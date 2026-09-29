@@ -124,6 +124,9 @@ static void charon_deliver_trait_changes(NSArray *environments, void (^change)(v
     for (id<UITraitEnvironment> environment in found)
         [previous addObject:environment.traitCollection];
     change();
+    // The registrations of iOS 17 are called here, once per environment that was told, with the collection it
+    // had before the change: the port's trait change delivery is the one place a trait moves on this release.
+    charon_deliver_trait_registrations(found, previous);
     NSUInteger index = 0;
     for (id<UITraitEnvironment> environment in found) {
         UITraitCollection *before = [previous objectAtIndex:index++];
@@ -212,7 +215,6 @@ static NSString *charon_size_class_name(UIUserInterfaceSizeClass sizeClass)
 @dynamic userInterfaceLevel;
 @dynamic legibilityWeight;
 @dynamic activeAppearance;
-@dynamic toolbarItemPresentationSize;
 
 + (BOOL)supportsSecureCoding
 {
@@ -334,6 +336,29 @@ static UITraitCollection *charon_make(Class cls, UIUserInterfaceIdiom idiom, CGF
 - (UIUserInterfaceSizeClass)verticalSizeClass
 {
     return _verticalSizeClass;
+}
+
+// The four traits this class holds in its own storage, written from UITraitCollection+Traits17.m, which is the
+// only other file that needs to change one of them and cannot reach the ivars from a category. The header
+// declares all four readonly, so these are the port's own and no application names them.
+- (void)charon_setUserInterfaceIdiom:(UIUserInterfaceIdiom)idiom
+{
+    _userInterfaceIdiom = idiom;
+}
+
+- (void)charon_setDisplayScale:(CGFloat)scale
+{
+    _displayScale = scale;
+}
+
+- (void)charon_setHorizontalSizeClass:(UIUserInterfaceSizeClass)sizeClass
+{
+    _horizontalSizeClass = sizeClass;
+}
+
+- (void)charon_setVerticalSizeClass:(UIUserInterfaceSizeClass)sizeClass
+{
+    _verticalSizeClass = sizeClass;
 }
 
 - (BOOL)containsTraitsInCollection:(UITraitCollection *)trait

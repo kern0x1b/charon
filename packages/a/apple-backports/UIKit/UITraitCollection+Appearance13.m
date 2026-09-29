@@ -55,17 +55,30 @@ NSDictionary *charon_trait_extras(UITraitCollection *collection)
 
 NSInteger charon_trait_extra(UITraitCollection *collection, NSString *name)
 {
-    NSNumber *held = charon_trait_extras(collection)[name];
-    return held ? held.integerValue : -1;
+    // A trait whose value is an object, which the object traits of iOS 17 store in the same dictionary, reads as
+    // no number at all rather than as a message a string does not answer, so a numeric accessor asked for one of
+    // them is a trait kind mismatch and the port's own table refuses it before it gets here.
+    id held = charon_trait_extras(collection)[name];
+    return [held isKindOfClass:[NSNumber class]] ? [held integerValue] : -1;
 }
 
 void charon_set_trait_extra(UITraitCollection *collection, NSString *name, NSInteger value)
 {
+    charon_set_trait_extra_object(collection, name, value == -1 ? nil : @(value));
+}
+
+id charon_trait_extra_object(UITraitCollection *collection, NSString *name)
+{
+    return charon_trait_extras(collection)[name];
+}
+
+void charon_set_trait_extra_object(UITraitCollection *collection, NSString *name, id value)
+{
     NSMutableDictionary *extras = [charon_trait_extras(collection) mutableCopy] ?: [NSMutableDictionary dictionary];
-    if (value == -1)
+    if (!value)
         [extras removeObjectForKey:name];
     else
-        extras[name] = @(value);
+        extras[name] = value;
     objc_setAssociatedObject(collection, &charon_extras_key, extras.count ? extras : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -108,8 +121,12 @@ NSUInteger charon_trait_extras_hash(UITraitCollection *collection)
 {
     NSUInteger hash = 0;
     NSDictionary *extras = charon_trait_extras(collection);
-    for (NSString *name in extras)
-        hash ^= name.hash + [extras[name] unsignedIntegerValue] * 2654435761u;
+    for (NSString *name in extras) {
+        // A number hashes by its value, as it always did; anything else, which is what an object trait stores,
+        // hashes by the object, which agrees with the equality the dictionary comparison above gives it.
+        id value = extras[name];
+        hash ^= name.hash + ([value isKindOfClass:[NSNumber class]] ? (NSUInteger)[value unsignedIntegerValue] * 2654435761u : [(NSObject *)value hash]);
+    }
     return hash;
 }
 
@@ -118,7 +135,17 @@ void charon_add_trait_extras_description(UITraitCollection *collection, NSMutabl
     charon_each_kind(^(CharonTraitKind kind) {
         if (!kind.described)
             return;
-        NSInteger value = charon_trait_extra(collection, kind.name);
+        id stored = charon_trait_extras(collection)[kind.name];
+        if (!stored)
+            return;
+        if (kind.described == 3) {
+            // The object traits of iOS 17: what a collection carries for a language or for the one BOOL, printed
+            // as the value is held. A typesetting language is the string; the flag is its number, so a
+            // collection that resolves natural alignment from the writing direction says so.
+            [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, stored]];
+            return;
+        }
+        NSInteger value = [stored integerValue];
         if (kind.described == 2) {
             NSArray *names = [kind.first componentsSeparatedByString:@","];
             if (value >= 0 && value < (NSInteger)names.count)
@@ -131,15 +158,30 @@ void charon_add_trait_extras_description(UITraitCollection *collection, NSMutabl
 void charon_encode_trait_extras(UITraitCollection *collection, NSCoder *coder)
 {
     NSDictionary *extras = charon_trait_extras(collection);
-    for (NSString *name in extras)
-        [coder encodeInteger:[extras[name] integerValue] forKey:[@"UITraitCollectionBuiltinTrait-_UITraitName" stringByAppendingString:name]];
+    for (NSString *name in extras) {
+        NSString *key = [@"UITraitCollectionBuiltinTrait-_UITraitName" stringByAppendingString:name];
+        // A number is coded as the integer the older collections have always coded, under the same key, so an
+        // archive written by either is read by the other. An object trait's value is an object, and is coded as
+        // one under the same key, which the decoder below reads back.
+        id value = extras[name];
+        if ([value isKindOfClass:[NSNumber class]])
+            [coder encodeInteger:[value integerValue] forKey:key];
+        else
+            [coder encodeObject:value forKey:key];
+    }
 }
 
 void charon_decode_trait_extras(UITraitCollection *collection, NSCoder *coder)
 {
     charon_each_kind(^(CharonTraitKind kind) {
         NSString *key = [@"UITraitCollectionBuiltinTrait-_UITraitName" stringByAppendingString:kind.name];
-        if ([coder containsValueForKey:key])
+        if (![coder containsValueForKey:key])
+            return;
+        // The three code styles of one key, because the value a trait holds decides which it was written as.
+        if (kind.described == 3) {
+            id object = [coder decodeObjectForKey:key];
+            charon_set_trait_extra_object(collection, kind.name, object);
+        } else
             charon_set_trait_extra(collection, kind.name, [coder decodeIntegerForKey:key]);
     });
 }

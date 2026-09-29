@@ -1,0 +1,309 @@
+// traitOverrides, registerForTraitChanges: and updateTraitsIfNeeded - the three ways iOS 17 gives an object its
+// own traits, the two private classes the host answers with, and the delivery that calls a registration back.
+//
+// What the host's own UIKit answers was measured first (facts/UIKit/UITrait17.md, M5 and M6). Both classes carry
+// the host's own names, _UITraitOverrides and _UITraitRegistration, because an application that prints one sees
+// that name; no SDK header declares either, which is what a delivery says under rule R4. The overrides object is
+// per owner - a view, a view controller, a presentation controller and a scene each have their own, and two
+// views never share one, which M5 measured.
+//
+// A registration is not a token: it is called when the traits it names change in the environment it was made on,
+// which is why UITraitCollection.m's own delivery asks this file for the call. The port's traits change when the
+// release reports a new status bar orientation and when an application sets a trait, so those are the two paths
+// a handler fires on; nothing else on this release moves a trait.
+
+#import "CharonTraits17.h"
+#import "CharonTraitStyle.h"
+#import <objc/runtime.h>
+
+#if !__has_include(<UIKit/UITrait.h>)
+
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+static char charon_trait_overrides_key;
+static char charon_trait_registrations_key;
+
+// The registrations of one observable, made on first ask and kept beside it.
+static NSMutableArray *charon_registrations_of(id observable, BOOL make)
+{
+    NSMutableArray *registrations = objc_getAssociatedObject(observable, &charon_trait_registrations_key);
+    if (!registrations && make) {
+        registrations = [NSMutableArray array];
+        objc_setAssociatedObject(observable, &charon_trait_registrations_key, registrations, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return registrations;
+}
+
+@interface _UITraitRegistration : NSObject <UITraitChangeRegistration>
+@property (nonatomic, copy) NSArray *traits;
+@property (nonatomic, copy) void (^handler)(id, UITraitCollection *);
+@property (nonatomic, assign) id target;
+@property (nonatomic, assign) SEL action;
+@end
+
+@implementation _UITraitRegistration
+
+- (id)copyWithZone:(NSZone *)zone
+{
+    // A registration is what unregisterForTraitChanges: takes back, and a copy of one is the same registration
+    // held once more, so unregistering either unregisters the one: two calls asking for the same traits are two
+    // registrations, and a copy is not a second of them.
+    return self;
+}
+
+- (void)charon_call:(id<UITraitEnvironment>)environment previous:(UITraitCollection *)previous
+{
+    if (_handler) {
+        _handler(environment, previous);
+        return;
+    }
+    if (!_target || !_action)
+        return;
+    // withTarget:action: takes a method of zero, one or two arguments, and the count of the method's own decides
+    // what the call is given: the environment whose traits are changing, and then the collection it had before,
+    // as the header of UITraitChangeObservable documents and the host does.
+    NSMethodSignature *signature = [_target methodSignatureForSelector:_action];
+    if (!signature)
+        return;
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    [invocation setTarget:_target];
+    [invocation setSelector:_action];
+    NSUInteger arguments = signature.numberOfArguments - 2;
+    if (arguments > 0) {
+        id first = environment;
+        [invocation setArgument:&first atIndex:2];
+    }
+    if (arguments > 1) {
+        UITraitCollection *before = previous;
+        [invocation setArgument:&before atIndex:3];
+    }
+    [invocation retainArguments];
+    [invocation invoke];
+}
+
+@end
+
+// The overrides of one owner: a trait collection to begin from, and the trait values put over it. The host's
+// description is two forms, "no overrides" and the list of what is set, and this prints both.
+@interface _UITraitOverrides : CharonTraitMutations <UITraitOverrides>
+@end
+
+@implementation _UITraitOverrides
+
+- (BOOL)containsTrait:(UITrait)trait
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    return definition ? charon_trait_value([self charon_collection], definition) != nil : NO;
+}
+
+- (void)removeTrait:(UITrait)trait
+{
+    // Removing an override puts the trait back to what the environment itself says, which is the trait's
+    // default: the dictionary entry goes, and the five traits the collection holds in its own storage and the
+    // style and the force touch capability are set to the values they start at.
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    if (!definition)
+        return;
+    UITraitCollection *collection = [self charon_collection];
+    switch (definition->home) {
+    case CharonTraitHomeIvar:
+        if (definition->trait == (Class)[UITraitUserInterfaceIdiom class])
+            [collection charon_setUserInterfaceIdiom:UIUserInterfaceIdiomUnspecified];
+        else if (definition->trait == (Class)[UITraitDisplayScale class])
+            [collection charon_setDisplayScale:0];
+        else if (definition->trait == (Class)[UITraitHorizontalSizeClass class])
+            [collection charon_setHorizontalSizeClass:UIUserInterfaceSizeClassUnspecified];
+        else
+            [collection charon_setVerticalSizeClass:UIUserInterfaceSizeClassUnspecified];
+        break;
+    case CharonTraitHomeStyle:
+        charon_set_trait_style(collection, UIUserInterfaceStyleUnspecified);
+        break;
+    case CharonTraitHomeForceTouch:
+        charon_set_trait_force_touch(collection, UIForceTouchCapabilityUnavailable);
+        break;
+    default:
+        charon_set_trait_extra_object(collection, definition->name, nil);
+        break;
+    }
+}
+
+// The traits of this overrides object that the environment does not already say are the ones the object changes,
+// which is what decides whether a registration fires.
+- (NSSet *)charon_overriddenTraits
+{
+    NSMutableSet *overridden = [NSMutableSet set];
+    for (Class trait in charon_trait_classes()) {
+        if ([self containsTrait:trait])
+            [overridden addObject:trait];
+    }
+    return overridden;
+}
+
+- (NSString *)description
+{
+    NSMutableArray *parts = [NSMutableArray array];
+    for (Class trait in [self charon_overriddenTraits]) {
+        const CharonTraitDefinition *definition = charon_trait_definition(trait);
+        id value = charon_trait_value([self charon_collection], definition);
+        [parts addObject:[NSString stringWithFormat:@"%@ = %@", charon_trait_public_name(definition), value]];
+    }
+    if (!parts.count)
+        return [NSString stringWithFormat:@"<%@: %p; no overrides>", [self class], self];
+    return [NSString stringWithFormat:@"<%@: %p; overrides = { %@ }>", [self class], self,
+                                      [parts componentsJoinedByString:@", "]];
+}
+
+@end
+
+static id<UITraitOverrides> charon_overrides_for(id owner)
+{
+    id<UITraitOverrides> overrides = objc_getAssociatedObject(owner, &charon_trait_overrides_key);
+    if (!overrides) {
+        overrides = [[_UITraitOverrides alloc] initWithCollection:nil];
+        objc_setAssociatedObject(owner, &charon_trait_overrides_key, overrides, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return overrides;
+}
+
+static id<UITraitChangeRegistration> charon_register(id observable, NSArray *traits, _UITraitRegistration *(^make)(void))
+{
+    if (![traits count])
+        [NSException raise:NSInternalInconsistencyException format:@"Must pass one or more traits to register for"];
+    _UITraitRegistration *registration = make();
+    registration.traits = traits;
+    [charon_registrations_of(observable, YES) addObject:registration];
+    return registration;
+}
+
+static void charon_unregister(id observable, id<UITraitChangeRegistration> registration)
+{
+    if (!registration)
+        [NSException raise:NSInternalInconsistencyException format:@"Must pass a non-nil registration to unregister"];
+    // Quiet twice over, as M6 measured: unregistering the same registration again asks nothing and changes
+    // nothing, and neither does unregistering one that is not this observable's.
+    [charon_registrations_of(observable, NO) removeObject:registration];
+}
+
+void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous)
+{
+    // Called by UITraitCollection.m's own delivery once the change is made, with the environments it told and
+    // the collection each had before. A registration fires for the traits it named when one of them differs
+    // between the two, and an environment that changed nothing fires nothing.
+    NSUInteger index = 0;
+    for (id<UITraitEnvironment> environment in environments) {
+        UITraitCollection *before = index < [previous count] ? [previous objectAtIndex:index] : nil;
+        index++;
+        NSArray *registrations = charon_registrations_of(environment, NO);
+        if (![registrations count])
+            continue;
+        NSSet<UITrait> *changed = [environment.traitCollection changedTraitsFromTraitCollection:before];
+        if (![changed count])
+            continue;
+        for (_UITraitRegistration *registration in [registrations copy]) {
+            for (Class trait in registration.traits) {
+                if (![changed containsObject:trait])
+                    continue;
+                [registration charon_call:environment previous:before];
+                break;
+            }
+        }
+    }
+}
+
+// The four classes that adopt UITraitChangeObservable in UIKitCore 17, and the one owner of traitOverrides that
+// is a controller rather than a view. A category on NSObject carries the four registration methods, because
+// UITraitChangeObservable is a protocol the SDK's own UITrait.h declares and the build SDK does not, and every
+// one of the four must answer them.
+@interface NSObject (CharonTraitChange17)
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler;
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withTarget:(id)target action:(SEL)action;
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withAction:(SEL)action;
+- (void)unregisterForTraitChanges:(id<UITraitChangeRegistration>)registration;
+@end
+
+@implementation NSObject (CharonTraitChange17)
+
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler
+{
+    return charon_register(self, traits, ^_UITraitRegistration * {
+        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+        registration.handler = handler;
+        return registration;
+    });
+}
+
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withTarget:(id)target action:(SEL)action
+{
+    return charon_register(self, traits, ^_UITraitRegistration * {
+        _UITraitRegistration *registration = [[_UITraitRegistration alloc] init];
+        registration.target = target;
+        registration.action = action;
+        return registration;
+    });
+}
+
+- (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withAction:(SEL)action
+{
+    return [self registerForTraitChanges:traits withTarget:self action:action];
+}
+
+- (void)unregisterForTraitChanges:(id<UITraitChangeRegistration>)registration
+{
+    charon_unregister(self, registration);
+}
+
+@end
+
+@implementation UIView (CharonTraitOverrides17)
+
+- (id<UITraitOverrides>)traitOverrides
+{
+    return charon_overrides_for(self);
+}
+
+- (void)updateTraitsIfNeeded
+{
+    // An application calls this after it changes an override, where the host re-resolves the environment. Here
+    // the environment is the screen's traits, which nothing has moved, so the call is the whole of it: a view's
+    // traitCollection is the screen's and stays the screen's.
+}
+
+@end
+
+@implementation UIViewController (CharonTraitOverrides17)
+
+- (id<UITraitOverrides>)traitOverrides
+{
+    return charon_overrides_for(self);
+}
+
+- (void)updateTraitsIfNeeded
+{
+}
+
+@end
+
+@implementation UIPresentationController (CharonTraitOverrides17)
+
+- (id<UITraitOverrides>)traitOverrides
+{
+    return charon_overrides_for(self);
+}
+
+@end
+
+@implementation UIWindowScene (CharonTraitOverrides17)
+
+- (id<UITraitOverrides>)traitOverrides
+{
+    return charon_overrides_for(self);
+}
+
+- (void)updateTraitsIfNeeded
+{
+}
+
+@end
+
+#endif
