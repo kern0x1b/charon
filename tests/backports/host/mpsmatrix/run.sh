@@ -158,14 +158,21 @@ PATTERN=$(printf '%s' "$HOST_DIVERGENCES" | tr ' ' '|')
 grep -vE "^case ($PATTERN) " "$build/system.strict" > "$build/system.counted"
 grep -vE "^case ($PATTERN) " "$build/port.strict" > "$build/port.counted"
 echo "named host divergences: $HOST_DIVERGENCES"
+# How many cases the names above actually remove, counted from the files and not from the list: five
+# names can match one case, five, or none, and two of them are a prefix with a case name after them, so
+# a line that printed the list's length beside a verdict read as five differences accounted for.
+compared=$(grep -c '^case ' "$build/system.counted")
+excluded=$(( $(grep -c '^case ' "$build/system.strict") - compared ))
+echo "compared: $compared cases, $excluded removed by the named divergences"
 
 if cmp -s "$build/system.counted" "$build/port.counted"; then
-    echo "differing cases: 0 (excluding the named divergence)"
-    echo "port: same as the system, case for case and bit for bit, apart from the named divergence"
+    echo "differing cases: 0 of the $compared compared"
+    echo "port: same as the system, case for case and bit for bit, apart from the $excluded named divergence cases"
     exit 0
 fi
+differing=$(diff "$build/system.counted" "$build/port.counted" | grep -c '^<')
 diff "$build/system.counted" "$build/port.counted" | head -60
-echo "differing cases: $(diff "$build/system.counted" "$build/port.counted" | grep -c '^<')"
-echo "  named host divergences excluded: $(printf '%s' "$HOST_DIVERGENCES" | wc -w)"
-echo "  so the port defects are: $(diff "$build/system.counted" "$build/port.counted" | grep -c '^<')"
+echo "differing cases: $differing of the $compared compared"
+echo "  removed by the named divergences: $excluded"
+echo "  so the port defects are: $differing"
 exit 1

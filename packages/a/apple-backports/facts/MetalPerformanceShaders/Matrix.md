@@ -38,6 +38,16 @@ divergence is a proof that the behaviour is the macOS GPU or driver's and not MP
 that proof in this file. **None of the thirteen currently named meets that bar, and the port has work
 to do on all of them.**
 
+How many cases the names actually remove is counted from the runner's own files, not
+from the length of the list: on macOS 27.0 (build 26A428) the filter drops **13 of 141**
+cases and **128** are compared, of which **58** differ - `sum` by one unit in the last place,
+`neuron` by 7.0e-05 and `batch-normalization` by 2.9e-06, and in the gradient families
+(`neuron-gradient-data`, `neuron-gradient-bias`, `fully-connected`) elements where one side is
+zero and the other is not. That run is on a **different operating system from every other
+measurement in this file**, which was taken against the MPS of macOS 26.5, so it does not
+settle any of the thirteen either way; it says only that the numbers move with the host's
+version and that a re-run has to name the macOS it ran on.
+
 The kernel's own parameters settle what the transposed line is. The probe prints them:
 
     kernel rows 2 columns 3 transpose 0;  result descriptor 3 x 2 rowBytes 12
