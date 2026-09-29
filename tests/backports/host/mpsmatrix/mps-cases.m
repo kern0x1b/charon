@@ -120,6 +120,10 @@ static MPSMatrix *matrixOf(const void *values, MPSDataType type, NSUInteger rows
     id<MTLBuffer> buffer = [gDevice newBufferWithBytes:values length:bytes options:MTLResourceStorageModeShared];
     MPSMatrixDescriptor *descriptor = [MPSMatrixDescriptor matrixDescriptorWithRows:rows columns:columns matrices:matrices rowBytes:rowBytes matrixBytes:matrixBytes dataType:type];
     MPSMatrix *matrix = [[MPSMatrix alloc] initWithBuffer:buffer descriptor:descriptor];
+    // The contract, checked rather than assumed: the matrix wraps the buffer it was made from and does
+    // not copy it, so the two are the same object and a kernel that writes one writes the other.
+    if (matrix.data != buffer)
+        printf("CONTRACT matrix.data is not the buffer it was made from\n");
     remember(matrix, (void *)values, bytes);
     return matrix;
 }
@@ -131,6 +135,8 @@ static MPSVector *vectorOf(const void *values, MPSDataType type, NSUInteger leng
     id<MTLBuffer> buffer = [gDevice newBufferWithBytes:values length:bytes options:MTLResourceStorageModeShared];
     MPSVectorDescriptor *descriptor = [MPSVectorDescriptor vectorDescriptorWithLength:length vectors:vectors vectorBytes:vectorBytes dataType:type];
     MPSVector *vector = [[MPSVector alloc] initWithBuffer:buffer descriptor:descriptor];
+    if (vector.data != buffer)
+        printf("CONTRACT vector.data is not the buffer it was made from\n");
     remember(vector, (void *)values, bytes);
     return vector;
 }
