@@ -16,6 +16,9 @@
 #import <Foundation/Foundation.h>
 #import <HealthKit/HealthKit.h>
 
+extern Class _Nullable CharonHKClassForObjectKind(NSInteger kind);
+extern void CharonHKSetClassResolver(Class _Nullable (^resolver)(NSString *name));
+
 #import <objc/runtime.h>
 
 #import "CharonHKTypes.h"
@@ -1342,6 +1345,17 @@ static void CharonHKWaitFor(volatile BOOL *answered)
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
 }
 
+// Where the port's classes went. The harness links this library's objects next to the system's
+// HealthKit, so every class of the port is built under a CharonHost-prefixed name and the kind table's
+// lookup by the SDK's own name would find the system's class instead. The table still says which name
+// belongs to which kind; this only says where that name lives here.
+static void CharonHKInstallClassResolver(void)
+{
+    CharonHKSetClassResolver(^Class(NSString *name) {
+        return NSClassFromString([@"CharonHost" stringByAppendingString:name]);
+    });
+}
+
 // The iOS 12.0 workout builder.
 //
 // The host is the oracle, and on this machine the host answers every call of this class that touches
@@ -1795,6 +1809,7 @@ static void CharonHKStoreRoundTrip(void)
 
 int main(void)
 {
+    CharonHKInstallClassResolver();
     CharonHKUnitCases();
     CharonHKPrefixedFactories();
     CharonHKUnitArithmetic();

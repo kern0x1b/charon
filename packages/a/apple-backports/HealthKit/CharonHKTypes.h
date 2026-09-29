@@ -44,6 +44,14 @@ extern const CharonHKTypeEntry *_Nullable CharonHKQuantityTypeEntryAt(NSUInteger
 // identifier names, from the kind the store keeps for it. Both are answered by name and looked up,
 // so that no file of this framework names a class of it as a symbol except the one that defines it.
 extern Class _Nullable CharonHKClassForObjectKind(NSInteger kind);
+
+// How a kind's class is found. The default is the runtime's own lookup by name, which is right in the
+// library: this port defines the class under the name the table names. A host harness that links this
+// library's objects next to the system's HealthKit has two classes of each name, and the harness's own
+// are renamed, so it installs a resolver of its own to say where they went. Nothing here decides policy:
+// the table still says which name belongs to which kind, and only the lookup of that name is replaceable.
+typedef Class _Nullable (^CharonHKClassResolver)(NSString *name);
+extern void CharonHKSetClassResolver(CharonHKClassResolver _Nullable resolver);
 extern Class _Nullable CharonHKClassForTypeKind(NSInteger kind);
 
 // Whether the SDK header names an identifier of this kind at all, so that the class methods of

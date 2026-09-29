@@ -50,21 +50,32 @@ Class CharonHKClassForTypeKind(NSInteger kind)
     }
 }
 
+// The lookup the kind table uses, and the one that replaces it. A nil resolver is the runtime's own.
+static CharonHKClassResolver charon_hk_class_resolver = ^Class(NSString *name) {
+    return NSClassFromString(name);
+};
+
+void CharonHKSetClassResolver(CharonHKClassResolver resolver)
+{
+    charon_hk_class_resolver = resolver ?: ^Class(NSString *name) { return NSClassFromString(name); };
+}
+
 Class CharonHKClassForObjectKind(NSInteger kind)
 {
+    CharonHKClassResolver resolve = charon_hk_class_resolver;
     switch (kind) {
     case 0:
-        return NSClassFromString(@"HKCategorySample");
+        return resolve(@"HKCategorySample");
     case 1:
-        return NSClassFromString(@"HKQuantitySample");
+        return resolve(@"HKQuantitySample");
     case 2:
-        return NSClassFromString(@"HKCorrelation");
+        return resolve(@"HKCorrelation");
     case 3:
-        return NSClassFromString(@"HKWorkout");
+        return resolve(@"HKWorkout");
     // The clinical record of 12.0, whose kind the store writes and which the table could not name, so a
     // record could be saved and never read back.
     case 4:
-        return NSClassFromString(@"HKClinicalRecord");
+        return resolve(@"HKClinicalRecord");
     default:
         return Nil;
     }
