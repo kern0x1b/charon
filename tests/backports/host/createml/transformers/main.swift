@@ -174,6 +174,26 @@ do {
     let appliedZeroWidth = scaled(fitRobust([1, 2, 3, 4, 100], 0.5...0.5), hostFive)
     check("a zero width leaves the deviation unscaled: the host's applied(4) is 1.0",
           appliedZeroWidth[3] == 1.0, "the port answers \(String(describing: appliedZeroWidth[3]))")
+
+    // The two guards, which are the cases where a scaler that "subtracts the median and divides by the
+    // scale" gives a different answer from the host rather than the same one.
+    //
+    // A **non-finite median is not subtracted** and the scale still applies. A NaN in the data makes the
+    // median NaN, and the host answers applied(1) = 1 / 0.5 = 2 and applied(9) = 9 / 0.5 = 18; a scaler
+    // that subtracted unconditionally would answer NaN for both. Measured, `probe/robust-scaler-host.swift`.
+    let appliedNaN = scaled(fitRobust([1, 2, Double.nan, 4]), [1.0, 9.0])
+    check("a non-finite median is not subtracted: the host's applied(1) is 1 / 0.5 = 2",
+          appliedNaN[0] == 2.0, "the port answers \(String(describing: appliedNaN[0]))")
+    check("and applied(9) is 9 / 0.5 = 18, not NaN",
+          appliedNaN[1] == 18.0, "the port answers \(String(describing: appliedNaN[1]))")
+    // An **infinite scale is not applied**, exactly as a zero one is not: `0.0...Double.infinity` has
+    // width infinity, the host's `interQuartileRange` is infinite, and applied(3) for median 2 is
+    // 3 - 2 = 1 rather than 0. An infinite bound is *not* a trap - the six ranges measured separately,
+    // and the three that trap (lower > upper, and a NaN bound at either end) trap in the standard
+    // library's `ClosedRange` at the call site, which the port inherits by using the same type.
+    let appliedInfiniteScale = scaled(fitRobust([1, 2, 3], 0.0...Double.infinity), [1.0, 3.0])
+    check("an infinite scale leaves the deviation unscaled: the host's applied(3) is 3 - 2 = 1",
+          appliedInfiniteScale[1] == 1.0, "the port answers \(String(describing: appliedInfiniteScale[1]))")
     let constantMinmax = column(try MinMaxScaler().fitted(on: constant).transformed(constant), "x")
     check("a constant column has no spread for a min-max scaler to divide by",
           constantMinmax == [0, 0, 0, 0] || constantMinmax == [7, 7, 7, 7],
