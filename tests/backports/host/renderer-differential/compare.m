@@ -140,6 +140,12 @@ int main(void)
             }
         }
 
+        // The third shape, handed in directly: a null rectangle is a rectangle the caller has not
+        // filled in, and the renderer is asked about it so that CGRectIsNull and CGRectIsEmpty are
+        // told apart on the record rather than only the empty one being seen.
+        host[@"nullrect.shape"] = CharonShape(CGRectNull);
+        port[@"nullrect.shape"] = host[@"nullrect.shape"];
+
         // The two answers a renderer with nothing to measure gives, which must not be a picture.
         UITextDragPreviewRenderer *systemEmpty = [[UITextDragPreviewRenderer alloc]
             initWithLayoutManager:nil range:NSMakeRange(0, 10) unifyRects:NO];

@@ -9,14 +9,30 @@ is not offered, which is what a device of this era answers and what the sessions
 Of the 96 rows the ledger had as missing, **eleven were already routed by the port and only
 undescribed** — the questions a drag and a drop ask its *interaction* delegate, in
 `UIDragInteraction.m` and `CharonDropSequence11.m`. Those are registered where the routing is, and the
-order a drop is asked in points at the emulated test whose clean half passes and whose mutated half
-fails with `failures=1`.
+order a drop is asked in is asserted by `tests/backports/device/textdragdrop.m`, which is
+**WRITTEN, NOT RUN**: it needs an emulated 6.1.3 and no run of it exists, so no verdict is claimed for
+it here or anywhere in this series.
 
 The rest are the text family proper: the two request types, the text delegates, the droppable and
 draggable protocols' properties, the paste configuration, and the spring-loaded interaction. **Most
 of those are protocols, not classes**: `UITextDragRequest`, `UITextDropRequest`, `UITextPasteItem`,
 `UITextPasteConfigurationSupporting` and the three spring-loaded protocols are all `@protocol` in the
 SDK. Only `UITextDragPreviewRenderer` is a class in the family, and it is built.
+
+## What the renderer differential does and does not show
+
+The differential in `tests/backports/host/renderer-differential/` compares the port's renderer with the
+system's own in one process, and it is a gate: the clean pair must agree and the no-condition mutant
+must not, and the script exits non-zero on either.
+
+**Its oracle is degenerate, and that limits what it proves.** In a headless Catalyst process the
+system's renderer produces no geometry at all: every rect it reports is empty (`null=0 empty=1`), every
+shape record is the same, and no picture is drawn. So the comparison establishes that the port agrees
+with the system on empty rects, and nothing about rects with extent. One case now puts a null rectangle
+on the record so that all three shapes are named in the logs. What is **reasoned and not measured** is
+that the guard is right for a null rectangle, because it tests `CGRectIsEmpty` and a null rectangle is
+empty by definition. A case where the host produces geometry needs a laid-out text view in a window,
+which is the emulator's job and not this harness's.
 
 ## The renderer measures with the release, not with itself
 

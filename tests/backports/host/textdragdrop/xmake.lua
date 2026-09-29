@@ -13,7 +13,9 @@ set_allowedarchs("iphoneos|armv7")
 set_defaultplat("iphoneos")
 set_defaultarchs("iphoneos|armv7")
 
-local ui = path.join(root, "packages/a/apple-backports/UIKit")
+# The port sources are taken from DDR_UIKIT, which the run script points at a scratch copy of,
+# so a mutant never overwrites a tracked file in the worktree.
+local ui = os.getenv("DDR_UIKIT") or path.join(root, "packages/a/apple-backports/UIKit")
 target("textdragdrop")
     add_rules("@addon/charon/daemon")
     add_files(path.join(root, "tests/backports/device/textdragdrop.m"),

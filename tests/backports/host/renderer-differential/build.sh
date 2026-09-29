@@ -74,12 +74,13 @@ nm -gU "$build/probe" | grep -E "OBJC_CLASS_\$_(UITextDragPreviewRenderer|$port_
 echo "== the clean pair:"
 "$build/probe" > "$build/clean.log" 2>&1 || true
 tail -1 "$build/clean.log"
-grep -c DIFFER "$build/clean.log" || true
+clean_differing=$(grep -c DIFFER "$build/clean.log" || true)
 
 link "$build/compare.o" "$build/mutant.o"
 echo "== the mutant, one rect a point out:"
 "$build/probe" > "$build/mutant.log" 2>&1 || true
 tail -1 "$build/mutant.log"
+rect_differing=$(grep -c DIFFER "$build/mutant.log" || true)
 
 # The second mutant: the same file with the null-or-empty condition removed, which is the wrong
 # renderer as it stood before the fix. It must go red on exactly the cases the condition covers and
@@ -107,4 +108,22 @@ link "$build/compare.o" "$build/mutant-nocondition.o"
 echo "== the mutant with the condition removed:"
 "$build/probe" > "$build/mutant-nocondition.log" 2>&1 || true
 tail -1 "$build/mutant-nocondition.log"
-grep -c DIFFER "$build/mutant-nocondition.log" || true
+nocondition_differing=$(grep -c DIFFER "$build/mutant-nocondition.log" || true)
+
+# The two assertions that make this a gate and not a report. The clean pair must agree with the
+# system, or the port is wrong; the no-condition mutant must not, or the fix is not what the mutant
+# removes. The rect+1 mutant is inert by construction -- every recorded first-line rect is empty,
+# so an offset inside the guarded branch has nothing to act on -- and is not asserted on.
+clean_compared=$(awk '/^compared/ {print $2}' "$build/clean.log")
+nocondition_compared=$(awk '/^compared/ {print $2}' "$build/mutant-nocondition.log")
+status=0
+if [ "$clean_differing" != "0" ]; then
+    echo "FAIL: the clean pair differs from the system in $clean_differing of $clean_compared values"
+    status=1
+fi
+if [ "$nocondition_differing" = "0" ]; then
+    echo "FAIL: the no-condition mutant is green, so it does not test the fix"
+    status=1
+fi
+[ "$status" -eq 0 ] && echo "PASS: clean 0/$clean_compared differing, no-condition mutant $nocondition_differing/$nocondition_compared"
+exit $status

@@ -11,15 +11,23 @@ device=${DDR_DEVICE:-iPhone3,1}
 releases=${DDR_RELEASES:-"6.1.3"}
 export DDR_ROOT=$root
 
-seq=$root/packages/a/apple-backports/UIKit/UITextView+TextDragDrop11.m
+# The port's own sources are copied into a scratch tree and the build is pointed at that, so the
+# mutant is a file in the scratch tree and never overwrites a tracked source in the worktree. A crash
+# or a kill between the two halves cannot leave the mutant behind as an uncommitted change.
+port=$root/packages/a/apple-backports/UIKit
+scratch=$build/port-sources
 mutated=$here/UITextView+TextDragDrop11.mutated.m
-original=$here/UITextView+TextDragDrop11.m.original
-cp "$seq" "$original"
+rm -rf "$scratch"
+mkdir -p "$scratch"
+cp "$port"/*.m "$port"/*.h "$scratch/" 2>/dev/null || true
+rm -f "$scratch/UITextView+TextDragDrop11.m"
+cp "$mutated" "$scratch/UITextView+TextDragDrop11.m"
 
 rm -rf "$build"
 mkdir -p "$build"
 cp "$here/xmake.lua" "$here/control" "$build/"
 cd "$build"
+export DDR_UIKIT=$scratch
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1
 
@@ -27,7 +35,7 @@ run_one() {
     release=$1
     half=$2
     image=$3
-    DDR_ROOT=$root xmake build -r -y > "build-$half-$release.log" 2>&1 || {
+    DDR_ROOT=$root DDR_UIKIT=$scratch xmake build -r -y > "build-$half-$release.log" 2>&1 || {
         echo "$half $release: BUILD-FAIL"; tail -3 "build-$half-$release.log"; return 1; }
     DDR_ROOT=$root xmake emulate -d "$device" -r "$release" install > "install-$half-$release.log" 2>&1 || {
         echo "$half $release: INSTALL-FAIL"; tail -3 "install-$half-$release.log"; return 1; }
@@ -43,7 +51,7 @@ run_one() {
     [ -n "$verdict" ] && echo "$half $release: $(python3 -c "
 import json
 d=json.load(open('$verdict'))
-print(d.get('state','?'), d.get('reason',''))" 2>/dev/null)"
+print(d.get('state','?'), d.get('reason',''))")"
     if [ "$status" -eq 0 ] && grep -Eq 'pass.{0,12} on iPhone' "$release-$half.log"; then
         echo "$half $release: pass"
         return 0
@@ -76,9 +84,9 @@ for release in $releases; do
     [ -n "$image" ] || image=$(ls -td "$HOME/.charon/emulator/images.noindex/"textdragdrop-* 2>/dev/null | head -1 | xargs basename)
     run_one "$release" clean "$image" && guest_lines "$release" clean "$image" || failed=1
 done
-cp "$mutated" "$seq"
+# the mutant, in the scratch tree only
+cp "$mutated" "$scratch/UITextView+TextDragDrop11.m"
 for release in $releases; do
     run_one "$release" mutated "$image" && guest_lines "$release" mutated "$image" || true
 done
-cp "$original" "$seq"
 exit $failed
