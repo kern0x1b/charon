@@ -78,14 +78,38 @@ static const char CharonTextDropInteractionKey;
 // The bodies, once. A text view and a text field are unrelated classes, so a category on one
 // cannot be called from the other; the seven members are the SDK's two protocols' members and
 // they are written once here, against the protocols, and both categories below forward to them.
+// The one place the two delegates are stored, and it is the reason this class exists. Both headers
+// declare their delegate weak (UITextDragging.h:35, UITextDropping.h:24), and an associated object
+// held with OBJC_ASSOCIATION_ASSIGN does not zero: a delegate deallocated before the control leaves
+// a dangling slot that the adaptors then message, which is a crash and a wrong answer to what the
+// header says. The library is built with ARC and the port's minimum for these members is 6.0, so
+// weak references exist, and a box is what holds one: the association retains the box, the box's
+// target is weak, and reading target after the delegate is gone is nil rather than a stale address.
+@interface CharonWeakDelegateBox : NSObject
+@property (nonatomic, weak) id target;
+@end
+
+@implementation CharonWeakDelegateBox
+@synthesize target = _target;
+@end
+
 static id CharonTextDragDelegateOf(id<UITextDraggable> control)
 {
-    return objc_getAssociatedObject(control, &CharonTextDragDelegateKey);
+    CharonWeakDelegateBox *box = objc_getAssociatedObject(control, &CharonTextDragDelegateKey);
+    return box.target;
 }
 
 static void CharonSetTextDragDelegate(id<UITextDraggable> control, id<UITextDragDelegate> delegate)
 {
-    objc_setAssociatedObject(control, &CharonTextDragDelegateKey, delegate, OBJC_ASSOCIATION_ASSIGN);
+    // A fresh box each time, so a replaced or cleared delegate leaves nothing pointing at the old
+    // one; nil clears the slot outright rather than storing an empty box.
+    if (!delegate) {
+        objc_setAssociatedObject(control, &CharonTextDragDelegateKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        return;
+    }
+    CharonWeakDelegateBox *box = [[CharonWeakDelegateBox alloc] init];
+    box.target = delegate;
+    objc_setAssociatedObject(control, &CharonTextDragDelegateKey, box, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static UIDragInteraction *CharonTextDragInteraction(id<UITextDraggable> control)
@@ -123,12 +147,19 @@ static void CharonSetTextDragOptions(id<UITextDraggable> control, UITextDragOpti
 
 static id CharonTextDropDelegateOf(id<UITextDroppable> control)
 {
-    return objc_getAssociatedObject(control, &CharonTextDropDelegateKey);
+    CharonWeakDelegateBox *box = objc_getAssociatedObject(control, &CharonTextDropDelegateKey);
+    return box.target;
 }
 
 static void CharonSetTextDropDelegate(id<UITextDroppable> control, id<UITextDropDelegate> delegate)
 {
-    objc_setAssociatedObject(control, &CharonTextDropDelegateKey, delegate, OBJC_ASSOCIATION_ASSIGN);
+    if (!delegate) {
+        objc_setAssociatedObject(control, &CharonTextDropDelegateKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        return;
+    }
+    CharonWeakDelegateBox *box = [[CharonWeakDelegateBox alloc] init];
+    box.target = delegate;
+    objc_setAssociatedObject(control, &CharonTextDropDelegateKey, box, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 static UIDropInteraction *CharonTextDropInteraction(id<UITextDroppable> control)
