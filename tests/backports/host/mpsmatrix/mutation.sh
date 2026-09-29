@@ -20,7 +20,8 @@ fmutated='                double y = CharonMPSApplyNeuron(neuron.type, g * (x - 
 work=${MUTATION_BUILD:-$root/.agent-work/runs/host/mpsmatrix-mutation}
 
 grep -qF "$line" "$kernel" || { echo "the anchor is gone from $kernel; the mutation is not a check any more"; exit 1; }
-restore() { printf '%s\n' "$original" > "$kernel"; }
+
+. "$(dirname "$0")/mutate.sh"
 original=$(cat "$kernel")
 foriginal=$(cat "$forward")
 restore_forward() { printf '%s\n' "$foriginal" > "$forward"; }
@@ -37,7 +38,7 @@ count() {
 
 before=$(count)
 printf 'before   %s\n' "$before"
-printf '%s\n' "$mutated" > "$kernel"
+mutate "$kernel" "$line" "$mutated"
 during=$(count)
 printf 'mutated  %s\n' "$during"
 restore
