@@ -32,3 +32,17 @@ typedef NSNumber *MPMediaEntityPersistentID;
 @interface MPMediaItemArtwork (Charon100)
 - (instancetype)initWithBoundsSize:(CGSize)boundsSize requestHandler:(UIImage *(^)(CGSize size))requestHandler;
 @end
+
+// The 9.0 command event's two types, and the base the port carries it over, so the check can compile
+// the port's own source for a class the release does not have.
+typedef NSUInteger MPChangeLanguageOptionSetting;
+@interface MPNowPlayingInfoLanguageOption : NSObject
+@property (nonatomic, readonly) BOOL isAutomaticLegibleLanguageOption;
+@end
+@interface MPRemoteCommand : NSObject
+@end
+@interface MPRemoteCommandEvent : NSObject
+- (instancetype)initWithCommand:(MPRemoteCommand *)command;
+@property (nonatomic, strong, readonly) MPRemoteCommand *command;
+@property (nonatomic, assign, readonly) NSTimeInterval timestamp;
+@end
