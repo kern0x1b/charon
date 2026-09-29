@@ -8,6 +8,12 @@
     NSString *_identifier;
     UIMenuOptions _options;
     NSArray<UIMenuElement *> *_children;
+    // The delegate a menu forces automatic selection on, which UIKit's own button machinery sets on a menu it
+    // is about to show. It is a private pair - no header declares it - and the host's own UIMenu answers it, so
+    // a menu this port replaces has to answer it too or the host's machinery sends it into nothing. Measured:
+    // the setter holds what it is given, nil clears it, and a second set replaces it.
+    id _forcedAutomaticSelectionDelegate;
+    BOOL _forceAutomaticSelection;
 }
 
 @dynamic preferredElementSize, selectedElements;
@@ -128,6 +134,34 @@
     }
     [text appendFormat:@"; children = <NSArray: %p>>", _children];
     return text;
+}
+
+
+// The host's own private pair, measured rather than guessed: -setForcedAutomaticSelectionDelegate: is declared
+// on UIMenu and on no superclass, it holds the delegate it is given, nil clears it, a second set replaces it,
+// and a menu that never had one answers the getter with nil.
+- (id)forcedAutomaticSelectionDelegate
+{
+    return _forcedAutomaticSelectionDelegate;
+}
+
+- (void)setForcedAutomaticSelectionDelegate:(id)forcedAutomaticSelectionDelegate
+{
+    _forcedAutomaticSelectionDelegate = forcedAutomaticSelectionDelegate;
+}
+
+
+// The second of the same private pair, measured the same way: the host's UIMenu carries both
+// -setForceAutomaticSelection: and -forceAutomaticSelection, and a menu that never had either answers the
+// getter with NO. The value is what the caller set.
+- (BOOL)forceAutomaticSelection
+{
+    return _forceAutomaticSelection;
+}
+
+- (void)setForceAutomaticSelection:(BOOL)forceAutomaticSelection
+{
+    _forceAutomaticSelection = forceAutomaticSelection;
 }
 
 @end
