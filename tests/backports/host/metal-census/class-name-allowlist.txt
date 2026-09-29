@@ -77,3 +77,10 @@ NSBundleOnDemandResourceInvalidTagError # a Foundation error constant named in a
 NSAscending # a fragment of NSSortDescriptorAscending; absent from every SDK 16.4 header
 NSEntity # a fragment of NSEntityDescription; absent from every SDK 16.4 header
 CFRetained # no declaration in SDK 16.4; the word occurs once, in Apple's own doc prose
+
+# ONE MORE, AND IT IS THE SAME STORY AS THE THREE ABOVE. NSBlock is not declared in SDK 16.4 at
+# all - no Block.h in the SDK, and the word appears only inside Apple's own doc prose in
+# NSExpression.h and NSOperation.h - so a JavaScriptCore row's prose names a type this SDK does not
+# have. The uncached oracle used to absorb it by sweeping every Capitalised token out of every
+# header's prose, which is why it passed before and not now: the index reads DECLARATIONS.
+NSBlock # not declared in SDK 16.4; the word occurs in Apple's doc prose only
