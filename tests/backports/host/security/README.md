@@ -148,3 +148,19 @@ rated medium and is recorded here rather than fixed; three defects were found by
 Until all five are fixed, the honest statement is: **the guard covers the `sec_*` and `Charon*` symbols a
 case calls by name, when the sources that define them are in the link line the guard was handed.** Nothing
 here claims otherwise, and none of the five is done.
+
+## Digests of the evidence this directory cites
+
+Taken from the files as they are in this branch's tree, after every content change - recomputed
+for this export, not copied from an earlier one. The README itself is deliberately NOT one of them:
+a file cannot carry its own digest.
+
+```
+shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \
+         tests/backports/host/security/compare-sec-object-wrappers.py \
+         packages/a/apple-backports/Security/SecObjectWrappers12_0.m
+```
+
+    0e134f43b64166c4e55a12f1f000cd36b1ad422922c937c49ee27487b11ad00c  tests/backports/host/security/sec-object-wrappers.m
+    47e215633006060820d6a7e6ce53797bc371889b79f35d0e3d06e08bee6f7354  tests/backports/host/security/compare-sec-object-wrappers.py
+    b3f86193a9e0860a6ac52e277875d8e90f4003645649850f0e03fecd7094e3e0  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
