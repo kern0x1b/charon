@@ -33,26 +33,53 @@ The package's recipe also builds that wrapper now (`packages/m/micro-ecc/xmake.l
 `CharonCKWebAuth.h` was in the package's source and not in its `include/`, and nothing that included it
 could compile. That was a gap in the package, not in its users, and it is fixed at the source.
 
-## Where the key material comes from, and how it is found
+## The signing is the release's own
 
-The key is not the port's: `SecKeyCreateRandomKey` (`Security/SecKey100.m`) makes it with the
-**release's own** `SecKeyGeneratePair`, so it lives in iOS 6's keychain. Reading it back is what
-`SecKeyCopyAttributeDictionary` and `SecKeyCopyPublicBytes` are for, the same two private entry points
-`SecKey100.m` already uses.
+A key of an application on this release lives in iOS 6's keychain: `SecKeyCreateRandomKey`
+(`Security/SecKey100.m`) makes it with the **release's own** `SecKeyGeneratePair`. And the release can
+sign with it: `SecKeyRawSign` and `SecKeyRawVerify` are iOS 2.0, both are in the armv7 shared cache of
+iOS 6.1.3, and they take an elliptic key and a digest. So for a key of the release's keychain this
+file does no arithmetic at all: it calls `SecKeyRawSign` and reads the two halves of the signature
+where the release put them.
 
-The release does not say where in the stored bytes the private scalar is, and **that shape cannot be
-read from here**: no release this port runs can be asked, and the host's own `SecKey` keeps a
-different shape again — measured, its P-256 private external representation is 97 bytes, a `0x04` tag,
-a length byte, then the scalar and the two coordinates, while a public key's is the 65 byte
-uncompressed point.
+Which is where the release put them is the release's business, not an assumption, and both shapes are
+read: a 64 byte answer is the two 32 byte halves of a P-256 signature, and an answer that begins with
+`0x30` is the SEQUENCE of two INTEGERs already. A result that is neither is refused with
+`errSecInternalError` rather than guessed at. `r` and `s` are put in the **low-s half**, which is the
+form Apple's own `SecKeyCreateSignature` produces and which a CloudKit web services token is checked
+against; `(r, s)` and `(r, n - s)` are both valid signatures of the same message, so the low-s one is
+the one that is Apple's. An elliptic key has no padding, so the call is made with `kSecPaddingNone`;
+if the release refuses that, it is asked once more with the `kSecPaddingPKCS1` it also names, and
+whichever it accepts is the one its answer comes from.
 
-So the scalar is **found, not assumed**: every 32 byte window of the stored bytes is tried as a
-private key, the public point it derives is compared with the point the key itself publishes, and the
-window that derives *that* point is the scalar. A blob whose shape nothing matches is refused with
-`errSecParam`, so a wrong answer cannot be signed with — the check is what makes an unmeasurable shape
-safe rather than a guess. The same comparison is what the host's 97 bytes are read with, and it is
-what tells the two candidate windows apart on the host (offset 2 matches the published X, offset 1 does
-not).
+**Which padding an EC key of this release takes, and whether it hands back the halves or the DER, is
+measured by a probe on the release itself**, `tests/backports/device/seckey-ecraw.m`, run in the
+emulator at 6.1.3 (`tests/backports/host/seckeycurve/emulate.sh`, one heavy job). It is queued; the
+code above handles either answer, so nothing waits on it to be correct, only to be known.
+
+## The keys this package makes are the only ones the curve is for
+
+`charon@micro-ecc` is reached for a key **this package created and holds the scalar of** — the
+`SecKeyCreateWithData` and the elliptic arm of `SecKeyCreateRandomKey` that are the next piece of work,
+and which mark their keys with a `CharonSecKeyScalar` attribute the two functions here look for. For
+every key of the release's keychain the curve is not used: the release signs and verifies, and the
+exchange below is not available at all.
+
+## The exchange, and why a release key cannot do it
+
+**Measured, not assumed**: the armv7 shared cache of iOS 6.1.3 exports `SecKeyRawSign` and
+`SecKeyRawVerify` and **no elliptic key agreement of any kind**. Its one key agreement is the
+finite-field `SecDH` family — `SecDHComputeKey`, `SecDHGenerateKeypair`, `SecDHCreate` — which is not a
+curve, and there is no `SecKeyCopyExchangeKey`, `SecKeyExchangeKey`, `SecKeyECDH` or
+`SecKeyCreateFromData` anywhere in it. The same probe asks the release for each of those names by
+`dlsym` and prints what it finds.
+
+So `SecKeyIsAlgorithmSupported` answers **NO** for a key exchange on a key of the release's keychain,
+and `SecKeyCopyKeyExchangeResult` refuses such a key with `errSecParam` and that reason, rather than
+making a shared secret over a scalar it would have to guess at. For a key of this package it answers
+YES and derives the secret over the curve, as `facts/Security/SecKeyElliptic.md` describes: the X
+coordinate of the shared point for an algorithm whose name ends in no digest, and its SHA-256 for one
+that does.
 
 ## What the port answers
 
@@ -98,12 +125,18 @@ for byte — after checking that the scalar and the point OpenSSL printed are on
 the point OpenSSL published for it) and not the other. The exchange is then made in both directions and
 a third pair of keys is shown to give a third secret.
 
-**Not measured: the release side.** The keychain extraction — which window of *iOS 6's* stored bytes is
-the scalar — has not run on a device or in the emulator, and the gate that would build it has not run
-(this is the patch the coordinator holds ungated, waiting for a heavy slot). The design is what makes
-that safe rather than a claim that it is right: the scalar is accepted only when it derives the key's
-own published public point, so the worst case on a shape nobody has read yet is a refusal, never a
-signature of the wrong bytes.
+**Not measured yet: the release's own answers.** The probe above is queued behind every other heavy
+job on the machine (`$HOME/Git/projects/ios/coordination/heavy.sh sh
+tests/backports/host/seckeycurve/emulate.sh`, log `.agent-work/runs/seckeyecraw.log`), so which padding
+an EC key of the release takes and whether it answers the halves or the DER is written down as "both
+are read" rather than as a fact. The gate that would build this file has not run either.
+
+**What was here before, and why it is gone.** The first version of this file found the private scalar
+by scanning every 32 byte window of the release's keychain blob and keeping the one whose derived
+public point matched the key's own. That was a crutch — a guess about a shape nobody had read, dressed
+as a check — and it is replaced by the release's own `SecKeyRawSign`, which needs no shape at all. The
+scan is not in the tree, and `Security/SecKeyElliptic.md` no longer depends on a keychain blob being
+anything in particular.
 
 **One thing this cost to find**, and it is the kind the differential exists for: the wrapper's
 `CharonCKSignES256` hashed the message and passed `sizeof digest` to `uECC_sign`. When the digest-level
