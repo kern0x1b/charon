@@ -110,6 +110,15 @@ cases = [line for line in run.stdout.split("\n") if line.strip()]
 if not cases:
     sys.stderr.write("clang read the headers and found no method in any of them\n")
     sys.exit(1)
+# Every class the registry carries must have produced at least one case. A class that produced none is
+# a class the check is silently not looking at -- the same silent narrowing the member table used to
+# allow, and the reason a class can be registered, reported as implemented, and never measured.
+seen = {line.split("\t")[0] for line in cases}
+silent = sorted(set(rows) - seen)
+if silent:
+    sys.stderr.write("these classes produced no case and would not be measured at all: %s\n"
+                     % ", ".join(silent))
+    sys.exit(1)
 with open(out, "w") as f:
     f.write("\n".join(cases) + "\n")
 print("%d class rows, %d members from clang" % (len(set(rows)), len(cases)))
