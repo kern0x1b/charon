@@ -67,7 +67,7 @@ sh "$here/provenance.sh" uuid "$work/scenekitprojection" | tee "$work/uuid-test-
 # copy has to carry.
 # The installed SceneKit backports: the newest install in the store, which is the one the package
 # build last left.
-lib=${LIB:-$(ls -d "$HOME"/.xmake/packages/a/apple-backports/*/*/ 2>/dev/null | tail -1)lib/libSceneKitBackports.dylib}
+lib=${LIB:-$(find "$HOME/.xmake/packages/a/apple-backports" -name libSceneKitBackports.dylib 2>/dev/null | xargs stat -f "%m %N" | sort -rn | head -1 | cut -d" " -f2-)}
 if [ -f "$lib" ]; then
     sh "$here/provenance.sh" uuid "$lib" | tee "$work/uuid-lib-before.log"
     echo "projectPoint in the installed library: $(strings "$lib" | grep -c projectPoint)"
@@ -79,6 +79,14 @@ fi
 echo "=== install and run ==="
 FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate install
 FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate run "$work/scenekitprojection"
-FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate run "$work/probe"
+# The probe only when it has been built, and it cannot be until a swift-runtime install carries the
+# RealityFoundation and RealityKit overlays for armv7 (measured: no install in the store has them, and
+# none has a simd module for armv7 either, so a Swift guest program has nothing to compile against).
+# Said here rather than left to fail as "the command is not in the image".
+if [ -f "$work/probe" ]; then
+    FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate run "$work/probe"
+else
+    echo "skipped the probe: no armv7 RealityFoundation module to build it against (no swift-runtime install carries the overlays)"
+fi
 echo "=== the verdicts, from xmake emulate log ==="
 FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate log | tail -30 | tee "$work/verdicts.log"
