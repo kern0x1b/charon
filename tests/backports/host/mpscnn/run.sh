@@ -10,12 +10,12 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
-build=${BUILD:-$(mktemp -d)}
+build=${BUILD:-$here/../../../../.agent-work/runs/host/mpscnn}
+rm -rf "$build"
+mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness -Wno-objc-protocol-method-implementation"
-mkdir -p "$build"
-
 xcrun clang -fobjc-arc $target $quiet "$here/cnn-cases.m" \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/system"
 "$build/system" > "$build/system.txt" 2> "$build/system.err" || true
