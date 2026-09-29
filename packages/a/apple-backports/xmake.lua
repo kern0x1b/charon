@@ -163,7 +163,7 @@ package("apple-backports")
                                      package:config("backgroundtasks") and {"BackgroundTasksBackports"} or {},
                                      package:config("photos") and {"PhotosBackports"} or {},
                                      package:config("gamecontroller") and {"GameControllerBackports"} or {},
-                                     package:config("coreml") and {"CoreMLBackports"} or {}, package:config("vision") and {"VisionBackports"} or {},
+                                     (package:config("coreml") or package:config("vision")) and {"CoreMLBackports"} or {}, package:config("vision") and {"VisionBackports"} or {},
                                      (package:config("metal") or package:config("metalkit") or package:config("modelio")) and {"MetalBackports"} or {},
                                      (package:config("metalkit") or package:config("modelio")) and {"MetalKitBackports"} or {},
                                      package:config("opengles") and {"OpenGLESBackports"} or {},
