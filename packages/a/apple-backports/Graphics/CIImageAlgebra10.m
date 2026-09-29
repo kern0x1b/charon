@@ -94,18 +94,17 @@ static CIImage *CharonCIClamp(CIImage *image, CGRect rect)
     return filter.outputImage ?: self;
 }
 
-- (CIImage *)imageByPremultiplyingAlpha
-{
-    // Each colour channel scaled by the alpha: a colour matrix whose red, green and blue vectors are
-    // the alpha with nothing else in them, and whose alpha vector leaves the alpha alone.
-    CIFilter *filter = [CIFilter filterWithName:@"CIColorMatrix"];
-    [filter setValue:self forKey:kCIInputImageKey];
-    [filter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:1] forKey:@"inputRVector"];
-    [filter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:1] forKey:@"inputGVector"];
-    [filter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:1] forKey:@"inputBVector"];
-    [filter setValue:[CIVector vectorWithX:0 Y:0 Z:0 W:1] forKey:@"inputAVector"];
-    return filter.outputImage ?: self;
-}
+// -imageByPremultiplyingAlpha is NOT here, and the reason is measured.  The release carries no
+// CIPremultiplyAlpha and no CIUnpremultiplyAlpha, and a colour matrix is linear over the four
+// channels it is given - it cannot multiply one channel by another - so no filter of the release
+// scales a channel by the alpha of the same pixel.  The one the port had here did exactly that
+// with the matrix: its vectors took the alpha into red, green and blue, which is not premultiply
+// but a grey image of the alpha.  Measured, over an image of 0.6 0.3 0.9 at alpha 0.5:
+// the system renders 96 487584e5, pixel 0 77 38 115 128 - each channel scaled by the alpha - and
+// the port rendered 96 fd3b7745, pixel 0 128 128 128 128.  A grey picture where the caller asked
+// for a premultiplied one is the silent fake the registry's `absent` is for, so the row is absent
+// and respondsToSelector: answers NO.  What would carry it is a per-pixel kernel or the port's own
+// renderer; the release has neither, and facts/CoreImage/ImageAlgebra.md carries the measurement.
 
 - (CIImage *)imageBySettingAlphaOneInExtent:(CGRect)rect
 {

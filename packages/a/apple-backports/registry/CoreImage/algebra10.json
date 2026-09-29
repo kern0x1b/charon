@@ -72,11 +72,11 @@
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "iOS 6 has the filters this is made of - CIAffineClamp, CIColorMatrix, CIGaussianBlur, CILanczosScaleTransform, CIMaskToAlpha and CIConstantColorGenerator, all read out of the release's own cache - and not the operation, so an application naming it finds nothing",
-      "effect": "each colour channel scaled by the alpha, through a colour matrix whose colour vectors are the alpha and whose alpha vector leaves the alpha alone",
+      "status": "absent",
+      "reason": "iOS 6 carries no CIPremultiplyAlpha and no CIUnpremultiplyAlpha, and a colour matrix is linear over the four channels it is given, so no filter of the release scales a channel by the alpha of the same pixel. The matrix the port had here put the alpha into red, green and blue, which is a grey image of the alpha and not a premultiplied one: measured, the system renders 96 487584e5 with pixel 0 77 38 115 128 and the port rendered 96 fd3b7745 with pixel 0 128 128 128 128",
+      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no premultiply filter, and no caller gets a grey image where it asked for a premultiplied one",
       "facts": "facts/CoreImage/ImageAlgebra.md",
-      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which prints the extent of what comes out and the bytes it renders to; the 6.1.3 armv7 dyld cache, read for which filters the release carries and which it does not, and for the selectors it has and has not"
+      "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel; the 6.1.3 armv7 dyld cache, which carries neither premultiply filter"
     },
     {
       "api": "-[CIImage imageBySettingAlphaOneInExtent:]",
