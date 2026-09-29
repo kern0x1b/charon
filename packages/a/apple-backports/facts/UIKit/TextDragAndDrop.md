@@ -137,3 +137,43 @@ policy the port does not have. That is a known difference from the SDK, not a cl
 members on a class that has neither protocol, and the same check is what named them. Where a control
 has no interaction the answer is nil, which is what the header's nullable properties allow and what
 `isTextDragActive` and `isTextDropActive` then report as no.
+
+
+## What is measured on the 6.1.3 guest, and what is not
+
+**The `UITextView` and `UITextField` members are UNMEASURED on the 6.1.3 guest.** The guest cannot
+construct a label or a text control at all. Three isolation runs, each its own process, in
+`tests/backports/host/textdragdrop`:
+
+| run | probe | result |
+| --- | --- | --- |
+| control table | `[UIView alloc] initWithFrame:]` | allocates |
+| control table | `[UILabel alloc] initWithFrame:]`, after that `UIView` | **traps** |
+| V1 | `[UILabel alloc] initWithFrame:]` as the *first* UIKit allocation | **traps** |
+| V2 | `[UIView alloc]` then `[UILabel alloc] initWithFrame:]` | `UIView` fine, **UILabel traps** |
+| V3 | `[UILabel alloc] init]` — no frame, first allocation | **traps** |
+
+`[UILabel class]` and `[UITextView class]` are both real classes here (`class_getInstanceSize` 144
+and 528), so this is not a missing class. Every run traps with **signal 5 at pc `0x310dc0d6`**, the
+same pc in all of them and in the harness's own runs, in
+`~/.charon/emulator/images.noindex/textdragdrop-f0a987fc/iPhone3,1_10B329/run/results/test.stdout`
+(08:04:49 for V1, 08:06:48 for V2, 08:08:27 for V3). It is not ordering, not the frame path and not
+the port's code: the text-drag family is never reached in any of these runs, and a `UIView`
+allocates in the same processes. A guest that can build a `UIView` but not a `UILabel` is a guest
+whose font services do not come up, which is emulator side, not this delta.
+
+**No part of this differential can run on the guest.** Driving a `UIView` does not help, because
+these seven members are no longer on `UIView` — that is what the carrier fix did, and it is why the
+seven interim `UIView.*` rows had to go. `clang` refuses the test outright:
+
+```
+error: property 'textDragInteraction' not found on object of type 'UIView *'
+error: property 'isTextDragActive' not found on object of type 'UIView *'
+```
+
+The only way to reach the port's bodies on a guest that cannot construct `UITextView` or
+`UITextField` is a test-local class adopting both protocols, and that would measure a stub written
+in the test rather than these members. So there is no reduced differential here: the honest result
+is that the seven members on the two classes are carried correctly (they compile with zero warnings
+and the bodies are the SDK's two protocols' members, on the classes the SDK's class extensions
+adopt them on) and are **unmeasured at runtime**. Recorded in `coordination/crutches.md`.
