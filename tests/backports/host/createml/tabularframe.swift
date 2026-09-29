@@ -64,6 +64,25 @@ func makeKeptSlice() -> PortTabularData.DiscontiguousColumnSlice<Int> {
 // The port's half of the AnyColumn accessor differential, printed beside the host's, so the two are
 // read together rather than inferred from which checks fail. `--anycolumn-probe` is its own
 // invocation because nothing here traps, and a check is still the assertion.
+// The out-of-range trap, in a child process, compared with the host's exit status. A trap ends the
+// process that would check it, so the check is two exit statuses and nothing else: the host's control
+// (its own process, one statement) exits 133 on `view[0]` over `d[1..<3]`, and this one must too.
+if CommandLine.arguments.contains("--slice-trap") {
+    let base = PortTabularData.Column<Int>(name: "c", [1, 2, 3])
+    let view = base[1..<3]
+    print("PROBE reading view[0], which is outside 1..<3")
+    let cell = view[0]
+    print("PROBE reached the end - so view[0] did NOT trap, and the host traps on it: \(String(describing: cell))")
+    exit(0)
+}
+if CommandLine.arguments.contains("--slice-inrange") {
+    let base = PortTabularData.Column<Int>(name: "c", [1, 2, 3])
+    let view = base[1..<3]
+    print("PROBE startIndex=\(view.startIndex) endIndex=\(view.endIndex) count=\(view.count)")
+    print("PROBE view[startIndex]=\(String(describing: view[view.startIndex]))")
+    print("PROBE view[startIndex+1]=\(String(describing: view[view.startIndex + 1]))")
+    exit(0)
+}
 if CommandLine.arguments.contains("--anycolumn-probe") {
     var pf = PortTabularData.DataFrame()
     pf.append(column: PortTabularData.Column<String>(name: "city", ["berlin", "paris", "madrid"]))
@@ -467,7 +486,20 @@ checkEqual("a column filtered reads back through the slice",
 checkEqual("a column's slice", writable[1..<4].values, [1, 4, 20])
 checkEqual("a slice's range", writable[1..<4].range, 1..<4)
 checkEqual("a slice's name is its column's", writable[1..<4].name, "n")
-checkEqual("a slice of a slice", writable[1..<4][0..<2].values, [1, 4])
+// The index space, against the host's, from the control on Apple's own over
+// `d = Column<Int>(name: "c", contents: [1, 2, 3])` and `view = d[1..<3]`:
+//
+//   startIndex = 1   endIndex = 3   count = 2
+//   view[1] = Optional(2)     the base's cell 1
+//   view[2] = Optional(3)     the base's cell 2
+checkEqual("a slice's startIndex is the range's lower bound, as the host's is for the same range",
+           writable[1..<4].startIndex, 1)
+checkEqual("a slice's endIndex is the range's upper bound, as the host's is for the same range",
+           writable[1..<4].endIndex, 4)
+checkEqual("a slice's count is the range's count", writable[1..<4].count, 3)
+checkEqual("an in-range read of a slice is the base's cell at that position",
+           writable[1..<4][1], writable[1..<4].base[1])
+checkEqual("a slice of a slice", writable[1..<4][1..<3].values, [1, 4])
 checkEqual("a column of a repeating value", PortTabularData.Column<Int>(repeating: 7, count: 4).values,
            [7, 7, 7, 7])
 checkEqual("a column built from a sequence", PortTabularData.Column<Int>([1, 2, 3], name: "s").values, [1, 2, 3])
@@ -558,7 +590,7 @@ do {
     checkClose("the standard library's own sum over a column",
                Double(column.presentValues.reduce(0, +)), 15, 1e-12)
     checkEqual("a column's slice is a collection too", Array(column[2..<4]), [4, 2])
-    checkEqual("a slice of a slice", Array(column[1..<4][0..<2]), [1, 4])
+    checkEqual("a slice of a slice", Array(column[1..<4][1..<3]), [1, 4])
     checkEqual("a column's enumerated pairs", column.presentValues.enumerated().map { "\($0.0):\($0.1)" },
                ["0:5", "1:1", "2:4", "3:2", "4:3"])
     // A **struct copy of a column is a value**, not a view. Measured on Apple's own, over
@@ -592,7 +624,9 @@ do {
     // host; the second host control is the thing to run before this is claimed to agree.
     var throughSlice = Column<Int>(copying: column)
     var slice = throughSlice[1..<3]
-    slice[0] = 10
+    // `range.lowerBound`, not `0`: the slice's index space is the base's positions, so `slice[0]` is a
+    // read outside the range and the host traps on it. Writing the base's cell 1 means asking for cell 1.
+    slice[slice.range.lowerBound] = 10
     checkEqual("a write through a slice reaches the column it is a view of", throughSlice.values,
                [5, 10, 4, 2, 3])
 

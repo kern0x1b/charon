@@ -321,21 +321,59 @@ public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
 
     public var count: Int { range.count }
     public var isEmpty: Bool { range.isEmpty }
-    public var startIndex: Int { 0 }
-    public var endIndex: Int { range.count }
+
+    /// The slice's index space is **the base's positions**, not `0..<count`.
+    ///
+    /// Measured on Apple's own, over `d = Column<Int>(name: "c", contents: [1, 2, 3])` and
+    /// `view = d[1..<3]`:
+    ///
+    ///     startIndex = 1   endIndex = 3   count = 2
+    ///     view[1] = Optional(2)     the base's cell 1
+    ///     view[2] = Optional(3)     the base's cell 2
+    ///
+    /// The same index space as `DiscontiguousColumnSlice`, and for the same reason: a slice is a *view*
+    /// of a column, and a view is addressed by the positions of what it views. A port that is dense
+    /// where Apple's is base-addressed returns a **different element** for the same expression, to a
+    /// real caller and without any error - `view[1]` would answer the base's cell 0. That is the whole of
+    /// the gap this closes, and it was invisible here because the suite's slice checks all read `[0]`.
+    public var startIndex: Int { range.lowerBound }
+    public var endIndex: Int { range.upperBound }
     public func index(after i: Int) -> Int { i + 1 }
     public func index(before i: Int) -> Int { i - 1 }
 
+    /// A cell of the **base**, addressed by the base's own position, and a **trap** outside the range.
+    ///
+    /// The host traps here. Measured as its own process, over the same `view = d[1..<3]`, with each
+    /// program doing one thing:
+    ///
+    ///     the slice read only                exit 133
+    ///     markers to startIndex/endIndex      marker 3: startIndex=1 endIndex=3 count=2, then exit 133
+    ///
+    /// and `view[0]` is the read that dies, because 0 is not in `1..<3`. The suite checks that trap the
+    /// way it has to be checked - in a child process, comparing the exit status with the host's - rather
+    /// than with an `if let` that could never fail.
     public subscript(position: Int) -> Element? {
-        get { base[range.lowerBound + position] }
+        get {
+            precondition(range.contains(position),
+                         "position \(position) is not in the slice's range \(range)")
+            return base[position]
+        }
         // Through the shared box on purpose: this is a view of `base`, and a write here is a write to
         // the column. A copy of a column takes its own box instead - see `setCellInSharedBox`.
-        set { base.setCellInSharedBox(range.lowerBound + position, newValue) }
+        set {
+            precondition(range.contains(position),
+                         "position \(position) is not in the slice's range \(range)")
+            base.setCellInSharedBox(position, newValue)
+        }
     }
 
+    /// A sub-slice of this slice, addressed by the **base's** positions like everything else here.
+    ///
+    /// Not `range.lowerBound + bounds...`: that was the dense model, where `bounds` was an offset from
+    /// the start of the slice. With the index space being the base's positions, `bounds` *is* a range of
+    /// the base and is taken as it stands.
     public subscript(bounds: Range<Int>) -> ColumnSlice<Element> {
-        ColumnSlice(base: base,
-                    range: range.lowerBound + bounds.lowerBound ..< range.lowerBound + bounds.upperBound)
+        ColumnSlice(base: base, range: bounds)
     }
 
     /// The slice as a column of its own, which **is** a copy: a caller asking for a column of the
@@ -344,7 +382,8 @@ public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
     public var column: Column<Element> { Column<Element>(name: name, values) }
 
     /// The values, which is what a caller reading a slice as a column needs and what the copy is for.
-    public var values: [Element] { Array(self).compactMap { $0 } }
+    /// Read through the range, because the index space *is* the range.
+    public var values: [Element] { range.compactMap { base[$0] } }
 }
 
 extension ColumnSlice: Equatable where Element: Equatable {}
