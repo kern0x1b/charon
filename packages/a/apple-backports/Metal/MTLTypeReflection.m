@@ -265,6 +265,39 @@ static id CharonTypedNode(NSDictionary *node, Class wanted)
 // a type the shader does not have.
 @implementation MTLPointerType
 
+// The four the member audit found undefined, each read from the node the plist carries. The header's
+// own comments are the contract: elementType is the element's data type, alignment is the "min
+// alignment for the element data type" and dataSize is "sizeof(T) for T *argName" - and the AIR
+// carries exactly those two numbers as size and alignSize, so they are MEASURED, not defaulted.
+- (MTLDataType)elementType
+{
+    NSDictionary *element = _node[@"elementType"];
+    return [element isKindOfClass:[NSDictionary class]] ? CharonDataTypeFromScalar(element[@"scalar"])
+                                                        : MTLDataTypeNone;
+}
+
+- (MTLArgumentAccess)access
+{
+    // The same three words MTLArgument reads, from the same key, and the same rule: a key this build
+    // does not know is the enumeration's zero rather than a guess.
+    NSString *access = _node[@"access"];
+    if ([access isEqualToString:@"read-write"])
+        return MTLArgumentAccessReadWrite;
+    if ([access isEqualToString:@"write-only"])
+        return MTLArgumentAccessWriteOnly;
+    return MTLArgumentAccessReadOnly;
+}
+
+- (NSUInteger)alignment
+{
+    return [_node[@"alignSize"] unsignedIntegerValue];
+}
+
+- (NSUInteger)dataSize
+{
+    return [_node[@"size"] unsignedIntegerValue];
+}
+
 - (MTLType *)pointee
 {
     return nil;
@@ -287,6 +320,33 @@ static id CharonTypedNode(NSDictionary *node, Class wanted)
 // because the plist carries no texture data type for an argument of this kind. 2D would be a guess
 // from a name.
 @implementation MTLTextureReferenceType
+
+// textureType, access and isDepthTexture, the three the audit found undefined. textureType is the one
+// with no measured answer: the plist carries no texture type for a texture argument, and
+// MTLTextureType's enumeration has no "none" case - it starts at 2D. So the value below is a DEFAULT
+// and the facts file says so: a texture argument this port carries is a 2D texture, and the header's
+// own list is "texture1D, texture2D..." - a caller reading it back gets the shape the port builds.
+- (MTLTextureType)textureType
+{
+    return MTLTextureType2D;
+}
+
+- (MTLArgumentAccess)access
+{
+    NSString *access = _node[@"access"];
+    if ([access isEqualToString:@"read-write"])
+        return MTLArgumentAccessReadWrite;
+    if ([access isEqualToString:@"write-only"])
+        return MTLArgumentAccessWriteOnly;
+    return MTLArgumentAccessReadOnly;
+}
+
+- (BOOL)isDepthTexture
+{
+    // NO, and the absence is the plist's: it carries no depth flag for an argument of this kind, so
+    // there is nothing that says the texture is a depth one.
+    return NO;
+}
 
 - (MTLDataType)textureDataType
 {
@@ -414,6 +474,8 @@ static id CharonTypedNode(NSDictionary *node, Class wanted)
 // An argument of a kernel this port dispatches is bound before the dispatch is encoded, so it is
 // active; an argument of one that was refused is never reached. The port records the refusal, it does
 // not make an argument inactive.
+// active is a @property with getter=isActive, so the property and the method are ONE thing here and
+// the implementation is the method the header names.
 - (BOOL)isActive
 {
     return YES;

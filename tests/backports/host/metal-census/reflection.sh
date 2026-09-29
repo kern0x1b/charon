@@ -22,8 +22,42 @@ root=$(cd "$here/../../../.." && pwd)
 work=${WORK:-$root/.agent-work/runs/metal-census/reflection}
 llvm=${LLVM:-$(brew --prefix llvm)}
 sdk=${SDK:-$("$llvm/bin/llvm-config" --sdk 2>/dev/null || xcrun --show-sdk-path)}
+# the SDK the LIBRARY builds against, which is 16.4 and not the host's: an armv7/6.1.3 object is
+# compiled against the SDK that release has, and a sysroot that does not declare what the reader
+# includes would fail for a reason that has nothing to do with the reader.
+library_sdk=${LIBRARY_SDK:-$HOME/.xmake/packages/i/iphoneos-sdk/16.4}
+SDK=""
+for candidate in "$library_sdk"/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk; do
+    if [ -f "$candidate/SDKSettings.json" ]; then SDK="$candidate"; break; fi
+done
+if [ ! -f "$SDK/SDKSettings.json" ]; then
+    echo "FAIL: no iOS 16.4 SDK for the library-flag compile; set LIBRARY_SDK" >&2
+    exit 1
+fi
 rm -rf "$work"
 mkdir -p "$work"
+
+# THE LIBRARY'S OWN FLAGS, FIRST, because a host check that only proves the reader READS a property
+# list says nothing about whether the library that ships it COMPILES. The 6.1.3 gate went red on this
+# very file: the host build used none of these, and -Werror=objc-missing-property-synthesis plus the
+# armv7 target are what caught it. The list is modules/apple/backports.lua's compile() at line 162 and
+# clang() below it, copied rather than approximated.
+library_compile() {
+    xcrun clang -target armv7-apple-ios6.1.3 -isysroot "$SDK" -fobjc-arc -Os -g0 -Wall \
+        -Wno-unguarded-availability-new -Wno-unguarded-availability \
+        -Werror=objc-missing-property-synthesis -Werror=incompatible-pointer-types \
+        -I"$root/packages/a/apple-backports/Metal" -I"$root/packages/a/apple-backports" \
+        -c "$root/packages/a/apple-backports/Metal/MTLTypeReflection.m" -o "$work/reader.o" \
+        > "$work/reader.log" 2>&1 || true
+    if grep -qE "MTLTypeReflection\.m.*(error|warning):" "$work/reader.log" \
+       || grep -qE "^.*(error|warning):" "$work/reader.log"; then
+        echo "FAIL: MTLTypeReflection.m does not compile with the library's own flags:" >&2
+        grep -E "error:|warning:" "$work/reader.log" | sed 's/^/  /' >&2
+        exit 1
+    fi
+}
+library_compile
+
 
 # air2cpu, built here, because a check that depends on a binary someone left in .agent-work reads
 # nothing at all when that binary is gone - and says so here rather than passing quietly.
@@ -101,14 +135,19 @@ PY2
 build "$here/reflection.m" "$work/real" "$work/real.build" || { echo "the real reader does not build:"; cat "$work/real.build"; exit 1; }
 # The mutant binary: the same test, with the MUTANT reader in place of the real one, so the only
 # difference between the two binaries is the code under test and the assertions are identical.
-mutant_build() {
+# THE LIBRARY'S OWN FLAGS, FIRST, because a host check that only proves the reader READS a property
+# list says nothing about whether the library that ships it COMPILES. The 6.1.3 gate went red on this
+# very file: the host build used none of these, and -Werror=objc-missing-property-synthesis plus the
+# armv7 target are what caught it. The list is modules/apple/backports.lua's compile() at line 162 and
+# clang() below it, copied rather than approximated.
+build() {
     xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
         -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc \
         -I"$root/packages/a/apple-backports/Metal" -I"$root/packages/a/apple-backports" \
         -I"$root/tests/backports/host/metalblit/gl-stub" -o "$work/mutant" "$work/mutant-test.m" \
         -framework Foundation -framework Metal -framework CoreGraphics 2>"$work/mutant.build"
 }
-mutant_build || { echo "the MUTANT does not build, so it cannot go red:"; cat "$work/mutant.build"; exit 1; }
+build || { echo "the MUTANT does not build, so it cannot go red:"; cat "$work/mutant.build"; exit 1; }
 
 echo "the real reader:"
 "$work/real" "$@" || { echo "FAIL: the real reader failed"; exit 1; }
@@ -117,13 +156,13 @@ echo
 echo "the mutant, which maps an unknown access to read-write:"
 set +e
 "$work/mutant" "$@" > "$work/mutant.out" 2>&1
-mutant_status=$?
+status=$?
 set -e
 # The mutant is expected to disagree about the accesses. It still reads the file; what it must not do
 # is report the same answers. Its own check counts every argument as read-write unless told otherwise,
 # so the way to catch it is that it no longer agrees with the file.
-if [ "$mutant_status" -ne 0 ]; then
-    echo "  the mutant exited $mutant_status:"
+if [ "$status" -ne 0 ]; then
+    echo "  the mutant exited $status:"
     sed 's/^/    /' "$work/mutant.out" | head -12
 fi
 # /bin/sh has no process substitution, so both runs are written to files and diffed. Their output is
