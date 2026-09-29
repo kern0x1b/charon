@@ -117,7 +117,7 @@ vDSP_DFT_Interleaved_SetupD vDSP_DFT_Interleaved_CreateSetupD(vDSP_DFT_Interleav
     setup->real_length = RealtoComplex == vDSP_DFT_Interleaved_RealtoComplex ? 2 * Length : 0;
     setup->forward = Direction == vDSP_DFT_FORWARD;
     setup->real_to_complex = RealtoComplex == vDSP_DFT_Interleaved_RealtoComplex;
-    return (vDSP_DFT_Interleaved_Setup)setup;
+    return (vDSP_DFT_Interleaved_SetupD)setup;
 }
 
 void vDSP_DFT_Interleaved_ExecuteD(const vDSP_DFT_Interleaved_SetupD Setup, const DSPDoubleComplex *Iri, DSPDoubleComplex *Ori)
