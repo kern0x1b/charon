@@ -89,6 +89,20 @@ if CommandLine.arguments.contains("--anycolumn-probe") {
     print("10 subscript of the optional   = \(String(describing: probeOpt0))")
     print("11 the present form's own subscript as Any? = \(probeCity0 as Any? == nil)")
     print("12 the ordinary form's cell    = \(String(describing: probeOrd1))  nil?=\(probeOrd1 as Any? == nil)")
+    // #12, measured on both sides the same way. The host's own answers, over the ordinary form of
+    // `[1, nil, 3]`:
+    //
+    //   as Any? == nil        true
+    //   type(of: as Any)      Optional<Any>
+    //   displayStyle          .optional
+    //   described             nil
+    //
+    // and the host's *present* cell at position 0 answers `type` Optional<Any> and `displayStyle`
+    // .optional too - so neither of those two is a discriminator. The subscript's own `Any?` is the
+    // optional on both sides of a present and a missing cell, and only `== nil` tells them apart.
+    let probePresent0 = pOrdCol[0]
+    print("12-MISSING type=\(type(of: probeOrd1 as Any)) style=\(Mirror(reflecting: probeOrd1 as Any).displayStyle) nil?=\(probeOrd1 == nil)")
+    print("12-PRESENT type=\(type(of: probePresent0 as Any)) style=\(Mirror(reflecting: probePresent0 as Any).displayStyle) nil?=\(probePresent0 == nil)")
     exit(0)
 }
 if CommandLine.arguments.contains("--slice-probe") {
@@ -192,6 +206,18 @@ let portCell: Any? = portOrd[1]
 check("a missing cell is nil as an Any?, as the host answers", hostCell == nil)
 check("a missing cell is nil as an Any? on the port too", portCell == nil)
 check("a present cell is not nil on either side", (hostOrd[0] as Any?) != nil && (portOrd[0] as Any?) != nil)
+// `type(of:)` and `Mirror` are **not** a discriminator for a missing cell, on either side. Measured on
+// Apple's own over the ordinary form of `[1, nil, 3]`:
+//
+//   missing cell:  type(of: as Any) = Optional<Any>   displayStyle = .optional   == nil  true
+//   present cell:  type(of: as Any) = Optional<Any>   displayStyle = .optional   == nil  false
+//
+// The subscript's own `Any?` is the optional, on both sides of a present and a missing cell, so both
+// report the same type and the same display style. Only `== nil` tells them apart - which is the
+// comparison the suite has been carrying, and the reason a hypothesis about a boxed `.none` inside
+// `Any` was a hypothesis rather than an observation: there is no such boxing to see.
+check("a missing cell and a present cell are the same type, as they are on the host",
+      String(describing: type(of: portOrd[1] as Any)) == String(describing: type(of: portOrd[0] as Any)))
 
 // A row's value must not be wrapped a second time. A frame's own column describes as
 // `Optional("berlin")` after the box, and a row that reads through it describes as
