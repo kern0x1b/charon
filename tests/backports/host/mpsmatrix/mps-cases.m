@@ -496,6 +496,8 @@ static float normGivenMean[3] = {4, 5, 4};
 static float normGivenVariance[3] = {8, 6, 6};
 static float normOut[4][3];
 static float normIncoming[4][3] = {{1, 2, 3}, {4, 5, 7}, {2, 8, 1}, {9, 1, 5}};
+static MTLCommandBufferStatus normStatus;
+static NSError *normError;
 static float normGradientData[4][3];
 static float normGradientGamma[3];
 static float normGradientBeta[3];
@@ -537,9 +539,12 @@ static void casesBatchNormalization(void)
     put("batch-normalization-statistics-variance", normVariance, sizeof(normVariance));
     put("batch-normalization-statistics-result", &normOut[0][0], sizeof(normOut));
 
-    memset(normGradientData, 0, sizeof(normGradientData));
-    memset(normGradientGamma, 0, sizeof(normGradientGamma));
-    memset(normGradientBeta, 0, sizeof(normGradientBeta));
+    // A sentinel, not a zero: 0x7f7f7f7f in every element, so a buffer the release leaves alone is
+    // distinguishable from a buffer it fills with zero. The command buffer's status and error are
+    // printed with the results.
+    memset(normGradientData, 0x7f, sizeof(normGradientData));
+    memset(normGradientGamma, 0x7f, sizeof(normGradientGamma));
+    memset(normGradientBeta, 0x7f, sizeof(normGradientBeta));
     run(^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&normIncoming[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
@@ -554,7 +559,11 @@ static void casesBatchNormalization(void)
         [kernel encodeToCommandBuffer:commandBuffer gradientMatrix:g inputMatrix:in meanVector:m varianceVector:v
                   gammaVector:gm betaVector:nil resultGradientForDataMatrix:out
              resultGradientForGammaVector:gg resultGradientForBetaVector:gb];
+        normStatus = commandBuffer.status;
+        normError = commandBuffer.error;
     });
+    printf("gradient-status %d error %s\n", (int)normStatus, normError ? normError.localizedDescription.UTF8String : "(none)");
+    fflush(stdout);
     put("batch-normalization-gradient-data", &normGradientData[0][0], sizeof(normGradientData));
     put("batch-normalization-gradient-gamma", normGradientGamma, sizeof(normGradientGamma));
     put("batch-normalization-gradient-beta", normGradientBeta, sizeof(normGradientBeta));
