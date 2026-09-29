@@ -136,18 +136,18 @@ The group is seven classes and the two protocols that declare an axis, of which 
 `AXLiveAudioGraph` is the one that asks for something; the other six are containers. An application
 fills a container in and an assistive technology reads it back, and neither half has to reach anything
 on this release, so the value each one keeps is the value it was given. Every rule below was measured against the host's own `Accessibility.framework` by
-`tests/backports/host/accessibilitychart/run.sh`, which builds the same 200 questions against the
+`tests/backports/host/accessibilitychart/run.sh`, which builds the same 206 questions against the
 system's classes and against the port's - compiled under names the system does not use, so neither can
-answer for the other - and compares the two outputs line by line. **187 of them are behaviour cases and
-all 187 answer the same; 13 check a declaration** (the two protocols and their members, which come from
+answer for the other - and compares the two outputs line by line. **193 of them are behaviour cases and
+all 193 answer the same; 13 check a declaration** (the two protocols and their members, which come from
 whichever header each side compiled against and are counted apart for that reason) **and there is no
 declared difference left.** The case's own `expected-differences.tsv` is empty and says why, and the
 summary line `run.sh` prints says which of the two kinds each case is:
 
 ```
-=== the two answers: 200 cases a side (187 behaviour, 13 declaration), 0 declared to differ
-cases read: 200 a side; declared differences: 0; undeclared or moved: 0
-identical on all 187 behaviour cases: the system and the port answer the same
+=== the two answers: 206 cases a side (193 behaviour, 13 declaration), 0 declared to differ
+cases read: 206 a side; declared differences: 0; undeclared or moved: 0
+identical on all 193 behaviour cases: the system and the port answer the same
 declaration cases: 13, which check a header and not the port's code
 ```
 

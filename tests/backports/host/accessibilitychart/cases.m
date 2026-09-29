@@ -29,17 +29,44 @@
 #import <Accessibility/Accessibility.h>
 #import <objc/runtime.h>
 
+// The class below prints a class name through name(), which is defined below it with the rest of the
+// helpers, so it is named here first.
+static NSString *name(NSString *spelling);
+
 // A class that adopts the two protocols, at file scope so it is in both halves. It is what makes the
 // protocol cases two-sided: the system's own Accessibility image does not list AXChart in its protocol
 // list, so without a class that adopts it the name resolves on one side and not the other and those
 // cases would be comparing the case's own file with itself. A caller adopts a protocol to get its
 // metadata, and this is that; the port's own generated protocol object is the other half of the same
 // thing, and run.sh gives it to the port half only.
-@interface CharonCaseAdopter : NSObject <AXChart, AXDataAxisDescriptor> @end
+@interface CharonCaseAdopter : NSObject <AXChart, AXDataAxisDescriptor> {
+    // A class that adopts a protocol has to answer it, so the adopter stores the three members the two
+    // protocols name rather than declaring them and doing nothing. The two cases above the protocol
+    // declarations then ask a class something it really answers, on both sides.
+    AXChartDescriptor *_chartDescriptor;
+    NSString *_title;
+    NSAttributedString *_attributedTitle;
+}
+@property (nonatomic, strong) AXChartDescriptor *accessibilityChartDescriptor;
+@property (nonatomic, copy) NSString *title;
+@property (nonatomic, copy) NSAttributedString *attributedTitle;
+@end
+
 @implementation CharonCaseAdopter
+
 @synthesize accessibilityChartDescriptor = _chartDescriptor;
 @synthesize title = _title;
 @synthesize attributedTitle = _attributedTitle;
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<CharonCaseAdopter title %@ attributed %@ chart %@ series %lu>",
+            _title ?: @"(none)",
+            _attributedTitle ?: @"(none)",
+            _chartDescriptor ? name(NSStringFromClass([_chartDescriptor class])) : @"(none)",
+            (unsigned long)(_chartDescriptor ? _chartDescriptor.series.count : 0)];
+}
+
 @end
 
 // The protocol names are looked up by string, and a string is not remapped by -D, so the port half is
@@ -434,7 +461,25 @@ int main(void)
         say(@"setter.chart.additionalAxes.count", @(setterChart.additionalAxes.count));
         same(@"setter.chart.additionalAxes", setterChart.additionalAxes.firstObject, ordered);
 
-        // --- The two protocols: the declaration itself, and the members it names.
+        // --- The two protocols. The two adopter cases are behaviour and come first: they ask whether a
+        // class that adopts a protocol answers conformsToProtocol:, which on the port is the port's own
+        // protocol metadata - the thing the two implemented protocol rows claim - and on the host is the
+        // framework's own. The cases after them check a *declaration* and not the port's code: their
+        // members come from whichever header each side compiled against, so a change to Apple's header
+        // moves them and nothing in packages/ can. They are labelled declaration.* and run.sh counts them
+        // apart from the behaviour cases for that reason, and the adopter class above is what puts each
+        // side's own metadata into the program.
+        CharonCaseAdopter *adopter = [[CharonCaseAdopter alloc] init];
+        adopter.title = @"AT";
+        adopter.attributedTitle = attributed(@"AA");
+        adopter.accessibilityChartDescriptor = chart;
+        say(@"adopter.conformsToAXChart", [adopter conformsToProtocol:@protocol(AXChart)] ? @"yes" : @"no");
+        say(@"adopter.conformsToAXDataAxisDescriptor",
+            [adopter conformsToProtocol:@protocol(AXDataAxisDescriptor)] ? @"yes" : @"no");
+        say(@"adopter.title", adopter.title);
+        say(@"adopter.attributedTitle", adopter.attributedTitle);
+        say(@"adopter.accessibilityChartDescriptor.series.count", @(adopter.accessibilityChartDescriptor.series.count));
+        say(@"adopter.description", adopter);
         Protocol *chartProtocol = objc_getProtocol(AXCHART_PROTOCOL.UTF8String);
         say(@"declaration.AXChart.found", chartProtocol ? @"yes" : @"no");
         say(@"declaration.AXChart.name", name([NSString stringWithUTF8String:protocol_getName(chartProtocol)]));
