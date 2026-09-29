@@ -17,7 +17,7 @@
    "key_unverified": "what is still unverified is that a **populated** item answers this getter with that value, which needs a media library: neither this Mac nor 6.1.3 can be given a populated MPMediaItem. See coordination/crutches.md"
   },
   {
-   "api": "MPMediaItem.explicitItem",
+   "api": "MPMediaItem.isExplicitItem",
    "kind": "property",
    "introduced": "10.0",
    "minimum": "6.0",

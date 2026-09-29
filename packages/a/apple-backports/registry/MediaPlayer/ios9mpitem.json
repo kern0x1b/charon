@@ -2,7 +2,7 @@
  "framework": "MediaPlayer",
  "entries": [
   {
-   "api": "MPMediaItem.protectedAsset",
+   "api": "MPMediaItem.hasProtectedAsset",
    "kind": "property",
    "introduced": "9.2",
    "minimum": "6.0",
