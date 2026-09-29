@@ -54,7 +54,7 @@ grep -c "origin.x + 1" "$build/mutant.m"
 set -x
 xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
     -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
-    -DUITextDragPreviewRenderer=CharonMutantTextDragPreviewRenderer \
+    -DUITextDragPreviewRenderer=$port_name \
     -I "$root/packages/a/apple-backports/UIKit" \
     -c "$build/mutant.m" -o "$build/mutant.o"
 
@@ -77,7 +77,34 @@ tail -1 "$build/clean.log"
 grep -c DIFFER "$build/clean.log" || true
 
 link "$build/compare.o" "$build/mutant.o"
-echo "== the mutant:"
+echo "== the mutant, one rect a point out:"
 "$build/probe" > "$build/mutant.log" 2>&1 || true
 tail -1 "$build/mutant.log"
-grep -c DIFFER "$build/mutant.log" || true
+
+# The second mutant: the same file with the null-or-empty condition removed, which is the wrong
+# renderer as it stood before the fix. It must go red on exactly the cases the condition covers and
+# on no other, so its count is the number of values the fix is responsible for.
+python3 - "$port" "$build/mutant-nocondition.m" <<'PYREMOVE'
+import sys
+src, dst = sys.argv[1], sys.argv[2]
+s = open(src).read()
+before = s
+for name in ("firstLineRect", "bodyRect", "lastLineRect"):
+    s = s.replace("if (%s && !CGRectIsEmpty(*%s))" % (name, name), "if (%s)" % name)
+assert s != before, "the condition was not found to remove"
+open(dst, "w").write(s)
+print("   the condition removed from", before.count("!CGRectIsEmpty"), "places")
+PYREMOVE
+grep -c "!CGRectIsEmpty" "$build/mutant-nocondition.m" || echo "   no condition left"
+set -x
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+    -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
+    -DUITextDragPreviewRenderer=$port_name \
+    -I "$root/packages/a/apple-backports/UIKit" \
+    -c "$build/mutant-nocondition.m" -o "$build/mutant-nocondition.o"
+set +x
+link "$build/compare.o" "$build/mutant-nocondition.o"
+echo "== the mutant with the condition removed:"
+"$build/probe" > "$build/mutant-nocondition.log" 2>&1 || true
+tail -1 "$build/mutant-nocondition.log"
+grep -c DIFFER "$build/mutant-nocondition.log" || true

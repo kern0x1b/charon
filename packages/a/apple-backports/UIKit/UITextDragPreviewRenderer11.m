@@ -89,13 +89,19 @@
                 lastLineRect:(inout CGRect *)lastLineRect
                  textOrigin:(CGPoint)origin
 {
-    if (firstLineRect)
+    // An empty rectangle is left where it is. Which kind of nothing it is was measured, not
+    // assumed: the host's own renderer, asked over a range it unified, reports firstLineRect and
+    // lastLineRect as empty and not null -- CGRectIsNull is 0 and CGRectIsEmpty is 1 for all three
+    // (tests/backports/host/renderer-differential, the firstShape/lastShape records) -- and it
+    // leaves those rects untouched by the text origin. A CGRectIsNull test would never have fired
+    // here and would have disagreed with the system in the other direction.
+    if (firstLineRect && !CGRectIsEmpty(*firstLineRect))
         firstLineRect->origin = CGPointMake(firstLineRect->origin.x + origin.x,
                                             firstLineRect->origin.y + origin.y);
-    if (bodyRect)
+    if (bodyRect && !CGRectIsEmpty(*bodyRect))
         bodyRect->origin = CGPointMake(bodyRect->origin.x + origin.x,
                                        bodyRect->origin.y + origin.y);
-    if (lastLineRect)
+    if (lastLineRect && !CGRectIsEmpty(*lastLineRect))
         lastLineRect->origin = CGPointMake(lastLineRect->origin.x + origin.x,
                                             lastLineRect->origin.y + origin.y);
     _firstLineRect = firstLineRect ? *firstLineRect : _firstLineRect;

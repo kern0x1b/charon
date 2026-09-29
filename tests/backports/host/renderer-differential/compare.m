@@ -24,6 +24,15 @@ static NSString *CharonRect(CGRect rect)
             rect.origin.x, rect.origin.y, rect.size.width, rect.size.height];
 }
 
+// Which of the three ways a rectangle can be nothing it is: null, empty, or neither. A null rectangle
+// has infinite origin and zero size; an empty one is all zeros. The adjust question turns on which of
+// them the renderer leaves alone, so the record says which.
+static NSString *CharonShape(CGRect rect)
+{
+    return [NSString stringWithFormat:@"null=%d empty=%d",
+            CGRectIsNull(rect) ? 1 : 0, CGRectIsEmpty(rect) ? 1 : 0];
+}
+
 static NSLayoutManager *CharonMakeLayout(void)
 {
     // Appended rather than assigned: a text storage that is set an attributed string in one go is
@@ -89,6 +98,9 @@ static void CharonAsk(id<CharonAsksRenderer> renderer, NSString *tag, Answer hos
     CGRect first = renderer.firstLineRect;
     CGRect body = renderer.bodyRect;
     CGRect last = renderer.lastLineRect;
+    host([tag stringByAppendingString:@".firstShape"], CharonShape(first));
+    host([tag stringByAppendingString:@".bodyShape"], CharonShape(body));
+    host([tag stringByAppendingString:@".lastShape"], CharonShape(last));
     [renderer adjustFirstLineRect:&first bodyRect:&body lastLineRect:&last textOrigin:CGPointMake(7, 11)];
     host([tag stringByAppendingString:@".adjustedFirst"], CharonRect(first));
     host([tag stringByAppendingString:@".adjustedBody"], CharonRect(body));
