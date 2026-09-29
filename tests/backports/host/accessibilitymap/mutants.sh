@@ -16,6 +16,7 @@
 #   M6  the archive drops the pins, where the host's own round trip carries them
 #   M7  the size is not carried through the copy
 #   M8  the factory answers the size it was asked for
+#   M9  a copy's store is mutable again, where the system's is frozen and a write to a copy raises
 #
 # Usage: sh tests/backports/host/accessibilitymap/mutants.sh
 set -eu
@@ -86,12 +87,12 @@ mutant() {
 }
 
 mutant M1-pin-not-stored 1 \
-    '    _pins[CharonBrailleMapKey(point)] = @(height);' \
+    '    [_pins setObject:@(height) forKey:CharonBrailleMapKey(point)];' \
     '    (void)point;'
 
 mutant M2-height-clamped 1 \
-    '    _pins[CharonBrailleMapKey(point)] = @(height);' \
-    '    _pins[CharonBrailleMapKey(point)] = @(height < 0.0f ? 0.0f : (height > 1.0f ? 1.0f : height));'
+    '    [_pins setObject:@(height) forKey:CharonBrailleMapKey(point)];' \
+    '    [_pins setObject:@(height < 0.0f ? 0.0f : (height > 1.0f ? 1.0f : height)) forKey:CharonBrailleMapKey(point)];'
 
 mutant M3-negative-point-refused 1 \
     '    if (!_pins) {' \
@@ -101,11 +102,11 @@ mutant M3-negative-point-refused 1 \
     if (!_pins) {'
 
 mutant M4-copy-shares-store 1 \
-    '    copy->_pins = _pins ? [_pins mutableCopy] : nil;' \
+    '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[NSDictionary dictionaryWithDictionary:(NSDictionary *)_pins] : nil;' \
     '    copy->_pins = _pins;'
 
 mutant M5-copy-drops-pins 1 \
-    '    copy->_pins = _pins ? [_pins mutableCopy] : nil;' \
+    '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[NSDictionary dictionaryWithDictionary:(NSDictionary *)_pins] : nil;' \
     '    copy->_pins = nil;'
 
 mutant M6-archive-drops-pins 1 \
@@ -119,6 +120,12 @@ mutant M7-copy-drops-size 1 \
 mutant M8-factory-wrong-size 1 \
     '    map->_size = dimensions;' \
     '    map->_size = CGSizeMake(1, 1);'
+
+# The frozen copy, which the parity decision of 2026-09-29 added: a copy that took the write would
+# answer the system differently on two cases, and this is the mutant that says so.
+mutant M9-copy-not-frozen 1 \
+    '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[NSDictionary dictionaryWithDictionary:(NSDictionary *)_pins] : nil;' \
+    '    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[(NSDictionary *)_pins mutableCopy] : nil;'
 
 echo "mutants run: $ran, killed: $killed, died for another reason: $died_wrong, survived: $survived"
 [ "$survived" -eq 0 ] && [ "$died_wrong" -eq 0 ] && [ "$killed" -eq "$ran" ]

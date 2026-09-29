@@ -28,13 +28,17 @@
 //  * **The store is real before anything has sized it.** A map obtained by allocation answers a zero
 //    size and still keeps its pins, measured, so the store is created when the first pin arrives and
 //    not by an initialiser.
-//  * **A copy carries the pins and is its own map.** The host's copy answers the same size and the same
-//    pins and is unaffected by a write to the original, measured. **It also refuses a write**: the
-//    host's copy hands over a frozen store and writing a pin to a copy raises
-//    NSInvalidArgumentException. This port's copy is writable, and that is the one place it is better
-//    than the system - a caller that writes a pin to its own copy gets the pin. The case declares the
-//    difference, `expected-differences.tsv` writes out both answers, and the ledger entry at
-//    .agent-work/handoffs/better-than-system-accessibility.md says what a port that matched would cost.
+//  * **A copy is frozen.** The host's copy answers the same size and the same pins, is unaffected by a
+//    write to the original, and refuses a write to itself: it hands over a store that cannot take one,
+//    and writing a pin to a copy raises NSInvalidArgumentException out of Foundation, measured twice.
+//    The family carries the system's behaviour, so this copy is frozen the same way and by the same
+//    route - the copy is handed the store as an immutable dictionary, and -setHeight:atPoint: sends
+//    setObject:forKey: to whatever is there. Nothing here throws and nothing here catches: the same
+//    Foundation class raises on both sides, which is why the case compares the exception's name and
+//    not its text. An application that wrote a pin to a copy crashes on iOS 26 too, so no working
+//    application depends on the write landing; the ledger entry at
+//    .agent-work/handoffs/better-than-system-accessibility.md keeps the record of what a port that took
+//    the write would have given, and that this port does not take it.
 //  * **The archive is a real round trip.** The host's own map archives and unarchives with its size and
 //    every pin intact, measured over a map with pins and over an empty one, so the port's does the same
 //    and asks for secure coding, which the host answers YES to.
@@ -62,10 +66,26 @@ static NSString *CharonBrailleMapKey(CGPoint point)
     return [NSString stringWithFormat:@"%g,%g", point.x, point.y];
 }
 
+// What the pin store has to be able to answer, and the reason it is a protocol and not a concrete type:
+// an original's store is a mutable dictionary and a copy's is an immutable one, and the write has to
+// compile against both. NSDictionary declares no setter at all, so the ivar cannot be typed as one and
+// the message sent; NSMutableDictionary lies about the copy. A protocol states what is needed and
+// nothing about which class answers it, and the frozen dictionary's refusal of the write is then
+// Foundation's own, by the same class and with the same name as the system's.
+@protocol CharonBrailleMapPinStore <NSObject>
+
+- (NSNumber *)objectForKey:(NSString *)key;
+- (void)setObject:(NSNumber *)value forKey:(NSString *)key;
+
+@end
+
 @implementation AXBrailleMap {
-    // The pins, by point. A dictionary and not a buffer, because the size is not known until somebody
-    // asks for a size and the measured store accepts a pin at any point at all.
-    NSMutableDictionary<NSString *, NSNumber *> *_pins;
+    // The pins, by point. Typed as the immutable dictionary and created mutable on the first write,
+    // because the two answers this class has to give are the two shapes: an original takes a write, and
+    // a copy of one does not. The write is not checked here - -setHeight:atPoint: sends
+    // setObject:forKey: to whatever is there - so a write to a copy raises out of Foundation the way it
+    // does on the system, by the same class and with the same name, and not by a throw written here.
+    id<CharonBrailleMapPinStore> _pins;
     CGSize _size;
 }
 
@@ -83,16 +103,20 @@ static NSString *CharonBrailleMapKey(CGPoint point)
     // Created here and not in an initialiser, because the measured store accepts a pin on a map that
     // nothing has sized: a map obtained by allocation and never sized still keeps what it is given.
     if (!_pins) {
-        _pins = [NSMutableDictionary dictionary];
+        _pins = (id<CharonBrailleMapPinStore>)[NSMutableDictionary dictionary];
     }
-    _pins[CharonBrailleMapKey(point)] = @(height);
+    // Sent as a message and not as a subscript assignment, because that is what reaches a store that
+    // cannot take the write: an immutable dictionary has no subscript setter, and the message is what
+    // Foundation raises NSInvalidArgumentException for on its frozen dictionaries. The original's store
+    // is mutable and takes it; a copy's is not.
+    [_pins setObject:@(height) forKey:CharonBrailleMapKey(point)];
 }
 
 - (float)heightAtPoint:(CGPoint)point
 {
     // A pin that was never written reads lowered, measured: the host answers 0 for a point it has never
     // been given, whatever else has been written to the map.
-    return _pins[CharonBrailleMapKey(point)].floatValue;
+    return [_pins objectForKey:CharonBrailleMapKey(point)].floatValue;
 }
 
 - (CGSize)dimensions
@@ -118,7 +142,11 @@ static NSString *CharonBrailleMapKey(CGPoint point)
     // declares and the ledger entry is about.
     AXBrailleMap *copy = [[AXBrailleMap allocWithZone:zone] init];
     copy->_size = _size;
-    copy->_pins = _pins ? [_pins mutableCopy] : nil;
+    // Frozen, and frozen by being the store itself rather than a mutable copy of it: the copy keeps what
+    // the original had when the copy was made, which is what the host's copy answers, and a write to it
+    // finds an immutable dictionary where the host's copy finds one too. The original keeps its own
+    // mutable store and stays writable, measured.
+    copy->_pins = _pins ? (id<CharonBrailleMapPinStore>)[NSDictionary dictionaryWithDictionary:(NSDictionary *)_pins] : nil;
     return copy;
 }
 
@@ -146,7 +174,9 @@ static NSString *CharonBrailleMapKey(CGPoint point)
     if (self) {
         _size = CGSizeMake([coder decodeDoubleForKey:@"sizeWidth"],
                            [coder decodeDoubleForKey:@"sizeHeight"]);
-        _pins = [[coder decodeObjectOfClass:[NSDictionary class] forKey:@"pins"] mutableCopy];
+        // Unarchived as an immutable store, for the same reason a copy is: what comes back is not
+        // something a caller is going to raise pins on, and the host's own round trip is not either.
+        _pins = [coder decodeObjectOfClass:[NSDictionary class] forKey:@"pins"];
     }
     return self;
 }

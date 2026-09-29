@@ -16,6 +16,7 @@
 // CharonAccessibility.h transcribes, which clang rejects by name. The factory is called through the
 // class name rather than through a Class variable, because a category method is not visible through one.
 #import "CharonBrailleMap.h"
+#import <objc/runtime.h>
 
 static void say(NSString *label, id value)
 {
@@ -42,6 +43,15 @@ static void expect(NSString *rule, id got, id want)
     if (!same) failures++;
 }
 
+// The renderer protocol is NOT checked here, and the two halves could not be compared anyway: the
+// port's copy of the protocol is not in its own image's protocol list. What is measured is this:
+// `nm` on the built library finds __OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_ and the two property lists
+// for CharonPortAXBrailleMapRenderer, so the metadata is emitted; `objc_getProtocol` and
+// NSProtocolFromString both answer nil for the name, while the same call on the host answers the
+// framework's own protocol. The registry row for the protocol is therefore `absent` with that
+// measurement as its reason, and the two members it names are `absent` for the same one. Establishing
+// why an emitted protocol is not in the protolist is the next piece of work on this group, and it is
+// the one thing in the group this series does not resolve.
 int main(void)
 {
     @autoreleasepool {

@@ -278,9 +278,9 @@ to a height or lowered, and a size. The release has neither the class nor the pr
 all three), and it needs no Charon header: `AXBrailleMap.h` is in the SDK the package compiles against
 and is byte-identical to 26.2's copy.
 
-`tests/backports/host/accessibilitymap/run.sh` asks the system's class and the port's class the same 49
-questions and compares the two outputs line by line. **46 answer the same; three are declared
-differences** in the case's own `expected-differences.tsv`, and each of those three says in one column
+`tests/backports/host/accessibilitymap/run.sh` asks the system's class and the port's class the same 48
+questions and compares the two outputs line by line. **47 answer the same; one is a declared
+difference** in the case's own `expected-differences.tsv`, and each of those three says in one column
 what each side answers and in a third why.
 
 **The pin store keeps whatever it is given.** Measured on the host: a height of 2.0 reads back 2.0, one
@@ -300,23 +300,56 @@ a copy carries the size and the pins and is unaffected by a write to the origina
 `NSKeyedArchiver` round trip brings the size and every pin back - over a map with pins and over an
 empty one.
 
-### The three lines the two do not answer the same, and why
+### The one line the two do not answer the same, and the cause of it
 
-* **A write to a copy.** The host's `-copyWithZone:` hands over a *frozen* pin store, and writing a pin
-  to a copy raises `NSInvalidArgumentException` while the original stays writable - measured twice. This
-  port's copy is its own mutable map, so a write to a copy lands. **This is the one place in the whole
-  Accessibility family where the port is deliberately better than the system**, and it is in the
-  coordinator's ledger at `.agent-work/handoffs/better-than-system-accessibility.md`. Matching the host
-  would mean raising from a setter a caller legitimately called, which is a defect rather than
-  behaviour; if the parity policy is read as covering it, the change is one line and the case turns red.
-* **What that write leaves behind**, recorded as its own case so a reader sees what each side did.
-* **The copy's answer at a point the original never had.** The host's copy answers `2` at (5, 6) where
-  the height `2` was written at (5, 5) and `0.125` was written at (5, 6) only after the copy was made -
-  so the host's copy does not address pins by the point it is given, and the mapping behind that is not
-  established: two measurements with two different points and the same answer each time, which is
-  consistent with a store keyed by something coarser than the point, and the cause was not chased
-  further. This port's store is keyed by the point, which is what the header's API says, and the host's
-  answer is recorded rather than reproduced. Every other pin rule is unaffected.
+**The host's pin store is keyed by the first coordinate of the point alone.** This is established, not
+guessed, and the numbers are these. Keying a 3x3 grid with a distinct height per point and reading a 5x5
+neighbourhood of the map back:
+
+```
+grid	-1,-1	0	0      every point of column 0 answers 7, of column 1 answers 8, of column 2 answers 9,
+grid	0,-1	7	7      and every point outside the three columns written answers 0 - on the original as
+grid	1,-1	8	8      well as on the copy, so this is the store and not the copy
+```
+
+Two narrower probes separate it from the alternatives:
+
+```
+one-column	(4,0)=33	(4,1)=33	(4,2)=33     three writes down one column are one pin; the last wins
+one-row	(0,4)=11	(1,4)=22	(2,4)=33        three writes along one row are three pins
+moved	(2,0) before=2 after=2                  a write to a second row of a column moves the first row's
+```
+
+So the second coordinate is not part of the key, the last write to a column wins, and a copy is a
+frozen snapshot of that column-keyed store - which is why the copy answers the height written at (5, 5)
+when asked about (5, 6): the two points are one key.
+
+The port's store is keyed by the point, which is what the header's API says - a height at a point - and
+**this one line is where the two differ**, and it is the only declared difference left. Everything else
+about the copy is the same on both sides and is no longer declared: the size is carried, the pins are
+carried, the copy is unaffected by a write to the original, and **a write to a copy raises on both
+sides** - the parity decision of 2026-09-29, and the reason the copy's store is an immutable dictionary
+handed over as it is, so that Foundation raises `NSInvalidArgumentException` out of its own frozen
+dictionary, by the same class and with the same name as the system's, rather than a throw written here.
+An application that wrote a pin to a copy crashes on iOS 26 too, so no working application depends on the
+write landing; what a port that took the write would have given is in the coordinator's ledger at
+`.agent-work/handoffs/better-than-system-accessibility.md`, which says so and which this port does not do.
+
+### AXBrailleMapRenderer: the metadata is emitted and the name does not resolve
+
+**This is the one thing in the group this series does not resolve, and it reverses a row the last one
+claimed.** `nm` on the built library finds `__OBJC_$_PROTOCOL_INSTANCE_METHODS_OPT_` and the two
+property lists for the port's own `CharonPortAXBrailleMapRenderer`, so the protocol's metadata is
+emitted - by the generated protocols object that `modules/apple/backports.lua` writes from the registry
+row, exactly as it is for the chart group's two protocols. And `objc_getProtocol` and
+`NSProtocolFromString` both answer **nil** for that name in a program that links the port, while the
+same call on the host answers the framework's own protocol. A class in the case adopting the protocol does
+not change it, and neither does the generated object.
+
+So the protocol row and its two property rows are **`absent`** again, with the two measurements as their
+reason, and what a caller gets is the class and its pin grid, with the renderer protocol not reachable by
+name. Establishing why an emitted protocol is not in its image's protocol list is the next piece of work
+on this group, and nothing here guesses at it.
 
 ### The one way to make a map, and why it is the port's own
 

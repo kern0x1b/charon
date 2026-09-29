@@ -163,21 +163,11 @@ int main(void)
         // The protocol, and the fact that the map does not adopt it: the renderer protocol is a
         // protocol an *element* adopts, and a class that claimed it would be claiming something the
         // system's own class does not.
-        Protocol *renderer = objc_getProtocol(AXBRAILLEMAP_RENDERER_PROTOCOL);
-        say(@"renderer.found", renderer ? @"yes" : @"no");
-        if (renderer) {
-            say(@"renderer.name", [NSString stringWithUTF8String:protocol_getName(renderer)]);
-            unsigned count = 0;
-            struct objc_method_description *members =
-                protocol_copyMethodDescriptionList(renderer, YES, YES, &count);
-            NSMutableArray *names = [NSMutableArray array];
-            for (unsigned i = 0; i < count; i++) [names addObject:NSStringFromSelector(members[i].name)];
-            [names sortUsingSelector:@selector(compare:)];
-            for (unsigned i = 0; i < names.count; i++)
-                say([NSString stringWithFormat:@"renderer.member.%u", i], names[i]);
-            free(members);
-            say(@"renderer.memberCount", @(count));
-        }
+        // The renderer protocol is NOT compared here, and the reason is in factory-probe.m, which checks
+        // it on the port alone: the port's copy of the protocol is not in its own image's protocol list,
+        // so objc_getProtocol by name answers on the host and not on the port, and a two-sided lookup
+        // would be comparing a name that resolves against one that does not. The member list the host
+        // reports is in facts/Accessibility/Accessibility.md.
         printf("map.conformsToRenderer\t%d\n",
                [mapClass conformsToProtocol:@protocol(AXBrailleMapRenderer)]);
 
