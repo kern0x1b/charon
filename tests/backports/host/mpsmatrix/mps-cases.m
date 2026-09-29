@@ -632,9 +632,15 @@ static void casesBatchNormalization(void)
         float referenceGamma[3] = {0, 0, 0}, referenceBeta[3] = {0, 0, 0};
         referenceGradient(&normSource[0][0], &normIncoming[0][0], &normGivenMean[0], &normGivenVariance[0],
                           0.001f, 4, 3, referenceGamma, referenceBeta);
-        printf("  REF-CASE filled  gamma %p beta %p", (const void *)referenceGamma, (const void *)referenceBeta);
-        printf("  gamma %g %g %g  beta %g %g %g\n", (double)referenceGamma[0], (double)referenceGamma[1],
-               (double)referenceGamma[2], (double)referenceBeta[0], (double)referenceBeta[1], (double)referenceBeta[2]);
+        // A case of its own, so the comparison reads host, port and reference rather than host and
+        // port, and the values are printed as text beside the hex because a hex read in the wrong byte
+        // order has already produced three confident wrong numbers in this file.
+        put("gradient-reference-text-gamma", referenceGamma, sizeof(referenceGamma));
+        put("gradient-reference-text-beta", referenceBeta, sizeof(referenceBeta));
+        printf("  REF-CASE filled  gamma %p beta %p  gamma %g %g %g  beta %g %g %g\n",
+               (const void *)referenceGamma, (const void *)referenceBeta,
+               (double)referenceGamma[0], (double)referenceGamma[1], (double)referenceGamma[2],
+               (double)referenceBeta[0], (double)referenceBeta[1], (double)referenceBeta[2]);
         // What the kernel's own result vectors hold, read from their buffers, for the same run.
         pullResults();
         printf("  REF-CASE kernel  gamma %g %g %g  beta %g %g %g\n", (double)normGradientGamma[0],

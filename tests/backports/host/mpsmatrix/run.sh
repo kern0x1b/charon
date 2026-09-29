@@ -28,6 +28,7 @@ set +e
 "$build/system" > "$build/system.txt" 2> "$build/system.err"
 system_status=$?
 set -e
+echo "tree: $(git -C "$here" rev-parse --short HEAD 2>/dev/null || echo unknown)  dirty $(git -C "$here" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 echo "system: $(wc -l < "$build/system.txt") lines, exit $system_status"
 [ "$system_status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-60)"
 
@@ -40,6 +41,7 @@ rm -rf "$build/plain"
 mkdir -p "$build/plain"
 for source in "$mps"/*.m; do
     xcrun clang -fobjc-arc -w $target -c "$source" -o "$build/plain/$(basename "$source" .m).o" 2>/dev/null
+    [ -f "$build/plain/$(basename "$source" .m).o" ] || { echo "cannot read an object from $source; stopping"; exit 1; }
 done
 for object in "$build/plain"/*.o; do xcrun nm -g --defined-only "$object"; done \
     | grep -oE '_OBJC_CLASS_\$_[A-Za-z0-9_]+' | sed 's/_OBJC_CLASS_\$_//' | sort -u > "$build/port-defines.txt"
@@ -58,11 +60,17 @@ printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n' > "$build
 objects=""
 for source in "$mps"/*.m; do
     name=$(basename "$source" .m)
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"
+    if ! xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -c "$source" -o "$build/$name.plain.o"; then
+        echo "the port source $source did not compile; stopping, because a count from a stale build is not a count"
+        exit 1
+    fi
     python3 "$here/../prefix_selectors.py" "$source" "$build/$name.m" ccharonHost_ \
         --declarations="$build/declarations.h" -fobjc-arc $target $quiet -include "$build/rename.h" -- "$build/$name.plain.o"
-    xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$mps" -include "$build/rename.h" \
-        -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"
+    if ! xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$mps" -include "$build/rename.h" \
+        -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"; then
+        echo "the prefixed port source $build/$name.m did not compile; stopping"
+        exit 1
+    fi
     objects="$objects $build/$name.o"
 done
 echo "compiled: $(echo "$objects" | wc -w) objects"
