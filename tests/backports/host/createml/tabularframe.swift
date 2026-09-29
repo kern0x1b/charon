@@ -499,7 +499,22 @@ checkEqual("a slice's endIndex is the range's upper bound, as the host's is for 
 checkEqual("a slice's count is the range's count", writable[1..<4].count, 3)
 checkEqual("an in-range read of a slice is the base's cell at that position",
            writable[1..<4][1], writable[1..<4].base[1])
-checkEqual("a slice of a slice", writable[1..<4][1..<3].values, [1, 4])
+// A sub-slice's range is a range of the **base**, not an offset from the outer slice. Measured on
+// Apple's own over `writable = Column<Int>(name: "n", contents: [5, 1, 4, 20, 3])`:
+//
+//     let inner = writable[1..<4][1..<3]
+//     startIndex = 1   endIndex = 3   count = 2
+//     elements = [Optional(1), Optional(4)]
+//
+// The offset reading - cells 2 and 3 - would be `[4, 20]`, and it is what the port did before the index
+// space was made base-addressed. All four answers are checked, because "the elements happen to match"
+// and "the range is the same range" are different properties, and only the second makes the first true
+// for the right reason.
+let innerSlice = writable[1..<4][1..<3]
+checkEqual("a sub-slice's startIndex is the range's lower bound, as the host's is", innerSlice.startIndex, 1)
+checkEqual("a sub-slice's endIndex is the range's upper bound, as the host's is", innerSlice.endIndex, 3)
+checkEqual("a sub-slice's count is the range's count, as the host's is", innerSlice.count, 2)
+checkEqual("a slice of a slice", innerSlice.values, [1, 4])
 checkEqual("a column of a repeating value", PortTabularData.Column<Int>(repeating: 7, count: 4).values,
            [7, 7, 7, 7])
 checkEqual("a column built from a sequence", PortTabularData.Column<Int>([1, 2, 3], name: "s").values, [1, 2, 3])
