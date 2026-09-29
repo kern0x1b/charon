@@ -458,7 +458,21 @@ the host:
     device and so nothing that could stream in either direction.
 
     **What justifies the three is narrower than what the code first claimed, and the narrow claim is what
-    the census prints.** It first said the release's Accessibility surface held no hearing device, no
+    the census prints.** The census's own last line, with its two numbers, is the one a claim about this
+    surface has to be checked against:
+
+    ```
+      Hearing     28
+      Pair        6
+      TOTAL       47 (sum) / 43 distinct, across the 10 words
+    ```
+
+    Forty-seven is the sum over the ten per-word lists and 43 is the number of exports behind it: four
+    exports contain two of the words each - the paired-UUIDs four, which carry Hearing and Pair - so the
+    sum counts them twice. Two of the six in the Pair list are a class and its metaclass rather than
+    preferences, and the list says so beside them.
+
+    It first said the release's Accessibility surface held no hearing device, no
     pairing and no Bluetooth audio-device symbol in it at all. That is false: the census lists **28**
     hearing-named exports there, four of them about a paired-UUIDs preference
     (`__AXSHearingSetPairedUUIDs`, `__AXSHearingCopyPairedUUIDs`, `kAXSPairedHearingUUIDsPreference`,
