@@ -847,27 +847,140 @@ end
 -- is built, so a library that no config of the package builds keeps that check from
 -- running for every config, and nothing says so. The recipe names each library in
 -- the list of links and again in the list it builds, and each config in both.
+-- Every {…} that is a direct element of one of the recipe's two list-valued table.join(
+-- calls, with the configs its own test names.  A list is one element of table.join(a, {…}, b,
+-- {…}), so it is found by walking the text and taking the braces that are not inside another
+-- table.  The test of a list is the run of package:config calls between the end of the
+-- previous list and this one's "{"; it is empty for the lists the recipe adds with no test,
+-- and {"FoundationBackports"} is one of those.
+--
+-- Reading the two apart is the point.  Counting a library's name and walking the *declared*
+-- configs both pass on a clause that reads a config nothing declares: the name is there
+-- twice and the config is never checked.  A whole library, and its rows, can sit in a
+-- series and never be built, and this is the check that exists for that.
+function recipe_lists(recipe)
+    local lists, at = {}, 1
+    while true do
+        local pos = recipe:find("table.join(", at, true)
+        if not pos then break end
+        local before = recipe:sub(pos - 200, pos - 1)
+        if before:find('add%("links"', 1) or recipe:sub(1, pos):find("local libraries = table%.join%(") then
+            local paren = recipe:find("(", pos, true)
+            local pieces, walk, paren_depth, brace = {}, paren + 1, 0, 0
+            while walk <= #recipe do
+                local c = recipe:sub(walk, walk)
+                if c == "(" then
+                    paren_depth = paren_depth + 1
+                elseif c == ")" then
+                    if paren_depth == 0 then break end
+                    paren_depth = paren_depth - 1
+                elseif c == "{" and paren_depth == 0 and brace == 0 then
+                    local open_at, close_at, inner = walk, walk, 0
+                    while close_at <= #recipe do
+                        local d = recipe:sub(close_at, close_at)
+                        if d == "{" then
+                            inner = inner + 1
+                        elseif d == "}" then
+                            inner = inner - 1
+                            if inner == 0 then break end
+                        end
+                        close_at = close_at + 1
+                    end
+                    table.insert(pieces, {open = open_at, close = close_at,
+                                          list = recipe:sub(open_at + 1, close_at - 1)})
+                    walk = close_at + 1
+                elseif c == "{" then
+                    brace = brace + 1
+                elseif c == "}" then
+                    brace = brace - 1
+                end
+                walk = walk + 1
+            end
+            for index, piece in ipairs(pieces) do
+                piece.sources = {}
+                local stop = paren
+                if index > 1 then stop = pieces[index - 1].close end
+                local pos2 = stop
+                while true do
+                    local found = recipe:find("package:config", pos2 + 1)
+                    if not found or found > piece.open then break end
+                    local open_q = recipe:find('("', found, true)
+                    local shut_q = recipe:find('")', found, true)
+                    if open_q and shut_q and shut_q < piece.open then
+                        table.insert(piece.sources, recipe:sub(open_q + 2, shut_q - 1))
+                    end
+                    pos2 = found
+                end
+                piece.libraries = {}
+                for library in piece.list:gmatch('"([%w]+Backports)"') do
+                    table.insert(piece.libraries, library)
+                end
+            end
+            for _, piece in ipairs(pieces) do
+                table.insert(lists, piece)
+            end
+        end
+        at = pos + 1
+    end
+    return lists
+end
+
 function wiring(backports, root, found)
     local recipe = io.readfile(path.join(root, "xmake.lua"))
-    local function count(text)
-        local n, from = 0, 1
-        while true do
-            local at = recipe:find(text, from, true)
-            if not at then
-                return n
+    if not recipe then
+        table.insert(found, "the package has no xmake.lua, so no config of it can be read")
+        return
+    end
+    -- The configs the recipe declares.  add_configs is the only thing that fills xmake's
+    -- config table, so a name it does not declare is one package:config answers nil for.
+    local declared, order = {}, {}
+    for name in recipe:gmatch('add_configs%("([%w_]+)"') do
+        if not declared[name] then
+            declared[name] = true
+            order[#order + 1] = name
+        end
+    end
+    local lists = recipe_lists(recipe)
+    if #lists == 0 then
+        table.insert(found, "the recipe's two library lists are not readable, so nothing here can say what they build")
+        return
+    end
+    -- From the config: a declared config no clause of either list tests builds nothing.
+    for _, name in ipairs(order) do
+        if name ~= "sources" then
+            local used = false
+            for _, piece in ipairs(lists) do
+                for _, source in ipairs(piece.sources) do
+                    if source == name then used = true end
+                end
             end
-            n = n + 1
-            from = at + #text
+            if not used then
+                table.insert(found, string.format('the config "%s" is declared but no clause of either library list tests it, so it builds no library at all', name))
+            end
+        end
+    end
+    -- From the clause: a clause that reads a config nothing declares is always false, and
+    -- the library it guards is never built - the shape this series shipped ModelIO in.
+    for _, piece in ipairs(lists) do
+        for _, source in ipairs(piece.sources) do
+            if not declared[source] then
+                table.insert(found, string.format('a clause tests package:config("%s") and no add_configs declares it, so that clause is always false and %s is never built',
+                                                  source, (#piece.libraries > 0) and table.concat(piece.libraries, ", ") or "nothing at all"))
+            end
+        end
+    end
+    -- From the library: every library but Foundation must be named by a list, and a library
+    -- no config can switch on is never compiled, never linked and never checked against the
+    -- registry.  Naming it twice was what the old check asked for, and twice is not reachable.
+    local named = {}
+    for _, piece in ipairs(lists) do
+        for _, library in ipairs(piece.libraries) do
+            named[library] = true
         end
     end
     for _, library in ipairs(backports.libraries()) do
-        if library.name ~= "FoundationBackports" and count('"' .. library.name .. '"') < 2 then
-            table.insert(found, library.name .. " is named fewer than twice in the recipe of the package, so no config builds it and the registry is never checked against the backports")
-        end
-    end
-    for name in recipe:gmatch('add_configs%("([%w]+)"') do
-        if name ~= "sources" and count('package:config("' .. name .. '")') < 2 then
-            table.insert(found, 'the config "' .. name .. '" is used fewer than twice in the recipe, so it builds no library, or does not link it')
+        if library.name ~= "FoundationBackports" and not named[library.name] then
+            table.insert(found, library.name .. " is in the library table and named by no list of the recipe, so no config builds it and the registry is never checked against the backports")
         end
     end
 end
