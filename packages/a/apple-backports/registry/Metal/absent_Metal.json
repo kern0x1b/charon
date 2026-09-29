@@ -512,180 +512,198 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterClipperInvocations under APPLE'S OWN NAME, so a caller writing MTLCommonCounterClipperInvocations gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterClipperPrimitivesOut",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterClipperPrimitivesOut under APPLE'S OWN NAME, so a caller writing MTLCommonCounterClipperPrimitivesOut gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterComputeKernelInvocations",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterComputeKernelInvocations under APPLE'S OWN NAME, so a caller writing MTLCommonCounterComputeKernelInvocations gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterFragmentCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterFragmentCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterFragmentCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterFragmentInvocations",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterFragmentInvocations under APPLE'S OWN NAME, so a caller writing MTLCommonCounterFragmentInvocations gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterFragmentsPassed",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterFragmentsPassed under APPLE'S OWN NAME, so a caller writing MTLCommonCounterFragmentsPassed gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterPostTessellationVertexCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterPostTessellationVertexCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterPostTessellationVertexCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterPostTessellationVertexInvocations",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterPostTessellationVertexInvocations under APPLE'S OWN NAME, so a caller writing MTLCommonCounterPostTessellationVertexInvocations gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterRenderTargetWriteCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterRenderTargetWriteCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterRenderTargetWriteCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterSetStageUtilization",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterSetStageUtilization under APPLE'S OWN NAME, so a caller writing MTLCommonCounterSetStageUtilization gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterSetStatistic",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterSetStatistic under APPLE'S OWN NAME, so a caller writing MTLCommonCounterSetStatistic gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterSetTimestamp",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterSetTimestamp under APPLE'S OWN NAME, so a caller writing MTLCommonCounterSetTimestamp gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterTessellationCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterTessellationCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterTessellationCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterTessellationInputPatches",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterTessellationInputPatches under APPLE'S OWN NAME, so a caller writing MTLCommonCounterTessellationInputPatches gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterTimestamp",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterTimestamp under APPLE'S OWN NAME, so a caller writing MTLCommonCounterTimestamp gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterTotalCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterTotalCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterTotalCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterVertexCycles",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterVertexCycles under APPLE'S OWN NAME, so a caller writing MTLCommonCounterVertexCycles gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLCommonCounterVertexInvocations",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a counter name the header declares and never spells: the string is APPLE'S OWN, MEASURED, and the counter names what it counts on the GPU",
+      "effect": "the port DEFINES MTLCommonCounterVertexInvocations under APPLE'S OWN NAME, so a caller writing MTLCommonCounterVertexInvocations gets the string Apple's own constant holds; the case reads Apple's copy by dlsym and compares the BYTES and the length, and all eighteen of these are distinct values",
+      "source": "SDK 16.4 MTLCounters.h, at that constant's own @constant line, and the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
+      "facts": "facts/Metal/CounterConstants.md"
     },
     {
       "api": "MTLComputePassDescriptor",
