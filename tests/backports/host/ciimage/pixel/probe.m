@@ -12,10 +12,12 @@
 #import <objc/runtime.h>
 #import <dlfcn.h>
 
-// -imageBySettingProperties: and -imageByUnpremultiplyingAlpha are NOT here, and the reason is
-// measured rather than reasoned: both rows are `absent` in registry/CoreImage/ctxowner9.json, the
-// port answers neither selector, and a probe that asked them would be measuring the framework on both
-// sides. What the measurements were is in facts/CoreImage/ContextOwner.md.
+// The three rows the port does not carry are not asked here, and the reason is measured rather than
+// reasoned: -imageBySettingProperties: and -imageByUnpremultiplyingAlpha are `absent` in
+// registry/CoreImage/ctxowner9.json and -imageByPremultiplyingAlpha in
+// registry/CoreImage/algebra10.json, the port adds none of the three selectors, and a probe that
+// asked them would be measuring the framework on both sides. What the measurements were is in
+// facts/CoreImage/ContextOwner.md and facts/CoreImage/ImageAlgebra.md.
 
 #import "port-support.h"
 
@@ -211,7 +213,11 @@ static void reportAlgebra(void)
     put_algebra(@"alg clamped rect", [image imageByClampingToRect:CGRectMake(0, 0, 3, 2)], CGRectMake(0, 0, 6, 4));
     put_algebra(@"alg intermediate", [image imageByInsertingIntermediate], bounds);
     put_algebra(@"alg intermediate cached", [image imageByInsertingIntermediate:YES], bounds);
-    put_algebra(@"alg premultiplied", [image imageByPremultiplyingAlpha], bounds);
+    // -imageByPremultiplyingAlpha is `absent` in registry/CoreImage/algebra10.json and is not
+    // asked here at all, neither called nor asked through respondsToSelector:.  This probe is one
+    // source built twice, and the port process is the framework's own CoreImage with the port's
+    // categories on it, so a selector the port does not carry is still answered YES in both
+    // processes and the two answers would be identical whatever the port does.
     put_algebra(@"alg alpha one", [image imageBySettingAlphaOneInExtent:bounds], bounds);
     put_algebra(@"alg alpha one half", [image imageBySettingAlphaOneInExtent:CGRectMake(0, 0, 3, 2)], bounds);
     put_algebra(@"alg transformed", [image imageByApplyingTransform:CGAffineTransformMakeScale(2, 2) highQualityDownsample:NO],
@@ -252,21 +258,14 @@ static void reportContextOwner(void)
     }
 }
 
-// The two rows the port does not carry are not asked here: they are `absent` in
-// registry/CoreImage/ctxowner9.json and the port answers neither, so a call here would reach the
-// framework in both processes. What they measured, and why neither is carried, is in
-// facts/CoreImage/ContextOwner.md. What is left of the algebra over a field with an alpha in it is
-// the premultiply, and the two processes are asked the same question about it.
-static void reportPremultiply(void)
-{
-    CGRect bounds = CGRectMake(0, 0, 6, 4);
-    CIImage *finite = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
-        imageByCroppingToRect:bounds];
-
-    put_box(@"premul source", finite.extent);
-    put_bytes(@"premul", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
-    put_pixels(@"premul", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
-}
+// The three rows the port does not carry are not asked here: -imageBySettingProperties: and
+// -imageByUnpremultiplyingAlpha are `absent` in registry/CoreImage/ctxowner9.json and
+// -imageByPremultiplyingAlpha in registry/CoreImage/algebra10.json.  They are not called and they
+// are not asked through respondsToSelector: either, because this probe is one source built twice
+// and the port process carries the framework's own CoreImage: a selector the port does not add is
+// answered YES in both processes, so the two answers would be identical whatever the port does.
+// What they measured, and why none of them is carried, is in facts/CoreImage/ContextOwner.md and
+// facts/CoreImage/ImageAlgebra.md.
 
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
 // renders to. The named colours and the two spellings of the colour-space initialisers are asked with
@@ -370,9 +369,10 @@ static void report_implementation(const char *key, Class cls, SEL selector)
 
 static void reportImplementations(void)
 {
-    // -imageBySettingProperties:, -properties and -imageByUnpremultiplyingAlpha are not asked: the
-    // port answers none of them (registry/CoreImage/ctxowner9.json), and on the host the three are the
-    // framework's own, so the two processes would be asked the same question about the same code.
+    // -imageBySettingProperties:, -properties, -imageByUnpremultiplyingAlpha and
+    // -imageByPremultiplyingAlpha are not asked: the port adds none of the four selectors, and on
+    // the host all four are the framework's own, so the two processes would be asked the same
+    // question about the same code.
     report_implementation("imp imageByClampingToExtent", [CIImage class], @selector(imageByClampingToExtent));
 }
 
@@ -424,7 +424,6 @@ int main(void)
         report(@"spaced", spaced);
         reportContextOwner();
         reportImplementations();
-        reportPremultiply();
         reportAlgebra();
         reportColors();
         reportRepresentations();

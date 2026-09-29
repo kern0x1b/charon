@@ -1,9 +1,16 @@
 #!/usr/bin/env python3
 # compare.py HOST PORT [TOLERANCE] [LABEL] : the two probes' answers, line by line, by key.
 # A key is everything up to the first number in a line, so "box vertices 9" and "box vertices 12" are
-# the same measurement. Numbers are compared to a tolerance, so a value the two round differently is
-# not a difference. A key one side has and the other does not is reported on its own line: that is a
+# the same measurement. Everything from that first number to the end of the line is the measurement,
+# and every number in it is compared to a tolerance, so a value the two round differently is not a
+# difference. A key one side has and the other does not is reported on its own line: that is a
 # measurement the host cannot be asked, not a disagreement.
+#
+# The whole tail is compared, not the first number of it.  A line can carry a pixel tuple, a
+# checksum, a vertex normal, a UV or a material property, and reading only the number behind the key
+# threw all of that away: on a green pair, 153 ciimage checksums and 12 RGBA tuples and 94 ModelIO
+# lines could be changed and this script still said "the same".  Keyed by the first number, compared
+# by all of them.
 import re, sys
 
 # compare.py HOST PORT [TOLERANCE] [LABEL] : the two probes' answers, line by line, by key.
@@ -11,7 +18,9 @@ host_path, port_path = sys.argv[1], sys.argv[2]
 tolerance = float(sys.argv[3]) if len(sys.argv) > 3 else 0.0
 label = sys.argv[4] if len(sys.argv) > 4 else 'modelio'
 
-KEY = re.compile(r'^(.*?)(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)(\s|$)')
+# The key is the text up to the first number; the measurement is the number and everything after it.
+# Group 2 is the first number and group 3 the rest of the line, so the two are not read twice.
+KEY = re.compile(r'^(.*?)(-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)(.*)$')
 
 def read(path):
     # A key seen again is the same key a second time, and is matched as such: the two runs walk the
@@ -22,7 +31,9 @@ def read(path):
         m = KEY.match(line)
         key = m.group(1) if m else line
         seen[key] = seen.get(key, 0) + 1
-        lines[(key, seen[key])] = (m.group(2) if m else None, line)
+        # the tail is the number the key stopped at and the rest of the line, so a pixel tuple,
+        # a checksum, a normal, a UV or a property type after it is compared and not dropped
+        lines[(key, seen[key])] = ((m.group(2) + m.group(3)) if m else None, line)
     return lines
 
 def numbers(text):
