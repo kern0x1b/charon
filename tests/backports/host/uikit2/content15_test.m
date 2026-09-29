@@ -462,24 +462,48 @@ static void compare_paragraphs(void)
 }
 
 
-// The protocol the range layer's own objects provide, read back through the runtime. NSTextElementProvider is
-// not declared by the build SDK, so a protocol object of that name can only have come from this library - which
-// is the difference between a protocol the port carries and one it only names. NSTextContentManagerDelegate,
-// NSTextContentStorageDelegate and NSTextSelectionDataSource are the other kind: the build SDK declares all
-// three, so the port cannot declare one of the same name, its rows are absent with that reason, and a lookup
-// here would report the host's own UIKit rather than anything of the port's.
-static void check_declared_protocol(void)
+// What a class of the port's own adopts, read off the class rather than by name. The SDK this file compiles
+// against declares NSTextLocation, NSTextElementProvider and NSTextStorageObserving as well - all three are in
+// its NSTextViewportLayoutController.h, NSTextContentManager.h and NSTextStorage.h - so a lookup by name would
+// answer with the host's whatever the port did, and a case built on one measures the host rather than this
+// library. Reading the protocol list off a class answers a narrower and true question, and the class makes it
+// the port's own: CharonTextLocation is a name no SDK header declares, and its @interface in CharonTextLocation.h
+// is the only declaration of it anywhere in this translation unit's world - so the protocol on
+// CharonHostCharonTextLocation is one this library put there. That it is a real reading and not a lookup is
+// shown by the control below and by the mutation: taking <NSTextLocation> off the declaration turns this case
+// red with `checks=55 failures=1`.
+//
+// The control is the storage beside it, which adopts NSTextStorageObserving through the SDK's own declaration of
+// NSTextContentStorage and does not adopt NSTextLocation - so a check that answered yes for every class in the
+// group would pass without reading anything.
+static BOOL class_adports(Class cls, Protocol *wanted)
 {
-    Protocol *provider = NSProtocolFromString(@"NSTextElementProvider");
-    charon_check(provider != nil, "a protocol the range layer's own objects provide is found by name at run time",
-                 @"NSProtocolFromString answered nil for a protocol the objects define");
-    charon_check(provider != nil && protocol_isEqual(provider, @protocol(NSTextElementProvider)),
-                 "and it is that protocol and no other", @"a different protocol answered");
-    charon_check(NSProtocolFromString(@"NSTextNoSuchProtocol") == nil,
-                 "and a name no library declares answers nil, which is what makes the one above a result",
-                 @"a protocol that is nowhere answered non-nil");
+    unsigned int count = 0;
+    __unsafe_unretained Protocol **list = class_copyProtocolList(cls, &count);
+    BOOL found = NO;
+    for (unsigned int i = 0; i < count; i++) {
+        if (protocol_isEqual(list[i], wanted) || protocol_conformsToProtocol(list[i], wanted))
+            found = YES;
+    }
+    free(list);
+    return found;
 }
 
+static void check_declared_protocol(void)
+{
+    Class location = NSClassFromString(@"CharonHostCharonTextLocation");
+    Class storage = NSClassFromString(@"CharonHostNSTextContentStorage");
+    charon_check(location != nil && storage != nil,
+                 @"the port's own location type and its storage are both in the process, renamed as the harness "
+                 @"renames them",
+                 @"one of the two is not");
+    charon_check(location != nil && class_adports(location, @protocol(NSTextLocation)),
+                 @"the port's own location type adopts the location protocol its header names", @"it adopts none");
+    charon_check(storage != nil && !class_adports(storage, @protocol(NSTextLocation)),
+                 @"and the storage beside it, which is not a location, answers no - which is what makes that "
+                 @"a reading and not a lookup",
+                 @"a class that is not a location answers yes");
+}
 int main(void)
 {
     @autoreleasepool {

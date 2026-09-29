@@ -30,10 +30,11 @@ OWNED_PROTOCOLS = ("NSTextElementProvider", "NSTextStorageObserving", "NSTextCon
 # release of the API that needed it, which is the range layer of 15.0.
 # The rows the port does not provide, and why. The two delegate protocols are declared by the build SDK, so a
 # port @protocol of the same name would be a duplicate, and a release with no such protocol object answers nil
-# to NSProtocolFromString; measured as the __OBJC_PROTOCOL_$_ symbols the port's own objects define, which are
+# to NSProtocolFromString. That is measured as the __OBJC_PROTOCOL_$_ symbols the port's own objects define -
 # the twelve under the two trait headers and NSTextElementProvider, NSTextLocation and NSTextStorageObserving,
-# and neither of these two. The third is a selector the port never sends: its own paragraph mapping is used
-# wherever a custom element at a location would be.
+# and neither of these two - and not as a lookup by name, which would answer with the host's: the SDK the host
+# differential compiles against carries all of these protocol objects itself. The third row is a selector the
+# port never sends: its own paragraph mapping is used wherever a custom element at a location would be.
 NOT_PROVIDED = {
     "NSTextContentManagerDelegate", "NSTextContentStorageDelegate",
     "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]",

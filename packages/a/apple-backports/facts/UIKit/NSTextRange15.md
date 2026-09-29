@@ -2,11 +2,14 @@
 
 `NSTextRange`, `NSTextSelection`, `NSTextElement`, `NSTextParagraph`,
 `NSTextSelectionNavigation`, and the two protocols the range layer is written
-against, `NSTextLocation` and `NSTextSelectionDataSource`. `NSTextLocation` is declared by this
-package — no SDK header names it, `CharonTextLocation.h` declares it and the objects define its
-protocol object. `NSTextSelectionDataSource` is declared by the build SDK, so the package declares
-no protocol of that name and its row is `absent`: it is a type the sources are written against, and
-on a release with no such protocol object `NSProtocolFromString` answers nil. Whole, from the headers
+against, `NSTextLocation` and `NSTextSelectionDataSource`. This package declares the protocol on
+its own concrete location type: `CharonTextLocation.h` has `CharonTextLocation : NSObject
+<NSTextLocation>`, the class is a name no SDK header uses, and the objects define
+`__OBJC_PROTOCOL_$_NSTextLocation`. The SDK this library is compiled against declares the protocol
+by name, so the name alone proves nothing; the class and the class name are what make the
+declaration the port's. `NSTextSelectionDataSource` is declared by the build SDK, so the package
+declares no protocol of that name and its row is `absent`: it is a type the sources are written
+against, and on a release with no such protocol object `NSProtocolFromString` answers nil. Whole, from the headers
 of SDK 26.2: `NSTextRange.h`, `NSTextSelection.h`, `NSTextElement.h`,
 `NSTextSelectionNavigation.h`.
 

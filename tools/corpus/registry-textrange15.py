@@ -110,9 +110,13 @@ METHODS = {
 
 # The selectors the port asks its data source for are the seven with an effect above that says it asks; these
 # five are declared by the protocol and never sent, and are the rows the corpus and the code disagree about.
-# The protocols of this group the port itself provides, measured as the __OBJC_PROTOCOL_$_ symbols its objects
-# define: CharonTextLocation.h declares NSTextLocation and the objects define __OBJC_PROTOCOL_$_NSTextLocation.
-# NSTextSelectionDataSource is not among them, and the build SDK declares it, so the port cannot add it.
+# The protocols of this group the port itself provides, measured two ways that agree: the
+# __OBJC_PROTOCOL_$_ symbols its objects define include __OBJC_PROTOCOL_$_NSTextLocation and not
+# __OBJC_PROTOCOL_$_NSTextSelectionDataSource, and CharonTextLocation.h is the only declaration of
+# CharonTextLocation in the package. What the protocol's NAME is worth nothing: the build SDK this library is
+# compiled against declares NSTextLocation in NSTextViewportLayoutController.h, and the SDK the host
+# differential compiles against has the protocol object itself, so a lookup by name answers with the host's
+# either way. The class is what makes it the port's - CharonTextLocation is a name no SDK header declares.
 PORT_PROVIDED_PROTOCOLS = {"NSTextLocation"}
 
 NOT_ASKED_EFFECT = ("the port neither declares nor sends it, so nothing of the port's is behind the name; a "

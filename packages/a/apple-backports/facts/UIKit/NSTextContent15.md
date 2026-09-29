@@ -181,10 +181,19 @@ other.
 
 `NSTextElementProvider` is what the range layer's group left to this one: its seven members are
 sent from here, by the content storage, and it is `implemented` for that reason. It is also the
-one of the four this package declares — the build SDK does not declare it, and
-`NSTextContentStorage`'s objects define the protocol object, so `NSProtocolFromString` finds it
-by name at run time. That is a case in `content15_test.m`, and the same case asks for a name no
-library declares and requires nil, so the first answer is a result and not a tautology.
+one of the four whose protocol object `NSTextContentStorage`'s objects define — measured as the
+`__OBJC_PROTOCOL_$_NSTextElementProvider` symbol among the fifteen the objects of this series
+define. A lookup by name would not have measured that: the SDK `content15_test.m` compiles
+against carries the protocol object itself, and `NSProtocolFromString("NSTextElementProvider")`
+answers non-nil in a process with none of this library in it.
+
+The case in `content15_test.m` therefore reads the protocol list off `CharonTextLocation`, which
+is the one of the four this package puts on a class of its own: no SDK header declares the name
+`CharonTextLocation`, so its declaration in `CharonTextLocation.h` is the only one, and the
+protocol on it is this library's. `NSTextElementProvider` has no such class here — the port's
+`NSTextElement` adopts nothing in its own source, and the SDK's declaration of that class is what
+a runtime would read — so for that one the nm table above is the evidence and no case claims
+more.
 
 The other three — the manager's delegate, the storage's, and the selection data source the range
 layer is written against — are declared by the build SDK, so a `@protocol` of the same name here
