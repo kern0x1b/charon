@@ -4,6 +4,7 @@
 // UIViewController, the real interface of the superclass, and no document browser with it.
 #import <Foundation/Foundation.h>
 #import <UIKit/UIViewController.h>
+#import <UIKit/UIViewControllerTransitioning.h>
 
 @class UIBarButtonItem, UIDocumentBrowserAction, UIDocumentBrowserViewController;
 @protocol UIDocumentBrowserViewControllerDelegate, UIViewControllerAnimatedTransitioning;
@@ -40,6 +41,20 @@
 @end
 
 @implementation UIDocumentBrowserViewController
+
+// Every property is stored: the library build turns a property the compiler would synthesize on its own
+// into an error (-Werror=objc-missing-property-synthesis), so each is named, with its instance variable.
+@synthesize delegate = _delegate;
+@synthesize allowsDocumentCreation = _allowsDocumentCreation;
+@synthesize allowsPickingMultipleItems = _allowsPickingMultipleItems;
+@synthesize allowedContentTypes = _allowedContentTypes;
+@synthesize recentDocumentsContentTypes = _recentDocumentsContentTypes;
+@synthesize additionalLeadingNavigationBarButtonItems = _additionalLeadingNavigationBarButtonItems;
+@synthesize additionalTrailingNavigationBarButtonItems = _additionalTrailingNavigationBarButtonItems;
+@synthesize customActions = _customActions;
+@synthesize browserUserInterfaceStyle = _browserUserInterfaceStyle;
+@synthesize charonAllowedContentTypes = _charonAllowedContentTypes;
+@synthesize charonDirectory = _charonDirectory;
 
 // The designated initialiser: the browser opens the document types it is given, and an empty or nil
 // list means the application's own, as the header says.
