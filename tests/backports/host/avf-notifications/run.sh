@@ -28,8 +28,8 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
 build=${AVF_NOTICE_BUILD:-$root/.agent-work/avf-notifications}
-expected=${AVF_NOTICE_ROWS:-33}
-sources="AVFoundationKeys9 AVFoundationKeys11 AVFoundationKeys16 AVFoundationKeysUnheld"
+expected=${AVF_NOTICE_ROWS:-67}   # every NSString *const the family defines
+sources="AVFoundationKeys9 AVFoundationKeys11 AVFoundationKeys16 AVFoundationKeysUnheld AVFoundationDeviceTypeAndPresetKeys16 AVCaptureCurrentSentinels8"
 control=${CONTROL:-0}
 break=${BREAK:-0}
 mutant=${AVFMUTANT:-0}
@@ -38,8 +38,16 @@ mkdir -p "$build/src" "$build/o"
 
 renames=""
 for source in $sources; do
+    # The rename list is built from the STRING constants only. The sentinels object defines none -
+    # they are a CMTime, three floats and a struct, not names - and the probe reaches them by their
+    # own names through dlsym, so they need no rename and get none. An object that is neither
+    # strings nor the sentinels object would be renamed wrongly, so the sentinels source is named
+    # here rather than skipped by a rule.
     names=$(sed -n 's/^NSString \*const \([A-Za-z0-9_]*\) = .*/\1/p' "$avf/$source.m")
-    [ -n "$names" ] || { echo "FAIL: $source.m defines no constant"; exit 1; }
+    if [ -z "$names" ]; then
+        [ "$source" = "AVCaptureCurrentSentinels8" ] || { echo "FAIL: $source.m defines no string constant"; exit 1; }
+        names=""
+    fi
     for name in $names; do renames="$renames -D$name=charon_host_$name"; done
 done
 
@@ -47,7 +55,23 @@ done
 # raised FileNotFoundError, and a harness that calls that "noticed" would be counting a crash.
 for source in $sources; do cp "$avf/$source.m" "$build/src/$source.m"; done
 total=0
-for source in $sources; do total=$((total + $(grep -c '^NSString \*const' "$avf/$source.m"))); done
+for source in $sources; do
+    # The sentinels object defines no string - they are a CMTime, three floats and a struct - and
+    # `grep -c` exits 1 on no match, which under `set -e` killed this script silently the first time
+    # the object was added. So the count is guarded, and an object that is NEITHER strings nor the
+    # sentinels object counting zero is a failure: it would leave the table shorter than the count
+    # below claims, which is the "a check that examined nothing" shape.
+    count=$(grep -c '^NSString \*const' "$avf/$source.m" || true)
+    if [ "$count" = 0 ]; then
+        [ "$source" = "AVCaptureCurrentSentinels8" ] || {
+            echo "FAIL: $source.m defines no string constant. Only the sentinels object may; a zero"
+            echo "      here means the table is shorter than the count below claims."
+            exit 1
+        }
+    else
+        total=$((total + count))
+    fi
+done
 if [ "$total" != "$expected" ]; then
     echo "FAIL: the sources define $total constants and this slice claims $expected"; exit 1
 fi
@@ -56,7 +80,11 @@ fi
 # build directory and not into the checkout - it is generated on every run.
 : > "$build/table.inc"
 for source in $sources; do
-    sed -n 's/^NSString \*const \([A-Za-z0-9_]*\) = .*/    { "\1", \&\1 },/p' "$build/src/$source.m" >> "$build/table.inc"
+    # The four AVCaptureDeviceType names are declared with a type the SDK marks unavailable on macOS,
+    # so this host program cannot take their address and the probe reaches them by dlsym instead -
+    # see unnameable[] in probe.m. They are skipped here, and the row count below accounts for them.
+    sed -n '/^NSString \*const AVCaptureDeviceType/!s/^NSString \*const \([A-Za-z0-9_]*\) = .*/    { "\1", \&\1 },/p' \
+        "$build/src/$source.m" >> "$build/table.inc"
 done
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
@@ -109,7 +137,7 @@ set +e; "$build/host" > "$build/host.table" 2> "$build/host.stderr"; host_status
 
 # 2. the same probe against the port's own definitions, in one binary with Apple's
 # shellcheck disable=SC2086
-xcrun clang -fobjc-arc -w -I"$build" $renames "$here/probe.m" $objects \
+xcrun clang -fobjc-arc -w -DCHARON_PORT_BUILD=1 -I"$build" $renames "$here/probe.m" $objects \
     -framework Foundation -framework AVFoundation -o "$build/port" > "$build/port.log" 2>&1 || {
         echo "FAIL: the port probe did not link - a name the port does not define is a link error"
         head -10 "$build/port.log"
@@ -120,9 +148,12 @@ set +e; "$build/port" > "$build/port.table" 2> "$build/port.stderr"; port_status
 # 3. neither table may be smaller than the claim, or the diff compares less than it says
 for side in host port; do
     rows=$(grep -c ' = ' "$build/$side.table" || true)
-    if [ "$rows" -ne "$expected" ]; then
-        echo "FAIL: the $side table has $rows rows and this slice claims $expected, so the diff below"
-        echo "      would compare something smaller than the claim"
+    # the sentinels print one " = " line each on top of the strings, so the expected count is the
+    # strings plus them; asserted on both sides so an empty table is a red and not a clean diff
+    if [ "$rows" -ne "$((expected - 4 + 5 + 4))" ]; then
+        echo "FAIL: the $side table has $rows rows; this family claims $expected string constants, of"
+        echo "      which 4 are declared with a type macOS cannot name and are read by dlsym, plus the 5"
+        echo "      sentinels. The diff below would compare something smaller than the claim."
         exit 1
     fi
 done
@@ -136,7 +167,7 @@ if diff -u "$build/host.table" "$build/port.table" > "$build/diff.log" 2>&1; the
     if [ "$mutant" != 0 ] && [ "$control" != 0 ]; then
         echo "ok  the control is green: the unmutated source through the identical build-and-run path"
     else
-        echo "ok  the port's $expected constants answer exactly what Apple's do, text and bytes both"
+        echo "ok  the port's $expected constants, 4 device-type names and 5 sentinels answer exactly what Apple's do"
     fi
     echo "log=$build"
     exit 0

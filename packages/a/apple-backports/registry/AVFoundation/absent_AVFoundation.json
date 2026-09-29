@@ -1392,46 +1392,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureExposureDurationCurrent",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureExposureTargetBiasCurrent",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureISOCurrent",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureLensPositionCurrent",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureManualExposureBracketedStillImageSettings",
       "kind": "class",
       "introduced": "8.0",
@@ -1459,16 +1419,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 8",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureWhiteBalanceGainsCurrent",
-      "kind": "constant",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -2682,26 +2632,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVContentKeySessionServerPlaybackContextOptionProtocolVersions",
-      "kind": "constant",
-      "introduced": "12.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVContentKeySessionServerPlaybackContextOptionServerChallenge",
-      "kind": "constant",
-      "introduced": "12.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "+[AVCaptureDevice extrinsicMatrixFromDevice:toDevice:]",
       "kind": "method",
       "introduced": "13.0",
@@ -2769,36 +2699,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVAsset a property like it: it arrived in iOS 13",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetExportPresetHEVC1920x1080WithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetExportPresetHEVC3840x2160WithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetExportPresetHEVCHighestQualityWithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -2932,36 +2832,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVCaptureDeviceTypeBuiltInDualWideCamera",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDeviceTypeBuiltInTripleCamera",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDeviceTypeBuiltInUltraWideCamera",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureInputPort.sourceDevicePosition",
       "kind": "property",
       "introduced": "13.0",
@@ -3049,26 +2919,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVContentKeyRequestRequiresValidationDataInSecureTokenKey",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVContentKeySystemAuthorizationToken",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3162,26 +3012,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVOutputSettingsPresetHEVC1920x1080WithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVOutputSettingsPresetHEVC3840x2160WithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayerItem.audioSpatializationAllowed",
       "kind": "property",
       "introduced": "13.0",
@@ -3249,76 +3079,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVSemanticSegmentationMatteTypeHair",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVSemanticSegmentationMatteTypeSkin",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVSemanticSegmentationMatteTypeTeeth",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoCodecTypeAppleProRes422HQ",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoCodecTypeAppleProRes422LT",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoCodecTypeAppleProRes422Proxy",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoCodecTypeHEVCWithAlpha",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3482,26 +3242,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVFileTypeProfileMPEG4AppleHLS",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVFileTypeProfileMPEG4CMAFCompliant",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayerItem.allowedAudioSpatializationFormats",
       "kind": "property",
       "introduced": "14.0",
@@ -3539,16 +3279,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 14",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVSemanticSegmentationMatteTypeGlasses",
-      "kind": "constant",
-      "introduced": "14.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3909,26 +3639,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetExportPresetAppleProRes422LPCM",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetExportPresetAppleProRes4444LPCM",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -4422,36 +4132,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVVideoRangeHLG",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoRangePQ",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoRangeSDR",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVCaptureDevice.automaticallyAdjustsFaceDrivenAutoExposureEnabled",
       "kind": "property",
       "introduced": "15.4",
@@ -4489,16 +4169,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVCaptureDeviceTypeBuiltInLiDARDepthCamera",
-      "kind": "constant",
-      "introduced": "15.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -4662,26 +4332,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVAssetPlaybackConfigurationOptionStereoMultiviewVideo",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetPlaybackConfigurationOptionStereoVideo",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVAssetTrack.canProvideSampleCursors",
       "kind": "property",
       "introduced": "16.0",
@@ -4822,36 +4472,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerInterstitialEventJoinCue",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventLeaveCue",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventNoCue",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVSampleBufferGenerator",
       "kind": "class",
       "introduced": "16.0",
@@ -4899,16 +4519,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVURLAsset a property like it: it arrived in iOS 16",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoTransferFunction_Linear",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
