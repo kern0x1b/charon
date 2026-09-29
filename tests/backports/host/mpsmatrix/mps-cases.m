@@ -723,6 +723,24 @@ static void casesSum(void)
     });
     put("sum-start-index", &sumOut[0][0], sizeof(sumOut));
 
+    // The boundary: a startIndex that leaves exactly one factor in the list and then none at all, so
+    // the scale guard's edge is exercised rather than assumed.
+    for (NSUInteger start = 1; start <= 3; start++) {
+        memset(sumOut, 0, sizeof(sumOut));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
+            MPSMatrix *b = matrixOf(&sumSecond[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
+            MPSMatrix *out = matrixOf(&sumOut[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
+            MPSVector *s = vectorOf(sumScale, MPSDataTypeFloat32, 3, 1, 3 * sizeof(float));
+            MPSMatrixSum *kernel = [[MPSMatrixSum alloc] initWithDevice:gDevice count:2 rows:2 columns:3 transpose:NO];
+            [kernel encodeToCommandBuffer:commandBuffer sourceMatrices:@[a, b] resultMatrix:out
+                                scaleVector:s offsetVector:nil biasVector:nil startIndex:start];
+        });
+        char name[64];
+        snprintf(name, sizeof(name), "sum-start-index-boundary %lu", (unsigned long)start);
+        put(name, &sumOut[0][0], sizeof(sumOut));
+    }
+
     memset(sumOut, 0, sizeof(sumOut));
     run(^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));

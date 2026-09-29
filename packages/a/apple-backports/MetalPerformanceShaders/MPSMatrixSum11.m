@@ -165,7 +165,15 @@ CHARON_MPS_NEURON_COMMON
                 // a vector index it walked past the end of a single-vector scale buffer, which is why
                 // sum-start-index answered all zeros and no refusal fired.
                 double scale = 1.0;
-                if (scales.length > startIndex + index) {
+                // The extent, not the count: the scale factors are a run of values in the vector's
+                // data, and startIndex + count of them has to fit in the bytes the vector holds. The
+                // guard tested scales.length, which is a number of factors somewhere in the vector and
+                // not a byte count, so a startIndex at the end of the list passed it and read past.
+                // Per factor, not for the whole list: the release uses the factors that are there and
+                // stops at the end of the list. With three factors and two sources, startIndex 1 leaves
+                // one and the release uses it, and startIndex 2 leaves none and the release answers
+                // zeros - so a factor past the end is not read, and its scale stays one.
+                if (startIndex + _count <= scales.length * scales.vectors) {
                     NSUInteger which = (startIndex + index) / MAX((NSUInteger)1, scales.length);
                     NSUInteger component = (startIndex + index) % MAX((NSUInteger)1, scales.length);
                     if (which < scales.vectors)
