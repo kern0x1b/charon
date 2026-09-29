@@ -1,6 +1,5 @@
 #import "uirest.h"
 #import <objc/message.h>
-#import <dlfcn.h>
 #import <stdio.h>
 
 // A control made of actions, on whichever side this binary is.
@@ -40,23 +39,23 @@ static void charon_insert_action(UISegmentedControl *control, UIAction *action, 
     ((void (*)(id, SEL, UIAction *, NSUInteger, BOOL))objc_msgSend)(control, chosen, action, index, NO);
 }
 
-static UISegmentedControl *charon_control_with_actions(CGRect frame, NSArray *actions)
+// The port's own implementation of a control made of actions, as a value the caller passes. A symbol in the main
+// image is only in what dlsym reads when the link exports it, which this harness does not do, and a symbol defined
+// in this header would have to be defined once for two binaries that disagree about it; an argument has neither
+// problem. The port side passes the port's own function - under its **harness** name, because the renamer
+// renames every exported C symbol an object defines - and the recorder passes NULL and takes the public
+// initializer, which there is the host's own and the right answer to record.
+typedef UISegmentedControl *(*CharonControlWithActions)(UISegmentedControl *, CGRect, NSArray *);
+
+static UISegmentedControl *charon_control_with_actions(CharonControlWithActions entry, CGRect frame, NSArray *actions)
 {
-    // The port publishes its own implementation as a name of its own, and this is what a differential calls: the
-    // public initialiser is the **host's** on the port's side, because the port's is a carried selector the
-    // harness renamed, and a host initialiser given a port action builds a segment from the action and hands it
-    // to the host's label - a mix of classes that never happens on a device. The recorder has no such symbol and
-    // takes the public initialiser, which is the host's own and the right answer on that side.
-    typedef UISegmentedControl *(*CharonControlWithActions)(UISegmentedControl *, CGRect, NSArray *);
-    static CharonControlWithActions entry = NULL;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        entry = (CharonControlWithActions)dlsym(dlopen(NULL, RTLD_NOW), "charon_control_init_with_actions");
-    });
-    // The one line the coordinator asked for: whether the port's own implementation is reachable in this
-    // process, which is the difference between running the port's code and falling back to the host's.
-    fprintf(stderr, "[controlmenus] the port's own control-with-actions entry point %s\n",
-            entry ? "was found" : "is NOT in this process");
+    // The one line the coordinator asked for, printed once and on both sides: the port's side passes the port's own
+    // function, the recorder's passes NULL. By construction, not by luck.
+    static int reported = 0;
+    if (!reported++) {
+        fprintf(stderr, "[controlmenus] the port's own control-with-actions entry point %s\n",
+                entry ? "was found" : "is NOT in this process");
+    }
     if (entry)
         return entry([UISegmentedControl alloc], frame, actions);
     SEL published = NSSelectorFromString(@"initWithFrame:actions:");
@@ -80,7 +79,7 @@ static NSString *bar_line(UIBarButtonItem *item)
     return [NSString stringWithFormat:@"title=%@ image=%d menu=%d pa=%d width=%g style=%ld system=%@", item.title ?: @"nil", item.image != nil, item.menu != nil, item.primaryAction != nil, item.width, (long)item.style, @""];
 }
 
-static NSArray *menu_scenario(Class actionClass, Class menuClass)
+static NSArray *menu_scenario(Class actionClass, Class menuClass, CharonControlWithActions entry)
 {
     NSMutableArray *lines = [NSMutableArray array];
     UIImage *image = [[UIImage alloc] init];
@@ -141,7 +140,7 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass)
     [lines addObject:ur_line(@"spaces", @[@(fixed.width), fixed.menu ?: @"nil", flexible.primaryAction ?: @"nil", ur_yes(fixed != flexible)])];
 
     UIAction *b1 = [actionClass actionWithTitle:@"B" image:nil identifier:@"idy" handler:^(id x) {}];
-    UISegmentedControl *sg = charon_control_with_actions(CGRectMake(0, 0, 200, 30), @[ a, b1 ]);
+    UISegmentedControl *sg = charon_control_with_actions(entry, CGRectMake(0, 0, 200, 30), @[ a, b1 ]);
     [lines addObject:ur_line(@"segments", @[@(sg.numberOfSegments), @(sg.selectedSegmentIndex), [sg titleForSegmentAtIndex:0] ?: @"nil", [sg titleForSegmentAtIndex:1] ?: @"nil", ur_yes([sg imageForSegmentAtIndex:0] != nil),
                                            ur_yes([sg actionForSegmentAtIndex:0] != a), ur_yes([[sg actionForSegmentAtIndex:0] isEqual:a]), @([sg segmentIndexForActionIdentifier:@"idy"]), @([sg segmentIndexForActionIdentifier:@"nope"])])];
     UIAction *cc = [actionClass actionWithTitle:@"C" image:nil identifier:@"idz" handler:^(id x) {}];
