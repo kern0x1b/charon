@@ -1,10 +1,18 @@
 // The names of SensorKit that arrived in iOS 14.0, with the values the host's own SensorKit holds.
 //
-// EVERY VALUE HERE IS READ OUT OF THE HOST'S SensorKit and not written down from memory: the reader
-// is tests/backports/host/sensorkit-names/differential.m, which dlsym's the framework,
-// dereferences each exported variable once - they are `const` object-pointer VARIABLES, so dlsym
-// returns the address of the variable - and compares what it reads with what this file defines,
-// and the whole check can be broken two ways so that a reader which compared nothing is red.
+// EVERY VALUE HERE IS READ OUT OF THE HOST'S SensorKit and not written down from memory, by the
+// harness in tests/backports/host/sensorkit-names, which is three files and a runner and each does one
+// thing:
+//   read-host.m   opens the host's framework and dlsym's each name, DEREFERENCING ONCE - these are
+//                 `const` object-pointer VARIABLES, so dlsym returns the address of the variable and
+//                 the address of the variable is the string;
+//   differential.m links THIS object's definitions into a process of its own and prints them, so the
+//                 two sides are independent: an object wins at link time, and the host's values come
+//                 from the other process;
+//   compare.py    puts the two outputs side by side over the one name list both walk;
+//   run.sh        builds and runs all of it, then breaks the comparison twice - every value wrong, and
+//                 one value wrong, which must name exactly one row - and hands compare.py an empty host
+//                 file, which must be red, so a run that compared nothing cannot look green.
 //
 // WHAT THE VALUES ARE, PLAINLY. The 29 usage-category keys each hold the string equal to the
 // constant's own name, and the ten sensor constants hold identifiers of the form
