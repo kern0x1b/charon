@@ -1587,6 +1587,21 @@ static void CharonHKSeriesBuilder12(void)
     CharonHKCompare(@"the raise's text", mineText, theirsText);
 }
 
+// The cumulative quantity sample of 13.0. The host carries the class, so this is compared against the
+// host's own: what a cumulative sample is, that its sum is what was given, and that it comes back from
+// this library's store as this class and not as its superclass.
+@interface CharonHostHKCumulativeQuantitySample : NSObject
++ (instancetype)charon_cumulativeWithType:(CharonHostHKQuantityType *)quantityType
+                                      sum:(CharonHostHKQuantity *)sum
+                                 startDate:(NSDate *)startDate
+                                   endDate:(NSDate *)endDate;
+@property (readonly, copy) CharonHostHKQuantity *sumQuantity;
+@property (readonly, copy) CharonHostHKQuantityType *sampleType;
+@property (readonly, copy) NSDate *startDate;
+@property (readonly, copy) NSDate *endDate;
+@property (readonly, copy) NSUUID *UUID;
+@end
+
 // The four most-recent members of 12.0. The host is asked for them and answers nil - its HealthKit has
 // no entitlement here, and it builds no statistics of its own that this harness could read - so the
 // oracle is the port's own input: samples with dates the harness chose, and the most recent is the one
@@ -1933,6 +1948,68 @@ static void CharonHKStatistics12(void)
            "samples and the dates the harness built above.\n");
 }
 
+// The cumulative quantity sample of 13.0, and its round trip through this library's own store.
+//
+// The host carries the class, so the shape of it is the host's to answer: that a cumulative sample holds
+// a sum, and that the sum is the one that was given. What the host cannot do here is save one, because
+// its HealthKit has no entitlement, so the round trip is this library's own store and the input the
+// harness builds - and the mutant is the kind the row is stored under, because a cumulative sample read
+// back as its superclass is a quantity sample with no sum, which is the only thing that distinguishes
+// the two.
+static void CharonHKCumulative13(void)
+{
+    NSDate *start = [NSDate dateWithTimeIntervalSince1970:1600000000];
+    NSDate *end = [NSDate dateWithTimeIntervalSince1970:1600003600];
+    CharonHostHKQuantityType *type = [CharonHostHKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierActiveEnergyBurned];
+    CharonHostHKUnit *unit = [CharonHostHKUnit kilocalorieUnit];
+    CharonHostHKQuantity *sum = [CharonHostHKQuantity quantityWithUnit:unit doubleValue:1234.0];
+
+    // The host's own class, asked what a cumulative sample is.
+    Class theirs = NSClassFromString(@"HKCumulativeQuantitySample");
+    CharonHKCompare(@"the host carries the cumulative quantity sample", theirs ? @"yes" : @"no", @"yes");
+    CharonHKCompareBool(@"the host's class answers a sum", [theirs instancesRespondToSelector:NSSelectorFromString(@"sumQuantity")], YES);
+    CharonHKCompareBool(@"the host's class has no initialiser of its own",
+                        [theirs instancesRespondToSelector:@selector(initWithType:quantity:startDate:endDate:)], NO);
+
+    CharonHostHKHealthStore *store = [[CharonHostHKHealthStore alloc] init];
+    __block BOOL authorised = NO;
+    [store requestAuthorizationToShareTypes:[NSSet setWithObject:type]
+                                  readTypes:[NSSet setWithObject:type]
+                                 completion:^(BOOL success, NSError *error) { authorised = success; }];
+    CharonHKWaitFor(&authorised);
+    if (!authorised) {
+        printf("skipped: the port's store granted no authorisation, so the cumulative sample cannot be measured here\n");
+        return;
+    }
+
+    CharonHostHKCumulativeQuantitySample *sample =
+        [CharonHostHKCumulativeQuantitySample charon_cumulativeWithType:type sum:sum startDate:start endDate:end];
+    CharonHKCompareDouble(@"the sum is the one it was given",
+                          [[sample sumQuantity] doubleValueForUnit:unit], 1234.0);
+    // This harness renames the port's own classes, so the superclass to ask about is the port's - the
+    // same reason the kind table goes through a resolver here.
+    CharonHKCompareBool(@"a cumulative sample is a quantity sample",
+                        [sample isKindOfClass:NSClassFromString(@"CharonHostHKQuantitySample")], YES);
+
+    __block BOOL saved = NO;
+    __block NSError *saveError = nil;
+    [store saveObject:sample withCompletion:^(BOOL success, NSError *error) { saved = success; saveError = error; }];
+    CharonHKWaitFor(&saved);
+    if (!saved) {
+        printf("the port's store took no cumulative sample: %s\n", saveError.localizedDescription.UTF8String);
+    }
+    CharonHKCompareBool(@"the store keeps a cumulative sample", saved, YES);
+    if (saved) {
+        CharonHostCharonHKStore *database = [CharonHostCharonHKStore sharedStore];
+        NSArray *found = [database objectsWithUUIDs:@[ sample.UUID ] ofType:type error:NULL];
+        CharonHKCompareInt(@"the cumulative sample is found again", (NSInteger)found.count, (NSInteger)1);
+        id back = found.firstObject;
+        CharonHKCompare(@"and it is found as this class, not as its superclass",
+                        NSStringFromClass([back class]), NSStringFromClass([sample class]));
+        CharonHKCompareBool(@"and it carries its sum", [back respondsToSelector:NSSelectorFromString(@"sumQuantity")], YES);
+    }
+}
+
 int main(void)
 {
     // Before the harness installs its own: this checks the resolver the library ships with, which is the
@@ -1951,6 +2028,7 @@ int main(void)
     CharonHKStoreRoundTrip();
     CharonHKSeriesQuery12();
     CharonHKStatistics12();
+    CharonHKCumulative13();
     printf("healthkit: %lu comparisons, %lu differences\n", (unsigned long)CharonHKComparisons,
            (unsigned long)CharonHKDifferences);
     return CharonHKDifferences == 0 ? 0 : 1;
