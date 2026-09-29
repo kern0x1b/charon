@@ -15,7 +15,15 @@
 // IT USES THE RELEASE'S OWN CALLS, and that is the design constraint, not a preference: on the 6.1.3 guest
 // SecKeyCreateSignature and the kSecKeyAlgorithm* constants DO NOT EXIST, so a program that measured the
 // guest with the 10.0 API could not run there at all. The four shapes below are copied from the SDK's
-// Security.framework/Headers/SecKey.h, grepped before they were written:
+// Security.framework/Headers/SecKey.h, grepped before they were written.
+//
+// THE PORT NOW CARRIES SecKeyCreateSignature AND THE kSecKeyAlgorithm* NAMES, so the clause above is
+// history and this file's design constraint is still the design constraint: what it measures - how
+// SecKeyCreateWithData may build a key, which is a question about the release's keychain and not about
+// the port - is asked through the release's own calls, because the answer has to be the release's. What
+// the port does with the four functions is facts/Security/SecKey.md and
+// facts/Security/SecKeyElliptic.md, and the 16-cell matrix over them is
+// tests/backports/host/seckeycurve/mutate-cells.py.
 //
 //   662  OSStatus SecKeyRawSign(SecKeyRef key, SecPadding padding, const uint8_t *dataToSign,
 //                                size_t dataToSignLen, uint8_t *sig, size_t *sigLen)
