@@ -140,39 +140,26 @@ paste "$build/system.divergent" "$build/port.divergent" | while read -r line; do
     echo "documented divergence: $line"
 done
 
-# Two host divergences, measured, and not defects in this port. Both are the release reading a batch
-# property and not acting on it; the six-row table is in facts/MetalPerformanceShaders/Matrix.md, and
-# the port follows the header in both cases.
-#   - batchStart is ignored: every combination of batchStart with a non-zero batchSize writes the same
-#     matrices, so a case that sets a range gets a matrix the range excludes written anyway.
-#   - batchSize 0 processes none of the matrices, where the header says 0 processes all of them.
-#   - and the random generators: a Float32 destination and a UInt32 one both come back all zeros from
-#     the release, with a command buffer that committed and no error, where the port answers the words
-#     and the scaled values. The PhiLox4x32-10 stream itself is proven - the port's words equal the
-#     release's and the published reference vectors for three seeds, measured outside this harness - so
-#     it is the Float32 and the destination-size paths, not the generator.
-HOST_DIVERGENCES="multiply-batch philox-uint32 philox-float32-uniform divergent philox-float32-normal"
+# The cases this port does not reproduce are named, with the reason, in owed.tsv beside this script -
+# not exempted here. The list used to live in this file as HOST_DIVERGENCES and the cases it matched
+# were dropped from the comparison before anything was measured, so a defect introduced in one of them
+# could not show; Matrix.md:38-39 already said none of them met the bar for an exemption. The grader
+# below now reads the whole set: a case that is not bit-identical and not within ULP_BOUND units in the
+# last place has to be in owed.tsv, and one that is not fails the run.
+#
+#   rank.py <system-prefix> <port-prefix> <ulp-bound> [owed.tsv]
+#
+# The bound is 64 units in the last place, which is 7.6e-06 relative near 1.0: the largest distance
+# among the cases that are rounding is 26 (batch-normalization 12, at 2.93e-06), and the defects this
+# bound has to catch are 7.5e+08 units away. The bound is named here, in the grader's own output and
+# in Matrix.md, so a reader can see what it is rather than infer it from a count.
+ULP_BOUND=64
 
-# An alternation over the names, so several are excluded and not just the first.
-PATTERN=$(printf '%s' "$HOST_DIVERGENCES" | tr ' ' '|')
-grep -vE "^case ($PATTERN) " "$build/system.strict" > "$build/system.counted"
-grep -vE "^case ($PATTERN) " "$build/port.strict" > "$build/port.counted"
-echo "named host divergences: $HOST_DIVERGENCES"
-# How many cases the names above actually remove, counted from the files and not from the list: five
-# names can match one case, five, or none, and two of them are a prefix with a case name after them, so
-# a line that printed the list's length beside a verdict read as five differences accounted for.
-compared=$(grep -c '^case ' "$build/system.counted")
-excluded=$(( $(grep -c '^case ' "$build/system.strict") - compared ))
-echo "compared: $compared cases, $excluded removed by the named divergences"
-
-if cmp -s "$build/system.counted" "$build/port.counted"; then
-    echo "differing cases: 0 of the $compared compared"
-    echo "port: same as the system, case for case and bit for bit, apart from the $excluded named divergence cases"
+python3 "$here/rank.py" "$build/system.prefix" "$build/port.prefix" "$ULP_BOUND" "$here/owed.tsv"
+rank_status=$?
+if [ "$rank_status" -eq 0 ]; then
+    echo "port: every case is bit-identical to the system or within $ULP_BOUND units in the last place, or is named as owed"
     exit 0
 fi
-differing=$(diff "$build/system.counted" "$build/port.counted" | grep -c '^<')
-diff "$build/system.counted" "$build/port.counted" | head -60
-echo "differing cases: $differing of the $compared compared"
-echo "  removed by the named divergences: $excluded"
-echo "  so the port defects are: $differing"
+echo "the grader found a case that differs beyond $ULP_BOUND units in the last place and is not named in $here/owed.tsv"
 exit 1

@@ -491,6 +491,9 @@ static inline double CharonMPSApplyNeuronGradient(MPSCNNNeuronType type, double 
     case MPSCNNNeuronTypeLinear:
         return a;
     case MPSCNNNeuronTypeSigmoid: {
+        // s*(1-s) with s = 1/(1+e^-x), written on |x|: s(-x) is 1-s(x), so the product is the same
+        // for a negative x, and this is the even function the table's own value gives. The softplus
+        // below is not even, and the same trick there is a wrong answer.
         double e = exp(-fabs(x));
         double s = 1.0 / (1.0 + e);
         return s * (1.0 - s);
@@ -504,8 +507,15 @@ static inline double CharonMPSApplyNeuronGradient(MPSCNNNeuronType type, double 
     case MPSCNNNeuronTypeAbsolute:
         return x > 0.0 ? 1.0 : (x < 0.0 ? -1.0 : 0.0);
     case MPSCNNNeuronTypeSoftPlus: {
-        double e = exp(fabs(b * x));
-        return a * b * (e / (1.0 + e));
+        // MPSCNNNeuronType.h gives f(x) = a * log(1 + e^(b*x)), so f'(x) = a*b*e^(b*x)/(1+e^(b*x)).
+        // The exponent is signed: taking its magnitude makes the derivative an even function where
+        // the function is not, and for b*x < 0 it answers a*b - f'(x) instead of f'(x), which the
+        // release's own neuron-gradient cases measure at 94 % of the value. Written as the sigmoid
+        // of b*x so no intermediate overflows: for b*x >= 0 the denominator 1+e^(-b*x) is at most 2,
+        // and for b*x < 0 the numerator e^(b*x) is at most 1.
+        double t = b * x;
+        double s = t >= 0.0 ? 1.0 / (1.0 + exp(-t)) : exp(t) / (1.0 + exp(t));
+        return a * b * s;
     }
     case MPSCNNNeuronTypeSoftSign: {
         double m = fabs(x);
@@ -528,8 +538,14 @@ static inline double CharonMPSApplyNeuronGradient(MPSCNNNeuronType type, double 
         return t * a * log(c);
     }
     case MPSCNNNeuronTypeLogarithm: {
+        // MPSCNNNeuronType.h gives f(x) = log_c(a*x+b), so f'(x) = a / ((a*x+b) * ln c) on the whole
+        // line and not only where the forward is defined. Clamping a*x+b at zero answered 0 where
+        // the release answers the analytic value, and a negative one where it answers a negative
+        // one: measured over the case's own inputs the release writes -2.18271 and +inf where this
+        // wrote 0, which is a/(t*ln c) at t = -0.375 and at t = 0. The forward's NaN for a
+        // non-positive argument is unchanged - the release's own forward writes one too.
         double t = a * x + b;
-        return t <= 0.0 ? 0.0 : a / (t * log(c));
+        return a / (t * log(c));
     }
     case MPSCNNNeuronTypeGeLU: {
         double u = x * 0.70710678118654752440;

@@ -1,0 +1,30 @@
+# owed.tsv - the cases of tests/backports/host/mpsmatrix that this port does not reproduce.
+#
+# run.sh used to drop these from the comparison before measuring anything (HOST_DIVERGENCES), so a
+# defect in one of them could not show. The grader rank.py reads the whole set instead: a case that is
+# not bit-identical and not within 64 units in the last place has to be named here, with its reason,
+# or the run fails. Every line below was measured on macOS 27.0 build 26A428 against the MPS of that
+# host, with the grader's own numbers beside it; the header's formula and the release's own value are
+# both given where they were compared.
+#
+# A line is a case name and a tab and the reason. The name is what put() printed, which for a case
+# with a parameter is the name and the parameter: "neuron 15", "philox-float32-uniform 0 1".
+
+multiply-batch	the release ignores batchStart: it writes the matrices of the whole range where the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header, facts/MetalPerformanceShaders/Matrix.md "Two divergences from its own header". OWED: the release's answer is not reproduced, and the row's effect says so.
+neuron 15	GeLU forward. The port evaluates the header's exact form f(x) = (1.0 + erf(x*sqrt(0.5)))*0.5*x; the release's kernel differs from it by up to 7.02e-05 relative, 800 units in the last place on -0.16997 against -0.169971. OWED: the release's approximation is in no header and this port does not guess one.
+neuron-gradient-data 15	GeLU data gradient, the derivative of the same expression: up to 5.65e-05 relative (751 units) on one element, 1e-07 on the rest. OWED, with the row's effect.
+fully-connected 7	one element is a sum that cancels: the release writes 0.0 and the port 5.2e-09, every other element within 9.4e-07 relative. The port accumulates the bias in float32 in its own order and the release in its own; neither order is in a header. OWED.
+fully-connected 15	the same cancellation with the sign: the release writes -0.0 and the port -1.6e-10, every other element within 6.2e-08 relative. OWED, as above.
+batch-normalization-gradient-data	the data gradient of the batch normalisation. The port computes the full backpropagation gamma/sqrt(v+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which reproduces its own values to float32 rounding; the release's value differs on 11 of 12 elements, by up to a factor of 3.79 and with a sign pattern that is not a constant per column. MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. OWED: unexplained, and the row's effect says so.
+philox-uint32 0	the release writes all zeros for a UInt32 destination, with a command buffer that committed and no error, where the port answers the generator's words. The PhiLox4x32-10 stream itself is proven against the published reference vectors for three seeds (registry/MetalPerformanceShaders/random.json). OWED: it is the release's UInt32 path, not the generator.
+philox-uint32 1	the same, seed 1.
+philox-uint32 2	the same, seed 2.
+philox-float32-uniform 0 0	the release writes all zeros for a Float32 destination where the port writes the scaled values. OWED, as for philox-uint32.
+philox-float32-uniform 0 1	the same, the scaled words of the same draw.
+philox-float32-uniform 1 0	the same, seed 1.
+philox-float32-uniform 1 1	the same, seed 1, scaled words.
+philox-float32-uniform 2 0	the same, seed 2.
+philox-float32-uniform 2 1	the same, seed 2, scaled words.
+divergent philox-float32-normal 0	the normal distribution of the same generator: the release writes all zeros for the Float32 path. The port's normal draws are measured against the release's over 160000 points in random.json. OWED, as for philox-uint32.
+divergent philox-float32-normal 1	the same, seed 1.
+divergent philox-float32-normal 2	the same, seed 2.
