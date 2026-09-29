@@ -1,6 +1,11 @@
 // MPSMatrixBatchNormalization, from the header of the SDK of iOS 16.4. One object per release: the band machinery keeps an
 // object whole or drops it whole, so a file here carries the API of exactly one release.
 
+// The rounding of the normalisation below is chosen at build time; the default is the plain form.
+#ifndef CHARON_BN_CANDIDATE
+#define CHARON_BN_CANDIDATE 0
+#endif
+
 // The state every one of the neural network matrix kernels carries, and the accessors each of them
 // declares. A macro defines no symbol, so a file that uses one needs nothing from another.
 #define CHARON_MPS_NEURON_IVARS \
@@ -156,7 +161,27 @@ CHARON_MPS_NEURON_COMMON
             for (NSUInteger row = 0; row < vectors; row++) {
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _sourceMatrixOrigin.x + row, _sourceMatrixOrigin.y + column), in.dataType, 0);
                 // gamma * (x - mean) / sqrt(variance + epsilon) + beta: the root, not the variance.
-                double y = CharonMPSApplyNeuron(neuron.type, g * (x - mu) / sqrt(given + (double)_epsilon) + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
+                // The rounding is a build flag, so the eight candidates of the ulp search are eight
+                // builds of this one file and not eight edits of it: bit 0 takes the root by
+                // division or by rsqrtf, bit 1 applies gamma before or after the divide, and bit 2
+                // fuses the two products or not. The default is the plain form the port has.
+#if CHARON_BN_CANDIDATE % 2 == 0
+                float root = 1.0f / sqrtf((float)given + _epsilon);
+#else
+                float root = rsqrtf((float)given + _epsilon);
+#endif
+                float centred = (float)x - (float)mu;
+#if (CHARON_BN_CANDIDATE / 2) % 2 == 0
+                float scaled = g * centred;
+#else
+                float scaled = centred * g;
+#endif
+#if (CHARON_BN_CANDIDATE / 4) % 2 == 0
+                float quotient = scaled * root;
+#else
+                float quotient = fmaf(scaled, root, 0.0f);
+#endif
+                double y = CharonMPSApplyNeuron(neuron.type, (double)quotient + b0, neuron.a, neuron.b, neuron.c, CharonMPSNeuronA(&neuron, column));
                 CharonMPSStore(CharonMPSMatrixElement(&out, b, _resultMatrixOrigin.x + row, _resultMatrixOrigin.y + column), out.dataType, 0, y);
             }
         }
