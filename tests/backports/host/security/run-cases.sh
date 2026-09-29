@@ -63,9 +63,12 @@ run_case() {
 
     # THE GUARD, AND EXACTLY WHAT IT DOES NOT COVER. It matches \bsec_[a-z0-9_]+\( in the CASE and in
     # the port sources, so it covers a case that reaches the port through a sec_* name AND that source
-    # being linked. IT DOES NOT COVER: supported, attributes, certificate-name and trust-result, which
-    # reach the port through Charon* helpers or through dlsym(RTLD_DEFAULT, ...); and a case that calls no
-    # sec_* name at all. A case outside that set is not guarded - it is neither checked nor claimed to be.
+    # being linked. IT COVERS FIVE CASES AND NOT THOSE: network-fetch, whose port functions are named as
+    # the HEADER names them (SecTrustSetNetworkFetchAllowed, ...) and match neither sec_* nor Charon*;
+    # supported, attributes and certificate-name, which reach the port through Charon* helpers; and
+    # trust-result, which resolves the port by dlsym(RTLD_DEFAULT, ...) and so has no link-time reference
+    # to find. A SOURCE DROPPED FROM THE LINK LINE CAN THEREFORE HIDE: dropping $N leaves network-fetch
+    # GREEN with exit 0 while the host answered. The README beside this file carries the control.
     # the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
     # the binary it linked, and the reference set is built from the very "$@" the guard is given, so a
     # source dropped from the link line also leaves the reference set. A case that resolves the port by

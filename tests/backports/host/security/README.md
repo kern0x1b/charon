@@ -113,9 +113,22 @@ name — the driver constructs it as `compare-$name.py`, so a literal grep for
 name is linked.** It matches `sec_*` in the case and in the port sources and requires `_name` in the
 case's own binary.
 
-**It does NOT cover** `supported`, `attributes`, `certificate-name` and `trust-result` — which reach the
-port through `Charon*` helpers or through `dlsym(RTLD_DEFAULT, …)` — and it does not cover a case that
-calls no `sec_*` name at all. Those cases are neither checked nor claimed to be.
+**It does NOT cover five cases**, and the list is what the code enforces, not what would be nice:
+
+| case | why it is outside the guard | proven by |
+| --- | --- | --- |
+| `network-fetch` | the port's functions are named as the HEADER names them (`SecTrustSetNetworkFetchAllowed`, …), and the guard matches only `sec_*` | dropping `$N` leaves the case **GREEN, exit 0**, with `nm -u` showing those symbols undefined — the host answered |
+| `supported`, `attributes`, `certificate-name` | they reach the port through `Charon*` helpers, which the guard does not match | same shape as `network-fetch` |
+| `trust-result` | it resolves the port by `dlsym(RTLD_DEFAULT, …)`, so there is no link-time reference to find at all | reading the case: the name is a **string** |
+
+**A source dropped from the link line CAN hide**, and `network-fetch` is the proof rather than my
+assertion: the symbols resolve to the host's framework, the case compares numbers the host produced, and
+it passes. What the guard does catch is a dropped source **whose functions the case reaches through a
+`sec_*` name** — dropping `$PD`, `$PMA` or the 16.0 accessor source does fire `MISSING`.
+
+The general fix is to stop matching a prefix and extract the port's definitions **by position** — the
+last identifier before the `(` of a definition line — and then intersect that with every identifier the
+case calls. I attempted the prefix route twice and it does not reach these names, so it is not claimed.
 
 **`nm`'s own status is now captured where `set -e` cannot intercept it.** The earlier form
 (`nm … > file` then `nmstatus=$?` on the next line) never reached the assignment: the script ended on the
