@@ -25,13 +25,13 @@
 @end
 
 @interface CharonTextDragAdaptor : NSObject <UIDragInteractionDelegate>
-@property (nonatomic, weak) UIView *control;
-- (instancetype)initWithControl:(UIView *)control;
+@property (nonatomic, weak) UIView<UITextDraggable, UITextDroppable> *control;
+- (instancetype)initWithControl:(UIView<UITextDraggable, UITextDroppable> *)control;
 @end
 
 @interface CharonTextDropAdaptor : NSObject <UIDropInteractionDelegate>
-@property (nonatomic, weak) UIView *control;
-- (instancetype)initWithControl:(UIView *)control;
+@property (nonatomic, weak) UIView<UITextDraggable, UITextDroppable> *control;
+- (instancetype)initWithControl:(UIView<UITextDraggable, UITextDroppable> *)control;
 @end
 
 @interface UIView (CharonTextDragDropAdaptors)

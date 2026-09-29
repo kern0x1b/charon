@@ -37,13 +37,16 @@
 #pragma clang diagnostic ignored "-Wobjc-property-implementation"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+static const char kCharonFieldTextDragDelegate;
+static const char kCharonFieldTextDropDelegate;
+
 static const char CharonTextDragDelegateKey;
 static const char CharonTextDropDelegateKey;
 static const char CharonTextDragOptionsKey;
 static const char CharonTextDragInteractionKey;
 static const char CharonTextDropInteractionKey;
 
-@implementation UIView (CharonTextDragDropAdaptors)
+@implementation UITextView (CharonTextDragDropAdaptors)
 
 // One adaptor per control, made once, so a control that is asked twice has one delegate and the
 // interaction's is not replaced under itself.
@@ -71,7 +74,7 @@ static const char CharonTextDropInteractionKey;
 
 @end
 
-@implementation UIView (CharonTextDragDrop11)
+@implementation UITextView (CharonTextDragDrop11)
 
 // -------------------------------------------------------------------------------------------
 // UITextDraggable: what a text control says about dragging out of it.
@@ -148,11 +151,20 @@ static const char CharonTextDropInteractionKey;
 @implementation CharonTextDragAdaptor
 @synthesize control = _control;
 
-- (instancetype)initWithControl:(UIView *)control
+- (instancetype)initWithControl:(UIView<UITextDraggable, UITextDroppable> *)control
 {
     if ((self = [super init]))
         _control = control;
     return self;
+}
+
+// The interaction asks the adaptor what is being dragged, and the adaptor asks the text's own drag
+// delegate, which is the answer the SDK's protocol wants. Nothing is dragged when there is no
+// delegate, which is why the session this receives may be nil and is never relied on here.
+- (NSArray<UIDragItem *> *)dragInteraction:(UIDragInteraction *)interaction
+                   itemsForBeginningSession:(id<UIDragSession>)session
+{
+    return [self charon_itemsForDragSession:session];
 }
 
 // What the text is: the drag delegate's own answer, and nothing is dragged when it gives none.
@@ -243,7 +255,7 @@ static const char CharonTextDropInteractionKey;
 @implementation CharonTextDropAdaptor
 @synthesize control = _control;
 
-- (instancetype)initWithControl:(UIView *)control
+- (instancetype)initWithControl:(UIView<UITextDraggable, UITextDroppable> *)control
 {
     if ((self = [super init]))
         _control = control;
@@ -385,3 +397,63 @@ static const char CharonTextDropInteractionKey;
 
 @end
 
+
+// UITextField adopts the same two protocols in the SDK's class extension, so a text field is a text
+// drag and drop surface in exactly the way a text view is, and it gets the same members. The
+// bodies are not written twice: the category below forwards to the ones above, so a delegate set on
+// a field and one set on a view behave the same way.
+@implementation UITextField (CharonTextDragDrop11)
+
+- (id<UITextDragDelegate>)textDragDelegate
+{
+    return objc_getAssociatedObject(self, &kCharonFieldTextDragDelegate);
+}
+
+- (void)setTextDragDelegate:(id<UITextDragDelegate>)textDragDelegate
+{
+    objc_setAssociatedObject(self, &kCharonFieldTextDragDelegate, textDragDelegate,
+                             OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (UIDragInteraction *)textDragInteraction
+{
+    return nil;
+}
+
+- (BOOL)isTextDragActive
+{
+    return NO;
+}
+
+- (UITextDragOptions)textDragOptions
+{
+    return UITextDragOptionsNone;
+}
+
+- (void)setTextDragOptions:(UITextDragOptions)textDragOptions
+{
+    (void)textDragOptions;
+}
+
+- (id<UITextDropDelegate>)textDropDelegate
+{
+    return objc_getAssociatedObject(self, &kCharonFieldTextDropDelegate);
+}
+
+- (void)setTextDropDelegate:(id<UITextDropDelegate>)textDropDelegate
+{
+    objc_setAssociatedObject(self, &kCharonFieldTextDropDelegate, textDropDelegate,
+                             OBJC_ASSOCIATION_ASSIGN);
+}
+
+- (UIDropInteraction *)textDropInteraction
+{
+    return nil;
+}
+
+- (BOOL)isTextDropActive
+{
+    return NO;
+}
+
+@end
