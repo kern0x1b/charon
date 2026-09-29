@@ -56,19 +56,37 @@ function main(...)
     local sdks = sdkdirs()
     local read, older = {}, {}
     local folder = path.join(path.directory(import("apple.dyld", {rootdir = path.join(os.scriptdir(), "..", "modules"), anonymous = true}).root()), "cache")
+    local skipped = {}
     for _, checkout in ipairs(live_checkouts(given)) do
         local modules = path.join(checkout, "modules")
-        local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
-        if dyld.kept_files then
-            local backports = import("apple.backports", {rootdir = modules, anonymous = true})
-            local architectures = import("apple.architectures", {rootdir = modules, anonymous = true})
-            local ladders = {}
-            for _, architecture in ipairs(architectures.names()) do
-                table.insert(ladders, dyld.held_ladder(backports.compatible(architecture)))
-            end
-            for _, file in ipairs(dyld.kept_files(sdks, ladders)) do
+        local names, failure
+        local ok = try {
+            function ()
+                local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
+                local backports = import("apple.backports", {rootdir = modules, anonymous = true})
+                local architectures = import("apple.architectures", {rootdir = modules, anonymous = true})
+                local ladders = {}
+                for _, architecture in ipairs(architectures.names()) do
+                    table.insert(ladders, dyld.held_ladder(backports.compatible(architecture)))
+                end
+                names = dyld.kept_files(sdks, ladders)
+                return true
+            end,
+            catch {
+                function (errors)
+                    failure = tostring(errors)
+                    return false
+                end
+            }
+        }
+        if ok and names then
+            for _, file in ipairs(names) do
                 read[path.filename(file)] = true
             end
+        elseif failure then
+            -- a checkout that cannot be read is named, and its cache kept whole: this code cannot know what a
+            -- checkout it cannot load needs, and a wrong removal costs a measurement rather than a wrong answer
+            table.insert(skipped, {checkout = checkout, reason = failure:match("([^\n]+)") or failure})
         else
             table.insert(older, checkout)
         end
@@ -106,10 +124,23 @@ function main(...)
         end
     end
     print("cache-sweep: %s: kept %d, %s %d", folder, kept, dry and "would remove" or "removed", removed)
+    for _, entry in ipairs(skipped) do
+        print("cache-sweep: skipped %s, and its cache is kept whole: %s", entry.checkout, entry.reason)
+    end
     if #older > 0 then
         print("cache-sweep: files named without a code key stay, read by code older than that naming in: %s", table.concat(older, " "))
     end
     if #failed > 0 then
         raise("cache-sweep: could not remove %d file(s):\n%s", #failed, table.concat(failed, "\n"))
+    end
+    if #skipped > 0 then
+        -- not silent: a sweep that could not read every live checkout did not sweep everything, and the run is
+        -- not the last word on the cache until that checkout loads
+        local names = {}
+        for _, entry in ipairs(skipped) do
+            table.insert(names, entry.checkout)
+        end
+        raise("cache-sweep: %d checkout(s) could not be read, and their cache is kept: %s", #skipped,
+              table.concat(names, ", "))
     end
 end
