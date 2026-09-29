@@ -945,6 +945,32 @@ function wiring(backports, root, found)
         table.insert(found, "the recipe's two library lists are not readable, so nothing here can say what they build")
         return
     end
+
+    -- What each library declares it links: backports.libraries() is the table link() reads
+    -- (backports.lua:1073-1075 turns each of these into -l), so this is not a second spelling
+    -- of the same declaration.
+    local declares = {}
+    for _, library in ipairs(backports.libraries()) do
+        declares[library.name] = library.libraries or {}
+    end
+
+    -- The libraries a clause of the recipe can switch on for a given config: the ones whose own
+    -- test names that config, and the ones with no test of their own, which are in the list for
+    -- every project - {"FoundationBackports"} is one of those.
+    local function builds_for(name)
+        local built = {}
+        for _, piece in ipairs(lists) do
+            local fires = #piece.sources == 0
+            for _, source in ipairs(piece.sources) do
+                if source == name then fires = true end
+            end
+            if fires then
+                for _, library in ipairs(piece.libraries) do built[library] = true end
+            end
+        end
+        return built
+    end
+
     -- From the config: a declared config no clause of either list tests builds nothing.
     for _, name in ipairs(order) do
         if name ~= "sources" then
@@ -959,8 +985,8 @@ function wiring(backports, root, found)
             end
         end
     end
-    -- From the clause: a clause that reads a config nothing declares is always false, and
-    -- the library it guards is never built - the shape this series shipped ModelIO in.
+    -- From the clause: a clause that reads a config nothing declares is always false, and the
+    -- library it guards is never built - the shape this series shipped ModelIO in.
     for _, piece in ipairs(lists) do
         for _, source in ipairs(piece.sources) do
             if not declared[source] then
@@ -969,9 +995,9 @@ function wiring(backports, root, found)
             end
         end
     end
-    -- From the library: every library but Foundation must be named by a list, and a library
-    -- no config can switch on is never compiled, never linked and never checked against the
-    -- registry.  Naming it twice was what the old check asked for, and twice is not reachable.
+    -- From the library: every library but Foundation must be named by a list, and a library no
+    -- config can switch on is never compiled, never linked and never checked against the
+    -- registry.  Twice is not reachable; named once by an unsatisfiable clause is the defect.
     local named = {}
     for _, piece in ipairs(lists) do
         for _, library in ipairs(piece.libraries) do
@@ -982,5 +1008,83 @@ function wiring(backports, root, found)
         if library.name ~= "FoundationBackports" and not named[library.name] then
             table.insert(found, library.name .. " is in the library table and named by no list of the recipe, so no config builds it and the registry is never checked against the backports")
         end
+    end
+
+    -- Fourth arm, and it is the one the first three cannot see.  A library declares the libraries
+    -- it links, and a library that is built while one of those is not is Undefined symbols at link
+    -- time - not a warning, and not visible to a check that only reads the recipe.  The gap this
+    -- series left in `modelio` was of exactly this kind and none of the first three arms could see
+    -- it, which is what this arm is for.
+    --
+    -- Seven configs in main have the gap, measured one config at a time with this same arm, and
+    -- they are main's rather than this series':
+    --
+    --   uikit, avkit, usernotificationsui, notificationcenter   UIKitBackports needs GraphicsBackports
+    --   avkit, usernotificationsui, notificationcenter           ... and the links list does not name it
+    --   avfaudio                                                 AVFAudioBackports needs AVFoundation,
+    --                                                             Accelerate and Graphics
+    --   avfoundation                                             AVFoundationBackports needs Accelerate
+    --                                                             and Graphics
+    --   scenekit, arkit                                          SceneKitBackports needs OpenGLESBackports
+    --   arkit                                                    ARKitBackports needs OpenGLES,
+    --                                                             Accelerate and Graphics itself, and
+    --                                                             SceneKit and AVFoundation need them too
+    --
+    -- They are listed here rather than left to a report, so that a SIXTH one goes red the way this
+    -- series' own modelio did, and so that the number above is the arm's own count and not a
+    -- sentence somebody wrote.  Each is `config .. "/" .. dep`, which is what the recipe's clause
+    -- has to gain.  A config that is not in this table and builds a library whose declared
+    -- dependency no clause builds is a failure, with no exception.
+    local owed = {
+        ["uikit/GraphicsBackports"] = true,
+        ["avkit/GraphicsBackports"] = true,
+        ["usernotificationsui/GraphicsBackports"] = true,
+        ["notificationcenter/GraphicsBackports"] = true,
+        ["avfaudio/AVFoundationBackports"] = true,
+        ["avfaudio/AccelerateBackports"] = true,
+        ["avfaudio/GraphicsBackports"] = true,
+        ["avfoundation/AccelerateBackports"] = true,
+        ["avfoundation/GraphicsBackports"] = true,
+        ["scenekit/OpenGLESBackports"] = true,
+        ["arkit/OpenGLESBackports"] = true,
+        ["arkit/AccelerateBackports"] = true,
+        ["arkit/GraphicsBackports"] = true,
+    }
+    local count = 0
+    for _, name in ipairs(order) do
+        if name ~= "sources" then
+            local built = builds_for(name)
+            -- Only the package's own libraries: a system library - icuucore, charon-coding - is
+            -- linked by name and is not one of the recipe's to build, and FoundationBackports is
+            -- in every list, so naming it as the library that is short of something would blame
+            -- the wrong one.
+            local missing = {}
+            for library in pairs(built) do
+                if library ~= "FoundationBackports" then
+                    for _, dep in ipairs(declares[library] or {}) do
+                        if dep:endswith("Backports") and dep ~= "FoundationBackports" and not built[dep] then
+                            missing[dep] = true
+                        end
+                    end
+                end
+            end
+            local names = {}
+            for dep in pairs(missing) do names[#names + 1] = dep end
+            table.sort(names)
+            for _, dep in ipairs(names) do
+                count = count + 1
+                if not owed[name .. "/" .. dep] then
+                    table.insert(found, string.format('the config "%s" builds a library that links -l%s, and no clause of the recipe builds it: Undefined symbols at link time. Add the clause and this goes',
+                                                      name, dep))
+                end
+            end
+        end
+    end
+    if count > 0 then
+        print(string.format("        the arm found %d such gaps, %d of them in the table of main's", count, (function()
+            local n = 0
+            for _ in pairs(owed) do n = n + 1 end
+            return n
+        end)()))
     end
 end
