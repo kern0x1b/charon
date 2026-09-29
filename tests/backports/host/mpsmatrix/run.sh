@@ -42,7 +42,7 @@ if [ "$system_status" -ne 0 ]; then echo "system: stopped at: $(tail -1 "$build/
 rm -rf "$build/plain"
 mkdir -p "$build/plain"
 for source in "$mps"/*.m; do
-    xcrun clang -fobjc-arc -w $target $candidate -c "$source" -o "$build/plain/$(basename "$source" .m).o" 2>/dev/null
+    xcrun clang -fobjc-arc -w $target $candidate -c "$source" -o "$build/plain/$(basename "$source" .m).o"
     [ -f "$build/plain/$(basename "$source" .m).o" ] || { echo "cannot read an object from $source; stopping"; exit 1; }
 done
 for object in "$build/plain"/*.o; do xcrun nm -g --defined-only "$object"; done \
