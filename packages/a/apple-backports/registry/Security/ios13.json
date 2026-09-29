@@ -2,6 +2,39 @@
   "framework": "Security",
   "entries": [
     {
+      "api": "sec_protocol_metadata_access_distinguished_names()",
+      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_access_ocsp_response()",
+      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_access_peer_certificate_chain()",
+      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
       "api": "sec_protocol_metadata_access_pre_shared_keys()",
       "effect": "false - the header's own @return, \"Returns true if the PSKs were accessible, false otherwise\" (SecProtocolMetadata.h:267) - AND THE HANDLER IS NOT RUN. A block that ran here would hand the caller a PSK and a psk_identity that were never negotiated, and the caller would act on a secret that does not exist. Nothing on 6.1.3 produces a metadata object, so there is never anything to hand over",
       "facts": "facts/Security/SecProtocolMetadata.md",
@@ -9,6 +42,105 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_access_supported_signature_algorithms()",
+      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_challenge_parameters_are_equal()",
+      "effect": "a REAL ANSWER about two objects the caller made: equal for the same object and for two metadata objects with nothing negotiated on either, false when one is NULL. A comparison against the release's stack would compare nothing, because there is no such stack",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_copy_peer_public_key()",
+      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_create_secret()",
+      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_create_secret_with_context()",
+      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_early_data_accepted()",
+      "effect": "false, and where the accessor takes a HANDLER the handler is NOT RUN. A handler that ran would hand the caller a certificate chain, an OCSP response, a signature algorithm or a distinguished name that were never negotiated, and the caller would act on them. Measured: the handler count is 0 after all four",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_ciphersuite()",
+      "effect": "0, and 0 IS A DOCUMENTED MEMBER of the enum, which is what makes this different from the two tls_protocol_version_t getters in the sibling file: kSSLProtocolUnknown = 0 (SecProtocolTypes.h:156) and SSL_NULL_WITH_NULL_NULL = 0x0000 (CipherSuite.h:48) both MEAN none, so this is a documented value and not a port-invented sentinel",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_protocol()",
+      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_negotiated_protocol_version()",
+      "effect": "0, and 0 IS A DOCUMENTED MEMBER of the enum, which is what makes this different from the two tls_protocol_version_t getters in the sibling file: kSSLProtocolUnknown = 0 (SecProtocolTypes.h:156) and SSL_NULL_WITH_NULL_NULL = 0x0000 (CipherSuite.h:48) both MEAN none, so this is a documented value and not a port-invented sentinel",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
       "source": "SDK 16.4, Security",
       "status": "inert"
     },
@@ -31,6 +163,28 @@
       "kind": "function",
       "minimum": "6.0",
       "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_get_server_name()",
+      "effect": "NULL, and the return type is _Nullable, so NULL is the HEADER'S OWN answer and not one the port invents. A caller receives no value at all, which is right: nothing on 6.1.3 negotiated anything for this object to report",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "sec_protocol_metadata_peers_are_equal()",
+      "effect": "a REAL ANSWER about two objects the caller made: equal for the same object and for two metadata objects with nothing negotiated on either, false when one is NULL. A comparison against the release's stack would compare nothing, because there is no such stack",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "nothing in 6.1.3 ever PRODUCES a sec_protocol_metadata_t: one is handed to a TLS callback by the handshake that negotiated it, the release has no stack that calls one, and this header has no setter. The port supplies the object under its own name - as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> *` - and each accessor answers an absence",
       "source": "SDK 16.4, Security",
       "status": "inert"
     },
