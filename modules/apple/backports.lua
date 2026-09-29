@@ -63,6 +63,11 @@ LIBRARIES = {
     {name = "MapKitBackports", folder = "MapKit", frameworks = {"MapKit", "UIKit", "CoreGraphics", "CoreLocation", "QuartzCore", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "PassKitBackports", folder = "PassKit", frameworks = {"PassKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CarPlayBackports", folder = "CarPlay", frameworks = {"CarPlay", "MapKit", "UIKit", "CoreGraphics", "CoreTelephony", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- FileProvider arrived in iOS 11.0 and the release has none of it: no framework, and no
+    -- extension host to load a provider. The manager, the domain and the requests are the port's
+    -- own and answer as a machine with no domains answers, measured on the host and written in the
+    -- library's facts.
+    {name = "FileProviderBackports", folder = "FileProvider", frameworks = {"FileProvider", "Foundation"}, libraries = {"FoundationBackports"}},
     -- Network.framework does not exist on the releases this port covers, so this library is the only place its
     -- connection surface can be, and it reports the path through the Foundation library's path monitor.
     {name = "NetworkBackports", folder = "Network", frameworks = {"Network", "Foundation", "Security"}, libraries = {"FoundationBackports"}},
