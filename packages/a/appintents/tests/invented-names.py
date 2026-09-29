@@ -115,27 +115,43 @@ SDK_ROOTS = ["/Library/Developer/CommandLineTools/SDKs", "/Applications/Xcode.ap
 
 
 def sdk_hits(name):
-    """The first hit for a name anywhere in the SDKs, as a quoted line, or None."""
-    needle = re.compile(r"\b%s\b" % re.escape(name))
+    """The first hit for a name in any Swift interface in the SDKs, as a quoted line, or None.
+
+    Only `.swiftinterface` and `.swiftdoc` are read: a name this series declares is a *Swift*
+    declaration, and walking every C header as well is what made this walk take minutes per name
+    and left the table truncated.
+    """
+    needle = re.compile(r"\\b%s\\b" % re.escape(name))
     for root in SDK_ROOTS:
         if not os.path.isdir(root):
             continue
         for base, _dirs, files in os.walk(root):
+            if ".swiftmodule" not in base:
+                continue
             for entry in sorted(files):
-                if not (entry.endswith(".swiftinterface") or entry.endswith(".h")):
+                if not (entry.endswith(".swiftinterface") or entry.endswith(".swiftdoc")):
                     continue
                 path = os.path.join(base, entry)
                 try:
                     for line in open(path, encoding="utf-8", errors="replace"):
                         if needle.search(line):
-                            return "%s: %s" % (os.path.relpath(path, root), line.strip()[:150])
+                            return "%s: %s" % (entry, line.strip()[:150])
                 except OSError:
                     continue
     return None
 
 
+REASONS = {
+    "AnyAppEntity": "the framework's own erasure is a nested type of `AppEntity`; this one answers to the same name and is the port's own spelling of it",
+    "AnyRange": "the port's own erased range, for the same reason as `AnyAppEntity`",
+    "Continuation": "the port's own bridge for a resumed intent, since there is no system to resume one",
+    "ContinuationError": "as `Continuation`",
+    "IndexRecord": "the port's own record of a donation's index entry; the framework keeps that state in its own store",
+}
+
+
 def reason_for(name):
-    """Why a name with no hit in any interface exists, in one clause."""
+    """Why a name with no hit in any SDK interface exists, in one clause."""
     if name in REASONS:
         return REASONS[name]
     if name.endswith("Resolver"):
@@ -143,26 +159,11 @@ def reason_for(name):
                 "this release's Foundation (see the Foundation gate line in the queue), so the port "
                 "writes one and gates it")
     if name.startswith("Intent") or "Presentation" in name or "Control" in name:
-        return ("a value or protocol of the framework's *machinery* -- its own store, its parameter "
-                "resolution and its presentation live in a system this release does not have, so the "
-                "port spells the part it can answer")
+        return ("a value or protocol of the framework's *machinery* -- its store, its parameter "
+                "resolution and its presentation live in a system this release does not have")
     if name.startswith("Any") or name.startswith("Charon"):
         return "the port's own erasure of a framework type, so a value of it can be named"
     return "a name this band wrote for state the framework keeps in a store this release does not have"
-
-
-REASONS = {
-    "AnyAppEntity": "the framework's own erasure is a nested type of `AppEntity` that it prints under its own container; this one answers to the same name and is the port's own spelling of it",
-    "AnyRange": "the port's own erased range, for the same reason as `AnyAppEntity`",
-    "DateResolver": "a resolver the runtime does not carry, so the port writes one; `Macros.md` and the Foundation gate line say why",
-    "DateComponentsResolver": "as `DateResolver`",
-    "FloatResolver": "as `DateResolver`",
-    "ElementResolver": "as `DateResolver`",
-    "IdentityResolver": "as `DateResolver`",
-    "IndexRecord": "the port's own record of a donation's index entry; the framework keeps that state in its own store",
-    "Continuation": "the port's own bridge for a resumed intent, since there is no system to resume one",
-    "ContinuationError": "as `Continuation`",
-}
 
 
 def statements():
