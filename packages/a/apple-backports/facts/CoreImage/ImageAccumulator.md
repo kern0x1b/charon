@@ -22,7 +22,11 @@ name of its own, because it re-implements a class the framework has; the framewo
 that process and is never asked, so the two never touch the same object.
 
 **`ciimage: 93 measurements, 90 the same, 2 different, 2 one side only`, at a tolerance of 5e-4.** The
-two one-sided lines are the name each process gives itself.
+two one-sided lines are the name each process gives itself. That was the count with the comparator
+that read only the first number of a line; the tree's own count is in
+`facts/CoreImage/Differences.md` and it is `539 measurements, 454 the same, 77 different, 42 one side
+only` - the two numbers here are this file's, written when the accumulator was measured on its own,
+and the full-run count covers every family the probe asks about.
 
 **Three defects it found on its first run, all fixed.**
 
@@ -31,21 +35,31 @@ two one-sided lines are the name each process gives itself.
      let an accumulator go trapped inside CoreFoundation. The ivar is a strong reference and its
      refcount is not touched.
   2. **The format is normalised, not stored as asked.** The host answers `kCIFormatBGRA8` for an
-     `kCIFormatRGBA8` request and for a `kCIFormatBGRA8` one alike, so the bytes are in blue-first order
-     whatever the caller asked for. The accumulator stores and reports that, and `setImage:` renders
-     the row through CoreGraphics - which hands over red first - and swaps the two outer channels as it
-     writes. Storing red-first and reporting it would show the picture with red and blue exchanged.
+     `kCIFormatRGBA8` request and for a `kCIFormatBGRA8` one alike, and the accumulator stores and
+     reports that. The *bytes* are red first, and this file first said otherwise: it said `setImage:`
+     swapped the two outer channels as it wrote, and the whole-tail comparison is what showed that
+     claim was wrong - `-image` reads the buffer through a `CGBitmapContext` made with
+     `kCGImageAlphaPremultipliedLast`, which is red first, so the buffer is red first and swapping
+     made a picture with red and blue exchanged. Measured, with the swap in place, `rgba set pixels` was
+     `128 915d7485` where the system's is `128 4fcd0585`; without it, `128 4fcd0585` on both sides.
   3. **The extent is the caller's, whole pixels or not.** The port integralised it; the host answers
      exactly what it was given, and answers the *image* over the whole pixels at the origin, which is
      `0 0 5 3` for an extent of `1.5 -2.25 5.5 3.5`. The accumulator now answers the extent it was
      given and the image over the whole pixels.
 
-**Still different, two measurements, both the same case:** the rendered bytes of the accumulator whose
-extent is `1.5 -2.25 5.5 3.5`. The extent, the format, the image's extent, the dirty-rect case, both
-byte orders, `clear`, an accumulator nothing was set into and one with a colour space all match exactly.
-The two that differ are the pixels, and the cause is the rectangle that is rendered into: the port
-integralises the dirty rectangle before rendering and the host does not, so at a fractional origin the
-two put the row a different distance down. Named, not guessed at.
+**Still different, one measurement, and its cause is measured:** the rendered bytes of the
+accumulator whose extent is `1.5 -2.25 5.5 3.5`, where the system writes nothing at all into the
+buffer - `60 f6009964`, and its four pixels `0 0 0 0` - and the port writes something into it. Every
+other accumulator measurement on this file matches exactly: the extent, the format, the image's
+extent, `rgba set`, `bgra set`, `clear`, an accumulator nothing was set into, one with a colour space,
+and the dirty-rect case (`dirty after` is `128 c2bab905` on both sides).
+
+The cause is the rectangle, and it was found by writing it the other way round twice. A rectangle that
+is not a whole number of pixels at a whole pixel is now left alone, as the system does. Clipping it
+into the whole pixels inside it first put a row of red into a buffer the system leaves empty - the
+port's own `60 73191c6b` said so against the system's `60 f6009964` - and it also wrote
+`ceil(3.5) = 4` rows into a buffer of 3 and ran off the end of it. Neither is what the system does, and
+the rule that is left is the one the measurement gives.
 
 ## What is not measured, and what is reasoned
 
