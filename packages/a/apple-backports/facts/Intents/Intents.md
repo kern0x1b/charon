@@ -348,3 +348,15 @@ names they derive. It has **not** been run on the device or in the emulator: the
 `INPreferences`' three answers all need a run on the port itself before this file can say they
 work rather than that they are the behaviour the header describes. Until that run, every entry
 of this framework is **device-unverified**.
+
+## A subclass that keeps its superclass's read-only value in its own ivar
+
+The seventeen `intents-1a` rows — eight reservation classes' `-initWithItemReference:…` in both
+spellings, `INRestaurantGuest`'s `-initWithNameComponents:…` and `INRideDriver`'s two — and the
+reason they were `absent` at all: `INReservation` and `INPerson` declare their values read-only and
+offer no designated initialiser, so there was nowhere to put them. The class now keeps a copy in its
+own ivar and answers the getter itself. **The objects are armv7 iOS 6.1.3 and nothing in that slice
+runs them**, so what is proven is the compile, the presence of the seventeen per `nm`, and the
+registry's own text; the runtime behaviour — the getter's answer, a superclass-typed pointer, an
+`NSSecureCoding` round trip — is owed to `intents-1c` and its renamed host harness. What is owed and
+what is proven are set out in full in `facts/Intents/InheritedReadonly.md`.
