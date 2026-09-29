@@ -201,22 +201,22 @@
   "kind": "property",
   "introduced": "11.0",
   "minimum": "6.0",
-  "maximum": "10.0",
+  "maximum": "11.0",
   "status": "implemented",
   "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
   "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
-  "effect": "from 10.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
+  "effect": "from 11.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
  },
  {
   "api": "UIViewPropertyAnimator.pausesOnCompletion",
   "kind": "property",
   "introduced": "11.0",
   "minimum": "6.0",
-  "maximum": "10.0",
+  "maximum": "11.0",
   "status": "implemented",
   "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
   "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
-  "effect": "from 10.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
+  "effect": "from 11.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
  },
  {
   "api": "-[NSCoder encodeCGVector:forKey:]",
