@@ -68,4 +68,7 @@ for symbol in _AXMFiHearingDevicePairedUUIDs _AXMFiHearingDeviceStreamingEar \
     fi
 done
 [ "$missing" -eq 0 ] || { echo "hearing: $missing of the three functions the port must define are not there"; exit 1; }
+# What the OWED line is held by, named on the run itself rather than only in the facts and the README:
+# the compile of hearing-check.m against the SDK's declarations, the nm assertion above, and the census.
 echo "hearing: OWED - not run here, because the declarations are API_UNAVAILABLE(macos) and this machine has no iOS runtime"
+echo "hearing: held by the compile above, by the nm assertion above, and by axs-census.lua; the command that would settle it is in this directory's README.md"
