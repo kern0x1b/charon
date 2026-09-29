@@ -35,7 +35,7 @@ system_status=$?
 set -e
 echo "tree: $(git -C "$here" rev-parse --short HEAD 2>/dev/null || echo unknown)  dirty $(git -C "$here" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 echo "system: $(wc -l < "$build/system.txt") lines, exit $system_status"
-if [ "$system_status" -ne 0 ]; then echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-60)"; fi
+if [ "$system_status" -ne 0 ]; then echo "system: died during the case marked: $(cat "$build/system.marker" 2>/dev/null || echo unknown)"; echo "  last case it printed: $(tail -1 "$build/system.txt" | cut -c1-60)"; fi
 
 # The names this port carries, each under a name of its own. This is every class the port *defines*,
 # derived from nm -g --defined-only of its objects and not from one registry file: the matrix file
@@ -95,7 +95,7 @@ set +e
 port_status=$?
 set -e
 echo "port: exit $port_status"
-[ "$port_status" -ne 0 ] && echo "port: stopped at: $(tail -1 "$build/port.txt" | cut -c1-60)"
+if [ "$port_status" -ne 0 ]; then echo "port: died during the case marked: $(cat "$build/port.marker" 2>/dev/null || echo unknown)"; echo "  last case it printed: $(tail -1 "$build/port.txt" | cut -c1-60)"; fi
 
 # Two cases are compared apart, and the reason is MPSState.h's own: -resourceSize "is subject to
 # change between different devices and operating systems", so the host's answer is a number about the
