@@ -38,9 +38,6 @@ CommandEvent # the same shape in another series: a family name in prose, declare
 # in prose that is true. They are listed because the oracle reads what the tree DECLARES and the
 # .tbd tables of SDK 16.4, and these are declared in ways neither of those sees: a macro, an
 # enumerator, a typedef, or a framework the 16.4 SDK ships no table for.
-NSNotFound # Foundation's not-found sentinel, a macro in NSObjCRuntime.h
-NSEntity # Core Data's NSEntityDescription attribute enumerator
-NSAscending # Core Data's sort-order enumerator
 NSFetchIndexElementType # Core Data enumerator
 NSIndexElements # Core Data enumerator
 NSIndexName # Core Data enumerator
@@ -50,17 +47,33 @@ NSPartialIndexPredicate # Core Data enumerator
 NSPropertyName # Core Data enumerator
 NSInternalInconsistencyException # Foundation exception, raised by name rather than declared
 NSInvalidArgumentException # Foundation exception, raised by name rather than declared
-CFRetained # CoreFoundation cast macro
 CFStringTokenizer # CoreFoundation opaque type, a struct and not an @interface
 CGBitmapContext # CoreGraphics opaque type
 CXErrorDomainCallDirectoryManager # CallKit error-domain constant
 SPSpotlightManager # Spotlight class of a framework with no 16.4 export table here
 JSValueIsArray # JavaScriptCore class of a framework with no 16.4 export table here
 MTKModelErrorDomain # MetalKit error-domain constant
-MTKTextureLoaderOptionSRGB # MetalKit enumerator
 MTLAllocation # Metal allocation constant of a release this SDK's table does not list
 MTLCommandBufferEncoderInfoErrorKey # Metal error key of a release this SDK's table does not list
 MTLMaxBlitPassSampleBuffers # Metal constant of a release this SDK's table does not list
 CharonCPListItem # this repository's own class, declared in a package the scan does not walk
 CharonValueStore # this repository's own class, declared in a package the scan does not walk
 NSBundleOnDemandResourceInvalidTagError # a Foundation error constant named in a row about NSBundleResourceRequest
+
+# THREE NAMES THAT ARE NOT NAMES IN THIS SDK AT ALL, re-derived from SDK 16.4 rather than excused.
+# They are fragments of real names written in another series' prose, so they are the same KIND of
+# defect this series has been fixing, in rows this series does not touch. They are listed, and
+# flagged here in one place, rather than fixed: the rows are CoreData's and AVFoundation's.
+#
+#   NSAscending   zero occurrences in every header of SDK 16.4. The Core Data sort order is
+#                 NSSortDescriptorAscending, declared in CoreData.h, and the row's prose has lost
+#                 the NSSortDescriptor prefix.
+#   NSEntity      zero occurrences in every header of SDK 16.4. The Core Data class is
+#                 NSEntityDescription, declared in CoreData.h, and the row's prose has lost the
+#                 Description suffix.
+#   CFRetained    zero declarations in SDK 16.4. The word appears once in the whole SDK, inside
+#                 AVAssetImageGenerator.h's own doc text, so the row's prose is quoting a word out
+#                 of Apple's documentation rather than naming a type.
+NSAscending # a fragment of NSSortDescriptorAscending; absent from every SDK 16.4 header
+NSEntity # a fragment of NSEntityDescription; absent from every SDK 16.4 header
+CFRetained # no declaration in SDK 16.4; the word occurs once, in Apple's own doc prose

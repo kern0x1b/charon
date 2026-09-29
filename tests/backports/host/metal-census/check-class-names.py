@@ -112,6 +112,9 @@ def declared_names():
             names |= enumerators(text)
             for m in re.finditer(r"#\s*define\s+([A-Z][A-Za-z0-9_]+)", text):
                 names.add(m.group(1))
+            for m in re.finditer(r"\b(?:static\s+)?(?:extern\s+)?const\s+[A-Za-z_][A-Za-z0-9_ ]*?"
+                                 r"\s([A-Z][A-Za-z0-9_]*)\s*(?:[A-Za-z_][A-Za-z0-9_]*)?\s*=", text):
+                names.add(m.group(1))
             # a C FUNCTION declared in the source is a known name as well: the prose says
             # "NSClassFromString answers nil", which is a true statement about a function
             for m in re.finditer(r"\b((?:NS|CF|CG|MTL|MTK|dispatch_|objc_)[A-Za-z0-9_]+)\s*\(", text):
@@ -150,20 +153,42 @@ def declared_names():
                 names |= enumerators(text)
                 for m in re.finditer(r"#\s*define\s+([A-Z][A-Za-z0-9_]+)", text):
                     names.add(m.group(1))
+                for m in re.finditer(r"\b(?:static\s+)?(?:extern\s+)?const\s+[A-Za-z_][A-Za-z0-9_ ]*?"
+                                     r"\s([A-Z][A-Za-z0-9_]*)\s*(?:[A-Za-z_][A-Za-z0-9_]*)?\s*=", text):
+                    names.add(m.group(1))
     return names
 
 
+def sdk_root():
+    """THE ONE SDK the package compiles against, found the way the other harnesses find it.
+
+    The shared store holds SIXTEEN copies of 16.4 - one per platform slice - and the previous
+    version of this function walked all of them, so it read 9,774 .tbd paths that were the same 611
+    tables sixteen times over, and its docstring said "the SDK the package compiles against" while
+    the code said something else. A symbol is declared in the SDK the package builds against, so
+    that is what is read: one SDK, and the count the check reports is the count it reads.
+    """
+    store = os.path.join(os.path.expanduser("~"), ".xmake", "packages", "i", "iphoneos-sdk", "16.4")
+    for entry in sorted(os.listdir(store)) if os.path.isdir(store) else []:
+        sdk = os.path.join(store, entry, "Developer.app", "Contents", "Developer", "Platforms",
+                           "iPhoneOS.platform", "Developer", "SDKs", "iPhoneOS16.4.sdk")
+        if os.path.isfile(os.path.join(sdk, "SDKSettings.json")):
+            return sdk
+    return None
+
+
 def sdk_tbd_files():
-    """Every .tbd in the SDK the package compiles against: the exported-symbol tables."""
+    """Every .tbd in the ONE SDK the package compiles against: the exported-symbol tables."""
     out = []
-    home = os.path.expanduser("~")
-    for base, _d, _f in os.walk(os.path.join(home, ".xmake", "packages", "i", "iphoneos-sdk", "16.4")):
-        for sub in ("usr/lib", "System/Library/Frameworks"):
-            root = os.path.join(base, sub)
-            for b2, _d2, f2 in os.walk(root):
-                for f3 in f2:
-                    if f3.endswith(".tbd"):
-                        out.append(os.path.join(b2, f3))
+    sdk = sdk_root()
+    if not sdk:
+        return out
+    for sub in ("usr/lib", "System/Library/Frameworks"):
+        root = os.path.join(sdk, sub)
+        for b2, _d2, f2 in os.walk(root):
+            for f3 in f2:
+                if f3.endswith(".tbd"):
+                    out.append(os.path.join(b2, f3))
     return out
 
 
@@ -195,7 +220,10 @@ def scan(planted=None):
             doc = json.load(open(path, encoding="utf-8"))
         except (OSError, ValueError):
             continue
-        for row in doc.get("entries", []):
+        # a registry is either {"entries": [...]} or a bare list, and the Accessibility stack
+        # landed on the new base with the second shape
+        rows = doc if isinstance(doc, list) else doc.get("entries", [])
+        for row in rows:
             # ONLY CLASS AND PROTOCOL ROWS. A constant row's prose legitimately names the VALUE it
             # carries - MicroPDF417 for AVMetadataObjectTypeMicroPDF417Code, TimeDomain for
             # AVAudioTimePitchAlgorithmTimeDomain - and a method row's prose names its receiver.
@@ -256,7 +284,8 @@ def planted_report(plant):
             doc = json.load(open(path, encoding="utf-8"))
         except (OSError, ValueError):
             continue
-        for row in doc.get("entries", []):
+        entries = doc if isinstance(doc, list) else doc.get("entries", [])
+        for row in entries:
             if row.get("api") != api or row.get("kind") not in ("class", "protocol"):
                 continue
             for m in CANDIDATE.finditer(name):
