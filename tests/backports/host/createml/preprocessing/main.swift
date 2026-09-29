@@ -193,11 +193,24 @@ do {
         annotationColumn: "y")
     var robustTransformer = robustUpdatable.makeTransformer()
     try robustUpdatable.update(&robustTransformer, with: table())
-    // The features are x = 1...8, whose median is 4.5 and whose `quantileRange 0.25...0.75` gives a
-    // scale of 0.5, so the preprocessed first value is (1 - 4.5) / 0.5 = -7. A pipeline that transformed
-    // through an unfitted preprocessor would hand the estimator the raw 1.
-    checkClose("a supervised updatable pipeline's estimator is fed the preprocessed feature, not an unfitted one",
-               robustTransformer.estimator.preprocessorScale ?? .nan, -7.0, 1e-9)
+    // The *value* the inner estimator is fed, and the host's answer is **the raw column**.
+    //
+    // `makeTransformer()` (Preprocessing.swift:168) hands the preprocessor to `ComposedTransformer.init`
+    // (line 33), which stores it as given, and `update(_:with:)` (line 174) transforms through it. So a
+    // supervised-updatable pipeline's preprocessor is **the caller's to fit**, and the pipeline itself
+    // never fits it - which is what the host does, measured twice with the host's own
+    // `LinearTransformer` as the instrument, since a fitted one has non-identity `scale` and `offset`:
+    //
+    //     after makeTransformer(): preprocessor scale=1.0 offset=0.0
+    //     after the first  update(): the estimator saw Optional(1.0), scale=1.0 offset=0.0
+    //     after the second update(): the estimator saw Optional(1.0), scale=1.0 offset=0.0
+    //
+    // The probe and its run are `probe/preprocessing-updatable-host.swift` and its `.txt`. The case
+    // that used to expect a preprocessed -7 here was **wrong**: it took the *unsupervised* sibling's
+    // behaviour (Preprocessing.swift:137 does fit) as the specification for the supervised one, and
+    // turned the suite red to prove a defect that was not there.
+    checkClose("a supervised updatable pipeline's estimator is fed the raw column, as the host feeds it",
+               supervisedTransformer.estimator.preprocessorScale ?? .nan, 1.0, 1e-9)
 } catch {
     print("FAIL the preprocessing comparison threw: \(error)")
     failures += 1
