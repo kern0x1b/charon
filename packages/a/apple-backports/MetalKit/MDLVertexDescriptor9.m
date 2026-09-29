@@ -1,8 +1,11 @@
 #import <ModelIO/ModelIO.h>
 
-// The fifteen vertex-attribute names are defined in the ModelIO library
-// (ModelIO/MDLVertexAttributes9.m), which is always linked; they are exported data symbols, so a band
-// at iOS 9 or later takes them from the release and this library only asks for them.
+// MDLVertexDescriptor, MDLVertexAttribute and MDLVertexBufferLayout are defined here, and this
+// object references none of the fifteen MDLVertexAttribute* name constants: they are defined in
+// ModelIO/MDLVertexAttributes9.m, and `nm -u` over this object finds no reference to any of them, so
+// this library does not ask for them and does not need ModelIO's to be linked beside it. What this
+// object does need is MetalKit's own, and backports.lua:45 declares them: MetalKitBackports links
+// FoundationBackports and MetalBackports.
 
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
