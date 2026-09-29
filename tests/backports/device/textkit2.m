@@ -1,4 +1,4 @@
-// textkit2.m — every implemented method of the range layer of TextKit 2, called on the release, as a device
+// textkit2.m - every implemented method of the range layer of TextKit 2, called on the release, as a device
 // binary run under xmake emulate. The port's own classes are the only ones of their names on iOS 6.1.3, so there
 // is nothing to compare against here: what this proves is that each method answers, and that none of them
 // crashes on the release. What each answer is was measured against the host's own UIKit and is in

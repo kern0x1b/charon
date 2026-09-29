@@ -1,4 +1,4 @@
-// CharonTextLocation.h — the port's own NSTextLocation, over an offset in the document of one
+// CharonTextLocation.h - the port's own NSTextLocation, over an offset in the document of one
 // NSTextContentStorage. What a range is made of, and what every question about a range is a comparison of.
 //
 // NSTextLocation is a protocol with one method, a comparison, so a location needs to hold nothing but the

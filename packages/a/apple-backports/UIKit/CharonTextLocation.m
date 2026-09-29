@@ -1,4 +1,4 @@
-// CharonTextLocation.m — the port's own NSTextLocation. See CharonTextLocation.h for why it holds the
+// CharonTextLocation.m - the port's own NSTextLocation. See CharonTextLocation.h for why it holds the
 // document as well as the offset.
 #import "CharonTextLocation.h"
 

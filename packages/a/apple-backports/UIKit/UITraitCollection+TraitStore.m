@@ -1,4 +1,4 @@
-// UITraitCollection+TraitStore.m — the table the twenty-two traits of iOS 17, 18 and 26 are read out of, and
+// UITraitCollection+TraitStore.m - the table the twenty-two traits of iOS 17, 18 and 26 are read out of, and
 // the three readers a trait collection's own description asks it for.
 //
 // The three readers are here, apart from UITraitCollection+Traits17.m, because they are used by two files of two
