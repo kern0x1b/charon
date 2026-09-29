@@ -47,6 +47,10 @@ static void compare(const char *label, CFDataRef port, CFDataRef host)
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         NSData *der = [NSData dataWithContentsOfFile:@"tests/backports/host/security/fixtures/certificate.der"];
         SecCertificateRef cert = SecCertificateCreateWithData(NULL, (__bridge CFDataRef)der);

@@ -75,6 +75,10 @@ static void throughTheAccessors(const unsigned char *bytes, size_t length)
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         // 1. TRUNCATION AT EVERY LENGTH
         for (size_t n = 0; n <= FixtureLength; n++) {

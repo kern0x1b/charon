@@ -32,6 +32,10 @@
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         // 1024 bits of a fixed pattern, so the signature below is over known data
         static const unsigned char material[128] = {

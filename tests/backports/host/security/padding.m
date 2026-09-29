@@ -18,6 +18,10 @@ static void padding(const char *label, SecKeyAlgorithm algorithm, long want)
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         // the paddings are the header's own enumerators, read by value so the expectation is the
         // SDK's number and not a spelling copied from a document

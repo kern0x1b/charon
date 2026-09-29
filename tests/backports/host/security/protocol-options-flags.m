@@ -21,6 +21,10 @@ static int failures = 0;
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     __weak id weakOptions = nil;
     @autoreleasepool {
         Class cls = NSClassFromString(@"CharonSecProtocolFlags");

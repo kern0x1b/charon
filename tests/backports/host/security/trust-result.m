@@ -23,6 +23,10 @@ static void report(const char *label, OSStatus status, SecTrustResultType result
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         void *system = dlopen("/System/Library/Frameworks/Security.framework/Security", RTLD_LAZY | RTLD_LOCAL);
         typedef OSStatus (*GetTrustResult)(SecTrustRef, SecTrustResultType *);

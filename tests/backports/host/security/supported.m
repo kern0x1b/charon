@@ -17,6 +17,10 @@ static void answer(const char *label, SecKeyOperationType op, SecKeyAlgorithm al
 
 int main(void)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         // the release has one padding, kSecPaddingPKCS1SHA1, and it is RSA's - so RSA sign/verify over a
         // digest is what it can carry, and the pairs below are what the differential checks.

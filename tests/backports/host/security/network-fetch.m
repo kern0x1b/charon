@@ -16,6 +16,10 @@ static void report(const char *label, OSStatus status, Boolean value, Boolean wa
 
 int main(int argc, const char **argv)
 {
+    // UNBUFFERED, so output SURVIVES A CRASH. A mutant that segfaults mid-case would otherwise lose
+    // every row printed before it, and the comparator would then say those rows "did not measure" and
+    // name a truncated buffer instead of the crash.
+    setvbuf(stdout, NULL, _IONBF, 0);
     @autoreleasepool {
         NSData *der = [NSData dataWithContentsOfFile:@"tests/backports/host/security/fixtures/certificate.der"];
         if (!der) { printf("no fixture\n"); return 1; }
