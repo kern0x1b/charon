@@ -4,8 +4,10 @@ These are **not** builds. A case is a `clang` compile and a run on this Mac, so 
 not apply to them and there is no heavy job: the only heavy things are a `heavy.sh` build and the gates.
 
 `run-cases.sh` is the one command that runs everything here. It builds each case **with the port sources
-it calls**, feeds the output to that case's comparator, runs the mutations, and ends with
-`N cases, M mutants, M noticed`. It exits non-zero on any failure, on a mutation that goes unnoticed, and
+it is given**, feeds the output to that case's comparator, runs the mutations, and ends with
+`N cases, M mutants, M noticed`. Every case prints exactly one verdict line — `GREEN`, `RED`, `CRASH`,
+`BUILD`, `MISSING` or `NOTRUN` — and the tail fails if the number of `GREEN` lines is not the number of
+cases, so a run cannot report coverage its own output does not show. It exits non-zero on any failure, on a mutation that goes unnoticed, and
 on a case whose expected symbols are missing from its own binary.
 
 ## The trap: a case that links too little measures the HOST, silently
@@ -104,3 +106,30 @@ metadata case are wired through the same `protocol_case`, which is why they were
 name — the driver constructs it as `compare-$name.py`, so a literal grep for
 `compare-protocol-options-blocks.py` returns **0 while the case runs and is green**. Grep for the
 `protocol_case` line, or read the summary line, which names how many cases were driven.
+
+## Owed
+
+**The `MISSING` guard does not cover every case, and a case can still measure the host and pass.** It was
+rated medium and is recorded here rather than fixed; three defects were found by reading the tree, all in
+`run_case`'s guard:
+
+1. **The reference set is built from the case's own link line**, `for src in "$@"`. That is the very
+   argument the guard is meant to be independent of: drop a source and its symbols leave the reference
+   set, the guard skips exactly what it should have caught, and the case links the host's copy and
+   passes. It must be built once over every port source in `Security/`, not from `"$@"`.
+2. **The `MISSING` line is silent.** `run_case` detects the situation and prints `NOTRUN`, but the
+   `MISSING $name $sym would measure the HOST` echo is not in the function, so the guard fires without
+   naming anything. This is the same defect class as the one the driver itself had — a check that
+   examines nothing beside a summary that says everything is covered — one level down.
+3. **The `dlsym(RTLD_DEFAULT, "NAME")` path is unguarded.** A case that resolves the port's entry point
+   by name at runtime leaves no link-time reference for the guard to find: the name is a string and the
+   host's dylib supplies it. `trust-result.m` does this on purpose, with the reason in its own header
+   comment — it defines the same name, so calling it would compare the port with itself — and it is
+   therefore the case that cannot currently be caught. A guard for it has to recognise the
+   `dlsym(RTLD_DEFAULT, …)` string and require the matching `_NAME` in the case's own binary. The
+   `dlsym(system, …)` calls must stay unchecked: those are the *host* side of a differential and are
+   supposed to resolve from the system framework.
+
+Until all three are fixed, the honest statement is: **the guard covers the `sec_*` and `Charon*` symbols a
+case calls by name, when the sources that define them are in the link line the guard was handed.** Nothing
+here claims otherwise.

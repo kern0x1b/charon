@@ -61,7 +61,12 @@ run_case() {
         return
     fi
 
-    # THE GUARD: the port's symbols this case CALLS must be DEFINED in the binary it linked. A source
+    # THE GUARD, AND ITS KNOWN LIMIT: the sec_*/Charon* symbols this case CALLS BY NAME must be DEFINED in
+    # the binary it linked, and the reference set is built from the very "$@" the guard is given, so a
+    # source dropped from the link line also leaves the reference set. A case that resolves the port by
+    # dlsym(RTLD_DEFAULT, ...) is not caught at all. Both are recorded as OWED in the README beside this
+    # script, with the three defects, rather than left for a reader to assume away.
+    # A source
     # dropped from the command line cannot hide, because the case still calls it - the name resolves to the
     # host framework, and the case measures the host while looking exactly like a port measurement.
     casefile=""
