@@ -24,12 +24,32 @@ for k in range(icount):
     addr, _, _, po = struct.unpack_from('<QQQI', m, ioff + 32 * k)
     e = m.find(b'\0', po)
     if m[po:e].decode() == install: base = addr
-ncmds = struct.unpack_from('<I', m, off(base) + 16)[0]; lc = off(base) + 32
+hdr = off(base)
+# THE HEADER IS 28 BYTES FOR A 32-BIT MACH-O AND 32 FOR 64-BIT, and the size comes from the magic
+# rather than from an assumption. The 6.1.3 cache's images are 0xfeedface - 32-bit - so a walk that
+# starts at +32 begins FOUR BYTES INTO COMMAND 0, and every size read after that is garbage: the first
+# "cmdsize" comes back as 1163157343 and the next offset leaves the file entirely.
+magic = struct.unpack_from('<I', m, hdr)[0]
+if magic == 0xfeedface: hdrsize = 28
+elif magic == 0xfeedfacf: hdrsize = 32
+else: sys.exit('%s: mach-o magic 0x%08x at file 0x%x is neither 32- nor 64-bit' % (install, magic, hdr))
+ncmds, sizeofcmds = struct.unpack_from('<II', m, hdr + 16)
+# sizeofcmds counts the load commands from AFTER the header, so the end is hdr + hdrsize + sizeofcmds.
+# Reading it as hdr + sizeofcmds is short by exactly the header size, and the last command then trips the
+# bounds check on a file that is in fact fine.
+end = hdr + hdrsize + sizeofcmds; lc = hdr + hdrsize
 symtab = None
-for _ in range(ncmds):
+for i in range(ncmds):
+    if lc + 8 > end:
+        sys.exit('%s: command %d starts at file 0x%x, past the load commands, which end at 0x%x'
+                 % (install, i, lc, end))
     cmd, size = struct.unpack_from('<II', m, lc)
+    if size < 8 or lc + size > end:
+        sys.exit('%s: command %d is 0x%08x at file 0x%x and declares cmdsize %d, which does not fit '
+                 'before the load commands end at 0x%x' % (install, i, cmd, lc, size, end))
     if cmd == 2: symtab = struct.unpack_from('<IIII', m, lc + 8)
     lc += size
+if symtab is None: sys.exit('%s: no LC_SYMTAB in %d commands' % (install, ncmds))
 symoff, nsyms, stroff, strsize = symtab
 wanted = set(symbols); found = {}
 for i in range(nsyms):
