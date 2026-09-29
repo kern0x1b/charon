@@ -191,13 +191,24 @@
 - (void)replaceCredentialIdentitiesWithIdentities:(NSArray<ASPasswordCredentialIdentity *> *)newCredentialIdentities
                                        completion:(void (^)(BOOL success, NSError * _Nullable error))completion
 {
-    // The whole set, and the header is that this is the call for a store that does NOT take
-    // incremental updates. This store does, so the port says so and does the incremental thing, which
-    // is a superset: every identity in the new set is saved, and anything not in it survives. An
-    // application that expected the set to be exactly the array would be surprised, and the facts say
-    // so; a port that emptied the store to satisfy the letter of a method the header restricts to
-    // non-incremental stores would destroy its own records.
-    [self saveCredentialIdentities:newCredentialIdentities completion:completion];
+    // The store's set is EXACTLY the array after this call. That is what the caller asked for and the
+    // port does not second-guess it. My first version saved the new identities as a superset and left
+    // anything not in the array alone, on the reading that the header confines this method to a store
+    // that does not take incremental updates -- and that reading was wrong: the restriction is a rule
+    // for the caller about which method to call, not permission for the callee to do something else.
+    // An application that calls this is saying "these and only these", and a port that keeps the rest
+    // would be handing back a set the caller did not ask for and cannot see.
+    NSMutableArray *records = [NSMutableArray array];
+    for (ASPasswordCredentialIdentity *identity in newCredentialIdentities) {
+        [records addObject:@{@"identifier": identity.serviceIdentifier.identifier ?: @"",
+                             @"type": @(identity.serviceIdentifier.type),
+                             @"user": identity.user ?: @"",
+                             @"recordIdentifier": identity.recordIdentifier ?: [NSNull null],
+                             @"rank": @(identity.rank)}];
+    }
+    BOOL written = [self charon_writeRecords:records];
+    if (completion)
+        completion(written, written ? nil : [self charon_storeError]);
 }
 
 @end

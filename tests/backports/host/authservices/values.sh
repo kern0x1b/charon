@@ -30,7 +30,7 @@ mkdir -p "$build"
 # Before anything is built or run: the host half must not name any of the four methods that write this
 # Mac's AutoFill state. See host-write-guard.sh -- the rule is that the host's side of this family is
 # read-only and the writing half is documented from the header, not measured here.
-sh "$here/host-write-guard.sh" "$here/values.m" "$here/hostshape.c"
+python3 "$here/host-write-guard.py" "$here/values.m" "$here/hostshape.c"
 
 # One -D list, used by every build of the port: the three classes it implements, and the one key it owns.
 # The other names in the framework -- ASAuthorizationProvider, the scope and operation typedefs, the
@@ -38,13 +38,28 @@ sh "$here/host-write-guard.sh" "$here/values.m" "$here/hostshape.c"
 # One line, split where it is used. This was a multi-line string handed to `set --`, which set the
 # SCRIPT's positional parameters, and inside build_and_run "$@" is the function's own two arguments --
 # so the compiler was handed the tag "plain" where a -D belongs.
-renames="-DASAuthorizationRequest=PortASAuthorizationRequest -DASAuthorizationOpenIDRequest=PortASAuthorizationOpenIDRequest -DASAuthorizationAppleIDRequest=PortASAuthorizationAppleIDRequest -DASCharonProviderCodingKey=PortASCharonProviderCodingKey -DASAuthorizationAppleIDProvider=PortASAuthorizationAppleIDProvider"
+renames="-DASAuthorizationRequest=PortASAuthorizationRequest \
+-DASAuthorizationOpenIDRequest=PortASAuthorizationOpenIDRequest \
+-DASAuthorizationAppleIDRequest=PortASAuthorizationAppleIDRequest \
+-DASAuthorizationAppleIDProvider=PortASAuthorizationAppleIDProvider \
+-DASCharonProviderCodingKey=PortASCharonProviderCodingKey \
+-DASCredentialServiceIdentifier=PortASCredentialServiceIdentifier \
+-DASCredentialServiceIdentifierType=PortASCredentialServiceIdentifierType \
+-DASPasswordCredentialIdentity=PortASPasswordCredentialIdentity \
+-DASCredentialIdentityStore=PortASCredentialIdentityStore \
+-DASCredentialIdentityStoreState=PortASCredentialIdentityStoreState \
+-DASCredentialIdentityStoreErrorDomain=PortASCredentialIdentityStoreErrorDomain \
+-DASCredentialIdentityStoreErrorCodeInternalError=PortASStoreErrorInternal \
+-DASCredentialIdentityStoreErrorCodeStoreDisabled=PortASStoreErrorDisabled \
+-DASCredentialIdentityStoreErrorCodeStoreBusy=PortASStoreErrorBusy"
 
 : "${AS_CREDENTIAL_STORE_PATH:=$build/credential-store.plist}"
 : "${CHICON_RUNS:=$build}"
 export AS_CREDENTIAL_STORE_PATH CHICON_RUNS
 
-sources="ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m ASAuthorizationAppleIDProvider.m ASCredentialServiceIdentifier.m ASPasswordCredentialIdentity.m ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m"
+sources="ASConstants12_0.m ASConstants13_0.m ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m \
+ASAuthorizationAppleIDProvider.m ASCredentialServiceIdentifier.m ASPasswordCredentialIdentity.m \
+ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m"
 
 # build_and_run <source-dir> <tag>: compile the port's three sources from there under the renames, link
 # them with the test into one binary, and run it. The tag is where the table lands. It returns the

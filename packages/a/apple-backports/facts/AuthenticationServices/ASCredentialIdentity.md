@@ -82,12 +82,15 @@ identifier, and deliberately **not** on the rank, which is the order the system 
 part of what they are. A remove takes only the named records, because the header restricts that method
 to a store that takes incremental updates and this one does.
 
-`replaceCredentialIdentitiesWithIdentities:` is where the port deliberately differs, and the facts say
-so rather than the code quietly: the header restricts it to a store that does **not** take incremental
-updates, and this one does, so the port saves the new set as a superset and leaves anything not in it
-alone. An application that expected the set to become exactly the array would be surprised. The
-alternative — emptying the store to satisfy the letter of a method the header confines to the other kind
-of store — would destroy the application's own records.
+`replaceCredentialIdentitiesWithIdentities:` makes the store's set **exactly** the array, because that
+is what the caller asked for. My first version saved the new identities as a superset and left anything
+not in the array alone, on the reading that the header confines this method to a store that does not take
+incremental updates. **That reading was wrong.** The restriction is a rule for the caller about which
+method to call on which kind of store; it is not permission for the callee to do something the caller
+did not ask for. An application calling this is saying "these and only these", and a port that keeps
+the rest hands back a set the caller neither asked for nor can see. The store here does take incremental
+updates, and a caller that wants a superset semantics calls `-saveCredentialIdentities:completion:`,
+which is the method that means it.
 
 `-getCredentialIdentityStoreStateWithCompletion:` reports **enabled** and **incremental**, and that is
 about the *application's* store, not the system's autofill database. There is no daemon behind this one

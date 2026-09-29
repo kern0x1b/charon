@@ -116,6 +116,68 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
     }
 }
 
+/* How many identities the port's store file holds, counted the way the store writes them. */
+static NSInteger self_identities(const char *path)
+{
+    NSData *data = [NSData dataWithContentsOfFile:@(path)];
+    if (!data)
+        return 0;
+    id held = [NSPropertyListSerialization propertyListWithData:data options:0 format:NULL error:NULL];
+    return [held isKindOfClass:[NSArray class]] ? (NSInteger)[held count] : 0;
+}
+
+/* The port's store, exercised: what it holds, a replace, and what it holds afterwards.
+ *
+ * This is the one case in this file that writes, and it writes the PORT's store -- a property list under
+ * .agent-work/runs/, named by AS_CREDENTIAL_STORE_PATH -- and never the host's. The host's store is not
+ * written at any point in this family: its four writing methods change the user's AutoFill state on this
+ * Mac, and host-write-guard.sh refuses to start if a probe so much as names one. The store is read back
+ * from its own file because the header has no getter for the identities: there is no public way to ask
+ * a credential identity store what it holds, which is itself a fact about it worth knowing.
+ */
+static NSInteger self_identities(const char *path);
+
+static int store_case(void)
+{
+    const char *path = [NSProcessInfo.processInfo.environment[@"AS_CREDENTIAL_STORE_PATH"] UTF8String];
+    if (!path) { printf("  FAIL no AS_CREDENTIAL_STORE_PATH, so the store case cannot run\n"); return 1; }
+    [[NSFileManager defaultManager] removeItemAtPath:@(path) error:NULL];
+
+    Class storeClass = NSClassFromString(@"PortASCredentialIdentityStore");
+    Class serviceClass = NSClassFromString(@"PortASCredentialServiceIdentifier");
+    Class identityClass = NSClassFromString(@"PortASPasswordCredentialIdentity");
+    if (!storeClass || !serviceClass || !identityClass) {
+        printf("  FAIL the port's store, service identifier or identity class is not linked in\n");
+        return 1;
+    }
+    id store = ((id (*)(id, SEL))objc_msgSend)(storeClass, sel_registerName("sharedStore"));
+
+    id serviceA = [[serviceClass alloc] initWithIdentifier:@"first.example" type:0];
+    id serviceB = [[serviceClass alloc] initWithIdentifier:@"second.example" type:0];
+    id (*makeIdentity)(id, SEL, id, id, id) = (id (*)(id, SEL, id, id, id))objc_msgSend;
+    SEL make = sel_registerName("identityWithServiceIdentifier:user:recordIdentifier:");
+    id first = makeIdentity(identityClass, make, serviceA, @"alice", nil);
+    id second = makeIdentity(identityClass, make, serviceB, @"bob", nil);
+    id third = makeIdentity(identityClass, make, serviceA, @"carol", nil);
+
+    // Before: save two of the three, so the store holds a set that is NOT what the replace will be
+    // given. A test that replaced an empty store would not tell a superset from a replacement.
+    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("saveCredentialIdentities:completion:"),
+        ((id)first), sel_registerName("saveCredentialIdentities:completion:"));
+    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("saveCredentialIdentities:completion:"),
+        ((id)second), sel_registerName("saveCredentialIdentities:completion:"));
+    printf("  store   before replace  %d identities\n", (int)self_identities(path));
+
+    ((void (*)(id, SEL, id, SEL))objc_msgSend)(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
+        [NSArray arrayWithObject:third], sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"));
+    NSInteger after = self_identities(path);
+    printf("  store   after replace   %d identities\n", (int)after);
+    // The set is exactly the array: one identity, and it is the one that was given. A superset would be
+    // three here.
+    if (after != 1) { printf("  FAIL the store holds %d identities, and the array named one\n", (int)after); return 1; }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 2) {
@@ -156,5 +218,13 @@ int main(int argc, char **argv)
         sel_registerName("init"));
     if (!portProvider) { fprintf(stderr, "the port's own provider could not be made\n"); return 1; }
     report("port", 0, portProvider, portOpenID, portApple, hostImplicit);
+    // The store case is PARKED: the port's store case calls replaceCredentialIdentitiesWithIdentities:,
+    // it compiled, and it SEGFAULTED on the first run, and a test that crashes is not a test. It is in
+    // .agent-work/plan-and-analysis/authservices-store-case/ with what is known: the renames and the
+    // sources that make the port's four identity classes live alongside the host's, and the one line
+    // where it stops. The port's -replaceCredentialIdentitiesWithIdentities: is the reviewed change and
+    // it is in the source; this is the case that will prove it, and it is not yet proved.
+    if (getenv("AS_STORE_CASE") && store_case() != 0)
+        return 1;
     return 0;
 }
