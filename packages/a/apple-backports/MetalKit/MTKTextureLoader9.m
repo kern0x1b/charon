@@ -12,16 +12,8 @@ NSString *const MTKTextureLoaderErrorKey = @"MTKTextureLoaderErrorKey";
 // passes the same NSString it read out of the header, so spelling the value the same way is the
 // whole contract (MTKTextureLoader.h:44 and its siblings).
 NSString *const MTKTextureLoaderOptionAllocateMipmaps = @"MTKTextureLoaderOptionAllocateMipmaps";
-NSString *const MTKTextureLoaderOptionGenerateMipmaps = @"MTKTextureLoaderOptionGenerateMipmaps";
 NSString *const MTKTextureLoaderOptionTextureUsage = @"MTKTextureLoaderOptionTextureUsage";
 NSString *const MTKTextureLoaderOptionTextureCPUCacheMode = @"MTKTextureLoaderOptionTextureCPUCacheMode";
-NSString *const MTKTextureLoaderOptionTextureStorageMode = @"MTKTextureLoaderOptionTextureStorageMode";
-NSString *const MTKTextureLoaderOptionCubeLayout = @"MTKTextureLoaderOptionCubeLayout";
-NSString *const MTKTextureLoaderOptionOrigin = @"MTKTextureLoaderOptionOrigin";
-NSString *const MTKTextureLoaderCubeLayoutVertical = @"MTKTextureLoaderCubeLayoutVertical";
-NSString *const MTKTextureLoaderOriginTopLeft = @"MTKTextureLoaderOriginTopLeft";
-NSString *const MTKTextureLoaderOriginBottomLeft = @"MTKTextureLoaderOriginBottomLeft";
-NSString *const MTKTextureLoaderOriginFlippedVertically = @"MTKTextureLoaderOriginFlippedVertically";
 
 // The rows of a tightly packed RGBA8 buffer, in the other order: a flip is not a mirror, it is the
 // rows swapped end for end, and the loader's destination has row 0 at the bottom.
