@@ -906,7 +906,19 @@ function recipe_lists(recipe)
         local pos = recipe:find("table.join(", at, true)
         if not pos then break end
         local before = recipe:sub(pos - 200, pos - 1)
-        if before:find('add%("links"', 1) or recipe:sub(1, pos):find("local libraries = table%.join%(") then
+        local which = nil
+        -- Which of the recipe's two lists this table.join( opens: the links list, or the
+        -- `local libraries` list on_install builds and installs. The second is found by POSITION
+        -- and not by asking whether the text before this table.join( contains it: that text
+        -- contains it for every table.join( later in the file, which is how a prefix search tags
+        -- a dozen of the wrong clauses.
+        local libraries_at = recipe:find("local libraries = table%.join%(")
+        if libraries_at and pos > libraries_at then
+            which = "libraries"
+        elseif before:find('add%("links"', 1) then
+            which = "links"
+        end
+        if which then
             local paren = recipe:find("(", pos, true)
             local pieces, walk, paren_depth, brace = {}, paren + 1, 0, 0
             while walk <= #recipe do
@@ -959,6 +971,7 @@ function recipe_lists(recipe)
                 end
             end
             for _, piece in ipairs(pieces) do
+                piece.which = which
                 table.insert(lists, piece)
             end
         end
@@ -1084,15 +1097,9 @@ function wiring(backports, root, found)
     -- has to gain.  A config that is not in this table and builds a library whose declared
     -- dependency no clause builds is a failure, with no exception.
     local owed = {
-        ["uikit/GraphicsBackports"] = true,
         ["avkit/GraphicsBackports"] = true,
         ["usernotificationsui/GraphicsBackports"] = true,
         ["notificationcenter/GraphicsBackports"] = true,
-        ["avfaudio/AVFoundationBackports"] = true,
-        ["avfaudio/AccelerateBackports"] = true,
-        ["avfaudio/GraphicsBackports"] = true,
-        ["avfoundation/AccelerateBackports"] = true,
-        ["avfoundation/GraphicsBackports"] = true,
         ["scenekit/OpenGLESBackports"] = true,
         ["arkit/OpenGLESBackports"] = true,
         ["arkit/AccelerateBackports"] = true,
@@ -1136,15 +1143,79 @@ function wiring(backports, root, found)
     -- found nor named is a failure.  e30cc19dc put the two unfindable entries at
     -- metalkit/MetalBackports and modelio/MetalKitBackports, which this series fixed; the two the
     -- arm does not find are avfoundation/Accelerate and avfoundation/Graphics.
-    local invisible = {
-        ["avfoundation/AccelerateBackports"] = "a gap in the links list alone, which the arm cannot see because it takes the union of the two recipe lists",
-        ["avfoundation/GraphicsBackports"] = "a gap in the links list alone, which the arm cannot see because it takes the union of the two recipe lists",
-    }
+    -- Nothing is in the table of unfindable rows any more, and that is the point of recording the
+    -- number: recipe_lists() had never read the libraries list at all. It skipped the whole
+    -- `local libraries = table.join(` clause, because the test it ran before this change asked
+    -- whether the text BEFORE a table.join( contained the anchor, and the anchor is AT it, so the
+    -- clause was dropped and the two stray table.join( calls further down the file were picked up
+    -- instead. Every number in the paragraph above this table was therefore the links list alone.
+    -- With the list read, six of the thirteen rows are closed by the libraries list and the union
+    -- is thirteen minus six, so the table is seven long and the count is 7.
+    local invisible = {}
     for entry in pairs(owed) do
         if not gaps[entry] and not invisible[entry] then
             table.insert(found, string.format('the table of main\'s gaps lists "%s" and the arm does not find it and cannot see why: it is either fixed, in which case the row goes, or a gap in one of the recipe\'s two lists alone, in which case it is named below', entry))
         end
     end
+    -- Fifth arm, and the one that can see a gap confined to the links list alone.  The arm above
+    -- takes the union of the recipe's two lists, so a library the links list names and the
+    -- libraries list does not build still looks built, and the gap is invisible to it.  That is not
+    -- a shape nobody has shipped: the `vision` config named -lCoreMLBackports in links while the
+    -- libraries list built CoreMLBackports under `coreml` alone, so a project asking for `vision`
+    -- and nothing else was given a library to link that was never built or installed.
+    --
+    -- It is invisible to the gate for the same reason it was invisible here: the gate builds every
+    -- config, so `coreml` builds the dylib and the link succeeds.
+    --
+    -- ONE direction, and the other direction is deliberately not a failure.  A library the links
+    -- list names must be built by the libraries list for that same config: the consumer is told to
+    -- link -lX, so X has to exist.  The reverse is the design and not a defect -- the libraries list
+    -- is the transitive closure, so it builds what a library of ours links, and the consumer's own
+    -- link line does not carry it.  Measured over every config of this recipe, the forward direction
+    -- has one entry (vision/CoreMLBackports) and the reverse has four:
+    --
+    --   avfaudio   builds AVFoundationBackports, AccelerateBackports and GraphicsBackports
+    --   uikit      builds GraphicsBackports
+    --
+    -- each of which is a library some library of ours needs, and none of which the consumer links
+    -- itself.  Failing the reverse direction would make four correct rows red.
+    local split = 0
+    for _, name in ipairs(order) do
+        if name ~= "sources" then
+            local function per(which)
+                local got = {}
+                for _, piece in ipairs(lists) do
+                    if piece.which == which then
+                        local fires = #piece.sources == 0
+                        for _, source in ipairs(piece.sources) do
+                            if source == name then fires = true end
+                        end
+                        if fires then
+                            for _, library in ipairs(piece.libraries) do got[library] = true end
+                        end
+                    end
+                end
+                return got
+            end
+            local linked, built = per("links"), per("libraries")
+            local named = {}
+            for library in pairs(linked) do
+                if not built[library] then
+                    named[#named + 1] = library
+                end
+            end
+            table.sort(named)
+            for _, library in ipairs(named) do
+                split = split + 1
+                table.insert(found, string.format('the config "%s" names -l%s in the recipe\'s links list and the libraries list does not build it for that config, so a project asking for that config alone is told to link a dylib this package never built: name it in BOTH lists, from ONE expression, so the two cannot drift',
+                                                  name, library))
+            end
+        end
+    end
+    if split > 0 then
+        print(string.format("        the single-config arm found %d library named in links and not built for that config", split))
+    end
+
     if count > 0 then
         -- Two figures, and two numbers: how many gaps the arm found, and how many entries the
         -- table holds.  1354f2c9c said this print was now "two separate figures over the two
