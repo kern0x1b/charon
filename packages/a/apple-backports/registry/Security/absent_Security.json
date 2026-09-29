@@ -81,6 +81,66 @@
       "status": "absent"
     },
     {
+      "api": "SecKeyCopyAttributes()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
+      "api": "SecKeyCreateWithData()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
+      "api": "SecCertificateCopyCommonName()",
+      "kind": "function",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
+      "api": "SecCertificateCopyEmailAddresses()",
+      "kind": "function",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
+      "api": "SecCertificateCopyNormalizedIssuerSequence()",
+      "kind": "function",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
+      "api": "SecCertificateCopyNormalizedSubjectSequence()",
+      "kind": "function",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
+      "effect": "the function is not there: a weak reference to it is NULL",
+      "source": "SDK 16.4, Security"
+    },
+    {
       "api": "SecTrustEvaluateAsyncWithError()",
       "effect": "the function is not there: a weak reference to it is NULL",
       "introduced": "13.0",

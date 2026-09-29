@@ -1,0 +1,49 @@
+{
+  "framework": "Security",
+  "entries": [
+    {
+      "api": "SecKeyCopyKeyExchangeResult()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the shared secret is micro-ecc's, between the private scalar read out of the release's own keychain and the public point the peer's key publishes",
+      "effect": "the X coordinate of the shared point, 32 bytes, for an algorithm of the ECDH family whose name ends in no digest, and the SHA-256 of it for one that does, which is what the two families say they hand back; or NULL with a CFError in the OSStatus domain for a nil key, an algorithm outside that family, a key with no private scalar to be found, or a failure of the curve",
+      "facts": "facts/Security/SecKeyElliptic.md",
+      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
+    },
+    {
+      "api": "SecKeyCreateSignature()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release has no SecKey and no elliptic curve: the signature is made by charon@micro-ecc, and the private scalar is read out of the release's own keychain and checked against the public point the key publishes before anything is signed",
+      "effect": "a DER ECDSA signature of the 32 byte digest, in the low-s half Apple's own Security produces, or NULL with a CFError in the OSStatus domain: a nil key or data is errSecParam, an algorithm that is not kSecKeyAlgorithmECDSASignatureDigestX962SHA256 is errSecParam, a digest that is not 32 bytes is errSecParam, a key whose stored bytes hold no 32 byte window that derives its own public point is errSecParam, and a failure of the curve is errSecInternalError",
+      "facts": "facts/Security/SecKeyElliptic.md",
+      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
+    },
+    {
+      "api": "SecKeyIsAlgorithmSupported()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the question is what this port can do with the key, and the answer follows from the two above: an elliptic key of the release's own keychain signs, verifies and exchanges over P-256, and nothing else",
+      "effect": "true for sign and verify with kSecKeyAlgorithmECDSASignatureDigestX962SHA256 and for key exchange with any algorithm of the ECDH family, false for encrypt and decrypt, for every other algorithm, and for a key the release's own keychain publishes no uncompressed public point for; a nil key or algorithm is false",
+      "facts": "facts/Security/SecKeyElliptic.md",
+      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
+    },
+    {
+      "api": "SecKeyVerifySignature()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the verification is micro-ecc's, over the public point the release's own keychain publishes for the key",
+      "effect": "true when the DER signature is a signature of that 32 byte digest under that point, false otherwise, and with a CFError in the OSStatus domain for a nil argument, another algorithm or a digest that is not 32 bytes; a signature that is not a signature is a false, not an error, as the host answers",
+      "facts": "facts/Security/SecKeyElliptic.md",
+      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
+    }
+  ]
+}
