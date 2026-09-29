@@ -428,7 +428,7 @@
    "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
    "effect": "a series of quantity samples, built one quantity at a time and saved through the store it was made with when the series is finished",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, and the host's own wording of the refusal, read off the host on this machine"
   },
   {
    "api": "-[HKQuantitySeriesSampleBuilder initWithHealthStore:quantityType:startDate:device:]",
@@ -439,7 +439,7 @@
    "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
    "effect": "the builder, holding the store the samples are saved through, the type they are of, the date they start at and the device they came from",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, and the host's own wording of the refusal, read off the host on this machine"
   },
   {
    "api": "-[HKQuantitySeriesSampleBuilder insertQuantity:date:error:]",
@@ -450,7 +450,7 @@
    "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
    "effect": "YES and the quantity kept, or NO and the host's own refusal: a unit the type does not accept, a date before the builder's start, or a builder already finished",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, and the host's own wording of the refusal, read off the host on this machine"
   },
   {
    "api": "-[HKQuantitySeriesSampleBuilder finishSeriesWithMetadata:completion:]",
@@ -461,7 +461,7 @@
    "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
    "effect": "the samples the series is, saved through the store, or nothing and an error",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values. The other four of this class's five selectors have the host's own wording of their refusal measured; what this one RETURNS is this port's own reading of the header, the host answering it with samples nil and com.apple.healthkit 1, \"Health data is unavailable on this device\", so there is no sample of the host's to measure the shape against"
   },
   {
    "api": "-[HKQuantitySeriesSampleBuilder discard]",
@@ -472,7 +472,7 @@
    "reason": "iOS 12.0 is the release of the quantity series builder, and the arm64 shared cache of 12.0 carries the class with the insert, the finish and the discard the header declares of that release",
    "effect": "nothing: what was inserted is dropped and the series is invalid, which is the host's own raise on the next use",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values and for the host's own wording of each refusal"
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, and the host's own wording of the refusal, read off the host on this machine"
   }
  ]
 }
