@@ -52,7 +52,9 @@ static void oneCase(MPSCNNNeuronType type, const char *label)
     say("case begin");
     memset(normOut, 0, sizeof(normOut));
     say("buffers created");
-    id<MTLCommandBuffer> buffer = [gDevice newCommandBuffer];
+    static id<MTLCommandQueue> queue;
+    if (!queue) queue = [gDevice newCommandQueue];
+    id<MTLCommandBuffer> buffer = [queue commandBufferWithUnretainedReferences];
     MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3);
     MPSMatrix *out = matrixOf(&normOut[0][0], MPSDataTypeFloat32, 4, 3);
     MPSVector *m = vectorOf(normGivenMean, MPSDataTypeFloat32, 3);
@@ -85,11 +87,15 @@ int main(int argc, char **argv)
         const unsigned kPreceding = (argc > 1) ? (unsigned)atoi(argv[1]) : 0;
         printf("device %s, preceding cases %u\n", [[gDevice name] UTF8String], kPreceding);
         fflush(stdout);
-        (void)kPreceding;
-        MPSCNNNeuronType type = MPSCNNNeuronTypeGeLU;
-        if (argc > 2) type = (MPSCNNNeuronType)atoi(argv[2]);
         say("device ready");
-        oneCase(type, "chosen type");
+        if (argc > 2) {
+            oneCase((MPSCNNNeuronType)atoi(argv[2]), "chosen type");
+        } else {
+            for (int t = 0; t < 15; t++) {
+                printf("--- type %d\n", t); fflush(stdout);
+                oneCase((MPSCNNNeuronType)t, "loop");
+            }
+        }
         printf("survived\n");
     }
     return 0;
