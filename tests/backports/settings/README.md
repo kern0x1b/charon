@@ -26,7 +26,11 @@ iphonesimulator` answers `SDK "iphonesimulator" cannot be located`. What holds t
     mutant M9 turns red on;
   * `axs-census.lua`, which is the measurement the answers are readings of.
 
-The command that settles the rest is an emulator run of `hearing-check.m` against the built library.
+The program that can run them is `tests/backports/device/hearing.m` - the tree's device-program shape,
+compiled clean for the port's own target, which asks the port's three functions for the answers the
+census says they must give and prints the release's own where the release has the functions at all. It is
+not run by anything in a band; the gate is what runs a device program, and that is when these three rows
+stop being held by three measurements.
 Until then the run prints `hearing: OWED` as its own last line and the three registry rows carry
 `HELD NOT BY RUN` in their `source`, so nothing reads as though a program had produced those answers.
 

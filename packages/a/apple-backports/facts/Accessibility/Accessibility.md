@@ -486,11 +486,27 @@ of the framework's binary or its resources; the names are facts of the answers t
 is owed to that series, `accessibility-color`.
 
 **The three hearing rows are held by less than the other twenty, and the run says so.** They are not run
-here: their declarations are unavailable on macOS and this machine has no iOS runtime. What holds them is
-the compiler checking their signatures against the SDK's and `nm` confirming the port defines all three
-for `armv7-apple-ios6.0`, with the answers as readings of the census. The command that settles the rest is
-an emulator run of `tests/backports/settings/hearing-check.m` against the built library, and the run prints
-`hearing: OWED` rather than passing quietly over it.
+here, and the reason is in two parts that are both about the machine and neither about the port:
+
+  * their declarations are `API_UNAVAILABLE(macos)`, the header's own statement that a Mac has no such
+    device, so **no macOS program can call them at all** - and the answer a host would give is the
+    signed-in user's own accessory list, which is nobody's answer to what a phone with no hearing hardware
+    must say;
+  * there is no iOS runtime on this machine to run them on: `xcrun --show-sdk-path --sdk iphonesimulator`
+    answers `SDK "iphonesimulator" cannot be located`, and the tree's device programs are run by the
+    coordinator's gate, which a band does not invoke.
+
+What holds the three rows is the compile of `tests/backports/settings/hearing-check.m` against the SDK's
+own declarations, an **assertion** over `nm` of the built object - which the settings run makes and mutant
+M9 turns red on - and the census the answers are readings of. The run prints `hearing: OWED` rather than
+passing quietly over it.
+
+**And the program that can run them now exists: `tests/backports/device/hearing.m`.** It is the tree's
+own device-program shape, it compiles clean for `armv7-apple-ios6.0`, and it asks the port's three
+functions for the answers the census says they must give while printing the release's own where the
+release has the functions at all. It is not run by anything in a band: the gate is what runs a device
+program, and when it does, this one turns the three rows from held-by-three-measurements into
+held-by-a-run. That is the whole of what could be done here, and it is a program rather than a promise.
 
 ### The Settings sections' availability, which is per case and was transcribed as if it were not
 
