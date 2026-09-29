@@ -232,6 +232,39 @@ def _enumerators(path, out):
                 collecting = False
 
 
+# THE HEADER, and it is what makes a CORRUPT index self-heal. A cache that is only rebuilt when it
+# is MISSING will happily serve a truncated one: a half-written file from an interrupted run is read
+# as current, and every name past the cut is reported undefined - which is about seventy false
+# failures. The key cannot fix that on its own, because the key is computed BEFORE the index exists
+# and putting the index's own size INTO the key would be circular. So the first line of the file
+# states how many names it should hold, and a read that finds a different count rebuilds.
+INDEX_HEADER = "# charon-class-names-index v%d names %d key %s\n"
+
+
+def index_is_sane(path, key):
+    """Does the cached index say it is complete, and is it?"""
+    try:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            first = fh.readline()
+            if not first.startswith("# charon-class-names-index"):
+                return False, "no header"
+            #   # charon-class-names-index v1 names <n> key <key>
+            parts = first.split()
+            if len(parts) < 7 or parts[0] != "#" or parts[1] != "charon-class-names-index":
+                return False, "no header"
+            if parts[2] != "v%d" % SDK_INDEX_VERSION:
+                return False, "written by another version of the extraction"
+            if parts[6] != key:
+                return False, "written under another key"
+            declared = int(parts[4])
+            counted = sum(1 for _ in fh)
+            if counted != declared:
+                return False, "truncated: %d names, the header says %d" % (counted, declared)
+    except (OSError, ValueError) as exc:
+        return False, "unreadable (%s)" % exc
+    return True, ""
+
+
 def build_sdk_index(sdk, dest):
     """Write every name the SDK declares to `dest`, sorted and deduplicated."""
     names = set()
@@ -248,7 +281,9 @@ def build_sdk_index(sdk, dest):
                     _enumerators(p, names)
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     tmp = dest + ".tmp%d" % os.getpid()
+    key = sdk_index_key(sdk)
     with open(tmp, "w", encoding="utf-8") as out:
+        out.write(INDEX_HEADER % (SDK_INDEX_VERSION, len(names), key))
         for name in sorted(names):
             out.write(name + "\n")
     os.replace(tmp, dest)
@@ -263,6 +298,13 @@ def sdk_index():
     key = sdk_index_key(sdk)
     path = os.path.join(CACHE_ROOT, "class-names", "sdk-%s-v%d.txt" % (key, SDK_INDEX_VERSION))
     if not os.path.isfile(path):
+        build_sdk_index(sdk, path)
+        return path
+    sane, why = index_is_sane(path, key)
+    if not sane:
+        # A CORRUPT INDEX IS REBUILT, not served. The key has not moved and the key cannot move -
+        # it is computed before the index exists - so completeness is stated in the file itself.
+        print("  the cached index is incomplete (%s), so it is rebuilt" % why)
         build_sdk_index(sdk, path)
     return path
 
@@ -480,6 +522,29 @@ def main():
             rc = 1
         else:
             print("  ok    the real tree is clean")
+        # A TRUNCATED INDEX UNDER AN UNCHANGED KEY MUST BE REBUILT. This is the reviewer's case and
+        # it is not the same as the key moving: the key cannot move, because it is computed before
+        # the index exists. So the file is cut in half and the completeness header must catch it.
+        index = sdk_index()
+        if index:
+            whole = os.path.getsize(index)
+            keep = max(1, whole // 2)
+            with open(index, "r+", encoding="utf-8") as fh:
+                fh.truncate(keep)
+            sane, why = index_is_sane(index, sdk_index_key(sdk_root()))
+            if sane:
+                print("  FAIL  a truncated index passed its own completeness check")
+                rc = 1
+            else:
+                print("  ok    the CACHE: a truncated index is caught (%s) and rebuilt" % why)
+            # and the rebuild puts it back
+            sdk_index()
+            sane, _why = index_is_sane(index, sdk_index_key(sdk_root()))
+            if not sane:
+                print("  FAIL  the rebuild did not restore a complete index")
+                rc = 1
+            else:
+                print("  ok    the CACHE: the rebuild restored a complete index")
         problem = cache_invalidation_self_test()
         if problem:
             print("  FAIL  the cache self-test: %s" % problem)
