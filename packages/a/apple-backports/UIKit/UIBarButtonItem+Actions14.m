@@ -75,7 +75,7 @@ static void charon_wire(UIBarButtonItem *item)
     if ((self = [self initWithTitle:primaryAction.title style:UIBarButtonItemStylePlain target:nil action:NULL])) {
         if (primaryAction.image)
             self.image = primaryAction.image;
-        self.primaryAction = primaryAction;
+        [self setPrimaryAction:primaryAction];
     }
     return self;
 }
@@ -83,28 +83,28 @@ static void charon_wire(UIBarButtonItem *item)
 - (instancetype)initWithBarButtonSystemItem:(UIBarButtonSystemItem)systemItem primaryAction:(UIAction *)primaryAction
 {
     if ((self = [self initWithBarButtonSystemItem:systemItem target:nil action:NULL]))
-        self.primaryAction = primaryAction;
+        [self setPrimaryAction:primaryAction];
     return self;
 }
 
 - (instancetype)initWithTitle:(NSString *)title menu:(UIMenu *)menu
 {
     if ((self = [self initWithTitle:title style:UIBarButtonItemStylePlain target:nil action:NULL]))
-        self.menu = menu;
+        [self setMenu:menu];
     return self;
 }
 
 - (instancetype)initWithImage:(UIImage *)image menu:(UIMenu *)menu
 {
     if ((self = [self initWithImage:image style:UIBarButtonItemStylePlain target:nil action:NULL]))
-        self.menu = menu;
+        [self setMenu:menu];
     return self;
 }
 
 - (instancetype)initWithBarButtonSystemItem:(UIBarButtonSystemItem)systemItem menu:(UIMenu *)menu
 {
     if ((self = [self initWithBarButtonSystemItem:systemItem target:nil action:NULL]))
-        self.menu = menu;
+        [self setMenu:menu];
     return self;
 }
 
