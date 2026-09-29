@@ -20,8 +20,18 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* A path is taken as given -- the caller may be naming a framework that is not in the two usual
+ * places, and one that is private is the interesting case here -- and only then are the usual roots
+ * tried with a bare name. The first version formatted a full path into a %s.framework/%s template
+ * and so could open nothing at all, and printed nothing when it failed. */
 static void *open_framework(const char *name)
 {
+    if (strchr(name, '/')) {
+        void *handle = dlopen(name, RTLD_LAZY);
+        if (handle)
+            return handle;
+        fprintf(stderr, "%s: %s\n", name, dlerror());
+    }
     char path[4096];
     const char *roots[] = {
         "/System/Library/Frameworks/%s.framework/%s",
@@ -34,11 +44,33 @@ static void *open_framework(const char *name)
         if (handle)
             return handle;
     }
+    fprintf(stderr, "none of the default frameworks opened for %s: %s\n", name, dlerror());
     return NULL;
+}
+
+/* Step one of the types work, deliberately small: with a class and a selector named on the command
+ * line, print that ONE method's type encoding and exit. It is a separate path so that "the encoding
+ * comes out" can be seen on its own, before the comparison depends on it. */
+static int one_method(const char *framework, const char *className, const char *selectorName)
+{
+    if (!open_framework(framework))
+        return 1;
+    Class cls = objc_getClass(className);
+    if (!cls) { fprintf(stderr, "no class %s\n", className); return 1; }
+    SEL sel = sel_registerName(selectorName);
+    Method method = class_getInstanceMethod(cls, sel);
+    if (!method)
+        method = class_getClassMethod(cls, sel);
+    if (!method) { fprintf(stderr, "no method -%s on %s\n", selectorName, className); return 1; }
+    printf("%s -%s types %s\n", className, selectorName, method_getTypeEncoding(method));
+    return 0;
 }
 
 int main(int argc, char **argv)
 {
+    if (argc == 4)
+        return one_method(argv[1], argv[2], argv[3]);
+
     if (argc != 3) {
         fprintf(stderr, "usage: %s <framework-name> <cases-file>\n", argv[0]);
         return 2;
