@@ -62,16 +62,6 @@
       "source": "SDK 16.4, Security"
     },
     {
-      "api": "SecTrustGetTrustResult()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
       "api": "SecTrustSetOCSPResponse()",
       "kind": "function",
       "introduced": "7.0",
