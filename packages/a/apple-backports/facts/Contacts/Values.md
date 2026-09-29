@@ -110,3 +110,38 @@ was not among them raises `CNPropertyNotFetchedException` under the name
 `isKeyAvailable:` and `areKeysAvailable:` answer honestly. A contact an
 application makes itself has every key available, and setting a value makes its
 key available.
+
+## The CNLabel names of iOS 11.0 to 14.3, and where their texts come from
+
+Contacts of iOS 13 added 202 `CNLabel…` names at once — the whole family of kinship labels a contact
+can carry (`CNLabelContactRelationAunt`, `…AuntFathersElderSister`, `…YoungestSister`, and the rest) —
+and iOS 11.0, 14.0 and 14.3 added five more. All 207 are carried here, and their texts are **Contacts'
+own**, not a spelling of the symbol and not a guess:
+
+    each value read out of the arm64e shared cache of iOS 18.0 through its own symbol, with
+    tools/cfconst.py — the symbol's address in the image's symbol table, the pointer stored there,
+    the __cfstring it points at, and the bytes that names
+
+Contacts writes these as a token rather than as a word: `CNLabelContactRelationAunt` is
+`_$!<Aunt>!$_`, and `CNLabelContactRelationAuntFathersElderSister` is
+`_$!<AuntFathersElderSister>!$_`. Carrying the token and not a readable spelling matters: a label is a
+key, and a key that differs by a character is a label no contact ever matches. The 205 kinship names
+come from `CNContactRelation.h`, `CNLabelPhoneNumberAppleWatch` from `CNPhoneNumber.h` and
+`CNLabelSchool` from `CNLabeledValue.h`.
+
+**The texts are checked against a second source**, the host's own Contacts, which exports all 207:
+`tests/backports/host/contactlabels` reads each value on both sides and compares.
+
+    207 agreed, 0 differed, and the host has no such name for none of them
+
+**One file per release**, because an object carries the API of one release: `ContactsRelationLabels110.m`
+(two names), `…130.m` (202), `…140.m` (two) and `…143.m` (one). The armv7 ladder measures the 11.0 pair
+first appearing in the cache of iOS 11.0, and all the rest in the cache of iOS 16.0 — nothing between
+12.0 and 16.0 is held — which is an upper bound for the 13.0, 14.0 and 14.3 their headers annotate, and
+is the release those three objects are carried from.
+
+**What a caller gets, and what it does not.** A caller that writes one of these names into
+`keysToFetch:` gets the key it asked for and a contact of the release's book that has no field under
+it, exactly as the ten keys of `registry/Contacts/ios10.json` already do. What is *not* claimed is a
+label the release never made: the release's own address book stores the labels it had, and this port
+adds no others to it.
