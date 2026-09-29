@@ -58,6 +58,32 @@ func makeKeptSlice() -> PortTabularData.DiscontiguousColumnSlice<Int> {
         return value > 3
     }
 }
+// The port's half of the AnyColumn accessor differential, printed beside the host's, so the two are
+// read together rather than inferred from which checks fail. `--anycolumn-probe` is its own
+// invocation because nothing here traps, and a check is still the assertion.
+if CommandLine.arguments.contains("--anycolumn-probe") {
+    var pf = PortTabularData.DataFrame()
+    pf.append(column: PortTabularData.Column<String>(name: "city", ["berlin", "paris", "madrid"]))
+    pf.append(column: PortTabularData.Column<Int?>(name: "n", [1, nil, 3]))
+    var pOrd = PortTabularData.DataFrame()
+    pOrd.append(column: PortTabularData.Column<Int>(name: "a", contents: [1, nil, 3]))
+    let pStrings = pf[dynamicMember: "city"]
+    let pOptionals = pf[dynamicMember: "n"]
+    let pOrdCol = pOrd[dynamicMember: "a"]
+    print("1  count                       = \(pStrings.count)")
+    print("2  name                        = \(pStrings.name)")
+    print("3  wrappedElementType (present)= \(String(describing: pStrings.wrappedElementType))")
+    print("4  subscript(position: 0)      = \(String(describing: pStrings[position: 0]))")
+    print("5  subscript(position: 2)      = \(String(describing: pStrings[position: 2]))")
+    print("6  missingCount, no nils       = \(pStrings.missingCount)")
+    print("7  missingCount, optional form = \(pOptionals.missingCount)")
+    print("8  missingCount, ordinary form = \(pOrdCol.missingCount)")
+    print("9  wrappedElementType (option) = \(String(describing: pOptionals.wrappedElementType))")
+    print("10 subscript of the optional   = \(String(describing: pOptionals[position: 0]))")
+    print("11 the present form's own subscript as Any? = \((pStrings[position: 0] as Any?) == nil)")
+    print("12 the ordinary form's cell    = \(String(describing: pOrdCol[position: 1]))  nil?=\((pOrdCol[position: 1] as Any?) == nil)")
+    exit(0)
+}
 if CommandLine.arguments.contains("--slice-probe") {
     let kept = makeKeptSlice()
     print("PROBE indices=\(kept.indices) count=\(kept.count) startIndex=\(kept.startIndex) endIndex=\(kept.endIndex)")
