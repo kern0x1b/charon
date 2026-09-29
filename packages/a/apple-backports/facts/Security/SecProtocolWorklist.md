@@ -5,27 +5,30 @@ rather than a search. **48 rows: 17 `sec_protocol_metadata_*` and 31 `sec_protoc
 every one of the 48 has a declaration in `SecProtocolMetadata.h` or `SecProtocolOptions.h` - none of
 them is a name the headers do not have, which is why none of them is `absent` for that reason.
 
-**Status: 3 done, 44 built, 1 owed** - the one owed is `sec_protocol_options_set_local_identity`.
+**Status: 3 done, 45 built, 0 owed** - the list is complete.
 The three block setters were built this round
 (`sec_protocol_options_set_key_update_block`, `set_challenge_block`, `set_verify_block`),
-so the ONE row still owed is `sec_protocol_options_set_local_identity` — and that one is
-blocked behind the `sec_identity_t` wrapper, which is one of the nine wrapper rows with no
-source. Its signature is read: `void sec_protocol_options_set_local_identity(
-sec_protocol_options_t options, sec_identity_t identity)` (SecProtocolOptions.h:101-102), so
-only the type is missing, not the shape — and the type CANNOT be supplied, because every
+and the row that was last owed - `sec_protocol_options_set_local_identity` - is built with the
+`sec_identity_t` wrapper it was blocked behind, in its own object
+(`Security/SecProtocolOptionsLocalIdentity.m`) and with a host case and three mutants. It was blocked on
+the TYPE, not on its shape: its signature is
+`void sec_protocol_options_set_local_identity(sec_protocol_options_t options, sec_identity_t identity)`
+(SecProtocolOptions.h:101-102), and the type arrives as the port's own wrapper class. What is still owed
+is the GUEST measurement of a real identity, which a wrapper cannot substitute for: every
 `SecIdentity.h` factory is `__IPHONE_NA` on iOS and `SecIdentityCreate` (the in-memory route) is not
-declared at all, so no SecPKCS12Import-based path reaches a `SecIdentityRef` on 6.1.3 without touching a
-keychain - `SecPKCS12Import` is `API_AVAILABLE(macos(10.0), ios(2.0))` and returns
-`kSecImportItemIdentity`, so an identity CAN be made here, and it costs a keychain. The true claim is
-"not without touching a keychain", not "no public way". See
-`facts/Security/SecObjectWrappers.md`. The list below was written at the start of the series,
+declared at all, so a real `SecIdentityRef` on 6.1.3 costs a keychain - `SecPKCS12Import` is
+`API_AVAILABLE(macos(10.0), ios(2.0))` and returns `kSecImportItemIdentity`, so an identity CAN be made
+in the guest, and it costs a keychain THERE. The true claim is "not without touching a keychain", not
+"no public way". See `facts/Security/SecObjectWrappersIdentity.md` for what is measured and
+`facts/Security/SecObjectWrappers.md` for the header facts. The list below was written at the start of the series,
 when 45 rows were owed; the wrappers since written build 44 of them (`nm -gU` of the gated
 `libSecurityBackports.dylib` defines each), marked **built** - the table below counts 3 done, 44 built and
-1 owed, and those three numbers are the same ones. **Built** means the entry point exists and answers what
-its row says; only the three **done** ones are measured on the release. **Owed** is what is left: the **one**
-row whose entry point does not exist yet, `sec_protocol_options_set_local_identity`, and it is blocked behind
-the `sec_identity_t` wrapper rather than behind its own shape. The section "Why each group is owed" below is
-the plan the wrappers that are now built were written from.
+0 owed, and those three numbers are the same ones. **Built** means the entry point exists and answers what
+its row says; only the three **done** ones are measured on the release. **Owed** is empty: every one of
+the 48 has an entry point, and the last of them landed with the identity series. The section "Why each
+group is owed" below is the plan those wrappers were written from, and it is kept because it is what
+makes the 48 legible. What each row is measured against is not restated here:
+`facts/Security/SecObjectWrappersIdentity.md` and `facts/Security/SecProtocolDefaults.md` carry it.
 
 | api | header | line | availability | file | state |
 | --- | --- | --- | --- | --- | --- |
@@ -47,7 +50,7 @@ the plan the wrappers that are now built were written from.
 | `sec_protocol_metadata_create_secret` | Metadata | :352 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios13.json | **built** |
 | `sec_protocol_metadata_create_secret_with_context` | Metadata | :383 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios13.json | **built** |
 | `sec_protocol_options_are_equal` | Options | :86 | API_AVAILABLE(macos(10.15), ios(13.0), watchos(6.0), tvos(13.0)) | ios13.json | **built** |
-| `sec_protocol_options_set_local_identity` | Options | :102 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **owed** |
+| `sec_protocol_options_set_local_identity` | Options | :102 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios12.json | **built** |
 | `sec_protocol_options_append_tls_ciphersuite` | Options | :118 | API_AVAILABLE(macos(10.15), ios(13.0), watchos(6.0), tvos(13.0)) | ios13.json | **built** |
 | `sec_protocol_options_add_tls_ciphersuite` | Options | :134 | - | ios13.json | **built** |
 | `sec_protocol_options_append_tls_ciphersuite_group` | Options | :150 | API_AVAILABLE(macos(10.15), ios(13.0), watchos(6.0), tvos(13.0)) | ios13.json | **built** |
@@ -107,9 +110,11 @@ security-r3 series (`packages/a/apple-backports/facts/Security/SecObjectWrappers
 ## The four defaults, and what they are worth
 
 The `@return` above each reads *"The default minimum TLS version"*, *"The default maximum DTLS version"*
-and so on: it **names the quantity and does not state a number**. So the classification is `implemented`
-— the function answers the documented default — while the **number** is a decision from the release's
-stack, not a reading:
+and so on: it **names the quantity and does not state a number**, which is why the number had to be
+measured rather than read off the header. The classification is `implemented` — the function answers the
+documented default — and the numbers below are a MEASUREMENT now, on 6.1.3 and on 6.0, taken by the
+probe in `facts/Security/SecProtocolDefaults.md` and recorded there with the digests of the logs. They
+are not re-derived here, so the two files cannot disagree:
 
 | api | line | returns | value |
 | --- | --- | --- | --- |
@@ -123,19 +128,22 @@ a caller asking what it would get by default must not be told about a version th
 The host case asserts that negatively as two rows of its own (`no-tls13`, `no-dtls12`), and the mutation
 returns `TLSv13` so the difference names the value *and* the un-honourable version.
 
-**This is recorded as a crutch.** The numbers come from the release's stack constants — `kTLSProtocol12`
-as its top, DTLS 1.0 only — and **not** from a guest measurement. `SSLCreateContext` is iOS 5+ and needs
-no identity, so the measurement is feasible; until it runs, these four are a decision, and the row says so.
+**The minimum is a crutch, and the other three are not.** The release's default floor is SSL 3.0 and
+`tls_protocol_version_t` has no SSLv3 member, so the min row returns the enum's lowest member and the gap
+is a coordinator crutch. Max TLS, min DTLS and max DTLS agree with what the release answers, so those
+three have no gap. The measurement **contradicted** the value this file used to decide: SSL 3.0 is a worse
+floor than TLS 1.0, so the earlier decision was wrong in the direction that matters. 4.3 was not
+attempted, and each row names the releases it was measured on.
 
 **What was grepped for and came back empty**, recorded rather than omitted: `kSSLProtocol2` and
 `kSSLProtocol3` in the 16.4 SDK's `CFNetwork.h`, and `kSSLProtocolTLSv1_2` in the same header. Both greps
 returned nothing, so there was no release-side constant to defer to and the fallback stands.
 
-## The comparator is implemented; the setters are not
+## The comparator and the setters are both implemented
 
 `sec_protocol_options_are_equal` (`:86`) reads back the settings the port **holds**, so it is
 `implemented` — it is the one thing the port can answer truthfully. The equality is its own state and
 nothing else: a comparison against the release's stack would compare nothing, because there is no such
-stack. Nothing in the list above is owed except the one row the status line names; the
-certificate/trust wrapper rows belong to a different family and are counted in
-`SecObjectWrappers.md`, not here.
+stack. Nothing in the list above is owed; the certificate/trust/identity wrapper rows belong to a
+different family and are counted in `SecObjectWrappers.md` and `SecObjectWrappersIdentity.md`, not
+here.

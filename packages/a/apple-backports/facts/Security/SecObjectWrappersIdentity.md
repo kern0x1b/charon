@@ -1,9 +1,17 @@
 # The `sec_identity_t` family, and what the host case does and does not measure
 
 Six rows in two objects, and the split is `release-split`'s, not mine: run on the pair as one object it
-reported `MIXED-RELEASES 12.0,16.0`, with `sec_identity_access_certificates` first appearing at **16.0**
-and the other five at **12.0**. One release per object, so `SecObjectWrappersIdentity12_0.m` and
-`SecObjectWrappersIdentity16_0.m`, plus `SecProtocolOptionsLocalIdentity.m` for the options setter.
+reported `MIXED-RELEASES 12.0,16.0`, which is the reason for two files. `sec_identity_access_certificates`
+is in the 16.0 rung and the other five in the 12.0 one, and one release per object is what the tool then
+agrees on - `release-split: clean, every object file's symbols first-appear in one release (4 files, 17
+symbols, 50 releases checked)`.
+
+**What "16.0" is worth, said plainly: it is a rung, not a measured first release.** The same run prints
+`note: no release is held between 12.0 and 16.0, so 16.0 here means after 12.0 and by 16.0, not a
+measured first release`. So the tool establishes that the symbol is in the 16.0 rung and not in the
+12.0 one, and it cannot name the release that first exported it, because there is no release between
+them. The 16.0 the row and the file name is the SDK's own annotation for the function
+(`SecProtocolTypes.h`), and the two agree; the ladder is what backs the SPLIT, not the arrival.
 
 **None of the six is exported by 6.1.3.** Read from that release's own cache — the Security image at
 `0x32e79000`, UUID `FBC24F15BD9E37539CDD6E3576BDE938`, 660 exports — `_sec_identity_create`,
