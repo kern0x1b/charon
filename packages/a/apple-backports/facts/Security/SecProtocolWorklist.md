@@ -84,3 +84,37 @@ a negotiation, with the cost stated in the row.
 
 `sec_identity_*`, `sec_certificate_*` and `sec_trust_*` are a different family and are in the
 security-r3 series (`packages/a/apple-backports/facts/Security/SecObjectWrappers.md`), not here.
+
+## The four defaults, and what they are worth
+
+The `@return` above each reads *"The default minimum TLS version"*, *"The default maximum DTLS version"*
+and so on: it **names the quantity and does not state a number**. So the classification is `implemented`
+— the function answers the documented default — while the **number** is a decision from the release's
+stack, not a reading:
+
+| api | line | returns | value |
+| --- | --- | --- | --- |
+| `...get_default_min_tls_protocol_version` | `:211` | `tls_protocol_version_TLSv10` | `0x0301` |
+| `...get_default_max_tls_protocol_version` | `:268` | `tls_protocol_version_TLSv12` | `0x0303` |
+| `...get_default_min_dtls_protocol_version` | `:223` | `tls_protocol_version_DTLSv10` | `0xfeff` |
+| `...get_default_max_dtls_protocol_version` | `:280` | `tls_protocol_version_DTLSv10` | `0xfeff` |
+
+**`TLSv13` (0x0304) and `DTLSv12` (0xfefd) are never returned**, because 6.1.3 cannot negotiate them and
+a caller asking what it would get by default must not be told about a version the release cannot honour.
+The host case asserts that negatively as two rows of its own (`no-tls13`, `no-dtls12`), and the mutation
+returns `TLSv13` so the difference names the value *and* the un-honourable version.
+
+**This is recorded as a crutch.** The numbers come from the release's stack constants — `kTLSProtocol12`
+as its top, DTLS 1.0 only — and **not** from a guest measurement. `SSLCreateContext` is iOS 5+ and needs
+no identity, so the measurement is feasible; until it runs, these four are a decision, and the row says so.
+
+**What was grepped for and came back empty**, recorded rather than omitted: `kSSLProtocol2` and
+`kSSLProtocol3` in the 16.4 SDK's `CFNetwork.h`, and `kSSLProtocolTLSv1_2` in the same header. Both greps
+returned nothing, so there was no release-side constant to defer to and the fallback stands.
+
+## The comparator is implemented; the setters are not
+
+`sec_protocol_options_are_equal` (`:86`) reads back the settings the port **holds**, so it is
+`implemented` — it is the one thing the port can answer truthfully. The equality is its own state and
+nothing else: a comparison against the release's stack would compare nothing, because there is no such
+stack. The 26 setters remain owed, each inert with the effect that the handshake ignores it.

@@ -2,8 +2,8 @@
   "framework": "Security",
   "entries": [
     {
-      "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
-      "effect": "0, and 0 IS NOT A MEMBER of tls_protocol_version_t: the enum is TLSv10 0x0301, TLSv12 0x0303, TLSv13 0x0304, DTLSv12 0xfefd, every one a REAL version (SecProtocolTypes.h:58-66). The header promises only \"A tls_protocol_version_t value\" and names no absence, so this is a sentinel the port manufactures, and the cost is stated: A CALLER CANNOT TELL IT FROM A VALUE THE ENUM DOES NOT DEFINE. It never reports a negotiated version, because nothing on 6.1.3 negotiates one",
+      "api": "sec_protocol_metadata_access_pre_shared_keys()",
+      "effect": "false - the header's own @return, \"Returns true if the PSKs were accessible, false otherwise\" (SecProtocolMetadata.h:267) - AND THE HANDLER IS NOT RUN. A block that ran here would hand the caller a PSK and a psk_identity that were never negotiated, and the caller would act on a secret that does not exist. Nothing on 6.1.3 produces a metadata object, so there is never anything to hand over",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
@@ -24,8 +24,8 @@
       "status": "inert"
     },
     {
-      "api": "sec_protocol_metadata_access_pre_shared_keys()",
-      "effect": "false - the header's own @return, \"Returns true if the PSKs were accessible, false otherwise\" (SecProtocolMetadata.h:267) - AND THE HANDLER IS NOT RUN. A block that ran here would hand the caller a PSK and a psk_identity that were never negotiated, and the caller would act on a secret that does not exist. Nothing on 6.1.3 produces a metadata object, so there is never anything to hand over",
+      "api": "sec_protocol_metadata_get_negotiated_tls_protocol_version()",
+      "effect": "0, and 0 IS NOT A MEMBER of tls_protocol_version_t: the enum is TLSv10 0x0301, TLSv12 0x0303, TLSv13 0x0304, DTLSv12 0xfefd, every one a REAL version (SecProtocolTypes.h:58-66). The header promises only \"A tls_protocol_version_t value\" and names no absence, so this is a sentinel the port manufactures, and the cost is stated: A CALLER CANNOT TELL IT FROM A VALUE THE ENUM DOES NOT DEFINE. It never reports a negotiated version, because nothing on 6.1.3 negotiates one",
       "facts": "facts/Security/SecProtocolMetadata.md",
       "introduced": "13.0",
       "kind": "function",
@@ -33,6 +33,61 @@
       "reason": "the header declares a TYPE and a function and the port supplies the object under its own name: as clang -E emits it, sec_protocol_metadata_t is `NSObject<OS_sec_protocol_metadata> * __attribute__((objc_independent_class))`. The class is DELIBERATELY EMPTY - this header has no setter and nothing in 6.1.3 ever produces a metadata, one being handed to a TLS callback by the handshake that negotiated it - so a held value would be a number that LOOKS negotiated with no caller able to have set it",
       "source": "SDK 16.4, Security",
       "status": "inert"
+    },
+    {
+      "api": "sec_protocol_options_are_equal()",
+      "effect": "the settings the port HOLDS, compared with each other: equal when both were given the same version range, different when they were not, true for the same object, true for two NULLs, false for one. Measured: both-empty equal, same range equal, different range different, same object, null cases and the ARC balance all agree. The equality is the port's own state and NOTHING ELSE - a comparison against the release's stack would compare nothing, because there is no such stack",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "a GETTER that reads back what was put, which is the one thing the port can answer truthfully; every setter on the same object is inert, and the comparator is implemented because it reads the setters' held state rather than the release's",
+      "source": "SDK 16.4, Security",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_protocol_options_get_default_max_dtls_protocol_version()",
+      "effect": "**THE VALUE IS THE PORT'S STACK RANGE, NOT 26.2's, and it IS NOT MEASURED ON 6.1.3.** The header's @return reads \"The default minimum TLS version\" and NAMES THE QUANTITY without stating a number, so the number is the coordinator's decision from the release's stack constants - kTLSProtocol12 as its top, DTLS 1.0 only - and a guest measurement (SSLCreateContext then SSLGetProtocolVersionMin/Max on a fresh context, which needs no identity) would replace it. RECORDED AS A CRUTCH. **TLSv13 (0x0304) and DTLSv12 (0xfefd) are NEVER returned, because 6.1.3 cannot negotiate them** and a caller asking what it would get by default must not be told about a version the release cannot honour. Measured on the host: tls_protocol_version_DTLSv10, 0xfeff",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header's @return (:280) names the quantity and does not state a value, so the classification is implemented - the function answers the documented default - while the NUMBER is a decision recorded as a crutch. What the port cannot do is negotiate it",
+      "source": "SDK 16.4, Security header text, plus the coordinator decision from the release stack",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_protocol_options_get_default_max_tls_protocol_version()",
+      "effect": "**THE VALUE IS THE PORT'S STACK RANGE, NOT 26.2's, and it IS NOT MEASURED ON 6.1.3.** The header's @return reads \"The default minimum TLS version\" and NAMES THE QUANTITY without stating a number, so the number is the coordinator's decision from the release's stack constants - kTLSProtocol12 as its top, DTLS 1.0 only - and a guest measurement (SSLCreateContext then SSLGetProtocolVersionMin/Max on a fresh context, which needs no identity) would replace it. RECORDED AS A CRUTCH. **TLSv13 (0x0304) and DTLSv12 (0xfefd) are NEVER returned, because 6.1.3 cannot negotiate them** and a caller asking what it would get by default must not be told about a version the release cannot honour. Measured on the host: tls_protocol_version_TLSv12, 0x0303",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header's @return (:268) names the quantity and does not state a value, so the classification is implemented - the function answers the documented default - while the NUMBER is a decision recorded as a crutch. What the port cannot do is negotiate it",
+      "source": "SDK 16.4, Security header text, plus the coordinator decision from the release stack",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_protocol_options_get_default_min_dtls_protocol_version()",
+      "effect": "**THE VALUE IS THE PORT'S STACK RANGE, NOT 26.2's, and it IS NOT MEASURED ON 6.1.3.** The header's @return reads \"The default minimum TLS version\" and NAMES THE QUANTITY without stating a number, so the number is the coordinator's decision from the release's stack constants - kTLSProtocol12 as its top, DTLS 1.0 only - and a guest measurement (SSLCreateContext then SSLGetProtocolVersionMin/Max on a fresh context, which needs no identity) would replace it. RECORDED AS A CRUTCH. **TLSv13 (0x0304) and DTLSv12 (0xfefd) are NEVER returned, because 6.1.3 cannot negotiate them** and a caller asking what it would get by default must not be told about a version the release cannot honour. Measured on the host: tls_protocol_version_DTLSv10, 0xfeff",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header's @return (:223) names the quantity and does not state a value, so the classification is implemented - the function answers the documented default - while the NUMBER is a decision recorded as a crutch. What the port cannot do is negotiate it",
+      "source": "SDK 16.4, Security header text, plus the coordinator decision from the release stack",
+      "status": "implemented"
+    },
+    {
+      "api": "sec_protocol_options_get_default_min_tls_protocol_version()",
+      "effect": "**THE VALUE IS THE PORT'S STACK RANGE, NOT 26.2's, and it IS NOT MEASURED ON 6.1.3.** The header's @return reads \"The default minimum TLS version\" and NAMES THE QUANTITY without stating a number, so the number is the coordinator's decision from the release's stack constants - kTLSProtocol12 as its top, DTLS 1.0 only - and a guest measurement (SSLCreateContext then SSLGetProtocolVersionMin/Max on a fresh context, which needs no identity) would replace it. RECORDED AS A CRUTCH. **TLSv13 (0x0304) and DTLSv12 (0xfefd) are NEVER returned, because 6.1.3 cannot negotiate them** and a caller asking what it would get by default must not be told about a version the release cannot honour. Measured on the host: tls_protocol_version_TLSv10, 0x0301",
+      "facts": "facts/Security/SecProtocolWorklist.md",
+      "introduced": "13.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "the header's @return (:211) names the quantity and does not state a value, so the classification is implemented - the function answers the documented default - while the NUMBER is a decision recorded as a crutch. What the port cannot do is negotiate it",
+      "source": "SDK 16.4, Security header text, plus the coordinator decision from the release stack",
+      "status": "implemented"
     }
   ]
 }
