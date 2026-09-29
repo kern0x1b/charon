@@ -33,9 +33,9 @@ mkdir -p "$build"
 # One line, split where it is used. This was a multi-line string handed to `set --`, which set the
 # SCRIPT's positional parameters, and inside build_and_run "$@" is the function's own two arguments --
 # so the compiler was handed the tag "plain" where a -D belongs.
-renames="-DASAuthorizationRequest=PortASAuthorizationRequest -DASAuthorizationOpenIDRequest=PortASAuthorizationOpenIDRequest -DASAuthorizationAppleIDRequest=PortASAuthorizationAppleIDRequest -DASCharonProviderCodingKey=PortASCharonProviderCodingKey"
+renames="-DASAuthorizationRequest=PortASAuthorizationRequest -DASAuthorizationOpenIDRequest=PortASAuthorizationOpenIDRequest -DASAuthorizationAppleIDRequest=PortASAuthorizationAppleIDRequest -DASCharonProviderCodingKey=PortASCharonProviderCodingKey -DASAuthorizationAppleIDProvider=PortASAuthorizationAppleIDProvider"
 
-sources="ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m"
+sources="ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m ASAuthorizationAppleIDProvider.m"
 
 # build_and_run <source-dir> <tag>: compile the port's three sources from there under the renames, link
 # them with the test into one binary, and run it. The tag is where the table lands. It returns the
@@ -57,9 +57,9 @@ build_and_run() {
             echo "FAIL: the two builds did not link into one binary"; head -6 "$build/$tag-link.log"; return 1; }
     # The port's renames are what make them a second hierarchy rather than a second name: the three
     # Port classes are in the binary and nothing else is.
-    portCount=$(nm -m "$build/$tag-values" 2>/dev/null | grep -cE 'OBJC_CLASS_[$]_PortASAuthorization(Request|OpenIDRequest|AppleIDRequest)' || true)
-    if [ "$portCount" -ne 3 ]; then
-        echo "FAIL: the binary does not carry the port's three renamed classes ($portCount found)"
+    portCount=$(nm -m "$build/$tag-values" 2>/dev/null | grep -cE 'OBJC_CLASS_[$]_PortASAuthorization(Request|OpenIDRequest|AppleIDRequest|AppleIDProvider)' || true)
+    if [ "$portCount" -ne 4 ]; then
+        echo "FAIL: the binary does not carry the port's four renamed classes ($portCount found)"
         return 1
     fi
     "$build/$tag-values" "$framework" > "$build/$tag-table.txt" 2> "$build/$tag-table.err" || {

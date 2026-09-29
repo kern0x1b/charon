@@ -76,7 +76,7 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
     // header does not mark it unavailable. Two constructors, one per side, and this says so.
     id request = onHost
         ? ((id (*)(id, SEL))objc_msgSend)(providerForThisSide, sel_registerName("createRequest"))
-        : ((id (*)(id, SEL))objc_msgSend)(((id (*)(id, SEL))objc_msgSend)((id)openID, sel_registerName("alloc")), sel_registerName("init"));
+        : ((id (*)(id, SEL))objc_msgSend)(providerForThisSide, sel_registerName("createRequest"));
     if (!request) {
         printf("  FAIL no request could be made from %s\n", class_getName(openID));
         return;
@@ -104,7 +104,7 @@ static void report(const char *label, int onHost, id providerForThisSide, Class 
     if (appleID) {
         id apple = onHost
             ? ((id (*)(id, SEL))objc_msgSend)(providerForThisSide, sel_registerName("createRequest"))
-            : ((id (*)(id, SEL))objc_msgSend)(((id (*)(id, SEL))objc_msgSend)((id)appleID, sel_registerName("alloc")), sel_registerName("init"));
+            : ((id (*)(id, SEL))objc_msgSend)(providerForThisSide, sel_registerName("createRequest"));
         if (!apple) {
             printf("  FAIL no request could be made from %s\n", class_getName(appleID));
             return;
@@ -149,6 +149,12 @@ int main(int argc, char **argv)
         fprintf(stderr, "the port's %s is not linked into this test\n", kPortOpenID);
         return 1;
     }
-    report("port", 0, nil, portOpenID, portApple, hostImplicit);
+    // The port's provider, made the way the port's provider is made: its own construction, because the
+    // provider's superclass is NSObject and -init is not marked unavailable on it.
+    id portProvider = ((id (*)(id, SEL))objc_msgSend)(((id (*)(id, SEL))objc_msgSend)
+        (NSClassFromString([NSString stringWithUTF8String:"PortASAuthorizationAppleIDProvider"]), sel_registerName("alloc")),
+        sel_registerName("init"));
+    if (!portProvider) { fprintf(stderr, "the port's own provider could not be made\n"); return 1; }
+    report("port", 0, portProvider, portOpenID, portApple, hostImplicit);
     return 0;
 }
