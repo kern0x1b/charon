@@ -113,3 +113,19 @@ The lesson worth keeping, because it happened twice in this family: **a link wit
 measure the port at all** - it measures the host, and agrees with it perfectly. A harness that cannot
 show, on its own output, which classes it is talking to will report a false agreement.
 
+## That the comparison can fail
+
+Two mutations of this port, each reverted, each shown red against the release:
+
+* **the pooling kernels' default edge mode back to clamp** - `pooling-average-2x2` goes to
+  `system 0.25 port 1`, one case differing. It is the only case that does not set an edge mode, so it is
+  the only one that sees the default.
+* **the divisor counting only the taps inside the image** - three cases red: `pooling-average-2x2` to
+  `system 0.25 port 1`, and `pooling-average-pad0` and `pooling-average-pad1` both to
+  `system 1.33333 port 3`, which is 12 over 4 rather than 12 over 9.
+
+The second is the one that matters for the rule in this file: the three 3x3 cases are where the divisor
+is the whole window, and a divisor that counted only the values really there would pass the 2x2 case
+and fail all three of those. Both mutations are in `git log` as their own commits, and the tree carries
+neither.
+
