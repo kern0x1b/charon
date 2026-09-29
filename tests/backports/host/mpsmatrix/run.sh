@@ -22,7 +22,7 @@ target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness -Wno-objc-protocol-method-implementation"
 mkdir -p "$build"
 
-xcrun clang -fobjc-arc $target $quiet "$here/mps-cases.m" \
+xcrun clang -fobjc-arc -Wformat -Werror=format $target $quiet "$here/mps-cases.m" \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/system"
 # The system's own MPS aborts on some cases, and an oracle that dies half way through can only be
 # compared over the part it produced. Which cases those are is said out loud rather than hidden.
@@ -47,7 +47,7 @@ fi
 rm -rf "$build/plain"
 mkdir -p "$build/plain"
 for source in "$mps"/*.m; do
-    xcrun clang -fobjc-arc -w $target $candidate -c "$source" -o "$build/plain/$(basename "$source" .m).o"
+    xcrun clang -fobjc-arc -Wformat -Werror=format $target $candidate -c "$source" -o "$build/plain/$(basename "$source" .m).o"
     [ -f "$build/plain/$(basename "$source" .m).o" ] || { echo "cannot read an object from $source; stopping"; exit 1; }
 done
 for object in "$build/plain"/*.o; do xcrun nm -g --defined-only "$object"; done \
@@ -67,7 +67,7 @@ printf '#import <MetalPerformanceShaders/MetalPerformanceShaders.h>\n' > "$build
 objects=""
 for source in "$mps"/*.m; do
     name=$(basename "$source" .m)
-    if ! xcrun clang -fobjc-arc -fvisibility=hidden -DCHARON_BN_TRACE $target $candidate $quiet -c "$source" -o "$build/$name.plain.o"; then
+    if ! xcrun clang -fobjc-arc -Wformat -Werror=format -fvisibility=hidden -DCHARON_BN_TRACE $target $candidate $quiet -c "$source" -o "$build/$name.plain.o"; then
         echo "the port source $source did not compile; stopping, because a count from a stale build is not a count"
         exit 1
     fi
@@ -76,7 +76,7 @@ for source in "$mps"/*.m; do
     # The define belongs here and not only on the plain compile: prefix_selectors.py turns the plain
     # object back into source, and this is the compile whose object is linked, so a define left off
     # here is a trace that is compiled in and then thrown away.
-    if ! xcrun clang -fobjc-arc -fvisibility=hidden -DCHARON_BN_TRACE $target $candidate $quiet -I"$mps" -include "$build/rename.h" \
+    if ! xcrun clang -fobjc-arc -Wformat -Werror=format -fvisibility=hidden -DCHARON_BN_TRACE $target $candidate $quiet -I"$mps" -include "$build/rename.h" \
         -include "$build/declarations.h" -c "$build/$name.m" -o "$build/$name.o"; then
         echo "the prefixed port source $build/$name.m did not compile; stopping"
         exit 1
@@ -85,7 +85,7 @@ for source in "$mps"/*.m; do
 done
 echo "compiled: $(echo "$objects" | wc -w) objects"
 
-xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/mps-cases.m" $objects \
+xcrun clang -fobjc-arc -Wformat -Werror=format $target $quiet -include "$build/rename.h" "$here/mps-cases.m" $objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/port"
 set +e
 "$build/port" > "$build/port.txt" 2> "$build/port.err"
