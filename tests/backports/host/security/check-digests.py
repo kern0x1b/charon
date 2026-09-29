@@ -11,7 +11,7 @@ one a reader copies out of it - died with FileNotFoundError from this very direc
 
 EXITING 0 IS THE WHOLE POINT, and a check that finds nothing to check must NOT exit 0: an earlier
 version printed "NO DIGEST LINES" and returned success, so a tree with no digests at all passed the
-check that exists to catch a README out of step with its files. Three ways this FAILS on purpose:
+check that exists to catch a README out of step with its files. Four ways this FAILS on purpose:
 
   * the README carries no digest lines            -> exit 1
   * fewer digest lines than files cited           -> exit 1

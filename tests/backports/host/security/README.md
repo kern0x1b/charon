@@ -3,9 +3,13 @@
 These are **not** builds. A case is a `clang` compile and a run on this Mac, so the machine's load does
 not apply to them and there is no heavy job: the only heavy things are a `heavy.sh` build and the gates.
 
-`run-cases.sh` is the one command that runs everything here, `check-digests.py` included — it was the
+`run-cases.sh` is the one command that runs the cases here, `check-digests.py` included — the digests were the
 one thing here that nothing ran, which is the defect this directory is about, so the driver runs it
-first and counts its exit. It builds each case **with the port sources
+first and counts its exit. Two scripts in this directory are still run by something else and not by the
+driver, and this says so rather than leaving "everything" to mean them: `gen-security-cases.py` GENERATES
+the case file and `run.sh` runs it, and `check-registered.py` is invoked by nothing in this tree at all —
+it passes (18 in the list, 18 defined, 125 rows of kind constant, exit 0) and it has a `--control` of its own, so whether it belongs
+in the driver's exit path is a decision about coverage and not a wording fix. The driver builds each case **with the port sources
 it is given**, feeds the output to that case's comparator, runs the mutations, and ends with
 `N cases, M mutants, M noticed`. Every case prints exactly one verdict line — `GREEN`, `RED`, `CRASH`,
 `BUILD`, `MISSING` or `NOTRUN` — and the tail fails if the number of `GREEN` lines is not the number of
