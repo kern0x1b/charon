@@ -137,7 +137,16 @@ CHARON_MPS_NEURON_COMMON
     for (NSUInteger row = 0; row < extent; row++) {
         for (NSUInteger column = 0; column < extentAcross; column++) {
             double sum = 0.0;
-            for (NSUInteger index = 0; index < _count; index++) {
+            // The factors left from startIndex, and as many sources as there are of them. Measured in
+            // tests/backports/host/mpsmatrix/fixtures/start-index-legible.m: with four factors of 2, 4, 8,
+            // 16 and sources of 1, 2, 3, 4, start 0 answers 10 = 1*2 + 2*4, start 1 answers 20 = 1*4 + 2*8,
+            // start 2 answers 40 = 1*8 + 2*16, start 3 answers 16 = 1*16 alone, and start 4 answers 0.
+            // Three sources give the same answers, so the factors are the bound and not the sources.
+            NSUInteger factors = scales.length * scales.vectors ? scales.length * scales.vectors : _count;
+            NSUInteger pairs = startIndex < factors ? factors - startIndex : 0;
+            if (pairs > _count)
+                pairs = _count;
+            for (NSUInteger index = 0; index < pairs; index++) {
                 if (index >= sourceMatrices.count) {
                     CharonMPSRefuse(@"MPSMatrixSum: %lu matrices were named and only %lu were given", (unsigned long)_count, (unsigned long)sourceMatrices.count);
                     return;
@@ -173,7 +182,7 @@ CHARON_MPS_NEURON_COMMON
                 // stops at the end of the list. With three factors and two sources, startIndex 1 leaves
                 // one and the release uses it, and startIndex 2 leaves none and the release answers
                 // zeros - so a factor past the end is not read, and its scale stays one.
-                if (startIndex + _count <= scales.length * scales.vectors) {
+                {
                     NSUInteger which = (startIndex + index) / MAX((NSUInteger)1, scales.length);
                     NSUInteger component = (startIndex + index) % MAX((NSUInteger)1, scales.length);
                     if (which < scales.vectors)
