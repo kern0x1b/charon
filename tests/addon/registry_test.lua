@@ -626,7 +626,9 @@ local function inline_rows_step(backports, found)
         table.insert(found, "a declaration without a body must not answer a function row, and it does")
     end
     -- a name that only appears in a comment, in a header that also holds a real definition and the word pairs
-    if asked("CMTagCommentedOnly", "#import <Foundation/Foundation.h>\n/* pairs: CMTagCommentedOnly( CMTag tag ) CF_REFINED_FOR_SWIFT { return 1; } */\n"):find("CMTagCommentedOnly", 1, true) == nil then
+    -- the shape of a real definition, inside a comment: with the comment stripping in place the name does not
+    -- answer, and without it it would - which is what makes the stripping a control rather than a habit
+    if asked("CMTagCommentedOnly", "#import <Foundation/Foundation.h>\n/* CMTagCommentedOnly definition: static inline Boolean CMTagCommentedOnly(CMTag tag) { return 1; } */\n"):find("CMTagCommentedOnly", 1, true) == nil then
         table.insert(found, "a name that only appears in a comment must not answer a function row, and it does")
     end
     -- a name only called inside another body is not a definition
