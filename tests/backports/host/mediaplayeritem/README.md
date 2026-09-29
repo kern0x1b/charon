@@ -63,3 +63,38 @@ comments, assetURL, dateAdded, isPreorder. Both controls hold - `prepareToPlay` 
 are names any framework may declare (`comments`, `assetURL`, `lyrics`, `dateAdded`). A match is necessary
 and not sufficient: a per-framework check against 6.1.3's MediaPlayer image is needed before any of the ten
 is written down as something the device release has. That is the next measurement, not this one.
+
+## What 6.1.3's own MediaPlayer has, per class — the measurement the implementation rests on
+
+Read with `tools/mach32_methods.py` from the 6.1.3 cache (see its test for the controls; the cross-check
+that owes the reader nothing: `valueForProperty:` present in the cache 26 times, `dealloc` 433, a nonsense
+selector 0). 236 classes in `__objc_classlist`, 41 in `__objc_catlist`.
+
+The class cluster, which is why a control that looked only at `MPMediaItem` failed:
+
+    MPMediaItem          superclass MPMediaEntity        own instance 75  own class  7
+    MPMediaEntity        superclass NSObject             own instance 18  own class  1
+    MPConcreteMediaItem  superclass MPMediaItem          own instance 29  own class  3
+    MPConcreteMediaItemCollection  MPMediaItemCollection  own instance 19  own class 0
+    MPNondurableMediaItem          MPMediaItem            own instance 19  own class  2
+
+`valueForProperty:` is an **own** instance method of the public `MPMediaEntity`, alongside
+`valuesForProperties:`, `mediaLibrary`, `representativeItem`, `enumerateValuesForProperties:usingBlock:`,
+`persistentID`, `copyWithZone:`, `isEqual:` and `hash` — the property-dictionary accessors the 22 properties
+are conveniences over.
+
+**None of the 22 getters is anywhere in the release**: not in `MPMediaItem`'s 75, not in
+`MPMediaEntity`'s 18, not in `MPConcreteMediaItem`'s 29, and not in any of the 41 categories. So all 22 are
+carried, and none is a clobber.
+
+| getter | public own | concrete own | categories | verdict |
+| --- | --- | --- | --- | --- |
+| albumTrackNumber, discNumber (7.0) | - | - | - | carry |
+| albumPersistentID, artistPersistentID, albumArtistPersistentID, genrePersistentID, composerPersistentID, podcastPersistentID, albumTrackCount, discCount, beatsPerMinute, isCompilation, isCloudItem, lyrics, comments, assetURL, userGrouping (8.0) | - | - | - | carry |
+| hasProtectedAsset (9.2) | - | - | - | carry |
+| dateAdded, isExplicitItem (10.0) | - | - | - | carry |
+| playbackStoreID, isPreorder (10.3) | - | - | - | carry |
+
+`albumTrackNumber` is declared by `MPAVItem` and `MPMediaQueryNowPlayingItem` in the same image; neither
+is an `MPMediaItem` accessor, and the per-cache selector search had been right that the string exists while
+the per-class walk, before the name mask came off, was not.
