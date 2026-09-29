@@ -47,8 +47,17 @@ columns after it cannot agree, and measured they do not:
             port  1.25   1.5   4     10.25  3.5   6
 
 The first element matching and the rest not is the signature of a per-column bias read where a
-broadcast one is meant, and it is the lead for this family of fifteen. **Not yet fixed** - the
-count is unchanged and this is the reading the header supports, measured, for whoever takes it next.
+broadcast one is meant, and it was the lead for this family of fifteen. **It is wrong, and the
+measurement says so.** Making the bias broadcast - the header's own word - changes the count not at
+all and turns `sum-start-index` into all zeros where the host has values. So the release reads the
+bias per column after all, or broadcasts something else, and `broadcast(bias)` in the header's
+pseudocode does not describe what its kernel does. The port is back on the per-column bias it had,
+which is the state the count of 72 was taken in.
+
+What is still unexplained here, and is a measurement rather than a reading: `sum-transpose` agrees on
+four of its six elements and the release writes **zero** for the other two, where the port has 14 and
+16. A zero where the port has a value is the shape of the twelve named divergences, and this one is not
+among them. It may be a thirteenth.
 
 ## The batch range, and how the release reads it
 
