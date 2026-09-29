@@ -539,6 +539,28 @@
    "effect": "the interval that source's most recent sample covers, and nil where it has none",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries all four"
+  },
+  {
+   "api": "HKCumulativeQuantitySeriesSample",
+   "kind": "class",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the cumulative sample of a series, which the arm64 image of 12.0 carries 7 times and the armv7 image of 8.0 carries 0 times, with sumQuantity at 4 in both as the control",
+   "effect": "the cumulative sample of a series, carrying its own sum over the period the series covers",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract, which declares the class with no availability line of its own, so its property inherits the class's; the arm64 image of 12.0 for the values, which carries the class 7 times as a real class, and its 13.0 superclass 0 times"
+  },
+  {
+   "api": "-[HKCumulativeQuantitySeriesSample sum]",
+   "kind": "property",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the cumulative sample of a series, which the arm64 image of 12.0 carries 7 times and the armv7 image of 8.0 carries 0 times, with sumQuantity at 4 in both as the control",
+   "effect": "the sum, exactly as the library's own initialiser was given it",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract, which declares the class with no availability line of its own, so its property inherits the class's; the arm64 image of 12.0 for the values, which carries the class 7 times as a real class, and its 13.0 superclass 0 times"
   }
  ]
 }

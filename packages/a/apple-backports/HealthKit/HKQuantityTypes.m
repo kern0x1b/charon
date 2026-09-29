@@ -80,6 +80,9 @@ Class CharonHKClassForObjectKind(NSInteger kind)
     // of its own rather than its superclass's.
     case 5:
         return resolve(@"HKCumulativeQuantitySample");
+    // The cumulative sample of a series, of 12.0, beside its 13.0 superclass.
+    case 6:
+        return resolve(@"HKCumulativeQuantitySeriesSample");
     default:
         return Nil;
     }

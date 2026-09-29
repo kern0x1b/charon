@@ -380,6 +380,43 @@ needs it is of 12.0.
 The store's kind table gained a case for it: kind 5, because it is a quantity sample and not one, and the
 table has to read one back as this class rather than as its superclass.
 
+## The cumulative sample of a series, of 12.0, over a superclass of 13.0
+
+`HKCumulativeQuantitySeriesSample` is of 12.0 and its superclass is of 13.0. The 26.2 header declares it
+`@interface HKCumulativeQuantitySeriesSample : HKCumulativeQuantitySample` with one readonly
+`HKQuantity *sum`, and carries **no availability line of its own** on the class, so the property inherits
+the class's.
+
+By substring count with a boundary after the name, in the arm64 image of 12.0 and the armv7 image of 8.0:
+
+| name | 12.0 arm64 | 8.0 armv7 |
+|---|---|---|
+| `HKCumulativeQuantitySeriesSample` | 7, and as a real class (`_OBJC_CLASS_$_`, `_OBJC_METACLASS_$_`) | 0 |
+| `HKCumulativeQuantitySample` (its superclass) | 0 | 0 |
+| `sumQuantity` (the control) | 4 | 4 |
+| `startDate` (the control) | - | 17 |
+
+So the class is at 12.0 and its superclass's own name is not in that image, which is the same disagreement
+recorded for the 13.0 class: at 12.0 the superclass was private or unnamed, and Apple documented it at 13.0.
+
+**What could not be measured, and is not claimed: the `sum` selector.** A packed cache gives 171
+whole-token matches for `sum` - it is a prefix of many identifiers and a word in many strings - and no way
+to attribute any of them to this class's accessor. The property is carried because the header declares it
+and the class is at 12.0; no count backs that one statement, and this is where it is recorded.
+
+The kind table gained case 6, beside case 5 for the superclass: it names a class per kind, and this is not
+its superclass.
+
+## What the kind table decides, and what it does not
+
+Since the archive's root is decoded by the unarchiver (`16b1a771b`), the class of an object read out of the
+store comes from the archive's own class name, not from the kind the table resolves. The kind still picks
+**whose** `+charon_objectFromArchive:type:store:` runs - so a row whose kind names no class cannot be read
+at all - but it no longer decides **which** class the object comes back as. A mutant that changes a
+stored kind therefore tests nothing here: the cumulative sample's kind was mutated from 5 to 1 and the
+round trip did not notice. The mutants for the cumulative classes are on the fact each class adds - the
+running total, and the series' own sum - which is what the read has to preserve.
+
 ## The device run
 
 None yet. Everything above is a read of a release image, a release cache, the SDK headers and the

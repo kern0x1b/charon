@@ -24,6 +24,13 @@
 
 #import "CharonHKStore.h"
 
+@interface HKCumulativeQuantitySample (CharonIOS130Internal)
+- (instancetype)charon_initWithCumulativeType:(HKQuantityType *)quantityType
+                                          sum:(HKQuantity *)sum
+                                     startDate:(NSDate *)startDate
+                                       endDate:(NSDate *)endDate;
+@end
+
 @interface HKSample (CharonIOS130Internal)
 @property (readonly, copy) HKSampleType *sampleType;
 - (instancetype)charon_initWithType:(HKSampleType *)sampleType
@@ -51,11 +58,21 @@
                                 startDate:(NSDate *)startDate
                                   endDate:(NSDate *)endDate
 {
+    return [[self alloc] charon_initWithCumulativeType:quantityType sum:sum startDate:startDate endDate:endDate];
+}
+
+// The same path as an instance initialiser, so a subclass of this class gets the type, the two dates and
+// the running total through it and adds only what is its own. [self alloc] in a subclass is that subclass.
+- (instancetype)charon_initWithCumulativeType:(HKQuantityType *)quantityType
+                                          sum:(HKQuantity *)sum
+                                     startDate:(NSDate *)startDate
+                                       endDate:(NSDate *)endDate
+{
     HKCumulativeQuantitySample *sample =
-        (HKCumulativeQuantitySample *)[[self alloc] charon_initWithType:quantityType
-                                                               metadata:nil
-                                                              startDate:startDate
-                                                                endDate:endDate];
+        (HKCumulativeQuantitySample *)[self charon_initWithType:quantityType
+                                                      metadata:nil
+                                                     startDate:startDate
+                                                       endDate:endDate];
     if (sample)
         sample->_sumQuantity = [sum copy];
     return sample;
