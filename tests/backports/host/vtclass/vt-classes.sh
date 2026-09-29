@@ -19,6 +19,10 @@ work=$(cd "$here/../../../.." && pwd)
 vt="$work/packages/a/apple-backports/VideoToolbox"
 t="$work/tests/backports/host/vtclass"
 gen="$work/.agent-work/generated/vt"
+# THIS SCRIPT'S OWN OUTPUT GOES UNDER THE WORKTREE, never in the temp path. An armv7 .o and the message
+# handed to git commit are both durable artefacts, and the temp path is wiped - so a run that wrote a commit
+# message there and was interrupted before committing lost it with nothing left to find.
+runs="$work/.agent-work/runs/vtclass"
 log=$work/.agent-work/runs/vt-classes.log
 mkdir -p "$(dirname "$log")"
 sdk=${VT_SDK:-$HOME/.xmake/packages/i/iphoneos-sdk/26.2/05d7872150914e1884a8de9d9dc71896/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk}
@@ -129,7 +133,7 @@ PY
     # 4. armv7, against the lowered SDK: the release the port has to build for
     for f in "$vt"/*.m; do
         xcrun clang -target armv7-apple-ios6.1 -isysroot "$low" -I"$vt/.." -c "$f" \
-            -o /tmp/vtclass-$(basename "$f" .m).o -w
+            -o $runs/vtclass-$(basename "$f" .m).o -w
     done
     echo "   armv7: $(ls "$vt"/*.m | wc -l | tr -d ' ') value files clean"
 
@@ -145,7 +149,7 @@ PY
     # 6. the commit: the class, and its two list lines, together - and only now
     cp "$staged/covered.txt" "$t/covered.txt"
     cp "$staged/mutants.txt" "$t/mutants.txt"
-    python3 - "$cls" "$gen/$cls.m" > /tmp/vtclass-msg.txt <<'PY'
+    python3 - "$cls" "$gen/$cls.m" > $runs/vtclass-msg.txt <<'PY'
 import json, sys
 cls, path = sys.argv[1], sys.argv[2]
 s = json.load(open('%s/summary.json' % path.rsplit('/', 1)[0]))[cls]
@@ -192,7 +196,7 @@ print("members of this family are judged from the iOS table alone, because the h
 print("declare them at all.")
 PY
     git add -A -- packages tests
-    git -c user.name=opencode -c user.email=opencode@local commit -q -F /tmp/vtclass-msg.txt
+    git -c user.name=opencode -c user.email=opencode@local commit -q -F $runs/vtclass-msg.txt
     rm -rf "$staged"
     echo "   committed $(git log --oneline -1 | cut -c1-58)"
 done
