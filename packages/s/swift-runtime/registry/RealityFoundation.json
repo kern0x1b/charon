@@ -857,8 +857,8 @@
             "introduced": "15.0",
             "minimum": "6.1.3",
             "status": "implemented",
-            "reason": "the SDK has no such member: an emitter is a component and a program reaches it through entity.components[ParticleEmitterComponent.self]. This is the accessor's this port adds, named the way the module's other optional components are",
-            "effect": "an entity's emitter, read and written through the component set, and nil for an entity that has none - the shape the SDK's own accessors of the same kind have",
+            "reason": "this accessor is the port's own and not a member the SDK declares: a program reaches the emitter through entity.components[ParticleEmitterComponent.self], and the interface has no Entity.particleEmitter. The invented-names check found this row the one name of 421 that no arm64e interface declares, and it is listed in the README's table as the port's own",
+            "effect": "an entity's emitter, read and written through the component set, and nil for an entity that has none - the shape the SDK's own accessors of the same kind have. The accessor is this port's, named for the module's other optional components; the component itself is Apple's, and ParticleEmitterComponent's rows say so",
             "source": "the host differential in the tree, tests/backports/host/realityfoundation (319 checks, run by tests/backports/host/run-all.sh), and the SDK interface each declaration was read from"
         },
         {

@@ -20,6 +20,7 @@ find.
 
     usage: invented.py <series-base> > invented-names.txt
 """
+import json
 import os
 import re
 import subprocess
@@ -49,15 +50,24 @@ def interfaces():
         ["find", os.path.join(home, ".xmake/packages/i/iphoneos-sdk"), "-name",
          "arm64e-apple-ios.swiftinterface", "-path", "*Reality*"],
         capture_output=True, text=True).stdout.split("\n")
+    modules = {}
     for module in sorted(m for m in found if m):
         release = ""
         for part in module.split("/"):
             if part.startswith("iPhoneOS") and part.endswith(".sdk"):
                 release = part.replace("iPhoneOS", "").replace(".sdk", "")
-        if not release or release in out:
+        if not release:
             continue
-        text = open(module, encoding="utf-8", errors="replace").read()
-        out[release] = (module, set(re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\b", text)))
+        modules.setdefault(release, []).append(module)
+    for release, paths in modules.items():
+        # both frameworks, unioned: a release's Reality surface is what its two interfaces declare
+        # between them, and taking one of the two made every RealityKit row read as invented
+        words = set()
+        for module in paths:
+            text = open(module, encoding="utf-8", errors="replace").read()
+            words |= set(re.findall(r"\b([A-Za-z_][A-Za-z0-9_]*)\b", text))
+        out[release] = (" and ".join(os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(p))))
+                        for p in paths), words)
     return out
 
 
@@ -77,9 +87,56 @@ def declared_names(base):
     return added
 
 
+def row_names(registries):
+    """Every implemented row's name, from the registries, with the row that carries it."""
+    names = []
+    for path in registries:
+        for entry in json.load(open(path, encoding="utf-8"))["entries"]:
+            if entry.get("status") == "implemented":
+                names.append((entry["api"], os.path.basename(path)))
+    return names
+
+
 def main(argv):
+    if argv and argv[0] == "--rows":
+        registries = [a for a in argv[1:] if a.endswith(".json")]
+        if not registries:
+            sys.exit("usage: invented.py --rows <registry.json>...")
+        found = interfaces()
+        versions = sorted(found)
+        if not versions:
+            sys.exit("invented.py: no arm64e Reality interface in the store")
+        words = {v: found[v][1] for v in versions}
+        print("# every implemented row's name, against the SDKs' arm64e interfaces (%s)"
+              % ", ".join(versions))
+        buckets = {"both": [], "newer": [], "older": [], "neither": [], "operator": []}
+        for api, registry in row_names(registries):
+            leaf = re.sub(r"\(.*", "", api.split(".")[-1]).strip()
+            if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", leaf):
+                # a row whose name is an operator - ==, the synthesised ones - is not readable out
+                # of a word set: the character class a word is drawn from excludes it
+                buckets["operator"].append((api, registry))
+                continue
+            in_old = leaf in words[versions[0]]
+            in_new = leaf in words[versions[-1]]
+            key = ("both" if in_old and in_new else "newer" if in_new
+                   else "older" if in_old else "neither")
+            buckets[key].append((api, registry))
+        for key, label in (("both", "in %s and %s" % (versions[0], versions[-1])),
+                           ("newer", "in %s only" % versions[-1]),
+                           ("older", "in %s only" % versions[0]),
+                           ("neither", "IN NEITHER - read every one of these"),
+                           ("operator", "a name that is an operator, which a word set cannot hold")):
+            print("\n## %s (%d)" % (label, len(buckets[key])))
+            for api, registry in buckets[key]:
+                print("   %-72s %s" % (api[:72], registry))
+        total = sum(len(v) for v in buckets.values())
+        print("\n# %d implemented rows: %d in an interface, %d in neither, %d an operator"
+              % (total, total - len(buckets["neither"]) - len(buckets["operator"]),
+                 len(buckets["neither"]), len(buckets["operator"])))
+        return 0
     if len(argv) != 1:
-        sys.exit("usage: invented.py <series-base>")
+        sys.exit("usage: invented.py <series-base> | --rows <registry.json>...")
     base = argv[0]
     found = interfaces()
     versions = sorted(found)
