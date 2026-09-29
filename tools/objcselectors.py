@@ -50,9 +50,14 @@ def methods(cache, ro, base_off, limit):
     do not understand: this FAILS rather than reporting selectors it invented.
     """
     base = cache.u32_at(ro + base_off)
-    if not base or base < limit:
+    if not base:
         return []
     mo = cache.require_off(base, 'method list at ro+%d' % base_off)
+    # The bound is on the FILE OFFSET, never on the ADDRESS: base is an address and every address in
+    # this cache is below 2**62, so testing the address against the bound refused EVERY list and made a
+    # working reader return nothing.
+    if mo >= limit:
+        return []
     entsize, count = struct.unpack_from('<II', cache._m, mo)
     # The first word is NOT a stride and NOT a zero flag word: on this 6.1.3 cache it reads 0x0000000f
     # for lists whose entries are plainly 12 bytes apart, so deriving the stride from it - or asserting
