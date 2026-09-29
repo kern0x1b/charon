@@ -5,24 +5,24 @@
 
 // CIColor exists on iOS 6: what it does not have is a way to name the colour space a colour was
 // measured in. The components of a colour given in a space are that colour as the space sees it, so
-// the colour is built by matching it into the space the renderer works in - which is what CoreGraphics
-// does with a colour and a space, and not an invention. What comes back is the framework's own CIColor,
-// so it is a real colour object and every existing method of it works on it.
+// the colour is built in the space the caller named, and the framework's own CIColor is made over it,
+// so it is a real colour object and every existing method of it works on it. The renderer converts
+// when it draws, which is where a conversion belongs: converting here changed what the accessors
+// answer, and the caller reads those.
 
 static CGColorRef CharonCIColorConvert(CGFloat red, CGFloat green, CGFloat blue, CGFloat alpha, CGColorSpaceRef space)
 {
-    // The colour as the named space sees it, and then the same colour in the space the renderer works
-    // in, which is the one a CIColor of that colour is made with.
+    // The colour in the space the caller named, and NOT matched into the space the renderer works
+    // in.  Matching it here is what this function used to do, and it made the accessors answer a
+    // number the caller never passed: measured, a green of 0.0000 in
+    // kCGColorSpaceGenericRGB came back 0.1491, and 0.2/0.6/0.9 came back 0.2403/0.6697/0.9208,
+    // because the components read back were the ones in the space the colour had been converted
+    // into.  The system keeps the caller's components in the caller's space - `-[CIColor green]` on
+    // that colour is 0.0000 - and converts when it renders, and the rendered bytes are the same
+    // either way: the pixels of that colour are 0 811c9dc5 in both processes.
     if (!space)
         space = CGColorSpaceCreateDeviceRGB();
-    CGColorRef given = CGColorCreate(space, (CGFloat[]){red, green, blue, alpha});
-    // The colour as the named space sees it, matched into the space the renderer works in, which is
-    // what CoreGraphics does with a colour and a space and is not a conversion invented here.
-    CGColorRef matched = given ? CGColorCreateCopyByMatchingToColorSpace(CGColorSpaceCreateDeviceRGB(),
-                                                                        kCGRenderingIntentDefault, given, NULL)
-                               : NULL;
-    CGColorRelease(given);
-    return matched;
+    return CGColorCreate(space, (CGFloat[]){red, green, blue, alpha});
 }
 
 @implementation CIColor (CharonColorSpace)
