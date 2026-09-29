@@ -16,6 +16,10 @@
 -- says how much of the release mentions AX at all, and the names it turns up in other frameworks are the
 -- reason the first figure is scoped to the three Accessibility libraries.
 --
+-- Its last line is two numbers, and they are two numbers: a sum over every word and the number of
+-- distinct exports behind it. Four exports contain two of the words each, so the sum is four more than
+-- the exports, and a count of the surface that quotes the sum as a count of exports is wrong by four.
+--
 -- Usage: xmake l tests/backports/settings/axs-census.lua <release> <architecture> <modules>
 function main(release, architecture, modules)
     local dyld = import("apple.dyld", {rootdir = modules, anonymous = true})
