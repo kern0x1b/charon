@@ -339,6 +339,11 @@ end
 local function dumper(opt, frameworks, headers)
     local umbrella = path.join(opt.outputdir, "umbrella.m")
     local lines = {}
+    -- Foundation first, and for a reason: the macro a redeclaration writes for a swift_private property and
+    -- API_AVAILABLE are both declared in NSObjCRuntime.h, which a header that imports only its own framework
+    -- does not reach. A lifted header is written under the same umbrella this is, so this is where that scope
+    -- comes from - not from the header's own imports, which are the SDK's business and not ours to widen.
+    table.insert(lines, "#import <Foundation/Foundation.h>")
     for _, framework in ipairs(frameworks) do
         local folder = path.join(opt.sdk, "System", "Library", "Frameworks", framework .. ".framework", "Headers")
         for _, header in ipairs(framework_headers(opt.sdk, framework)) do
@@ -1395,14 +1400,14 @@ function member_declaration(member, name, target)
                 table.insert(attributes, accessor .. "=" .. member[accessor].name)
             end
         end
-        -- A property the SDK declares swift_private is one Swift must not see by its own name; a redeclaration that
-        -- dropped the attribute would show Swift a member of a name it did not have, so the redeclared property
-        -- carries the same macro the SDK's declaration spells. The fact is clang's own attribute kind; what is
-        -- written is the macro's name, which is what a header says and what the umbrella's Foundation defines.
-        if has_attribute(member, "SwiftPrivateAttr") then
-            table.insert(attributes, "NS_REFINED_FOR_SWIFT")
-        end
-        return string.format("@property (%s) %s %s API_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type, name, target)
+        -- A property the SDK declares swift_private is one Swift must not see by its own name, and a redeclaration
+        -- that dropped the attribute would show Swift a member of a name it does not have. NS_REFINED_FOR_SWIFT
+        -- expands to __attribute__((swift_private)), so it goes AFTER the declarator, beside API_AVAILABLE and not
+        -- inside the property's own attribute list, where clang reads the expansion as an unknown property attribute.
+        -- The fact is clang's attribute kind; what is written is the macro's name, as a header spells it.
+        local refined = has_attribute(member, "SwiftPrivateAttr") and "NS_REFINED_FOR_SWIFT " or ""
+        return string.format("@property (%s) %s %s %sAPI_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type,
+                             name, refined, target)
     end
     local parameters, parts = {}, {}
     for _, child in ipairs(member.inner or {}) do

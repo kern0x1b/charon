@@ -481,7 +481,7 @@ function failures(opt)
     local swift_private = property_with({{kind = "SwiftPrivateAttr"}})
     expect_equal(found, "a property the SDK declares swift_private is redeclared with the macro",
                  lift.member_declaration(swift_private, "destinationFrame", "6.0"),
-                 "@property (readonly, NS_REFINED_FOR_SWIFT) id destinationFrame API_AVAILABLE(ios(6.0));")
+                 "@property (readonly) id destinationFrame NS_REFINED_FOR_SWIFT API_AVAILABLE(ios(6.0));")
     expect_equal(found, "and it carries no other attribute", table.concat(lift.uncarried_attributes(swift_private), ","), "")
     local others = property_with({{kind = "AvailabilityAttr", introduced = "17.0"}, {kind = "SwiftPrivateAttr"},
                                  {kind = "SwiftObjCMembersAttr"}})
@@ -489,6 +489,63 @@ function failures(opt)
                  table.concat(lift.uncarried_attributes(others), ","), "SwiftObjCMembersAttr")
     expect_equal(found, "and availability alone is carried",
                  table.concat(lift.uncarried_attributes({inner = {{kind = "AvailabilityAttr"}}}), ","), "")
+
+    -- The redeclaration clang accepts, asked of clang and not of a string: a comparison let two
+    -- compiler-confirmed defects through a green suite - NS_REFINED_FOR_SWIFT inside the property's attribute
+    -- list, which clang reads as an unknown property attribute, and a header with no NSObjCRuntime to define
+    -- the macro. The header imports only its own framework and gets Foundation the way the generated umbrella
+    -- gives every lifted header, and the redeclaration written is the one member_declaration() writes.
+    local home = os.getenv("HOME")
+    local store = path.join(home, ".xmake", "packages")
+    local sdks = os.dirs(path.join(store, "i/iphoneos-sdk/16.4/*/Developer.app/Contents/Developer/Platforms/"
+                                      .. "iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk"))
+    local clang = os.getenv("LIFT_CLANG")
+    if not clang or #clang == 0 then
+        -- os.dirs() lists directories, so the bin directory is globbed and the binary taken from it
+        for _, bin in ipairs(os.dirs(path.join(store, "l/llvm/*/*/bin"))) do
+            if os.isfile(path.join(bin, "clang")) then
+                clang = path.join(bin, "clang")
+                break
+            end
+        end
+    end
+    if #sdks == 0 then
+        print("skipped: no iPhoneOS 16.4 SDK under " .. path.join(store, "i/iphoneos-sdk/16.4"))
+    elseif not clang then
+        print("skipped: no clang under " .. path.join(store, "l/llvm"))
+    else
+        local written = path.join(os.tmpdir(), "charon-lift-redeclaration")
+        for _, only in ipairs({"CoreGraphics", "Foundation"}) do
+            os.tryrm(written)
+            os.mkdir(written)
+            local header = path.join(written, "Redeclared.h")
+            io.writefile(header, table.concat({
+                string.format("#import <%s/%s.h>", only, only),
+                "#import <Foundation/Foundation.h>",
+                "@interface VTFrameProcessorConfiguration : NSObject",
+                "@end",
+                "@interface Redeclared : VTFrameProcessorConfiguration",
+                lift.member_declaration({kind = "ObjCPropertyDecl", name = "destinationFrame",
+                                         type = {qualType = "id"}, readonly = true,
+                                         inner = {{kind = "SwiftPrivateAttr"}}}, "destinationFrame", "6.0"),
+                "@end"}, "\n") .. "\n")
+            try {
+                function ()
+                    os.iorunv(clang, {"-fsyntax-only", "-target", "armv7-apple-ios6.0", "-isysroot", sdks[1],
+                                      "-Wno-incompatible-sysroot", "-x", "objective-c", header})
+                    print(string.format("ok   the redeclaration clang accepts, in a header importing only %s", only))
+                    return true
+                end,
+                catch {
+                    function (errors)
+                        print(string.format("FAIL the redeclaration clang rejects, importing only %s: %s", only,
+                                            tostring(errors):gsub("[\r\n]", " "):sub(1, 160)))
+                        return false
+                    end
+                }
+            }
+        end
+    end
 
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
 
