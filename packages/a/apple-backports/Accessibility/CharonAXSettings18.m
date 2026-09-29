@@ -35,10 +35,12 @@ BOOL AXAssistiveAccessEnabled(void)
 
 void AXOpenSettingsFeature(AXSettingsFeature feature, void (^completionHandler)(NSError *_Nullable error))
 {
-    // This release's Settings app has none of the sections the enumeration names: they arrived with
-    // 18.0, and the Settings app of 6.1.3 has no section for a personal voice, no section for adding
-    // audio to calls, no Assistive Touch, no Assistive Touch devices and no Dwell Control - the last
-    // three being Apple's own of 26.0 and the first two of 18.0 and 18.2. So the call cannot begin.
+    // This release's Settings app has none of the sections the enumeration names, whatever the caller's
+    // deployment target is: the Settings app of 6.1.3 has no section for a personal voice, none for
+    // adding audio to calls, no Assistive Touch, no Assistive Touch devices and no Dwell Control. The
+    // release each of those arrived in is not written down here - it is on the case, in
+    // CharonAXSettings.h, which is the one place a compiler reads it and where a caller finds it. So the
+    // call cannot begin.
     //
     // The completion is called, and called once, and called before this function returns. That is a
     // decision and it is a forced one: the API takes a completion, and a caller that waits for a
