@@ -53,7 +53,12 @@ int main(void) { @autoreleasepool {
     float factors[16] = {65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608,
                           16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824, 2147483648};
     P("source i's four values start at 2^(0+4i); factor i's four start at 2^(16+4i).\n"
-      "A single source and a single factor would give the product, so a sum of the two is a pair.\n\n");
+      "A single source and a single factor would give the product, so a sum of the two is a pair.\n"
+      "\nNOT YET DECODED. The answers do not decompose as sums of those products: they carry low\n"
+      "fractional bits where a product of two powers of two cannot, and they are three orders of\n"
+      "magnitude below the smallest product the inputs allow. Whatever the host consumed here is not\n"
+      "the scale vector as this program built it, so the table cannot yet say which pair went in, and\n"
+      "no rule has been derived from it.\n\n");
     for (NSUInteger start = 0; start <= 3; start++) {
         once(d, q, sources, 4, factors, 4, 2, start);
     }
