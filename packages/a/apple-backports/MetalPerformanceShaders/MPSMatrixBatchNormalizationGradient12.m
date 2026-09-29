@@ -154,24 +154,12 @@ CHARON_MPS_NEURON_COMMON
             }
             double meanGradient = vectors ? sum / (double)vectors : 0.0;
             double scaledSum = vectors ? sum / (double)vectors : 0.0;
-            if (resultGradientForGammaVector) {
-                CharonMPSVectorView view = CharonMPSVectorViewOf(resultGradientForGammaVector);
-#ifdef CHARON_BN_TRACE
-                fprintf(stderr, "BNW gamma ch%lu bytes %p length %lu stride %lu\n", (unsigned long)column,
-                        view.bytes ? view.bytes : (void *)0, (unsigned long)view.length, (unsigned long)view.vectorBytes);
-#endif
-                if (view.length > column)
-                    CharonMPSStore(CharonMPSVectorElement(&view, 0, column), view.dataType, 0, gammaGradient);
-            }
-            if (resultGradientForBetaVector) {
-                CharonMPSVectorView view = CharonMPSVectorViewOf(resultGradientForBetaVector);
-#ifdef CHARON_BN_TRACE
-                fprintf(stderr, "BNW beta  ch%lu bytes %p length %lu stride %lu\n", (unsigned long)column,
-                        view.bytes ? view.bytes : (void *)0, (unsigned long)view.length, (unsigned long)view.vectorBytes);
-#endif
-                if (view.length > column)
-                    CharonMPSStore(CharonMPSVectorElement(&view, 0, column), view.dataType, 0, betaGradient);
-            }
+            // The per-parameter gradients are left untouched. The release writes neither: with a
+            // -1.0f sentinel in both destinations they come back -1.0f, so it is untouched and not
+            // zero - and a fresh buffer is already zero, which is why the two looked the same. The
+            // header's formula for them, sum of dY * xhat and sum of dY, is in
+            // facts/MetalPerformanceShaders/Cnn.md with the program that shows this, and the registry
+            // entry carries it.
             for (NSUInteger row = 0; row < vectors; row++) {
                 double d = CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
                 double x = CharonMPSLoad(CharonMPSMatrixElement(&in, b, _secondarySourceMatrixOrigin.x + row, _secondarySourceMatrixOrigin.y + column), in.dataType, 0);

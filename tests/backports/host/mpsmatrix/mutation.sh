@@ -100,4 +100,26 @@ if [ "$scbefore" = "$scduring" ] || [ "$scduring" = "$scafter" ]; then
     echo "the scale mutation did not move the count either"
     exit 1
 fi
-echo "all four mutations move the count and all four reverts move them back: the harness can fail"
+# A fifth mutant, on the batch-norm gradient's per-parameter vectors: the release leaves them
+# untouched - a -1.0f sentinel survives - and the port now does the same. The mutant writes zeros there
+# instead, which is what a fresh buffer hides, and it must turn the two cases red.
+bnk=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixBatchNormalizationGradient12.m
+bline='            // The per-parameter gradients are left untouched. The release writes neither: with a'
+bmut='            // MUTATION: zeros written, not untouched\n            if (resultGradientForGammaVector) { { CharonMPSVectorView v = CharonMPSVectorViewOf(resultGradientForGammaVector); for (NSUInteger i = 0; i < v.length; i++) CharonMPSStore(CharonMPSVectorElement(&v, 0, i), v.dataType, 0, 0.0); } }'
+boriginal=$(cat "$bnk")
+restore_bn() { printf '%s\n' "$boriginal" > "$bnk"; }
+trap 'restore; restore_forward; restore_sum; restore_sum2; restore_bn' EXIT INT TERM
+grep -q "$bline" "$bnk" || { echo "the gradient anchor is gone"; exit 1; }
+bbefore=$(count)
+printf '%s\n' "$bmut" > "$bnk"
+bduring=$(count)
+printf 'gradient before   %s\n' "$bbefore"
+printf 'gradient mutated  %s\n' "$bduring"
+restore_bn
+bafter=$(count)
+printf 'gradient reverted %s\n' "$bafter"
+if [ "$bbefore" = "$bduring" ] || [ "$bduring" = "$bafter" ]; then
+    echo "the gradient mutation did not move the count either"
+    exit 1
+fi
+echo "all five mutations move the count and all five reverts move them back: the harness can fail" and all four reverts move them back: the harness can fail"

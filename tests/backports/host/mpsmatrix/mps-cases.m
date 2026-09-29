@@ -611,6 +611,13 @@ static void casesBatchNormalization(void)
     // A sentinel, not a zero: 0x7f7f7f7f in every element, so a buffer the release leaves alone is
     // distinguishable from a buffer it fills with zero. The command buffer's status and error are
     // printed with the results.
+    // The per-parameter gradient destinations go in with a sentinel rather than a zero, so a side that
+    // leaves them alone is distinguishable from a side that writes zero.
+    {
+        float untouched[3] = {-1.0f, -1.0f, -1.0f};
+        memcpy(normGradientGamma, untouched, sizeof(untouched));
+        memcpy(normGradientBeta, untouched, sizeof(untouched));
+    }
     memset(normGradientData, 0x7f, sizeof(normGradientData));
     memset(normGradientGamma, 0x7f, sizeof(normGradientGamma));
     memset(normGradientBeta, 0x7f, sizeof(normGradientBeta));

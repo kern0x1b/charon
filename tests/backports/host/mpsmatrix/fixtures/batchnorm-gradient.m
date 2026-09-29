@@ -20,8 +20,11 @@ int main(void) { @autoreleasepool {
     id<MTLBuffer> vb   = [d newBufferWithBytes:var length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> gb   = [d newBufferWithBytes:gam length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> outb = [d newBufferWithLength:48 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> ggb  = [d newBufferWithLength:12 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> gbb  = [d newBufferWithLength:12 options:MTLResourceStorageModeShared];
+    // A sentinel in both per-parameter destinations: a fresh buffer is already zero, so writing zero
+    // and writing nothing are indistinguishable without it.
+    float sentinel[3] = {-1.0f, -1.0f, -1.0f};
+    id<MTLBuffer> ggb  = [d newBufferWithBytes:sentinel length:sizeof(sentinel) options:MTLResourceStorageModeShared];
+    id<MTLBuffer> gbb  = [d newBufferWithBytes:sentinel length:sizeof(sentinel) options:MTLResourceStorageModeShared];
 
     MPSMatrixDescriptor *md = [MPSMatrixDescriptor matrixDescriptorWithRows:4 columns:3 matrices:1
                                                                      rowBytes:12 matrixBytes:48 dataType:MPSDataTypeFloat32];
