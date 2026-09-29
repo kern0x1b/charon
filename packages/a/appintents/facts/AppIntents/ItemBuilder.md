@@ -1,30 +1,33 @@
-# `IntentItemSection.Builder` — the shape was wrong, and the reading is written
+# The two result-builder families — `IntentItem.Builder` and `IntentItemSection.Builder`
 
-The corpus ledger carries three rows for this family, and the **first** of them was a real shape
-difference this series had wrong:
+Both are the same shape of problem and the same reading, and the ledger carries seven rows between
+them (`IntentItem.Builder` 4, `IntentItemSection.Builder` 3).
 
-| row | before | now |
-| --- | --- | --- |
-| `IntentItemSection.Builder` | the module had one builder, `IntentItemSectionBuilder<Item>`, reachable only under that name | `IntentItemSection.Builder` is a `typealias` to it, inside the type (`Items.swift`), the way `IntentItem.Builder` already is at `Items.swift:18` |
-| `IntentItemSection.Builder.buildBlock()` | declared, on the top-level builder | declared, and reachable under the framework's name |
-| `IntentItemSection.Builder.buildBlock(_:)` | declared, on the top-level builder | declared, and reachable under the framework's name |
+**The shape defect, fixed.** The framework nests the builder: `IntentItemSection.Builder` is an enum
+*inside* `IntentItemSection` (`arm64e-apple-macos.swiftinterface:5003-5007`) and `IntentItem.Builder`
+inside `IntentItem` (`:4951-4960`). This module keeps one builder per family and names it in the type
+by a `typealias`, the way `IntentItem.Builder` already was (`Items.swift:18`) and
+`IntentItemSection.Builder` now is — **a typealias, not a second declaration**, so the same builder
+answers to the name the ledger carries.
 
-The framework nests the builder — `arm64e-apple-macos.swiftinterface:5003-5007` is
-`@_functionBuilder public enum Builder` *inside* `IntentItemSection`, with
-`buildBlock() -> [IntentItemSection<Result>]` and two variadic `buildBlock`s — and the port's
-`IntentItemSection` had no `Builder` at all, so no row of the family could be read. A typealias and
-not a second declaration: it is the same builder, under the name the ledger names.
+**The reading, and why a reference rather than a call.** The digester prints a `@resultBuilder` type
+with **no members at all** — measured on these two families and on `Tips.GroupBuilder` in the kits —
+so a member cannot be found by name in the dump and a *call* would need a value of the type built
+first. A reference is enough and needs nothing constructed: each member is bound to a closure type
+that names the framework's signature, which is also what disambiguates the two `buildBlock`
+overloads.
 
-**The reading is written, and it is the same kind as `IntentPerson`'s**
-(`.agent-work/host/probe-itembuilder.swift`): the digester prints a `@resultBuilder` type with **no
-members at all** — measured on this family and on `Tips.GroupBuilder` in the kits — so each member is
-referenced in the framework's spelling, with a closure type that names the signature
-(`let variadic: (IntentItemSection<String>…) -> [IntentItemSection<String>] = …buildBlock`), which
-disambiguates the overload without constructing a value.
+| row | the reference |
+| --- | --- |
+| `IntentItem.Builder.buildArray(_:)` | `let array: ([IntentItem<String>]) -> [IntentItem<String>] = …buildArray` |
+| `IntentItem.Builder.buildBlock()` | `let empty: () -> [IntentItem<String>] = …buildBlock` |
+| `IntentItem.Builder.buildBlock(_:)` | `let one: (IntentItem<String>) -> [IntentItem<String>] = …buildBlock` |
+| `IntentItem.Builder.buildExpression(_:)` | `let expression: (IntentItem<String>) -> IntentItem<String> = …buildExpression` |
+| `IntentItemSection.Builder` + its two `buildBlock`s | the same, in `probe-itembuilder.swift` |
 
-**What is not yet measured, and why.** The probe typechecks against a *built* module, and the module
-in the store predates this typealias — it answers `type 'IntentItemSection<String>' has no member
-'Builder'`, which is the old build talking. So the three rows are **not placed yet**: placing them
-needs one device compile of the module (the AppIntents build under the guard) and then the typecheck
-above. That is the next step, and it is a device compile rather than a macro build, so it is not
-blocked on the addon release.
+**What is measured and what is not.** `IntentPerson`'s family is **placed**: its probe typechecks with
+0 errors against the module built from this tree, because that module already carried the
+declarations. These two families are **written and unmeasured**: both probes typecheck against a
+*built* module, and the module in the store predates the `IntentItemSection.Builder` typealias. One
+device compile of the module, then two typechecks, places all seven rows — and the load has been over
+the cap for this whole turn, so nothing was submitted and nothing of mine holds a slot.
