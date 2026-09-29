@@ -54,51 +54,50 @@ run_case() {
     # whole of exit 134 - the attributes mutant segfaulted, and the driver died on it before it could say
     # so. `|| status=$?` is the form that survives, and the verdict block already used it.
     status=0
-    # THE PORT'S SYMBOLS MUST BE IN THE BINARY. A case that links only SOME of the sources it needs does
-    # not fail: the missing names resolve to the HOST framework, the case runs, and it measures the host
-    # while looking exactly like a port measurement. nm -m does not catch it - it prints an address for a
-    # symbol the binary does not define - and nm -u does: "(undefined) ... (from Security)" is the tell.
-    # So every sec_* function each source DEFINES is checked to be DEFINED here. nm cannot read a
-    # source file, so the definitions are read out of the source text.
-    missing=0
-    for src in "$@"; do
-        [ -f "$src" ] || continue
-        for sym in $(grep -E '^[A-Za-z_].*\bsec_[a-z_]+\(' "$src" 2>/dev/null \
-                     | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z_]+)\(.*/\1/p' | sort -u); do
-            if ! nm "$build/$name" 2>/dev/null | awk '$2=="T"{print $3}' | grep -qx "_$sym"; then
-                echo "MISSING $name  _$sym is not DEFINED in the binary - it resolved to a dylib, so this case would measure the HOST and not the port. Source: $src"
-                missing=$((missing + 1))
+    # THE GUARD NEEDS NO TRUST IN THE LINK LINE. It reads what the case's OWN SOURCE CALLS, keeps the
+    # names a port source under Security/ DEFINES, and requires each to be DEFINED in the binary this
+    # case linked. A source dropped from the command line cannot hide, because the case still calls it:
+    # the name resolves to the host framework, the case runs, and it measures the host while looking
+    # exactly like a port measurement. That is the bug this guards, and a case of ours did it.
+    #
+    # nm -gU, AND nm's OWN EXIT STATUS rather than a pipe's: `nm ... | grep` reports grep's status, so a
+    # failed nm reads as "no symbols found" and the guard passes on a binary it never inspected.
+    casefile=""
+    for a in "$@"; do
+        case "$a" in *.m) casefile="$a"; break;; esac
+    done
+    if [ -n "$casefile" ]; then
+        strip() { sed -e 's://.*::' -e 's:/\*[^*]*\*/::g' "$1"; }
+        # CALLED identifiers: every sec_* followed by ( in the BODY, whether or not the line starts with
+        # one - a call is usually mid-line, and requiring the line to start is how the old regex missed
+        # calls and picked up return types instead.
+        called=$(strip "$casefile" | grep -oE '\bsec_[a-z0-9_]+[[:space:]]*\(' \
+                 | sed -E 's/[[:space:]]*\($//' | sort -u)
+        for src in "$@"; do
+            [ -f "$src" ] || continue
+            strip "$src" | grep -E '\bsec_[a-z0-9_]+\(' \
+            | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z0-9_]+)\(.*/\1/p'
+        done | sort -u > "$build/port-defines.txt"
+        nm -gU "$build/$name" > "$build/$name.nm" 2>/dev/null
+        nmstatus=$?
+        if [ "$nmstatus" -ne 0 ]; then
+            echo "BUILD  $name FAILED: nm -gU on the linked binary exited $nmstatus"
+            failures=$((failures + 1))
+            return
+        fi
+        for sym in $called; do
+            grep -qx "$sym" "$build/port-defines.txt" || continue    # not a port symbol: not ours
+            # nm -gU PRINTS "ADDRESS TYPE _NAME", so the symbol is the LAST FIELD and not at the start
+            # of the line. Anchoring on ^_sym$ matched nothing ever, and every symbol looked missing.
+            if [ "$(awk -v s="_$sym" '$NF==s' "$build/$name.nm" | wc -l)" -lt 1 ]; then
+                echo "MISSING $name $sym would measure the HOST: _$sym is not defined in the binary this case linked"
+                failures=$((failures + 1))
+                return
             fi
         done
-    done
-    if [ "$missing" -ne 0 ]; then
-        echo "BUILD  $name FAILED: $missing port symbol(s) came from a dylib instead of the sources"
-        failures=$((failures + 1))
-        return
-    fi
-    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || status=$?
-    # A SIGNAL IS NOT A DIFFERENCE. exit 128+N is death by signal N, and the output is whatever was
-    # printed before the process died - so running the comparison on it would say "the port's class was
-    # not found" about a process that never got that far. Three mutations in this series were caught
-    # this way (134 for the C strings, 139 for the dispatch_data values) and each was reported as a
-    # harness failure rather than as the crash it was.
-    if [ "$status" -ge 128 ]; then
-        echo "CRASH  $name  crashed: signal $((status - 128)) (exit $status), not a difference"
-        sed 's/^/       /' "$build/$name.out" | tail -3
-        failures=$((failures + 1))
-        return
-    fi
-    if python3 "$H/$compare" "$build/$name.out" > "$build/$name.green" 2>&1; then
-        echo "GREEN  $name  $(tail -1 "$build/$name.green")"
-    else
-        echo "RED    $name  $(tail -1 "$build/$name.green")"
-        sed 's/^/       /' "$build/$name.green"
-        failures=$((failures + 1))
     fi
 }
 
-# A mutation must make its comparison FAIL. A mutation that still passes is a useless mutation, and a run
-# that accepted one would be reporting coverage it does not have - so that is an error, not a pass.
 run_mutation() {
     # Same rule: counted where it runs, BEFORE the early return a crashing mutant takes. It was counted
     # after, so a mutation that segfaulted - the most emphatic "noticed" there is - was not counted at all.
