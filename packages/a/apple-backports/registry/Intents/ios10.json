@@ -2936,7 +2936,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the type is a class of a framework this package does not carry, and no header of the port's own SDK declares it, so there is nothing to keep the value in",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2945,7 +2945,7 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped the value would answer with a class that looks filled and is not",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3856,7 +3856,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the superclass's designated initialiser takes a parameter the SDK does not mark nullable and nothing in the headers says where a subclass would get one, so the port refuses to chain rather than make a call the SDK forbids",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3865,7 +3865,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the superclass's designated initialiser takes a parameter the SDK does not mark nullable and nothing in the headers says where a subclass would get one, so the port refuses to chain rather than make a call the SDK forbids",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },

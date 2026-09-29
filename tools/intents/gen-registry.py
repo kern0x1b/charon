@@ -168,6 +168,19 @@ SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release c
           "release each object file is carried from (tools/intents/measure-intents.lua)")
 
 
+def reason_for(causes, vocabulary, api, fallback):
+    """The reason for a member, from the cause the generator recorded for it.
+
+    The generator records a cause under the member's own selector - "EKRecurrenceRule",
+    "initWithEKRecurrenceRule:" - and the registry asks under the whole row,
+    "-[INDateComponentsRange EKRecurrenceRule]".  Every lookup that did only the second missed,
+    and the member fell back to the group's blanket reason, which is how a row whose class this
+    delivery carries read "a class of a later group of this same delivery".
+    """
+    selector = api.rsplit(" ", 1)[-1][:-1] if " " in api else None
+    return vocabulary.get(causes.get(api) or causes.get(selector), fallback)
+
+
 def generator_property_names(selector):
     """The property names one answered selector answers: its own, and a getter's name off it."""
     body = selector.partition("[")[2].partition(" ")[2].rstrip("]").strip()
@@ -370,7 +383,7 @@ def main():
                     continue
                 if api.split(".")[1] in report["dynamic"]:
                     entries.append(absent(api, "property", intro,
-                                          vocabulary.get(causes.get(api), options.reason), options.facts))
+                                          reason_for(causes, vocabulary, api, options.reason), options.facts))
                     missing["dynamic"] += 1
                     continue
             if kind == "method":
@@ -393,7 +406,7 @@ def main():
                     missing["init"] += 1
                     continue
                 entries.append(absent(api, "method", intro,
-                                      vocabulary.get(causes.get(api), options.reason), options.facts))
+                                      reason_for(causes, vocabulary, api, options.reason), options.facts))
                 missing["skipped"] += 1
                 continue
         if kind == "class":
