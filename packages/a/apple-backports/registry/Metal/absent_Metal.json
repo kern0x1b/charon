@@ -493,7 +493,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "an error domain the header declares as a name and never spells: the string is APPLE'S OWN, MEASURED, and the SDK's own apinotes say which error class belongs to it",
-      "effect": "the port DEFINES MTLBinaryArchiveDomain under APPLE'S OWN NAME, so an NSError built by the port carries the same domain string an Apple-built one does; the case reads Apple's copy by dlsym and compares the BYTES and the length",
+      "effect": "the port DEFINES MTLBinaryArchiveDomain under APPLE'S OWN NAME; the case reads Apple's copy by dlsym and compares the BYTES and the length, and it builds an NSError with the port's own constant and reads .domain back against Apple's string, so a caller that constructed one would get the same domain - the port itself constructs none today",
       "source": "SDK 16.4 MTLBinaryArchive.h:17, and Metal.apinotes binds MTLBinaryArchiveError to it; the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/CounterConstants.md"
     },
@@ -757,7 +757,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "an error domain the header declares as a name and never spells: the string is APPLE'S OWN, MEASURED, and the SDK's own apinotes say which error class belongs to it",
-      "effect": "the port DEFINES MTLCounterErrorDomain under APPLE'S OWN NAME, so an NSError built by the port carries the same domain string an Apple-built one does; the case reads Apple's copy by dlsym and compares the BYTES and the length",
+      "effect": "the port DEFINES MTLCounterErrorDomain under APPLE'S OWN NAME; the case reads Apple's copy by dlsym and compares the BYTES and the length, and it builds an NSError with the port's own constant and reads .domain back against Apple's string, so a caller that constructed one would get the same domain - the port itself constructs none today",
       "source": "SDK 16.4 MTLCounters.h:202, and Metal.apinotes binds MTLCounterSampleBufferError to it; the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/CounterConstants.md"
     },
@@ -812,7 +812,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "an error domain the header declares as a name and never spells: the string is APPLE'S OWN, MEASURED, and the SDK's own apinotes say which error class belongs to it",
-      "effect": "the port DEFINES MTLDynamicLibraryDomain under APPLE'S OWN NAME, so an NSError built by the port carries the same domain string an Apple-built one does; the case reads Apple's copy by dlsym and compares the BYTES and the length",
+      "effect": "the port DEFINES MTLDynamicLibraryDomain under APPLE'S OWN NAME; the case reads Apple's copy by dlsym and compares the BYTES and the length, and it builds an NSError with the port's own constant and reads .domain back against Apple's string, so a caller that constructed one would get the same domain - the port itself constructs none today",
       "source": "SDK 16.4 MTLDynamicLibrary.h:14, and Metal.apinotes binds MTLDynamicLibraryError to it; the value measured from Apple's own Metal by dlsym; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 16.0, so 14.0 means after 12.0 and by 16.0, not a measured first release",
       "facts": "facts/Metal/CounterConstants.md"
     },

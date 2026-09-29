@@ -81,9 +81,14 @@ counted as red.
 The same shape as the eighteen: the header declares the name and never the string, and
 **`Metal.apinotes` is where the SDK says which error class each domain belongs to** — it binds
 `MTLBinaryArchiveError`, `MTLCounterSampleBufferError` and `MTLDynamicLibraryError` to these three.
-So the string is Apple's own, measured by dlsym, and the case compares the bytes and the length. An
-`NSError` the port builds therefore carries the same domain string an Apple-built one does, which is
-the whole point of the row.
+So the string is Apple's own, measured by dlsym, and the case compares the bytes and the length.
+
+**What is measured about the domain, and what is not.** The port **builds no `NSError`**: nothing in
+it calls `errorWithDomain:` today, and a row that said it did would be claiming a constructor that
+does not exist. What the case measures instead is the constant: it constructs an `NSError` **here**
+with the port's own domain and reads `.domain` back, comparing it byte for byte with Apple's string.
+So the claim is a fact about the CONSTANT — a caller that constructed an error with it would get the
+same domain an Apple-built one carries — and not a claim that the port constructs one.
 
 ## The mutants
 

@@ -238,6 +238,17 @@ def _enumerators(path, out):
 # failures. The key cannot fix that on its own, because the key is computed BEFORE the index exists
 # and putting the index's own size INTO the key would be circular. So the first line of the file
 # states how many names it should hold, and a read that finds a different count rebuilds.
+# WHAT THE HEADER DOES NOT SEE, and the reviewer is right that it cannot. It COUNTS lines, so a
+# corruption that replaces a name in the middle of the file with another name of the same line count
+# is invisible to it: the count still matches.
+#
+# SO TWO THINGS HEAL AND ONE IS ONLY CONTAINED. The COUNT heals a TRUNCATED index, and a RED RUN
+# heals anything else: it deletes the index, so the next run rebuilds from the SDK. What is only
+# CONTAINED is a same-count corruption between one red and the next - and that is the safe direction
+# to fail in, because a name replaced by a different one can only make a DEFINED name read
+# UNDEFINED, never the reverse, so it cannot produce a false PASS. A checksum over the body would
+# catch both cases and costs a full read of a 17 MB file on every run, which is the cost this cache
+# exists to remove.
 INDEX_HEADER = "# charon-class-names-index v%d names %d key %s\n"
 
 
@@ -383,10 +394,10 @@ def candidates_in_prose():
         # landed on the new base with the second shape
         rows = doc if isinstance(doc, list) else doc.get("entries", [])
         for row in rows:
-            # ONLY CLASS AND PROTOCOL ROWS. A constant row's prose legitimately names the VALUE it
-            # carries - MicroPDF417 for AVMetadataObjectTypeMicroPDF417Code - and a method row's
-            # prose names its receiver; neither claims the port defines a type.
-            if row.get("kind") not in ("class", "protocol"):
+            kind = row.get("kind")
+            # A METHOD row's prose names its receiver, which is a class the SDK declares and that the
+            # port is not claiming to define, so method rows are not scanned.
+            if kind not in ("class", "protocol", "constant"):
                 continue
             api = row.get("api", "")
             text = " ".join(str(row.get(k, "")) for k in ("reason", "effect"))
@@ -394,7 +405,7 @@ def candidates_in_prose():
                 # COUNTED FIRST, then filtered. A run that examined nothing must not be able to say
                 # OK, and a count taken after the filters would be zero on a healthy tree - which is
                 # the "a check that examined nothing said it passed" defect.
-                found.append((api, m.group(1), os.path.relpath(path, ROOT)))
+                found.append((api, m.group(1), os.path.relpath(path, ROOT), kind))
     return found
 
 
@@ -409,7 +420,14 @@ def scan(planted=None):
     live = package_names()
     allow = allow_list()
     unresolved = set()
-    for _api, name, _p in all_candidates:
+    for _api, name, _p, kind in all_candidates:
+        # A CONSTANT ROW IS SCANNED FOR A CLASS-LIKE NAME ONLY: one beginning with a framework
+        # initialism. A constant row's prose legitimately names the VALUE it carries -
+        # "timestamp", "PostTessellationCycles", "MTLBinaryArchiveDomain" - and those are not claims
+        # that the port defines a type. The reviewer planted MTLZorpblaxDescriptor in a constant
+        # row's effect and this check called the tree clean, because constant rows were not read.
+        if kind == "constant" and not name.startswith(("MTL", "MPS")):
+            continue
         if not class_shaped(name):
             continue
         if name in live or name in allow:
@@ -417,8 +435,10 @@ def scan(planted=None):
         unresolved.add(name)
     declared = index_lookup(index, unresolved)
     hits = []
-    for api, name, path in all_candidates:
+    for api, name, path, kind in all_candidates:
         if name == api or name in declared or name in live or name in allow:
+            continue
+        if kind == "constant" and not name.startswith(("MTL", "MPS")):
             continue
         if not class_shaped(name):
             continue
@@ -563,6 +583,19 @@ def main():
         print("FAIL: these row texts name a class nothing defines:")
         for api, name, path in hits:
             print("    %-50s names %-42s %s" % (api, name, path))
+        # A RED RUN DROPS THE INDEX, so the next run rebuilds it. This is the clause an earlier
+        # message claimed and the code did not have: the red path left the cache alone, so a stale
+        # index survived a red and the next run was red again off the same bytes. Deleting on red
+        # makes the self-heal real, and it is SAFE because content damage can only make a DEFINED
+        # name read UNDEFINED - a red - and never the reverse, so the worst a corrupt index can do
+        # is cost one rebuild.
+        index = sdk_index()
+        if index and os.path.isfile(index):
+            try:
+                os.remove(index)
+                print("  the cached index is dropped on a red run, so the next run rebuilds it")
+            except OSError as exc:
+                print("  note: the cached index could not be dropped (%s)" % exc)
         return 1
     print("  every candidate in the row texts is a declared name, the row's own api, or allow-listed")
     print("check-class-names: OK")

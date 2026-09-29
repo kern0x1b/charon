@@ -134,6 +134,31 @@ int main(void)
         same_bytes(apple_metal, "MTLCounterErrorDomain", charonHost_MTLCounterErrorDomain);
         same_bytes(apple_metal, "MTLDynamicLibraryDomain", charonHost_MTLDynamicLibraryDomain);
 
+        /* THE PORT'S DOMAIN IN AN ACTUAL NSError. The rows said the port "builds" an NSError and that
+         * is not true: nothing in the port calls errorWithDomain: today, and a row must not claim a
+         * behaviour that is not there. So the claim is MEASURED instead - an NSError is constructed
+         * here with the port's own domain constant and its .domain is read back and compared with
+         * Apple's string, which is what a caller would see if the port built one. That is a fact
+         * about the CONSTANT, not a claim about a constructor that does not exist. */
+        {
+            struct { const char *name; NSString *port; NSString *apple; } domains[] = {
+                {"MTLBinaryArchiveDomain", charonHost_MTLBinaryArchiveDomain, nil},
+                {"MTLCounterErrorDomain", charonHost_MTLCounterErrorDomain, nil},
+                {"MTLDynamicLibraryDomain", charonHost_MTLDynamicLibraryDomain, nil},
+            };
+            for (unsigned i = 0; i < sizeof domains / sizeof domains[0]; i++) {
+                NSString * const apple = *(NSString * const *)dlsym(apple_metal, domains[i].name);
+                NSError *e = [NSError errorWithDomain:domains[i].port code:7 userInfo:nil];
+                NSString *back = e.domain;
+                const char *a = [apple UTF8String];
+                const char *b = [back UTF8String];
+                BOOL same = (a && b && strlen(a) == strlen(b) && memcmp(a, b, strlen(a)) == 0);
+                check(same, ([NSString stringWithFormat:
+                              @"an NSError built with the port's %s reads back .domain \"%s\", "
+                              @"byte for byte Apple's \"%s\"", domains[i].name, b ? b : "", a ? a : ""]));
+            }
+        }
+
         printf("no device was created: %d checks, every constant read from Apple's own Metal by name\n",
                checks);
     }
