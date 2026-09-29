@@ -91,6 +91,14 @@ static void charon_shift_in(UISegmentedControl *control, NSUInteger index)
 
 + (void)load
 {
+    // The hooks below replace four of the host's *own* public methods, and a replacement is only wanted where
+    // the release does not have the API this object carries. On a device the band keeps the object only below
+    // that release, so +load never runs above it; in a host differential the object is linked whatever the
+    // release has, and without this check the hooks would replace methods the host is keeping - which is how a
+    // differential ends up measuring the hooks instead of the backport. The API this object carries is
+    // -insertSegmentWithAction:atIndex:animated:, so that is what the check asks.
+    if ([UISegmentedControl instancesRespondToSelector:@selector(insertSegmentWithAction:atIndex:animated:)])
+        return;
     Class cls = [UISegmentedControl class];
     Method title = class_getInstanceMethod(cls, @selector(insertSegmentWithTitle:atIndex:animated:));
     Method image = class_getInstanceMethod(cls, @selector(insertSegmentWithImage:atIndex:animated:));
