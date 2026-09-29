@@ -136,3 +136,39 @@ check behind it does not support.
 The review of r11 found the transition controller `implemented` with no `@implementation` at all.
 That is fixed in the same series: `UIDocumentBrowserTransitionController.m` is the class's own
 storage for the two properties its header declares, and the behaviour harness builds and runs it.
+
+
+## The transition, and what is measured about it
+
+`UIDocumentBrowserTransitionController` declares conformance to
+`UIViewControllerAnimatedTransitioning` and now honours it. The review found the conformance
+declared and neither required method implemented; `clang -Wprotocol` names both —
+`transitionDuration:` and `animateTransition:` — and with them implemented the file compiles with
+**no warning under the library's own flags**,
+`-Werror=objc-missing-property-synthesis` and the rest, against the 16.4 SDK the library is built
+with.
+
+**Neither body is a transcription of Apple's, and that is the point.** What the port implements is
+what these two questions can mean on a release with no Files app and no document provider:
+
+- `transitionDuration:` is the time a document takes to appear once it has arrived, and **zero while
+  it is still being brought across**, because there is nothing on screen yet to move. The number for
+  the arrived case is the port's own — the header states no duration and Apple names none this port
+  can read — and it is written down as the port's where it is declared.
+- `animateTransition:` is a plain cross-dissolve of the view this transition was aimed at, and it
+  completes the transition **even when there is no view at all**, because a caller waiting for a
+  completion that never comes waits for ever.
+
+**Measured, by the host harness:** a document that is here takes a positive time; one still loading
+takes none; running a transition brings the view to full opacity and completes the context; a
+transition with no view still completes.
+
+**Not measured, and not claimed:** what a real document browser's transition looks like, its real
+duration, and whether it animates the document at all. Those are Apple's, on a release with a Files
+app and a document provider, and neither this host nor this release has either. The port
+cross-dissolves the view it was given because that is what a cross-dissolve is for and because there
+is nothing else it can honestly do.
+
+The host harness reaches the animation through a stand-in for `UIView`'s own animation API, named
+after the header the SDK declares the protocol in — `UIViewControllerTransitioning.h`, not a file
+named after the protocol, which the review found and no build would ever have found.

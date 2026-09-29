@@ -107,9 +107,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the object that drives a document browser transition, carrying where it is going and how far the load has got, and naming -init unavailable as the header does",
+   "effect": "the object that drives a document browser transition, carrying where it is going and how far the load has got, and honouring the transitioning protocol it declares: transitionDuration: is the port's own time for a document that has arrived and zero while it is still coming across, and animateTransition: is a plain cross-dissolve of the view it was aimed at, completing even when there is none. What a real document browser's transition looks like is Apple's and is not measured here, because neither this host nor this release has a Files app or a document provider",
    "facts": "facts/UIKit/DocumentBrowser.md",
-   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
+   "source": "the header of SDK 26.2 for the two properties and the unavailable -init; the two required protocol methods verified by clang -Wprotocol under the library's own flags against the 16.4 SDK, and their behaviour run by tests/backports/host/documentbrowser/behaviour.sh through a stand-in for UIView's animation"
   },
   {
    "api": "UIDocumentBrowserViewController.additionalLeadingNavigationBarButtonItems",
