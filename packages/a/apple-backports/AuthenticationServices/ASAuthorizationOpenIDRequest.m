@@ -37,23 +37,32 @@
 @synthesize nonce = _nonce;
 @synthesize requestedOperation = _requestedOperation;
 
+// This header does not mark -init unavailable and the release's own construction is -init, so it
+// stays. It is a NAME for -charon_initWithProvider: rather than a second place the default is set: the
+// port's provider builds its request through the construction, and a default that also lived here was a
+// line nothing reached -- which is why a mutation of it changed nothing and the differential was
+// agreeing with the host by accident.
 - (instancetype)init
 {
-    // This header does not mark -init unavailable, and the host binds it, so the port binds it too:
-    // an application that cannot call [ASAuthorizationOpenIDRequest new] against the port and can
-    // against the release is a difference in the surface, not a detail.
-    self = [super init];
+    return [self charon_initWithProvider:nil];
+}
+
+// The construction the provider uses, and the ONE place the four defaults are set. It was in -init, and
+// -init is not what -charon_initWithProvider: calls -- the base marks -init unavailable and the compiler
+// reads the base's mark for a subclass -- so the defaults were never applied on the path a real request
+// takes, and a mutation of the line changed nothing: the differential was agreeing with the host by
+// accident. The defaults are here because this is where the object is made.
+- (instancetype)charon_initWithProvider:(id<ASAuthorizationProvider>)provider __attribute__((objc_method_family(init)))
+{
+    self = [super charon_initWithProvider:provider];
     if (self) {
         _requestedScopes = nil;
         _state = nil;
         _nonce = nil;
-        // nil, and this is a measurement rather than a reading of the header. The host's own provider
-        // hands out a request whose requestedOperation is nil -- asked on macOS 27.0 through
-        // [[ASAuthorizationAppleIDProvider alloc] init] createRequest, which is how a request is
-        // supposed to be made, since the base marks -init and +new unavailable. The header types the
-        // property as non-nullable and the release leaves it nil, and the port follows the release:
-        // defaulting it to the implicit operation would have made a port that sends an operation the
-        // release does not send, which is a behavioural difference an application can observe.
+        // nil, and this is a measurement rather than a reading of the header: the host's own provider
+        // hands out a request whose requestedOperation is nil, asked on macOS 27.0 through
+        // [[ASAuthorizationAppleIDProvider alloc] init] createRequest. The header types the property
+        // non-nullable and the release leaves it nil, and the port follows the release.
         _requestedOperation = nil;
     }
     return self;

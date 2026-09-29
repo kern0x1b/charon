@@ -186,12 +186,43 @@ open(path, "w").write(text.replace(old, new, 1))
     built=$?
     set -e
     [ "$built" -eq 0 ] || { echo "FAIL: the $tag build did not complete"; return 1; }
-    if cmp -s "$build/plain-table.txt" "$build/$tag-table.txt"; then
-        echo "FAIL: the $tag mutation changed nothing the check can see"
+    # The same comparison the check makes, over the same rows, and nothing else: a raw cmp notices a
+    # relocated method address, which every mutation of any size moves, and that is not a value. The
+    # `built` rows are excluded by verdict() because the whole point of them is that the two builds are
+    # DIFFERENT classes.
+    set +e
+    python3 - "$build/plain-table.txt" "$build/$tag-table.txt" <<'PYTHON' > "$build/$tag-verdict.txt"
+import re, sys
+def rows(path):
+    out, side = {}, None
+    for line in open(path):
+        line = line.rstrip("\n")
+        if line in ("host", "port"):
+            side = line
+            continue
+        if not side or not line.startswith("  "):
+            continue
+        parts = [p for p in re.split(r"\s{2,}", line.strip()) if p]
+        if len(parts) >= 2:
+            out[(side, parts[0], parts[1])] = parts[-1]
+    return out
+plain, mutant = rows(sys.argv[1]), rows(sys.argv[2])
+# Everything the port holds that is not a `built` row: a row the CHECK measures.
+measured = {k[1:] for k in mutant if k[0] == "port" and not k[1].startswith("built")}
+changed = sorted(k for k in measured if plain.get(("port",) + k) != mutant.get(("port",) + k))
+for key in changed:
+    print("CHANGED %-46s was %-10s now %s" % (key[1], plain.get(("port",) + k.join(()), "?"), mutant.get(("port",) + k)))
+print("VERDICT %d of %d measured rows differ" % (len(changed), len(measured)))
+sys.exit(1 if changed else 0)
+PYTHON
+    judged=$?
+    set -e
+    cat "$build/$tag-verdict.txt" | sed 's/^/     /'
+    if [ "$judged" -eq 0 ]; then
+        echo "FAIL: the $tag mutation changed no row the check measures -- a relocated address is not a value"
         return 1
     fi
-    echo "   the $tag table differs from the port's:"
-    diff "$build/plain-table.txt" "$build/$tag-table.txt" | grep -E "^[<>]" | sed 's/^/     /' | head -4
+    echo "   the $tag mutation is red, and the row that changed is named above"
     return 0
 }
 

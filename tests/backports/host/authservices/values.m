@@ -221,6 +221,11 @@ static int store_case(void)
                     [NSArray arrayWithObject:third], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
     NSInteger after = self_identities(path);
     printf("  store   after replace   %d identities\n", (int)after);
+    // The store's state after the replace, in the TABLE, keyed like every other row, so that a wrong
+    // replace which does not crash still shows up as a difference. The probe-local check below is not
+    // enough: it fails the run, but the two mutants are compared by their tables and a row that is not
+    // in the table is a row the comparison cannot see.
+    printf("  store   identities after replace %d\n", (int)after);
     // The set is exactly the array: one identity, and it is the one that was given. A superset would be
     // three here.
     if (after != 1) { printf("  FAIL the store holds %d identities, and the array named one\n", (int)after); return 1; }

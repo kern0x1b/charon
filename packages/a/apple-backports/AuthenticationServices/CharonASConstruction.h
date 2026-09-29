@@ -37,6 +37,21 @@ extern NSString *const ASCharonProviderCodingKey;
     __attribute__((objc_method_family(init)));
 @end
 
+// Each class in the chain overrides this, so the most derived one runs: a subclass's own defaults are
+// applied where the object is actually made. The port's provider builds its request through
+// -charon_initWithProvider: and NOT through -init -- the base marks -init unavailable, and the compiler
+// reads the base's mark for a subclass too -- so a default that lives in a subclass's -init is never
+// reached, and a mutation of it changes nothing. That is not a property of the mutation; it was a
+// default the port was not actually applying.
+@interface ASAuthorizationOpenIDRequest (CharonASConstruction)
+- (instancetype)charon_initWithProvider:(id<ASAuthorizationProvider>)provider
+    __attribute__((objc_method_family(init)));
+@end
+@interface ASAuthorizationAppleIDRequest (CharonASConstruction)
+- (instancetype)charon_initWithProvider:(id<ASAuthorizationProvider>)provider
+    __attribute__((objc_method_family(init)));
+@end
+
 // A credential is a value object: the release marks -init and +new unavailable and hands the object
 // back from a provider. The port's way in names the seven values the header declares, because there is
 // no other way to make one and a credential with no user is not a credential.

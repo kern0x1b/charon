@@ -33,6 +33,16 @@
     return self;
 }
 
+// The construction the provider uses, so the user is nil on the path a real request takes -- the same
+// reason as in the class above, and the same fix.
+- (instancetype)charon_initWithProvider:(id<ASAuthorizationProvider>)provider __attribute__((objc_method_family(init)))
+{
+    self = [super charon_initWithProvider:provider];
+    if (self)
+        _user = nil;
+    return self;
+}
+
 - (NSString *)user
 {
     return [_user copy];
