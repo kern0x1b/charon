@@ -152,5 +152,8 @@ class Cache(object):
         end = self._m.find(b'\0', o, o + 512)
         return self._m[o:end].decode('latin-1')
 
+    def u32_at(self, address):
+        return struct.unpack_from('<I', self._m, self.require_off(address, 'a 32-bit pointer'))[0]
+
     def u64_at(self, address):
         return struct.unpack_from('<Q', self._m, self.require_off(address, 'a pointer'))[0]
