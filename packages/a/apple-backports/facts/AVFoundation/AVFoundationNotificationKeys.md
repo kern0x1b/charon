@@ -7,15 +7,24 @@ and no media anywhere in the slice.
 
 ## Open source checked
 
-The coordinator's scout table (`charon/.agent-work/runs/oss-scout/oss-candidates.tsv`, 22 rows) was
-read. Its candidates are the Swift runtime libraries - swift-corelibs-foundation,
-swift-corelibs-libdispatch, swift-crypto, swift-collections, swift-numerics and the rest - plus three
-Apple-OSS frameworks held on a separate list with their own licence question (CoreFoundation APSL-2.0,
-objc4, libdispatch). **None of them carries an AVFoundation implementation**, and the table's own
-`framework_breakdown` column has `Foundation` entries and nothing for AVFoundation. So: **not used,
-because no open-source candidate answers these rows at all**; the values are measured from the host's
-own framework instead, and the two Apple-OSS frameworks that could conceivably have carried a header
-are on the separate list the coordinator holds, so they were not read and not used.
+The coordinator's scout table (`charon/.agent-work/runs/oss-scout/oss-candidates.tsv`, **21 data rows** —
+22 lines with the header) was read. Its candidates are the Swift runtime libraries -
+swift-corelibs-foundation, swift-corelibs-libdispatch, swift-crypto, swift-collections,
+swift-numerics and the rest - plus three Apple-OSS frameworks held on a separate list with their own
+licence question (CoreFoundation APSL-2.0, objc4, libdispatch).
+
+**Its `framework_breakdown` column does name AVFoundation, once.** The `apple/swift-corelibs-foundation`
+row reads `Foundation=20;UIKit=4;SensorKit=3;AVFoundation=1`, and that one line is the file's only
+AVFoundation mention. An earlier version of this paragraph said the column had "nothing for
+AVFoundation"; that was wrong about the column, and it mattered — a reader who opened the table to
+check would have found the opposite of what this file claimed about it. Both numbers are corrected
+here for that reason alone.
+
+**Not used, because no candidate answers these rows.** That one AVFoundation surface is a Foundation
+implementation's own type definitions, and the 33 rows here are `NSString *const` *values* — no
+candidate in the table carries them. The values are therefore measured from the host's own framework
+instead, and the two Apple-OSS frameworks that could conceivably have carried a header are on the
+separate list the coordinator holds, so they were not read and not used.
 
 ## The measurement, and what it decided
 
@@ -60,39 +69,39 @@ host, which is why the values are read at runtime rather than composed from the 
 
 | name | value the host answered | first held rung |
 | --- | --- | --- |
-| `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey | 16.0 |
-| `AVAssetDownloadTaskMinimumRequiredPresentationSizeKey` | AVAssetDownloadTaskMinimumRequiredPresentationSizeKey | 16.0 |
-| `AVAssetDownloadTaskPrefersHDRKey` | AVAssetDownloadTaskPrefersHDRKey | 16.0 |
-| `AVAssetDownloadTaskPrefersLosslessAudioKey` | AVAssetDownloadTaskPrefersLosslessAudioKey | 16.0 |
-| `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | AVFragmentedMovieContainsMovieFragmentsDidChangeNotification | 16.0 |
-| `AVFragmentedMovieDurationDidChangeNotification` | AVFragmentedMovieDurationDidChangeNotification | 16.0 |
-| `AVFragmentedMovieTrackSegmentsDidChangeNotification` | AVFragmentedMovieTrackSegmentsDidChangeNotification | 16.0 |
-| `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | AVFragmentedMovieTrackTimeRangeDidChangeNotification | 16.0 |
-| `AVFragmentedMovieWasDefragmentedNotification` | AVFragmentedMovieWasDefragmentedNotification | 16.0 |
-| `AVMediaCharacteristicContainsAlphaChannel` | public.contains-alpha-channel | 16.0 |
-| `AVMediaCharacteristicContainsHDRVideo` | public.contains-hdr-video | 16.0 |
-| `AVMediaCharacteristicIsOriginalContent` | public.original-content | 16.0 |
-| `AVMovieReferenceRestrictionsKey` | AVMovieReferenceRestrictionsKey | 16.0 |
-| `AVMovieShouldSupportAliasDataReferencesKey` | AVMovieShouldSupportAliasDataReferencesKey | 16.0 |
-| `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | AVPlayerEligibleForHDRPlaybackDidChangeNotification | 16.0 |
-| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeErrorKey` | AssetListResponseStatusDidChangeErrorKey | 16.0 |
-| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeEventKey` | AssetListResponseStatusDidChangeEventKey | 16.0 |
-| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeNotification` | AssetListResponseStatusDidChangeNotification | 16.0 |
-| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeStatusKey` | AssetListResponseStatusDidChangeStatusKey | 16.0 |
-| `AVPlayerInterstitialEventMonitorCurrentEventDidChangeNotification` | CurrentEventDidChangeNotification | 16.0 |
-| `AVPlayerInterstitialEventMonitorEventsDidChangeNotification` | EventsDidChangeNotification | 16.0 |
-| `AVPlayerItemMediaSelectionDidChangeNotification` | AVPlayerItemMediaSelectionDidChangeNotification | 16.0 |
-| `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification | 16.0 |
-| `AVPlayerItemTimeJumpedOriginatingParticipantKey` | AVPlayerItemTimeJumpedOriginatingParticipantKey | 16.0 |
-| `AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification` | AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification | 16.0 |
-| `AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification` | AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification | 16.0 |
-| `AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification` | AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification | 16.0 |
-| `AVURLAssetAllowsConstrainedNetworkAccessKey` | AVURLAssetAllowsConstrainedNetworkAccessKey | 16.0 |
-| `AVURLAssetAllowsExpensiveNetworkAccessKey` | AVURLAssetAllowsExpensiveNetworkAccessKey | 16.0 |
-| `AVURLAssetHTTPUserAgentKey` | AVURLAssetHTTPUserAgentKey | 16.0 |
-| `AVURLAssetPrimarySessionIdentifierKey` | AVURLAssetPrimarySessionIdentifierKey | 16.0 |
-| `AVURLAssetURLRequestAttributionKey` | AVURLAssetURLRequestAttributionKey | 16.0 |
-| `AVVideoAppleProRAWBitDepthKey` | AppleProRAWBitDepthKey | 16.0 |
+| `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | `AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey` | 16.0 |
+| `AVAssetDownloadTaskMinimumRequiredPresentationSizeKey` | `AVAssetDownloadTaskMinimumRequiredPresentationSizeKey` | 11.0 |
+| `AVAssetDownloadTaskPrefersHDRKey` | `AVAssetDownloadTaskPrefersHDRKey` | 16.0 |
+| `AVAssetDownloadTaskPrefersLosslessAudioKey` | `AVAssetDownloadTaskPrefersLosslessAudioKey` | 16.0 |
+| `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | `AVFragmentedMovieContainsMovieFragmentsDidChangeNotification` | 16.0 |
+| `AVFragmentedMovieDurationDidChangeNotification` | `AVFragmentedMovieDurationDidChangeNotification` | 16.0 |
+| `AVFragmentedMovieTrackSegmentsDidChangeNotification` | `AVFragmentedMovieTrackSegmentsDidChangeNotification` | 16.0 |
+| `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | `AVFragmentedMovieTrackTimeRangeDidChangeNotification` | 16.0 |
+| `AVFragmentedMovieWasDefragmentedNotification` | `AVFragmentedMovieWasDefragmentedNotification` | 16.0 |
+| `AVMediaCharacteristicContainsAlphaChannel` | `public.contains-alpha-channel` | 16.0 |
+| `AVMediaCharacteristicContainsHDRVideo` | `public.contains-hdr-video` | 16.0 |
+| `AVMediaCharacteristicIsOriginalContent` | `public.original-content` | 16.0 |
+| `AVMovieReferenceRestrictionsKey` | `AVMovieReferenceRestrictionsKey` | 16.0 |
+| `AVMovieShouldSupportAliasDataReferencesKey` | `AVMovieShouldSupportAliasDataReferencesKey` | 16.0 |
+| `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | `AVPlayerEligibleForHDRPlaybackDidChangeNotification` | 16.0 |
+| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeErrorKey` | `AssetListResponseStatusDidChangeErrorKey` | none of the fifteen |
+| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeEventKey` | `AssetListResponseStatusDidChangeEventKey` | none of the fifteen |
+| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeNotification` | `AssetListResponseStatusDidChangeNotification` | none of the fifteen |
+| `AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeStatusKey` | `AssetListResponseStatusDidChangeStatusKey` | none of the fifteen |
+| `AVPlayerInterstitialEventMonitorCurrentEventDidChangeNotification` | `CurrentEventDidChangeNotification` | 16.0 |
+| `AVPlayerInterstitialEventMonitorEventsDidChangeNotification` | `EventsDidChangeNotification` | 16.0 |
+| `AVPlayerItemMediaSelectionDidChangeNotification` | `AVPlayerItemMediaSelectionDidChangeNotification` | 9.3.6 |
+| `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | `AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification` | 16.0 |
+| `AVPlayerItemTimeJumpedOriginatingParticipantKey` | `AVPlayerItemTimeJumpedOriginatingParticipantKey` | 16.0 |
+| `AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification` | `AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification` | 16.0 |
+| `AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification` | `AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification` | 16.0 |
+| `AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification` | `AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification` | 16.0 |
+| `AVURLAssetAllowsConstrainedNetworkAccessKey` | `AVURLAssetAllowsConstrainedNetworkAccessKey` | 16.0 |
+| `AVURLAssetAllowsExpensiveNetworkAccessKey` | `AVURLAssetAllowsExpensiveNetworkAccessKey` | 16.0 |
+| `AVURLAssetHTTPUserAgentKey` | `AVURLAssetHTTPUserAgentKey` | 16.0 |
+| `AVURLAssetPrimarySessionIdentifierKey` | `AVURLAssetPrimarySessionIdentifierKey` | 16.0 |
+| `AVURLAssetURLRequestAttributionKey` | `AVURLAssetURLRequestAttributionKey` | 16.0 |
+| `AVVideoAppleProRAWBitDepthKey` | `AppleProRAWBitDepthKey` | 16.0 |
 
 ## What the harness can and cannot settle
 
