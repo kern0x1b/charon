@@ -73,10 +73,12 @@ BOOL MPSSupportsMTLDevice(id<MTLDevice> device)
 
 - (instancetype)initWithCoder:(NSCoder *)aDecoder
 {
-    // A kernel of this port is a description of work, not a compiled pipeline: its device, its
-    // options and its label are everything the base class carries, and a subclass's own state is
-    // encoded by the subclass. The release decodes the same three keys here, so an archive written
-    // by an application and read by this port and the other way round both name the same fields.
+    // A kernel of this port is a description of work, not a compiled pipeline, and what the archive
+    // carries is the device, the options and the label. Nothing here encodes a subclass's own state,
+    // and nothing here can: the release's keys for it are in no header, and an invented key would
+    // write an archive the release cannot read. So -initWithCoder:device: on a subclass answers this
+    // implementation, and the two random generators are recorded as owed in
+    // facts/MetalPerformanceShaders/Random.md rather than described as round-tripping.
     return [self initWithCoder:aDecoder device:MTLCreateSystemDefaultDevice()];
 }
 

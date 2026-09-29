@@ -7,9 +7,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "MPSMatrixRandomDistributionDescriptor",
@@ -37,9 +37,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "+[MPSMatrixRandomDistributionDescriptor defaultDistributionDescriptor]",
@@ -87,9 +87,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandom encodeToCommandBuffer:destinationVector:]",
@@ -97,9 +97,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandom initWithDevice:]",
@@ -107,9 +107,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomMTGP32 initWithCoder:device:]",
@@ -117,9 +117,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "answered by MPSKernel's own implementation, reached through MPSMatrixRandom: the archive carries the label and the device and nothing else, so a decoded generator answers the default distribution with the default seed rather than the ones it was encoded with. The release's own keys for a generator's state are in no header and an invented key would write an archive it cannot read, so this is recorded as owed in facts/MetalPerformanceShaders/Random.md rather than described as a round trip. Measured: class_copyMethodList puts -initWithCoder:device: in CharonMPSKernel and in no class of the chain below it.",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomMTGP32 initWithDevice:]",
@@ -127,9 +127,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomMTGP32 initWithDevice:destinationDataType:seed:]",
@@ -137,9 +137,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomMTGP32 initWithDevice:destinationDataType:seed:distributionDescriptor:]",
@@ -147,9 +147,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomMTGP32 synchronizeStateOnCommandBuffer:]",
@@ -157,9 +157,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomPhilox initWithCoder:device:]",
@@ -167,9 +167,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "answered by MPSKernel's own implementation, reached through MPSMatrixRandom: the archive carries the label and the device and nothing else, so a decoded generator answers the default distribution with the default seed rather than the ones it was encoded with. The release's own keys for a generator's state are in no header and an invented key would write an archive it cannot read, so this is recorded as owed in facts/MetalPerformanceShaders/Random.md rather than described as a round trip. Measured: class_copyMethodList puts -initWithCoder:device: in CharonMPSKernel and in no class of the chain below it.",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomPhilox initWithDevice:]",
@@ -177,9 +177,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomPhilox initWithDevice:destinationDataType:seed:]",
@@ -187,9 +187,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "-[MPSMatrixRandomPhilox initWithDevice:destinationDataType:seed:distributionDescriptor:]",
@@ -197,9 +197,9 @@
       "introduced": "13",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit",
       "facts": "facts/MetalPerformanceShaders/Random.md",
-      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)",
-      "effect": "the normal distribution draws mean + standardDeviation * invnorm(t) from the same t, with Wichura AS 241 in double precision: measured against the release over 160000 points spanning the whole range, 47.4% are bit for bit, 84.1% are within two units in the last place, and the largest absolute difference anywhere is 3.81e-06. The release uses a different rational approximation, which is in no header, so the two streams are not interchangeable; the uniform and the default distributions, and the raw UInt32 stream, are bit for bit"
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
     },
     {
       "api": "MPSMatrixRandom.batchSize",

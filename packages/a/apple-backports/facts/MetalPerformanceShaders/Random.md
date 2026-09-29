@@ -150,3 +150,26 @@ rather than derived from the shape of the formula: for `[-2, 3]` the release ans
 `standardDeviation = 1.44337571`, which is the mean at the middle and the width over the square root of
 twelve. `+defaultDistributionDescriptor` answers every field zero, and
 `+normalDistributionDescriptorWithMean:standardDeviation:` leaves the bounds infinite.
+
+## Owed: the generators do not round-trip through an archive
+
+`-[MPSMatrixRandomMTGP32 initWithCoder:device:]` and `-[MPSMatrixRandomPhilox initWithCoder:device:]`
+are `implemented`, and what answers them is `MPSKernel`'s own implementation, reached through
+`MPSMatrixRandom`. Measured with `class_copyMethodList` over the chain
+(`MPSMatrixRandomPhilox` → `MPSMatrixRandom` → `MPSKernel`): the selector is in `MPSKernel` and in no
+class below it, and `MPSKernel`'s implementation decodes three keys — the label, and the device and
+options it sets itself — and nothing else. So an MTGP32 read back from an archive answers the default
+distribution with the default seed, not the ones it was written with.
+
+`MPSMatrixRandom.h:216-217` of iPhoneOS16.4.sdk marks the MTGP32 method
+`NS_DESIGNATED_INITIALIZER`, so the class should carry it, and this port does not. The reason it is
+owed rather than written is the same on both classes: the release's archive keys for a generator's
+seed, its destination data type and its distribution are in no header, so any key this port chose
+would be one the release cannot read and the round trip would be a fiction in the one direction that
+matters. Writing `MPSMatrixRandomMTGP32` a forwarder to `MPSKernel` would make the class carry the
+selector and change nothing an archive can see, which is why the two rows' `effect` says what is
+answered and by whom instead.
+
+The forwarder `-[MPSMatrixRandomPhilox initWithCoder:device:]` already in
+`MPSMatrixRandomPhilox13.m:32-35` is that same no-op, kept because the selector has to be reachable
+and the class answers it; the two rows' `effect` strings say so.
