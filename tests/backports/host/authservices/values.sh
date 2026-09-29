@@ -162,13 +162,27 @@ fi
 #   $1 is the case: "operation" or "replace"
 echo "== mutants: each one has to be red, and neither is the other's"
 
-# run_mutant <tag> <file> <old> <new> <what it is>
+# run_mutant <tag> <target> <old> <new> <what it is>
+# run_mutant <tag>_from_file <anchor-file> <replacement-file> <target> <what it is>
+#
+# Both forms apply to the ONE named target file, through apply-anchor.py, which asserts the anchor
+# occurs exactly once there before it writes. The first version ran its pattern over every .m in the copy
+# and at every occurrence in each; the line it changed is also the first line of -charon_records, so the
+# mutant's -charon_records began by calling -charon_records and the store's reads recursed until the stack
+# went. That is the SIGSEGV the replace mutant was reported as, and the reason a mutation has to name a
+# PLACE rather than a line: the same line is two different places depending on the method it is in.
 run_mutant() {
     tag=$1
-    target=$2
-    old=$3
-    new=$4
-    what=$5
+    anchorFile=""
+    replFile=""
+    if [ "$tag" = "replace_from_file" ] || [ "$tag" = "_from_file" ]; then
+        # The marker is in the tag itself: run_mutant replace_from_file <anchor> <replacement> <target> <what>
+        anchorFile=$2; replFile=$3; target=$4; what=$5
+        shift
+    else
+        target=$2; anchor=$3; repl=$4; what=$5
+        shift
+    fi
     echo
     echo "-- $tag: $what"
     rm -rf "$build/$tag"
@@ -179,16 +193,17 @@ run_mutant() {
         echo "FAIL: the mutation names $target, which is not one of the port's sources"
         return 1
     fi
-    OLDPATTERN="$old" NEWPATTERN="$new" python3 -c '
-import os, sys
-path = sys.argv[1]
-text = open(path).read()
-old, new = os.environ["OLDPATTERN"], os.environ["NEWPATTERN"]
-if old not in text:
-    sys.stderr.write("the pattern is not in %s\n" % path)
-    sys.exit(1)
-open(path, "w").write(text.replace(old, new, 1))
-' "$build/$tag/$target" || { echo "FAIL: the $tag mutation did not apply"; return 1; }
+    if [ -n "$anchorFile" ]; then
+        python3 "$here/apply-anchor.py" "$anchorFile" "$replFile" "$build/$tag/$target" \
+            || { echo "FAIL: the $tag mutation did not apply, and nothing was written"; return 1; }
+    else
+        # The inline form writes its two halves out and goes through the same one file, so both forms
+        # are the same edit applied the same way.
+        printf '%s\n' "$anchor" > "$build/$tag/.anchor"
+        printf '%s\n' "$repl" > "$build/$tag/.repl"
+        python3 "$here/apply-anchor.py" "$build/$tag/.anchor" "$build/$tag/.repl" "$build/$tag/$target" \
+            || { echo "FAIL: the $tag mutation did not apply, and nothing was written"; return 1; }
+    fi
     cmp -s "$build/$tag/$target" "$package/$target" && { echo "FAIL: the mutation changed nothing"; return 1; }
     echo "   $target changed:"
     diff "$package/$target" "$build/$tag/$target" | grep -E "^[<>]" | sed 's/^/     /' | head -4
@@ -217,5 +232,6 @@ open(path, "w").write(text.replace(old, new, 1))
 
 status=0
 run_mutant operation ASAuthorizationOpenIDRequest.m "_requestedOperation = nil;" "_requestedOperation = [ASAuthorizationOperationImplicit copy];" "a fresh request's default operation becomes the implicit one" || status=1
-run_mutant replace ASCredentialIdentityStore.m "NSMutableArray *records = [NSMutableArray array];" "NSMutableArray *records = [self charon_records];" "the store's replace keeps the old set instead of replacing it" || status=1
+run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m \
+    "replace keeps the old identities: the set it starts from is what the store already held" || status=1
 exit "$status"

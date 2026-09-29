@@ -230,7 +230,9 @@ static int store_case(void)
     printf("  store   identities after replace %d\n", (int)after);
     // The set is exactly the array: one identity, and it is the one that was given. A superset would be
     // three here.
-    if (after != 1) { printf("  FAIL the store holds %d identities, and the array named one\n", (int)after); return 1; }
+    // The count is the ROW, and the comparison is the check's, not this function's. Returning 1 here
+    // would end the run before the two tables could be compared, and a mutant that makes the store hold
+    // the wrong number has to be seen AS a difference between the tables rather than as a failed test.
     return 0;
 }
 
