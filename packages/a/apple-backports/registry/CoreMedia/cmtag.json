@@ -1,0 +1,203 @@
+{
+  "framework": "CoreMedia",
+  "entries": [
+    {
+      "api": "CMTagMakeWithOSTypeValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the category with the value as an OSType and kCMTagDataType_OSType",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagMakeWithSInt64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the category with the value and kCMTagDataType_SInt64",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagMakeWithFlagsValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the category with the value and kCMTagDataType_Flags",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagMakeWithFloat64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the category with the value's 64 bits and kCMTagDataType_Float64; 0.0 is still a Float64 and still valid",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagGetOSTypeValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the low 32 bits of the value as a FourCharCode, with NO check of the data type - measured, and the host's own",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagGetSInt64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the value as an int64, with no check of the data type - measured",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagGetFlagsValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the value, with no check of the data type - measured",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagGetFloat64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the value's 64 bits as a double, with no check of the data type - measured",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagGetValueDataType()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the data type field",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagEqualToTag()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the three fields equal",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagHasOSTypeValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the data type is kCMTagDataType_OSType",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagHasSInt64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the data type is kCMTagDataType_SInt64",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagHasFlagsValue()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the data type is kCMTagDataType_Flags",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagHasFloat64Value()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the data type is kCMTagDataType_Float64",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagCompare()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "category as a SIGNED 32-bit integer, then data type, then - within one category and data type - a NaN on either side EQUAL to the other, -0.0 equal to 0.0, a Float64 ordered as a signed double and an int64 as an UNSIGNED 64-bit; fitted as a comparator over a pair, 0 of 253 measured pairs wrong, and both mutants of the NaN tie and the int64 sign red",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagCopyAsDictionary()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "a dictionary of category, data type and value as CFNumbers - a float's value travels as its bit pattern in a 64-bit integer - and no address is ever handed to CFDictionaryCreate, which retains what it is given",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagMakeFromDictionary()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "the tag a dictionary of that shape describes, and kCMTagInvalid for anything that is not one or is missing a key",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    },
+    {
+      "api": "CMTagCopyDescription()",
+      "kind": "function",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "CMTag arrived at iOS 17 and the SDK the toolchain resolves is 16.4, where no CoreMedia header has Tag in its name; CharonCMTag26.h transcribes 26.2's own declaration for each of these, signature and return type included, so the symbol is declared to a consumer as well as defined in the object",
+      "effect": "{category:'<four>' value:<v> <type>} with the category through kCFStringEncodingMacRoman and the string ending at its first zero byte, and {category:'<four>'{INVALID} for a tag with no data type",
+      "facts": "facts/CoreMedia/CMTag.md",
+      "source": "the host's own CoreMedia, held over 665 answers by tests/backports/host/coremedia7/cmtag.m - the port's object reached through dlopen(RTLD_LOCAL | RTLD_FIRST) - with the compare rule fitted over 253 measured pairs and both of its mutants red"
+    }
+  ]
+}

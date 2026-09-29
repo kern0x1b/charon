@@ -57,11 +57,68 @@ CF_INLINE CMTagValue CMTagGetValue( CMTag tag ) CF_REFINED_FOR_SWIFT
 
 CM_EXPORT CMTagDataType CMTagGetValueDataType( CMTag tag );
 
-
 CF_INLINE CMTagCategory CMTagGetCategory( CMTag tag ) CF_REFINED_FOR_SWIFT
 {
 	return tag.category;
 }
+
+CF_INLINE Boolean CMTagHasCategory( CMTag tag, CMTagCategory category ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
+{
+	return ( CMTagGetCategory( tag ) == category );
+}
+
+CF_INLINE Boolean CMTagCategoryEqualToTagCategory( CMTag tag1, CMTag tag2 ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
+{
+	return tag1.category == tag2.category;
+}
+
+CF_INLINE Boolean CMTagCategoryValueEqualToValue( CMTag tag1, CMTag tag2 ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift")
+{
+	return (tag1.category == tag2.category) && // categories must match
+	    (CMTagGetValueDataType(tag1) == CMTagGetValueDataType(tag2)) && // data types must match
+	    (tag1.value == tag2.value);
+}
+
+CM_EXPORT Boolean CMTagHasSInt64Value( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT int64_t CMTagGetSInt64Value( CMTag tag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT Boolean CMTagHasFloat64Value( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT Float64 CMTagGetFloat64Value( CMTag tag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT Boolean CMTagHasOSTypeValue( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT OSType CMTagGetOSTypeValue( CMTag tag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT Boolean CMTagHasFlagsValue( CMTag tag ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT uint64_t CMTagGetFlagsValue( CMTag tag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CMTag CMTagMakeWithSInt64Value( CMTagCategory category, int64_t value ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CMTag CMTagMakeWithFloat64Value( CMTagCategory category, Float64 value ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CMTag CMTagMakeWithOSTypeValue( CMTagCategory category, OSType value ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CMTag CMTagMakeWithFlagsValue( CMTagCategory category, uint64_t flagsForTag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT Boolean CMTagEqualToTag( CMTag tag1, CMTag tag2 ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CFComparisonResult CMTagCompare( CMTag tag1, CMTag tag2 ) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT CFHashCode CMTagHash( CMTag tag) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT CFStringRef CM_NULLABLE CMTagCopyDescription(
+    CFAllocatorRef CM_NULLABLE allocator,
+    CMTag tag ) CF_REFINED_FOR_SWIFT;
+
+CM_EXPORT CFDictionaryRef CM_NULLABLE CMTagCopyAsDictionary(
+    CMTag tag,
+    CFAllocatorRef CM_NULLABLE allocator) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
+
+CM_EXPORT CMTag CMTagMakeFromDictionary(
+    CFDictionaryRef CM_NONNULL dict) CF_SWIFT_UNAVAILABLE("Unavailable in Swift");
 
 typedef CF_ENUM(OSStatus, CMTagCollectionError)
 {
