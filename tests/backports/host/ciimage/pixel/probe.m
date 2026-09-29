@@ -12,24 +12,10 @@
 #import <objc/runtime.h>
 #import <dlfcn.h>
 
-// The port's own implementations, as the named C functions the port's files export. On the host side
-// there is no port build, so the framework's methods are the ones under test there; on the port side
-// these are called directly, so the port's code is the one under test here and dladdr names its image.
-#ifdef CHARON_PORT
-extern NSDictionary *charon_CIImage_properties(id image, SEL _cmd);
-extern CIImage *charon_CIImage_imageBySettingProperties(id image, SEL _cmd, NSDictionary *properties);
-extern CIImage *charon_CIImage_imageByUnpremultiplyingAlpha(id image, SEL _cmd);
-#define SET_PROPERTIES(image, properties) \
-    charon_CIImage_imageBySettingProperties((image), @selector(imageBySettingProperties:), (properties))
-#define GET_PROPERTIES(image) charon_CIImage_properties((image), @selector(properties))
-#define UNPREMULTIPLY(image) charon_CIImage_imageByUnpremultiplyingAlpha((image), @selector(imageByUnpremultiplyingAlpha))
-static const char *const PORT_IMPL_NAME = "charon_CIImage_*";
-#else
-#define SET_PROPERTIES(image, properties) [(image) imageBySettingProperties:(properties)]
-#define GET_PROPERTIES(image) (image).properties
-#define UNPREMULTIPLY(image) [(image) imageByUnpremultiplyingAlpha]
-static const char *const PORT_IMPL_NAME = "framework";
-#endif
+// -imageBySettingProperties: and -imageByUnpremultiplyingAlpha are NOT here, and the reason is
+// measured rather than reasoned: both rows are `absent` in registry/CoreImage/ctxowner9.json, the
+// port answers neither selector, and a probe that asked them would be measuring the framework on both
+// sides. What the measurements were is in facts/CoreImage/ContextOwner.md.
 
 #import "port-support.h"
 
@@ -266,30 +252,20 @@ static void reportContextOwner(void)
     }
 }
 
-// The two rows the properties and the unpremultiply answer, asked over a field with an alpha in it and
-// over a field that has no end, and over the round trip between them.
-static void reportPropertiesAndUnpremultiply(void)
+// The two rows the port does not carry are not asked here: they are `absent` in
+// registry/CoreImage/ctxowner9.json and the port answers neither, so a call here would reach the
+// framework in both processes. What they measured, and why neither is carried, is in
+// facts/CoreImage/ContextOwner.md. What is left of the algebra over a field with an alpha in it is
+// the premultiply, and the two processes are asked the same question about it.
+static void reportPremultiply(void)
 {
     CGRect bounds = CGRectMake(0, 0, 6, 4);
     CIImage *finite = [[[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]]
         imageByCroppingToRect:bounds];
-    CIImage *infinite = [[CIImage alloc] initWithColor:[[CIColor alloc] initWithRed:0.6 green:0.3 blue:0.9 alpha:0.5]];
 
-    put_box(@"props source", finite.extent);
-    CIImage *set = SET_PROPERTIES(finite, @{@"charonProbe": @"one"});
-    put(@"props distinct %d", set != finite);
-    put(@"props count %lu", (unsigned long)GET_PROPERTIES(set).count);
-    put(@"props value %@", GET_PROPERTIES(set)[@"charonProbe"] ?: @"(none)");
-    put_box(@"props extent", set.extent);
-    put_bytes(@"props pixels", render([set imageByCroppingToRect:bounds]));
-    put(@"props source still %lu", (unsigned long)GET_PROPERTIES(finite).count);
-
-    put_box(@"unpre finite extent", UNPREMULTIPLY(finite).extent);
-    put_bytes(@"unpre finite", render([UNPREMULTIPLY(finite) imageByCroppingToRect:bounds]));
-    put_pixels(@"unpre finite", render([UNPREMULTIPLY(finite) imageByCroppingToRect:bounds]));
-    put_bytes(@"unpre round trip", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
-    put(@"unpre infinite infinite %d", CGRectIsInfinite(UNPREMULTIPLY(infinite).extent));
-    put(@"props impl %s", PORT_IMPL_NAME);
+    put_box(@"premul source", finite.extent);
+    put_bytes(@"premul", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
+    put_pixels(@"premul", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));
 }
 
 // A colour, measured as the numbers the colour object holds and as the bytes an image of that colour
@@ -394,9 +370,9 @@ static void report_implementation(const char *key, Class cls, SEL selector)
 
 static void reportImplementations(void)
 {
-    report_implementation("imp imageBySettingProperties:", [CIImage class], @selector(imageBySettingProperties:));
-    report_implementation("imp properties", [CIImage class], @selector(properties));
-    report_implementation("imp imageByUnpremultiplyingAlpha", [CIImage class], @selector(imageByUnpremultiplyingAlpha));
+    // -imageBySettingProperties:, -properties and -imageByUnpremultiplyingAlpha are not asked: the
+    // port answers none of them (registry/CoreImage/ctxowner9.json), and on the host the three are the
+    // framework's own, so the two processes would be asked the same question about the same code.
     report_implementation("imp imageByClampingToExtent", [CIImage class], @selector(imageByClampingToExtent));
 }
 
@@ -448,7 +424,7 @@ int main(void)
         report(@"spaced", spaced);
         reportContextOwner();
         reportImplementations();
-        reportPropertiesAndUnpremultiply();
+        reportPremultiply();
         reportAlgebra();
         reportColors();
         reportRepresentations();

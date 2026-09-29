@@ -13,26 +13,26 @@
       "source": "the header of the iOS 16.4 SDK for the contract; the host's own CoreImage over the same calls, by tests/backports/host/ciimage/pixel, which draws into a CGContext on both sides and prints the bytes that context ended up holding; the 6.1.3 armv7 selector table for what the release has"
     },
     {
-      "api": "+[CIImage imageBySettingProperties:]",
+      "api": "-[CIImage imageBySettingProperties:]",
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "crutch",
-      "reason": "iOS 6 has no primitive that takes a properties dictionary and makes an image, and the method is missing from the release; the row is carried as a crutch and coordination/crutches.md records what it answers and what it cannot",
-      "effect": "the image's own properties plus the caller's, on a copy of the image; the values read back correctly, and the copy is the image on the system measured here, so the measurement that cannot match is that the system's answer is a distinct object of the same extent",
+      "status": "absent",
+      "reason": "the release's properties are readonly and there is no setter, and no public construction makes a second CIImage of the same extent: measured on the host, -copy, -mutableCopy, an identity affine transform, a crop to the image's own extent, an identity CIColorMatrix and a CIGammaAdjust at power 1 and at power 2 all hand back the same object, seven of seven, and the system's own method hands back a distinct one. The identity therefore cannot be reached from outside the framework, and a port answer that returns the receiver would report a call that changed the caller's image as one that did not",
+      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no properties setter, and a caller that checked is not silently given its own image back with a dictionary attached to it",
       "facts": "facts/CoreImage/ContextOwner.md",
-      "source": "the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the identity, the class and the extent of what came back; the two-process probe's values and pixels for the row"
+      "source": "the header of the iOS 16.4 SDK, where -imageBySettingProperties: is declared at CIImage.h:386; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the identity, the class and the extent of what came back"
     },
     {
       "api": "-[CIImage imageByUnpremultiplyingAlpha]",
       "kind": "method",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "crutch",
-      "reason": "iOS 6 has no filter that divides by alpha - CIDivideBlendMode is absent from its 6.1.3 cache and it has no kernel it can compile one from - and the method is missing from the release, so the arithmetic is the port's own over the rendered bytes and the row is a crutch",
-      "effect": "each colour channel divided by the alpha in float, the alpha untouched, a result over one clamped, and an infinite extent answered as the image itself, which is what the system does; one unit of 255 out on a channel, and a premultiply followed by an unpremultiply is not the identity as it is on the system",
+      "status": "absent",
+      "reason": "the release has no filter that divides by alpha - CIDivideBlendMode is absent from its 6.1.3 cache - so the only arithmetic available is the port's own over the rendered bytes, and an 8-bit render of an already premultiplied buffer divided back by its alpha does not return what went in: measured, a pixel comes out 255 151 255 128 where the system gives 255 153 255 128, and half-float does not help because kCIFormatRGBAh is linear (CIImage.h:51) and the round trip through it is a second conversion rather than a second precision. Quiet inexactness on a colour channel is worse than no answer",
+      "effect": "nothing: respondsToSelector: answers NO, which is the truth on a release with no divide-by-alpha primitive, and no caller gets a colour shifted by a quantisation step it cannot see",
       "facts": "facts/CoreImage/ContextOwner.md",
-      "source": "the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the rendered bytes and four pixels of them and the round trip's checksum; coordination/crutches.md for what is still open"
+      "source": "the header of the iOS 16.4 SDK, where -imageByUnpremultiplyingAlpha is declared at CIImage.h:377; the host's own CoreImage over the same call, by tests/backports/host/ciimage/pixel, which prints the rendered bytes and four pixels of them"
     }
   ]
 }

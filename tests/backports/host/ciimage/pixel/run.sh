@@ -25,8 +25,6 @@ sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GR
 cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
 cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
 cp "$GRAPHICS/CIImageAlgebra10.m" "$BUILD/port/CIImageAlgebra.m"
-cp "$GRAPHICS/CIImageProperties10.m" "$BUILD/port/CIImageProperties.m"
-cp "$GRAPHICS/CIImageUnpremultiply11.m" "$BUILD/port/CIImageUnpremultiply.m"
 sed -e 's/CharonGOCtxContext/CharonGGCtxContext/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIContextGCOwner11.m" > "$BUILD/port/CIContextGCOwner.m"
 # The port's classes, under names of their own. The renamed support header is what the probe imports,
 # so it goes where the import finds it and the include path is given - not -include, which would put a
@@ -40,8 +38,6 @@ sed -e 's/CIFilterShape/CharonCIFilterShape/g' -e 's/CharonCharon/Charon/g' "$GR
 cp "$GRAPHICS/CIColor10.m" "$BUILD/port/CIColor.m"
 cp "$GRAPHICS/CIContextRepresentations10.m" "$BUILD/port/CIContextRepresentations.m"
 cp "$GRAPHICS/CIImageAlgebra10.m" "$BUILD/port/CIImageAlgebra.m"
-cp "$GRAPHICS/CIImageProperties10.m" "$BUILD/port/CIImageProperties.m"
-cp "$GRAPHICS/CIImageUnpremultiply11.m" "$BUILD/port/CIImageUnpremultiply.m"
 sed -e 's/CharonGOCtxContext/CharonGGCtxContext/g' -e 's/CharonCharon/Charon/g' "$GRAPHICS/CIContextGCOwner11.m" > "$BUILD/port/CIContextGCOwner.m"
 
 # The system answers: the probe alone, against the framework the host carries.
@@ -51,7 +47,7 @@ xcrun clang -fobjc-arc $quiet "${CH_PROBE:-$here/probe.m}" -framework CoreImage 
 # the port's classes it asks and it says so.
 objects=""
 for piece in CIImageAccumulator CIFilterShape CIColor CIContextRepresentations CIImageAlgebra \
-            CIContextGCOwner CIImageProperties CIImageUnpremultiply; do
+            CIContextGCOwner; do
     # The port's classes are declared in the renamed support header, so their own sources see their
     # own names; CIContextGCOwner declares its class itself and is given the header only for the rest.
     if [ "$piece" = CIContextGCOwner ]; then

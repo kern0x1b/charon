@@ -2,7 +2,11 @@
 
 Measured 2026-09-28 on the rebased tree (`ciimage: 559 measurements, 534 the same, 17 different, 42 one
 side only`; `modelio: 317 measurements, 300 the same, 5 different, 55 one side only`), at a tolerance of
-5e-4 on both. The causes are below, grouped, and each says which side is ours to fix.
+5e-4 on both. The causes are below, grouped, and each says which side is ours to fix. **The CoreImage
+count has moved since**: two rows came out and their measurements went with them, and this tree's own
+run is `ciimage: 551 measurements, 525 the same, 17 different, 44 one side only` — see "The count, and
+what it measures now that two rows came out" at the end, which also carries the control that shows the
+comparator can fail. The 17 are the same 17.
 
 ## CoreImage, the 17 different
 
@@ -147,31 +151,54 @@ class without the band carrying it. Not fixed; the next step is to see which of 
 dropped at 4.3 and to decide between keeping the arithmetic in a file the band keeps and having the
 class come from the release.
 
-## The count, and what it now measures
+## The count, and what it measures now that two rows came out
 
-    ciimage: 564 measurements, 532 the same, 19 different, 52 one side only (tolerance 5e-4)
+    ciimage: 551 measurements, 525 the same, 17 different, 44 one side only (tolerance 0.0005)
 
-The three CoreImage rows that were in that count and were **not measurements of the port** are out of
-it, and the two that are in it are now the port's own code, because the probe calls
-`charon_CIImage_properties`, `charon_CIImage_imageBySettingProperties` and
-`charon_CIImage_imageByUnpremultiplyingAlpha` directly and `dladdr` names the probe's image for all
-three. Both are registered as **crutches**, with the measurement, in `registry/CoreImage/ctxowner9.json`
-and `coordination/crutches.md`:
+That is this tree's own run of `tests/backports/host/ciimage/pixel/run.sh`, on the two processes the
+script builds. The comparator can fail, which is what makes the numbers worth reading: with one number
+the two sides agree on changed on the port side, the same comparator on the same two files reports
 
-- `-imageBySettingProperties:` — the values read back correctly (`props count 1`, `props value one` on
-  both sides) and the identity cannot match: `props distinct 0` in the port against `1` on the system.
-- `-imageByUnpremultiplyingAlpha` — `unpre finite pixel 1` is `255 153 255 128` on the system and
-  `255 151 255 128` in the port, and `unpre round trip` is `487584e5` (which **is** the source
-  checksum, so the system's is exactly the identity) against `fd3b7745`.
+    ciimage: 551 measurements, 524 the same, 18 different, 44 one side only (tolerance 0.0005)
+    different: rgba extent 0.0000 0.0000 8.0000 4.0000
+            the port: rgba extent 12345 0.0000 8.0000 4.0000
 
-### UNMEASURED: the four "0 distinct" alternatives were measured on the host, not on the release
+### The 17 are the 17 that were there before, and the two rows that left are not among them
 
-The finding that no public construction makes a distinct image with the same extent - `-copy`, an
-identity affine transform, an identity colour matrix and a crop to the image's own extent all returning
-the same object, and a clamp returning a distinct one only by making the extent infinite - was
-**measured against the macOS 26 host's CoreImage**. The port runs against the **release's** CoreImage.
-CoreImage arrives with iOS 5.0 (measured against the armv7 caches: the image is absent from 4.3 and
-4.3.5, present in 5.0), so on iOS 6.1.3 the question is whether `-copy` or an identity transform
-returns a distinct image there. **That is unmeasured, and it is a device or emulator question.** If the
-release's copy is distinct, the port's row is right and the identity matches with no change; if it is
-not, the crutch stands. Nothing here should be read as a claim about the release.
+Before, the count was `564 measurements, 532 the same, 19 different, 52 one side only`. The thirteen
+measurements that went with `-imageBySettingProperties:` and `-imageByUnpremultiplyingAlpha` are out of
+the probe with the rows: both are `absent` in `registry/CoreImage/ctxowner9.json`, the port answers
+neither selector, and a probe that called them would have been measuring the host framework in both
+processes. The full reason, both measurements and why neither row is one of the four statuses, is in
+`facts/CoreImage/ContextOwner.md`. Nothing was dropped to make the count smaller: 551 is what the script
+prints.
+
+### The two rows that left, in one line each
+
+- `-imageBySettingProperties:` — `props distinct 0` where the system gives `1`, and **no public
+  construction reaches a distinct image**: `-copy`, `-mutableCopy`, an identity affine transform, a crop
+  to the image's own extent, an identity `CIColorMatrix` and a `CIGammaAdjust` at power 1 and at power 2
+  all return the same object, seven of seven, the last of which visibly changes the image. The identity is
+  built inside the framework and is not reachable from outside it.
+- `-imageByUnpremultiplyingAlpha` — `unpre finite pixel 0` is `255 153 255 128` on the system and
+  `255 151 255 128` in the port: the division is over an 8-bit render of an already premultiplied buffer,
+  and `kCIFormatRGBAh` (iOS 6.0, `CIImage.h:51`) is **linear**, so it trades a quantisation for a colour
+  conversion rather than removing either.
+
+### A correction: `unpre round trip` never measured the unpremultiply
+
+Its source is `put_bytes(@"unpre round trip", render([[finite imageByPremultiplyingAlpha] imageByCroppingToRect:bounds]));`
+— it asks `-[CIImage imageByPremultiplyingAlpha]` and nothing else, so the divergence
+`487584e5` (the source checksum, so the system's is exactly the identity) against `fd3b7745` belongs to
+the premultiply row in `registry/CoreImage/algebra10.json`, and never to the two rows above. The earlier
+pass read it as "a premultiply followed by an unpremultiply is not the identity" and used it to justify
+their status. The probe now asks the premultiply under its own name, `premul`, so the line says what it
+measures.
+
+### UNMEASURED, and it is a claim about the host, not about the release
+
+Everything above is the macOS 26 host's CoreImage; the port runs against the **release's**. CoreImage
+arrives with iOS 5.0 (measured against the armv7 caches: the image is absent from 4.3 and 4.3.5, present
+in 5.0), so on iOS 6.1.3 the seven constructions would have to be measured again before anyone may say
+the release behaves as the host does. Nothing in this file is a claim about what iOS 6.1.3 returns, and
+nothing has run on a device or under `xmake emulate`.

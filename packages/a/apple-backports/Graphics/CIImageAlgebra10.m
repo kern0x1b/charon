@@ -155,9 +155,10 @@ static CIImage *CharonCIClamp(CIImage *image, CGRect rect)
 
 // -imageBySettingProperties: is NOT here, and the reason is measured. The release exposes no way to
 // set an image's properties: the header's `properties` is readonly and there is no setter, so the two
-// implementations available are a touch of the private ivar behind it - a crutch - and a call back into
-// this method to get a new image, which is a stack overflow (measured under -fsanitize=address). The
-// row stays named in facts/CoreImage/ImageAlgebra.md.
+// implementations available are a touch of the private ivar behind it - a crutch - and a copy of the
+// image, which measured hands back the same object (seven of seven public constructions do, in
+// facts/CoreImage/ContextOwner.md). The row is registered `absent` there and the port answers
+// neither it nor -imageByUnpremultiplyingAlpha.
 //
 // That makes three of this family - -imageByUnpremultiplyingAlpha, -imageBySettingProperties: and, on
 // the host's own measure, the clamp methods - methods the framework itself calls on an image while it
