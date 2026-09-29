@@ -14,6 +14,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
 build=${BUILD:-$here/../../../../.agent-work/runs/host/mpsmatrix}
 candidate=${CANDIDATE:+-DCHARON_BN_CANDIDATE=$CANDIDATE}
+system=${SYSTEM_TXT:-}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
@@ -26,7 +27,7 @@ xcrun clang -fobjc-arc $target $quiet "$here/mps-cases.m" \
 # The system's own MPS aborts on some cases, and an oracle that dies half way through can only be
 # compared over the part it produced. Which cases those are is said out loud rather than hidden.
 set +e
-"$build/system" > "$build/system.txt" 2> "$build/system.err"
+if [ -n "$system" ]; then cp "$system" "$build/system.txt"; else "$build/system" > "$build/system.txt" 2> "$build/system.err"; fi
 system_status=$?
 set -e
 echo "tree: $(git -C "$here" rev-parse --short HEAD 2>/dev/null || echo unknown)  dirty $(git -C "$here" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
