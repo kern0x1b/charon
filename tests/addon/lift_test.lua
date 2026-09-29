@@ -8,6 +8,7 @@ end
 
 function failures(opt)
     local lift = import("apple.lift", {rootdir = opt.modules, anonymous = true})
+    local backports = import("apple.backports", {rootdir = opt.modules, anonymous = true})
     local found = {}
     local cases = {
         {"API_AVAILABLE(macos(10.9), ios(7.0), watchos(2.0), tvos(9.0))", "API_AVAILABLE(macos(10.9), ios(6.0), watchos(2.0), tvos(9.0))"},
@@ -565,18 +566,34 @@ function failures(opt)
         end
     end
     expect_equal(found, "a row spelled with the getter carries the property",
-                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(by_getter), kept), ","), "")
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(by_getter), kept, backports.spellings), ","), "")
     expect_equal(found, "and a row spelled with the property's own name does too",
-                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(own), kept), ","), "")
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(own), kept, backports.spellings), ","), "")
     expect_equal(found, "and no row spelling it at all is still refused",
-                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(nothing), kept), ","),
+                 table.concat(lift.property_accessors_uncarried("UITextField", drag, is_carried(nothing), kept, backports.spellings), ","),
                  "-[UITextField isTextDragActive]")
     -- kept is the guard the original code had, on the accessor: a row that keeps the accessor means the port
     -- does not answer it, and the getter's row does not carry it then
+    -- Both sides, one rule: the registry's own spellings() is what the lift asks, so a row spelled with the
+    -- getter and one spelled with the property name name the same declaration to the check and to the lift. A
+    -- property whose own name really is isSomething keeps its own spelling, because the guess is additive.
+    for _, spelling in ipairs({"-[UITextField isTextDragActive]", "UITextField.isTextDragActive", "UITextField.textDragActive"}) do
+        local names = backports.spellings(spelling)
+        expect_equal(found, string.format("the row %-32s answers the property name", spelling),
+                     tostring(names["UITextField.textDragActive"]), "true")
+    end
+    expect_equal(found, "a property named isSomething keeps its own spelling",
+                 tostring(backports.spellings("-[UISomething isHidden]")["UISomething.isHidden"]), "true")
+    expect_equal(found, "and a setter row answers the property name too",
+                 tostring(backports.spellings("-[UITextField setTextDragActive:]")["UITextField.textDragActive"]), "true")
+    expect_equal(found, "another owner's row does not",
+                 tostring(backports.spellings("-[UITextView isTextDragActive]")["UITextField.textDragActive"]), "nil")
+
     expect_equal(found, "a property whose accessor is kept is not carried by the getter's row",
                  table.concat(lift.property_accessors_uncarried("UITextField", drag,
-                                                               is_carried({["UITextField.isTextDragActive"] = true}),
-                                                               {["-[UITextField isTextDragActive]"] = true}), ","),
+                                                               is_carried({["UITextField.textDragActive"] = true}),
+                                                               {["-[UITextField isTextDragActive]"] = true},
+                                                               backports.spellings), ","),
                  "-[UITextField isTextDragActive]")
 
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)

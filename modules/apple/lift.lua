@@ -1356,7 +1356,7 @@ local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
 -- the port builds: UITextField.isTextDragActive names UITextDraggable's textDragActive, whose getter is
 -- isTextDragActive, and the property's own spelling is in none of the rows. A property whose own name a row *keeps*
 -- is not carried by the getter's row either: kept means the port does not answer it.
-function property_accessors_uncarried(owner, node, carried, kept)
+function property_accessors_uncarried(owner, node, carried, kept, spellings)
     local left = {}
     local sign = node.class and "+" or "-"
     local getter = node.getter and node.getter.name or node.name
@@ -1366,8 +1366,21 @@ function property_accessors_uncarried(owner, node, carried, kept)
         table.insert(accessors, string.format("%s[%s %s]", sign, owner, setter))
     end
     for _, accessor in ipairs(accessors) do
-        if not (carried(accessor) or carried(owner .. "." .. node.name) and not kept[accessor]
-                    or carried(owner .. "." .. getter) and not kept[accessor]) then
+        -- The apis that name this declaration are the registry's own answer, not a rule written here: a row
+        -- spelled Owner.foo, Owner.isFoo or the accessor itself names it, and backports.spellings() is where that is
+        -- decided - for the check that a port builds against and for this lift, so the two cannot disagree. The
+        -- kept guard is the one this file has always had: a row that keeps a name means the port does not answer
+        -- it, and the accessor itself is not governed by it.
+        local held = carried(accessor)
+        if not held and not kept[accessor] then
+            for api in pairs(spellings(accessor)) do
+                if carried(api) then
+                    held = true
+                    break
+                end
+            end
+        end
+        if not held then
             table.insert(left, accessor)
         end
     end
@@ -2175,7 +2188,7 @@ local function computed(opt)
                     table.insert(unreachable, string.format("%s is declared by %s in a form this cannot write again", api, by))
                 end
                 if node.kind == "ObjCPropertyDecl" then
-                    for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept)) do
+                    for _, accessor in ipairs(property_accessors_uncarried(owner, node, carried, kept, backports.spellings)) do
                         table.insert(unreachable, string.format("%s is %s's property %s, whose accessor %s is not carried",
                                                               api, by, node.name, accessor))
                     end

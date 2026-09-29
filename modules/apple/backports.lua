@@ -1471,12 +1471,25 @@ function registry(root)
     return listed, incomplete, table.orderkeys(frameworks)
 end
 
+-- The property names a selector may be the accessor of, most specific first: setFoo: and isFoo are the accessor
+-- spellings of foo, and a selector that is neither may be a property's own name. Both are answers on purpose: the
+-- SDK decides which, by the getter= attribute on the property, and a row here may name either. A property whose own
+-- name really is isSomething is covered by the literal answer, so nothing is lost by the guess.
 local function property_of(selector)
-    local named = selector:match("^set(%u[%w_]*):$")
-    if named then
-        return named:sub(1, 1):lower() .. named:sub(2)
+    local found = {}
+    local setter = selector:match("^set(%u[%w_]*):$")
+    if setter then
+        table.insert(found, setter:sub(1, 1):lower() .. setter:sub(2))
     end
-    return selector:match("^([%w_]+)$")
+    local getter = selector:match("^is(%u[%w_]*)$")
+    if getter then
+        table.insert(found, getter:sub(1, 1):lower() .. getter:sub(2))
+    end
+    local literal = selector:match("^([%w_]+)$")
+    if literal then
+        table.insert(found, literal)
+    end
+    return found
 end
 
 spellings = function(api)
@@ -1488,12 +1501,18 @@ spellings = function(api)
             found[string.format("-[%s %s]", class, selector)] = true
             found[string.format("+[%s %s]", class, selector)] = true
         end
+        -- and the property names it may be an accessor of, so a row spelled with the getter and a row spelled with
+        -- the property's name answer each other whichever way the row is written
+        for _, property in ipairs(property_of(member)) do
+            found[class .. "." .. property] = true
+        end
     end
     local sign, owner, selector = plain:match("^([-+])%[([%w_]+) (.+)%]$")
     if sign then
         found[owner .. "." .. selector] = true
-        local property = property_of(selector)
-        if property then
+        -- every property name this selector may be an accessor of, so a row spelled with a getter and a row
+        -- spelled with the property name are the same declaration to the check and to the lift
+        for _, property in ipairs(property_of(selector)) do
             found[owner .. "." .. property] = true
         end
     end
