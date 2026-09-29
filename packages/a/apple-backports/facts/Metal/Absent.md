@@ -273,3 +273,24 @@ through `CharonMetalBuffer` (`MTLBuffer.h:32` makes `MTLBuffer` a `MTLResource`)
 `MTLDrawable` through `CharonMetalDrawable`, which adopts `CAMetalDrawable` and that is `<MTLDrawable>`
 in QuartzCore's `CAMetalLayer.h:28`. The tool resolves each by asking which `@interface` adopts a
 protocol inheriting the row's, so these are measured on a real class rather than asserted.
+
+### update 2026-09-29: MTLResource is implemented — all four members were cheap
+
+The criterion reported `CharonMetalBuffer` missing four `MTLResource` members — `allocatedSize`,
+`hazardTrackingMode`, `isAliasable`, `makeAliasable` — and **all four were cheap**, needing no
+measurement, because each is a property of a CPU-resident buffer whose size the port already answers.
+
+| member | answer | where it comes from |
+| --- | --- | --- |
+| `allocatedSize` | the window's own `length` | a buffer here is a window onto ONE `MTLBuffer`'s bytes, and that is the smallest allocation it can live in; a larger number is one nobody here can know |
+| `hazardTrackingMode` | `MTLHazardTrackingModeUntracked` | the header's own case at `MTLResource.h:98` — the workgroup's threads are joined by a mutex and a condition variable before the dispatch is encoded (`facts/Metal/Compute.md`), so the hazard is resolved by the join, not by a tracked range |
+| `isAliasable` | `NO` | two textures over one range of the memory this device has would be two names for bytes the shader then writes twice |
+| `makeAliasable` | does nothing | and `isAliasable` says `NO` because nothing did — that is the pair the header gives |
+
+**The header's own wording corrected the signatures twice**, and the criterion caught each: `makeAliasable`
+is `-(void) makeAliasable` with **no argument** (`MTLResource.h:78`), not a `BOOL` taking a resource —
+whether the call succeeded is what `isAliasable` answers. Reading the header before writing the
+method would have saved a round trip.
+
+`MTLResource` is therefore `implemented`, and the criterion reports every member of the protocol
+defined for `CharonMetalBuffer`.

@@ -116,9 +116,9 @@
       "kind": "protocol",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "inert",
-      "reason": "the port carries CharonMetalBuffer, and the criterion in tests/backports/host/protocol-conformance.sh finds 4 member(s) of this protocol it does not define, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does define are callable; these are NOT, and are owed, from the tool's own list: -allocatedSize, -hazardTrackingMode, -isAliasable, -makeAliasable",
+      "status": "implemented",
+      "reason": "the port carries CharonMetalBuffer, which conforms through MTLBuffer (16.4's MTLBuffer.h:32), and the class now defines all four MTLResource members the criterion had reported missing",
+      "effect": "allocatedSize is the window's own length, which is what the port already answers and is the smallest allocation the window can live in; hazardTrackingMode is MTLHazardTrackingModeUntracked, the header's own case at MTLResource.h:98, because a workgroup's threads are joined by a mutex and a condition variable before the dispatch is encoded (facts/Metal/Compute.md); isAliasable is NO and makeAliasable does nothing, because two textures over one range of the memory this device has would be two names for bytes the shader writes twice. Every member is defined, measured by tests/backports/host/protocol-members.py",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache",
       "facts": "facts/Metal/Absent.md"
     },
