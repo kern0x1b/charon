@@ -63,6 +63,7 @@ static void printClassImages(void)
         Class cls = NSClassFromString(names[i]);
         printf("image %-40s %s\n", names[i].UTF8String,
                cls ? (class_getImageName(cls) ?: "(none)") : "(absent)");
+        fflush(stdout);
         NSString *charon = [@"Charon" stringByAppendingString:names[i]];
         Class mine = NSClassFromString(charon);
         printf("image %-40s %s\n", charon.UTF8String,
@@ -79,6 +80,8 @@ static void pullResults(void)
     }
 }
 
+// Flushed after every case: the oracle's own teardown crashes, and an unflushed stream loses every
+// answer printed since the last flush.
 static void put(const char *name, const void *bytes, size_t length)
 {
     pullResults();
@@ -87,6 +90,7 @@ static void put(const char *name, const void *bytes, size_t length)
     for (size_t i = 0; i < length; i++)
         printf("%02x", p[i]);
     printf("\n");
+    fflush(stdout);
 }
 
 static MPSMatrix *matrixOf(const void *values, MPSDataType type, NSUInteger rows, NSUInteger columns, NSUInteger matrices, size_t rowBytes, size_t matrixBytes)
