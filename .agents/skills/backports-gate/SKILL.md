@@ -119,6 +119,16 @@ A sweep: it reports whether each `host/*/run.sh` got past building itself, not w
 pass. A test that stops linking dies silently under `set -eu`; after reviving one, run it in full
 and read it for regressions before calling it healthy.
 
+`charon_check(passed, name, detail)` takes `const char *name` and prints it with `%s`, so a name
+is a C string. An `@"…"` there is read as a pointer: the check still passes or fails as it should,
+the run still exits with the failure count, and the line that would tell a reader *which* check
+failed prints an address - `FAIL P'^A: it adopts none` - which is worse than no line, because a
+red run can no longer be read. The existing macro `NAMED(...)` already returns `.UTF8String` for a
+name built with a format. A file a band adds checks to should compile with no warning at all
+under the flags `run.sh` compiles a test with (`-Wall -fobjc-arc` and the harness on the include
+path), and a test that deliberately probes a `nil` or a newer API than the target carries says so
+in a local pragma rather than losing the warning in a file-wide one.
+
 ## What goes with a patch
 
 The base commit, what is inside, which of steps 1–4 ran with their verdict lines, and the caveats.
