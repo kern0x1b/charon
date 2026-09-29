@@ -31,52 +31,6 @@
 #import <UIKit/UIKit.h>
 #import "CharonPassKit.h"
 
-@implementation PKPaymentAuthorizationController (CharonSecureElement)
-
-// Apple's own documentation: a device that cannot make payments says so here. The four NO answers.
-+ (BOOL)canMakePayments
-{
-    return NO;
-}
-
-+ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks
-{
-    (void)networks;
-    return NO;
-}
-
-+ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks capabilities:(PKMerchantCapability)capabilities
-{
-    (void)networks;
-    (void)capabilities;
-    return NO;
-}
-
-@end
-
-@implementation PKPaymentAuthorizationViewController (CharonSecureElement)
-
-// +canMakePayments, 8.0: the capability question, NO, like the controller's own.
-+ (BOOL)canMakePayments
-{
-    return NO;
-}
-
-+ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks
-{
-    (void)networks;
-    return NO;
-}
-
-+ (BOOL)canMakePaymentsUsingNetworks:(NSArray *)networks capabilities:(PKMerchantCapability)capabilities
-{
-    (void)networks;
-    (void)capabilities;
-    return NO;
-}
-
-@end
-
 @implementation PKPassLibrary (CharonSecureElement)
 
 // The capability questions, NO, and the two activation-availability ones NO -- a device with no
