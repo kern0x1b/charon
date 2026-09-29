@@ -571,3 +571,22 @@ the index within the drawn picture is `dx + 112`, not `dx - 112`. With the sign 
 is `(dx + 112.5) * 0.2232 - 0.5 = 24.61 + 0.2232 dx`, which is candidate A to two places. So the
 port's rule and Core ML's rule are the same, the 49.16 was my arithmetic, and the red cover row is a
 defect in the port's **code** that this does not locate.
+
+## What is not carried
+
+The Core ML request is the one request Vision here really runs, and the paragraph above says so with
+its measurements. These are the parts of the surface that are still not carried, each one against
+what the tree and the registry say rather than against an intention.
+
+- Detecting a barcode, a rectangle, a face and its landmarks is still next: `-performRequests:error:`
+  answers `VNErrorNotImplemented` for every request but the Core ML one, so no request of those kinds
+  runs. Their observations are implemented as classes with the properties and accessors the release
+  declares, and an application can make one itself, but nothing in the port produces one: the
+  landmark regions answer no points, because there is no request to make them from.
+- `+[VNDetectFaceLandmarksRequest revision:supportsConstellation:]` arrived in iOS 13 and is not
+  carried. Its row in `registry/Vision/ios11.json` is `absent`, with the reason the port does not
+  detect the constellation of face landmarks, and the selector is in none of the port's own sources.
+- The host's Vision is newer than the releases read here and differs in what it does with a tracker's
+  level (it ignores it), a copy of an observation (it returns the same object), a yaw out of range
+  (it clamps) and the symbologies it reads by default (it has more). The port follows iOS 12 there,
+  and the records leave those out.
