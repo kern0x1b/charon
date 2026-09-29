@@ -18,19 +18,35 @@
 static void *g_handle;
 static int g_failures;
 
-static void charonCompareString(NSString *name, NSString *port, NSString *const *apple) {
+// ORACLE: "host" means Apple's own MediaPlayer on this machine answered dlsym; "cache" means this Mac's
+// MediaPlayer does NOT export the name and the value was read from the armv7 dyld shared cache of the
+// release that first exports it, by tools/cfconst.py. The oracle is named on every line so a constant no
+// oracle judged is visible instead of silently green.
+static void charonCompareString(NSString *name, NSString *port, NSString *const *apple,
+                                const char *oracle, const char *cacheValue) {
   const char *p = port ? [port UTF8String] : NULL;
   // apple is a dlsym result and can be NULL ITSELF, not only the value it points at: dereferencing a NULL
   // symbol pointer is a segfault, and that is what the first run did.
-  const char *a = (apple && *apple) ? [*apple UTF8String] : NULL;
-  if (!a) { printf("MISSING\t%s\tApple's own MediaPlayer has no such symbol\n", [name UTF8String]); g_failures++; return; }
-  if (!p) { printf("NULL\t%s\tthe port defines it as NULL\n", [name UTF8String]); g_failures++; return; }
+  const char *a;
+  if (oracle && strcmp(oracle, "cache") == 0) {
+    // judged by a RELEASE CACHE, because this Mac's MediaPlayer has no such symbol. If the cache value is
+    // absent too then NOTHING compared this name, and that is NO-ORACLE - not the same as a host MISSING.
+    a = cacheValue;
+    if (!a) { printf("NO-ORACLE\t%s\tnothing compared this name\n", [name UTF8String]); g_failures++; return; }
+  } else {
+    // judged by Apple's own MediaPlayer on this machine. apple is a dlsym result and can be NULL ITSELF,
+    // not only the value it points at: dereferencing a NULL symbol pointer is a segfault.
+    if (!apple) { printf("MISSING\t%s\tApple's own MediaPlayer has no such symbol\n", [name UTF8String]); g_failures++; return; }
+    a = *apple ? [*apple UTF8String] : NULL;
+    if (!a) { printf("NULL\t%s\tthe port defines it as NULL\n", [name UTF8String]); g_failures++; return; }
+  }
+  if (!p) { printf("PORT-NULL\t%s\tthe port defines it as NULL\n", [name UTF8String]); g_failures++; return; }
   if (strcmp(p, a) != 0) {
     printf("DIFFERS\t%s\tthe port has %s and Apple's has %s\n", [name UTF8String], p, a);
     g_failures++;
     return;
   }
-  printf("OK\t%s\t%s\t", [name UTF8String], p);
+  printf("OK\t%s\t%s\toracle=%s\t", [name UTF8String], p, oracle ? oracle : "host");
   for (const unsigned char *b = (const unsigned char *)p; *b; b++) printf("%02x", *b);
   printf("\n");
 }
@@ -44,7 +60,7 @@ int main(void) {
 @@CALLS@@
     // the PLANTED control: a name neither side has, which must be REPORTED and must not pass
     charonCompareString(@"MPNoSuchConstantForTheControl", nil,
-                         (NSString *const *)dlsym(g_handle, "MPNoSuchConstantForTheControl"));
+                         (NSString *const *)dlsym(g_handle, "MPNoSuchConstantForTheControl"), "host", NULL);
     printf("failures\t%d\n", g_failures);
   }
   return g_failures ? 1 : 0;
