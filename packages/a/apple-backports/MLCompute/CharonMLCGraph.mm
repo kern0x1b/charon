@@ -162,8 +162,11 @@ static float CharonMLCActivate(const CharonMLCFormula *formula, float x)
             // measured as 1.050701, 2.101402, 3.152103, 4.202804 - a scale of 1.0507009873554804934.
             return 1.0507009873554804934f * (fmaxf(0.0f, x) + fminf(0.0f, 1.6732632423543772848f * (expf(x) - 1.0f)));
         case MLCActivationTypeHardSwish:
-            // 0 below -3, x above 3 and x (x + 3) / 6 between, measured as 0.6666667, 1.666667, 3, 4.
-            return x <= -3.0f ? 0.0f : (x >= 3.0f ? x : x * (x + 3.0f) / 6.0f);
+            // 0 below -3, x from 3, and x (x + 3) / 6 between - measured: 0.6666667, 1.6666667, 3, 4.
+            // The multiply is by the reciprocal and not a divide, and the differential compares the bits
+            // rather than six digits: at 2 the two differ by one ulp, 3fd55555 against the framework's
+            // 3fd55556, and the reciprocal is the framework's. Six digits could not see that.
+            return x <= -3.0f ? 0.0f : (x >= 3.0f ? x : x * (x + 3.0f) * (1.0f / 6.0f));
         case MLCActivationTypeTanh:
             return a * tanhf(b * x);
         case MLCActivationTypeSigmoid:

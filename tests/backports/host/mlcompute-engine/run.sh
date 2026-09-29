@@ -108,37 +108,88 @@ xcrun clang $common "$here/system.m" $libs -framework MLCompute -o "$build/syste
 "$build/system" > "$build/system.log"
 "$build/port" "$build/libCharonMLCompute.dylib" > "$build/port.log"
 
-if ! diff -u "$build/system.log" "$build/port.log"; then
-    echo "the port's answers differ from the host's, above"
-    exit 1
-fi
-echo "the port computes all $(( $(grep -c '	' "$build/system.log") )) activations as the host does"
+# The comparison, case by case, on the bits of each float. Bit-identical is the rule for nineteen of
+# the twenty-one cases, and the two exceptions are named with the size of their exception, measured:
+#
+#   tanh, tanhShrink - the framework's own tanh is one ulp off the correctly rounded value at 1, where it
+#   answers 3f42f7d5 and tanhf, tanh in double and tanhf in double all answer 3f42f7d6; its tanhShrink
+#   subtracts that value, which carries the error to four ulps at 1. Four is the whole of the allowance.
+#
+# It is per case and not one number for the file because a number wide enough for those two would be
+# wide enough to hide a wrong constant: 0.797885f - the rounded spelling of the GELU's own multiplier,
+# and what this file carried until the review measured it against the framework's descriptor - costs two
+# ulps on the GELU, and would pass a four-ulp rule. With the GELU held to zero the wrong constant fails,
+# and the mutant below is that exact value.
+python3 - "$build/system.log" "$build/port.log" <<'CMP'
+import re, sys
 
-# A mutant of the port: the GELU's bound, one digit changed, in the port's own formula. If the check above
-# can be told apart from it, the check is reading the port's code and not a stored answer.
+ULPS_ALLOWED = {"activation tanh": 4, "activation tanhShrink": 4}
+
+def read(path):
+    cases = {}
+    for line in open(path):
+        if "\t" not in line:
+            continue
+        name, values = line.rstrip("\n").split("\t", 1)
+        fields = values.split(",")
+        if len(fields) == 4 and all(re.fullmatch(r"[0-9a-f]{8}", f) for f in fields):
+            cases[name] = [int(f, 16) for f in fields]
+        else:
+            cases[name] = None
+    return cases
+
+system, port = read(sys.argv[1]), read(sys.argv[2])
+problems = []
+if set(system) != set(port):
+    problems.append("the two runs did not answer the same cases: %s" % sorted(set(system) ^ set(port)))
+for name, left in system.items():
+    right = port.get(name)
+    if left is None or right is None:
+        if left != right:
+            problems.append("%s: host %r, port %r" % (name, left, right))
+        continue
+    for index, (a, b) in enumerate(zip(left, right)):
+        allowed = ULPS_ALLOWED.get(name, 0)
+        if a >> 23 != b >> 23 or abs(a - b) > allowed:
+            problems.append("%s: value %d is 0x%08x against the host's 0x%08x (%d ulp, %d allowed)"
+                            % (name, index, b, a, abs(a - b), allowed))
+if problems:
+    print("the port's answers differ from the host's:")
+    for problem in problems[:20]:
+        print("  " + problem)
+    sys.exit(1)
+print("the port computes all %d activations as the host does: bit for bit, bar the last bit of the"
+      " two cases that go through the framework's own tanh" % len(system))
+CMP
+
+# A mutant of the port: the GELU's multiplier written the rounded way, which is the value this file
+# carried until the review measured it against the framework's own descriptor. If the check cannot tell
+# it apart, the check is reading a stored answer and not the code.
 mutant() {
     rm -rf "$build/mutant"
     mkdir -p "$build/mutant"
     cp "$port"/*.m "$port"/*.mm "$port"/*.h "$build/mutant/"
-    python3 - "$build/mutant/CharonMLCGraph.mm" <<'PY'
+    python3 - "$build/mutant/CharonMLCGraph.mm" <<'MUT'
 import sys
 path = sys.argv[1]
 text = open(path).read()
 before = text
-text = text.replace("return x * 0.5f * (1.0f + tanhf(0.7978845608f * (x + 0.044715f * x * x * x)));",
-                    "return x * 0.5f * (1.0f + tanhf(0.7078845608f * (x + 0.044715f * x * x * x)));")
+text = text.replace("0.7978845608f * (x + 0.044715f * x * x * x)));",
+                    "0.797885f * (x + 0.044715f * x * x * x)));")
 assert text != before, "the mutant changed nothing"
 open(path, "w").write(text)
-PY
+MUT
     dylib "$build/mutant/libCharonMLCompute.dylib" "$build/mutant/MLCTypes14.m $build/mutant/MLCDevice15.m $build/mutant/MLCTensors14.m $build/mutant/MLCDescriptors14.m $build/mutant/MLCLayers14.m $build/mutant/CharonMLCGraph.mm"
     xcrun clang $common -I"$build/mutant" "$here/port.m" $libs -o "$build/mutant/port"
     "$build/mutant/port" "$build/mutant/libCharonMLCompute.dylib" > "$build/mutant.log" 2>&1 || true
-    if diff -q "$build/system.log" "$build/mutant.log" > /dev/null; then
+    # The two logs are produced by the same code path, so the ulps the rule allows are identical in both
+    # and cannot stand in for a difference: what a diff finds here is the mutant's own doing.
+    if diff -q "$build/port.log" "$build/mutant.log" > /dev/null; then
         echo "the mutant is indistinguishable from the port: the check reads a stored answer, not the code"
         exit 1
     fi
-    echo "the mutant is told apart:"
-    diff "$build/system.log" "$build/mutant.log" | grep "^[<>]" | head -4 | sed "s/^/  /"
+    echo "the mutant is told apart, on the case it perturbs:"
+    diff "$build/port.log" "$build/mutant.log" | grep "^[<>]" | head -2 | sed "s/^/  /"
 }
 mutant
 echo "log=$build/system.log"

@@ -2,8 +2,26 @@
 // of one channel holding 1, 2, 3, 4. This is the side the port is held to, and it is the same question
 // tests/backports/host/mlcompute/engine.m asked when the measurements were taken.
 #import <Foundation/Foundation.h>
+#include <stdint.h>
+#include <string.h>
 #import <MLCompute/MLCompute.h>
 #import "cases.h"
+
+// The four values, each as the bits of the float rather than as a decimal: %g is six significant
+// digits and the GELU's constant differs in the seventh, so a decimal comparison cannot see the error
+// this differential exists to catch.
+static uint32_t charon_bits(float value)
+{
+    uint32_t bits;
+    memcpy(&bits, &value, sizeof(bits));
+    return bits;
+}
+
+static void print_values(const char *name, const float *values)
+{
+    printf("activation %s\t%08x,%08x,%08x,%08x\n", name, charon_bits(values[0]), charon_bits(values[1]),
+           charon_bits(values[2]), charon_bits(values[3]));
+}
 
 int main(void)
 {
@@ -47,7 +65,7 @@ int main(void)
                 printf("activation %s\t(no answer: %s)\n", charon_case_names[type], outcome.UTF8String ?: "did not compile");
                 continue;
             }
-            printf("activation %s\t%g,%g,%g,%g\n", charon_case_names[type], out[0], out[1], out[2], out[3]);
+            print_values(charon_case_names[type], out);
             free(out);
         }
     }

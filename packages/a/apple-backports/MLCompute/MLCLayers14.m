@@ -253,7 +253,10 @@ static MLCActivationLayer *CharonMLCActivation(MLCActivationDescriptor *descript
 
 + (MLCActivationLayer *)geluLayer
 {
-    return CharonMLCActivation([MLCActivationDescriptor descriptorWithType:MLCActivationTypeGELU a:0.797885f b:0.044715f]);
+    // Measured against the host's own descriptor, in bits: a is 0x3f4c422a and b is 0x3d372713, and
+    // 0.7978845608f and 0.044715f are the two values that are those floats. 0.797885f - the rounded
+    // spelling - is 0x3f4c4231 and is not.
+    return CharonMLCActivation([MLCActivationDescriptor descriptorWithType:MLCActivationTypeGELU a:0.7978845608f b:0.044715f]);
 }
 
 + (MLCActivationLayer *)hardSwishLayer

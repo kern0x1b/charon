@@ -8,6 +8,8 @@
 // one it dlsym's. That is what makes the two answers come out of the same arrangement of code the gate
 // builds, rather than out of a program that happens to be able to see the engine's symbols.
 #import <Foundation/Foundation.h>
+#include <stdint.h>
+#include <string.h>
 #import <dlfcn.h>
 // The port's own declarations, for the selectors only: including the header declares them without a
 // link-time reference to any class, and the classes themselves are looked up by name below, so every one of
@@ -17,6 +19,22 @@
 #import "cases.h"
 
 typedef BOOL (*CharonElementwise)(id layer, id input, id output);
+
+// The four values, each as the bits of the float rather than as a decimal: %g is six significant
+// digits and the GELU's constant differs in the seventh, so a decimal comparison cannot see the error
+// this differential exists to catch.
+static uint32_t charon_bits(float value)
+{
+    uint32_t bits;
+    memcpy(&bits, &value, sizeof(bits));
+    return bits;
+}
+
+static void print_values(const char *name, const float *values)
+{
+    printf("activation %s\t%08x,%08x,%08x,%08x\n", name, charon_bits(values[0]), charon_bits(values[1]),
+           charon_bits(values[2]), charon_bits(values[3]));
+}
 
 int main(int argc, const char **argv)
 {
@@ -64,7 +82,7 @@ int main(int argc, const char **argv)
                 continue;
             }
             const float *values = [result data].bytes;
-            printf("activation %s\t%g,%g,%g,%g\n", charon_case_names[type], values[0], values[1], values[2], values[3]);
+            print_values(charon_case_names[type], values);
         }
     }
     dlclose(library);

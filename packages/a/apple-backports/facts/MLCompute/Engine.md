@@ -46,6 +46,13 @@ the same function.
 The erf form is still not it: `x/2 * (1 + erff(x / sqrt(2)))` gives 0.841345 at 1, and the framework
 does not.
 
+The constant is `0.7978845608f` and its float is `0x3f4c422a`, which is what the framework's own
+`+geluLayer` descriptor carries - measured against it, bit for bit, together with `b = 0.044715f` =
+`0x3d372713`. The rounded spelling `0.797885f` is `0x3f4c4231` and is not the framework's value, and it
+costs two ulps on the GELU, which is why the differential's own tolerance is per case: the GELU is held
+to zero and the two cases that go through the framework's tanh are held to four, the whole of what that
+transcendental's own error carries.
+
 ## What was measured about it
 
 **It builds for this port's oldest release.** All three translation units compile for
