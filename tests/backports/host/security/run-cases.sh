@@ -349,14 +349,6 @@ must_not_compile() {
     # do. The increment belongs at the top, like the other two runners.
     mutants=$((mutants + 1))
     name=$1; sources=$2
-    # A MISSING MUTANT FILE IS NOT A BUILD FAILURE AND NOT A PASS. Without this, a file that is simply
-    # absent makes the compiler fail for the wrong reason, and "refused by the compiler" - which is what
-    # this expectation REQUIRES - cannot be told from a mutant that was never written.
-    if [ ! -f "$build/mutant-$name.m" ]; then
-        echo "RED    $name mutation MISSING - the file was not written, so nothing was proved"
-        failures=$((failures + 1))
-        return
-    fi
     if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mustfail-$name" > "$build/mustfail-$name.log" 2>&1; then

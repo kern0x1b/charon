@@ -130,6 +130,21 @@ rated medium and is recorded here rather than fixed; three defects were found by
    `dlsym(system, …)` calls must stay unchecked: those are the *host* side of a differential and are
    supposed to resolve from the system framework.
 
-Until all three are fixed, the honest statement is: **the guard covers the `sec_*` and `Charon*` symbols a
+4. **The stale-mutant sweep is NOT LANDED.** Removing every `mutant-*.m` before any is written is the
+   right fix, and it is written, but `make-mutants.py` is called by the driver *after* the early
+   `mutate()` invocations, so a sweep there deletes the mutants this run has just written and the suite
+   goes red — measured: `3 failure(s) - 19 cases, 14 mutants, 10 noticed`. It has to run **before**
+   `make-mutants` and before the first `mutate()`, which means the driver's ordering changes. **OWED.**
+   The hazard is real and has already happened here: a stale `held-nocopy` was built between two runs
+   and reported `NOT BUILT` for a reason that had nothing to do with the script.
+5. **The missing-mutant-file check is OWED.** `must_not_compile` is required to see a build *fail*, and a
+   mutant file that is simply absent makes the compiler fail for the wrong reason — "refused by the
+   compiler", which is what the expectation requires, cannot be told from a mutant nobody wrote. The check
+   that distinguishes them was written and then **reverted, unproven**: its control removed a file that
+   `make-mutants.py` rewrites at the start of every run, so the control could not fail. Proving it needs
+   a function-level test that calls `must_not_compile` on a path that cannot exist, without going through
+   the generator at all. **OWED.**
+
+Until all five are fixed, the honest statement is: **the guard covers the `sec_*` and `Charon*` symbols a
 case calls by name, when the sources that define them are in the link line the guard was handed.** Nothing
-here claims otherwise.
+here claims otherwise, and none of the five is done.
