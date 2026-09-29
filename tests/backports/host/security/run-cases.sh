@@ -30,12 +30,10 @@ common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fo
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
 green=0
-# MUTANT_EXTRA ADDS sources the case does not link, for a mutant that lives in an object whose class
-# lives in another: the sec-identity-nohandler mutant is in the 16.0 object and calls the class the
-# 12.0 one defines, so the link needs that one file beside it. It is set by the mutation that needs
-# it and cleared at EVERY exit of run_mutation, including the build-failure one the author left out -
-# a stale value links the wrong object into the next mutant and the run says nothing.
-MUTANT_EXTRA=""
+# EVERY MUTANT NAMES ITS OWN LINK LINE, and there is no global left to forget. What a mutant may be
+# linked against is a property of the mutation, so it is an argument to run_mutation and not a
+# variable that has to be set before one call and cleared after it: a stale one linked the wrong object
+# into the next mutant and the run said nothing. See run_mutation's own comment for the line's shape.
 # THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
@@ -138,23 +136,59 @@ run_case() {
     fi
 }
 
+# run_mutation NAME COMPARE CASEFILE ORIGIN [EXTRA...]
+#
+#   ORIGIN is the port source this mutant is a whole-file copy of, and EXTRA is whatever ELSE the
+#   case's own run_case line carries. So the mutant's link line is
+#       <the case>  <the mutant's copy of ORIGIN>  <EXTRA...>
+#   which is the CASE's line with ORIGIN swapped - and the CONTROL below is that same line with the
+#   unmutated ORIGIN put back.
+#
+# WHY THIS IS A CHECK AND NOT A COMMENT. run_mutation used to link the case, the mutant and one
+# optional extra, and for sec-identity the case links four sources, so the three mutants were each
+# built from three sources fewer than the case and went RED on rows the case never produced:
+# `holder-class: the port's options holder was not found` and `local-identity-*: the case did not
+# measure it` - differences that have nothing to do with a mutation, counted as though they did. A
+# BYTE-IDENTICAL COPY of the unmutated source on that line was RED too, which is the measurement that
+# shows it. So the control is built and compared HERE, before the mutant is looked at, and a red
+# control is reported as INVALID MUTANT and fails the run instead of being read as coverage.
 run_mutation() {
     # Same rule: counted where it runs, BEFORE the early return a crashing mutant takes. It was counted
     # after, so a mutation that segfaulted - the most emphatic "noticed" there is - was not counted at all.
     mutants=$((mutants + 1))
-    name=$1; compare=$2; casefile=${3:-$name}
+    name=$1; compare=$2; casefile=$3; origin=$4; shift 4
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
-        MUTANT_EXTRA=""
         return
     fi
-    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" ${MUTANT_EXTRA:+"$MUTANT_EXTRA"} \
+    # THE CONTROL, on the IDENTICAL line with the unmutated source where the mutant's copy goes. This
+    # is the run_mutation link line with one argument changed, so a control that is red cannot be
+    # blamed on anything the mutation did.
+    if ! xcrun clang $common "$H/$casefile.m" "$origin" "$@" \
+         -framework Foundation -framework Security -framework CoreFoundation \
+         -o "$build/control-$name" > "$build/control-$name.log" 2>&1; then
+        echo "INVALID MUTANT $name  the control did not BUILD, so a verdict from this line would be the link's: $(grep -m1 'error:' "$build/control-$name.log" | cut -c9-)"
+        failures=$((failures + 1))
+        return
+    fi
+    cstatus=0
+    ( cd "$work" && "$build/control-$name" ) > "$build/control-$name.out" 2>&1 || cstatus=$?
+    if [ "$cstatus" -ge 128 ]; then
+        echo "INVALID MUTANT $name  the CONTROL crashed (signal $((cstatus - 128))), so the line is not sound and the mutation's verdict would be the line's"
+        failures=$((failures + 1))
+        return
+    fi
+    if ! python3 "$H/$compare" "$build/control-$name.out" > "$build/control-$name.verdict" 2>&1; then
+        echo "INVALID MUTANT $name  the CONTROL is red, so this mutation proves NOTHING about the case: $(grep -m1 DIFFERS "$build/control-$name.verdict" | cut -c9-)"
+        failures=$((failures + 1))
+        return
+    fi
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" "$@" \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
         failures=$((failures + 1))
-        MUTANT_EXTRA=""
         return
     fi
     status=0
@@ -165,7 +199,6 @@ run_mutation() {
         # rather than leaving a crash and a non-zero exit to describe the same run.
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
-        MUTANT_EXTRA=""
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -176,11 +209,9 @@ run_mutation() {
             echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
             failures=$((failures + 1))
         fi
-        MUTANT_EXTRA=""
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
-        MUTANT_EXTRA=""
     fi
 }
 
@@ -360,13 +391,13 @@ mutate "$G" "$build/mutant-trust-result.m" \
     return errSecSuccess;' \
 'a verdict is invented instead of the releases own'
 
-run_mutation supported          compare-supported.py
-run_mutation padding           compare-padding.py
-run_mutation verify-pairs      compare-verify-pairs.py
-run_mutation attributes        compare-attributes.py
-run_mutation certificate-name  compare-certificate-name.py
-run_mutation certificate-fields compare-certificate-fields.py
-run_mutation network-fetch     compare-network-fetch.py
+run_mutation supported          compare-supported.py          supported          $F
+run_mutation padding           compare-padding.py           padding           $F
+run_mutation verify-pairs      compare-verify-pairs.py      verify-pairs      $F
+run_mutation attributes        compare-attributes.py        attributes        $F
+run_mutation certificate-name  compare-certificate-name.py  certificate-name  $D
+run_mutation certificate-fields compare-certificate-fields.py certificate-fields $D
+run_mutation network-fetch     compare-network-fetch.py     network-fetch     $N
 must_not_compile() {
     # IT IS A MUTATION AND IT COUNTS AS ONE. It incremented `noticed` without incrementing `mutants`,
     # so the run reported 11 noticed against 10 mutations: a compiler-refused mutation was being counted
@@ -374,6 +405,18 @@ must_not_compile() {
     # do. The increment belongs at the top, like the other two runners.
     mutants=$((mutants + 1))
     name=$1; sources=$2
+    # THE CONTROL, and for this runner it is the other way round: the verdict here is a build FAILING,
+    # so what has to be shown first is that the UNMUTATED line BUILDS. Without it a source that does not
+    # compile makes every must-not-compile mutant "noticed" for a reason that has nothing to do with the
+    # type system - the same shape as a red control in run_mutation, and the reason the two runners are
+    # now held to one rule rather than one of them.
+    if ! xcrun clang $common "$H/$3.m" $sources \
+         -framework Foundation -framework Security -framework CoreFoundation \
+         -o "$build/control-$name" > "$build/control-$name.log" 2>&1; then
+        echo "INVALID MUTANT $name  the control did not BUILD, so a refusal would prove nothing: $(grep -m1 'error:' "$build/control-$name.log" | cut -c9-)"
+        failures=$((failures + 1))
+        return
+    fi
     if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mustfail-$name" > "$build/mustfail-$name.log" 2>&1; then
@@ -405,8 +448,8 @@ else
     done
 fi
 run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
-run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
-run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
+run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers $O
+run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers $O
 # THE BLOCKS MUTATION MUST NOT COMPILE, and its call was LOST in the F3 revert - only the function
 # definition survived, so a run quietly stopped proving that. It is restored here beside the other two.
 # THE THREE sec-identity MUTANTS. Each mutant REPLACES the case's own port source - run_mutation always
@@ -433,34 +476,36 @@ make_mutant "$build/mutant-sec-identity-noretain.m" "$SI" \
 make_mutant "$build/mutant-sec-identity-nohandler.m" "$SI16" \
     '        handler(wrapper);' \
     '        (void)wrapper;   // MUTANT: the handler is NEVER CALLED'
-# NO EXTRA SOURCE HERE: the mutant IS the case's own source, and run_mutation already builds
-# $build/mutant-<name>.m, so passing the same file again links it TWICE and every symbol collides.
-run_mutation sec-identity-nocopy   compare-sec-identity.py sec-identity
-run_mutation sec-identity-noretain compare-sec-identity.py sec-identity
-# THE nohandler MUTANT IS THE ONE THAT NEEDS MORE: it lives in the 16.0 object and calls the class
-# the 12.0 one defines, so the 12.0 source goes on its link line beside the mutant.
-MUTANT_EXTRA=$SI
-run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity
+# THE sec-identity CASE is built as $H/sec-identity.m $SI $SI16 $LI $O, so each of its mutants is
+# built as that line with ONE of those four swapped for the mutant's copy of it - and every one of the
+# four is named, because a line that drops a source the case links produces rows the case never
+# measured and a mutation judged on it means nothing. run_mutation's control is the same line with the
+# unmutated source back, so this cannot rot quietly again.
+run_mutation sec-identity-nocopy   compare-sec-identity.py sec-identity $SI   $SI16 $LI $O
+run_mutation sec-identity-noretain compare-sec-identity.py sec-identity $SI   $SI16 $LI $O
+# nohandler's copy is of the 16.0 object, so THAT is the origin and the 12.0 one is an extra: the
+# mutant calls the class the 12.0 object defines.
+run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity $SI16 $SI $LI $O
 # THE DEFAULTS MUTANT: the minimum answered as a value the enum does not have. 0x0300 is not a member of
 # tls_protocol_version_t at all - the lowest is 0x0301 - so a row that drifted below the enum's floor
 # would still be a plausible-looking number and only this comparison would see it.
 make_mutant "$build/mutant-defaults-below-enum.m" "$PO" \
     '    return tls_protocol_version_TLSv10;' \
     '    return (tls_protocol_version_t)0x0300;   // MUTANT: below the enum'"'"'s lowest member'
-# NO EXTRA SOURCE HERE, and the line above it used to say MUTANT_EXTRA=$SI: the mutant IS a copy of
-# SecProtocolOptions13_0.m, which IS the case's own source, so the link line is the case and the mutant
-# and nothing else. The identity object that line added has nothing to do with these four rows, and
-# `sh -x` showed it on the link: the mutant was being built from an object its comparison cannot see.
-run_mutation defaults-below-enum compare-protocol-options.py protocol-options
+# The mutant IS a copy of SecProtocolOptions13_0.m, which IS this case's own source, so ORIGIN is it
+# and there is no extra: the line is the case and the mutant. That line used to carry MUTANT_EXTRA=$SI,
+# a copy-paste of the line above it here, and `sh -x` showed the identity object on the link - a source
+# this comparison cannot see, put there by accident.
+run_mutation defaults-below-enum compare-protocol-options.py protocol-options $PO
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
-run_mutation data-halfpair compare-protocol-options-data.py protocol-options-data
+run_mutation data-halfpair compare-protocol-options-data.py protocol-options-data $PD
 # held-nocopy mutates the IVAR in SecProtocolOptions13_0.m, which IS the case's own source, so it
 # REPLACES it and is not added beside it - adding it is a duplicate symbol, which is what it did first.
-run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held
-run_mutation identity       compare-protocol-options-held.py  protocol-options-held
-run_mutation trust-result      compare-trust-result.py
+run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held $PO
+run_mutation identity       compare-protocol-options-held.py  protocol-options-held $PO
+run_mutation trust-result      compare-trust-result.py      trust-result      $G
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---
 if xcrun clang $common -fsanitize=address,undefined -fno-omit-frame-pointer -g \
