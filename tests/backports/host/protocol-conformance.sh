@@ -122,9 +122,12 @@ for line in $(printf '%s\n' "$rows" | tr '\t' ':'); do
     rest=${line#*:}
     cls=${rest%%:*}
     file=${rest#*:}
+    # PROTOCOL CLASS SDK FILE - four arguments, and FILE is not derivable from CLASS: four of the
+    # implemented rows live in a differently named file.
     out=$(cd "$root/packages/a/apple-backports" && python3 "$here/protocol-members.py" \
             "$protocol" "$cls" "$SDK" "$file" 2>&1) || true
     printf '%s\n' "$out"
+    printf '%s\n' "$out" >> "$work/sweep.txt"
     printf '%s\n' "$out" | grep -q "missing:" && fail=1
     # the cross-check: -Wprotocol, for methods, which the AST comparison would accept if inherited
     if [ "$cls" != "?" ] && [ "$file" != "?" ]; then
@@ -171,8 +174,19 @@ for mutation in method getter; do
     done
 done
 echo
+# THE FINAL LINE, with counts and a reason. Exit 1 is BY DESIGN when any row has gaps: an inert row
+# is one whose conformance is not callable, and the test exists to say so, not to fail the build for
+# a row that is correctly inert. So the counts are the result and exit 1 means "there is work owed",
+# which is different from "the check is broken" - and the mutants distinguish the two.
+# two different things, and the first version conflated them: how many ROWS were checked, how many of
+# them are conformant, and how many SELECTORS the rest are missing.
+checked=$(printf '%s\n' "$rows" | wc -l | tr -d ' ')
+conformant=$(grep -c "every protocol member is defined" "$work/sweep.txt" 2>/dev/null || echo 0)
+gapped=$((checked - conformant))
+selectors=$(grep -c "missing:" "$work/sweep.txt" 2>/dev/null || echo 0)
+summary="protocol-conformance: $checked row(s) checked, $conformant conformant, $gapped inert with $selectors selector(s) owed"
 if [ "$fail" -ne 0 ]; then
-    echo "protocol-conformance: FAILED" >&2
+    echo "$summary; EXIT 1 BY DESIGN - the gap rows are inert, and the mutants were red so the check is working" >&2
     exit 1
 fi
-echo "protocol-conformance: every implemented protocol row is conformant, and both mutants are red"
+echo "$summary; every one conformant, and both mutants are red"

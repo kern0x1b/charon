@@ -79,6 +79,13 @@ extern MTLArgumentAccess CharonAccessFromWord(NSString *_Nullable word);
 @end
 
 // MTLArgument's node, and the typed accessors over it, implemented in the 8.0 object.
+// The plist node a function was built from, which is the argument list its attributes come from. It
+// is declared here because the attribute helper lives in another translation unit and reads it, and
+// a declaration in the file that IMPLEMENTS the accessor is not visible to a function elsewhere.
+@interface CharonMetalFunction (CharonArgumentNode)
+@property (nonatomic, readonly, strong, nullable) NSDictionary *charonArgumentNode;
+@end
+
 @interface MTLArgument (CharonTypeTreeStorage)
 - (instancetype)initWithNode:(NSDictionary *)node;
 - (NSUInteger)charonArgumentIndex;

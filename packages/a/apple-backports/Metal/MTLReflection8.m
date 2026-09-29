@@ -1,3 +1,4 @@
+#import "CharonMetal.h"
 #import "MTLTypeReflectionInternal.h"
 
 #include <stdlib.h>
@@ -160,3 +161,20 @@
 }
 
 @end
+
+// The one place that turns a function's argument list into attributes, so a vertex attribute and a
+// stage input are built by the same code from the same plist and cannot drift apart. It lives HERE
+// and not in CharonMetalLibrary.m because it builds an MTLVertexAttribute - the class in this object -
+// and a function that builds a class cannot live in a file that cannot see it. CharonMetalLibrary.m
+// declares it and calls it from MTLFunction's two attribute getters.
+
+// The one place that turns a function's argument list into attributes, so a vertex attribute and a
+// stage input are built by the same code from the same plist and cannot drift apart. It lives HERE
+// because it builds an MTLVertexAttribute - the class in this object - and CharonMetalLibrary.m
+// declares it and calls it from MTLFunction's two attribute getters, because a C function has to be
+// DEFINED in the translation unit that can see what it builds.
+static NSArray *CharonAttributesFromFunction(CharonMetalFunction *function)
+{
+    NSDictionary *node = function.charonArgumentNode;
+    return node ? @[[[MTLVertexAttribute alloc] initWithNode:node]] : @[];
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Does a class really answer a protocol? Read the AST, not the warnings.
 
-    python3 tests/backports/host/protocol-members.py PROTOCOL CLASS [CLASS.m]
+    python3 tests/backports/host/protocol-members.py PROTOCOL CLASS SDK FILE
 
 A protocol row marked `implemented` claims every member of the protocol is callable, and
 backports.lua:664 turns that claim into a band floor. The criterion is therefore exact:
@@ -116,23 +116,44 @@ def synthesised(document, name):
 
 
 def ast_for(path, sdk):
-    """The AST of one class file, compiled with the library's flags and no -I, from the package dir."""
+    """The AST of one class file, compiled with the library's flags and no -I, from the package dir.
+
+    A translation unit that DOES NOT COMPILE is refused, and the refusal names the errors. This is the
+    whole lesson of the r4 review: clang emits an AST for a file with errors in it, so this tool read
+    a broken file, found the class's declarations, and reported the protocol CONFORMANT - which is how
+    a row claimed a band floor for a class that does not build. A criterion that cannot see whether its
+    input compiles is not a criterion.
+    """
     result = subprocess.run(
         ["xcrun", "clang", "-target", "armv7-apple-ios6.1.3", "-isysroot", sdk, "-fobjc-arc", "-Os",
          "-g0", "-Wno-unguarded-availability-new", "-Wno-unguarded-availability",
+         "-Werror=objc-missing-property-synthesis",
          "-Xclang", "-ast-dump=json", "-fsyntax-only", path],
         cwd=os.getcwd(), capture_output=True, text=True)
+    errors = [line for line in result.stderr.split("\n") if " error:" in line]
+    if errors:
+        print("protocol-members: %s DOES NOT COMPILE, so its declarations cannot be trusted:"
+              % os.path.basename(path))
+        for line in errors[:6]:
+            print("      %s" % line.split(" error:")[0].split("/")[-1] + " error:" + line.split(" error:")[1])
+        raise SystemExit(2)
     if not result.stdout.strip():
         raise SystemExit("protocol-members: %s produced no AST:\n%s" % (path, result.stderr[-800:]))
     return json.loads(result.stdout)
 
 
 def main():
-    if len(sys.argv) < 4:
+    if len(sys.argv) != 5:
         print(__doc__)
         return 2
-    protocol, cls, sdk = sys.argv[1], sys.argv[2], sys.argv[3]
-    path = sys.argv[4] if len(sys.argv) > 4 else "Metal/%s.m" % cls
+    protocol, cls, sdk, path = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4]
+    if not os.path.isfile(path):
+        print("protocol-members: %s is not a file. The class file is NOT derivable from the class"
+              % path)
+        print("name: four of the five implemented rows live in a differently named file -")
+        print("CharonMetalSampler and CharonMetalFunction are both in CharonMetalTexture.m and")
+        print("CharonMetalLibrary.m respectively - so FILE is an argument and not a guess.")
+        return 2
     document = ast_for(path, sdk)
     members = protocol_members(document, protocol)
     defines = class_defines(document, cls) | synthesised(document, cls)
