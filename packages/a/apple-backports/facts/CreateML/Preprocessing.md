@@ -12,28 +12,56 @@ A pipeline's `Preprocessor` is a **`Transformer`**, and the `Transformer` protoc
 `applied(to:eventHandler:)` — there is no `fitted(to:)` on it. So the pipeline cannot fit its
 preprocessor, and fitting is a separate step the *caller* performs.
 
-**The check, with its command and count.** No type conforms to both protocols directly:
+**The check, with its command, its count and its controls.** A type's conformance clause is the text
+between its name and the first `where` or `{`, and membership of both protocol names is tested **in
+that clause alone**. That is what makes the answer unfoolable: a generic parameter *named* `Estimator`,
+and a `where Preprocessor : Transformer` constraint, each put both words on one line without either
+being a conformance.
 
-    $ grep -nE "struct [A-Za-z]+.*CreateMLComponents::Transformer.*CreateMLComponents::Estimator|\
-                struct [A-Za-z]+.*CreateMLComponents::Estimator.*CreateMLComponents::Transformer" \
-        arm64e-apple-ios-macabi.swiftinterface
-    575:  public struct PreprocessingEstimator<Preprocessor, Estimator> : ...Estimator
-              where Preprocessor : ...Transformer, Estimator : ...Estimator, ...
-    5153: public struct TransformerToEstimatorAdaptor<Transformer> : ...Estimator
-              where Transformer : ...Transformer
+    $ python3 tests/backports/host/createml/probe/discriminate.py \
+        /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/\
+CreateMLComponents.framework/Modules/CreateMLComponents.swiftmodule/arm64e-apple-ios-macabi.swiftinterface
 
-**Two hits, and neither is a type conforming to both.** Line 575 is a pipeline whose *generic parameter*
-is named `Estimator` and whose `Preprocessor` is constrained *to* `Transformer` — the same shape as the
-other 17 `Preprocessing*` types, which is why a naive grep for "Transformer" and "Estimator" on the
-same line returns 18 and none of them is a type that is both.
+    POSITIVE control - two types conforming to both: 2
+       BothOnAContinuation
+       BothOnOneLine
+       expected ['BothOnAContinuation', 'BothOnOneLine'] -> CONTROL PASSES
+    NEGATIVE control - one of the two, in each order, with Transformer only as a parameter and a
+       where clause: 0
+       expected [] -> CONTROL PASSES
 
-**Line 5153 is the one that matters, and it corrects the rule.** `TransformerToEstimatorAdaptor`
-conforms to `Estimator` and wraps a `Transformer` — it is the sanctioned route by which a
-`Transformer` becomes fittable. So the accurate statement is:
+    real interface: arm64e-apple-ios-macabi.swiftinterface
+       types whose conformance clause names BOTH Transformer and Estimator: 0
+       TransformerToEstimatorAdaptor's clause: [<Transformer> : CreateMLComponents::Estimator]
+          names Transformer: False  names Estimator: True  -> listed: False
+       PreprocessingEstimator's clause: [<Preprocessor, Estimator> : CreateMLComponents::Estimator]
+          names Transformer: False  names Estimator: True  -> listed: False
 
-- a `Transformer` has no `fitted(to:)` of its own, and a **pipeline never fits its preprocessor**;
-- a caller who wants a fitted preprocessor wraps it in `TransformerToEstimatorAdaptor`, fits *that*, and
-  passes the result to the pipeline.
+    controls: positive PASS, negatives PASS
+
+**The count is 0: no type in the framework conforms to both `Transformer` and `Estimator`.** Two
+earlier attempts got this wrong and both are worth recording, because they are the shapes the check
+has to resist:
+
+- *a grep for both words on one line* reports **18**, every one a `Preprocessing*` pipeline whose
+  generic parameter is named `Estimator` and whose `Preprocessor` is constrained *to* `Transformer`;
+- *a two-alternative grep* reports **2**, and reading those two lines suggested one of them was
+  `TransformerToEstimatorAdaptor` conforming to both. **It does not.** Its conformance clause is
+  `<Transformer> : CreateMLComponents::Estimator` — it conforms to `Estimator`, and the `Transformer`
+  in it is a *generic parameter name*.
+
+**The positive control has to be synthetic**, because the real interface contains no type conforming to
+both and so cannot show that the tool is able to answer yes at all. It is a scratch text with both
+protocols on one line after the name, and in a two-line continuation form, and the discriminator must
+list both. A discriminator that matched nothing would otherwise report 0 for the right reason and give
+a reader no way to tell that from a broken parser.
+
+So the rule, with the count known:
+
+- a `Transformer` has no `fitted(to:)` of its own, and **a pipeline never fits its preprocessor**;
+- a caller who wants a fitted preprocessor reaches it through `TransformerToEstimatorAdaptor`, which is
+  an `Estimator` wrapping a `Transformer` — so fitting the adaptor yields a fitted `Transformer` to
+  hand to the pipeline.
 
 "The host never fits the preprocessor" is a statement about the **pipeline**, and not a prohibition on
 fitting a `Transformer` at all.
