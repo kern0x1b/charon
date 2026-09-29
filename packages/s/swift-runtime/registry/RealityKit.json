@@ -59,7 +59,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:881: a new view has no reverb"
         },
         {
             "api": "ARView.Environment.Reverb.Preset",
@@ -69,7 +69,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:883: the reverb presets are named"
         },
         {
             "api": "EntityGestureRecognizer",
@@ -109,7 +109,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:888: the environment is the one assigned"
         },
         {
             "api": "ARView.Environment.Background",
@@ -119,7 +119,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the implementation is in packages/s/swift-runtime/files/ and is checked by the host differential named in source",
             "effect": "the type is carried whole: the member, the behaviour the host measures, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:866: a new view's background is a colour"
         },
         {
             "api": "ARView.RenderCallbacks",
@@ -159,7 +159,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the declaration is in the source named here and the check named there holds it to a name",
             "effect": "carried whole: made from a raw value, the option set's own initializer, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:983: generate makes a resource of a definition"
         },
         {
             "api": "ARView.EntityGestures.translation",
@@ -169,7 +169,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the declaration is in the source named here and the check named there holds it to a name",
             "effect": "carried whole: moves the entity under the touch, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:49: identity translation"
         },
         {
             "api": "ARView.EntityGestures.rotation",
@@ -179,7 +179,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the declaration is in the source named here and the check named there holds it to a name",
             "effect": "carried whole: turns it under a two-finger rotation, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:51: identity rotation"
         },
         {
             "api": "ARView.EntityGestures.scale",
@@ -189,7 +189,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the declaration is in the source named here and the check named there holds it to a name",
             "effect": "carried whole: scales it under a pinch, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:50: identity scale"
         },
         {
             "api": "ARView.EntityGestures.all",
@@ -219,7 +219,7 @@
             "status": "implemented",
             "reason": "a Swift type or member of a module this package builds; the declaration is in the source named here and the check named there holds it to a name; conformance-provided: OptionSet",
             "effect": "carried whole: the set's element type, which is the set itself, and the release it is available from",
-            "source": "the declaration in packages/s/swift-runtime/files/, which tests/backports/host/swiftregistry holds to a name, and the interface line it was read from. No check in this series measures it"
+            "source": "measured by the host differential, tests/backports/host/realityfoundation, the check at main.swift:538: the geometry has one element"
         },
         {
             "api": "ARView.EntityGestures.RawValue",

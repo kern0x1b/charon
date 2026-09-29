@@ -95,7 +95,9 @@ def main(argv):
             for token in tokens(entry["api"]):
                 for number, subject in checks:
                     if token.lower() in subject.lower():
-                        hit = (token, number, subject)
+                        # (verdict, line, subject) - the token is the report's business, not the
+                        # guard's, and putting it in slot 0 is what made the covered branch dead
+                        hit = ("covered", number, subject)
                         break
                 if hit:
                     break
