@@ -81,34 +81,41 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation MKLocalSearchRequest (CharonRequest)
 
-// THE RELEASE'S OWN INITIALISER, reached without this category's help, and this is a fix and not a
-// style: the previous version of this file DEFINED -initWithNaturalLanguageQuery: in the category and
-// then called it, so the call went to the category's own copy and to nothing below it. The backtrace
-// the probe caught it with, quoted in the probe's own commit:
+// The release's own -init and its own -setNaturalLanguageQuery:, and nothing of this category's. The
+// release has NO -initWithNaturalLanguageQuery: of either shape (a search of the armv7 cache of 6.1.3
+// for the selector string finds 0, and finds -setNaturalLanguageQuery: twice), so both initialisers
+// are this category's own. An earlier version had each call the other, and every request initialiser
+// recursed:
 //
 //     frame #0: libport.dylib`-[MKLocalSearchRequest(CharonRequest) initWithNaturalLanguageQuery:] + 44
 //
-// Every one of this port's request initialisers is a case, so every one of them recursed and every
-// one of them crashed. The release's own initialiser is named by its own selector through the
-// runtime, which is the one spelling that cannot be this category's copy: a category cannot replace a
-// method the class it is on already has, and it must not.
-static id CharonReleaseRequestInit(id request, NSString *query)
+// The version after it called -initWithNaturalLanguageQuery: through the runtime as "the release's
+// own", which on the release is a selector nothing answers, and it dropped the query-only initialiser
+// the registry lists (the stack 14 gate at 6.1.3: "listed as implemented, but nothing of that name is
+// built"). Both now end here, where no initialiser of this category is called.
+static id CharonRequestInit(MKLocalSearchRequest *request, NSString *query)
 {
-    SEL releaseInit = NSSelectorFromString(@"initWithNaturalLanguageQuery:");
-    IMP release = class_getMethodImplementation(object_getClass(request), releaseInit);
-    SEL categoryCopy = NSSelectorFromString(@"charon_initWithNaturalLanguageQuery:");
-    (void)categoryCopy;
-    if (release == NULL) {
-        return nil;
+    request = [request init];
+    [request setNaturalLanguageQuery:query];
+    return request;
+}
+
+- (instancetype)initWithNaturalLanguageQuery:(NSString *)query
+{
+    // The header's query-only initialiser: the release's query with the whole world as the region, as
+    // its registry row says, so the release's search is asked with no narrower a place than any.
+    self = CharonRequestInit(self, query);
+    if (self) {
+        [self setRegion:MKCoordinateRegionMake(CLLocationCoordinate2DMake(0.0, 0.0), MKCoordinateSpanMake(180.0, 360.0))];
     }
-    return ((id (*)(id, SEL, id))release)(request, releaseInit, query);
+    return self;
 }
 
 - (instancetype)initWithNaturalLanguageQuery:(NSString *)query region:(MKCoordinateRegion)region
 {
-    // The release's own initialiser, reached as above: its query and its region, which is all this
+    // The release's own -init and query, as above, and its own -setRegion:, which is all this
     // initialiser adds, and the release's own storage for both.
-    self = CharonReleaseRequestInit(self, query);
+    self = CharonRequestInit(self, query);
     if (self) {
         [self setRegion:region];
     }
@@ -122,7 +129,7 @@ static id CharonReleaseRequestInit(id request, NSString *query)
     // has no such request, so the release's own empty query is the base and the completion is held,
     // and the port's own MKLocalSearchCompleter reads it back through -[MKLocalSearchCompletion
     // title] when the caller asks the completer for its results.
-    self = CharonReleaseRequestInit(self, @"");
+    self = CharonRequestInit(self, @"");
     if (self) {
         objc_setAssociatedObject(self, (const void *)"charonFinishedCompletion", completion,
                                  OBJC_ASSOCIATION_RETAIN);
@@ -253,7 +260,7 @@ static id CharonReleaseRequestInit(id request, NSString *query)
 // features on a later release gets its own points of interest here.
 - (instancetype)initWithPointsOfInterestRequest:(id)request
 {
-    MKLocalSearchRequest *empty = CharonReleaseRequestInit([[MKLocalSearchRequest alloc] init], @"");
+    MKLocalSearchRequest *empty = CharonRequestInit([MKLocalSearchRequest alloc], @"");
     self = [self initWithRequest:empty];
     (void)request;
     return self;
