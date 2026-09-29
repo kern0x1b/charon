@@ -108,7 +108,7 @@ that does.
 ## What was measured, and what was not
 
 **Measured**, against the host's own Security.framework in both directions
-(`tests/backports/host/seckeycurve`, 34 checks, none differing): a signature the port makes verifies
+(`tests/backports/host/seckeycurve`, **78 checks, none differing**): a signature the port makes verifies
 under the host's `SecKeyVerifySignature`, and one the host makes verifies through the port, for
 messages of 0, 65 and 130 bytes; the host refuses the port's signature under SHA-384, so the
 algorithm is not being ignored; the port refuses the host's signature for another message; every
@@ -116,6 +116,27 @@ signature is the low-s half on **both** sides over 24 samples, which is the form
 producer takes; and the shape of what a P-256 key exports is read from the host — the 65 byte
 uncompressed public point, the 97 byte private blob, and the two candidate windows in it that only one
 of which derives the key's own published point.
+
+**The port's own curve is measured too, and how it got there is part of this file.** The three
+`CharonCK*` calls of `SecKeyElliptic10.m` are behind the marker `kCharonSecKeyScalar`, which only
+`SecKeyCreateWithData` would put on a key, and until this was measured **nothing in the repository
+executed them at all**: the one call the differential made passed a key of the host's, so every run
+took the release's `SecKeyRawSign` path, and a mutant that returned half the DER from the curve's own
+signing left the run byte-identical (`checks=55 failures=0`, the same log hash as the pristine run).
+The suite now builds the key the port would have built — the point and the scalar OpenSSL printed for
+one of the two keys `run.sh` makes, through the host's `SecKeyCreateWithData`, whose own note is that
+it "does not add keys to any keychain" — and registers it as the port's kind, so the curve runs and is
+held to two oracles: micro-ecc's signature verifies under the host's `SecKeyVerifySignature`, a
+signature the host makes verifies through the port's own reader, and the port's exchange is OpenSSL's
+own secret for the same two keys, byte for byte, with the digest-named form checked against SHA-256 of
+OpenSSL's bytes. The same mutant now gives `checks=78 failures=3`.
+
+**What is still not measured: the release's own answers, and any device run.** Every measurement above
+is the port on a host. Which padding an EC key of the **release** accepts, and whether it hands back
+the halves or a DER, is what the queued emulator probe settles, and it has not run; and no key of the
+release's keychain carries the marker, so the curve's own path is unreachable on a device until
+`SecKeyCreateWithData` is written. The rows of `registry/Security/ios10elliptic.json` now say which of
+the two paths each `effect` describes, and the second one says it is measured on the host only.
 
 The **ECDH is held to OpenSSL**, not to the host, and the reason is measured: the host's own
 `SecKeyCopyKeyExchangeResult` reads through a key that is only in memory and dies with a SIGSEGV inside
