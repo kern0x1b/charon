@@ -659,8 +659,10 @@ local SCRIPTDIR = os.scriptdir()
 -- changed SDK, rung or reader is simply a different file and nothing is ever invalidated by hand.
 -- The key of the code comes first in the name, so tools/cache-sweep.lua can tell which code wrote a
 -- file and remove what no live checkout reads any more; nothing here removes a file.
-local function stored(name)
-    return path.join(path.directory(root()), "cache", name)
+-- A caller may name where the kept files live; none does today, and a test that must not touch the machine's
+-- cache does. Without one this is what every other caller already gets.
+local function stored(name, under)
+    return path.join(under or path.directory(root()), "cache", name)
 end
 
 -- The text of a kept file, or nil when there is none: a sweep that removes it between a check and a
@@ -723,8 +725,8 @@ local function code_key()
 end
 
 -- A kept file of family (sdk-owners, first-release) under the current code and key.
-local function kept_file(family, key)
-    return stored(family .. "-" .. code_key() .. "-" .. key .. ".tsv")
+local function kept_file(family, key, under)
+    return stored(family .. "-" .. code_key() .. "-" .. key .. ".tsv", under)
 end
 
 -- What the owners of an SDK's symbols depend on besides the code: every .tbd it holds, by content.
@@ -740,8 +742,8 @@ local function sdk_key(sdkdir)
     return SDK_KEYS[sdkdir]
 end
 
-local function owners_file(sdkdir)
-    return kept_file("sdk-owners", sdk_key(sdkdir))
+local function owners_file(sdkdir, under)
+    return kept_file("sdk-owners", sdk_key(sdkdir), under)
 end
 
 local function write_owners(file, owners)
@@ -893,8 +895,8 @@ local function ladder_signature(ladder)
     return SIGNATURES[named]
 end
 
-local function first_release_file(ladder, sdkdir)
-    return kept_file("first-release", hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)))
+local function first_release_file(ladder, sdkdir, under)
+    return kept_file("first-release", hash.strhash128(sdk_key(sdkdir) .. " " .. ladder_signature(ladder)), under)
 end
 
 -- What first_releases(ladder, sdkdir, ...) answers from: the code that measures, the SDK's .tbd files
@@ -906,12 +908,13 @@ end
 
 -- The kept files this code reads for each of sdkdirs and ladders: what tools/cache-sweep.lua keeps
 -- of this checkout's measurements. It computes names only, and measures nothing.
-function kept_files(sdkdirs, ladders)
+-- What a checkout reads, under the cache root its caller names - the machine's own unless it says otherwise.
+function kept_files(sdkdirs, ladders, under)
     local files = {}
     for _, sdkdir in ipairs(sdkdirs) do
-        table.insert(files, owners_file(sdkdir))
+        table.insert(files, owners_file(sdkdir, under))
         for _, ladder in ipairs(ladders) do
-            table.insert(files, first_release_file(ladder, sdkdir))
+            table.insert(files, first_release_file(ladder, sdkdir, under))
         end
     end
     return files
