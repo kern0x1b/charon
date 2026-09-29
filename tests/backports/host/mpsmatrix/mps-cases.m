@@ -15,8 +15,40 @@
 
 static id<MTLDevice> gDevice;
 
+// Every matrix and vector a case is built from a C array, and a kernel writes into the MTLBuffer behind
+// it, never into that array. So each one remembers where it came from, and every result is read back out
+// of the buffer into its array before it is printed. Without this a case prints the values it went in
+// with and both runs agree whatever the kernel did.
+typedef struct {
+    id object;
+    void *source;
+    size_t bytes;
+} CharonMPSSource;
+static CharonMPSSource gSources[4096];
+static NSUInteger gSourceCount;
+
+static void remember(id object, void *source, size_t bytes)
+{
+    if (gSourceCount < sizeof(gSources) / sizeof(gSources[0])) {
+        gSources[gSourceCount].object = object;
+        gSources[gSourceCount].source = source;
+        gSources[gSourceCount].bytes = bytes;
+        gSourceCount++;
+    }
+}
+
+static void pullResults(void)
+{
+    for (NSUInteger i = 0; i < gSourceCount; i++) {
+        CharonMPSSource *entry = &gSources[i];
+        id<MTLBuffer> buffer = [(id)entry->object data];
+        memcpy(entry->source, [buffer contents], entry->bytes);
+    }
+}
+
 static void put(const char *name, const void *bytes, size_t length)
 {
+    pullResults();
     printf("%s %zu ", name, length);
     const unsigned char *p = (const unsigned char *)bytes;
     for (size_t i = 0; i < length; i++)
@@ -30,7 +62,9 @@ static MPSMatrix *matrixOf(const void *values, MPSDataType type, NSUInteger rows
     size_t bytes = (matrices - 1) * matrixBytes + (rows - 1) * rowBytes + columns * element;
     id<MTLBuffer> buffer = [gDevice newBufferWithBytes:values length:bytes options:MTLResourceStorageModeShared];
     MPSMatrixDescriptor *descriptor = [MPSMatrixDescriptor matrixDescriptorWithRows:rows columns:columns matrices:matrices rowBytes:rowBytes matrixBytes:matrixBytes dataType:type];
-    return [[MPSMatrix alloc] initWithBuffer:buffer descriptor:descriptor];
+    MPSMatrix *matrix = [[MPSMatrix alloc] initWithBuffer:buffer descriptor:descriptor];
+    remember(matrix, (void *)values, bytes);
+    return matrix;
 }
 
 static MPSVector *vectorOf(const void *values, MPSDataType type, NSUInteger length, NSUInteger vectors, size_t vectorBytes)
@@ -39,7 +73,9 @@ static MPSVector *vectorOf(const void *values, MPSDataType type, NSUInteger leng
     size_t bytes = (vectors - 1) * vectorBytes + length * element;
     id<MTLBuffer> buffer = [gDevice newBufferWithBytes:values length:bytes options:MTLResourceStorageModeShared];
     MPSVectorDescriptor *descriptor = [MPSVectorDescriptor vectorDescriptorWithLength:length vectors:vectors vectorBytes:vectorBytes dataType:type];
-    return [[MPSVector alloc] initWithBuffer:buffer descriptor:descriptor];
+    MPSVector *vector = [[MPSVector alloc] initWithBuffer:buffer descriptor:descriptor];
+    remember(vector, (void *)values, bytes);
+    return vector;
 }
 
 // A command buffer from a queue, not from the device: on macOS 26.5 -newCommandBuffer answers an
@@ -610,6 +646,256 @@ static void casesState(void)
     [buffer waitUntilCompleted];
 }
 
+
+#pragma mark - the linear solvers
+
+static float luSource[4][4] = {{0, 2, 1, 4}, {3, 8, 2, 1}, {1, 0, 7, 3}, {2, 1, 1, 9}};
+static float luResult[4][4];
+static uint32_t luPivots[4];
+static int32_t luStatus[1];
+static float luRight[4][2] = {{1, 2}, {3, 4}, {5, 6}, {7, 8}};
+static float luSolution[4][2];
+static float singularSource[3][3] = {{1, 2, 3}, {2, 4, 6}, {1, 1, 1}};
+static float singularResult[3][3];
+static uint32_t singularPivots[3];
+static int32_t singularStatus[1];
+
+static void casesDecomposition(void)
+{
+    {
+        memset(luResult, 0, sizeof(luResult));
+        memset(luPivots, 0, sizeof(luPivots));
+        memset(luStatus, 0, sizeof(luStatus));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *in = matrixOf(&luSource[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrix *out = matrixOf(&luResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrix *pivots = matrixOf(&luPivots[0], MPSDataTypeUInt32, 1, 4, 1, 4 * sizeof(uint32_t), 4 * sizeof(uint32_t));
+            id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(luStatus) options:MTLResourceStorageModeShared];
+            MPSMatrixDecompositionLU *kernel = [[MPSMatrixDecompositionLU alloc] initWithDevice:gDevice rows:4 columns:4];
+            [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in resultMatrix:out pivotIndices:pivots status:status];
+            [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> finished) {
+                memcpy(luStatus, status.contents, sizeof(luStatus));
+            }];
+        });
+        put("lu-result", &luResult[0][0], sizeof(luResult));
+        put("lu-pivots", luPivots, sizeof(luPivots));
+        put("lu-status", luStatus, sizeof(luStatus));
+    }
+    memset(singularResult, 0, sizeof(singularResult));
+    memset(singularPivots, 0, sizeof(singularPivots));
+    memset(singularStatus, 0, sizeof(singularStatus));
+    run(^(id<MTLCommandBuffer> commandBuffer) {
+        MPSMatrix *in = matrixOf(&singularSource[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
+        MPSMatrix *out = matrixOf(&singularResult[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
+        MPSMatrix *pivots = matrixOf(&singularPivots[0], MPSDataTypeUInt32, 1, 3, 1, 3 * sizeof(uint32_t), 3 * sizeof(uint32_t));
+        id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(singularStatus) options:MTLResourceStorageModeShared];
+        MPSMatrixDecompositionLU *kernel = [[MPSMatrixDecompositionLU alloc] initWithDevice:gDevice rows:3 columns:3];
+        [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in resultMatrix:out pivotIndices:pivots status:status];
+        [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> finished) {
+            memcpy(singularStatus, status.contents, sizeof(singularStatus));
+        }];
+    });
+    put("lu-singular-result", &singularResult[0][0], sizeof(singularResult));
+    put("lu-singular-pivots", singularPivots, sizeof(singularPivots));
+    put("lu-singular-status", singularStatus, sizeof(singularStatus));
+}
+
+static float choleskyLower[4][4] = {{4, 0, 0, 0}, {1, 3, 0, 0}, {2, -1, 5, 0}, {1, 1, 1, 6}};
+static float choleskyUpper[4][4] = {{4, 1, 2, 1}, {0, 3, -1, 1}, {0, 0, 5, 1}, {0, 0, 0, 6}};
+static float choleskyResult[4][4];
+static int32_t choleskyStatus[1];
+static float indefinite[2][2] = {{1, 2}, {2, 1}};
+static float indefiniteResult[2][2];
+static int32_t indefiniteStatus[1];
+
+static void casesCholesky(void)
+{
+    for (int lower = 0; lower < 2; lower++) {
+        memset(choleskyResult, 0, sizeof(choleskyResult));
+        memset(choleskyStatus, 0, sizeof(choleskyStatus));
+        float (*source)[4] = lower ? choleskyLower : choleskyUpper;
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *in = matrixOf(&source[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrix *out = matrixOf(&choleskyResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(choleskyStatus) options:MTLResourceStorageModeShared];
+            MPSMatrixDecompositionCholesky *kernel = [[MPSMatrixDecompositionCholesky alloc] initWithDevice:gDevice lower:lower order:4];
+            [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in resultMatrix:out status:status];
+            [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> finished) {
+                memcpy(choleskyStatus, status.contents, sizeof(choleskyStatus));
+            }];
+        });
+        char name[64];
+        snprintf(name, sizeof(name), "cholesky %d", lower);
+        put(name, &choleskyResult[0][0], sizeof(choleskyResult));
+        snprintf(name, sizeof(name), "cholesky-status %d", lower);
+        put(name, choleskyStatus, sizeof(choleskyStatus));
+    }
+    memset(indefiniteResult, 0, sizeof(indefiniteResult));
+    memset(indefiniteStatus, 0, sizeof(indefiniteStatus));
+    run(^(id<MTLCommandBuffer> commandBuffer) {
+        MPSMatrix *in = matrixOf(&indefinite[0][0], MPSDataTypeFloat32, 2, 2, 1, 2 * sizeof(float), 4 * sizeof(float));
+        MPSMatrix *out = matrixOf(&indefiniteResult[0][0], MPSDataTypeFloat32, 2, 2, 1, 2 * sizeof(float), 4 * sizeof(float));
+        id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(indefiniteStatus) options:MTLResourceStorageModeShared];
+        MPSMatrixDecompositionCholesky *kernel = [[MPSMatrixDecompositionCholesky alloc] initWithDevice:gDevice lower:YES order:2];
+        [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in resultMatrix:out status:status];
+        [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> finished) {
+            memcpy(indefiniteStatus, status.contents, sizeof(indefiniteStatus));
+        }];
+    });
+    put("cholesky-indefinite-result", &indefiniteResult[0][0], sizeof(indefiniteResult));
+    put("cholesky-indefinite-status", indefiniteStatus, sizeof(indefiniteStatus));
+}
+
+static float triangularLower[3][3] = {{2, 0, 0}, {1, 3, 0}, {-1, 2, 4}};
+static float triangularUpper[3][3] = {{2, 1, -1}, {0, 3, 2}, {0, 0, 4}};
+static float triangularRight[3][3] = {{1, 2, 9}, {3, 4, 9}, {5, 6, 9}};
+static float triangularSolution[3][3];
+
+static void casesSolveTriangular(void)
+{
+    for (int upper = 0; upper < 2; upper++) {
+        for (int right = 0; right < 2; right++) {
+            for (int transpose = 0; transpose < 2; transpose++) {
+                for (int unit = 0; unit < 2; unit++) {
+                    memset(triangularSolution, 0, sizeof(triangularSolution));
+                    float (*source)[3] = upper ? triangularUpper : triangularLower;
+                    run(^(id<MTLCommandBuffer> commandBuffer) {
+                        MPSMatrix *in = matrixOf(&source[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
+                        // The right hand side is order x sides, or sides x order when the right hand
+                        // side is on the right, which is the shape the release insists on.
+                        NSUInteger rhsRows = right ? 2 : 3, rhsColumns = right ? 3 : 2;
+                        MPSMatrix *rhs = matrixOf(&triangularRight[0][0], MPSDataTypeFloat32, rhsRows, rhsColumns, 1, 3 * sizeof(float), 9 * sizeof(float));
+                        MPSMatrix *out = matrixOf(&triangularSolution[0][0], MPSDataTypeFloat32, rhsRows, rhsColumns, 1, 3 * sizeof(float), 9 * sizeof(float));
+                        MPSMatrixSolveTriangular *kernel = [[MPSMatrixSolveTriangular alloc] initWithDevice:gDevice
+                                                                                                   right:right
+                                                                                                   upper:upper
+                                                                                               transpose:transpose
+                                                                                                    unit:unit
+                                                                                                   order:3
+                                                                                  numberOfRightHandSides:2
+                                                                                                   alpha:1.5];
+                        [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in rightHandSideMatrix:rhs solutionMatrix:out];
+                    });
+                    char name[96];
+                    snprintf(name, sizeof(name), "solve-triangular %d %d %d %d", upper, right, transpose, unit);
+                    put(name, &triangularSolution[0][0], right ? 2 * 3 * sizeof(float) : 3 * 2 * sizeof(float));
+                }
+            }
+        }
+    }
+}
+
+static void casesSolveLU(void)
+{
+    for (int transpose = 0; transpose < 2; transpose++) {
+        memset(luSolution, 0, sizeof(luSolution));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *in = matrixOf(&luResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrix *rhs = matrixOf(&luRight[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
+            MPSMatrix *pivots = matrixOf(&luPivots[0], MPSDataTypeUInt32, 1, 4, 1, 4 * sizeof(uint32_t), 4 * sizeof(uint32_t));
+            MPSMatrix *out = matrixOf(&luSolution[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
+            MPSMatrixSolveLU *kernel = [[MPSMatrixSolveLU alloc] initWithDevice:gDevice transpose:transpose order:4 numberOfRightHandSides:2];
+            [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in rightHandSideMatrix:rhs pivotIndices:pivots solutionMatrix:out];
+        });
+        char name[64];
+        snprintf(name, sizeof(name), "solve-lu %d", transpose);
+        put(name, &luSolution[0][0], sizeof(luSolution));
+    }
+}
+
+static void casesSolveCholesky(void)
+{
+    for (int upper = 0; upper < 2; upper++) {
+        memset(luSolution, 0, sizeof(luSolution));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *in = matrixOf(&choleskyResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrix *rhs = matrixOf(&luRight[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
+            MPSMatrix *out = matrixOf(&luSolution[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
+            MPSMatrixSolveCholesky *kernel = [[MPSMatrixSolveCholesky alloc] initWithDevice:gDevice upper:upper order:4 numberOfRightHandSides:2];
+            [kernel encodeToCommandBuffer:commandBuffer sourceMatrix:in rightHandSideMatrix:rhs solutionMatrix:out];
+        });
+        char name[64];
+        snprintf(name, sizeof(name), "solve-cholesky %d", upper);
+        put(name, &luSolution[0][0], sizeof(luSolution));
+    }
+}
+
+#pragma mark - the random generators
+
+static uint32_t randomWords[16];
+static float randomFloats[16];
+
+static void casesRandom(void)
+{
+    for (uint32_t seed = 0; seed < 3; seed++) {
+        memset(randomWords, 0, sizeof(randomWords));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *out = matrixOf(&randomWords[0], MPSDataTypeUInt32, 4, 4, 1, 4 * sizeof(uint32_t), 16 * sizeof(uint32_t));
+            MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeUInt32 seed:seed];
+            [kernel encodeToCommandBuffer:commandBuffer destinationMatrix:out];
+        });
+        char name[64];
+        snprintf(name, sizeof(name), "philox-uint32 %u", seed);
+        put(name, randomWords, sizeof(randomWords));
+
+        memset(randomFloats, 0, sizeof(randomFloats));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *out = matrixOf(&randomFloats[0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeFloat32 seed:seed
+                             distributionDescriptor:[MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:0 maximum:1]];
+            [kernel encodeToCommandBuffer:commandBuffer destinationMatrix:out];
+        });
+        snprintf(name, sizeof(name), "philox-uniform01 %u", seed);
+        put(name, randomFloats, sizeof(randomFloats));
+
+        memset(randomFloats, 0, sizeof(randomFloats));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *out = matrixOf(&randomFloats[0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeFloat32 seed:seed
+                             distributionDescriptor:[MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:-2 maximum:3]];
+            [kernel encodeToCommandBuffer:commandBuffer destinationMatrix:out];
+        });
+        snprintf(name, sizeof(name), "philox-uniform-2to3 %u", seed);
+        put(name, randomFloats, sizeof(randomFloats));
+
+        // The normal distribution goes through the release's own inverse normal function, which is a
+        // single precision approximation of it; this port's is the sixteen digit one, so the two agree
+        // to within a couple of units in the last place and not always to the bit. Named, not hidden.
+        memset(randomFloats, 0, sizeof(randomFloats));
+        run(^(id<MTLCommandBuffer> commandBuffer) {
+            MPSMatrix *out = matrixOf(&randomFloats[0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
+            MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeFloat32 seed:seed
+                             distributionDescriptor:[MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:2 standardDeviation:3]];
+            [kernel encodeToCommandBuffer:commandBuffer destinationMatrix:out];
+        });
+        snprintf(name, sizeof(name), "divergent philox-normal %u", seed);
+        put(name, randomFloats, sizeof(randomFloats));
+
+        // A vector destination is not a case the release of macOS 26.5 answers: every shape tried
+        // aborts in its own validation ("Number of requested results is too large to fit in the
+        // destination image"), for one vector of four elements and for sixteen vectors alike. This port
+        // fills the vector as the header says, and the difference is named in
+        // facts/MetalPerformanceShaders/Solve.md rather than left for a reader to find.
+
+        // The batch range is not a case the release answers for a matrix destination either: it treats
+        // the destination as one image of rows x columns and refuses a range that runs past it, while
+        // this port takes the matrices of the destination as the batch, which is what "the starting
+        // index in the destination batch" names. Named in facts/MetalPerformanceShaders/Solve.md.
+    }
+    // The uniform descriptor's own moments, which the release fills in.
+    {
+        float pairs[][2] = {{-2, 3}, {0, 1}, {1.5f, 2.5f}, {-10, 10}};
+        for (unsigned i = 0; i < 4; i++) {
+            MPSMatrixRandomDistributionDescriptor *uniform = [MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:pairs[i][0] maximum:pairs[i][1]];
+            printf("distribution-uniform %u %d %.9g %.9g %.9g %.9g\n", i, (int)uniform.distributionType, uniform.minimum, uniform.maximum, uniform.mean, uniform.standardDeviation);
+            MPSMatrixRandomDistributionDescriptor *normal = [MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:1.25f standardDeviation:0.5f];
+            printf("distribution-normal %u %d %.9g %.9g %.9g %.9g\n", i, (int)normal.distributionType, normal.minimum, normal.maximum, normal.mean, normal.standardDeviation);
+            MPSMatrixRandomDistributionDescriptor *plain = [MPSMatrixRandomDistributionDescriptor defaultDistributionDescriptor];
+            printf("distribution-default %u %d %.9g %.9g %.9g %.9g\n", i, (int)plain.distributionType, plain.minimum, plain.maximum, plain.mean, plain.standardDeviation);
+        }
+    }
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -630,6 +916,12 @@ int main(void)
         casesBatchNormalization();
         casesSum();
         casesState();
+        casesDecomposition();
+        casesCholesky();
+        casesSolveTriangular();
+        casesSolveLU();
+        casesSolveCholesky();
+        casesRandom();
     }
     return 0;
 }

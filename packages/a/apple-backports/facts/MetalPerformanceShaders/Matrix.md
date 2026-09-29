@@ -112,6 +112,10 @@ initialiser to use.
 
 ## What differs
 
+`MPSMatrixNeuronGradient`'s bias gradient and several of the neuron results differ from the release's by
+one or two units in the last place of a `float`, and the sigmoid and exponential cases differ in the
+last bit of the sigmoid itself. Those are the open items of this family, not settled facts.
+
 `-[MPSState resourceSize]`, and with it `MPSStateBatchResourceSize`, answer this port's own number of
 bytes — what the state's description implies, or the length of a resource the caller supplied. The
 release answers a number about its own heap: a state made from a 64 byte buffer is 16384 there and 64
