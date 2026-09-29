@@ -2,16 +2,6 @@
   "framework": "AVFoundation",
   "entries": [
     {
-      "api": "+[AVMetadataItem metadataItemsFromArray:filteredByMetadataItemFilter:]",
-      "kind": "method",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "+[AVPlayerItem playerItemWithAsset:automaticallyLoadedAssetKeys:]",
       "kind": "method",
       "introduced": "7.0",
@@ -552,16 +542,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMetadataItemFilter",
-      "kind": "class",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMutableAudioMixInputParameters.audioTimePitchAlgorithm",
       "kind": "property",
       "introduced": "7.0",
@@ -822,16 +802,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "+[AVMetadataItem metadataItemsFromArray:filteredByIdentifier:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "-[AVAssetReaderOutput markConfigurationAsFinal]",
       "kind": "method",
       "introduced": "8.0",
@@ -1029,26 +999,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports have a AVPlayerItemMetadataOutputPushDelegate that sends anything like it: the message arrived in iOS 8",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "-[AVTimedMetadataGroup copyFormatDescription]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVTimedMetadataGroup a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "-[AVTimedMetadataGroup initWithSampleBuffer:]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVTimedMetadataGroup a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -1572,16 +1522,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "+[AVMetadataItem metadataItemWithPropertiesOfMetadataItem:valueLoadingHandler:]",
-      "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a method like it: it arrived in iOS 9",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "+[AVMutableComposition compositionWithURLAssetInitializationOptions:]",
       "kind": "method",
       "introduced": "9.0",
@@ -1772,57 +1712,7 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVDateRangeMetadataGroup",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMediaSelection",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataGroup",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataItem.startDate",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMetadataItem a property like it: it arrived in iOS 9",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataItemValueRequest",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMutableDateRangeMetadataGroup",
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
@@ -1839,16 +1729,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMutableMetadataItem.startDate",
-      "kind": "property",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableMetadataItem a property like it: it arrived in iOS 9",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3303,56 +3183,6 @@
     },
     {
       "api": "AVMediaDataStorage",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataBodyObject",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataCatBodyObject",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataDogBodyObject",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataHumanBodyObject",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMetadataSalientObject",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",

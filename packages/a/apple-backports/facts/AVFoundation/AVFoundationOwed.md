@@ -5,64 +5,14 @@ in the order they can honestly be answered. It exists so that a deferred row is 
 and a measurement on it, and never a row quietly left `absent` as though `absent` were a finished
 answer.
 
-**Answered so far: 47** - the metadata key-space names and the coordinated-playback and player-rate
-strings, in [MetadataKeySpaces.md](MetadataKeySpaces.md) and
-[CoordinatedPlaybackReasons.md](CoordinatedPlaybackReasons.md), each value read out of the host's own
-framework at runtime and diffed between Apple's build and the port's.
+**Answered so far: 64** - 47 constant rows, in [MetadataKeySpaces.md](MetadataKeySpaces.md) and
+[CoordinatedPlaybackReasons.md](CoordinatedPlaybackReasons.md), and the 17 metadata-object rows in
+[AVMetadataObjects.md](AVMetadataObjects.md). Each is measured against the host's own build by a
+differential, and against the held release caches so that nothing the port defines is a class or a
+member a release already has.
 
-**Left: 543** - the 17 below, and 526 more in 228 families.
-
-## The seventeen of this family, and the measurement that defers them
-
-| row | kind | introduced | owner |
-| --- | --- | --- | --- |
-| `AVDateRangeMetadataGroup` | class | 9.0 | `AVDateRangeMetadataGroup` |
-| `AVMetadataBodyObject` | class | 13.0 | `AVMetadataBodyObject` |
-| `AVMetadataCatBodyObject` | class | 13.0 | `AVMetadataCatBodyObject` |
-| `AVMetadataDogBodyObject` | class | 13.0 | `AVMetadataDogBodyObject` |
-| `AVMetadataGroup` | class | 9.0 | `AVMetadataGroup` |
-| `AVMetadataHumanBodyObject` | class | 13.0 | `AVMetadataHumanBodyObject` |
-| `+[AVMetadataItem metadataItemWithPropertiesOfMetadataItem:valueLoadingHandler:]` | method | 9.0 | `AVMetadataItem` |
-| `+[AVMetadataItem metadataItemsFromArray:filteredByIdentifier:]` | method | 8.0 | `AVMetadataItem` |
-| `+[AVMetadataItem metadataItemsFromArray:filteredByMetadataItemFilter:]` | method | 7.0 | `AVMetadataItem` |
-| `AVMetadataItem.startDate` | property | 9.0 | `AVMetadataItem` |
-| `AVMetadataItemFilter` | class | 7.0 | `AVMetadataItemFilter` |
-| `AVMetadataItemValueRequest` | class | 9.0 | `AVMetadataItemValueRequest` |
-| `AVMetadataSalientObject` | class | 13.0 | `AVMetadataSalientObject` |
-| `AVMutableDateRangeMetadataGroup` | class | 9.0 | `AVMutableDateRangeMetadataGroup` |
-| `AVMutableMetadataItem.startDate` | property | 9.0 | `AVMutableMetadataItem` |
-| `-[AVTimedMetadataGroup copyFormatDescription]` | method | 8.0 | `AVTimedMetadataGroup` |
-| `-[AVTimedMetadataGroup initWithSampleBuffer:]` | method | 8.0 | `AVTimedMetadataGroup` |
-
-Two measurements decide all seventeen, and both were taken on the host before a line was written:
-
-1. **There is no public way to build the objects, so a differential has no common input.** Asked
-   directly with `class_getClassMethod:` / `class_getInstanceMethod:` on the host build:
-   `+[AVMetadataItem metadataItemWithIdentifier:value:extraAttributes:]` **no**,
-   `-[AVMetadataGroup initWithItems:]` **no**, `+[AVDateRangeMetadataGroup dateRangeGroupWithItems:]`
-   **no**, `-[AVMetadataItemFilter initWithIdentifiers:]` **no**, and `-[AVMetadataItemFilter identifiers]`
-   **no** - the host's spelling of that one is `allowList`. What the host *does* answer is
-   `-[AVMetadataGroup items]`, `-[AVDateRangeMetadataGroup startDate]`, `-endDate`,
-   `-[AVMutableDateRangeMetadataGroup setItems:]`, `-setStartDate:`, `-setEndDate:`. So the accessors
-   can be compared once there is something to call them on, and the constructors cannot be compared
-   at all, because Apple has no public constructor either.
-2. **The body-object classes carry state a detection produces.** On the host, by
-   `class_copyMethodList` and `class_getInstanceSize`: `AVMetadataBodyObject` 5 own methods, 24
-   bytes; `AVMetadataCatBodyObject` 6 and 24; `AVMetadataDogBodyObject` 6 and 24;
-   `AVMetadataHumanBodyObject` 8 and **40**; `AVMetadataSalientObject` 7 and 24. A class of that name
-   with an empty body would satisfy every `isKindOfClass:` and answer nothing for `timeRange`,
-   `bodyObjectType` or `confidence`. That is the silent shape the registry README names, so these
-   rows want `inert` with the effect written down, or a real body-object fed by a capture pipeline -
-   and neither is a row to close by writing a file.
-
-`AVMetadataItem`'s three class methods and its `startDate`, and `AVTimedMetadataGroup`'s two, are in
-this list for the same reason and not for a third: `+metadataItemsFromArray:filteredBy...` filters
-items the port cannot be handed, and `-[AVTimedMetadataGroup initWithSampleBuffer:]` needs a
-`CMSampleBuffer` of timed metadata that no test in this tree builds yet.
-
-**What would unblock them:** a host test that builds one `AVMetadataItem` and one timed-metadata
-sample buffer from a fixture file, which makes the accessors comparable. That is the next piece of
-work, and it is a piece of test infrastructure, not a row.
+**Left: 526** - the families below, none of them a metadata row: the family that answered the 17 is
+gone from this file, and its 13 metadata classes are not in the table any more.
 
 ## The rest, largest families first
 
@@ -82,6 +32,14 @@ work, and it is a piece of test infrastructure, not a row.
 | `AVAssetWriter` | 9 |
 | `AVCaptureStillImageOutput` | 9 |
 | `AVAssetExportSession` | 8 |
+| `AVAssetResourceLoadingRequest` | 8 |
+| `AVCaptureSession` | 7 |
+| `AVCaptureVideoPreviewLayer` | 6 |
+| `AVSampleBufferDisplayLayer` | 6 |
+| `AVCaptureVideoDataOutput` | 5 |
+| `AVMutableComposition` | 5 |
+| `AVAssetResourceLoaderDelegate` | 4 |
+| `AVComposition` | 4 |
 
 Of the families above, these are pure data and can be answered the way this slice was, one
 `dlsym`-measurable table or one constructible object at a time, in this order:
