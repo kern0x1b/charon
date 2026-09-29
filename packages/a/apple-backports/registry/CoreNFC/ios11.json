@@ -103,26 +103,6 @@
       "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
     },
     {
-      "api": "NFCNDEFMessage",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a message read from a tag has no tag to come from on a release with no NFC hardware",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers NFCNDEFMessage.h and NFCNDEFPayload.h"
-    },
-    {
-      "api": "NFCNDEFPayload",
-      "kind": "class",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a message read from a tag has no tag to come from on a release with no NFC hardware",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers NFCNDEFMessage.h and NFCNDEFPayload.h"
-    },
-    {
       "api": "NFCReaderSessionDelegate",
       "kind": "protocol",
       "introduced": "11.0",

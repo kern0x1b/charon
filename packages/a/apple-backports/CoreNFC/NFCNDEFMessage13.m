@@ -298,13 +298,11 @@ static size_t CharonNDEFRender(NFCNDEFPayload *payload, BOOL first, BOOL last, B
                                                                 payload:[payload.payload subdataWithRange:NSMakeRange(offset, take)]];
         BOOL starts = marker == 0x00;
         BOOL ends = offset + take >= payload.payload.length;
-        // The marker belongs to the bytes of the chunk, not to the record that carries them, so the
-        // record is rendered with the marker as the first byte of its payload and every chunk but the
-        // first has no type and no ID.
-        NSMutableData *marked = [NSMutableData dataWithBytes:&marker length:1];
-        [marked appendData:chunk.payload];
-        chunk.payload = marked;
-        CharonNDEFRender(chunk, *first, ends, !starts, marker, NO, into);
+        // The marker is written here and nowhere else: the payload object carries the bytes of the
+        // chunk and not the marker, the renderer puts the marker as the first byte of the payload, and
+        // the parser reads that byte back. A chunk after the first has no type and no ID of its own,
+        // which is what the CF flag is for.
+        CharonNDEFRender(chunk, *first, ends, !starts, marker, YES, into);
         *first = NO;
         offset += take;
         ++marker;
@@ -331,6 +329,14 @@ static size_t CharonNDEFRender(NFCNDEFPayload *payload, BOOL first, BOOL last, B
 - (NSUInteger)length
 {
     return [self charonEncodedRecords].length;
+}
+
+// The bytes a message encodes to. KVC would stop at the class extension's own getter, which answers
+// nothing before the first encoding, so the private method is called here and the function is what the
+// port's own header declares for it.
+NSData *CharonNDEFEncodedRecords(NFCNDEFMessage *message)
+{
+    return [(id)message performSelector:@selector(charonEncodedRecords)];
 }
 
 - (instancetype)initWithNDEFRecords:(NSArray<NFCNDEFPayload *> *)records
@@ -382,7 +388,10 @@ static size_t CharonNDEFRender(NFCNDEFPayload *payload, BOOL first, BOOL last, B
             continue;
         }
         NSData *type = [NSData dataWithBytes:record.type length:record.typeLength];
-        NSData *identifier = [NSData dataWithBytes:record.identifier length:record.identifierLength];
+        // No ID field at all is nil, not an empty data: an empty one would make the encoder write the
+        // field back and the round trip would weigh a byte more than the bytes it was given.
+        NSData *identifier = record.hasIdentifierField
+            ? [NSData dataWithBytes:record.identifier length:record.identifierLength] : nil;
         NSMutableData *payload = [NSMutableData dataWithBytes:record.payload length:record.payloadLength];
         // A record whose payload begins with the zero marker opens a chunked group, which the
         // specification spells as a well-known record with the marker and continuations after it.

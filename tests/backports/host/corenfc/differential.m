@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import "CoreNFC/CoreNFC.h"
 #import "check.h"
+#import "CharonNDEF.h"
 
 // The port's NFCNDEFPayload and NFCNDEFMessage against NDEF byte vectors.
 //
@@ -47,8 +48,10 @@ static NSData *URIVector(void)
 static NSData *LongRecordVector(size_t payloadLength)
 {
     NSMutableData *data = [NSMutableData data];
-    // A media record with an ID: MB, ME, TNF media (0b010 in bits 3..1, which is 0x04), IL set, SR clear.
-    const unsigned char head[] = {0xC4, 0x04, (unsigned char)(payloadLength >> 24),
+    // A media record with the ID field present and empty: MB 0x80, ME 0x40, TNF media (0b010 in bits
+    // 3..1, which is 0x04), IL 0x10, SR clear - 0xD4 - then the type length, the four byte payload
+    // length, the ID length of zero because IL says the field is there, and the type.
+    const unsigned char head[] = {0xD4, 0x04, (unsigned char)(payloadLength >> 24),
                                   (unsigned char)(payloadLength >> 16), (unsigned char)(payloadLength >> 8),
                                   (unsigned char)payloadLength, 0x00, 0x74, 0x65, 0x73, 0x74};
     [data appendBytes:head length:sizeof head];
@@ -83,7 +86,7 @@ int main(int argc, char **argv)
     check_named(textRecord.typeNameFormat == NFCTypeNameFormatNFCWellKnown, @"whose type name format is well known",
                  [NSString stringWithFormat:@"%u", (unsigned)textRecord.typeNameFormat]);
     check_named([textRecord.type isEqualToData:[@"T" dataUsingEncoding:NSUTF8StringEncoding]], @"and whose type is the text RTD's T", textRecord.type);
-    check_named(textRecord.identifier.length == 0, @"with no identifier", textRecord.identifier);
+    check_named(textRecord.identifier == nil, @"and no identifier at all, because the header's IL is clear", textRecord.identifier);
     NSLocale *locale = nil;
     NSString *hello = [textRecord wellKnownTypeTextPayloadWithLocale:&locale];
     check_named([hello isEqualToString:@"Hello"], @"and whose payload reads back as the text it was", hello);
@@ -101,8 +104,10 @@ int main(int argc, char **argv)
     NSData *long300 = LongRecordVector(300);
     NFCNDEFMessage *fromLong = [NFCNDEFMessage ndefMessageWithData:long300];
     check_named(fromLong.records.count == 2, @"a 300 byte payload and its tail are two records", [NSString stringWithFormat:@"%lu", (unsigned long)fromLong.records.count]);
-    check_named([fromLong.records.firstObject.payload isEqualToData:[long300 subdataWithRange:NSMakeRange(14, 300)]],
+    check_named([fromLong.records.firstObject.payload isEqualToData:[long300 subdataWithRange:NSMakeRange(11, 300)]],
                  @"and the first carries the 300 bytes the four byte length field named", nil);
+    check_named([fromLong.records.firstObject.identifier isEqualToData:[NSData data]], @"and an ID field that is there and empty",
+                 [fromLong.records.firstObject.identifier description]);
     check_named([fromLong.records.lastObject.type isEqualToData:[@"Q" dataUsingEncoding:NSUTF8StringEncoding]],
                  @"and the second the type that follows", [fromLong.records.lastObject.type description]);
 
@@ -111,7 +116,7 @@ int main(int argc, char **argv)
     NFCNDEFMessage *built = [[NFCNDEFMessage alloc] initWithNDEFRecords:@[text2]];
     check_named(built.length == text.length, @"a message the port builds weighs what the vector weighs",
                  [NSString stringWithFormat:@"%lu against %lu", (unsigned long)built.length, (unsigned long)text.length]);
-    NFCNDEFMessage *reread = [NFCNDEFMessage ndefMessageWithData:[built valueForKey:@"charonEncoded"]];
+    NFCNDEFMessage *reread = [NFCNDEFMessage ndefMessageWithData:CharonNDEFEncodedRecords(built)];
     check_named([reread.records.firstObject.payload isEqualToData:textRecord.payload], @"and its own bytes read back as the same payload",
                  [reread.records.firstObject.payload description]);
 
@@ -126,13 +131,39 @@ int main(int argc, char **argv)
                                                              type:[@"T" dataUsingEncoding:NSUTF8StringEncoding]
                                                         identifier:nil payload:ten chunkSize:4];
     NFCNDEFMessage *chunkedMessage = [[NFCNDEFMessage alloc] initWithNDEFRecords:@[chunked]];
-    NSData *chunkedBytes = [chunkedMessage valueForKey:@"charonEncoded"];
-    check_named(chunkedBytes.length == 12 + 6 + 6, @"a ten byte payload chunked by four is three records",
+    NSData *chunkedBytes = CharonNDEFEncodedRecords(chunkedMessage);
+    check_named(chunkedBytes.length == 23, @"a ten byte payload chunked by four is three records of 4, 4 and 2 bytes with their markers",
                  [NSString stringWithFormat:@"%lu bytes", (unsigned long)chunkedBytes.length]);
     check_named((((const unsigned char *)chunkedBytes.bytes)[0] & 0x01) == 0, @"whose first record is not a continuation", nil);
-    check_named((((const unsigned char *)chunkedBytes.bytes)[12] & 0x01) != 0, @"whose second is", nil);
-    check_named((((const unsigned char *)chunkedBytes.bytes)[12] & 0x20) == 0, @"and carries no type of its own, the first byte after the header being the chunk number", nil);
-    check_named(((const unsigned char *)chunkedBytes.bytes)[12 + 4] == 0x01, @"numbered one", nil);
+    // The records are walked the way the specification lays them out rather than at hard-coded
+    // offsets: header, type length, payload length of one or four bytes, the ID length only when the
+    // header's IL says the field is there, then the type, the ID and the payload.
+    const unsigned char *raw = chunkedBytes.bytes;
+    size_t at = 0;
+    for (int record = 0; record < 3; record++) {
+        check_named(at + 3 <= chunkedBytes.length, [NSString stringWithFormat:@"record %d is inside the message", record], nil);
+        uint8_t header = raw[at];
+        size_t typeLength = raw[at + 1];
+        size_t payloadLength = raw[at + 2];
+        size_t after = at + 3;
+        if (header & 0x10) {
+            after += 1;   // the ID length, because IL says the field is there
+        }
+        check_named(after + typeLength + payloadLength <= chunkedBytes.length,
+                     [NSString stringWithFormat:@"record %d is whole", record], nil);
+        check_named((header & 0x01) != 0 ? record > 0 : record == 0,
+                     [NSString stringWithFormat:@"record %d is %s", record, record == 0 ? "the first" : "a continuation"],
+                     [NSString stringWithFormat:@"header 0x%02x", header]);
+        check_named(typeLength == (record == 0 ? 1u : 0u),
+                     [NSString stringWithFormat:@"record %d carries %s", record, record == 0 ? "the type" : "no type of its own"],
+                     [NSString stringWithFormat:@"%lu", (unsigned long)typeLength]);
+        check_named(raw[after + typeLength] == record,
+                     [NSString stringWithFormat:@"record %d is numbered %d by its first payload byte", record, record],
+                     [NSString stringWithFormat:@"0x%02x", raw[after + typeLength]]);
+        at = after + typeLength + payloadLength;
+    }
+    check_named(at == chunkedBytes.length, @"and the three records are the whole message",
+                 [NSString stringWithFormat:@"%lu of %lu", (unsigned long)at, (unsigned long)chunkedBytes.length]);
     NFCNDEFMessage *chunkedBack = [NFCNDEFMessage ndefMessageWithData:chunkedBytes];
     check_named([chunkedBack.records.firstObject.payload isEqualToData:ten], @"and the group reads back as the ten bytes it was",
                  [chunkedBack.records.firstObject.payload description]);

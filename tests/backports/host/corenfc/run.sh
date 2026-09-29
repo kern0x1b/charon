@@ -17,7 +17,7 @@ for source in CharonNDEF NFCNDEFMessage11 NFCNDEFMessage13; do
     xcrun clang -fobjc-arc -w -I"$here" -I"$port" -c "$port/$source.m" -o "$build/$source.o"
     objects="$objects $build/$source.o"
 done
-xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$here" -I"$harness" \
+xcrun clang -fobjc-arc -Wall -Wno-deprecated-declarations -I"$here" -I"$port" -I"$harness" \
     "$here/differential.m" "$harness/check.m" $objects \
     -framework Foundation -o "$build/differential"
 "$build/differential" "$@"

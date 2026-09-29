@@ -64,6 +64,12 @@ size_t CharonNDEFRecordEncode(const CharonNDEFRecord *record, uint8_t *out, size
 // not a whole record of the length they claim.
 size_t CharonNDEFRecordDecode(const uint8_t *bytes, size_t length, CharonNDEFRecord *record);
 
+// The bytes a message encodes to, which -length weighs and the differential reads back. It is a
+// function rather than a method because the encoded bytes are the port's own state, kept in the
+// object's class extension and not in any header of the framework.
+@class NFCNDEFMessage;
+NSData *CharonNDEFEncodedRecords(NFCNDEFMessage *message);
+
 // The well-known URI prefixes of the NFC Forum URI RTD specification, in its own order, index 0 the
 // empty prefix.
 extern const char *const CharonNDEFURIPrefixes[36];
