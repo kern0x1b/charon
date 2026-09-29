@@ -3,12 +3,16 @@
 These are **not** builds. A case is a `clang` compile and a run on this Mac, so the machine's load does
 not apply to them and there is no heavy job: the only heavy things are a `heavy.sh` build and the gates.
 
-`run-cases.sh` is the one command that runs everything here. It builds each case **with the port sources
+`run-cases.sh` is the one command that runs everything here, `check-digests.py` included — it was the
+one thing here that nothing ran, which is the defect this directory is about, so the driver runs it
+first and counts its exit. It builds each case **with the port sources
 it is given**, feeds the output to that case's comparator, runs the mutations, and ends with
 `N cases, M mutants, M noticed`. Every case prints exactly one verdict line — `GREEN`, `RED`, `CRASH`,
 `BUILD`, `MISSING` or `NOTRUN` — and the tail fails if the number of `GREEN` lines is not the number of
 cases, so a run cannot report coverage its own output does not show. It exits non-zero on any failure, on a mutation that goes unnoticed, and
-on a case whose expected symbols are missing from its own binary.
+on a case whose expected symbols are missing from its own binary, and on a digest below that no longer
+matches the file it is pinned to. The digest line is a check, not a case: it is deliberately not in the
+case or `GREEN` counts, so `N cases` still means the cases and nothing else.
 
 ## The trap: a case that links too little measures the HOST, silently
 
@@ -158,9 +162,13 @@ Still owed, none of it done:
 
 ## Digests of the evidence this directory cites
 
-Recomputed with `shasum -a 256` AFTER the last content change, on this tree, and checked here by
+Recomputed with `shasum -a 256` AFTER the last content change, on this tree, and checked by
 `check-digests.py` - which exits non-zero when this block is missing, when it covers fewer files
-than the command below cites, or when any digest does not match.
+than the command below cites, when any digest does not match, or when a cited file cannot be read.
+`run-cases.sh` runs it, so a pin that has gone stale ends the run non-zero; to run it by hand, run
+`python3 check-digests.py` from this directory, which is the invocation its own docstring gives: the
+script resolves the README and the files cited below from its own location and not from the working
+directory, so the same run comes out the same from here, from the repository root or from anywhere else.
 
 ```
 shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \

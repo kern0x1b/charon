@@ -202,6 +202,21 @@ PD=$S/SecProtocolOptionsData13_0.m
 PS=$S/SecProtocolOptionsSSLProtocol13_0.m
 
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
+# THE DIGESTS THE README PINS ARE CHECKED HERE, and not by hand. check-digests.py existed and nothing
+# ran it, which is the one defect this driver exists to end - a check nobody invokes is a check that
+# cannot fail - so the README's "one command that runs everything here" was false while it stood alone.
+# The script resolves the README and the cited files from __file__, so this is the same run from any
+# working directory. Its exit is counted in `failures`, so a stale pin ends the run non-zero, and the
+# count is NOT put in `green` or `cases`: those two are compared with each other at the tail and a
+# digest line is not a case. It runs first because a pin that does not match the tree makes every
+# verdict below it a verdict about files nobody can trust.
+if python3 "$H/check-digests.py" > "$build/check-digests.log" 2>&1; then
+    echo "GREEN  digests  $(tail -1 "$build/check-digests.log")"
+else
+    echo "RED    digests  the README's digests do not match the tree, so the verdicts below would be about files nobody can trust:"
+    sed 's/^/       /' "$build/check-digests.log"
+    failures=$((failures + 1))
+fi
 # The two verdicts a driver must keep apart, checked first so a driver that has conflated them says so
 # before it goes on to report anything else.
 # Security.framework IS LINKED, and without it the control is WORTHLESS: the first build did not link it,

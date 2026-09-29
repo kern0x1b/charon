@@ -3,6 +3,12 @@
 
     python3 check-digests.py
 
+The paths the README cites are written from the repository root, and the README is read from this
+script's own directory, so the two are resolved from __file__ and not from the working directory:
+run from here, from the repository root or from anywhere else, and the result is the same. The first
+version resolved both from the process's working directory, so the invocation in this docstring - the
+one a reader copies out of it - died with FileNotFoundError from this very directory.
+
 EXITING 0 IS THE WHOLE POINT, and a check that finds nothing to check must NOT exit 0: an earlier
 version printed "NO DIGEST LINES" and returned success, so a tree with no digests at all passed the
 check that exists to catch a README out of step with its files. Three ways this FAILS on purpose:
@@ -10,15 +16,24 @@ check that exists to catch a README out of step with its files. Three ways this 
   * the README carries no digest lines            -> exit 1
   * fewer digest lines than files cited           -> exit 1
   * any file whose sha256 does not match          -> exit 1
+  * the README or a cited file cannot be read     -> exit 1
 
 The cited files are read out of the README's own shasum block, so the check and the thing being checked
 cannot disagree about what is cited.
 """
 import hashlib
+import os
 import re
 import sys
 
-README = "tests/backports/host/security/README.md"
+HERE = os.path.dirname(os.path.abspath(__file__))
+# four levels up: this directory is tests/backports/host/security
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(HERE))))
+README = os.path.join(HERE, "README.md")
+
+if not os.path.isfile(README):
+    print("FAIL  %s does not exist - there is no README to check" % README)
+    sys.exit(1)
 
 text = open(README).read()
 pairs = re.findall(r'^\s+([0-9a-f]{64})\s+(\S+)$', text, re.M)
@@ -46,7 +61,7 @@ if wanted:
 bad = 0
 for digest, path in pairs:
     try:
-        actual = hashlib.sha256(open(path, 'rb').read()).hexdigest()
+        actual = hashlib.sha256(open(os.path.join(ROOT, path), 'rb').read()).hexdigest()
     except OSError as exc:
         print("FAIL  %s cannot be read: %s" % (path, exc))
         bad += 1
