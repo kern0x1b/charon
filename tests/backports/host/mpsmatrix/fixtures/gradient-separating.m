@@ -73,7 +73,10 @@ static double variant(int c, int r, int ms, int vs, int ug, int ag, int ax, int 
     return g * (brow[c] - mdy - hx * mdx) / root;
 }
 
-int main(void) { @autoreleasepool {
+int main(int argc, char **argv) { @autoreleasepool {
+    int swappedXY = (argc > 1 && argv[1][0] == 'x');
+    int swappedMV = (argc > 1 && argv[1][0] == 'm');
+    P("order: %s\n", swappedXY ? "gradient and source swapped" : (swappedMV ? "mean and variance swapped" : "as declared"));
     P("given mean %g %g %g   given var %g %g %g   gamma %g %g %g   eps %g\n",
       gmean[0], gmean[1], gmean[2], gvar[0], gvar[1], gvar[2], gam[0], gam[1], gam[2], eps);
 
@@ -117,8 +120,11 @@ int main(void) { @autoreleasepool {
     memcpy(mb, gmean, sizeof(mb)); memcpy(vb, gvar, sizeof(vb)); memcpy(gb, gam, sizeof(gb));
     id<MTLBuffer> inb = [d newBufferWithBytes:sb length:48 options:MTLResourceStorageModeShared];
     id<MTLBuffer> incb = [d newBufferWithBytes:ib length:48 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> mbuf = [d newBufferWithBytes:mb length:12 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> vbuf = [d newBufferWithBytes:vb length:12 options:MTLResourceStorageModeShared];
+    // the four argument slots, permuted as the mode asks
+    id<MTLBuffer> A = swappedXY ? incb : inb;   // inputMatrix slot
+    id<MTLBuffer> B = swappedXY ? inb : incb;    // gradientMatrix slot
+    id<MTLBuffer> mbuf = [d newBufferWithBytes:swappedMV ? vb : mb length:12 options:MTLResourceStorageModeShared];
+    id<MTLBuffer> vbuf = [d newBufferWithBytes:swappedMV ? mb : vb length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> gbuf = [d newBufferWithBytes:gb length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> outb = [d newBufferWithLength:48 options:MTLResourceStorageModeShared];
     MPSMatrixDescriptor *md = [MPSMatrixDescriptor matrixDescriptorWithRows:4 columns:3 matrices:1
@@ -129,8 +135,8 @@ int main(void) { @autoreleasepool {
     MPSMatrixBatchNormalizationGradient *g = [[MPSMatrixBatchNormalizationGradient alloc] initWithDevice:d];
     g.epsilon = eps;
     [g encodeToCommandBuffer:cb
-             gradientMatrix:[[MPSMatrix alloc] initWithBuffer:incb descriptor:md]
-                inputMatrix:[[MPSMatrix alloc] initWithBuffer:inb descriptor:md]
+             gradientMatrix:[[MPSMatrix alloc] initWithBuffer:B descriptor:md]
+                inputMatrix:[[MPSMatrix alloc] initWithBuffer:A descriptor:md]
                  meanVector:[[MPSVector alloc] initWithBuffer:mbuf descriptor:vd]
              varianceVector:[[MPSVector alloc] initWithBuffer:vbuf descriptor:vd]
                 gammaVector:[[MPSVector alloc] initWithBuffer:gbuf descriptor:vd]
@@ -141,7 +147,9 @@ int main(void) { @autoreleasepool {
     [cb commit]; [cb waitUntilCompleted];
     float o[12] = {0}; memcpy(o, [outb contents], 48);
     P("\nhost dX:"); for (int i = 0; i < 12; i++) P(" %g", o[i]); P("\n");
-    P("host dX at (row 0, column 0) = %.9g\n\n", o[0]);
+    P("host dX at (row 0, column 0) = %.9g\n", o[0]);
+    if (swappedXY) { P("  (variants below are for the declared order, not the swapped one)\n"); }
+    P("\n");
 
     for (int i = 0; i < 16; i++)
         P("  %13.9f  mean %-5s var %-5s gamma %-7s agg %-4s axis vectors form %s\n",

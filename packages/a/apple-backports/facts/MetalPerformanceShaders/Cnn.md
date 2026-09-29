@@ -414,3 +414,28 @@ fitted.
 The next probe is then not about the source at all: it is the four by four block of channel 1 with
 `dY`'s mean moved by ±δ around the given mean, three runs, to see the divergence as a function of that
 one quantity.
+
+### The argument orders, and the order is not it either
+
+`tests/backports/host/mpsmatrix/fixtures/gradient-orders.txt`, three runs of one program:
+
+    as declared                        host dX at (0, 0) =   0.778845072
+    gradient and source swapped                    =  -1.68092501
+    mean and variance vectors swapped              = -34.5620041
+
+**None of the three is a variant of the family, and the swapped orders are not closer than the declared
+one** — the closest of the sixteen is `0.0060` from `-1.68` and `0.0752` from `0.779`. So the release is
+not reading the gradient and the source the other way round, nor the mean and variance the other way
+round. The order is not the explanation.
+
+**And the linearity result rules out the `dY` divisor on its own terms**, which is the correction worth
+keeping: I had claimed the block divides by `mean(dY) − given mean`, and a quantity linear in `dY` cannot
+sit in a denominator of an operator that is exactly linear in `dY` — `e_0 + e_1` equals the sum of the
+columns with a difference of 0. So that claim is wrong independently of the table being wrong.
+
+**Where the case stands.** Four probes now say the same thing from different directions: the
+sixteen standard variants do not fit; the plain and axis forms do not fit; the three argument orders do
+not fit; and the operator is linear, block diagonal by channel, and writes every element. **`-s`
+`batch-normalization-gradient-data` stays unclaimed**, with all of it in this section — the port writes
+the header's formula, the host writes something outside the family tried, and nothing is marked matching
+on a guess.
