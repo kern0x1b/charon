@@ -12,6 +12,15 @@
 
 @implementation ASPortCredentialExchange
 
+// Named, not auto-synthesized: the library build refuses a property the compiler would synthesize on its
+// own (-Werror=objc-missing-property-synthesis).
+@synthesize credential = _credential;
+@synthesize error = _error;
+@synthesize cancelled = _cancelled;
+@synthesize configurationCompleted = _configurationCompleted;
+@synthesize expiryAsked = _expiryAsked;
+@synthesize expired = _expired;
+
 // The context builds one of these per completion, with the values it just recorded. There is no other
 // way to make one, so a record cannot claim an exchange the context did not have: every field is what
 // the completion that created it actually said, and the flags are set from the same statement as the
