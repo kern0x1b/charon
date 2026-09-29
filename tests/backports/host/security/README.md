@@ -129,6 +129,23 @@ case's own binary.
 | `supported`, `attributes`, `certificate-name` | they reach the port through `Charon*` helpers, which the guard does not match | same shape as `network-fetch` |
 | `trust-result` | it resolves the port by `dlsym(RTLD_DEFAULT, …)`, so there is no link-time reference to find at all | reading the case: the name is a **string** |
 
+**And the newest case is inside the guard, by the same rule the list above is measured with.**
+`sec-identity` calls six `sec_*` names — `sec_identity_create`,
+`sec_identity_create_with_certificates`, `sec_identity_access_certificates`, `sec_identity_copy_ref`,
+`sec_identity_copy_certificates_ref` and `sec_protocol_options_set_local_identity` — so its `called`
+set is those six and the guard has something to check. Dropping `$SI` from its link line ends the run
+non-zero, but by the LINK and not by `MISSING`:
+
+```
+BUILD  sec-identity FAILED to build          (the undefined symbol is CharonSecIdentity, which the
+NOTRUN sec-identity  the build failed, so the case never ran        host has no such class)
+run-cases: 1 failure(s) - 19 cases, 18 mutants, 17 noticed          EXIT=1
+```
+
+which is the same shape as `supported` and `verify-pairs` above: a case whose port entry points are
+`Charon*` class names cannot fall through to the host, so the link refuses it before the guard is
+reached. Both shapes end the run non-zero; they are not the same check.
+
 **A source dropped from the link line CAN hide**, and `network-fetch` is the proof rather than my
 assertion: the symbols resolve to the host's framework, the case compares numbers the host produced, and
 it passes. What the guard does catch is a dropped source **whose functions the case reaches through a
@@ -141,8 +158,8 @@ case calls. I attempted the prefix route twice and it does not reach these names
 **`nm`'s own status is now captured where `set -e` cannot intercept it.** The earlier form
 (`nm … > file` then `nmstatus=$?` on the next line) never reached the assignment: the script ended on the
 failing command, so the branch was unreachable and an `nm` failure killed the run silently. A stub `nm`
-that exits 1 now produces 19 `BUILD … nm -gU on the linked binary exited 1` lines, 0 cases counted, and
-a non-zero exit, where the real run is unchanged at 19/14/13.
+that exits 1 now produces **20** `BUILD … nm -gU on the linked binary exited 1` lines, 0 cases counted,
+and exit 20, where the real run is unchanged at **20/18/17**.
 
 Still owed, none of it done:
 
@@ -153,9 +170,15 @@ Still owed, none of it done:
    source that was never linked because **nobody called its function** — the case has to reach the port
    through a `sec_*` name for the guard to have anything to check.
 2. **The stale-mutant sweep is not landed**: `make-mutants.py` runs after the early `mutate()` calls, so a
-   sweep there deletes the mutants this run has just written and the suite goes red
-   (3 failures, 19 cases, 14 mutants, 10 noticed). It has to run before `make-mutants` and before the
-   first `mutate()`.
+   sweep in the `else` beside it deletes the mutants that run has just written and the suite goes red.
+   Measured on this tree by putting the sweep exactly there — `rm -f "$build"/mutant-*.m` — and running
+   the driver:
+   ```
+   BUILD  make-mutants.py reported success but mutant-blocks-challenge-into-keyupdate.m is ABSENT …
+   BUILD  make-mutants.py reported success but mutant-data-halfpair.m is ABSENT …
+   run-cases: 10 failure(s) - 20 cases, 18 mutants, 12 noticed          EXIT=10
+   ```
+   It has to run before `make-mutants` and before the first `mutate()`.
 3. **The missing-mutant-file check is reverted as unproven**: `must_not_compile` is required to see a
    build FAIL, and a mutant file that is simply absent makes the compiler fail for the wrong reason. Its
    control removed a file `make-mutants.py` rewrites at the start of every run, so the control could not
