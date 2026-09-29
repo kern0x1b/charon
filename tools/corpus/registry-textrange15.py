@@ -35,7 +35,7 @@ EFFECTS = {
     "NSTextSelectionNavigation": "what a selection moved does: every answer is a question for the data source the object was made with, and with no data source there is no document and the answer is the header's own",
     # protocols
     "NSTextLocation": "a location is anything that answers -compare:, and a range is two of them, so an object that adopts this is a location a range can be made of",
-    "NSTextSelectionDataSource": "the navigation object sends each of these to the data source it was made with, and an application that adopts the protocol compiles against the SDK's own declaration of it",
+    "NSTextSelectionDataSource": "the navigation object asks the data source it was made with for the seven selectors below, through a typed send on the SDK's own declaration of the protocol: the build SDK declares it, so the port cannot declare a protocol of the same name, and a release that has no such protocol object answers nil to NSProtocolFromString - the protocol is a type here and not an object the port provides",
     # properties
     "NSTextRange.empty": "YES when the range's two locations are the same place, which two equal location objects are",
     "NSTextRange.location": "the inclusive location the range starts at, which is the start of a union and the later of two starts for an intersection",
@@ -96,15 +96,35 @@ METHODS = {
     "-[NSTextLocation compare:]": "the ordering of two locations, which is the whole of what a location has to answer and all a range ever asks of one",
     # the data source's own members: the navigation object sends each of these
     "-[NSTextSelectionDataSource documentRange]": "the navigation object moves a selection to the start or the end of this, and a nil or empty one means there is nowhere to move to",
-    "-[NSTextSelectionDataSource enumerateSubstringsFromLocation:options:usingBlock:]": "the navigation object's own segmentation: it is what knows where the next word, line, sentence or paragraph is, and the port asks it rather than guessing",
+        # The five selectors below are declared by the data source protocol and the port asks for none of them. A move over a word, a line, a sentence or a paragraph is placed from the range that granularity encloses at the location and from the offset selector, which is what the code does; a container destination has no case and the move answers nil. Each row says which of those it is.
+"-[NSTextSelectionDataSource enumerateSubstringsFromLocation:options:usingBlock:]": "the port does not ask for it: a move over a word, a line, a sentence or a paragraph is placed from the range -textRangeForSelectionGranularity:enclosingLocation: returns and the offset of its end",
     "-[NSTextSelectionDataSource textRangeForSelectionGranularity:enclosingLocation:]": "the range a granularity encloses at a location, which is where a move over a word, a line, a sentence or a paragraph lands",
     "-[NSTextSelectionDataSource locationFromLocation:withOffset:]": "a location that many characters on, which is how a move over one character or paragraph separator is placed",
     "-[NSTextSelectionDataSource offsetFromLocation:toLocation:]": "the offset between two locations, which is what a paragraph asks to place its two derived ranges in the document",
-    "-[NSTextSelectionDataSource baseWritingDirectionAtLocation:]": "the base direction at a location, which is what an insertion location is resolved against",
-    "-[NSTextSelectionDataSource enumerateCaretOffsetsInLineFragmentAtLocation:usingBlock:]": "the caret offsets of a line, in visual order, which is what a selection's affinity describes",
+    "-[NSTextSelectionDataSource baseWritingDirectionAtLocation:]": "the port does not ask for it: a location of the port's is an offset in a document and carries no writing direction, and no answer of the navigation object resolves one",
+    "-[NSTextSelectionDataSource enumerateCaretOffsetsInLineFragmentAtLocation:usingBlock:]": "the port does not ask for it: the affinity of a selection is kept as it was made and is never recomputed from caret offsets",
     "-[NSTextSelectionDataSource lineFragmentRangeForPoint:inContainerAtLocation:]": "the line under a point, which is what a tap and a mouse-down select, and what a word at a point is enclosed from",
-    "-[NSTextSelectionDataSource enumerateContainerBoundariesFromLocation:reverse:usingBlock:]": "the container and page boundaries a move to a container destination lands on; a data source that does not enumerate them has none, and the navigation object answers nil for such a move, which is what the header says a movement with no valid result answers",
-    "-[NSTextSelectionDataSource textLayoutOrientationAtLocation:]": "the orientation of the layout at a location; the navigation object assumes horizontal when a data source does not implement it, which is what the header says",
+    "-[NSTextSelectionDataSource enumerateContainerBoundariesFromLocation:reverse:usingBlock:]": "the port does not ask for it: a container or page destination has no case in the movement's own switch and the move answers nil, which is the header's answer for a movement with no logically valid result",
+    "-[NSTextSelectionDataSource textLayoutOrientationAtLocation:]": "the port does not ask for it: nothing in the navigation object reads an orientation, and the line under a point is asked for as a range",
+}
+
+# The selectors the port asks its data source for are the seven with an effect above that says it asks; these
+# five are declared by the protocol and never sent, and are the rows the corpus and the code disagree about.
+# The protocols of this group the port itself provides, measured as the __OBJC_PROTOCOL_$_ symbols its objects
+# define: CharonTextLocation.h declares NSTextLocation and the objects define __OBJC_PROTOCOL_$_NSTextLocation.
+# NSTextSelectionDataSource is not among them, and the build SDK declares it, so the port cannot add it.
+PORT_PROVIDED_PROTOCOLS = {"NSTextLocation"}
+
+NOT_ASKED_EFFECT = ("the port neither declares nor sends it, so nothing of the port's is behind the name; a "
+                    "data source asked for it answers for itself, and the navigation object asks for the "
+                    "selectors the reason names instead")
+
+NOT_ASKED = {
+    "-[NSTextSelectionDataSource enumerateSubstringsFromLocation:options:usingBlock:]",
+    "-[NSTextSelectionDataSource baseWritingDirectionAtLocation:]",
+    "-[NSTextSelectionDataSource enumerateCaretOffsetsInLineFragmentAtLocation:usingBlock:]",
+    "-[NSTextSelectionDataSource enumerateContainerBoundariesFromLocation:reverse:usingBlock:]",
+    "-[NSTextSelectionDataSource textLayoutOrientationAtLocation:]",
 }
 
 def load_rows():
@@ -145,16 +165,33 @@ def entry_for(row):
                     facts=FACTS, effect=effect, source=SOURCE) if effect else None
     if kind == "protocol":
         effect = EFFECTS.get(api)
+        if effect is None:
+            return None
+        if api not in PORT_PROVIDED_PROTOCOLS:
+            # The build SDK declares this protocol, so the port cannot declare one of the same name, and a
+            # release that carries no such protocol object answers nil to NSProtocolFromString. It is a type the
+            # port's own sources are written against and not an object the port provides, so the row is absent.
+            return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="absent",
+                        reason=effect, effect=NOT_ASKED_EFFECT, facts=FACTS, source=SOURCE)
         return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="implemented",
-                    facts=FACTS, effect=effect, source=SOURCE) if effect else None
+                    facts=FACTS, effect=effect, source=SOURCE)
     if kind == "property":
         effect = EFFECTS.get(api)
         return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="implemented",
                     facts=FACTS, effect=effect, source=SOURCE) if effect else None
     if kind == "method":
         effect = METHODS.get(api)
+        if effect is None:
+            return None
+        if api in NOT_ASKED:
+            # A selector of the data source the port does not send: nothing of the port's is behind it, so the
+            # row is absent rather than implemented, and the effect says which selector answers instead.
+            return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="absent",
+                        reason=effect,
+                        effect=NOT_ASKED_EFFECT,
+                        facts=FACTS, source=SOURCE)
         return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="implemented",
-                    facts=FACTS, effect=effect, source=SOURCE) if effect else None
+                    facts=FACTS, effect=effect, source=SOURCE)
     raise SystemExit("unhandled kind " + kind + " for " + api + " - give it the effect it answers, above")
 
 def main():

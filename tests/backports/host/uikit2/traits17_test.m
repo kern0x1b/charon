@@ -706,9 +706,30 @@ static void check_registration(void)
                  @"a controller answers updateTraitsIfNeeded", @"it does not");
 }
 
+
+// The protocols the port itself declares, read back through the runtime rather than off the objects. The
+// twenty-two trait classes are iOS 17, 18 and 26 API and the build SDK declares none of their protocols, so a
+// protocol object for UITraitDefinition can only have come from this library: that is what makes the answer
+// non-nil a statement about the port and not about the host's UIKit. The three Text Kit 2 protocols are the
+// other way round - the build SDK declares them, so the port cannot declare one of the same name and their rows
+// are absent with that reason - and asking for them here would only report the host's own.
+static void check_declared_protocols(void)
+{
+    Protocol *definition = NSProtocolFromString(@"UITraitDefinition");
+    charon_check(definition != nil, "a protocol this library declares is found by name at run time",
+                 @"NSProtocolFromString answered nil for a protocol the objects define");
+    charon_check(definition != nil && protocol_isEqual(definition, @protocol(UITraitDefinition)),
+                 "and it is the port's own, not the host's declaration of a name that collides",
+                 @"a different protocol answered");
+    charon_check(NSProtocolFromString(@"UITraitNoSuchTraitProtocol") == nil,
+                 "and a name no library declares answers nil, which is what makes the one above a result",
+                 @"a protocol that is nowhere answered non-nil");
+}
+
 int main(void)
 {
     @autoreleasepool {
+        check_declared_protocols();
         compare_definitions();
         compare_empty();
         compare_values();

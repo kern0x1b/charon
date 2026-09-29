@@ -180,11 +180,20 @@ other.
 ## The protocols
 
 `NSTextElementProvider` is what the range layer's group left to this one: its seven members are
-sent from here, by the content storage, and it is `implemented` for that reason. The other
-three are the manager's own delegate and the storage's, and each is sent from the object that
-holds it. No protocol here is declared by the package: an application that adopts one compiles
-against the SDK's own declaration of it, and `NSProtocolFromString` answers nil on a release
-that has no such protocol object — which is the truth for all four.
+sent from here, by the content storage, and it is `implemented` for that reason. It is also the
+one of the four this package declares — the build SDK does not declare it, and
+`NSTextContentStorage`'s objects define the protocol object, so `NSProtocolFromString` finds it
+by name at run time. That is a case in `content15_test.m`, and the same case asks for a name no
+library declares and requires nil, so the first answer is a result and not a tautology.
+
+The other three — the manager's delegate, the storage's, and the selection data source the range
+layer is written against — are declared by the build SDK, so a `@protocol` of the same name here
+would be a duplicate and the package declares none of them. An application that adopts one
+compiles against the SDK's own declaration of it, and on a release that carries no such protocol
+object `NSProtocolFromString` answers nil. Their rows say so, and the selectors of the two delegate
+protocols the port sends are `implemented` because the port does send them; the nine selectors of
+the selection data source that the port never sends are `absent`, each naming the selector the port
+asks instead.
 
 ## Not measured
 

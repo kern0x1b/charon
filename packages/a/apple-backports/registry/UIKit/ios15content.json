@@ -146,9 +146,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: an element at a location is the port's own paragraph mapping, cut at the paragraph endings, and no delegate is asked to replace it",
+      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the element the manager uses at a location, so a document type of an application's own supplies it instead of the port's mapping; a manager with no delegate uses its own",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
     {
@@ -486,9 +487,10 @@
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the manager asks its delegate whether an element takes part in an enumeration, and a delegate that implements it not leaves the manager's own enumeration as it is. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
+      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the manager asks its delegate for the element at a location and whether an element takes part in an enumeration, and a delegate that implements neither leaves the manager's own mapping and its own enumeration as they are",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
     {
@@ -496,9 +498,10 @@
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the content storage asks its delegate for the paragraph of a range, which is how a document type of an application's own supplies elements instead of the port's paragraph mapping. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
+      "effect": "nothing of the port's is behind the name: the port neither declares it nor sends it, so a delegate asked for it answers for itself and the port's own answer stands where it would have been used",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the content storage asks its delegate for the paragraph of a range, which is how a document type of an application's own supplies elements instead of the port's paragraph mapping",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
     {

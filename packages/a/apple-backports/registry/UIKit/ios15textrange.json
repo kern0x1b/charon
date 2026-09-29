@@ -256,9 +256,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: a location of the port's is an offset in a document and carries no writing direction, and no answer of the navigation object resolves one",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the base direction at a location, which is what an insertion location is resolved against",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     },
     {
@@ -266,9 +267,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: the affinity of a selection is kept as it was made and is never recomputed from caret offsets",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the caret offsets of a line, in visual order, which is what a selection's affinity describes",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     },
     {
@@ -276,9 +278,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: a container or page destination has no case in the movement's own switch and the move answers nil, which is the header's answer for a movement with no logically valid result",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the container and page boundaries a move to a container destination lands on; a data source that does not enumerate them has none, and the navigation object answers nil for such a move, which is what the header says a movement with no valid result answers",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     },
     {
@@ -286,9 +289,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: a move over a word, a line, a sentence or a paragraph is placed from the range -textRangeForSelectionGranularity:enclosingLocation: returns and the offset of its end",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the navigation object's own segmentation: it is what knows where the next word, line, sentence or paragraph is, and the port asks it rather than guessing",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     },
     {
@@ -326,9 +330,10 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the port does not ask for it: nothing in the navigation object reads an orientation, and the line under a point is asked for as a range",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the orientation of the layout at a location; the navigation object assumes horizontal when a data source does not implement it, which is what the header says",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     },
     {
@@ -676,9 +681,10 @@
       "kind": "protocol",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
+      "reason": "the navigation object asks the data source it was made with for the seven selectors below, through a typed send on the SDK's own declaration of the protocol: the build SDK declares it, so the port cannot declare a protocol of the same name, and a release that has no such protocol object answers nil to NSProtocolFromString - the protocol is a type here and not an object the port provides",
+      "effect": "the port neither declares nor sends it, so nothing of the port's is behind the name; a data source asked for it answers for itself, and the navigation object asks for the selectors the reason names instead",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the navigation object sends each of these to the data source it was made with, and an application that adopts the protocol compiles against the SDK's own declaration of it",
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
     }
   ]

@@ -32,6 +32,20 @@ OWNED_PROTOCOLS = ("NSTextElementProvider", "NSTextStorageObserving", "NSTextCon
                    "NSTextContentStorageDelegate")
 # The port's own NSTextLocation: a name no SDK header declares, so it is a private entry point and takes the
 # release of the API that needed it, which is the range layer of 15.0.
+# The rows the port does not provide, and why. The two delegate protocols are declared by the build SDK, so a
+# port @protocol of the same name would be a duplicate, and a release with no such protocol object answers nil
+# to NSProtocolFromString; measured as the __OBJC_PROTOCOL_$_ symbols the port's own objects define, which are
+# the twelve under the two trait headers and NSTextElementProvider, NSTextLocation and NSTextStorageObserving,
+# and neither of these two. The third is a selector the port never sends: its own paragraph mapping is used
+# wherever a custom element at a location would be.
+NOT_PROVIDED = {
+    "NSTextContentManagerDelegate", "NSTextContentStorageDelegate",
+    "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]",
+}
+NOT_PROVIDED_EFFECT = ("nothing of the port's is behind the name: the port neither declares it nor sends it, so a "
+                       "delegate asked for it answers for itself and the port's own answer stands where it would "
+                       "have been used")
+
 PRIVATE = {"CharonTextLocation": "15.0"}
 VALUES = re.compile(r"NSText(ContentManager|ContentStorage)\w*$")
 # A notification name is a symbol, not a case of an enumeration, so it is not one of the header-only values.
@@ -53,8 +67,8 @@ EFFECTS = {
     # protocols
     "NSTextElementProvider": "the content storage is the port's implementation of it: the document range, the element enumeration in both directions, the replacement, the synchronisation and the two location conversions, each sent by the object that holds the document",
     "NSTextStorageObserving": "the content storage is the port's observer of the text storage it is made over: the two messages the storage sends an observer are the port's way of learning that an edit has finished, which is what keeps every range in the document true",
-    "NSTextContentManagerDelegate": "the manager asks its delegate for the element at a location and whether an element takes part in an enumeration, and a delegate that implements neither leaves the manager's own mapping and its own enumeration as they are",
-    "NSTextContentStorageDelegate": "the content storage asks its delegate for the paragraph of a range, which is how a document type of an application's own supplies elements instead of the port's paragraph mapping",
+    "NSTextContentManagerDelegate": "the manager asks its delegate whether an element takes part in an enumeration, and a delegate that implements it not leaves the manager's own enumeration as it is. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
+    "NSTextContentStorageDelegate": "the content storage asks its delegate for the paragraph of a range, which is how a document type of an application's own supplies elements instead of the port's paragraph mapping. The build SDK declares this protocol, so the port cannot declare one of the same name, and a release with no such protocol object answers nil to NSProtocolFromString",
     # properties
     "NSTextContentManager.delegate": "the delegate the manager asks for an element at a location and for whether an element is enumerated, and nil for a manager with none",
     "NSTextContentManager.textLayoutManagers": "the layout managers the manager holds, in the order they were added, and empty for a bare one",
@@ -90,7 +104,7 @@ EFFECTS = {
     "-[NSTextStorageObserving performEditingTransactionForTextStorage:usingBlock:]": "the block runs inside the manager's own transaction, so nesting and the outermost synchronisation are the manager's",
     "-[NSTextStorageObserving textStorage]": "the storage the document is held in, held strongly by the content storage because the storage's own reference to its observer is weak",
     # the delegate methods
-    "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]": "the element the manager uses at a location, so a document type of an application's own supplies it instead of the port's mapping; a manager with no delegate uses its own",
+    "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]": "the port does not ask for it: an element at a location is the port's own paragraph mapping, cut at the paragraph endings, and no delegate is asked to replace it",
     "-[NSTextContentManagerDelegate textContentManager:shouldEnumerateTextElement:options:]": "NO skips the element from the enumeration, which is how a provider hides an element from the layout; a manager with no delegate enumerates all of them",
     "-[NSTextContentStorageDelegate textContentStorage:textParagraphWithRange:]": "the paragraph of a range, used in place of the port's own paragraph for that range, which is how a document type of an application's own supplies its elements",
 }
@@ -158,6 +172,12 @@ def entry_for(row):
     effect = EFFECTS.get(api)
     if effect is None:
         return None
+    if api in NOT_PROVIDED:
+        # Nothing of the port's is behind this name: a protocol the build SDK declares, which the port therefore
+        # cannot declare under the same name, or a selector of one the port never sends. The row is absent and the
+        # reason says what the port asks instead, so no row claims a protocol object or a send that is not there.
+        return dict(api=api, kind=kind, introduced=introduced, minimum=minimum, status="absent",
+                    reason=effect, effect=NOT_PROVIDED_EFFECT, facts=FACTS, source=SOURCE)
     return dict(api=api, kind=kind, introduced=introduced, minimum=minimum, status="implemented",
                 facts=FACTS, effect=effect, source=SOURCE)
 
@@ -175,22 +195,12 @@ def main():
         raise SystemExit("no effect written for:\n  " + "\n  ".join(missing))
     # The port's own location type, which no SDK header declares, so no corpus row names it: it is carried from
     # the release of the API that needed it, and rule R4 asks a delivery with such a name to say so.
-    # A notification name is a symbol and not a case of an enumeration, so it takes an entry, and this one is
-    # absent because the condition that posts it cannot arise in the port's document: it is posted when a text
-    # attribute the storage cannot map to an element is added, and the port's elements carry the whole
-    # attributed string, so there is no attribute it cannot map. The effect says the condition, so a reader can
-    # see what would have to change for the name to be there.
-    entries.append(dict(
-        api="NSTextContentStorageUnsupportedAttributeAddedNotification", kind="constant", introduced="15.0",
-        minimum="6.0", status="absent",
-        reason=("the notification is posted when an attribute the storage cannot map to an element is added, and "
-                "the port's elements carry the whole attributed string: a paragraph is a range of the string and a "
-                "list element is its marker and its contents, so there is no attribute the port cannot map and the "
-                "condition cannot arise"),
-        effect=("the name is not there: a lookup of it answers nil, and no notification of it is ever posted. What "
-                "would have to change is the element model - an element that could not represent some attribute a "
-                "caller put in the backing store - and the port has none"),
-        source=SOURCE))
+    #
+    # NSTextContentStorageUnsupportedAttributeAddedNotification is NOT emitted here. The corpus has a row for it
+    # and this script used to write a second one, absent, in this file - which contradicted
+    # registry/UIKit/uikit-constants.json, where the symbol is implemented and measured from the 16.0 cache that
+    # exports it. One row lives in one registry file, so the constant belongs there and this script says nothing
+    # about it: emitting it here made the two files disagree and put the same api in the tree twice.
     entries.sort(key=lambda e: (e["kind"], e["api"]))
     with open(OUT, "w") as handle:
         json.dump({"framework": "UIKit", "entries": entries}, handle, indent=2)
@@ -198,8 +208,8 @@ def main():
     kinds = {}
     for entry in entries:
         kinds[entry["kind"]] = kinds.get(entry["kind"], 0) + 1
-    print("  " + " ".join(f"{k}={v}" for k, v in sorted(kinds.items())))
-    print(f"{len(rows)} rows of the group plus one notification: {len(entries)} entries")
+    print(f"{len(rows)} rows of the group: {len(entries)} entries " +
+          " ".join(f"{k}={v}" for k, v in sorted(kinds.items())))
     print(f"plus {len(values)} header-only values, which get no entry by registry/README.md:")
     for name in sorted({v["api"] for v in values}):
         print("  " + name)

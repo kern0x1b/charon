@@ -461,9 +461,29 @@ static void compare_paragraphs(void)
                                                                             endLocation:at8]]));
 }
 
+
+// The protocol the range layer's own objects provide, read back through the runtime. NSTextElementProvider is
+// not declared by the build SDK, so a protocol object of that name can only have come from this library - which
+// is the difference between a protocol the port carries and one it only names. NSTextContentManagerDelegate,
+// NSTextContentStorageDelegate and NSTextSelectionDataSource are the other kind: the build SDK declares all
+// three, so the port cannot declare one of the same name, its rows are absent with that reason, and a lookup
+// here would report the host's own UIKit rather than anything of the port's.
+static void check_declared_protocol(void)
+{
+    Protocol *provider = NSProtocolFromString(@"NSTextElementProvider");
+    charon_check(provider != nil, "a protocol the range layer's own objects provide is found by name at run time",
+                 @"NSProtocolFromString answered nil for a protocol the objects define");
+    charon_check(provider != nil && protocol_isEqual(provider, @protocol(NSTextElementProvider)),
+                 "and it is that protocol and no other", @"a different protocol answered");
+    charon_check(NSProtocolFromString(@"NSTextNoSuchProtocol") == nil,
+                 "and a name no library declares answers nil, which is what makes the one above a result",
+                 @"a protocol that is nowhere answered non-nil");
+}
+
 int main(void)
 {
     @autoreleasepool {
+        check_declared_protocol();
         compare_manager();
         compare_list_element();
         compare_storage();
