@@ -174,3 +174,31 @@ outputs were memset to zero, so "not written" and "written zero" were the same t
 pointer print compared the case's C array with the object's buffer, which the comparison never
 mixed. Each of those produced a confident wrong number. The case file now prints the values as
 text beside the hex, which is what would have caught all three at once.
+
+## Batch normalisation: the family is a rounding difference, and that is now measured
+
+The forward is correct in structure. On the case's own inputs, with the header's formula worked out by
+hand, the release, this port and the scalar reference agree on **all twelve elements to the six decimals
+printed**:
+
+    y = gamma * (x - mean) / sqrt(variance + epsilon) + beta
+
+    host  -1.090891 -1.418482  0.183571  0.500000 -0.500000  3.449286
+          -0.560594  0.418482 -1.449286  3.151485 -1.724643  1.816429
+    port  the same
+    ref   the same
+
+**What differs is the last bit of a `float`.** Of the family's twenty-one cases, nineteen differ, and
+they differ only in the final hex digit of the words that differ:
+
+    batch-normalization 0    host[ 5] 18c15c40   port[ 5] 19c15c40
+    batch-normalization 2    host[ 0] 0025babd   port[ 0] f924babd
+
+The port accumulates the normalisation in `double` and rounds once on the store; the release evaluates
+in `float32` throughout, so where the exact result lands near a tie the two round differently. That is
+the whole of the difference, and it is a rounding question rather than a structural one — the two
+missing roots, the given mean, and the divisor are all now correct.
+
+The fix is the port's to make: the same single-precision formulation the release uses, `float` from
+the multiply onwards. It is the ulp work, and it is the last thing this family's structure is waiting
+on.
