@@ -441,6 +441,14 @@ run_mutation sec-identity-noretain compare-sec-identity.py sec-identity
 # the 12.0 one defines, so the 12.0 source goes on its link line beside the mutant.
 MUTANT_EXTRA=$SI
 run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity
+# THE DEFAULTS MUTANT: the minimum answered as a value the enum does not have. 0x0300 is not a member of
+# tls_protocol_version_t at all - the lowest is 0x0301 - so a row that drifted below the enum's floor
+# would still be a plausible-looking number and only this comparison would see it.
+make_mutant "$build/mutant-defaults-below-enum.m" "$PO" \
+    '    return tls_protocol_version_TLSv10;' \
+    '    return (tls_protocol_version_t)0x0300;   // MUTANT: below the enum'"'"'s lowest member'
+MUTANT_EXTRA=$SI
+run_mutation defaults-below-enum compare-protocol-options.py protocol-options
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
