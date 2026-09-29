@@ -2,9 +2,9 @@
 #import <CoreMedia/CoreMedia.h>
 #import <VideoToolbox/VideoToolbox.h>
 
-// The string constants VideoToolbox declared in iOS 26.0. Where the values come from, and why the value is not the
-// constant's own name: the head of VideoToolboxConstants8_0.m. An object carries the API of one release, so the
-// 135 are split by the release each arrived in (registry/VideoToolbox/).
+// The string constants VideoToolbox's first held export of which is iOS 26.0. Where the values
+// come from, and why a value is not the constant's own name: the head of
+// VideoToolboxConstants7_0.m. An object carries the API of one release.
 
 const CFStringRef kVTCameraCalibrationExtrinsicOriginSource_StereoCameraSystemBaseline = CFSTR("StereoCameraSystemBaseline");
 const CFStringRef kVTCameraCalibrationLensAlgorithmKind_ParametricLens = CFSTR("ParametricLens");
@@ -30,8 +30,6 @@ const CFStringRef kVTCompressionPropertyCameraCalibrationKey_LensIdentifier = CF
 const CFStringRef kVTCompressionPropertyCameraCalibrationKey_LensRole = CFSTR("LensRole");
 const CFStringRef kVTCompressionPropertyCameraCalibrationKey_RadialAngleLimit = CFSTR("RadialAngleLimit");
 const CFStringRef kVTCompressionPropertyKey_CameraCalibrationDataLensCollection = CFSTR("CameraCalibrationDataLensCollection");
-const CFStringRef kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumDuration = CFSTR("RecommendedParallelizedSubdivisionMinimumDuration");
-const CFStringRef kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumFrameCount = CFSTR("RecommendedParallelizedSubdivisionMinimumFrameCount");
 const CFStringRef kVTCompressionPropertyKey_SupportedPresetDictionaries = CFSTR("SupportedPresetDictionaries");
 const CFStringRef kVTCompressionPropertyKey_VBVBufferDuration = CFSTR("VBVBufferDuration");
 const CFStringRef kVTCompressionPropertyKey_VBVInitialDelayPercentage = CFSTR("VBVInitialDelayPercentage");
@@ -42,8 +40,6 @@ const CFStringRef kVTDecodeFrameOptionKey_ContentAnalyzerRotation = CFSTR("Conte
 const CFStringRef kVTHDRMetadataInsertionMode_RequestSDRRangePreservation = CFSTR("HDRMetadataInsertionMode_RequestSDRRangePreservation");
 const CFStringRef kVTHeroEye_Left = CFSTR("Left");
 const CFStringRef kVTHeroEye_Right = CFSTR("Right");
-const CFStringRef kVTMotionEstimationSessionCreationOption_Label = CFSTR("Label");
-const CFStringRef kVTMotionEstimationSessionCreationOption_MotionVectorSize = CFSTR("MotionVectorSize");
 const CFStringRef kVTMotionEstimationSessionCreationOption_UseMultiPassSearch = CFSTR("UseMultiPassSearch");
 const CFStringRef kVTProjectionKind_Equirectangular = CFSTR("Equirectangular");
 const CFStringRef kVTProjectionKind_HalfEquirectangular = CFSTR("HalfEquirectangular");

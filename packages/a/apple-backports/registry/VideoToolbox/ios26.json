@@ -2147,28 +2147,6 @@
    "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
   },
   {
-   "api": "kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumDuration",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
-  },
-  {
-   "api": "kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumFrameCount",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
-  },
-  {
    "api": "kVTCompressionPropertyKey_SupportedPresetDictionaries",
    "kind": "constant",
    "introduced": "26.0",
@@ -2277,28 +2255,6 @@
    "effect": "the string the header's own constant is documented to have, answered from the port",
    "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
    "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
-  },
-  {
-   "api": "kVTMotionEstimationSessionCreationOption_Label",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTMotionEstimationSessionProperties.h, the declaration's own availability"
-  },
-  {
-   "api": "kVTMotionEstimationSessionCreationOption_MotionVectorSize",
-   "kind": "constant",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTMotionEstimationSessionProperties.h, the declaration's own availability"
   },
   {
    "api": "kVTMotionEstimationSessionCreationOption_UseMultiPassSearch",

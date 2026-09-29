@@ -2,6 +2,160 @@
  "framework": "VideoToolbox",
  "entries": [
   {
+   "api": "kVTCompressionPropertyKey_CalculateMeanSquaredError",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.4, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.4"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_HasLeftStereoEyeView",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_HasRightStereoEyeView",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_HeroEye",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_HorizontalDisparityAdjustment",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_MVHEVCLeftAndRightViewIDs",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_MVHEVCVideoLayerIDs",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_MVHEVCViewIDs",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_StereoCameraBaseline",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTDecompressionPropertyKey_GeneratePerFrameHDRDisplayMetadata",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTDecompressionPropertyKey_RequestedMVHEVCVideoLayerIDs",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.0"
+  },
+  {
+   "api": "kVTSampleAttachmentQualityMetricsKey_ChromaBlueMeanSquaredError",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.4, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.4"
+  },
+  {
+   "api": "kVTSampleAttachmentQualityMetricsKey_ChromaRedMeanSquaredError",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.4, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.4"
+  },
+  {
+   "api": "kVTSampleAttachmentQualityMetricsKey_LumaMeanSquaredError",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 17.4, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 17.4"
+  },
+  {
    "api": "kVTCompressionPropertyKey_MaximumRealTimeFrameRate",
    "kind": "constant",
    "introduced": "18.0",
@@ -55,6 +209,50 @@
    "effect": "the string the header's own constant is documented to have, answered from the port",
    "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
    "source": "SDK 26.2, VideoToolbox/Headers/VTHDRPerFrameMetadataGenerationSession.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumDuration",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 26.0"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_RecommendedParallelizedSubdivisionMinimumFrameCount",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 26.0"
+  },
+  {
+   "api": "kVTMotionEstimationSessionCreationOption_Label",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 26.0"
+  },
+  {
+   "api": "kVTMotionEstimationSessionCreationOption_MotionVectorSize",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 26.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "the armv7 cache ladder (tools/release-split.lua), which first exports it at 18.0; SDK 26.2, VideoToolbox/Headers, states 26.0"
   }
  ]
 }

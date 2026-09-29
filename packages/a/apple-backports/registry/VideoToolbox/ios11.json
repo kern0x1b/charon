@@ -88,28 +88,6 @@
    "effect": "the string the header's own constant is documented to have, answered from the port",
    "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
    "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
-  },
-  {
-   "api": "kVTVideoDecoderSpecification_PreferredDecoderGPURegistryID",
-   "kind": "constant",
-   "introduced": "11.3",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 11.3, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTDecompressionProperties.h, the declaration's own availability"
-  },
-  {
-   "api": "kVTVideoDecoderSpecification_RequiredDecoderGPURegistryID",
-   "kind": "constant",
-   "introduced": "11.3",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "a VideoToolbox string constant SDK 26.2 declares as 11.3, and the release the port builds for lacks it",
-   "effect": "the string the header's own constant is documented to have, answered from the port",
-   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
-   "source": "SDK 26.2, VideoToolbox/Headers/VTDecompressionProperties.h, the declaration's own availability"
   }
  ]
 }

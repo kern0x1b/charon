@@ -2,7 +2,7 @@
 """Each VideoToolbox string constant is defined in the object of the release its registry row names.
 
 An object carries the API of one release (the gate refuses one that holds several), so the 135 constants are
-split into VideoToolboxConstants<major>_<minor>.m, one file per release. This holds the split both ways:
+split into VideoToolboxConstants<release>.m, one file per release. This holds the split both ways:
 
   * every constant a file defines has a registry row (kind constant) whose `introduced` is the release in
     that file's name, and
@@ -39,8 +39,8 @@ def registry_releases(registry):
 
 
 def file_release(path):
-    match = re.match(r"VideoToolboxConstants(\d+)_(\d+)\.m$", os.path.basename(path))
-    return "%s.%s" % match.groups() if match else None
+    match = re.match(r"VideoToolboxConstants(\d+(?:_\d+)+)\.m$", os.path.basename(path))
+    return match.group(1).replace("_", ".") if match else None
 
 
 def check(objects, registry):
