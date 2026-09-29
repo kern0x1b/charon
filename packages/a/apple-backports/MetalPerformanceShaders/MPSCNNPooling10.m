@@ -33,6 +33,10 @@
                         strideInPixelsX:strideInPixelsX strideInPixelsY:strideInPixelsY
                          dilationRateX:1 dilationRateY:1];
     }
+    // Outside the image is zero, not the nearest value: measured, with no edge mode set, the release
+    // answers 0.25 for the corner window of a 2x2 average over (1, 2, 3 / 4, 5, 6 / 7, 8, 9), which is
+    // the one value really there over the whole window. Clamping answers that same value four times.
+    self.edgeMode = MPSImageEdgeModeZero;
     return self;
 }
 
