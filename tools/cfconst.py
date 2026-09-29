@@ -6,6 +6,7 @@ pointer, and the bytes that name it are read through the shared reader's per-map
 symbol asked for that the image does not EXPORT is reported by name and is a FAILURE, not a silence:
 this exists to read a release's real constant values, and a name it cannot find has no value.
 """
+import struct
 import sys
 
 import dyldcache
@@ -26,16 +27,15 @@ def main():
                  % (image, ', '.join(missing)))
     for sym in wanted:
         addr = exports[sym]
-        # the __cfstring is a POINTER to the object, at the symbol's address
-        isa = cache.u32_at(addr)
-        if isa != 1:
-            sys.exit('%s: the value at 0x%08x is 0x%08x, not the isa of a __cfstring'
-                     % (sym, addr, isa))
-        flags = cache.u32_at(addr + 4)
-        length = cache.u32_at(addr + 8)
-        pointer = cache.u32_at(addr + 12) & 0xFFFFFFFFF   # the stored pointer keeps chain bits
-        text = cache.string_at(pointer)
-        print('%s\t0x%08x\t%s\t(%d bytes, flags 0x%x)' % (sym, addr, text, length, flags))
+        # the exported ADDRESS is a VARIABLE in __DATA; a 32-bit pointer there is the __cfstring, and the
+        # two are different things at different addresses - checking the variable's own contents for a
+        # __cfstring isa is reading the wrong address, which is what the first version did.
+        cfptr = cache.u32_at(addr)
+        cfo = cache.require_off(cfptr, '__cfstring for ' + sym)
+        isa, flags, chars, length = struct.unpack_from('<IIII', cache._m, cfo)
+        text = cache.string_at(chars)
+        print('%s\t0x%08x\t%s\t(%d bytes, flags 0x%x, cfstring 0x%08x)'
+              % (sym, addr, text, length, flags, cfptr))
 
 
 if __name__ == '__main__':
