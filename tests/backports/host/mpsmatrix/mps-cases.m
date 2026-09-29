@@ -93,6 +93,26 @@ static void put(const char *name, const void *bytes, size_t length)
     fflush(stdout);
 }
 
+// The batch-normalisation gradient, computed by hand from the formula in the header so the comparison
+// has a third opinion that is neither the host's nor this port's:
+//     gradGamma[c] = sum over i of dY[i][c] * (x[i][c] - mean[c]) / sqrt(variance[c] + epsilon)
+//     gradBeta[c]  = sum over i of dY[i][c]
+static void referenceGradient(const float *source, const float *incoming, const float *mean,
+                             const float *variance, float epsilon, int rows, int channels,
+                             float *gradGamma, float *gradBeta)
+{
+    for (int c = 0; c < channels; c++) {
+        double g = 0.0, b = 0.0;
+        for (int i = 0; i < rows; i++) {
+            double xhat = ((double)source[i * channels + c] - mean[c]) / sqrt((double)variance[c] + epsilon);
+            g += (double)incoming[i * channels + c] * xhat;
+            b += (double)incoming[i * channels + c];
+        }
+        gradGamma[c] = (float)g;
+        gradBeta[c] = (float)b;
+    }
+}
+
 static MPSMatrix *matrixOf(const void *values, MPSDataType type, NSUInteger rows, NSUInteger columns, NSUInteger matrices, size_t rowBytes, size_t matrixBytes)
 {
     size_t element = MPSSizeofMPSDataType(type);
@@ -562,12 +582,20 @@ static void casesBatchNormalization(void)
         normStatus = commandBuffer.status;
         normError = commandBuffer.error;
     });
+    {
+        float referenceGamma[3] = {0, 0, 0}, referenceBeta[3] = {0, 0, 0};
+        referenceGradient(&normSource[0][0], &normIncoming[0][0], &normGivenMean[0], &normGivenVariance[0],
+                          0.001f, 4, 3, referenceGamma, referenceBeta);
+        put("reference-gradient-gamma", referenceGamma, sizeof(referenceGamma));
+        put("reference-gradient-beta", referenceBeta, sizeof(referenceBeta));
+    }
     printf("gradient-status %d error %s\n", (int)normStatus, normError ? normError.localizedDescription.UTF8String : "(none)");
     fflush(stdout);
     put("batch-normalization-gradient-data", &normGradientData[0][0], sizeof(normGradientData));
     put("batch-normalization-gradient-gamma", normGradientGamma, sizeof(normGradientGamma));
     put("batch-normalization-gradient-beta", normGradientBeta, sizeof(normGradientBeta));
 }
+
 
 #pragma mark - sum
 
