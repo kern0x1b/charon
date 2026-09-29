@@ -21,6 +21,7 @@
 // an error that reads like a broken SDK rather than an include order.
 #import <dlfcn.h>
 #include "port-store-rule.h"
+#include "ASPortCredentialExchange.h"
 #import <objc/runtime.h>
 #include <objc/message.h>
 #include <stdio.h>
@@ -232,6 +233,42 @@ static int store_case(void)
         printf("  store   credential fresh user %s\n", [ask(credential, "user") UTF8String] ?: "nil");
         printf("  store   credential fresh pass %s\n", [ask(credential, "password") UTF8String] ?: "nil");
         printf("  store   credential copy  pass %s\n", [ask(credentialCopy, "password") UTF8String] ?: "nil");
+    }
+    // The context is the other half of the provider, and unlike the controller it BUILDS for the host:
+    // NSExtensionContext exists on the host, so a value comparison can reach it. What it must be asked is
+    // whether a completion was RECORDED, because a context that took the credential and dropped it would bind
+    // every method the shape check reads and still leave nothing anywhere knowing the exchange finished.
+    {
+        Class contextClass = NSClassFromString(@"PortASCredentialProviderExtensionContext");
+        if (!contextClass) { printf("  FAIL the port's provider context is not linked in\n"); return 1; }
+        id (*complete)(id, SEL, id, void (^)(BOOL)) =
+            (id (*)(id, SEL, id, void (^)(BOOL)))objc_msgSend;
+        id (*exchangeOf)(id, SEL) = (id (*)(id, SEL))objc_msgSend;
+        BOOL (*flag)(id, SEL) = (BOOL (*)(id, SEL))objc_msgSend;
+        id (*errorOf)(id, SEL, id) = (id (*)(id, SEL, id))objc_msgSend;
+        Class credentialClass = NSClassFromString(@"PortASPasswordCredential");
+        id (*make)(id, SEL, id, id) = (id (*)(id, SEL, id, id))objc_msgSend;
+        id credential = make(((id (*)(id, SEL))objc_msgSend)((id)credentialClass, sel_registerName("alloc")),
+                             sel_registerName("initWithUser:password:"), @"alice", @"correct horse");
+        id context = ((id (*)(id, SEL))objc_msgSend)((id)contextClass, sel_registerName("alloc"));
+        __block BOOL recorded = NO;
+        complete(context, sel_registerName("completeRequestWithSelectedCredential:completionHandler:"),
+                 credential, ^(BOOL expired) { recorded = expired; });
+        id exchange = exchangeOf(context, sel_registerName("lastExchange"));
+        id held = ask(exchange, "credential");
+        printf("  context  credential user  %s\n", [ask(held, "user") UTF8String] ?: "nil");
+        printf("  context  handler answered  %s\n", recorded ? "yes" : "no");
+        printf("  context  exchange flags  cancelled %s configuration %s\n",
+               flag(exchange, sel_registerName("cancelled")) ? "yes" : "no",
+               flag(exchange, sel_registerName("configurationCompleted")) ? "yes" : "no");
+        id cancelled = ((id (*)(id, SEL))objc_msgSend)((id)contextClass, sel_registerName("alloc"));
+        errorOf(cancelled, sel_registerName("cancelRequestWithError:"),
+                [NSError errorWithDomain:@"PortASProvider" code:42 userInfo:nil]);
+        id after = exchangeOf(cancelled, sel_registerName("lastExchange"));
+        NSError *afterError = (NSError *)ask(after, "error");
+        printf("  context  after cancel  cancelled %s code %ld kept %s\n",
+               flag(after, sel_registerName("cancelled")) ? "yes" : "no",
+               (long)afterError.code, afterError ? "yes" : "no");
     }
 
     printf("  store   before replace  %d identities\n", (int)self_identities(path));

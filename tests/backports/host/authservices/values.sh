@@ -63,7 +63,7 @@ renames="-DASAuthorizationRequest=PortASAuthorizationRequest \
 -DASCredentialServiceIdentifierType=PortASCredentialServiceIdentifierType \
 -DASPasswordCredentialIdentity=PortASPasswordCredentialIdentity \
 -DASCredentialIdentityStore=PortASCredentialIdentityStore \
--DASCredentialIdentityStoreState=PortASCredentialIdentityStoreState -DASPasswordCredential=PortASPasswordCredential \
+-DASCredentialIdentityStoreState=PortASCredentialIdentityStoreState -DASPasswordCredential=PortASPasswordCredential -DASCredentialProviderExtensionContext=PortASCredentialProviderExtensionContext \
 -DASCredentialIdentityStoreErrorDomain=PortASCredentialIdentityStoreErrorDomain \
 -DASCredentialIdentityStoreErrorCodeInternalError=PortASStoreErrorInternal \
 -DASCredentialIdentityStoreErrorCodeStoreDisabled=PortASStoreErrorDisabled \
@@ -75,7 +75,7 @@ export AS_CREDENTIAL_STORE_PATH CHICON_RUNS
 
 sources="ASConstants12_0.m ASConstants13_0.m ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m \
 ASAuthorizationAppleIDProvider.m ASCredentialServiceIdentifier.m ASPasswordCredentialIdentity.m \
-ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m ASPasswordCredential.m"
+ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m ASPasswordCredential.m ASPortCredentialExchange.m ASCredentialProviderExtensionContext.m"
 
 # build_and_run <source-dir> <tag>: compile the port's three sources from there under the renames, link
 # them with the test into one binary, and run it. The tag is where the table lands. It returns the
@@ -92,7 +92,10 @@ build_and_run() {
                 echo "FAIL: $from/$name did not compile"; head -5 "$build/$tag-$name.log"; return 1; }
         objects="$objects $build/$tag-$name.o"
     done
-    xcrun clang -fobjc-arc -framework Foundation -framework AuthenticationServices \
+    # -I"$from" is the port's own header directory, and values.m needs it: ASCredentialProviderExtensionContext
+    # hands out -lastExchange, and a caller that reads what came back has to be able to NAME its type, which is
+    # why the record's type lives in a port header rather than in the .m that implements it.
+    xcrun clang -fobjc-arc -I"$from" -framework Foundation -framework AuthenticationServices \
         -o "$build/$tag-values" "$here/values.m" $objects 2> "$build/$tag-link.log" || {
             echo "FAIL: the two builds did not link into one binary"; head -6 "$build/$tag-link.log"; return 1; }
     # The port's renames are what make them a second hierarchy rather than a second name: the three
@@ -279,6 +282,9 @@ run_scan_mutant() {
 run_scan_mutant provider_from_file "$here/provider.anchor" "$here/provider.repl" \
     ASCredentialProviderViewController.m \
     "a base class default that reaches for the store" || status=1
+
+run_mutant context_from_file "$here/context.anchor" "$here/context.repl" ASCredentialProviderExtensionContext.m \
+    "a cancellation that drops the error, so a failed exchange looks like one that stopped" || status=1
 
 run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m \
     "replace keeps the old identities: the set it starts from is what the store already held" || status=1

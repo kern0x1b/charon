@@ -86,7 +86,7 @@ build_library "$sources $shared" "$build/libAuthenticationServicesBackports.dyli
 echo "built:    $(ls "$package"/*.m | wc -l | tr -d ' ') AuthenticationServices sources, $(echo $shared | wc -w | tr -d ' ') shared"
 
 # 2. The cases: every class the registry carries, with the public members clang reads out of its header.
-AUTHORSERVICES_SOURCES="$package" python3 - "$registry" "$build/classes.txt" "$here/members.py" "$headers" "$sdk" <<'PYTHON'
+PORT_HEADERS="$package" AUTHORSERVICES_SOURCES="$package" python3 - "$registry" "$build/classes.txt" "$here/members.py" "$headers" "$sdk" <<'PYTHON'
 import json, os, re, subprocess, sys
 registry, out, members_py, headers, sdk = sys.argv[1:6]
 rows = []
@@ -176,8 +176,10 @@ compare() {
     python3 "$here/portshape.py" "$library" "$build/classes.txt" > "$build/$label-port.tsv" 2>"$build/$label-port.err"
     portStatus=$?
     cat "$build/$label-host.err" "$build/$label-port.err"
-    python3 - "$build/$label-host.tsv" "$build/$label-port.tsv" <<'PYTHON'
+    python3 - "$build/$label-host.tsv" "$build/$label-port.tsv" "$headers" <<'PYTHON'
+import os
 import sys
+headers = sys.argv[3]
 host, port = {}, {}
 for path, table in ((sys.argv[1], host), (sys.argv[2], port)):
     with open(path) as f:
@@ -198,6 +200,14 @@ for key in sorted(set(host) | set(port)):
         verdict = "ok" if portSays == "no" else "the port declares a member the release marks unavailable"
         if verdict != "ok":
             red += 1
+    elif hostSays == "no" and portSays == "yes" and not os.path.isfile(
+            os.path.join(headers, key[0] + ".h")):
+        # A class the PORT defines has no SDK header, and the host is not supposed to have it, so
+        # "the host says no and the port says yes" is the EXPECTED shape for such a row rather than a
+        # divergence -- the same reasoning as a must-be-unavailable member, one case further along:
+        # there is no release member to agree with. The row says which case it is, so a reader is not
+        # left guessing why nine rows that differ are called ok.
+        verdict = "ok (the port's own class: the release has no such header, so the host owes nothing)"
     else:
         verdict = "same" if hostSays == portSays else "the two sides differ"
         if verdict != "same":

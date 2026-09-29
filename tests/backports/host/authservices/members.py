@@ -98,10 +98,22 @@ def main(argv):
     if len(argv) < 3:
         raise SystemExit("usage: members.py <headers-dir> <class> [...]")
     headers, classes = argv[1], argv[2:]
+    # A class the PORT defines has its header in the port, not in the SDK, and looking only in the SDK is
+    # the same mistake the writing-selectors scan made: reading the wrong directory rather than reading
+    # the wrong thing. So a class with no SDK header is looked for in the port's own headers, and the
+    # row says which directory answered, because "this class is implemented" and "nobody read its
+    # declaration" are different claims and only one of them is a defect.
+    port_headers = os.environ.get("PORT_HEADERS", "")
     for className in classes:
         path = os.path.join(headers, className + ".h")
+        if not os.path.isfile(path) and port_headers:
+            candidate = os.path.join(port_headers, className + ".h")
+            if os.path.isfile(candidate):
+                sys.stderr.write("%s: the SDK has no header, so the port's own was read: %s\n"
+                                 % (className, candidate))
+                path = candidate
         if not os.path.isfile(path):
-            sys.stderr.write("no header for %s: %s\n" % (className, path))
+            sys.stderr.write("no header for %s: %s, and none in %s\n" % (className, path, port_headers or "(no port headers)"))
             sys.exit(1)
         node = ast_of(path)
         found = list(members_of(node, className))

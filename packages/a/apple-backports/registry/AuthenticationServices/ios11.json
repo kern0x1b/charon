@@ -47,10 +47,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "the NSExtensionContext subclass a password-manager extension completes its exchange into. Three of the header's four members are carried: -completeRequestWithSelectedCredential:completionHandler:, -completeExtensionConfigurationRequest and -cancelRequestWithError:, and each RECORDS the exchange in -lastExchange -- the credential, the error, whether it was cancelled, whether it was a configuration request, and the answer the completion handler gave about expiry -- because on a device the counterpart of a completion is the system taking the credential, and the port has no system to hand it to, so what a test can observe is what the extension decided. The fourth, -completeRequestReturningItems:completionHandler:, is declared NS_UNAVAILABLE by the release and is deliberately not implemented, which is the release's own request rather than a gap",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the method list by tests/backports/host/authservices, and the 26.2 header's four declarations read by clang's AST at ios(12.0)",
+      "facts": "facts/AuthenticationServices/ASCredentialProvider.md"
     },
     {
       "api": "ASCredentialProviderViewController",
@@ -213,6 +213,15 @@
       "effect": "the result of a finished request: -provider and -credential, both held strongly and both copied in and out, with -copyWithZone: carrying the same pair rather than copying either end -- copying an authorization must not mint a second credential claiming the same identity",
       "facts": "facts/AuthenticationServices/ASAuthorizationRequest.md",
       "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the class's members as the header declares them, read by clang's AST"
+    },
+    {
+      "api": "ASPortCredentialExchange",
+      "kind": "class",
+      "introduced": "port",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the port's own immutable record of one credential-provider exchange, and the only thing -[ASCredentialProviderExtensionContext lastExchange] hands back: the credential the extension selected, the error a cancellation carried, whether the exchange was cancelled, whether it was a configuration request, and the answer the completion handler gave about expiry. It is the port's own addition and not an Apple class -- Apple's counterpart is the SYSTEM taking the credential, which the port has no way to be -- and it is a class rather than a struct returned by value because a struct return is a stret call an ordinary message send does not describe, and because an immutable object cannot be changed by whoever holds it",
+      "source": "defined by packages/a/apple-backports/AuthenticationServices/ASPortCredentialExchange.h"
     }
   ]
 }
