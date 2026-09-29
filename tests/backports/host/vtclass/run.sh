@@ -1,4 +1,5 @@
 #!/bin/sh
+# THIS SUITE COMPARES THE CLASSES: the class exists, it conforms to the protocol the SDK declares, and each accessor is spelled as the SDK spells it and lives where the SDK puts it. The sibling videotoolbox/run.sh compares the 135 STRING CONSTANTS, which are values rather than shapes.
 # run.sh — a host differential for the port's VideoToolbox classes: the class exists, it conforms to the
 # protocol the SDK declares, every accessor is spelled the SDK spells it, and each accessor lives WHERE
 # the SDK declares it — on the class for a class property, on the instance otherwise. One mutation per
