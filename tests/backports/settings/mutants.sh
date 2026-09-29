@@ -1,6 +1,8 @@
 #!/bin/sh
 # settings/mutants.sh - every assertion of the settings check has a mutant, and every mutation has a
-# control.
+# control. How many that is, and how many of them died and how many were controls, is printed by the
+# run and not written here: a count in a file is a count no run maintains, and this file has been wrong
+# about the check's own assertion count twice today already.
 #
 # The rules, and the mutants that break them:
 #   M1  a settings value answers YES, where the release's answer is NO            (the six value answers)
