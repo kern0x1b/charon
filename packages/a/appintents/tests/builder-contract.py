@@ -103,15 +103,21 @@ def main():
                    if label else r"public static func %s\(\s*\)[^\n]*" % re.escape(member.split("(")[0]))
         m = re.search(r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
                      sources[where], re.S)
-        # the twin has to be the declaration **on this type**: `buildBlock` is declared on several
-        # builders in that interface, and the first one in the file is not this row's
-        twin = re.search(r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]),
-                         _type_block(interface, where), re.S)
+        # the twin has to be **this row's** declaration on **this type**: `buildBlock` is declared
+        # three times in that block (no argument, one variadic, one array) and on other builders
+        # entirely, so the candidate is the first one whose own external labels are the row's labels
+        want_labels = external_labels("func " + member.split("(", 1)[1].join(("(", ")"))) \
+            if "(" in member else []
+        block = _type_block(interface, where)
+        candidates = [m.group(0) for m in re.finditer(
+            r"public static func %s\(.{0,200}?(?:->|\n    )" % re.escape(member.split("(")[0]), block, re.S)]
+        twin = next((c for c in candidates if external_labels(c) == want_labels),
+                    candidates[0] if candidates else None)
         if not m:
             failures.append("%s: no static func by that name in %s" % (name, SOURCES[where]))
             continue
         decl = m.group(0)
-        want = external_labels(twin.group(0)) if twin else external_labels(member)
+        want = external_labels(twin) if twin else want_labels
         got = external_labels(decl)
         red = want != got
         if not re.search(r"@resultBuilder", sources[where]):
@@ -119,7 +125,8 @@ def main():
         if red:
             failures.append("%s: the framework's external labels are %s and this module's are %s"
                             % (name, want, got))
-        if (twin and "<" in twin.group(0)) != ("<" in decl):
+        generic_of = lambda d: bool(re.search(r"func\s+\w+\s*<", d or ""))
+        if generic_of(twin) != generic_of(decl):
             failures.append("%s: the framework's declaration is generic and this one is not, or the other way" % name)
         print("%-4s %-42s labels port=%s framework=%s" % ("RED" if red else "ok", name, got, want))
     print("checked %d row(s), %d failure(s)" % (checked, len(failures)))

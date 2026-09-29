@@ -43,7 +43,11 @@ public struct IntentItem<Value> where Value: _IntentValue {
 public enum IntentItemBuilder<Value> where Value: _IntentValue {
     public static func buildBlock() -> [IntentItem<Value>] { return [] }
 
-    public static func buildBlock(_ item: IntentItem<Value>) -> [IntentItem<Value>] { return [item] }
+    /// The framework's overload is **variadic** -- `buildBlock(_ items: AppIntents::IntentItem<Value>...)`
+    /// (arm64e-apple-ios.swiftinterface:4954) -- and the port's took a single item, which is the
+    /// difference the two-sided check found. A list is written as several items, so the caller
+    /// shapes are `buildBlock(a, b, c)` and the empty `buildBlock()`.
+    public static func buildBlock(_ items: IntentItem<Value>...) -> [IntentItem<Value>] { return items }
 
     public static func buildExpression(_ expression: IntentItem<Value>) -> IntentItem<Value> { return expression }
 
@@ -600,11 +604,14 @@ public struct IntentCurrencyAmount: Equatable, Hashable, Sendable, DisplayRepres
 public enum IntentItemSectionBuilder<Item> where Item: _IntentValue {
     public static func buildBlock() -> [IntentItemSection<Item>] { return [] }
 
-    public static func buildBlock(_ section: IntentItemSection<Item>) -> [IntentItemSection<Item>] {
-        return [section]
+    /// Both variadic overloads the framework declares for a section builder
+    /// (arm64e-apple-ios.swiftinterface:5005-5006): a list of sections, and a list of the items
+    /// inside one.
+    public static func buildBlock(_ sections: IntentItemSection<Item>...) -> [IntentItemSection<Item>] {
+        return sections
     }
 
-    public static func buildExpression(_ expression: IntentItemSection<Item>) -> IntentItemSection<Item> {
-        return expression
+    public static func buildBlock(_ items: IntentItem<Item>...) -> [IntentItemSection<Item>] {
+        return [IntentItemSection(items: items)]
     }
 }
