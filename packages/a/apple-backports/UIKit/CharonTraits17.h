@@ -248,6 +248,22 @@ typedef NS_ENUM(NSInteger, CharonTraitHome) {
     CharonTraitHomeForceTouch = 3
 };
 
+// One trait definition, written by a function rather than a static initializer because it names its class with
+// [Class class] and no initializer may send a message. index is the trait's place in the header order, which is
+// what the twenty-two are read in, whatever order the three files' +load calls happen to run in.
+#define CHARON_TRAIT(Index, ClassName, StoredName, ValueKind, Home, Default, Appearance)                                                 \
+    static CharonTraitDefinition charon_held_##ClassName;                                                                               \
+    static void charon_define_##ClassName(void)                                                                                        \
+    {                                                                                                                                   \
+        charon_held_##ClassName.trait = [ClassName class];                                                                             \
+        charon_held_##ClassName.name = StoredName;                                                                                     \
+        charon_held_##ClassName.kind = ValueKind;                                                                                      \
+        charon_held_##ClassName.home = Home;                                                                                           \
+        charon_held_##ClassName.defaultValue = Default;                                                                                \
+        charon_held_##ClassName.affectsColorAppearance = Appearance;                                                                   \
+        charon_register_trait_definition(Index, &charon_held_##ClassName);                                                             \
+    }
+
 typedef struct {
     __unsafe_unretained Class trait;
     __unsafe_unretained NSString *name;
@@ -257,9 +273,29 @@ typedef struct {
     BOOL affectsColorAppearance;
 } CharonTraitDefinition;
 
+// The reader a trait collection's own description asks the trait table through, defined in
+// UITraitCollection+TraitStore.m and registered by UITrait17.m's +load. It is declared here because two files
+// need it and a definition is not a declaration.
+typedef NSString *(*CharonTraitValueReader)(UITraitCollection *collection, NSString *name, BOOL *known,
+                                            BOOL *isDefault);
+void charon_add_trait_value_reader(CharonTraitValueReader reader);
+
+// The reader itself, defined in UITraitCollection+TraitStore.m. It is declared here because the file that
+// registers it is not the file that defines it, and +load may name a C function whatever the categories' +load
+// ordering is.
+NSString *charon_read_trait_value(UITraitCollection *collection, NSString *name, BOOL *known, BOOL *isDefault);
+
+// How many traits the port carries: the twenty-two that UIKit.h and the three environment headers declare. It is
+// here and not in a file because two files need it - the table they are registered into, and the list the header's
+// order produces - and a #define in one of them is a name the other cannot see.
+#define CHARON_TRAIT_COUNT 22
+
 // The definition of a trait class, or NULL when the class is not one this port carries. The twenty-two are
-// registered by UITrait17.m's +load, so a lookup before the runtime has run its +load calls answers NULL and the
-// caller raises the way UIKitCore does.
+// registered by the three files that carry them, one per release, so a lookup before the runtime has run their
+// +load calls answers NULL and the caller raises the way UIKitCore does. index is the trait's place in the header
+// order, which is what the twenty-two are read in, whatever order the three +load calls happen to run in.
+void charon_register_trait_definition(int index, const CharonTraitDefinition *definition);
+
 const CharonTraitDefinition *charon_trait_definition(Class trait);
 
 // The twenty-two classes, in the order UITrait.h and the three environment headers declare them, which is the
@@ -281,6 +317,47 @@ static inline NSString *charon_trait_public_name(const CharonTraitDefinition *de
     if (prefix.location == NSNotFound)
         return identifier;
     return [identifier substringFromIndex:NSMaxRange(prefix)];
+}
+
+// What a trait class says about itself, which is all it has: the class's own name, that name without the UITrait
+// prefix, whether the trait decides how a dynamic colour resolves, and the value a collection that sets none of
+// it has, read through the type the trait's own protocol declares. All four are read from the table, so a trait
+// class in any of the three files answers the same four the same way (M1).
+static inline NSString *charon_identifier_of(Class trait)
+{
+    return NSStringFromClass(trait);
+}
+
+static inline NSString *charon_trait_name_of(Class trait)
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    return definition ? charon_trait_public_name(definition) : NSStringFromClass(trait);
+}
+
+static inline BOOL charon_appearance_of(Class trait)
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    return definition ? definition->affectsColorAppearance : NO;
+}
+
+static inline NSInteger charon_integer_default_of(Class trait)
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    if (!definition || !definition->defaultValue)
+        return -1;
+    return [definition->defaultValue integerValue];
+}
+
+static inline CGFloat charon_cgfloat_default_of(Class trait)
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    return definition && definition->defaultValue ? (CGFloat)[definition->defaultValue doubleValue] : 0;
+}
+
+static inline id charon_object_default_of(Class trait)
+{
+    const CharonTraitDefinition *definition = charon_trait_definition(trait);
+    return definition ? definition->defaultValue : nil;
 }
 
 // Whether a collection says nothing about a trait, which is what makes an absent value the trait's default
