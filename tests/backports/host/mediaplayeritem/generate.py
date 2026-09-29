@@ -17,7 +17,10 @@ import os
 import pathlib
 import sys
 
-# (property, type, getter, key) - the single list for this group.
+# (property, type, getter, key) - the single list for this group. 7.0 was hand-written before the
+# generator existed and is here now, so one writer emits every group and none is typed twice.
+GROUP_70 = [("albumTrackNumber", "NSUInteger", "albumTrackNumber", "albumTrackNumber"),
+            ("discNumber", "NSUInteger", "discNumber", "discNumber")]
 GROUP_80 = [
     ("albumPersistentID", "MPMediaEntityPersistentID", "albumPersistentID", "albumPersistentID"),
     ("artistPersistentID", "MPMediaEntityPersistentID", "artistPersistentID", "artistPersistentID"),
@@ -44,9 +47,19 @@ GROUP_100 = [("dateAdded", "NSDate *", "dateAdded", "dateAdded"),
 GROUP_103 = [("playbackStoreID", "NSString *", "playbackStoreID", "playbackStoreID"),
              ("preorder", "BOOL", "isPreorder", "preorder")]
 
-GROUPS = {80: GROUP_80, 92: GROUP_92, 100: GROUP_100, 103: GROUP_103}
+# The property-key constants, each the same-named string: the header declares them NSString * const and
+# the dictionary is keyed by the property's name, so a constant that named anything else would name a key
+# nothing reads. The release each arrived in is its own group's, per the header's MP_API.
+CONSTANTS = {70: [], 80: [], 92: [], 100: [], 103: [], 145: []}
+# MPMediaItemPropertyIsExplicit is 7.0 and MPMediaItemPropertyIsPreorder is 14.5, so each needs a group
+# of its own rather than a neighbour's file: one object, one release, per band()'s own rule.
+GROUP_145 = []
+CONSTANTS[145] = [("MPMediaItemPropertyIsPreorder", "preorder")]
+
+GROUPS = {70: GROUP_70, 80: GROUP_80, 92: GROUP_92, 100: GROUP_100, 103: GROUP_103, 145: GROUP_145}
 # The file and the table are named for the release without its dot; the header line quotes it with.
-LABEL = {80: "8.0", 92: "9.2", 100: "10.0", 103: "10.3"}
+LABEL = {70: "7.0", 80: "8.0", 92: "9.2", 100: "10.0", 103: "10.3", 145: "14.5"}
+
 
 # How each type is read out of the property dictionary. A type with no entry is not carried.
 CONVERSION = {
@@ -87,9 +100,14 @@ HEADER = """// MPMediaItem's %(count)d %(release)s members, the ones this releas
 @interface MPMediaItem (Charon%(name)s)
 %(declarations)s@end
 
+// The property-key constants this release declares, each the same-named string, so a caller can spell a
+// key the way Apple spells it.
+%(constants_decl)s
 @implementation MPMediaItem (Charon%(name)s)
 
-%(bodies)s@end
+%(bodies)s%(constants_def)s@end
+
+#undef MPMediaItemPropertyKey
 """
 
 
@@ -97,6 +115,10 @@ def emit(release, members, root):
     label = LABEL[release]
     library = os.path.join(root, "packages", "a", "apple-backports", "MediaPlayer", "MPMediaItem%s.m" % release)
     declarations, bodies = [], []
+    constants = CONSTANTS.get(release, [])
+    constants_decl = "".join('@property (class, nonatomic, readonly) NSString * %s;\n' % c for c, _k in constants)
+    constants_def = "".join(
+        '+ (NSString *)%s { return @"%s"; }\n' % (c, k) for c, k in constants)
     for name, kind, getter, key in members:
         if kind not in CONVERSION:
             raise SystemExit("%s has type %s, which this generator cannot read" % (name, kind))
@@ -105,7 +127,8 @@ def emit(release, members, root):
                       % (kind, getter, CONVERSION[kind] % key))
     with open(library, "w") as out:
         out.write(HEADER % {"count": len(members), "release": label, "name": release,
-                            "declarations": "".join(declarations), "bodies": "".join(bodies)})
+                            "declarations": "".join(declarations), "bodies": "".join(bodies),
+                            "constants_decl": constants_decl, "constants_def": constants_def})
 
     table = os.path.join(root, "tests", "backports", "host", "mediaplayeritem", "members%s.h" % release)
     with open(table, "w") as out:

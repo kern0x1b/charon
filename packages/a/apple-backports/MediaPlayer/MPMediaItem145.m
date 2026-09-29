@@ -1,4 +1,4 @@
-// MPMediaItem's 1 9.2 members, the ones this release does not have at all.
+// MPMediaItem's 0 14.5 members, the ones this release does not have at all.
 //
 // Generated from the one list in tests/backports/host/mediaplayeritem/generate.py, with the facts rows
 // and the host check's table, so the three cannot drift. Do not edit by hand: change the list and run the
@@ -12,8 +12,8 @@
 // dictionary, a real item is answered by the release, and a category on the public class clobbers nothing
 // because a subclass's own method wins over a category on its public ancestor.
 //
-// Split by introduced release, per band()'s own rule: this file holds the 1 the 26.2 header
-// declares MP_API(ios(9.2)).
+// Split by introduced release, per band()'s own rule: this file holds the 0 the 26.2 header
+// declares MP_API(ios(14.5)).
 
 #import <Foundation/Foundation.h>
 #if defined(CHARON_MEDIAPLAYER_STANDIN)
@@ -24,19 +24,16 @@
 #import <MediaPlayer/MediaPlayer.h>
 #endif
 
-@interface MPMediaItem (Charon92)
-@property (nonatomic, readonly) BOOL protectedAsset;
+@interface MPMediaItem (Charon145)
 @end
 
 // The property-key constants this release declares, each the same-named string, so a caller can spell a
 // key the way Apple spells it.
+@property (class, nonatomic, readonly) NSString * MPMediaItemPropertyIsPreorder;
 
-@implementation MPMediaItem (Charon92)
+@implementation MPMediaItem (Charon145)
 
-- (BOOL)hasProtectedAsset {
-    return [[self valueForProperty:@"hasProtectedAsset"] boolValue];
-}
-
++ (NSString *)MPMediaItemPropertyIsPreorder { return @"preorder"; }
 @end
 
 #undef MPMediaItemPropertyKey

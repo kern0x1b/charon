@@ -29,6 +29,9 @@
 @property (nonatomic, readonly) BOOL preorder;
 @end
 
+// The property-key constants this release declares, each the same-named string, so a caller can spell a
+// key the way Apple spells it.
+
 @implementation MPMediaItem (Charon103)
 
 - (NSString *)playbackStoreID {
@@ -40,3 +43,5 @@
 }
 
 @end
+
+#undef MPMediaItemPropertyKey
