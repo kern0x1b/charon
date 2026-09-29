@@ -170,7 +170,9 @@ static void port_store_send(id receiver, SEL selector, id first, void (^completi
  * This is the one case in this file that writes, and it writes the PORT's store -- a property list under
  * .agent-work/runs/, named by AS_CREDENTIAL_STORE_PATH -- and never the host's. The host's store is not
  * written at any point in this family: its four writing methods change the user's AutoFill state on this
- * Mac, and host-write-guard.sh refuses to start if a probe so much as names one. The store is read back
+ * Mac, and host-write-guard.py requires every writing selector in a harness source to be inside the
+ * chokepoint, while the runtime rule in port-store-rule.h refuses the host's class outright. The store is
+ * read back
  * from its own file because the header has no getter for the identities: there is no public way to ask
  * a credential identity store what it holds, which is itself a fact about it worth knowing.
  */

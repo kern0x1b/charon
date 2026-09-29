@@ -64,16 +64,26 @@ holds. The writing half's behaviour is documented from the header, and the port'
 runs against the port's own store, whose property list lives under `.agent-work/runs/` and never in
 `~/Library`.
 
-`tests/backports/host/authservices/host-write-guard.sh` greps the host probe for the four names before
-anything is built and refuses to start if any of them appears, and `values.sh` runs it first. Before
-this round's first run:
+Two things enforce that, and they are different in kind, so they are worth telling apart.
 
-    saveCredentialIdentities                    values.m 0
-    removeCredentialIdentities                  values.m 0
-    replaceCredentialIdentitiesWithIdentities   values.m 0
-    removeAllCredentialIdentities               values.m 0
+**The runtime refusal.** Every store write in the probe goes through one chokepoint,
+`port_store_send()` in `values.m`, which reads the receiver's class name out of the runtime and refuses
+anything the harness has not renamed to the port's, aborting with the selector and the class it was
+about to be sent to. `port-store-rule.h` holds the predicate and
+`tests/backports/host/authservices/port-store-selftest.m` asks the same predicate about **this Mac's own**
+`ASCredentialIdentityStore` class object, with the four selectors as strings and nothing sent:
 
-and the port's own sources, which are the only place any of them is called: 5, 2, 2, 2.
+    this machine's class is ASCredentialIdentityStore, the rule's prefix is "Port"
+    saveCredentialIdentities:completion:                   refused
+    removeCredentialIdentities:completion:                 refused
+    removeAllCredentialIdentitiesWithCompletion:           refused
+    replaceCredentialIdentitiesWithIdentities:completion:  refused
+    0 of the four would have been allowed against this machine's store
+
+This is the half that protects the machine, and it does not depend on reading any source.
+
+Before this round's first run the four names appeared in `values.m` 0 times, and in the port's own
+sources — the only place any of them is called — 5, 2, 2, 2.
 
 ## What the port's store does, and where it differs from the system one
 

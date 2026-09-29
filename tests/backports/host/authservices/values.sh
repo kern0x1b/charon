@@ -28,8 +28,19 @@ mutate=${1:-}
 mkdir -p "$build"
 
 # Before anything is built or run: the host half must not name any of the four methods that write this
-# Mac's AutoFill state. See host-write-guard.sh -- the rule is that the host's side of this family is
-# read-only and the writing half is documented from the header, not measured here.
+# Mac's AutoFill state. Two halves, and they are different in kind, so they are named separately:
+#
+#   the STATIC half   host-write-guard.py walks the probe's statements and requires every writing
+#                     selector to be dispatched inside one chokepoint, port_store_send(), or inside the
+#                     table that chokepoint compares against, and nowhere else. It is a reader, and it
+#                     is here to catch a send made anywhere else; it is NOT what stands between this
+#                     machine and its AutoFill state, because a probe sends selectors as strings
+#                     through a cast objc_msgSend and a reader cannot see that.
+#   the RUNTIME half  port-store-selftest.m asks the predicate the chokepoint uses -- the receiver's
+#                     class name out of the runtime -- about this Mac's own
+#                     ASCredentialIdentityStore class object, with the four selectors as strings and
+#                     nothing sent. This is the half that protects the machine, and it does not depend
+#                     on reading any source.
 python3 "$here/host-write-guard.py" "$here/values.m" "$here/hostshape.c"
 
 # One -D list, used by every build of the port: the three classes it implements, and the one key it owns.
