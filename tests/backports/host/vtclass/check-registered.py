@@ -116,6 +116,19 @@ def main():
                     for kind, api in sorted(entries - registered)]
     orphan = ["registered, but not built: %s (%s)" % (api, kind)
               for kind, api in sorted(registered - entries)]
+    # A SECOND COUNT, INDEPENDENT of members_of(), so a shared blind spot cannot hide again. This is
+    # grep over the header - a different tool, a different rule, the same question - and the two must
+    # agree or the stand-in fails. It is how the seventeen missing method rows were found: members_of()
+    # found no initialiser, so it recorded none, so the comparison agreed with itself.
+    header = open(os.path.join(VT_DIR, "CharonVideoToolbox.h")).read()
+    grepped = len(re.findall(r'^[+-]\s*\([^)]*instancetype[^)]*\)\s*init\w*[:\w]*', header, re.M))
+    declared = len(registry["method"])
+    print("  initialisers: the header says %d, the registry records %d" % (grepped, declared))
+    if grepped != declared:
+        print("FAIL a shared blind spot: %d initialisers in the header, %d rows. Two counts of one fact "
+              "disagree, so one of them is wrong and neither can be trusted." % (grepped, declared))
+        return 1
+
     missing = report("built, but no entry in registry", unregistered)
     extra = report("registered, but not built", orphan)
     if control:

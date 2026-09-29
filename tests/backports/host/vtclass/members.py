@@ -25,7 +25,12 @@ FOUR THINGS IT GETS RIGHT, each of which cost a wrong answer before:
   `CHARON_VALUE_PROPERTY(CVPixelBufferRef, buffer)` both implement the property `buffer`; reading either
   as a method is how sixteen properties were reported missing while a row for each existed.
 
-  THE CLASS ITSELF IS A ROW, and its initialisers are rows named the SDK spells them.
+  THE CLASS ITSELF IS A ROW, and its initialisers are rows named the SDK spells them. The pattern accepts
+  whatever the header puts between the parens and the selector - SDK 26.2 writes
+  `- (nullable instancetype)initWith…` - because a pattern insisting the return type comes first finds
+  NO initialiser at all, and then the registry has seventeen classes, no method rows, and a stand-in
+  that AGREES with it because both sides come from here. One derivation removes disagreement and can hide
+  a shared omission; check-registered.py counts initialisers a second way and fails when the two differ.
 """
 import os
 import re
@@ -40,7 +45,7 @@ HEADER = os.path.join(VT_DIR, "CharonVideoToolbox.h")
 TEMPLATE_CLASS = "VTMotionBlurConfiguration"
 TEMPLATE_FILE = "VideoToolboxValue26.m"
 
-INITIALISER = re.compile(r'^-\s*\(\s*instancetype\s*\)(initWith\w[\w:]*)', re.M)
+INITIALISER = re.compile(r'^[+-]\s*\([^)]*instancetype[^)]*\)\s*(init\w*[:\w]*)', re.M)
 PROPERTY_ROW = re.compile(r'@property\s*\(([^)]*)\)\s*[^;]*?\s(\w+)\s*(?:[A-Z_][A-Z_0-9]*\s*(?:\([^)]*\))?)?;', re.S)
 MACRO_ACCESSOR = re.compile(r'CHARON_\w+_PROPERTY\((.*)\)', re.S)
 HAND_ACCESSOR = re.compile(r'([-+])\s*\([^)]*\)\s*(\w+)')
