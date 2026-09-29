@@ -11,6 +11,13 @@
     UIMenuElementAttributes _attributes;
     UIMenuElementState _state;
     UIActionHandler _handler;
+    // The three the host's own UIAction carries and a menu built by the host's machinery sets on an action it is
+    // about to show. Measured on the host, in probe-uiaction.m, before implementing: each is what the caller
+    // set, a second set replaces, nil clears an object and no - the selected image is held by reference and not
+    // copied, and the subtitle is copied as the header declares.
+    NSString *_subtitle;
+    UIImage *_selectedImage;
+    UIActionRepeatBehavior _repeatBehavior;
 }
 
 @dynamic sender, presentationSourceItem;
@@ -165,6 +172,51 @@
         [text appendFormat:@"; attributes = %@", charon_menu_attributes_text(_attributes)];
     [text appendString:@">"];
     return text;
+}
+
+
+// The handler, which the port stores from the initializer and which the host lets a caller replace: measured, a
+// second -setHandler: replaces the first and the getter reads back what was last set.
+- (UIActionHandler)handler
+{
+    return _handler;
+}
+
+- (void)setHandler:(UIActionHandler)handler
+{
+    _handler = [handler copy];
+}
+
+- (NSString *)subtitle
+{
+    return _subtitle;
+}
+
+- (void)setSubtitle:(NSString *)subtitle
+{
+    _subtitle = [subtitle copy];
+}
+
+// Held by reference and not copied: the host's -setSelectedImage: answers the very image it was given, and
+// nil clears it.
+- (UIImage *)selectedImage
+{
+    return _selectedImage;
+}
+
+- (void)setSelectedImage:(UIImage *)selectedImage
+{
+    _selectedImage = selectedImage;
+}
+
+- (UIActionRepeatBehavior)repeatBehavior
+{
+    return _repeatBehavior;
+}
+
+- (void)setRepeatBehavior:(UIActionRepeatBehavior)repeatBehavior
+{
+    _repeatBehavior = repeatBehavior;
 }
 
 @end
