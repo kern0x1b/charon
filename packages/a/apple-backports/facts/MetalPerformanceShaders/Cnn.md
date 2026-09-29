@@ -319,3 +319,38 @@ standard sixteen** — not sixty-four distinct, which is unaskable.
 The host has not been run on these inputs yet: the program was written and did not compile in the
 time left, so no fixture is committed and no host answer is claimed. The design and the check are
 recorded here so the next turn writes the program against them.
+
+### The separating probe, run: no variant of the family is the host's formula
+
+`tests/backports/host/mpsmatrix/fixtures/gradient-separating.m` runs on inputs where the given and
+batch statistics differ, and it **passes its own two-part check first**: the sixteen standard-form
+variants are all distinct from each other (0 collisions), and the plain and axis forms are all distinct
+from the standard ones (0 collisions). So the family separates and the host is inside the search.
+
+The host's data gradient at element (0, 0) is `0.778845072`, and **none of the sixty-four variants
+equals it.** The sixteen standard-form values run from `-3.327` to `1.886`:
+
+     -3.327  mean given, var batch, gamma with,  agg sum,   axis vectors
+     -3.007  mean given, var batch, gamma without, agg mean,  axis vectors
+     -2.493  mean given, var given, gamma with,  agg sum,   axis vectors
+     -2.219  mean given, var given, gamma without, agg sum,  axis vectors
+     -2.005  mean given, var given, gamma without, agg mean,  axis vectors
+     -1.674  mean given, var batch, gamma with,  agg mean,  axis vectors
+     -1.663  mean given, var given, gamma with,  agg sum,   axis vectors
+     -1.117  mean given, var given, gamma with,  agg mean,  axis vectors
+      0.569  mean batch, var given, gamma without, agg sum,  axis vectors
+      0.623  mean batch, var given, gamma without, agg mean,  axis vectors
+      0.779  **the host** - no variant
+      0.854  mean batch, var batch, gamma without, agg sum,  axis vectors
+      0.934  mean batch, var batch, gamma without, agg mean,  axis vectors
+      1.121  mean batch, var given, gamma with,    agg sum,   axis vectors
+      1.257  mean batch, var given, gamma with,    agg mean,  axis vectors
+      1.681  mean batch, var batch, gamma with,    agg sum,   axis vectors
+      1.886  mean batch, var batch, gamma with,    agg mean,  axis vectors
+
+So the host's data gradient is not this family at all - not the standard formula under any of the mean,
+variance, gamma or aggregation choices, not the same over the other axis, and not the plain
+`gamma/sigma * dY` with no mean terms. **The port's `gradient-data` stays unclaimed**, exactly as
+the untouched per-parameter vectors do: the port writes the header's formula, the host writes something
+else that no variant here reproduces, and no case should be marked matching on a guess. The probe is the
+fixture, and it re-runs the whole search and the two-part check in one program.
