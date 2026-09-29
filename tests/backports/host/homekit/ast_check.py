@@ -235,6 +235,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 RUNS = os.path.join(_worktree_root(HERE), ".agent-work", "runs", "homekit")
 
 
+PARSE_ERRORS = []
+
+
 def ast(root, name):
     """clang's filtered AST for one class, as a list of documents."""
     command = [
@@ -253,8 +256,14 @@ def ast(root, name):
     ]
     result = subprocess.run(command, capture_output=True, text=True)
     if result.returncode != 0:
-        sys.stderr.write(result.stderr)
-        raise SystemExit("clang failed for %s in %s" % (name, root))
+        # A parse that failed is RED, named by its first error line, and never a traceback and never a
+        # missing member: ast() returning no documents for a file that would not parse looks exactly like
+        # a class that binds nothing, and that is how a broken scratch copy gets read as a result.
+        first = next((line for line in result.stderr.splitlines() if " error:" in line), None)
+        PARSE_ERRORS.append((root, first or result.stderr.splitlines()[0]
+                             if result.stderr.splitlines() else "clang failed with no diagnostic"))
+        return []
+    PARSE_ERRORS[:] = [e for e in PARSE_ERRORS if e[0] != root]
     raw = result.stdout
     decoder = json.JSONDecoder()
     documents = []
@@ -400,22 +409,101 @@ SETUP_CLASSES = {
         "11.3": "HMAccessorySetupPayload11_3.m",
         "13.0": "HMAccessorySetupPayload13_0.m",
     },
+    "HMAccessorySetupManager": {
+        "class": "15.0",
+        "15.0": "HMAccessorySetupManager15_0.m",
+    },
+    "HMAccessorySetupRequest": {
+        "class": "15.4",
+        "15.4": "HMAccessorySetupRequest15_4.m",
+    },
+    "HMAccessorySetupResult": {
+        "class": "15.4",
+        "15.4": "HMAccessorySetupResult15_4.m",
+    },
 }
 
-HEADER_OF_CLASS = {"HMAccessorySetupPayload": "HMAccessorySetupPayload.h"}
+# The protocols each setup class conforms to, and what those protocols require of it. A protocol method
+# is NOT a foreign member: the header's own class declaration says NSObject<NSCopying>, and a port that
+# did not bind -copyWithZone: would not be conforming. A protocol's requirements are not ObjCMethodDecls
+# of the class, so comparing method decls alone called the port's own -copyWithZone: a foreign member --
+# and the first run over HMAccessorySetupResult went red on exactly the method its conformance demands.
+SETUP_PROTOCOLS = {
+    "HMAccessorySetupRequest": {"NSCopying": ("-copyWithZone:",)},
+    "HMAccessorySetupResult": {"NSCopying": ("-copyWithZone:",)},
+}
+
+# Members the release declares and the port does NOT bind, each with the owner class and the reason.
+# They are listed rather than left out, because a member the check does not mention is a member nothing
+# looked at, and "absent because the hardware is not here" has to be re-checkable like any other row.
+# The one entry is hardware: a real accessory has to be physically present, and the system's setup UI is
+# what launches the pairing. matterPayload is NOT here -- it is storage, the port holds the object and
+# reads it back, and drawing the line at the slot that holds a payload would leave a header property
+# unsynthesised and a member of the release's surface answered with nothing.
+# KEYED BY THE SIGNED SELECTOR AND NOTHING ELSE -- the same string `members` is keyed by, so that
+# `expected -= absent` means anything. Two other forms were tried and both fail SILENTLY: the bare member
+# name lacks the sign, and the documented "-[Cls member]" spelling carries a class name and a space. Both
+# produce the same misleading symptom, which is an assertion saying the header does not declare a member
+# the header plainly declares, while the dict consulted is the right one and only the key is wrong.
+SETUP_ABSENT = {
+    "-performAccessorySetupUsingRequest:completionHandler:": "HMAccessorySetupManager",
+}
+
+SETUP_ABSENT_WHY = {
+    "-performAccessorySetupUsingRequest:completionHandler:":
+        "HARDWARE: it adds an accessory that is physically present, over HomeKit's own transport to it",
+
+}
+
+HEADER_OF_CLASS = {
+    "HMAccessorySetupPayload": "HMAccessorySetupPayload.h",
+    "HMAccessorySetupManager": "HMAccessorySetupManager.h",
+    "HMAccessorySetupRequest": "HMAccessorySetupRequest.h",
+    "HMAccessorySetupResult": "HMAccessorySetupResult.h",
+}
 
 MANGLED_SELECTOR = re.compile(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*\s+")
 
 
 def selector_of(mangled):
-    """The selector out of a mangled method name: -[Cls initWithURL:ownershipToken:] -> the selector,
-    with its colons, and the leading sign kept so a class method is not read as an instance one."""
+    """The selector out of a mangled method name, for BOTH shapes clang writes.
+
+    -[Cls initWithURL:ownershipToken:]  and  -[Cls payload]  are spelled differently, and the difference
+    is one space: a mangled name with a selector that takes arguments has a space after the class name,
+    and one that takes none has a closing bracket in its place. A pattern that requires the space reads
+    every argument-less selector as "payload]" -- with the bracket still on it -- and that is not a
+    cosmetic difference, because the header's members are named by property_accessors() WITHOUT it: the
+    two spellings of one member then disagree, the property-derived one is expected and never found, and
+    a correct port is reported as binding nothing at all. The leading sign is kept, so a class method is
+    not read as an instance one.
+    """
     if not mangled:
         return None
-    stripped = MANGLED_SELECTOR.sub("", mangled)
-    if stripped == mangled:
+    match = re.match(r"^[-+]\[[A-Za-z_][A-Za-z0-9_]*[\s\]]+(.*)$", mangled)
+    if not match:
         return None
-    return ("-" if mangled.startswith("-") else "+") + stripped
+    body = match.group(1)
+    if body.endswith("]"):
+        body = body[:-1]
+    return mangled[0] + body
+
+
+def self_test_selector_of():
+    """The helper's own control, on both spellings, printed so a run shows it was exercised."""
+    cases = [
+        ("-[HMAccessorySetupPayload initWithURL:ownershipToken:]", "-initWithURL:ownershipToken:"),
+        ("-[HMAccessorySetupRequest payload]", "-payload"),
+        ("+[HMAccessorySetupResult new]", "+new"),
+        ("-[HMAccessorySetupResult(CharonHomeKitSetup) charon_initWithHomeIdentifier:]", None),
+    ]
+    wrong = []
+    for mangled, want in cases:
+        got = selector_of(mangled)
+        if want is not None and got != want:
+            wrong.append("%s gave %s, wanted %s" % (mangled, got, want))
+    print("  self-test: selector_of on a with-arguments and an argument-less name: %s"
+          % ("ok" if not wrong else "; ".join(wrong)))
+    return wrong
 
 
 def header_line(header, line):
@@ -445,7 +533,10 @@ def stage(scratch, class_name):
     """
     global PORT_INCLUDE
     source = PORT_HEADER_DIR or PORT_INCLUDE
-    for name in objects_of(class_name).values():
+    # EVERY class's objects, not just the one being mutated: compare_setup runs over all of them, and a
+    # scratch directory holding only the mutated class's objects leaves the other classes' lookups failing
+    # on a missing file -- which reads as a check that cannot fail rather than as a broken mutant.
+    for name in sorted({o for c in SETUP_CLASSES for o in objects_of(c).values()}):
         with open(os.path.join(source, name)) as handle:
             with open(os.path.join(scratch, name), "w") as out:
                 out.write(handle.read())
@@ -489,16 +580,55 @@ def objects_of(class_name):
     return {k: v for k, v in objects.items() if k != "class"}
 
 
+def property_accessors(name, text, readonly):
+    """The selectors a header @property requires: its getter, and unless it is readonly its setter.
+
+    Two things make this necessary rather than clever, and both were measured on this clang's JSON dump
+    rather than assumed. A property's GETTER is emitted as an ObjCMethodDecl of the class, so a check on
+    method decls alone already sees it; its SETTER is not emitted at all unless something calls it. So the
+    setter of a readwrite property is a member the port must bind and the header's AST never mentions,
+    and comparing method decls alone calls it a FOREIGN member -- which is how -setSuggestedAccessoryName:
+    came to be reported on HMAccessorySetupRequest as something the port had no business binding. The
+    names are the property's own with a custom getter=/setter= read off the header line, because that is
+    where the header writes them: this clang carries no getterName or setterName key for either.
+    """
+    getter = re.search(r"getter\\s*=\\s*([A-Za-z_][A-Za-z0-9_]*)", text)
+    setter = re.search(r"setter\\s*=\\s*([A-Za-z_][A-Za-z0-9_]*:?)", text)
+    selectors = ["-" + (getter.group(1) if getter else name)]
+    if not readonly:
+        selectors.append("-" + (setter.group(1) if setter else "set%s:" % (name[0].upper() + name[1:])))
+    return selectors
+
+
 def header_methods(class_name, header):
     """{selector: {"release", "unavailable", "line"}} for one class, from the header's own lines.
 
     The header is compiled for the check's own target, so the members arrive through the port file's
     import tagged with the SDK file by includedFrom -- the same join the property check above uses, and
     the same reason: one dump carries both sides and the file each came from is what tells them apart.
+
+    A @property contributes its accessors as members in their own right, at the property's own line, so
+    that a setter the header's AST does not emit is still something the port has to bind and the check
+    has to name.
     """
     found = {}
 
     def walk(node):
+        if node.get("kind") == "ObjCPropertyDecl":
+            # The property side of the join, and it has to come FIRST: a property's accessors are members
+            # of the class, and a class whose members the check cannot name is a class nothing looked at.
+            loc = node.get("loc") or {}
+            source = ((loc.get("includedFrom") or {}).get("file", "") if isinstance(
+                loc.get("includedFrom"), dict) else "")
+            name = node.get("name")
+            if name and loc.get("line") and source and os.path.realpath(source).startswith(
+                    os.path.realpath(HM_HEADERS) + os.sep):
+                text = header_line(header, loc["line"])
+                release, unavailable = release_of(text)
+                for selector in property_accessors(name, text, bool(node.get("readonly"))):
+                    found.setdefault(selector, []).append(
+                        {"release": release, "unavailable": unavailable, "line": loc["line"],
+                         "accessor_of": name})
         if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
             selector = selector_of(node.get("mangledName", ""))
             loc = node.get("loc") or {}
@@ -521,9 +651,36 @@ def header_methods(class_name, header):
 
     # The header's members arrive through the port file's own import, so the dump that carries both
     # sides is the 11.3 object's -- the oldest of the two, so the class's own release is the one in it.
-    for document in ast(os.path.join(PORT_INCLUDE, objects_of(class_name)["11.3"]), class_name):
+    # The header's members are read through ONE of the port's own files, and it is the OLDEST object of
+    # the class -- whichever release that object happens to be called. Hardcoding the payload's own "11.3"
+    # found the other three classes' objects nowhere, and a class whose header cannot be read is a class
+    # the comparison says nothing about.
+    oldest = sorted(objects_of(class_name).items())[0][1]
+    for document in ast(os.path.join(PORT_INCLUDE, oldest), class_name):
         walk(document)
     return {selector: entries[0] for selector, entries in found.items()}
+
+
+def header_properties(class_name):
+    """{name: {"line", "readonly", "text"}} for the header's own properties of one class."""
+    header = HEADER_OF_CLASS.get(class_name)
+    found = {}
+    if not header:
+        return found
+
+    def walk(node):
+        if node.get("kind") == "ObjCPropertyDecl" and from_sdk(node.get("loc") or {}):
+            loc = node.get("loc") or {}
+            if node.get("name") and loc.get("line"):
+                found[node["name"]] = {"line": loc["line"], "readonly": bool(node.get("readonly")),
+                                       "text": header_line(header, loc["line"])}
+        for child in node.get("inner", []):
+            walk(child)
+
+    oldest = sorted(objects_of(class_name).items())[0][1]
+    for document in ast(os.path.join(PORT_INCLUDE, oldest), class_name):
+        walk(document)
+    return found
 
 
 def port_methods(class_name, object_name):
@@ -536,7 +693,30 @@ def port_methods(class_name, object_name):
     """
     found = {}
 
+    # The header's properties, read BEFORE the walk: an ObjCPropertyImplDecl names its property, and a
+    # property is where "readonly" and a custom getter= or setter= actually live -- but the header's
+    # property decls are emitted AFTER the @implementation in the dump, so collecting them in the same
+    # walk leaves the map empty at the moment it is needed and every synthesised accessor is silently
+    # dropped. Read first, then walk.
+    declared = header_properties(class_name)
+
     def walk(node):
+        if node.get("kind") == "ObjCPropertyImplDecl":
+            # A @synthesize -- explicit or automatic -- IS the binding. This is the port-side twin of the
+            # header-side gap: clang emits a property's getter only where something references it, and the
+            # accessor methods themselves are absent from the dump for a synthesised property nothing
+            # calls, so reading only ObjCMethodDecl called two of the request's four setters and the
+            # result's readonly getter "not bound" on a port that binds them. The SAME property_accessors
+            # the header side uses derives the names, so the two sides cannot drift apart, and a property
+            # with no header declaration contributes nothing: a member counts as bound only through an
+            # ObjCPropertyImplDecl of THIS object or an explicit method below.
+            decl = node.get("propertyDecl") or {}
+            name = decl.get("name") or node.get("name")
+            info = declared.get(name)
+            if name and info is not None:
+                line = (node.get("loc") or {}).get("line")
+                for selector in property_accessors(name, info["text"], info["readonly"]):
+                    found.setdefault(selector, line)
         if node.get("kind") in ("ObjCMethodDecl", "ObjCInstanceMethodDecl", "ObjCClassMethodDecl"):
             selector = selector_of(node.get("mangledName", ""))
             loc = node.get("loc") or {}
@@ -563,15 +743,44 @@ def compare_setup(verbose=True):
         members = header_methods(class_name, header)
         class_release = objects["class"]
         for release, object_name in sorted((r, o) for r, o in objects.items() if r != "class"):
+            before = len(PARSE_ERRORS)
             bound = port_methods(class_name, object_name)
+            if len(PARSE_ERRORS) > before:
+                # The object's own file did not parse. Every member would now read as missing, which is
+                # a claim about a file clang refused to read, so the parse is the only thing reported.
+                for path, first in PARSE_ERRORS[before:]:
+                    failures.append("the parse of %s failed, so no member of %s was measured: %s"
+                                    % (os.path.basename(path), class_name, first))
+                continue
             # A member the header line gives no API_AVAILABLE of its own arrived with the class, and an
             # object owns the members of its own release and of no other.
             expected = {s for s, m in members.items()
                         if not m["unavailable"] and (m["release"] or class_release) == release}
-            forbidden = {s for s, m in members.items() if m["unavailable"]}
+            # A protocol requirement is a member too, and it has no line in the class's own header: the
+            # conformance is on the @interface line and the protocol is named in the table.
+            expected |= {sel for reqs in SETUP_PROTOCOLS.get(class_name, {}).values() for sel in reqs}
+            # And a member the port does not carry LEAVES the expected set and joins the forbidden one, so
+            # its absence is measured rather than merely unmentioned, and the reason travels with it.
+            absent = {sel for sel, owner in SETUP_ABSENT.items() if owner == class_name}
+            # And the form is asserted, not assumed: a key in SETUP_ABSENT that no header member answers
+            # to is a typo, and a typo here is invisible -- it subtracts nothing and the member is
+            # reported as missing, which reads like a port defect rather than like a table defect.
+            for sel in absent:
+                if sel not in members:
+                    failures.append("SETUP_ABSENT names %s, which the header of %s does not declare"
+                                    % (sel, class_name))
+            expected -= absent
+            forbidden = {s for s, m in members.items() if m["unavailable"]} | absent
             for selector in sorted(expected):
+                if selector not in members:
+                    protocol = next((name for name, reqs in SETUP_PROTOCOLS.get(class_name, {}).items()
+                                     if selector in reqs), "a protocol")
+                    if selector not in bound:
+                        failures.append("%s (%s): the port binds no %s, which %s requires of this class"
+                                        % (class_name, release, selector, protocol))
+                    continue
                 if selector in bound:
-                    rows.append((object_name, selector, release, members[selector]["line"]))
+                    rows.append((object_name, selector, release, header, members[selector]["line"]))
                 else:
                     failures.append("%s (%s): the header declares %s at %s:%d, and the object binds no such method"
                                     % (class_name, release, selector, header, members[selector]["line"]))
@@ -596,9 +805,8 @@ def compare_setup(verbose=True):
                         ",".join(holders) or "no object binds it", selector, "NS_UNAVAILABLE",
                         header, member["line"]))
     if verbose:
-        for object_name, selector, release, line in rows:
-            print("  %-36s %-34s %-6s %s:%d" % (object_name, selector, release, HEADER_OF_CLASS[
-                "HMAccessorySetupPayload"], line))
+        for object_name, selector, release, row_header, line in rows:
+            print("  %-36s %-34s %-6s %s:%d" % (object_name, selector, release, row_header, line))
         # The unavailable members are NAMED, not merely absent: a check that says nothing about -init and
         # +new cannot be read as having looked at them, and they are the two members of this class the
         # release refuses to let a caller use.
@@ -621,8 +829,9 @@ def main():
     PORT_HEADER_DIR = port
     source = os.path.join(port, "HMAccessoryProfile10_0.m")
 
-    print("header contract, from clang's AST of the SDK and of the port, for %s" % TARGET[0])
-    failures = []
+    print("self-test: the helpers this check's own answers depend on")
+    failures = self_test_selector_of()
+    print("\nheader contract, from clang's AST of the SDK and of the port, for %s" % TARGET[0])
     for name, expected in sorted(EXPECTED.items()):
         # each class's own file: the properties arrive through that file's import, tagged with the SDK
         # header they came from, and the port's own declaration of them is in the same dump
@@ -693,12 +902,15 @@ def main():
         stage(scratch, "HMAccessorySetupPayload")
         with open(thirteen, "w") as handle:
             handle.write("// a mutant: bytes, and nothing else.\n" + text)
-        original = SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"]
+        original = (SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"], PORT_INCLUDE)
         try:
             SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"] = os.path.basename(thirteen)
             inert, _ = compare_setup(verbose=False)
         finally:
-            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"] = original
+            # The lookup root goes back too, not just the table: a scratch directory that the enclosing
+            # `with` then deletes is the root every LATER mutant reads through, so leaving it behind is
+            # how one mutation's result becomes the next one's input.
+            SETUP_CLASSES["HMAccessorySetupPayload"]["13.0"], PORT_INCLUDE = original
         if inert:
             print("  RED, which is WRONG: the bytes moved and no member changed")
             print("    %s" % "; ".join(inert))
