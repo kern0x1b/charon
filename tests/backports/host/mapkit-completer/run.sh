@@ -57,12 +57,37 @@ CHARON_PORT_DYLIB="$build/libport.dylib" CHARON_MUTANT=1 transcript port "$build
 
 # The two transcripts, with the first line's own identity removed so the comparison is about the
 # CALLS and not about which image each came from.
-strip() { sed '1d' "$1" | grep -E '^  (call|transcript|#)' | sed 's/^  //' | grep -v '^# [0-9]* call'; }
+# The transcript's case lines, with the build's own header dropped and the per-line "# N call(s)"
+# echo dropped. EVERY STEP TOLERATES AN EMPTY RESULT, with || true, and that is the fix for a silent
+# death: a grep that selects nothing exits 1, the script runs under `set -e`, and the whole run ends
+# there with no FAIL line and no output at all. A mutant that records nothing is a FINDING -- it
+# means the mutant silenced the thing it was built to exercise -- and a finding has to be printed.
+# The transcript's case lines, with the build's own header dropped and the per-call echo dropped.
+# Two things here are fixes rather than cosmetics:
+#   * the "charonHost_" the -D renames put into a class NAME is a build artefact, not a behaviour,
+#     so it is normalised away -- otherwise the port's own class can never equal the host's;
+#   * EVERY STEP TOLERATES AN EMPTY RESULT, with || true. A grep that selects nothing exits 1, the
+#     script runs under `set -e`, and the run ends there with no FAIL and no output at all. A mutant
+#     that records nothing is a FINDING -- it silenced the thing it was built to exercise -- and a
+#     finding has to be printed, not swallowed.
+strip() {
+    sed 's/charonHost_//g; 1d' "$1" |
+        { grep -E '^  (call|transcript|#)' || true; } |
+        sed 's/^  //' |
+        { grep -v '^# [0-9]* call' || true; }
+}
 strip "$build/host.txt" > "$build/host.body"
 strip "$build/port.txt" > "$build/port.body"
 strip "$build/mutant.txt" > "$build/mutant.body"
 
 cat "$build/host.txt"; cat "$build/port.txt"
+for who in host port mutant; do
+    if [ ! -s "$build/$who.body" ]; then
+        echo "FAIL the $who run recorded no case at all: an empty transcript is a RESULT, and it is"
+        echo "     being reported here rather than as a silent death under set -e"
+        exit 1
+    fi
+done
 echo "--- the transcripts, compared:"
 if diff -u "$build/host.body" "$build/port.body"; then
     echo "ok the port's completer calls its delegate exactly as the host's own does"

@@ -36,11 +36,19 @@
 
 - (void)completerDidUpdateResults:(id)completer
 {
-    // the value that matters: how many results the completer had at the moment it said so
+    // The value that matters: how many results the completer had at the moment it said so, AND
+    // whether it is a completer at all. The count alone cannot tell a wrong argument from a right
+    // one: the port answers 0 results for a query that finds nothing, so a mutant that passes nil
+    // records "results=0" too and the two transcripts are identical -- which is what the probe said
+    // when it ran. The argument's IDENTITY is the thing under test, so it is recorded: the port
+    // passes ITSELF, and anything else is a wrong argument whatever its count.
     NSUInteger count = [completer respondsToSelector:@selector(results)]
         ? [[completer valueForKey:@"results"] count] : 0;
-    [_calls addObject:[NSString stringWithFormat:@"update results=%lu", (unsigned long)count]];
-    printf("  call 1: completerDidUpdateResults: results=%lu\n", (unsigned long)count);
+    NSString *who = (completer == nil) ? @"nil" : NSStringFromClass([completer class]);
+    [_calls addObject:[NSString stringWithFormat:@"update results=%lu completer=%@",
+                        (unsigned long)count, who]];
+    printf("  call 1: completerDidUpdateResults: results=%lu completer=%s\n",
+           (unsigned long)count, [who UTF8String]);
     fflush(stdout);
 }
 
@@ -89,8 +97,14 @@ int main(int argc, char **argv)
         // the only difference between them is the argument.
         if (getenv("CHARON_MUTANT") != NULL) {
             Class mutant = objc_allocateClassPair(completerClass, "CharonMutantCompleter", 0);
+            // THE MUTANT SENDS THE MESSAGE TO THE REAL DELEGATE, AND PASSES THE WRONG ARGUMENT.
+            // It used to declare `id delegate = nil` and send to that, so the runner's own recorder
+            // was never asked and the transcript recorded "# 0 call(s)" -- a mutant that silences
+            // the thing it is meant to exercise, which reads as a probe that cannot see anything at
+            // all. A mutant has to go wrong in the ONE THING UNDER TEST and do everything else
+            // normally, so the delegate is the one the runner set and only the argument is wrong.
             IMP wrong = imp_implementationWithBlock(^(id self_, SEL _cmd) {
-                id delegate = nil;
+                id delegate = [self_ valueForKey:@"delegate"];
                 SEL updated = NSSelectorFromString(@"completerDidUpdateResults:");
                 if ([delegate respondsToSelector:updated]) {
                     ((void (*)(id, SEL, id))objc_msgSend)(delegate, updated, nil);
