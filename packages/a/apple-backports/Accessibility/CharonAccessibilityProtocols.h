@@ -21,3 +21,9 @@
 @protocol AXChart;
 
 @protocol AXDataAxisDescriptor;
+
+// AXBrailleMapRenderer arrived with a later group, in 15.2, and a generated protocol source names it too.
+// The 16.4 SDK declares it in AXBrailleMap.h, which the umbrella import above brings in, so a forward
+// declaration is the whole of what this file owes it - the same as the two above, and the same as what
+// tools/transcribe-protocols.py writes for a protocol the SDK the package compiles against defines.
+@protocol AXBrailleMapRenderer;
