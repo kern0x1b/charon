@@ -13,8 +13,10 @@ renames="-DIORegistryEntryCopyFromPath=charonHost_IORegistryEntryCopyFromPath
 -DIOMainPort=charonHost_IOMainPort
 -DkIOMainPortDefault=charonHost_kIOMainPortDefault"
 # shellcheck disable=SC2086
-xcrun clang -fvisibility=hidden -w $renames -c "$port/IORegistryPaths.c" -o "$build/port.o"
+xcrun clang -fvisibility=hidden -w $renames -c "$port/IORegistryPaths9.c" -o "$build/port9.o"
+# shellcheck disable=SC2086
+xcrun clang -fvisibility=hidden -w $renames -c "$port/IOMainPort15.c" -o "$build/port15.o"
 xcrun clang -fobjc-arc -Wall -I"$harness" \
-    "$here/differential.m" "$harness/check.m" "$build/port.o" \
+    "$here/differential.m" "$harness/check.m" "$build/port9.o" "$build/port15.o" \
     -framework Foundation -framework IOKit -o "$build/differential"
 "$build/differential"

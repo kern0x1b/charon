@@ -33,6 +33,18 @@ over the two the release has, and the two names of iOS 15 over what the header i
   returns a `CFString` of what it wrote (+1, as the name promises). An entry of 0, and any entry the
   release cannot give a path for, is answered `NULL` — again the release's own answer.
 
+## What the ladder measures
+
+The two objects are placed by the release the armv7 cache ladder measures each symbol first appearing
+in, read with `dyld.first_releases` over the held ladder:
+
+| symbol | the header annotates | the ladder measures |
+| --- | --- | --- |
+| `IORegistryEntryCopyFromPath`, `IORegistryEntryCopyPath` | 9.0 | 9.0 |
+| `kIOMainPortDefault`, `IOMainPort` | 15.0 | **16.0** — nothing between 12.0 and 16.0 is held, so an upper bound |
+
+Hence `IORegistryPaths9.c` and `IOMainPort15.c`, one release each, as an object must be.
+
 ## Where the port answers where the host does not
 
 The host crashes on two of these, and an API of this port never crashes the caller:

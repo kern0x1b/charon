@@ -26,6 +26,24 @@ lists them under `kCFHTTPVersion1_1`), and the other five are the constant names
 what CFNetwork does: a stream property key is the symbol's own text, so a key and its documentation
 cannot drift apart. Nothing here is invented and nothing is shortened.
 
+## What the ladder measures, and where it differs from the headers
+
+The objects these constants are compiled in are placed by the release the armv7 cache ladder measures
+each symbol first appearing in, not by the header's annotation, and the two do not always agree. Read
+with `dyld.first_releases` over the held ladder:
+
+| symbol | the header annotates | the ladder measures |
+| --- | --- | --- |
+| `kCFHTTPVersion2_0` | 8.0 | **9.0** — the armv7 cache of 8.0 exports no such symbol |
+| `kCFStreamPropertySocketExtendedBackgroundIdleMode` | 9.0 | 9.0 |
+| `kCFStreamNetworkServiceTypeCallSignaling` | 10.0 | **10.0.1** — the first rung of 10.0 held, so an upper bound |
+| `kCFHTTPVersion3_0`, the three properties of 13.0 | 13.0 | **16.0** — nothing between 12.0 and 16.0 is held |
+
+So the seven names live in three objects, one release each: `CFNetworkNames9.m` carries the two the
+ladder puts at 9.0, `CFNetworkNames10.m` the one at 10.0.1, and `CFNetworkNames13.m` the four it puts
+at 16.0. An object carries the API of a single release, and the release it is carried from is the one
+the ladder measured.
+
 ## What the release does with them
 
 The keys are carried; the behaviour behind them is the release's own CFNetwork, and the release has
