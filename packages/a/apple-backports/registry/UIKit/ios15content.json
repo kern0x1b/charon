@@ -32,16 +32,6 @@
       "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
     },
     {
-      "api": "NSTextContentStorageUnsupportedAttributeAddedNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the notification is posted when an attribute the storage cannot map to an element is added, and the port's elements carry the whole attributed string: a paragraph is a range of the string and a list element is its marker and its contents, so there is no attribute the port cannot map and the condition cannot arise",
-      "effect": "the name is not there: a lookup of it answers nil, and no notification of it is ever posted. What would have to change is the element model - an element that could not represent some attribute a caller put in the backing store - and the port has none",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
-    },
-    {
       "api": "+[NSTextListElement textListElementWithChildElements:textList:nestingLevel:]",
       "kind": "method",
       "introduced": "16.0",
