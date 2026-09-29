@@ -26,7 +26,10 @@ setvbuf(stdout, nil, _IONBF, 0)
 // here is `PortTabularData.`-qualified, so the two `DataFrame`s and the two `Column`s coexist
 // without either shadowing the other. Holding both is what makes this a differential rather than a
 // test of the port against itself, and it is the wiring every family in this series needs.
-import PortTabularData
+// `@testable` for the members that are internal on purpose: `AnyColumn`'s typed initialisers,
+// `presentValues` and `erasedValues` are not Apple's, so they are internal, and the suite reads them
+// rather than reading around them. Everything else in this file is public on both sides.
+@testable import PortTabularData
 import TabularData
 
 // The distinguishing test for a discontiguous slice, behind a flag so the suite's own run is untouched.
@@ -466,12 +469,18 @@ check("an erased column read as another type is nil", erased.assumingType(String
 // The metatype of a value read out of `[Any]` prints as `Optional(Swift.Double)` and the metatype
 // expression `Optional<Double>.self` prints as `Optional<Double>`: two spellings of the same type,
 // so the check names the spelling the metatype actually has rather than the one written by hand.
-checkEqual("an erased column's own type is the type of its values",
-           String(describing: erased.elementType), "Optional(Swift.Double)")
-// A column of mixed kinds has no type, and answers nil rather than the first kind it found.
-let mixed = PortTabularData.AnyColumn(PortTabularData.Column<Any>(name: "m", [1, "two"]))
-check("an erased column of mixed kinds has no type", mixed.elementType == nil,
-      "the port answers \(String(describing: mixed.elementType))")
+// The erased column's type is the type it was **made with**, which is Apple's answer and the only one
+// the port now gives: `wrappedElementType` is recorded at construction, so a column of `Double` reports
+// `Double` and a column of mixed values reports the type it was built as rather than guessing from the
+// values it happens to hold. The inferred `elementType` is gone - it was a second answer to the same
+// question and it answered it differently.
+checkEqual("an erased column reports the type it was made with",
+           String(describing: erased.wrappedElementType), "Double")
+let mixed = PortTabularData.Column<Any>(name: "m", [1, "two"]).eraseToAnyColumn()
+checkEqual("a column of mixed values reports the type it was made with, not the first kind it found",
+           String(describing: mixed.wrappedElementType), "Any")
+check("eraseToAnyColumn is the public door, and it is Apple's name and result type",
+      String(describing: PortTabularData.Column<Int>(name: "d", [1]).eraseToAnyColumn().count) == "1")
 
 // The conformances themselves, which are the thing the port's own test was wrongly told it could
 // not have: a caller iterating a column and a frame's rows, with the standard library's own

@@ -174,6 +174,14 @@ public struct Column<Element>: ColumnProtocol {
 
     public var slice: ColumnSlice<Element> { ColumnSlice(base: self, range: 0..<count) }
 
+    /// The column as a `AnyColumn`, which is the SDK's own way in and the port's only public one.
+    ///
+    /// Carried exactly as the iPhoneOS 26.2 interface has it -
+    /// `public func eraseToAnyColumn() -> TabularData.AnyColumn` on `Column<WrappedElement>` (line 523).
+    /// The same name on `ColumnSlice` (658) and `DiscontiguousColumnSlice` (1522) answers an
+    /// `AnyColumnSlice`, which the port does not declare yet, so those two arrive with it.
+    public func eraseToAnyColumn() -> AnyColumn { AnyColumn(self) }
+
     public mutating func append(_ value: Element) { values.append(value) }
     public mutating func append(contentsOf other: [Element]) { values.append(contentsOf: other) }
     public mutating func reserveCapacity(_ capacity: Int) { values.reserveCapacity(capacity) }
@@ -421,7 +429,7 @@ public struct AnyColumn: @unchecked Sendable {
     /// takes the name so renaming the box renames the typed column it hands back.
     private let makeTyped: (String) -> Any
 
-    public init<T>(_ column: Column<T>) {
+    internal init<T>(_ column: Column<T>) {
         self.name = column.name
         self.wrappedElementType = T.self
         // An element that is already optional keeps its own nil and is not wrapped a second time.
@@ -438,11 +446,11 @@ public struct AnyColumn: @unchecked Sendable {
         }
     }
 
-    public init<T>(_ slice: ColumnSlice<T>) {
+    internal init<T>(_ slice: ColumnSlice<T>) {
         self.init(Column(slice.base, name: slice.base.name)[slice.range])
     }
 
-    public init<T>(_ slice: DiscontiguousColumnSlice<T>) {
+    internal init<T>(_ slice: DiscontiguousColumnSlice<T>) {
         // A discontiguous slice's values are a copy of the columns it names, in that order, so the box
         // holds a column of them. The indices are not kept: an `AnyColumn` is contiguous, which is why
         // a caller that needs the positions asks the slice rather than the column.
@@ -493,14 +501,14 @@ public struct AnyColumn: @unchecked Sendable {
     /// The cells that hold a value, with the missing ones dropped. The public way to read an erased
     /// column's values, since `values(as:)` is internal: the SDK has no such accessor, and a caller
     /// reaching for one would be reaching for a name this port invented.
-    public var presentValues: [Any] {
+    internal var presentValues: [Any] {
         storage.map { element -> Any in
             guard let element = element else { return Optional<Any>.none as Any }
             return element
         }
     }
 
-    public var erasedValues: [Any] {
+    internal var erasedValues: [Any] {
         storage.map { element -> Any in
             guard let element = element else { return Optional<Any>.none as Any }
             return element
@@ -553,19 +561,6 @@ public struct AnyColumn: @unchecked Sendable {
         return out
     }
 
-    /// The type every *present* value has, or nil when the present values disagree. The storage is
-    /// `[Any?]` so a nil element survives, and the inference looks through the optional: a column that
-    /// is half nils is a column of one type with gaps, not a column of `Optional<Any>`.
-    public var elementType: Any.Type? {
-        var found: Any.Type?
-        for value in storage {
-            guard let value = value else { continue }
-            let type = Swift.type(of: value)
-            if let found = found, found != type { return nil }
-            found = type
-        }
-        return found
-    }
 }
 
 /// The two questions the box has to ask about an element type, without a way to name the type itself.

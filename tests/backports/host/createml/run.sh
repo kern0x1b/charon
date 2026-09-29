@@ -64,7 +64,11 @@ for dirpath, _, names in os.walk(root):
         open(path, "w").write(text)
 PY
 
-xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
+# `-enable-testing` so the suite's `@testable import PortTabularData` can reach the members that are
+# internal on purpose: `AnyColumn`'s typed initialisers, `presentValues` and `erasedValues` are not
+# Apple's, and a suite that cannot reach them has either to stop checking them or to check them through
+# a public door that does not exist.
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O -enable-testing \
     -module-name PortTabularData \
     -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
     -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
@@ -72,7 +76,11 @@ xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
 # The TabularData module first: it declares no import of itself, so the module name is the only
 # thing that changes and -module-name does it. Apple's TabularData and the port's are then two
 # modules declaring the same type names, and the second differential holds both in one process.
-xcrun swiftc -swift-version 5 -wmo -parse-as-library -O \
+# `-enable-testing` so the suite's `@testable import PortTabularData` can reach the members that are
+# internal on purpose: `AnyColumn`'s typed initialisers, `presentValues` and `erasedValues` are not
+# Apple's, and a suite that cannot reach them has either to stop checking them or to check them through
+# a public door that does not exist.
+xcrun swiftc -swift-version 5 -wmo -parse-as-library -O -enable-testing \
     -module-name PortTabularData \
     -emit-module -emit-module-path "$out/modules/PortTabularData.swiftmodule" \
     -c -o "$out/tab.o" "$out"/files/TabularData/*.swift
