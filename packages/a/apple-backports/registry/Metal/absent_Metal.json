@@ -401,80 +401,80 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureBoundingBoxGeometryDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLAccelerationStructureBoundingBoxGeometryDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureCommandEncoder",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLAccelerationStructureDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureGeometryDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLAccelerationStructureGeometryDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureTriangleGeometryDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLAccelerationStructureTriangleGeometryDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLBinaryArchive",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLBinaryArchiveDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLBinaryArchiveDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLBinaryArchive.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLBinaryArchiveDomain",
@@ -491,10 +491,10 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLCommonCounterClipperInvocations",
@@ -681,40 +681,40 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLComputePassDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLComputePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLComputePassSampleBufferAttachmentDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLComputePassSampleBufferAttachmentDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLComputePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLComputePassSampleBufferAttachmentDescriptorArray",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLComputePassSampleBufferAttachmentDescriptorArray, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLComputePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLCounter",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLCounterErrorDomain",
@@ -731,40 +731,40 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLCounterSampleBufferDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLCounterSampleBufferDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLCounters.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLCounterSet",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLDynamicLibrary",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLDynamicLibraryDomain",
@@ -792,10 +792,10 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLFunctionLog",
@@ -824,50 +824,50 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLInstanceAccelerationStructureDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLIntersectionFunctionDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLIntersectionFunctionDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLFunctionDescriptor.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLIntersectionFunctionTable",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLIntersectionFunctionTableDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLIntersectionFunctionTableDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLIntersectionFunctionTable.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLLinkedFunctions",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLLinkedFunctions, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLLinkedFunctions.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLLogContainer",
@@ -885,80 +885,80 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLPrimitiveAccelerationStructureDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLAccelerationStructure.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLRenderPassSampleBufferAttachmentDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLRenderPassSampleBufferAttachmentDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLRenderPass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLRenderPassSampleBufferAttachmentDescriptorArray",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLRenderPassSampleBufferAttachmentDescriptorArray, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLRenderPass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLResourceStatePassDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLResourceStatePassDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLResourceStatePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLResourceStatePassSampleBufferAttachmentDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLResourceStatePassSampleBufferAttachmentDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLResourceStatePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLResourceStatePassSampleBufferAttachmentDescriptorArray",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLResourceStatePassSampleBufferAttachmentDescriptorArray, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLResourceStatePass.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLVisibleFunctionTable",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the protocol the 14.0 family is declared in, resolvable by its own name",
+      "effect": "the port declares the protocol in CharonMetalProtocols.h, so a caller resolving it by name finds it; the bodies come from the SDK the package compiles against, which already declares them",
+      "source": "written by tools/transcribe-protocols.py from SDK 26.2 and forward-declared against SDK 16.4, which already declares it; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLVisibleFunctionTableDescriptor",
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: what the thing it describes is built from, asked of nothing",
+      "effect": "the port vends CharonMTLVisibleFunctionTableDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created; the properties that hold a device-made object - the MTLBuffer, MTLCounterSet, MTLFunction and MTLAccelerationStructure references - are carried and read nil, and are not measured: both sides answer nil with no device, and a round trip with a real one would need a device to make it",
+      "source": "SDK 16.4 MTLVisibleFunctionTable.h, the class the package carries in Metal/MTLDescriptors14.m; the values compared are the header's own enumerations; the cache ladder's band for this symbol is 14.0, and it reports that no release is held between 12.0 and 14.0, so 14.0 means after 12.0 and by 14.0, not a measured first release"
     },
     {
       "api": "MTLAccelerationStructureMotionBoundingBoxGeometryDescriptor",
