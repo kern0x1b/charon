@@ -196,6 +196,27 @@ Two findings, and both are the reason a header is not enough:
   and a tab accessory environment all read as their unspecified values on a release that is never
   being recorded or shown in a tab accessory, which is what the header's own comments say they mean.
 
+## What the host's UIKit can and cannot be asked about these protocols
+
+The twelve protocol objects the objects of this series define are in the tree, and `nm` over
+those objects is the evidence for them. The host differential cannot be: the SDK it compiles
+against declares the trait protocols in its own `UITrait.h` **and the trait classes that adopt
+them** — `@interface UITraitUserInterfaceIdiom : NSObject <UINSIntegerTraitDefinition>`,
+`@interface UITraitDisplayScale : NSObject <UICGFloatTraitDefinition>` — so a class list read off
+a trait class in that process is the SDK's declaration, not this library's, whatever
+`CharonTraits17.h` says.
+
+Measured, on this file's own group: taking `<UINSIntegerTraitDefinition>` off
+`UITraitUserInterfaceIdiom` in `CharonTraits17.h` and giving `UITraitDisplayScale` the integer
+kind as well both leave `traits17` at `checks=352 failures=0`, exit 0. The class is renamed to
+`CharonHost…` and still carries the SDK's protocol list, because the declaration that binds is
+the one in the SDK's header for the same name.
+
+The one protocol in this delivery a host case *can* read is the range layer's `NSTextLocation`,
+and only because `CharonTextLocation` is a name no SDK header uses — see
+`facts/UIKit/NSTextRange15.md` and the case in `content15_test.m`, whose mutation drops that
+declaration off the class and turns the group red.
+
 ## One path the differential does not reach
 
 `UITraitCollection.m` declares `-displayScale` and `-setDisplayScale:` on the collection itself,
