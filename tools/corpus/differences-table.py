@@ -244,59 +244,35 @@ def run():
         print()
 
     if opts.page:
+        # Every family that has a one-sided line at all, taken from the run and named by the run.
+        # There is no literal anywhere below: the old version matched the literal `repr`, and a page
+        # that wrote "further repr lines" - the same fact, the same page - was silently passed, which
+        # is the opposite of the safe direction its own commit claimed it was.
+        keys = read_one_sided(opts.ci)[1]
+        families = {}
+        for side in ("port", "system"):
+            for name, prefixes in CIIMAGE_GROUPS:
+                picked = [k for k in keys[side] if any(k.startswith(p) for p in prefixes)]
+                if picked:
+                    families.setdefault(name, {"port": 0, "system": 0, "label": family_label(picked)})
+                    families[name][side] = len(picked)
+
         for page in opts.page:
             # The page is written with hard wraps, so a sentence about a figure can have a newline
             # in the middle of it; read the text as one line before matching any pattern in it.
             text = re.sub(r"\s+", " ", open(page, encoding="utf-8").read())
-            keys = read_one_sided(opts.ci)[1]
-            label = family_label([k for k in keys["port"] + keys["system"] if k.startswith("repr")] or ["repr"])
-            n_port = sum(1 for k in keys["port"] if k.startswith(label))
-            n_system = sum(1 for k in keys["system"] if k.startswith(label))
-            # The one-sided lines are the one number in these pages that no arithmetic checked, and
-            # it was wrong: it said 30, the run says 33, and the three it left out are the only ones
-            # in that family where the SYSTEM answers and the port is silent - so a sentence about
-            # the port's side alone was half the fact.
-            #
-            # EVERY statement is checked, not the first: Differences.md states the pair twice, once
-            # in the live table and once in the historical row corrected in place, and a matcher that
-            # read one of them would pass a page whose other statement was wrong.  So each
-            # statement of the family is found, each is read for both figures, and a statement that
-            # gives one without the other is a finding.  A page that says nothing about the family
-            # is not checked for it.
-            # The prose writes the pair as two clauses - "33 further `repr` lines one-sided on
-            # the port's side AND 3 further `repr` lines one-sided on the system's side" - so a
-            # figure clause is one of those, not a sentence.  EVERY clause is read, because
-            # Differences.md states the pair twice, once in the live table and once in the
-            # historical row corrected in place, and a matcher that read the first of a pair and
-            # the first of the page would pass a page whose second statement was wrong.
-            #
-            # And the two clauses of a pair have to be together: a clause with no partner within
-            # WINDOW characters of it is half the fact, which is exactly what the old sentence
-            # was.  WINDOW is generous enough for a wrapped sentence and short enough not to pair
-            # two independent statements of the page.
-            WINDOW = 240
-            clauses = {}
-            for m in re.finditer(r"(\d+) further `" + re.escape(label) + r"` lines (?:are )?(one-sided on the [a-z]+'s side)", text):
-                clauses[m.start()] = (int(m.group(1)), m.group(2))
-            if not clauses:
-                continue
-            for at, (said, what) in sorted(clauses.items()):
-                if said != (n_port if "port" in what else n_system):
-                    print("FAIL %s: a clause says %d `%s` lines are %s and the run has %d"
-                          % (page, said, label, what, n_port if "port" in what else n_system))
-                    failed = True
-            for at, (said, what) in sorted(clauses.items()):
-                partner = "one-sided on the system's side" if "port" in what else "one-sided on the port's side"
-                lo, hi = (at, at + WINDOW) if "port" in what else (max(0, at - WINDOW), at)
-                if not any(w == partner and lo <= p < hi for p, (_, w) in clauses.items()):
-                    print("FAIL %s: a clause states %d `%s` lines %s with no clause for the other side within %d characters of it: that is half the fact"
-                          % (page, said, label, what, WINDOW))
-                    failed = True
-            # and the group table, on a page that has one
+            # The group table is read off the file as it stands, line by line, because a table row is
+            # a line and collapsing the page would join them.
             written, has_table = page_counts(page)
+
+            # (a) THE GROUP TABLE, on a page that has one, and UNCONDITIONALLY.  It used to sit
+            # below a `continue` that fired when the family clauses were not found, so a page that
+            # spelled its figures a way the matcher did not read also had its group counts
+            # unchecked - and a wrong `shape` count went through as exit 0.  The group counts do not
+            # depend on the figures, so nothing about them is conditional on them.
             if has_table:
-                for path, groups, label2 in ((opts.ci, CIIMAGE_GROUPS, "CoreImage"),
-                                             (opts.modelio, MODELIO_GROUPS, "ModelIO")):
+                for path, groups, which in ((opts.ci, CIIMAGE_GROUPS, "CoreImage"),
+                                            (opts.modelio, MODELIO_GROUPS, "ModelIO")):
                     by_group = {}
                     for key, host, port in read_differences(path):
                         by_group.setdefault(group_of(key, groups) or "UNATTRIBUTED", []).append(key)
@@ -311,6 +287,45 @@ def run():
                             print("FAIL %s: the page says %r is %d and the run has %d"
                                   % (page, name, written[name], len(entries)))
                             failed = True
+
+            # (b) THE FIGURES, per family, and the label is matched with or without backticks -
+            # both spellings are the same sentence and the page may use either.
+            for name, figures in sorted(families.items()):
+                label = figures["label"]
+                # The run's bare key, quoted the way the page quotes it or not: `repr` and repr are
+                # the same sentence and either may be written.  The alternation is non-capturing, so
+                # the groups are the figure and the side - and getting that wrong is an IndexError
+                # rather than a wrong number, which is what it was the first time.
+                pattern = (r"(\d+) further (?:`" + re.escape(label) + r"`|" + re.escape(label) +
+                           r") lines (?:are )?(one-sided on the [a-z]+'s side)")
+                clauses = {}
+                for m in re.finditer(pattern, text):
+                    clauses[m.start()] = (int(m.group(1)), m.group(2))
+                for at, (said, what) in sorted(clauses.items()):
+                    want = figures["port"] if "port" in what else figures["system"]
+                    if said != want:
+                        print("FAIL %s: a clause says %d %s lines are %s and the run has %d"
+                              % (page, said, label, what, want))
+                        failed = True
+                # The two clauses of a pair have to be together.  The prose writes the pair as two
+                # clauses joined by "and", so a clause with no partner within WINDOW characters of it
+                # is half the fact - which is what the sentence that said 30 was.
+                WINDOW = 240
+                for at, (said, what) in sorted(clauses.items()):
+                    partner = "one-sided on the system's side" if "port" in what else "one-sided on the port's side"
+                    lo, hi = (at, at + WINDOW) if "port" in what else (max(0, at - WINDOW), at)
+                    if not any(w == partner and lo <= p < hi for p, (_, w) in clauses.items()):
+                        print("FAIL %s: a clause states %d %s lines %s with no clause for the other side within %d characters of it: that is half the fact"
+                              % (page, said, label, what, WINDOW))
+                        failed = True
+                # (c) A page that carries the group table and the run has one-sided lines in a family
+                # that family the page does NOT state is a finding, not a pass.  A page with the table
+                # is the page that claims to account for the run, so a family it leaves out is a gap in
+                # that claim - and the old code turned the same situation into a silent `continue`.
+                if has_table and not clauses and (figures["port"] or figures["system"]):
+                    print("FAIL %s: the page has the group table and the run has %d and %d one-sided `%s` lines, and the page states no figure for them: a page that accounts for the run has to account for this"
+                          % (page, figures["port"], figures["system"], label))
+                    failed = True
     return 1 if failed else 0
 
 

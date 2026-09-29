@@ -174,6 +174,23 @@ as 0.0000 came back 0.1491 - and the colour now keeps the caller's components in
 with the conversion where it belongs, at render time. The rendered pixels were and are `0 811c9dc5`
 on both sides, which is why the whole family was invisible to the old comparator.
 
+**The one-sided lines of that run, which are measurements the other side does not have and not
+disagreements, and are named here so a page that accounts for the run accounts for them too:**
+
+    ciimage: 527 measurements, 479 the same, 40 different, 42 one side only (tolerance 0.0005)
+        one-sided lines in the CoreImage run, by which side answers: system 8, port 34
+            one-sided on the system's side in `repr`: 3
+            one-sided on the system's side in `alg`: 4
+            one-sided on the port's side in `repr`: 33
+
+`33 further repr lines one-sided on the port's side` and `3 further repr lines one-sided on the
+system's side` - the three are `repr rgbaf png none`, `repr rgbaf png tiff none` and `repr jpeg none`,
+the only lines in that family where the system answers and the port is silent. And **0 further `alg`
+lines one-sided on the port's side** and **4 further `alg` lines one-sided on the system's side**: the
+four are `alg clamped rect pixels pixel 0` to `pixel 3`, one-sided because the port's clamped image
+has a different extent and so a different number of pixel lines - the same reason the clamped family
+has a different number of `different` lines, and named in its row above.
+
 **And the two rows that were the worst of it are `absent` rather than different:**
 `-imageByPremultiplyingAlpha` (`d255cf714`, a grey image of the alpha) and
 `-imageBySettingAlphaOneInExtent:` (`78b6730f2`, an infinite extent where the system's is `0 0 6 4`).
