@@ -80,8 +80,13 @@ run_case() {
             [ -f "$src" ] || continue
             strip "$src" | grep -E '\bsec_[a-z0-9_]+\(' | sed -nE 's/.*[^A-Za-z0-9_](sec_[a-z0-9_]+)\(.*/\1/p'
         done | sort -u > "$build/port-defines.txt"
-        nm -gU "$build/$name" > "$build/$name.nm" 2>/dev/null
-        nmstatus=$?
+        # nm's OWN STATUS, CAPTURED WITHOUT set -e KILLING THE SCRIPT FIRST. `nm ... > file` followed by
+        # `nmstatus=$?` on the next line NEVER REACHES THE ASSIGNMENT under set -e: the script ends on the
+        # failing command, so the branch below was unreachable and the guard died SILENTLY on an nm failure
+        # instead of reporting one. The `|| status=$?` form is the one that survives, and the same slip was
+        # made in run_mutation and fixed there - twice - before it was fixed here.
+        nmstatus=0
+        nm -gU "$build/$name" > "$build/$name.nm" 2>/dev/null || nmstatus=$?
         if [ "$nmstatus" -ne 0 ]; then
             echo "NOTRUN $name  nm -gU failed, so the case was never compared" > "$build/verdict-$name"; echo "BUILD  $name FAILED: nm -gU on the linked binary exited $nmstatus"
             failures=$((failures + 1))
