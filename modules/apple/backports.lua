@@ -1694,29 +1694,23 @@ end
 -- declaration without a body is not a definition. The name is the registry's spelling without its ().
 -- This reads and writes nothing: it cannot reorder a declaration, and a header that stops compiling is a
 -- different check.
-local INLINE_BODIES = {}
-
-function inline_defined(root, name)
-    local seen = INLINE_BODIES[root]
-    if not seen then
-        seen = {}
-        local function normalise(text)
-            text = text:gsub("/%*.-%*/", " "):gsub("//[^\n]*", " ")
-            return (text:gsub("%s+", " "))
-        end
-        local function scan(folder)
-            for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
-                for before, after in normalise(io.readfile(file) or ""):gmatch(
-                        "([%w_<>%* ]+)%s+([%w_]+)%s*%b()%s*[%w_(),\"%s]*{") do
-                    seen[after] = true
-                end
+function inline_bodies_of(root)
+    local seen = {}
+    -- a definition, with the comments stripped and the whitespace folded, so whatever sits between the
+    -- parameter list and the brace - a CF_REFINED_FOR_SWIFT, a CF_SWIFT_UNAVAILABLE("...") - is an attribute
+    local function normalise(text)
+        text = text:gsub("/%*.-%*/", " "):gsub("//[^\n]*", " ")
+        return (text:gsub("%s+", " "))
+    end
+    for _, folder in ipairs({root, path.join(root, "*")}) do
+        for _, file in ipairs(os.files(path.join(folder, "*.h"))) do
+            for before, after in normalise(io.readfile(file) or ""):gmatch(
+                    "([%w_<>%* ]+)%s+([%w_]+)%s*%b()%s*[%w_(),\"%s]*{") do
+                seen[after] = true
             end
         end
-        scan(root)
-        scan(path.join(root, "*"))
-        INLINE_BODIES[root] = seen
     end
-    return seen[name] or false
+    return seen
 end
 
 function protocol_declared(root, owner, inventory, sdkdir)
@@ -1775,6 +1769,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     -- per call, not a module global: an earlier check in the same process filled it from a tree with no SDK
     -- and the next one reused that answer instead of asking declared_names about its own
     local declared_by_header
+    local inline_bodies
     for _, carried in ipairs({found.classes, found.members, found.symbols}) do
         for name in pairs(carried) do
             -- the protocol metadata symbols answer for the protocol rows and are not API of their own
@@ -1829,9 +1824,14 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
                 (owner and listed[owner] and listed[owner].kind == "protocol" and
                  protocol_declared(root, owner, inventory, sdkdir)) or
                 (owner and inventory and inventory.protocols and inventory.protocols[owner] ~= nil) or false
-            if entry.kind == "function" and not built and inline_defined(root, name:gsub("%(%)$", "")) then
-                -- the port's own body, in a header of the package: a symbol will never answer for an inline
-                built = true
+            if entry.kind == "function" and not built then
+                -- the port's own body, in a header of the package: a symbol will never answer for an inline,
+                -- and Apple's own inlines are not counted - an SDK inline is Apple's code in the consumer
+                inline_bodies = inline_bodies or inline_bodies_of(root)
+                local bare = (name:gsub("%(%)$", ""))
+                if inline_bodies[bare] then
+                    built = true
+                end
             end
             if (entry.kind == "type" or entry.kind == "case") and not built then
                 -- no symbol will ever answer for a type or an enumeration case, so the header is the build
