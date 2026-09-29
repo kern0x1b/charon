@@ -45,7 +45,7 @@ if ! cmp -s "$BUILD/host/in/cube.obj" "$BUILD/port/in/cube.obj"; then
     echo "the two processes were not given the same inputs"; exit 1
 fi
 
-python3 "$here/compare.py" "$BUILD/host/answers.txt" "$BUILD/port/answers.txt" "$1"
+python3 "$here/compare.py" "$BUILD/host/answers.txt" "$BUILD/port/answers.txt" "${1:-0.0005}"
 status=$?
 echo "answers: $BUILD/host/answers.txt $BUILD/port/answers.txt"
 exit $status
