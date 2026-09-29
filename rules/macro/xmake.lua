@@ -22,6 +22,15 @@ rule("macro")
         if not project.required_package("swift-syntax") then
             raise("target(%s) is a macro plugin, and its project does not require charon@swift-syntax: the toolchain's own swift-syntax does not export CompilerPlugin, so there is nothing else to build it against", target:name())
         end
+        -- The addon's own `rules/swift` attaches to a target's `.swift` files **by extension**
+        -- (`~/.xmake/addons/charon/v0.8.14/rules/swift/xmake.lua:3` is `set_extensions(".swift")`),
+        -- and its `on_load` refuses a project that requires no runtime, which is what a host plugin
+        -- target is. Measured, in this order: `set_rules("macro")` replaces the default rules and
+        -- does not detach it; `{defaults = false}` on the files does not detach it either; the rule
+        -- is chosen from the target's file set by extension, so what is left is to give the plugin
+        -- sources an extension the addon rule does not claim and have this rule copy them, or to take
+        -- the addon rule off the target by name. Both are the next attempt.
+        --
         -- Own the sources. `set_default(false)` was tried here first and **measured not to work**:
         -- the next build after it failed with the identical "error opening input file
         -- 'arm64-apple-ios'", because the default rules are the *target's*, and a rule's
