@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""accessibilitychart/compare.py - the two answers against what the case declares.
+"""host/common/compare.py - the two answers of a host differential against what the case declares.
+
+It lives here and not in one case's folder because two of them need it: a reader that answers
+"identical" on two empty files is a reader every case in this tree can be made to pass, and a second
+copy of it would be a second reader to keep right.
 
 The file the port's differential reads, expected-differences.tsv, holds the cases the two answers are
 expected to differ on, and **it currently holds none**: the three rows it had are gone, because the

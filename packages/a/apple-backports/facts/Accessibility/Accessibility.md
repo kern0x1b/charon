@@ -270,10 +270,80 @@ A mutant that takes the guard out of `CharonSayOnce.h` writes a line per call, a
 "the port wrote 3 lines for +[AXLiveAudioGraph start], and the case called it 3 times". That is what the
 `inert` status now rests on rather than on a sentence.
 
+## AXBrailleMap, 15.2: the pin state of a display that is not there
+
+A braille map is the state of a connected two-dimensional braille display: a grid of pins, each raised
+to a height or lowered, and a size. The release has neither the class nor the protocol
+(0 of the framework's 30 classes on 6.1.3 armv7, on 4.3 armv7 and on 3.0 armv6, control symbol found on
+all three), and it needs no Charon header: `AXBrailleMap.h` is in the SDK the package compiles against
+and is byte-identical to 26.2's copy.
+
+`tests/backports/host/accessibilitymap/run.sh` asks the system's class and the port's class the same 49
+questions and compares the two outputs line by line. **46 answer the same; three are declared
+differences** in the case's own `expected-differences.tsv`, and each of those three says in one column
+what each side answers and in a third why.
+
+**The pin store keeps whatever it is given.** Measured on the host: a height of 2.0 reads back 2.0, one
+of -1.0 reads back -1.0, a fraction reads back exactly, a negative point takes one, and a point at
+(1e9, 1e9) was never written and reads 0. There is no range check and no bounds check on the host and
+there is none here: a check the system does not make is a port answering something a caller never
+asked for, and three mutants hold that - a store that keeps nothing, a height clamped to the unit
+range, and a negative point refused - each of which dies on its own line.
+
+**The store is real before anything has sized it.** A map obtained by allocation answers a zero size and
+still keeps its pins, measured, so the store is created when the first pin arrives and not by an
+initialiser. Two maps do not share a grid, measured.
+
+**The copy and the archive are real.** The header's protocol list is `NSCopying, NSSecureCoding`, so
+both are members the port owes and both are measured: `+supportsSecureCoding` answers YES on the host,
+a copy carries the size and the pins and is unaffected by a write to the original, and an
+`NSKeyedArchiver` round trip brings the size and every pin back - over a map with pins and over an
+empty one.
+
+### The three lines the two do not answer the same, and why
+
+* **A write to a copy.** The host's `-copyWithZone:` hands over a *frozen* pin store, and writing a pin
+  to a copy raises `NSInvalidArgumentException` while the original stays writable - measured twice. This
+  port's copy is its own mutable map, so a write to a copy lands. **This is the one place in the whole
+  Accessibility family where the port is deliberately better than the system**, and it is in the
+  coordinator's ledger at `.agent-work/handoffs/better-than-system-accessibility.md`. Matching the host
+  would mean raising from a setter a caller legitimately called, which is a defect rather than
+  behaviour; if the parity policy is read as covering it, the change is one line and the case turns red.
+* **What that write leaves behind**, recorded as its own case so a reader sees what each side did.
+* **The copy's answer at a point the original never had.** The host's copy answers `2` at (5, 6) where
+  the height `2` was written at (5, 5) and `0.125` was written at (5, 6) only after the copy was made -
+  so the host's copy does not address pins by the point it is given, and the mapping behind that is not
+  established: two measurements with two different points and the same answer each time, which is
+  consistent with a store keyed by something coarser than the point, and the cause was not chased
+  further. This port's store is keyed by the point, which is what the header's API says, and the host's
+  answer is recorded rather than reproduced. Every other pin rule is unaffected.
+
+### The one way to make a map, and why it is the port's own
+
+The header marks `-init` and `+new` unavailable and gives no other way to make a map, so on a real
+device nothing but the braille display service ever holds one, and no release this port carries has
+that service. A caller that wants a map has to be able to ask for one, so the port adds
+`+charon_mapWithDimensions:` in `Accessibility/CharonBrailleMap.h` - Charon's own spelling, the
+arrangement `CharonAccessibility.h` uses for the request's own methods for the same reason - and the
+SDK's initialisers stay where they are. It gets a header of its own rather than a line in
+`CharonAccessibility.h`, because that file transcribes three braille classes and a program importing
+both would have two declarations of each, which clang rejects by name.
+
+That factory cannot be compared against the system, which cannot be asked to build a map at all, so
+`factory-probe.m` checks it on its own and **asserts rather than prints**: seven checks over a 3x2 grid,
+a copy of a sized map - which is the only place the copy's size is held by anything, since the two-sided
+case can only ever copy a zero-sized one - and a zero-sized map that still takes a pin. The first
+version of that probe printed and asserted nothing, and two mutants survived it: a copy that dropped
+the size and a factory that answered the wrong size. It asserts now, and both die on it.
+
+`presentImage:` is the one member of the group that asks for something this release does not have. It
+is carried, it is `inert`, and it says once in the log that there is no display to show the image on -
+counted by the run, which calls it once and fails if the port wrote a line per call.
+
 ## What the registry holds, and the rows it does not
 
-**117 entries** are written. Of the 114 the Accessibility framework started with, 35 rows became
-`implemented` with the chart group and one became `inert` (`AXLiveAudioGraph` and its three class
+**119 entries** are written. Of the 114 the Accessibility framework started with, 39 rows became
+`implemented` over the chart and braille-map groups and two became `inert` (`AXLiveAudioGraph` and its three class
 methods, which the registry now names one by one), two rows were **removed** rather than left `absent`,
 and five rows were added that the registry had no answer for at all: the two protocols of 15.0 and the
 three class methods of the graph. Fifty-five entries are `implemented`, four `inert` and 58 `absent`.

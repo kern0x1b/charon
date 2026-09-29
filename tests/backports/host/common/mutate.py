@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""accessibilitychart/mutate.py - change one line of a copy of the port's source, for mutants.sh.
+"""host/common/mutate.py - change one line of a copy of the port's source, for a case's mutants.sh.
+
+It is here for the same reason the reader is: every mutants.sh in this tree needs a mutator that
+refuses a line it cannot find, and a copy per case is a copy to keep right.
 
 The copy is a mutant's own, so the change is written to it and never to the tree's file. Two things
 about that are checked rather than assumed:

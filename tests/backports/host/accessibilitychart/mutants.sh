@@ -84,7 +84,7 @@ mutant() {
     cp "$sources/CharonChartDescriptors.m" "$dir/pkg/Accessibility/"
     cp "$package/CharonSayOnce.h" "$dir/pkg/"
     MUTATE="$dir/pkg/Accessibility/CharonChartDescriptors.m" MUTATE_OLD="$old" MUTATE_NEW="$new" \
-        MUTATE_NTH="$nth" python3 "$here/mutate.py"
+        MUTATE_NTH="$nth" python3 "$here/../common/mutate.py"
     ran=$((ran + 1))
     if ACCESSIBILITY_SRC="$dir/pkg/Accessibility" BUILD="$dir/build" sh "$here/run.sh" > "$dir/out.txt" 2>&1; then
         echo "MUTANT SURVIVED: $name"
@@ -259,7 +259,7 @@ MUTATE="$work/M18-say-once/pkg/CharonSayOnce.h" MUTATE_OLD='    @synchronized (s
         [said addObject:key];
     }' MUTATE_NEW='    @synchronized (said) {
         [said addObject:key];
-    }' MUTATE_NTH=1 python3 "$here/mutate.py"
+    }' MUTATE_NTH=1 python3 "$here/../common/mutate.py"
 ran=$((ran + 1))
 if ACCESSIBILITY_SRC="$work/M18-say-once/pkg/Accessibility" BUILD="$work/M18-say-once/build" \
    sh "$here/run.sh" > "$work/M18-say-once/out.txt" 2>&1; then
