@@ -8,6 +8,7 @@
 // One file, one case, run directly. It takes the number of preceding cases to run first, so the same
 // binary bisects: 0 is the case alone, and k is the case after the k cases that come before it.
 #import <Foundation/Foundation.h>
+#include <unistd.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
@@ -39,9 +40,18 @@ static MPSVector *vectorOf(const void *values, MPSDataType type, NSUInteger leng
                                                                   vectorBytes:length * sizeof(float) dataType:type]];
 }
 
+static void say(const char *step)
+{
+    char line[128];
+    int n = snprintf(line, sizeof(line), "STEP %s\n", step);
+    write(2, line, (size_t)n);
+}
+
 static void oneCase(MPSCNNNeuronType type, const char *label)
 {
+    say("case begin");
     memset(normOut, 0, sizeof(normOut));
+    say("buffers created");
     id<MTLCommandBuffer> buffer = [gDevice newCommandBuffer];
     MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3);
     MPSMatrix *out = matrixOf(&normOut[0][0], MPSDataTypeFloat32, 4, 3);
@@ -49,13 +59,19 @@ static void oneCase(MPSCNNNeuronType type, const char *label)
     MPSVector *v = vectorOf(normGivenVariance, MPSDataTypeFloat32, 3);
     MPSVector *g = vectorOf(normGamma, MPSDataTypeFloat32, 3);
     MPSVector *b = vectorOf(normBeta, MPSDataTypeFloat32, 3);
+    say("kernel alloc");
     MPSMatrixBatchNormalization *kernel = [[MPSMatrixBatchNormalization alloc] initWithDevice:gDevice];
+    say("kernel allocated");
     [kernel setNeuronType:type parameterA:1.0f parameterB:1.0f parameterC:2.0f];
     kernel.epsilon = 0.001f;
+    say("neuron set");
     [kernel encodeToCommandBuffer:buffer inputMatrix:in meanVector:m varianceVector:v
                       gammaVector:g betaVector:b resultMatrix:out];
+    say("encoded");
     [buffer commit];
+    say("committed");
     [buffer waitUntilCompleted];
+    say("completed");
     printf("%-28s status %ld  out %g %g %g\n", label, (long)buffer.status, normOut[0][0], normOut[1][0], normOut[2][0]);
     fflush(stdout);
 }
@@ -69,8 +85,11 @@ int main(int argc, char **argv)
         const unsigned kPreceding = (argc > 1) ? (unsigned)atoi(argv[1]) : 0;
         printf("device %s, preceding cases %u\n", [[gDevice name] UTF8String], kPreceding);
         fflush(stdout);
-        if (kPreceding > 0) oneCase(MPSCNNNeuronTypeTanH, "tan h (before gelu)");
-        oneCase(MPSCNNNeuronTypeGeLU, "gelu alone");
+        (void)kPreceding;
+        MPSCNNNeuronType type = MPSCNNNeuronTypeGeLU;
+        if (argc > 2) type = (MPSCNNNeuronType)atoi(argv[2]);
+        say("device ready");
+        oneCase(type, "chosen type");
         printf("survived\n");
     }
     return 0;
