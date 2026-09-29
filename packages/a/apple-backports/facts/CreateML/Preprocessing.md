@@ -75,16 +75,32 @@ fitting a `Transformer` at all.
 | type | the port | the host | evidence |
 | --- | --- | --- | --- |
 | `PreprocessingUpdatableSupervisedEstimator` | **does not fit** — `makeTransformer()` (line 168) hands the preprocessor to `ComposedTransformer.init` (line 33), which stores it as given | **does not fit** — `scale=1.0 offset=0.0` after `makeTransformer()`, after the first update and after the second | `tests/backports/host/createml/probe/preprocessing-updatable-host.swift` and its `.txt` |
-| `PreprocessingEstimator` | **fits** — `transformed(_:)` line 57 and `fitted(on:)` line 62, both `preprocessor.fitted(on: training)` | **does not fit** — `scale=1.0 offset=0.0` after `fitted(to:)`, and `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-estimator-host.swift` and its `.txt` |
-| `PreprocessingUpdatableEstimator` | **fits** — `transformed(_:)` line 137 | **does not fit** — `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-updatable-estimator-host.swift` and its `.txt` |
+| `PreprocessingEstimator` | **fitted** — `preprocessed(from:)` line 56 and `fitted(on:)` line 61 both called `preprocessor.fitted(on: training)`; now neither does | **does not fit** — `scale=1.0 offset=0.0` after `fitted(to:)`, and `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-estimator-host.swift` and its `.txt` |
+| `PreprocessingUpdatableEstimator` | **fitted** — `preprocessed(from:)` line 136; now it does not | **does not fit** — `preprocessed(from:)` returns the raw `[1, 2, 3, 4, 5, 6, 7, 8]` | `tests/backports/host/createml/probe/preprocessing-updatable-estimator-host.swift` and its `.txt` |
 
 ## A divergence in the API surface, in the same family
 
-**Neither the host's `PreprocessingEstimator` nor its `PreprocessingUpdatableEstimator` has
-`transformed(to:)`.** Their members are `preprocessed(from:)`, `fitted(to:)` and
-`fitted(toPreprocessed:)`; the port has `transformed(_:)` at `Preprocessing.swift:57` and `:137`. Two
-public names the framework does not have, and they belong in the invented-names table as their own
-entries.
+**A claim withdrawn: there is no `transformed(_:)` on any of the three pipelines.** Two reports - mine
+and the coordinator's instruction that followed it - said the port had `transformed(_:)` at
+`Preprocessing.swift:57` and `:137` and that it was a third invented public name. There is no such
+member. Lines 57 and 137 are **body** lines inside `preprocessed(from:)`, calling the *preprocessor's*
+`transformed`. The pipelines' public members are `preprocessed(from:)`, `fitted(on:)`,
+`featuresOnly(from:)`, `makeTransformer()` and `update(_:with:)`, and `grep -n 'public func
+transformed'` over the file returns nothing. The check that would have caught it is one `grep` for a
+declaration rather than a call, and I read a body line as a declaration twice.
+
+**Nothing in the tree calls a pipeline's `transformed(_:)`.** The `.transformed(` calls that remain are
+on the scalers themselves - `standard.transformed(numbers)` and the rest in the transformers suite -
+which is `ColumnarTransformer`, a different type, and correct there.
+
+**Still OPEN: does a pipeline *apply* the preprocessor it was given?** The three probes all used
+`LinearTransformer(scale: 1, offset: 0)`, the identity, so they cannot distinguish "transforms through
+the caller's preprocessor" from "ignores the preprocessor and hands the input back". A non-identity
+preprocessor separates them, and the probe written for that does not build - `swiftc -typecheck` passes
+and then both `-O` and `-Onone` abort with signal 6. The question and the probe's path are
+`tests/backports/host/createml/probe/preprocessor-applied-host.swift`, whose `.txt` records the failure.
+The claim "does not fit" is measured; "does not use" is not, and the distinction bears on what a caller
+who passes an *unfitted* preprocessor should expect.
 
 **All three types, measured, and the port fits two of them where the host fits none.** The rule above
 predicts exactly this and the third probe confirms it rather than being predicted: the host's
