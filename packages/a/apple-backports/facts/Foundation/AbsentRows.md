@@ -21,7 +21,7 @@ next time anything lands.
 <!-- framework: Foundation -->
 <!-- count:begin -->
 ```
-Foundation   110 absent   9 ignored   792 implemented   48 inert      (16271 rows, 3283 absent, over 65 frameworks)
+Foundation   110 absent   9 ignored   792 implemented   48 inert      (16279 rows, 3263 absent, over 65 frameworks)
 ```
 <!-- count:end -->
 
@@ -54,24 +54,46 @@ the ad-hoc list writer, which is why both the list and the count come from the o
 
 ## The families, by what the host lacks
 
-The groups are `tools/host-has-row.m --by-owner` over `tools/registry-absent.py --list Foundation`,
-both of which are in the tree, so this table is printed rather than remembered:
+The groups are the second generated block below, which is the same run and the same tool as the
+list above it, so a plan built on it cannot quote a number the block does not carry:
 
+<!-- host-lacks-by-owner -->
+<!-- host-lacks-by-owner:begin -->
 ```
-$ tools/host-has-row.m --by-owner <(tools/registry-absent.py --list Foundation)   # grouped
-   4 NSURLSessionStreamDelegate      3 NSURLSessionTaskDelegate     2 NSXPCInterface
-   2 NSUserActivityDelegate          1 NSUserActivity               1 NSFilePresenter
-   1 NSPredicateValidating           5 _os_log_*                    11 the constants
-# 30 rows the host lacks, over this tree
+  1  NSUserActivity
+  1  NSInflectionRuleAttributeName
+  1  NSLanguageIdentifierAttributeName
+  1  NSMorphologyAttributeName
+  3  NSURLSessionTaskDelegate
+  1  NSMarkdownSourcePositionAttributeName
+  1  NSInflectionAgreementArgumentAttributeName
+  1  NSInflectionAgreementConceptAttributeName
+  1  NSInflectionConceptsKey
+  1  NSInflectionReferentConceptAttributeName
+  1  NSURLSessionUploadTaskResumeData
+  1  NSFilePresenter
+  1  NSLocalizedNumberFormatAttributeName
+  1  NSListItemDelimiterAttributeName
+  1  NSPredicateValidating
+  2  NSXPCInterface
+  2  NSUserActivityDelegate
+  4  NSURLSessionStreamDelegate
+  1  _os_log_impl
+  1  _os_log_error_impl
+  1  _os_log_fault_impl
+  1  _os_log_debug_impl
+  1  _os_log_disabled
+# 23 groups over 30 rows the host lacks
 ```
+<!-- host-lacks-by-owner:end -->
 
-| the host lacks | rows | what the port has to build |
-| --- | --- | --- |
-| `NSURLSessionStreamDelegate` (4) + `NSURLSessionTaskDelegate` (3) | 7 | the port's own loader and stream task, which have to *call* seven delegate members at the right moments |
-| `NSXPCInterface` (2) | 2 | Mach XPC on 4.3 and 6.1.3 - the class itself is the wall |
-| `NSUserActivityDelegate` (2) + `NSUserActivity` (1) | 3 | the port's own `NSUserActivity` class |
-| the item-provider six | 0 | **answered**: this slice's six rows, which the port's own provider answers (see below) |
-| `NSFilePresenter` (1), `NSPredicateValidating` (1), `_os_log_*` (5), the 11 constants | 18 | each its own line below |
+| the host lacks | what the port has to build |
+| --- | --- |
+| the two delegate protocols, the largest group in the block | the port's own loader and stream task, which have to *call* those members at the right moments |
+| `NSXPCInterface` | Mach XPC on 4.3 and 6.1.3 - the class itself is the wall |
+| `NSUserActivityDelegate` and `NSUserActivity` | the port's own `NSUserActivity` class |
+| the item-provider six | **answered**: the rows this series took, which the port's own provider answers (see below) |
+| `NSFilePresenter`, `NSPredicateValidating`, `_os_log_*`, the constants | each its own line below |
 
 The **seven session-delegate rows are the largest group the host still lacks**, and they are not the slice that came next,
 for a reason that is a limit of the instrument rather than of the work: the code that would call those
@@ -99,13 +121,59 @@ them now. The next group of that shape is the three `NSUserActivity` rows.
   port's category is small; the proof has the same blocker as the five above.
 - **The seven session-delegate members**: the port's own `NSURLSession.m` and `NSURLSessionStreamTask9.m`
   have to call them, and neither is a host translation unit. Owed with the 6.1.3 call test.
-- **The inflection, morphology, markdown and attributed-string names (24 rows), `NSURLSessionUploadTaskResumeData`,
-  `NSListItemDelimiterAttributeName`, `NSLocalizedNumberFormatAttributeName`**: the *values*. The host
-  lacks these thirteen names outright, so there is no host oracle either, and the facts file that
-  carries this family refuses a header comment as a source. Blocker: `xmake firmware --arch=<a> fetch
-  <a release new enough to export them>` and one `tools/corpus/cache-value.lua` run each - the
-  network, not a slot. **`cachetools-fix3` is on this path**: `cfconst.py`'s 32-bit reads are what a
-  cache value read goes through.
+- **The names this family owes** - the inflection, morphology, markdown and attributed-string
+  vocabulary, `NSURLSessionUploadTaskResumeData`, `NSListItemDelimiterAttributeName`,
+  `NSLocalizedNumberFormatAttributeName` - are owed for their **values**. The block below is
+  `tools/host-has-row.m --write-facts` over `tools/registry-absent.py --list Foundation`: it is every
+  absent Foundation row the host does not answer, and **eleven** of the ones in this family are in it -
+  `NSInflectionRuleAttributeName`, `NSLanguageIdentifierAttributeName`, `NSMorphologyAttributeName`,
+  `NSMarkdownSourcePositionAttributeName`, `NSInflectionAgreementArgumentAttributeName`,
+  `NSInflectionAgreementConceptAttributeName`, `NSInflectionConceptsKey`,
+  `NSInflectionReferentConceptAttributeName`, `NSURLSessionUploadTaskResumeData`,
+  `NSLocalizedNumberFormatAttributeName`, `NSListItemDelimiterAttributeName` - so for those there is
+  no host oracle at all; the rest of the family the host has a name for and what it lacks is the
+  release-ladder reading. No count of the whole family is written here on purpose: a number typed beside
+  a list the tool prints is a number that goes stale, which is what this section had twice. The facts
+  file that carries the family refuses a header comment as a source. Blocker: `xmake firmware --arch=<a> fetch <a release new enough to export
+  them>` and one `tools/corpus/cache-value.lua` run each - the network, not a slot. **`cachetools-fix3`
+  is on this path**: `cfconst.py`'s 32-bit reads are what a cache value read goes through.
+
+<!-- host-lacks -->
+<!-- host-lacks:begin -->
+```
+-[NSUserActivity deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:]
+NSInflectionRuleAttributeName
+NSLanguageIdentifierAttributeName
+NSMorphologyAttributeName
+-[NSURLSessionTaskDelegate URLSession:didCreateTask:]
+NSMarkdownSourcePositionAttributeName
+-[NSURLSessionTaskDelegate URLSession:task:didReceiveInformationalResponse:]
+-[NSURLSessionTaskDelegate URLSession:task:needNewBodyStreamFromOffset:completionHandler:]
+NSInflectionAgreementArgumentAttributeName
+NSInflectionAgreementConceptAttributeName
+NSInflectionConceptsKey
+NSInflectionReferentConceptAttributeName
+NSURLSessionUploadTaskResumeData
+-[NSFilePresenter accommodatePresentedItemEvictionWithCompletionHandler:]
+NSLocalizedNumberFormatAttributeName
+NSListItemDelimiterAttributeName
+NSPredicateValidating
++[NSXPCInterface XPCTypeForSelector:argumentIndex:ofReply:]
++[NSXPCInterface setXPCType:forSelector:argumentIndex:ofReply:]
+-[NSUserActivityDelegate userActivity:didReceiveInputStream:outputStream:]
+-[NSUserActivityDelegate userActivityWasContinued:]
+-[NSURLSessionStreamDelegate URLSession:streamTask:didBecomeInputStream:outputStream:]
+-[NSURLSessionStreamDelegate URLSession:betterRouteDiscoveredForStreamTask:]
+-[NSURLSessionStreamDelegate URLSession:readClosedForStreamTask:]
+-[NSURLSessionStreamDelegate URLSession:writeClosedForStreamTask:]
+_os_log_impl
+_os_log_error_impl
+_os_log_fault_impl
+_os_log_debug_impl
+_os_log_disabled
+# 30 rows the host lacks, over the tree this walk read
+```
+<!-- host-lacks:end -->
 - **The five `NSUndoManager` rows**: a policy question, not a build. The release's own manager keeps
   its stack private and exposes no count, so a category cannot answer `undoCount` truthfully and a
   count answering 0 is the silent fake the worker brief forbids; `inert` against `ignored` is the

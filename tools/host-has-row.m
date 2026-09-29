@@ -122,8 +122,120 @@ static int print_by_owner(const char *path)
     return unparsed ? 1 : 0;
 }
 
+/* --write-facts F TSV rewrites F's generated group block from this run, so the number a facts file
+   quotes beside an owed line is this probe's and not a porter's. The block sits between
+   <!-- host-lacks:begin --> and <!-- host-lacks:end -->, next to a <!-- host-lacks --> line. */
+static int write_facts(const char *path, const char *tsv)
+{
+    const char *begin = "<!-- host-lacks:begin -->";
+    const char *end = "<!-- host-lacks:end -->";
+    const char *grouped_begin = "<!-- host-lacks-by-owner:begin -->";
+    const char *grouped_end = "<!-- host-lacks-by-owner:end -->";
+    char text[1 << 16];
+    FILE *facts = fopen(path, "r");
+    if (!facts) { printf("FAIL cannot read %s\n", path); return 2; }
+    size_t got = fread(text, 1, sizeof text - 1, facts);
+    fclose(facts);
+    text[got] = 0;
+    if (!strstr(text, begin) || !strstr(text, end) || !strstr(text, "<!-- host-lacks -->")) {
+        printf("FAIL %s has no %s / %s markers or no <!-- host-lacks --> line\n", path, begin, end);
+        return 1;
+    }
+    if (!strstr(text, grouped_begin) || !strstr(text, grouped_end)) {
+        printf("FAIL %s has no %s / %s markers\n", path, grouped_begin, grouped_end);
+        return 1;
+    }
+    /* the groups first, into a string, then the block: one run, one block */
+    char block[1 << 15];
+    int written = 0;
+    static char names[128][256];
+    static unsigned tally[128];
+    unsigned groups = 0;
+    written += snprintf(block + written, sizeof block - written, "%s\n```\n", begin);
+    FILE *input = fopen(tsv, "r");
+    if (!input) { printf("FAIL cannot read %s\n", tsv); return 2; }
+    char line[1024];
+    unsigned total = 0, unparsed = 0;
+    while (fgets(line, sizeof line, input)) {
+        char api[512], kind[64], introduced[32];
+        if (sscanf(line, "%511[^\t]\t%63[^\t]\t%31s", api, kind, introduced) != 3) { unparsed++; continue; }
+        if (strcmp(answer(api, kind), "LACKS") != 0) continue;
+        char owner[256] = {0};
+        const char *open = strchr(api, '[');
+        const char *dot = strchr(api, '.');
+        if (open) {
+            const char *space = strchr(open + 1, ' ');
+            size_t length = (size_t)(space - (open + 1));
+            if (length && length < sizeof owner) { memcpy(owner, open + 1, length); owner[length] = 0; }
+        } else if (dot && (size_t)(dot - api) < sizeof owner) {
+            size_t length = (size_t)(dot - api);
+            memcpy(owner, api, length); owner[length] = 0;
+        } else {
+            snprintf(owner, sizeof owner, "%s", api);
+        }
+        written += snprintf(block + written, sizeof block - written, "%s\n", api);
+        /* the grouped counts, in the same run, so the two blocks cannot disagree */
+        {
+            unsigned found = groups;
+            for (unsigned g = 0; g < groups; g++) {
+                if (strcmp(names[g], owner) == 0) { found = g; break; }
+            }
+            if (found < 128) {
+                snprintf(names[found], sizeof names[found], "%s", owner);
+                if (found == groups) groups++;
+                tally[found]++;
+            }
+        }
+        total++;
+    }
+    fclose(input);
+    written += snprintf(block + written, sizeof block - written,
+                        "# %u rows the host lacks, over the tree this walk read\n```\n%s", total, end);
+
+    /* splice both blocks: the list and the grouped counts, in the file's own order */
+    char staged[1 << 17];
+    size_t kept = 0;
+    const char *cursor = text;
+    /* in the order they appear in the file, not the order they are written here: a splice that
+       assumes an order it does not check leaves the earlier block stale, which is how a generated
+       block came out empty above. */
+    int list_first = strstr(text, begin) < strstr(text, grouped_begin);
+    for (int pass = 0; pass < 2; pass++) {
+        int list = (pass == 0) ? list_first : !list_first;
+        const char *mark = list ? begin : grouped_begin;
+        const char *stop = list ? end : grouped_end;
+        char *at = strstr(cursor, mark);
+        if (!at) continue;
+        size_t head_length = (size_t)(at - cursor);
+        memcpy(staged + kept, cursor, head_length); kept += head_length;
+        if (list) {
+            memcpy(staged + kept, block, strlen(block)); kept += strlen(block);
+        } else {
+            int group_written = 0;
+            group_written += snprintf(staged + kept, sizeof staged - kept, "%s\n```\n", grouped_begin);
+            for (unsigned g = 0; g < groups; g++)
+                group_written += snprintf(staged + kept + group_written, sizeof staged - kept - group_written,
+                                          "%3u  %s\n", tally[g], names[g]);
+            group_written += snprintf(staged + kept + group_written, sizeof staged - kept - group_written,
+                                      "# %u groups over %u rows the host lacks\n```\n%s", groups, total, grouped_end);
+            kept += group_written;
+        }
+        cursor = strstr(at, stop) + strlen(stop);
+    }
+    snprintf(staged + kept, sizeof staged - kept, "%s", cursor);
+    FILE *out = fopen(path, "w");
+    if (!out) { printf("FAIL cannot write %s\n", path); return 2; }
+    fputs(staged, out);
+    fclose(out);
+    printf("rewrote the generated group block in %s: %u rows the host lacks\n", path, total);
+    if (unparsed) { printf("FAIL %u line(s) did not parse\n", unparsed); return 1; }
+    return 0;
+}
+
 int main(int argc, char **argv)
 {
+    if (argc > 3 && strcmp(argv[1], "--write-facts") == 0)
+        return write_facts(argv[2], argv[3]);
     if (argc > 2 && strcmp(argv[1], "--by-owner") == 0)
         return print_by_owner(argv[2]);
     const char *path = argc > 1 ? argv[1] : NULL;

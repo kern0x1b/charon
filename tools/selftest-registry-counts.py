@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""selftest-registry-absent.sh: the writer of a facts file's count block, checked the way a reader
-would be misled if it were wrong.
+"""selftest-registry-counts.py: the two tools a facts file's numbers come from, checked the
+way a reader would be misled if they were wrong.
 
-    tools/selftest-registry-absent.sh            exit 0 and a line per case, or exit 1 and the failures
+    tools/selftest-registry-counts.py            exit 0 and a line per case, or exit 1 and the failures
 
 The reason this exists, measured: `--write-facts` took the framework from a marker line in the file
 and only refused a framework the walk had never heard of. A framework that is in the walk with **no
@@ -22,6 +22,16 @@ what the tool printed and whether it rewrote the file:
   5. a registry path with no rows: the counting refusal, not a zero.
 
 Each case writes its facts file into a scratch directory of its own and never into the tree.
+
+The name is `.py` because it is Python: it was a `.sh` that `sh` could not run, which is the same
+wart `tools/corpus/selftest-differences-table.sh` still carries and which is not a pattern to copy. It
+covers both tools rather than only the one it was named for, because a facts file's numbers come from
+both and a self-test that checked one of them would leave the other's refusals unproved.
+
+The last case is the one the reviewer named: `tools/registry-facts-rows.py` printed its count **before**
+it asked whether it had counted anything, so a path with no registry produced `0 rows point at …` on
+stdout and then the refusal, and the number is the thing a reader keeps. The refusal now comes first and
+the case asserts **stdout is empty**, not merely that the exit status is not zero.
 """
 import os
 import shutil
@@ -30,6 +40,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOL = os.path.join(HERE, "registry-absent.py")
+FACTS_ROWS = os.path.join(HERE, "registry-facts-rows.py")
 ROOT = os.path.dirname(HERE)
 # The scratch is inside this worktree and not the system temp path: the owner's rule, and a test that
 # writes outside the tree is a test whose leftovers nobody sweeps.
@@ -40,6 +51,10 @@ failures = []
 
 def run(arguments, cwd=ROOT):
     return subprocess.run([sys.executable, TOOL] + arguments, capture_output=True, text=True, cwd=cwd)
+
+
+def run_facts_rows(arguments, cwd=ROOT):
+    return subprocess.run([sys.executable, FACTS_ROWS] + arguments, capture_output=True, text=True, cwd=cwd)
 
 
 def check(name, condition, detail=""):
@@ -123,10 +138,25 @@ def main():
         check("a registry with no rows is refused, not counted as zero",
               result.returncode != 0 and "nothing was counted" in said,
               "exit %d, said: %s" % (result.returncode, said.strip()[:110]))
+        # 6. the facts-rows tool: an empty path is refused with NOTHING on stdout
+        empty = os.path.join(scratch, "no-registry-under-this")
+        os.makedirs(empty, exist_ok=True)
+        result = run_facts_rows([empty, "facts/Foundation/NSURLResourceKeyStrings.md", "7.0-18.0"])
+        check("a path with no registry is refused with empty stdout",
+              result.returncode != 0 and result.stdout == "" and "nothing was counted" in result.stderr,
+              "exit %d, stdout: %s, stderr: %s" % (result.returncode, result.stdout.strip()[:60],
+                                                    result.stderr.strip()[:70]))
+
+        # 7. and the same tool on a registry that is there, where it does print
+        result = run_facts_rows([os.path.join(ROOT, "packages/a/apple-backports/registry"),
+                                 "facts/Foundation/NSURLResourceKeyStrings.md", "7.0-18.0"])
+        check("a real registry is counted, and says so on stdout",
+              result.returncode == 0 and result.stdout.startswith("45 rows point at"),
+              "exit %d, stdout: %s" % (result.returncode, result.stdout.strip()[:70]))
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
 
-    print("%d checks, %d failures" % (7, len(failures)))
+    print("%d checks, %d failures" % (8, len(failures)))
     if failures:
         raise SystemExit(1)
 

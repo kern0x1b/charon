@@ -1,9 +1,26 @@
 # The URL resource keys and their neighbours, with the values real releases shipped
 
-44 exported string constants of Foundation that arrived between iOS 7 and iOS 18: the file protection
+45 exported string constants of Foundation that arrived between iOS 7 and iOS 18: the file protection
 group, the volume and shared-item keys, the iCloud user defaults notifications, the URL resource keys
 of 8.0, the attribute names of 15.0, the credential storage key of 7.0, the one stream service type,
 and the six that no release below 18.0 exports.
+
+That count is `tools/registry-facts-rows.py <registry-root> facts/Foundation/NSURLResourceKeyStrings.md
+7.0-18.0`: the rows whose `facts` is this file and whose `introduced` is in `[7.0, 18.0)`. It reads **44**
+on `6fcdc631b` and **45** from `568b5f846` on - the same rows on those two, and all `implemented` on
+each - and it is 45 on `820a21f76`, on `b721b20b2`, on `d12d2fd9a` and on the tip of the series that adds
+this paragraph. So the `44` this file's first line carried was **right when it was written**: one of the
+fifteen constants the earlier `foundation-absent-2` answered -
+`NSFileProtectionCompleteWhenUserInactive`, introduced 17.0 - is inside this window and carries this
+file's `facts` pointer from that commit, and before it that row was `absent` with no pointer at all. The
+walk is where that sentence comes from, one run per tree:
+
+```
+6fcdc631b   44 rows point at facts/Foundation/NSURLResourceKeyStrings.md with introduced in [7.0, 18.0)   implemented: 44
+568b5f846   45 rows point at facts/Foundation/NSURLResourceKeyStrings.md with introduced in [7.0, 18.0)   implemented: 45
+6fcdc631b   NSFileProtectionCompleteWhenUserInactive  introduced 17.0  status absent        facts (none)
+568b5f846   NSFileProtectionCompleteWhenUserInactive  introduced 17.0  status implemented  facts/Foundation/NSURLResourceKeyStrings.md
+```
 
 Source: the SDK 26.2 headers for the declarations and their availability; for every value, the dyld
 shared cache of a real release, read through `tools/corpus/cache-value.lua` over the project's own
@@ -21,7 +38,7 @@ identifier's own spelling** — and the three that differ from their own name be
 | `NSURLIsApplicationKey` | `_NSURLIsApplicationKey` | 9.0 |
 | every other one here | its own name | the release in the table below |
 
-Five of the 44 are not the string their own name suggests, and one of them is not even an
+Five of the 45 are not the string their own name suggests, and one of them is not even an
 `NSURL…` name: the notification a user defaults posts when the store is full is a
 `CFPreferences` name, and the attribute names of 15.0 drop the `AttributeName` ending. Guessing any
 of these from the header would have been wrong, which is the whole reason they were read.
@@ -198,6 +215,6 @@ this tree with that value:
 <!-- maximum -->
 <!-- maximum:begin -->
 ```
-16271 rows, 261 with a maximum, 0 not at the release that has the API, 99 members of a class the backports carries this rule does not judge
+16279 rows, 261 with a maximum, 0 not at the release that has the API, 99 members of a class the backports carries this rule does not judge
 ```
 <!-- maximum:end -->
