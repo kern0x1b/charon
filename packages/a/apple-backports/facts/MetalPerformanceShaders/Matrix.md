@@ -13,8 +13,21 @@ package compiles against, for every signature, default and formula — including
 `MPSMatrixFullyConnected.h` and `MPSMatrixBatchNormalization.h` write in their own discussions. The
 behaviour was measured against the MPS of macOS 26.5 by `tests/backports/host/mpsmatrix/run.sh`, which
 compiles the cases twice — once against the system's own MPS, once against this port's classes under
-names of their own — and compares the two answers element by element. **1267 cases, identical bit for
-bit**, with the two exceptions named under *What differs* below.
+names of their own — and compares the two answers element by element.
+
+**That earlier claim — "1267 cases, identical bit for bit" — was wrong and is withdrawn.** It was made
+from a harness that printed the values it was given rather than the values the kernel wrote, and three
+defects in the harness have since been found and fixed: the outputs were prefilled with zero, so "not
+written" and "written zero" were the same thing; the hex is little-endian byte order and was read in the
+wrong order, which turned 16.0 into 4.0; and a pointer print compared the case's C array with the
+object's buffer, which the comparison never mixed. A fourth was mine and not the harness's: a `BUILD`
+path one level short wrote the results into `tests/` while I read the worktree root's copy, which was
+stale for an afternoon.
+
+**What the harness measures now, as of the last run: 137 compared cases, 85 of them differing** — 73
+where both sides wrote and the values differ, and 12 where the host writes zeros and the port does not.
+Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
+the families are worked through and this paragraph is the one to re-measure, not to trust.
 
 ## Where the arithmetic happens
 
