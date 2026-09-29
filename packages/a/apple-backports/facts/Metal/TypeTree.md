@@ -716,3 +716,34 @@ buffers are **bound**, not what they are.
 padded `NSMutableArray`. Padding fills the gaps with `NSNull`, and a gap that answers a non-nil object
 is an entry nobody set — the host differential caught it, and the fix is the honest shape rather than
 an assertion relaxed to match.
+
+## The 14.0 classes, three of which the port declares itself
+
+`MTLFunctionLog`, `MTLFunctionLogDebugLocation`, `MTLLogContainer` and `MTLFunctionDescriptor`, all
+`API_AVAILABLE(ios(14.0))` and all measured conformant by `tests/backports/host/protocol-members.py`.
+
+**The first three are PROTOCOLS, and the SDK this package builds against does not have them.** 16.4
+forward-declares `MTLLogContainer` at `MTLCommandBuffer.h:22` and defines none of the three; 26.2
+declares all three as protocols — `MTLLogContainer` at `MTLFunctionLog.h:19` as
+`<NSObject, NSFastEnumeration>`, `MTLFunctionLogDebugLocation` at `:23`, `MTLFunctionLog` at `:31`. So
+the port declares the protocols in `MTLFunctionLogInternal.h`, transcribed from 26.2 as facts with no
+Apple bodies, and the container *conforms* — which is what carries them. A class the release lacks is
+carried, not omitted.
+
+**I got the shape wrong first, and the criterion caught it.** I transcribed all three as `@interface`
+and the criterion reported every member missing — including against 26.2, where the real declarations
+are visible. It was not the SDK: a protocol takes no storage, so there was nothing for an
+`@implementation` to inherit from. Declaring them as protocols and putting the storage in
+`CharonMetalFunctionLog` / `CharonMetalFunctionLogDebugLocation` fixed it, and the criterion then reads
+`every protocol member is defined` for both.
+
+**What the logs ANSWER, which is the whole of them.** A function log is the GPU's own record of what a
+kernel did while it ran. This port dispatches through its AIR translation over OpenGL ES 2.0, on a
+driver that records nothing per invocation, so there is no log. The header's answer for a function with
+no logs is what these return: `type` is `MTLFunctionLogTypeValidation` (the enumeration's zero),
+`encoderLabel` and `function` and `debugLocation` are `nil`, and the container is **empty** — with the
+two `NSFastEnumeration` methods 26.2's declaration asks for, returning nothing. The members are real
+and the values are absent **by the device**: that is the documented answer, not a stub.
+
+`MTLFunctionDescriptor` is the exception — the 16.4 SDK declares it, so there is nothing to declare
+here, and its five members are carried with `options` starting at `MTLFunctionOptionNone`.

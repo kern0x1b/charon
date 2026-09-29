@@ -780,10 +780,11 @@
       "kind": "class",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it configures function creation (specialization, binary archives) from a compiled library. This port's own function creation (-[CharonMetalLibrary newFunctionWithName:constantValues:error:]) already takes a name and constant values directly, without this descriptor - the extra facilities it offers go with compiler capabilities this port does not build, not with a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalFunctionDescriptor",
+      "effect": "name, specializedName, constantValues, options and binaryArchives are all carried and settable; options starts at MTLFunctionOptionNone, the enumeration's own zero, and the constant values are whatever a caller sets - the 16.4 SDK declares this class, so there is nothing to declare here",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLFunctionHandle",
@@ -800,20 +801,22 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalFunctionLog, behind the port's own @protocol MTLFunctionLog",
+      "effect": "type, encoderLabel, function and debugLocation are all carried and nil or the enumeration's zero: a function log is the GPU's own record of a kernel's execution, and this port dispatches through its AIR translation over OpenGL ES 2.0 on a driver that records nothing per invocation; so there IS no log, and the header's answer for a function with no logs is what these return; the members are real and the VALUE is absent by the device, which is the documented answer rather than a stub",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLFunctionLogDebugLocation",
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalFunctionLogDebugLocation, behind the port's own @protocol",
+      "effect": "functionName, URL, line and column are all carried, built by an initializer a caller supplies; a debug location names where a log says something went wrong, and there is no log, so the value a caller gets is the one it passed and nothing the port invented",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLInstanceAccelerationStructureDescriptor",
@@ -870,10 +873,11 @@
       "kind": "protocol",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it reports per-encoder execution status or shader debug log information this port's CharonMetalCommandBuffer/CharonMetalEncoder do not track at all. MTLCommandBufferDescriptor.errorOptions (facts/Metal/CommandBufferDescriptor.md) can already ask for this tracking; nothing produces it yet, a real, named gap rather than a silent one.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalLogContainer, behind the port's own @protocol MTLLogContainer",
+      "effect": "an array of logs that is empty, plus the two NSFastEnumeration methods 26.2's declaration asks for; an EMPTY container is what a command buffer with no function logs has, and NSFastEnumeration over it returns nothing - 26.2 declares MTLLogContainer as <NSObject, NSFastEnumeration> at MTLFunctionLog.h:19",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLPrimitiveAccelerationStructureDescriptor",
