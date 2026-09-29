@@ -381,3 +381,33 @@ So the host's data gradient is **block diagonal on the feature channel** and **l
 every element — and the block is still not the standard form, since the sixteen variants of it did not
 fit. The next step is the block alone, one channel at a time, which removes the coupling between
 channels and leaves a four by four operator to identify.
+
+### Where the host's `-inf` and its 2.58e26 come from: a mean that is already centred
+
+The sentinel showed the host writes every element, so those two values are its own arithmetic. Every
+input has a non-zero variance, so the divisor is not `sqrt(var + eps)`. Printing the quantities that
+could be zero, per channel, against the inputs the Jacobian used:
+
+| quantity | channel 0 | channel 1 | channel 2 |
+| --- | --- | --- | --- |
+| given mean | 2 | 5 | 4 |
+| batch mean of dY | 3.25 | **5** | 4.5 |
+| **difference** | −1.25 | **0** | −0.5 |
+| given var | 7 | 3 | 9 |
+| batch var of dY | 3.6875 | 6.5 | 8.75 |
+| `sum (x - given mean)` | 8 | −1 | 8 |
+| `sum (x - given mean) * dY` | 26 | 20 | 60 |
+| `sum dY` | 13 | 20 | 18 |
+
+**Channel 1 is the one whose given mean and batch mean are both 5** — a difference of exactly zero,
+where channels 0 and 2 differ. And the degenerate columns in the Jacobian are channel 1's and channel
+2's, with channel 1 the cleanly infinite one.
+
+So the host's block **degenerates exactly when the data is already centred**: it uses the given mean
+and the batch's own mean in a way that divides by, or cancels against, their difference, and a
+difference of zero is what produces `-inf` and the astronomical values. The standard formula has no
+such term, which is consistent with none of the sixteen fitting.
+
+That is the mechanism to look for, and it is one the four by four block of channel 1 will show
+directly: its entries either degenerate as a function of the two means or they do not, and the probe
+does not have to guess the form to ask.
