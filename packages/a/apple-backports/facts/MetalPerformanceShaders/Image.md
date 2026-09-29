@@ -89,6 +89,32 @@ A divisor one short takes three of the six cases red and a fresh image that is n
 and each revert takes them back, so the green cases above are measuring this port's arithmetic over this
 port's image and not the release's twice.
 
+**Where the two class rows are placed, and why that is not their `introduced`.** `MPSImage` is
+introduced in 9.0 and `MPSImageDescriptor` in 26.2, and both rows carry a **`minimum` of 6.0**, which is a
+different field: `introduced` is when the release has the class, and `minimum` is the earliest release the
+object holding it is carried on. `minimums()` in `modules/apple/backports.lua` takes an object's bound from
+the registry entries for the names that object *defines*, so `MPSImage13.o` is bounded by these two rows
+and by nothing else. With no minimum it was carried by every band, and it names
+`_OBJC_CLASS_$_MTLTextureDescriptor` — the class `Metal/MTLTextureDescriptor8.m` defines, and that file is
+carried from 6.0 on — so below 6.0 the object would name a class the band does not carry, and the 4.3 gate
+says so:
+
+    error: 1 objects cannot be placed by their registry minimum above iOS 4.3: MPSImage13.o is carried by
+    every band and names _OBJC_CLASS_$_MTLTextureDescriptor, which MTLTextureDescriptor8.o defines only
+    from 6.0 on; it would not link below that, so give its entries that minimum or move the symbol to a
+    file of its own
+
+**This is the rule for the rest of this family**, and it is worth stating once here: a class row whose
+class calls into a Metal class needs a `minimum` at the release that Metal class is carried from, or its
+object must be a file of its own. Declaring `libraries = {"FoundationBackports", "MetalBackports"}` in
+`modules/apple/backports.lua` does not bound the placement; only the registry minimum does. The sweep over
+the two libraries' objects, on the same tree, names one object and one symbol:
+
+    MPSImage13.o    _OBJC_CLASS_$_MTLTextureDescriptor
+    (every other object of the 51 names no Metal class)
+
+so the bound belongs to these two rows and to no other row of either framework.
+
 **A fresh image reads as zeros.** The port zeroes a texture it made, because a texture's contents are
 whatever was in it and a kernel reads them; the release zeroes a fresh image too, and a caller that
 reads an image before it writes it is answered zeros. The second mutant, `image-zero-fill`, is that
