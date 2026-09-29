@@ -48,18 +48,14 @@
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor",
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXCustomContent",
@@ -75,27 +71,21 @@
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPointValue",
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataSeriesDescriptor",
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXFeatureOverrideSession",
@@ -124,9 +114,9 @@
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "inert",
+      "reason": "a live audio graph is drawn by an assistive technology, and this release runs none: the whole Accessibility surface it holds is the AXS* preference library, measured, and no publisher of a graph is in it. The class is carried, its three class methods keep it and say once each that nothing draws the graph, and the class holds no state - the host own instance has no ivar at all, measured with class_copyIvarList",
+      "effect": "the class is there and NSClassFromString finds it, the three class methods do nothing and write one line each to the log, and no value reaches an assistive technology because none on this release would draw it"
     },
     {
       "api": "AXMathExpression",
@@ -268,9 +258,7 @@
       "kind": "class",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXRequest",
@@ -414,99 +402,77 @@
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChart.accessibilityChartDescriptor",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.additionalAxes",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.attributedTitle",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.contentDirection",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.contentFrame",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.series",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.summary",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.title",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.xAxis",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXChartDescriptor.yAxis",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXCustomContent.attributedLabel",
@@ -576,117 +542,91 @@
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataAxisDescriptor.title",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPoint.additionalValues",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPoint.attributedLabel",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPoint.label",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPoint.xValue",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPoint.yValue",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPointValue.category",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataPointValue.number",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataSeriesDescriptor.attributedName",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataSeriesDescriptor.dataPoints",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataSeriesDescriptor.isContinuous",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXDataSeriesDescriptor.name",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXFeatureOverrideSessionManager.sharedInstance",
@@ -920,54 +860,35 @@
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXNumericDataAxisDescriptor.lowerBound",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
-    },
-    {
-      "api": "AXNumericDataAxisDescriptor.range",
-      "kind": "property",
-      "introduced": "15.0",
-      "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXNumericDataAxisDescriptor.scaleType",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXNumericDataAxisDescriptor.upperBound",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXNumericDataAxisDescriptor.valueDescriptionProvider",
       "kind": "property",
       "introduced": "15.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "status": "implemented"
     },
     {
       "api": "AXRequest.currentRequest",
@@ -1054,13 +975,47 @@
       "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
     },
     {
-      "api": "AttributeScopes.accessibility",
-      "kind": "property",
+      "api": "AXChart",
+      "kind": "protocol",
       "introduced": "15.0",
+      "status": "implemented",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "source": "declaration in the SDK the backport compiles against; metadata object generated by modules/apple/backports.lua from this row"
+    },
+    {
+      "api": "AXDataAxisDescriptor",
+      "kind": "protocol",
+      "introduced": "15.0",
+      "status": "implemented",
+      "facts": "facts/Accessibility/Accessibility.md",
+      "source": "declaration in the SDK the backport compiles against; metadata object generated by modules/apple/backports.lua from this row"
+    },
+    {
+      "api": "+[AXLiveAudioGraph start]",
+      "kind": "method",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "begins a graph of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
+      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "facts": "facts/Accessibility/Accessibility.md"
+    },
+    {
+      "api": "+[AXLiveAudioGraph updateValue:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "publishes one value of it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
+      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "facts": "facts/Accessibility/Accessibility.md"
+    },
+    {
+      "api": "+[AXLiveAudioGraph stop]",
+      "kind": "method",
+      "introduced": "15.0",
+      "status": "inert",
+      "reason": "ends it of a graph an assistive technology draws, and this release runs none that does: the whole Accessibility surface it holds is the AXS* preference library, measured, with no publisher in it",
+      "effect": "the method is there, it does nothing, and it writes one line to the log the first time it is used; the value a caller publishes reaches no assistive technology, because none on this release would draw it",
+      "facts": "facts/Accessibility/Accessibility.md"
     }
   ]
 }

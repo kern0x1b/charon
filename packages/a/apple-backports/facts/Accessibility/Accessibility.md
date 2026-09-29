@@ -1,8 +1,8 @@
 # Accessibility on a release that has the C library and not the classes
 
-`libAccessibilityBackports.dylib` carries the first group of the Accessibility framework of SDK 26.2:
-the request and the feature-override session, and the braille tables. Every registry entry of this
-framework points here.
+`libAccessibilityBackports.dylib` carries the first two groups of the Accessibility framework of SDK
+26.2: the request and the feature-override session, the braille tables, and now the chart and data
+classes of 15.0. Every registry entry of this framework points here.
 
 ## What the release has, measured
 
@@ -38,7 +38,7 @@ preference and its siblings - not the braille table API of 26.0.
 
 So this framework is two things stacked: a preferences library the release already answers for, and
 thirty Objective-C classes the SDK of 26.2 declares on top of it, of which this delivery carries
-six.
+thirteen.
 
 That is why no band needs a straggler here: nothing in either group is a class the release exports,
 so every band builds the library whole and `tools/intents/measure-group.lua` - the check that found
@@ -60,7 +60,7 @@ accessor answers it unchanged.
 classes, 39 rows) and `AXSettings.h` (five functions and five notification constants, 7 rows).
 
 `AXAudiograph.h` and `AXBrailleMap.h` are in 16.4 already and are byte-identical to 26.2's copies
-(`shasum -a 256` of each pair agrees), so the chart and braille-map groups need no Charon header at all.
+(`shasum -a 256` of each pair agrees), so the chart group needs no Charon header at all.
 `AXCustomContent.h` is in 16.4 too but is not the same file: 26.2's copy adds six lines inside
 `AXCustomContentProvider` - a block-returning typedef, an `@optional` marker and the block property -
 so that one member needs a Charon header of its own, as a protocol **category** and not as a second
@@ -110,26 +110,98 @@ invented: a translation of nothing is the input with **no cells**, and the locat
 because no cell was produced. Both directions answer that way, the second without guessing print text
 out of dot patterns. A table an *application* builds is real and is kept, coded and copied.
 
+## The chart and data classes of 15.0
+
+Eight of the nine are containers. An application fills them in and an assistive technology reads them
+back, and neither half has to reach anything on this release, so the value each one keeps is the value
+it was given. Every rule below was measured against the host's own `Accessibility.framework` by
+`tests/backports/host/accessibilitychart/run.sh`, which builds the same 138 questions against the
+system's classes and against the port's - compiled under names the system does not use, so neither can
+answer for the other - and compares the two outputs line by line. 135 of the 138 answer the same; the
+three that do not are named below and are written out in the case's own `expected-differences.tsv`.
+
+**A name and an attributed name are one value.** The header declares `title` and `attributedTitle` (and
+`label`/`attributedLabel`, and `name`/`attributedName`) as two readwrite properties each. On the host,
+setting either face leaves the other holding the same characters, and setting one to nil leaves the
+other nil - measured on a chart, a data point, a series and both axis classes. The port keeps two
+storage slots and its two setters write both, which is the smallest thing that keeps them in step.
+
+**A data point value's two faces are independent, and are not the same rule.** The factory for a number
+leaves the category **nil**; the factory for a category leaves the number **0**, not NaN and not a
+raise. A write to one afterwards does not move the other: a number value given a category keeps 1.5, a
+category value given a number keeps "cat".
+
+**A nullable argument stays what it was given.** A data point built with the two-argument initialiser
+answers nil for its y value, its additional values, its label and its attributed label. A chart given
+an empty series answers an empty array, and the same chart given nil answers nil. A numeric axis given
+nil gridline positions answers nil, and answers nil again after a set to nil.
+
+**The two values no initialiser takes start where the host's start.** A chart's `contentFrame` is a zero
+rectangle and its `contentDirection` is the zero case of its own enumeration, and both are set and read
+back when a caller sets them.
+
+**`-copy` is shallow and shares.** A copy of a chart answers the very series array and the very x-axis
+object its original does, a copy of a series answers the very points array, and a copy of a point
+answers the very x value - measured by pointer identity, not by equality. The port's `copyWithZone:`
+hands its storage over unchanged rather than copying what it points at.
+
+### The three lines the port does not answer the same, and why
+
+The host's own `-copyWithZone:` drops three fields. Measured twice on the host: a chart set to direction
+5 and frame (1, 2, 3, 4) and a numeric axis set to scale case 2, and of the copies of those objects the
+host answers the zero case, the zero rectangle and the zero case again, while every object-typed field
+of the same copies is carried - the title, the summary, the shared series array, both axes, the
+additional axes, the gridline positions, the caller's own description block. The three fields it loses
+are the three value-typed ones, and it loses the same three in both runs.
+
+The port carries all three. A copy that answers a zero rectangle and the linear case for values the
+caller set would be a defect in the port rather than the system behaving as documented, and the
+difference is not hidden: the case prints all three on both sides, `expected-differences.tsv` writes
+out what each side answers and why, and `compare.py` fails if any of the three moves or if the two
+start agreeing.
+
+### AXLiveAudioGraph, the one member of the group that asks for something
+
+A live audio graph is drawn by an assistive technology, and this release runs none: the whole
+Accessibility surface it holds is the preferences library above, and no publisher of a graph is in it.
+The class is carried and `inert`, and so are its three class methods, each of which writes one line to
+the log the first time it is used - the package's own say-once, so a second call is silent.
+
+The class holds **no state**, and that is measured rather than assumed: the host's instance has no ivar
+at all (`class_copyIvarList` over `AXLiveAudioGraph` returns none, and its instance size is 8, which is
+the isa pointer and nothing else), and all three of its methods are class methods
+(`class_getClassMethod` for each). No value is refused and no call raises, because the host does not:
+it takes a value below the unit range, a value above it and a call after `+stop`, without complaint.
+What the case compares for this class is the shape both sides can answer - the three class methods, the
+instance size, the ivar count, that the calls survive - and the sound itself, which a program cannot
+read, is not compared and is not claimed.
+
 ## What the registry holds, and the rows it does not
 
-**114 entries** are written, of the 361 rows the corpus names. The rest are three kinds of row, and
-all three are counted here rather than written as claims nothing checks.
+**117 entries** are written. Of the 114 the Accessibility framework started with, 36 rows became
+`implemented` with the chart group and one became `inert` (`AXLiveAudioGraph` and its three class
+methods, which the registry now names one by one), two rows were **removed** rather than left `absent`,
+and five rows were added that the registry had no answer for at all: the two protocols of 15.0 and the
+three class methods of the graph. Fifty-five entries are `implemented`, four `inert` and 58 `absent`.
 
-* **A Swift-only spelling** is not a row this registry can answer. There are 38 of them in this
-  framework: the Swift face of
+The two rows that were removed, and the one rule that took them out:
+
+* **`AXNumericDataAxisDescriptor.range`** and **`AttributeScopes.accessibility`** are both Swift-only
+  spellings. Neither exports a symbol, so neither can be an `implemented` row, and an `absent` row
+  would be the registry claiming an answer it has not got. `range` is the Swift face of the
+  `lowerBound`/`upperBound` pair - the Swift initialiser takes a `range` and the Objective-C one takes
+  the two bounds, and no header of either the port's SDK or 26.2's declares a `-range` selector: the
+  host answers `respondsToSelector:range` = 0, and the only "range" in either header is inside a
+  comment. `AttributeScopes.accessibility` is a nested member of a Foundation Swift type that no header
+  in the port's SDK tree declares; its seven members are the `UIAccessibilitySpeech*Attribute` constants
+  of the **UIKit** family, so the scope's content is already another family's answer. Both are owed to
+  the Swift module build, which is where a Swift-only surface belongs, and until then they are owed
+  work rather than a registry row of any status.
+* The same rule takes **36 other Swift-only spellings** out of this framework's rows: the Swift face of
   an Objective-C initialiser (`AXDataPoint.init(x:y:additionalValues:label:)`), a Swift getter label
   (`AXBrailleTranslationResult.inputIndex(forResultIndex:)`), and the whole `AttributeScopes` and
   `AttributeDynamicLookup` surface. A property row is named by one spelling in this registry, and these
   are not it; the accessibility of an attribute is reached through the Objective-C half.
-  Two of the 38 are named here because they are the ones a reader is most likely to look for:
-  `AXNumericDataAxisDescriptor.range` is the Swift face of the `lowerBound`/`upperBound` pair - the Swift
-  initialiser takes a `range`, the Objective-C one takes the two bounds, and no header of either the
-  port's SDK or 26.2's declares a `-range` selector (the host answers `respondsToSelector:range` = 0, and
-  the only "range" in either header is inside a comment) - and `AttributeScopes.accessibility` is a
-  nested member of a Foundation Swift type that no header in the port's SDK tree declares, whose seven
-  members are the `UIAccessibilitySpeech*Attribute` constants of the **UIKit** family. Both are owed to
-  the Swift module build, which is where a Swift-only surface belongs. Neither is left as an `absent`
-  row: that status would be the registry claiming an answer it has not got.
 * **Four names the corpus gives twice** - a generic class's property once per instantiation
   (`AXChartDescriptor.additionalAxes`, `AXChartDescriptor.xAxis`, `AXNumericDataAxisDescriptor.gridlinePositions`,
   `AXBrailleTable.language`) - and two entries may not share a name, so one spelling is the row.
@@ -179,5 +251,8 @@ The forward translation of the same input is right.
 
 ## What is not measured here
 
-Not run: not on the device, not in the emulator, not through the generated call test. Every entry here is
-**device-unverified**, and the package build that checks every band is what the delivery report quotes.
+Not run for the chart group: not on the device, not in the emulator, not through the generated call test.
+The host differential and its eight mutants are what the group is held to here - each mutant changes one
+line of the port's own source and has to be caught by the comparison, and each was shown to be caught,
+with the line that caught it. The braille table group is at the same state: device-unverified, and the
+package build that checks every band is what the delivery report quotes.
