@@ -1312,3 +1312,147 @@ and the mutant that ignores the handler is red for both reasons it should be:
     RED  imageWithSize: returns what the handler returned: the handler's image
     RED  the handler was asked for the size the caller wanted: other
     artwork: 2 RED
+
+## What the 26.2 header declares that no row covers
+
+Counted from clang's JSON AST of MediaPlayer's umbrella, per class: the
+`ObjCInterfaceDecl` and every `ObjCCategoryDecl` whose interface is that class,
+unioned by member name, against every row the registry holds. Three controls: a
+member known to be declared is found (valueForProperty: in 1 class(es)), a name no header
+declares is found zero times, and a scratch copy of the AST with one declaration
+removed is short by exactly one member.
+
+| class | declared | a row covers | no row |
+| --- | ---: | ---: | ---: |
+| MPAdTimeRange | 5 | 0 | 5 |
+| MPChangeLanguageOptionCommandEvent | 2 | 0 | 2 |
+| MPChangePlaybackPositionCommand | 0 | 0 | 0 |
+| MPChangePlaybackPositionCommandEvent | 1 | 0 | 1 |
+| MPChangePlaybackRateCommand | 2 | 0 | 2 |
+| MPChangePlaybackRateCommandEvent | 1 | 0 | 1 |
+| MPChangeRepeatModeCommand | 2 | 0 | 2 |
+| MPChangeRepeatModeCommandEvent | 2 | 0 | 2 |
+| MPChangeShuffleModeCommand | 2 | 0 | 2 |
+| MPChangeShuffleModeCommandEvent | 2 | 0 | 2 |
+| MPContentItem | 18 | 0 | 18 |
+| MPFeedbackCommand | 6 | 0 | 6 |
+| MPFeedbackCommandEvent | 1 | 0 | 1 |
+| MPMediaEntity | 5 | 1 | 4 |
+| MPMediaItem | 42 | 17 | 25 |
+| MPMediaItemAnimatedArtwork | 3 | 0 | 3 |
+| MPMediaItemArtwork | 7 | 0 | 7 |
+| MPMediaItemCollection | 6 | 0 | 6 |
+| MPMediaLibrary | 8 | 0 | 8 |
+| MPMediaPickerController | 12 | 1 | 11 |
+| MPMediaPlaylist | 9 | 4 | 5 |
+| MPMediaPlaylistCreationMetadata | 8 | 0 | 8 |
+| MPMediaPredicate | 0 | 0 | 0 |
+| MPMediaPropertyPredicate | 5 | 0 | 5 |
+| MPMediaQuery | 20 | 0 | 20 |
+| MPMediaQuerySection | 2 | 0 | 2 |
+| MPMovieAccessLog | 3 | 0 | 3 |
+| MPMovieAccessLogEvent | 14 | 0 | 14 |
+| MPMovieErrorLog | 3 | 0 | 3 |
+| MPMovieErrorLogEvent | 7 | 0 | 7 |
+| MPMoviePlayerController | 44 | 0 | 44 |
+| MPMoviePlayerViewController | 2 | 0 | 2 |
+| MPMusicPlayerApplicationController | 1 | 0 | 1 |
+| MPMusicPlayerController | 28 | 6 | 22 |
+| MPMusicPlayerControllerMutableQueue | 2 | 0 | 2 |
+| MPMusicPlayerControllerQueue | 3 | 0 | 3 |
+| MPMusicPlayerMediaItemQueueDescriptor | 8 | 0 | 8 |
+| MPMusicPlayerPlayParameters | 2 | 0 | 2 |
+| MPMusicPlayerPlayParametersQueueDescriptor | 7 | 0 | 7 |
+| MPMusicPlayerQueueDescriptor | 2 | 0 | 2 |
+| MPMusicPlayerStoreQueueDescriptor | 7 | 0 | 7 |
+| MPNowPlayingInfoCenter | 8 | 1 | 7 |
+| MPNowPlayingInfoLanguageOption | 8 | 0 | 8 |
+| MPNowPlayingInfoLanguageOptionGroup | 4 | 0 | 4 |
+| MPNowPlayingSession | 15 | 0 | 15 |
+| MPPlayableContentManager | 11 | 0 | 11 |
+| MPPlayableContentManagerContext | 5 | 0 | 5 |
+| MPRatingCommand | 4 | 0 | 4 |
+| MPRatingCommandEvent | 1 | 0 | 1 |
+| MPRemoteCommand | 8 | 0 | 8 |
+| MPRemoteCommandCenter | 23 | 20 | 3 |
+| MPRemoteCommandEvent | 2 | 0 | 2 |
+| MPSeekCommandEvent | 1 | 0 | 1 |
+| MPSkipIntervalCommand | 2 | 0 | 2 |
+| MPSkipIntervalCommandEvent | 1 | 0 | 1 |
+| MPTimedMetadata | 5 | 0 | 5 |
+| MPVolumeView | 19 | 1 | 18 |
+
+421 members across 57 classes, 370 with no row. The classes in the order of the
+fewest missing members are the next pieces.
+
+## What the 26.2 header declares that no row covers
+
+Counted from clang's JSON AST of MediaPlayer's umbrella, per class: the
+`ObjCInterfaceDecl` and every `ObjCCategoryDecl` whose interface is that class,
+unioned by member name, against every row the registry holds. Three controls: a
+member known to be declared is found (valueForProperty: in 1 class(es)), a name no header
+declares is found zero times, and a scratch copy of the AST with one declaration
+removed is short by exactly one member.
+
+| class | declared | a row covers | no row |
+| --- | ---: | ---: | ---: |
+| MPAdTimeRange | 5 | 0 | 5 |
+| MPChangeLanguageOptionCommandEvent | 2 | 0 | 2 |
+| MPChangePlaybackPositionCommand | 0 | 0 | 0 |
+| MPChangePlaybackPositionCommandEvent | 1 | 0 | 1 |
+| MPChangePlaybackRateCommand | 2 | 0 | 2 |
+| MPChangePlaybackRateCommandEvent | 1 | 0 | 1 |
+| MPChangeRepeatModeCommand | 2 | 0 | 2 |
+| MPChangeRepeatModeCommandEvent | 2 | 0 | 2 |
+| MPChangeShuffleModeCommand | 2 | 0 | 2 |
+| MPChangeShuffleModeCommandEvent | 2 | 0 | 2 |
+| MPContentItem | 18 | 0 | 18 |
+| MPFeedbackCommand | 6 | 0 | 6 |
+| MPFeedbackCommandEvent | 1 | 0 | 1 |
+| MPMediaEntity | 5 | 1 | 4 |
+| MPMediaItem | 42 | 17 | 25 |
+| MPMediaItemAnimatedArtwork | 3 | 0 | 3 |
+| MPMediaItemArtwork | 7 | 0 | 7 |
+| MPMediaItemCollection | 6 | 0 | 6 |
+| MPMediaLibrary | 8 | 0 | 8 |
+| MPMediaPickerController | 12 | 1 | 11 |
+| MPMediaPlaylist | 9 | 4 | 5 |
+| MPMediaPlaylistCreationMetadata | 8 | 0 | 8 |
+| MPMediaPredicate | 0 | 0 | 0 |
+| MPMediaPropertyPredicate | 5 | 0 | 5 |
+| MPMediaQuery | 20 | 0 | 20 |
+| MPMediaQuerySection | 2 | 0 | 2 |
+| MPMovieAccessLog | 3 | 0 | 3 |
+| MPMovieAccessLogEvent | 14 | 0 | 14 |
+| MPMovieErrorLog | 3 | 0 | 3 |
+| MPMovieErrorLogEvent | 7 | 0 | 7 |
+| MPMoviePlayerController | 44 | 0 | 44 |
+| MPMoviePlayerViewController | 2 | 0 | 2 |
+| MPMusicPlayerApplicationController | 1 | 0 | 1 |
+| MPMusicPlayerController | 28 | 6 | 22 |
+| MPMusicPlayerControllerMutableQueue | 2 | 0 | 2 |
+| MPMusicPlayerControllerQueue | 3 | 0 | 3 |
+| MPMusicPlayerMediaItemQueueDescriptor | 8 | 0 | 8 |
+| MPMusicPlayerPlayParameters | 2 | 0 | 2 |
+| MPMusicPlayerPlayParametersQueueDescriptor | 7 | 0 | 7 |
+| MPMusicPlayerQueueDescriptor | 2 | 0 | 2 |
+| MPMusicPlayerStoreQueueDescriptor | 7 | 0 | 7 |
+| MPNowPlayingInfoCenter | 8 | 1 | 7 |
+| MPNowPlayingInfoLanguageOption | 8 | 0 | 8 |
+| MPNowPlayingInfoLanguageOptionGroup | 4 | 0 | 4 |
+| MPNowPlayingSession | 15 | 0 | 15 |
+| MPPlayableContentManager | 11 | 0 | 11 |
+| MPPlayableContentManagerContext | 5 | 0 | 5 |
+| MPRatingCommand | 4 | 0 | 4 |
+| MPRatingCommandEvent | 1 | 0 | 1 |
+| MPRemoteCommand | 8 | 0 | 8 |
+| MPRemoteCommandCenter | 23 | 20 | 3 |
+| MPRemoteCommandEvent | 2 | 0 | 2 |
+| MPSeekCommandEvent | 1 | 0 | 1 |
+| MPSkipIntervalCommand | 2 | 0 | 2 |
+| MPSkipIntervalCommandEvent | 1 | 0 | 1 |
+| MPTimedMetadata | 5 | 0 | 5 |
+| MPVolumeView | 19 | 1 | 18 |
+
+421 members across 57 classes, 370 with no row. The classes in the order of the
+fewest missing members are the next pieces.
