@@ -77,10 +77,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "a user and a password as a value: -initWithUser:password:, +credentialWithUser:password:, -user and -password, each copied in and out, and -copyWithZone: carrying BOTH -- a copy that dropped the password would look like a credential and could not be used for one. The reason the two provider classes are absent -- no credential provider extension for the system's AutoFill to consult -- does not touch a value object an application constructs and hands back",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; and the 26.2 header's contract, its members read by clang's AST",
+      "facts": "facts/AuthenticationServices/ASCredentialIdentity.md"
     },
     {
       "api": "ASPasswordCredentialIdentity",

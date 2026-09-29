@@ -86,6 +86,13 @@
     __attribute__((objc_method_family(init)));
 @end
 
+// A password credential is a value: the protocol it adopts declares the initialisers unavailable, so
+// the port's own is the only way one is made.
+@interface ASPasswordCredential (CharonASConstruction)
+- (instancetype)charon_initWithUser:(NSString *)user password:(NSString *)password
+    __attribute__((objc_method_family(init)));
+@end
+
 @interface ASAuthorizationAppleIDProvider (CharonASConstruction)
 - (instancetype)charon_initWithCredentialState:(id)store
     __attribute__((objc_method_family(init)));

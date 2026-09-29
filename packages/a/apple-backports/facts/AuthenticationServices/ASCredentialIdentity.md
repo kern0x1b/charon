@@ -150,3 +150,35 @@ The value differential mutates two things and requires both red. The **operation
 differing table. The **replace** mutant — which restores the superset behaviour — is red by *crashing*,
 not by differing, and a crash is not the red this self-test wants: it shows the code path changed and
 nothing more. It is left in the run and the fact is recorded here rather than dressed as a pass.
+
+## `ASPasswordCredential`, and why it is not absent with the two provider classes
+
+`ASPasswordCredential` was registered `absent` for the same reason as
+`ASCredentialProviderViewController` and `ASCredentialProviderExtensionContext`: "the release has no
+credential provider extension or identity store for the system's AutoFill to consult". **That reason does
+not reach it.** A credential is a value object — a user and a password — that an application constructs
+and hands back. It asks nothing of the system, needs no daemon, no extension host and no hardware, and
+the two provider classes are absent for the opposite reason. Carrying this one and leaving those two
+absent is not a partial answer; it is the right answer for each.
+
+What it carries: `-initWithUser:password:`, `+credentialWithUser:password:`, `-user` and `-password`, each
+copied in and out, and `-copyWithZone:` carrying **both**. A copy that dropped the password would be an
+object that looks like a credential and could not be used for one.
+
+Its construction is the port's own — `-charon_initWithUser:password:` — because `ASAuthorizationCredential`,
+the protocol it adopts, declares the initialisers `NS_UNAVAILABLE`.
+
+**The check that covers it is the shape one, and it is the check that caught the row.** With the class in
+the tree and the row still saying `absent`, the shape check stopped the run by name:
+
+    these classes are DEFINED in the tree and the registry does not carry them as implemented,
+    so they are not measured at all: ASPasswordCredential
+
+That is the guard written for exactly this, doing its job on the band that wrote it. With the row set, the
+four members clang reads out of `ASPasswordCredential.h` are compared against the host's own class:
+
+    ASPasswordCredential  initWithUser:password:          instance  available  yes yes  same
+    ASPasswordCredential  credentialWithUser:password:    class     available  yes yes  same
+    ASPasswordCredential  user                            instance  available  yes yes  same
+    ASPasswordCredential  password                        instance  available  yes yes  same
+    12 class rows, 63 members from clang, 63 cases, 0 red

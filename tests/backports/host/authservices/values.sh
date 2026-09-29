@@ -63,7 +63,7 @@ renames="-DASAuthorizationRequest=PortASAuthorizationRequest \
 -DASCredentialServiceIdentifierType=PortASCredentialServiceIdentifierType \
 -DASPasswordCredentialIdentity=PortASPasswordCredentialIdentity \
 -DASCredentialIdentityStore=PortASCredentialIdentityStore \
--DASCredentialIdentityStoreState=PortASCredentialIdentityStoreState \
+-DASCredentialIdentityStoreState=PortASCredentialIdentityStoreState -DASPasswordCredential=PortASPasswordCredential \
 -DASCredentialIdentityStoreErrorDomain=PortASCredentialIdentityStoreErrorDomain \
 -DASCredentialIdentityStoreErrorCodeInternalError=PortASStoreErrorInternal \
 -DASCredentialIdentityStoreErrorCodeStoreDisabled=PortASStoreErrorDisabled \
@@ -75,7 +75,7 @@ export AS_CREDENTIAL_STORE_PATH CHICON_RUNS
 
 sources="ASConstants12_0.m ASConstants13_0.m ASAuthorizationRequest.m ASAuthorizationOpenIDRequest.m ASAuthorizationAppleIDRequest.m \
 ASAuthorizationAppleIDProvider.m ASCredentialServiceIdentifier.m ASPasswordCredentialIdentity.m \
-ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m"
+ASCredentialIdentityStoreState.m ASCredentialIdentityStore.m ASPasswordCredential.m"
 
 # build_and_run <source-dir> <tag>: compile the port's three sources from there under the renames, link
 # them with the test into one binary, and run it. The tag is where the table lands. It returns the
@@ -237,6 +237,6 @@ run_mutant() {
 
 status=0
 run_mutant operation ASAuthorizationOpenIDRequest.m "_requestedOperation = nil;" "_requestedOperation = [ASAuthorizationOperationImplicit copy];" "a fresh request's default operation becomes the implicit one" || status=1
-run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m \
+run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m ASPasswordCredential.m \
     "replace keeps the old identities: the set it starts from is what the store already held" || status=1
 exit "$status"
