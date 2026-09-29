@@ -124,7 +124,9 @@ if python3 "$here/compare.py" "$build/host.tsv" "$build/port.tsv" "$here/expecte
         echo "say-once: +[AXLiveAudioGraph $member] called ${calls} times, $lines line in the port's log"
     done
     echo "identical on all $((behaviour)) behaviour cases: the system and the port answer the same"
-    echo "declaration cases: $declarations, which check a header and not the port's code"
+    # Said with the verdict and not beside it, so the line cannot be read as "13 cases nothing looked at":
+    # compare.py has just compared them and found no difference, and this is what it compared.
+    echo "declaration cases: $declarations, which check a header and not the port's code; compared above, $declarations of $declarations the same"
     exit 0
 fi
 echo "the two answers do not match what this case declares"

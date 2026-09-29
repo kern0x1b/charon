@@ -18,27 +18,28 @@
 # A mutant that survives, one that dies of a build error, and one that dies of anything else are all
 # failures of the case, and the script exits on the count of each.
 #
-# The rules each mutant breaks:
+# The rules each mutant breaks, in the order the file applies them:
+#   M3  setting a title leaves the attributed face of it behind
 #   M1  a value built for a category answers 1 for its number, where the measured answer is 0
 #   M2  a value built for a number answers an empty string for its category, where it answers nil
-#   M3  setting a title leaves the attributed face of it behind
 #   M4  the two-argument data point initialiser answers an empty array for its additional values,
 #       where the measured answer is nil
 #   M5  a copy of a chart carries the direction the original was set to, where the system's copy does not
+#   M9  a chart's copy carries the frame the original was set to, like M5 for the other dropped field
+#  M10  a numeric axis' copy carries the scale the original was set to, like M5 for the third
 #   M6  a numeric axis answers a constant for every value its description provider is given
 #   M7  the live audio graph holds an ivar, where the host's instance has none
 #   M8  the categorical axis' order is the reverse of what it was given
-#   M9  the chart's copy carries the frame the original was set to, like M5 for the other dropped field
-#  M10  a numeric axis' copy carries the scale the original was set to, like M5 for the third
 #  M11  a chart's copy deep-copies its series instead of sharing the original's array
 #  M12  a chart's copy copies its x axis instead of sharing it
 #  M13  a point's copy copies its x value instead of sharing it
 #  M14  a series' copy rebuilds the attributed name instead of sharing the original's string
 #  M15  -setDataPoints: does nothing
 #  M16  -setXValue: answers the very object it was given, where the system answers a copy of it
-#  M17  -setSummary: does nothing, which is the only break the case reaches through the diff alone
+#  M17  the chart's -setSummary: does nothing, and no other mutant in this list touches a setter of a
+#       string-typed property
 #  M18  the say-once guard is gone, so the port writes a line for every call
-#
+
 # Usage: sh tests/backports/host/accessibilitychart/mutants.sh
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
