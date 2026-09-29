@@ -46,8 +46,10 @@
 
 - (instancetype)initWithCharonBounds:(CGSize)bounds handler:(UIImage *(^)(CGSize))handler {
     // The header marks -init unavailable on the class (it is not the way to make one), and this subclass is
-    // the way: the base's -init is NSObject's, reached without the header's compile-time refusal.
-    self = [super performSelector:@selector(init)];
+    // the way: the base's -init is the one the class inherits, looked up at run time so the header's compile-time refusal
+    // does not apply (performSelector: is refused under ARC for a selector of the init family).
+    IMP baseInit = [MPMediaItemArtwork instanceMethodForSelector:@selector(init)];
+    self = ((id (*)(id, SEL))baseInit)(self, @selector(init));
     if (self) {
         _charonBounds = bounds;
         _charonHandler = [handler copy];
