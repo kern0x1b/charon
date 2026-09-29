@@ -12,6 +12,12 @@ rule("macro")
     -- of a package that depends on this one (rules/swift/xmake.lua:182, commit 415a119e) -- so a
     -- package that ships a plugin needs nothing but to build it and to name this rule.
     on_load(function (target)
+        -- Once per load, so that a project can *see* that the rule was found before it builds with
+        -- it: `xmake l -c 'print("…")'` in the project prints this line when the rule is registered,
+        -- and prints nothing when the spelling is wrong. Every failure to reach this rule so far
+        -- looked like a build failure rather than a rule that was never loaded, and one build spent
+        -- a slow slot on that.
+        print("macro rule: loaded for target(" .. target:name() .. ")")
         import("core.project.project")
         if not project.required_package("swift-syntax") then
             raise("target(%s) is a macro plugin, and its project does not require charon@swift-syntax: the toolchain's own swift-syntax does not export CompilerPlugin, so there is nothing else to build it against", target:name())
