@@ -88,6 +88,33 @@ The `image.exports` accessor inside `apple.dyld` did not resolve from an `open_c
 this establishes the **image's presence** and not which of the two releases first exports the four
 classes from it. The presence is what the placement needs.
 
+## The libraries' own objects, and the release-split run over them
+
+The CoreImage and ModelIO libraries are built into `build/objects/<folder>/` or, when the deployment
+target is raised, `build/objects-<minimum>/<folder>/` - `modules/apple/backports.lua` at :782, :2157
+and :2194 are the three places that say so - and `release-split` is run over the build's own objects,
+one directory per invocation:
+
+    for d in "$out"/build/objects/*/ "$out"/build/objects-*/*/; do xmake l tools/release-split.lua "$d"; done
+
+Over every source the recipe's own input list takes, and over both layouts:
+
+    objects/Graphics/        clean, every object file's symbols first-appear in one release (67 files, 590 symbols, 50 releases checked)
+    objects/MetalKit/        clean, every object file's symbols first-appear in one release (10 files,  44 symbols, 50 releases checked)
+    objects/ModelIO/         clean, every object file's symbols first-appear in one release (18 files, 115 symbols, 50 releases checked)
+    objects-6.0/Graphics/    clean, every object file's symbols first-appear in one release (67 files, 590 symbols, 50 releases checked)
+    objects-6.0/MetalKit/    clean, every object file's symbols first-appear in one release (10 files,  44 symbols, 50 releases checked)
+    objects-6.0/ModelIO/     clean, every object file's symbols first-appear in one release (18 files, 115 symbols, 50 releases checked)
+
+**95 objects over the three libraries, clean.** A hand-made object tree has to write the same record
+a build writes - `build/objects/sdkdir` and `build/objects-6.0/sdkdir`, the file
+`release-split.lua:137` reads as `path.join(path.directory(path.absolute(objectsdir)), "sdkdir")` -
+or the documented one-argument invocation answers that it has no record of the SDK.
+
+An earlier report in this series gave Graphics 18, ModelIO 18, MetalKit 1. Those were the 37 objects
+of the files this series adds or changes, compiled one at a time, with the SDK passed by hand: a
+band's subset, and passing the SDK by hand hides that the build records it.
+
 ## The count, and what it measures now that the whole tail is compared
 
     ciimage: 539 measurements, 454 the same, 77 different, 42 one side only (tolerance 0.0005)
