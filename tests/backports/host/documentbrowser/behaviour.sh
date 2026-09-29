@@ -16,15 +16,24 @@ runs=$root/.agent-work/runs/documentbrowser
 port=$root/packages/a/apple-backports/UIKit/UIDocumentBrowserViewController.m
 mkdir -p "$runs"
 
+# The port's file as it is when the run starts, so every mutant is put back to exactly that and an
+# uncommitted edit survives a run instead of being overwritten by HEAD.
+saved=$runs/port-as-found.m
+cp "$port" "$saved"
+
 build_and_run() {
     label=$1
     work=$runs/$label
     rm -rf "$work"
     mkdir -p "$work"
-    xcrun clang -fobjc-arc -I "$here/host-stub" -I "$root/packages/a/apple-backports/UIKit" \
+    # The stand-in for UIView's animation is compiled in, and the port's file is told to use it.
+    xcrun clang -fobjc-arc -DCHARON_TRANSITION_ANIMATION_STANDIN \
+        -I "$here/host-stub" -I "$root/packages/a/apple-backports/UIKit" \
         -framework Foundation \
         "$port" "$root/packages/a/apple-backports/UIKit/UIDocumentBrowserTransitionController.m" \
-        "$here/host-stub/UIKit/UIViewController.m" "$here/behaviour.m" \
+        "$here/host-stub/UIKit/UIViewController.m" \
+        "$here/host-stub/UIKit/UIViewControllerTransitioning.m" \
+        "$here/behaviour.m" \
         -o "$work/behaviour" 2> "$work/build.log" || {
             echo "$label: BUILD-FAIL"; head -5 "$work/build.log"; return 1; }
     "$work/behaviour" > "$work/run.log" 2>&1 || true
@@ -64,7 +73,9 @@ PYMUT
         echo "  NOT CAUGHT: the mutant did not turn '$expected' red"
         mutant_missed=1
     fi
-    git -C "$root" show "HEAD:packages/a/apple-backports/UIKit/UIDocumentBrowserViewController.m" > "$port"
+    # Restored from the copy taken when the run started, not from HEAD: a run must not silently
+    # destroy an uncommitted edit of the port's file, which is how a real change went missing once.
+    cp "$saved" "$port"
 }
 
 mutant_missed=0

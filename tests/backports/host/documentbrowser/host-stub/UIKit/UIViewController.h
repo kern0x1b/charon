@@ -3,11 +3,12 @@
 // transition at; nothing else of UIKit is touched, because everything else the file uses is
 // Foundation, which the host has.
 #import <Foundation/Foundation.h>
+#import "UIKit/UIViewControllerTransitioning.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIView : NSObject
-@end
+// The run loop the transition's animation block is driven on, and the duration it will report, so
+// the harness can run a transition through instead of only asking for its length.
 
 @interface UIViewController : NSObject
 @property (nonatomic, strong, nullable) UIView *view;

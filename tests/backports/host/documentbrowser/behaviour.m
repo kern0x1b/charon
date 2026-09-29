@@ -44,6 +44,25 @@ static void check(BOOL passed, NSString *what, NSString *detail)
     }
 }
 
+// A context that only remembers whether it was completed, which is all the transition asks of one.
+// The one way the browser makes a transition controller, since the header takes -init away from an
+// application. It is the port's own factory and the test may use it: this is the port, not an
+// application pretending to be one.
+@interface UIDocumentBrowserTransitionController (CharonProbe)
++ (instancetype)charon_makeForBrowser;
+@end
+
+@interface ProbeContext : NSObject <UIViewControllerContextTransitioning>
+@property (nonatomic) BOOL completed;
+@end
+
+@implementation ProbeContext
+- (void)completeTransition:(BOOL)completed
+{
+    self.completed = YES;
+}
+@end
+
 static NSURL *MakeDir(NSString *name)
 {
     NSURL *url = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingPathComponent:name] isDirectory:YES];
@@ -202,6 +221,35 @@ int main(void)
         check(url != nil, @"the 11.0 transition question answers too", nil);
         check(at.loadingProgress == nil,
               @"a document that is not being brought across has no progress, as the header says it may be nil", nil);
+
+        // The transition's own two required methods, run through: how long it says it takes, and
+        // that running it brings the view it was aimed at to full opacity and completes.
+        UIDocumentBrowserTransitionController *here_ = [UIDocumentBrowserTransitionController charon_makeForBrowser];
+        here_.targetView = [[UIView alloc] init];
+        check([here_ transitionDuration:nil] > 0,
+              @"a document that is here takes a positive time to show", nil);
+
+        UIDocumentBrowserTransitionController *loading = [UIDocumentBrowserTransitionController charon_makeForBrowser];
+        loading.loadingProgress = [NSProgress progressWithTotalUnitCount:1];
+        check([loading transitionDuration:nil] == 0,
+              @"a document still being brought across takes no time, because there is nothing to show yet", nil);
+
+        UIDocumentBrowserTransitionController *run_ = [UIDocumentBrowserTransitionController charon_makeForBrowser];
+        UIView *arriving = [[UIView alloc] init];
+        run_.targetView = arriving;
+        ProbeContext *context = [[ProbeContext alloc] init];
+        [run_ animateTransition:context];
+        check(arriving.alpha == 1,
+              @"running the transition brings the view it was aimed at to full opacity",
+              [NSString stringWithFormat:@"alpha=%g", arriving.alpha]);
+        check(context.completed,
+              @"running the transition completes it, so a caller waiting is not left waiting", nil);
+
+        UIDocumentBrowserTransitionController *nowhere = [UIDocumentBrowserTransitionController charon_makeForBrowser];
+        ProbeContext *lonely = [[ProbeContext alloc] init];
+        [nowhere animateTransition:lonely];
+        check(lonely.completed,
+              @"a transition with no view to animate still completes", nil);
 
         printf("\n%d checks, %d failures\n", gChecks, gFailures);
         return gFailures ? 1 : 0;
