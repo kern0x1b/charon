@@ -410,6 +410,23 @@ static inline void CharonMPSConsumeReadCount(id object)
     }
 }
 
+// The row stride the release recommends for a given number of columns and element type, measured on
+// macOS 26.5's own MPSMatrixDescriptor over all eight element types and seventy column counts
+// (tests/backports/host/mpsmatrix/run.sh prints the table this rule reproduces): one column is one
+// element, a floating point row is rounded up to a multiple of sixteen bytes and an integer row to a
+// multiple of four elements. Zero columns have no row. Both descriptors answer it, so it is here
+// rather than in either of them, and static so that neither needs a symbol from the other.
+static inline size_t CharonMPSRowBytesForColumns(NSUInteger columns, MPSDataType dataType)
+{
+    size_t elementSize = MPSSizeofMPSDataType(dataType);
+    size_t alignment = CharonMPSDataTypeIsFloat(dataType) ? 16 : 4 * elementSize;
+    if (columns == 0)
+        return 0;
+    if (columns == 1)
+        return elementSize;
+    return (columns * elementSize + alignment - 1) / alignment * alignment;
+}
+
 // The neuron activation functions MPSCNNNeuronType names, in the formulas that header gives for them.
 // PReLU takes its parameter A per channel, in aPerChannel, because the header says a caller sets those
 // through setNeuronToPReLUWithParametersA: and the table has no other way to see them.

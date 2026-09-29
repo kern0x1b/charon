@@ -1,19 +1,25 @@
-// MPSKernel, MPSPredicate, MPSCommandBuffer and the two functions MPSCoreTypes.h declares.
+// MPSCommandBuffer, from the header of the SDK of iOS 16.4. One object per release: the band machinery keeps an
+// object whole or drops it whole, so a file here carries the API of exactly one release.
 
 #import "CharonMPS.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-const MTLRegion MPSRectNoClip = {{0, 0, 0}, {-1, -1, -1}};
-
-// -commitAndContinue arrived in iOS 14 and the SDK this package compiles against names it on
+id<MTLDevice> MPSGetPreferredDevice(MPSDeviceOptions options)
+{
+    // The release walks its devices and returns the first that matches the options. This port has one
+    // device and no removable or low-power choice among several, so the options have nothing to
+    // choose between and the one device is the preferred one. MPSDeviceOptionsDefault is 0, and a
+    // caller may pass any combination; none of them names a device this port does not have.
+    (void)options;
+    return MTLCreateSystemDefaultDevice();
+}// -commitAndContinue arrived in iOS 14 and the SDK this package compiles against names it on
 // MPSCommandBuffer but not on MTLCommandBuffer, so a wrapped command buffer is asked for it through
 // this. The release forwards the message when the wrapped buffer has one and commits otherwise.
 @protocol CharonMPSCommitAndContinuing <NSObject>
 - (void)commitAndContinue;
 @end
-
 // The debug group, buffer label and memory barrier surface of MTLCommandBuffer arrived after the
 // SDK this package compiles against declares it, so the wrapped buffer is asked for each of them
 // through this, and a buffer that has none of them is not asked at all.
@@ -26,7 +32,7 @@ const MTLRegion MPSRectNoClip = {{0, 0, 0}, {-1, -1, -1}};
 - (void)memoryBarrierWithResources:(NSArray<id<MTLResource>> *)resources;
 @end
 
-
+const MTLRegion MPSRectNoClip = {{0, 0, 0}, {-1, -1, -1}};
 BOOL MPSSupportsMTLDevice(id<MTLDevice> device)
 {
     // The release answers YES for a device whose hardware it can run its kernels on. Every MTLDevice
@@ -36,167 +42,6 @@ BOOL MPSSupportsMTLDevice(id<MTLDevice> device)
     return device != nil;
 }
 
-id<MTLDevice> MPSGetPreferredDevice(MPSDeviceOptions options)
-{
-    // The release walks its devices and returns the first that matches the options. This port has one
-    // device and no removable or low-power choice among several, so the options have nothing to
-    // choose between and the one device is the preferred one. MPSDeviceOptionsDefault is 0, and a
-    // caller may pass any combination; none of them names a device this port does not have.
-    (void)options;
-    return MTLCreateSystemDefaultDevice();
-}
-
-@implementation MPSKernel {
-    id<MTLDevice> _device;
-    MPSKernelOptions _options;
-    NSString *_label;
-}
-
-@synthesize label;
-
-- (instancetype)initWithDevice:(id<MTLDevice>)device
-{
-    if ((self = [super init])) {
-        _device = device;
-        _options = MPSKernelOptionsNone;
-    }
-    return self;
-}
-
-- (id<MTLDevice>)device
-{
-    return _device;
-}
-
-- (MPSKernelOptions)options
-{
-    return _options;
-}
-
-- (void)setOptions:(MPSKernelOptions)options
-{
-    _options = options;
-}
-
-- (NSString *)label
-{
-    return _label;
-}
-
-- (void)setLabel:(NSString *)name
-{
-    _label = [name copy];
-}
-
-- (instancetype)copyWithZone:(NSZone *)zone device:(id<MTLDevice>)device
-{
-    MPSKernel *copy = [[[self class] allocWithZone:zone] initWithDevice:device ? device : _device];
-    copy->_options = _options;
-    copy->_label = _label;
-    return copy;
-}
-
-- (id)copyWithZone:(NSZone *)zone
-{
-    return [self copyWithZone:zone device:nil];
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder
-{
-    // A kernel of this port is a description of work, not a compiled pipeline: its device, its
-    // options and its label are everything the base class carries, and a subclass's own state is
-    // encoded by the subclass. The release decodes the same three keys here, so an archive written
-    // by an application and read by this port and the other way round both name the same fields.
-    return [self initWithCoder:aDecoder device:MTLCreateSystemDefaultDevice()];
-}
-
-- (instancetype)initWithCoder:(NSCoder *)aDecoder device:(id<MTLDevice>)device
-{
-    if ((self = [super init])) {
-        _device = device;
-        _options = MPSKernelOptionsNone;
-        NSString *name = [aDecoder decodeObjectOfClass:[NSString class] forKey:@"label"];
-        if (name)
-            _label = [name copy];
-    }
-    return self;
-}
-
-- (void)encodeWithCoder:(NSCoder *)aCoder
-{
-    if (_label)
-        [aCoder encodeObject:_label forKey:@"label"];
-}
-
-+ (BOOL)supportsSecureCoding
-{
-    return YES;
-}
-
-@end
-
-@implementation MPSPredicate {
-    id<MTLBuffer> _buffer;
-    NSUInteger _offset;
-    id<MTLDevice> _device;
-}
-
-+ (instancetype)predicateWithBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset
-{
-    return [[self alloc] initWithBuffer:buffer offset:offset];
-}
-
-- (instancetype)initWithBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset
-{
-    if ((self = [super init])) {
-        _buffer = buffer;
-        _offset = offset;
-    }
-    return self;
-}
-
-- (instancetype)initWithDevice:(id<MTLDevice>)device
-{
-    // The release takes a device and draws its predicate bytes from a heap MPS manages, so the
-    // caller never sees the buffer. This port has no MPS heap, so the predicate is backed by a
-    // buffer of its own, made here, that the caller can reach through -predicateBuffer and write
-    // through. A predicate of this kind is the same object the header describes: a uint32 that is
-    // not zero lets the kernel run.
-    if ((self = [super init])) {
-        _device = device;
-        _buffer = [device newBufferWithLength:4 options:MTLResourceStorageModeShared];
-    }
-    return self;
-}
-
-- (id<MTLBuffer>)predicateBuffer
-{
-    return _buffer;
-}
-
-- (NSUInteger)predicateOffset
-{
-    return _offset;
-}
-
-// Whether the kernel this predicate is attached to runs. The header's rule is the release's own: the
-// uint32 at the offset is not zero for true.
-- (BOOL)charon_mps_permitsExecution
-{
-    if (!_buffer)
-        return YES;
-    if (_offset + 4 > _buffer.length)
-        return NO;
-    uint32_t value = 0;
-    memcpy(&value, (const char *)[_buffer contents] + _offset, 4);
-    return value != 0;
-}
-
-@end
-
-// MPSCommandBuffer wraps a command buffer so the options MPS adds - the predicate, the heap provider -
-// travel with it. Everything the MTLCommandBuffer protocol asks for is the wrapped buffer's own answer
-// forwarded, so an MPSCommandBuffer is usable everywhere a command buffer is.
 @implementation MPSCommandBuffer {
     id<MTLCommandBuffer> _buffer;
     MPSPredicate *_predicate;
