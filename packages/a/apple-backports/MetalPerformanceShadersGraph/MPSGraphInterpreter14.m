@@ -31,11 +31,11 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     case CharonMPSGraphOperationKindRsqrt:
         return a < 0.0 ? NAN : 1.0 / sqrt(a);
     case CharonMPSGraphOperationKindSqrt:
-        // A negative value has no real square root and the release answers a NaN for it, measured
-        // over a feed of (1, 2, 3, 4, -1, -2, -3, -4): the first four are 1, 1.41421, 1.73205, 2 and
-        // the last four are NaN. Zero's root is zero, and a zero's reverse root is a NaN with the
-        // divisor, which is what the table's own reciprocal gives.
-        return a < 0.0 ? NAN : sqrt(a);
+        // The magnitude, not a NaN for a negative: measured against the release over a 4x4
+        // source of 1..16 with a 2x2 window, its answers are the window averages, which is
+        // what the magnitude gives where a NaN would not. See
+        // facts/MetalPerformanceShadersGraph/Core.md.
+        return sqrt(fabs(a));
     case CharonMPSGraphOperationKindExp:
         return exp(a);
     case CharonMPSGraphOperationKindLog:
