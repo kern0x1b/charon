@@ -306,220 +306,242 @@
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImageAnimationLoopCount",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImageAnimationStartIndex",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationSkinMatte",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationTeethMatte",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyAPNGCanvasPixelHeight",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyAPNGCanvasPixelWidth",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyAPNGFrameInfoArray",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyExifOffsetTime",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyExifOffsetTimeDigitized",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyExifOffsetTimeOriginal",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyGIFCanvasPixelHeight",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyGIFCanvasPixelWidth",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyGIFFrameInfoArray",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSCanvasPixelHeight",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSCanvasPixelWidth",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSDelayTime",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSDictionary",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSFrameInfoArray",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSLoopCount",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyHEICSUnclampedDelayTime",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: kCGImagePropertyAPNGFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyHEICSDictionary is {HEICS}, and kCGImageAuxiliaryDataTypeSemanticSegmentationHairMatte is its own full name - the same group holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which runs one symbol per process so a fault names its own symbol; and a 40-name sample of the 328 already-implemented ImageIO constants, drawn with seed 20260929 and read with the same harness, matched the port's own values 40 of 40",
+      "facts": "facts/ImageIO/Names130.md"
     },
     {
       "api": "kCGImagePropertyExifCompositeImage",
