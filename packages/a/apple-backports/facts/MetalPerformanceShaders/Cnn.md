@@ -292,3 +292,30 @@ host's is not. So the host's data gradient is not `(gamma/sqrt(variance+eps)) * 
 xhat * mean(dY*xhat))` under any of the sixteen choices, and the difference is structural rather than
 a rounding. The formula needs a probe of its own, on inputs chosen so that each of the sixteen
 separates — different given and batch means, and a batch whose variance differs from the one given.
+
+### The separating inputs, designed, and what the self-check can and cannot ask of them
+
+The case the differential uses cannot separate the variants — its given mean and its batch mean are
+both 4. The inputs chosen instead, on which every distinction is live:
+
+    source        1  3  7  2  9  4  5  1 11  8  6  2      (four feature vectors by three channels)
+    dY            4  2  9  1  7  3  6  3  5  2  8  1
+    given mean    2  5  4        against a batch mean of  3.25  5  6
+    given var     7  3  9        against a batch var of   3.6875 7  3
+    gamma       1.5  0.75 2     epsilon 0.125
+
+**The given and batch statistics are genuinely different now**, where the old case had them equal for
+column 0 — which is the whole reason the sixteen collapsed there.
+
+**And the self-check has to be stated carefully, which the design shows.** The family is 64: sixteen of
+the standard form and sixteen of the form that is not the standard formula at all, `dX = gamma/sigma *
+dY` with no mean terms. On these inputs the **sixteen standard-form variants are all distinct**; the
+eighty collisions are all inside the plain form, and they are **structural rather than a fault in the
+inputs**: a form with no mean terms cannot depend on which mean or which aggregation was chosen, so
+variants differing only in those axes are identical *by construction*. The right check is therefore
+two — the standard-form sixteen distinct from each other, and the plain sixteen distinct **from the
+standard sixteen** — not sixty-four distinct, which is unaskable.
+
+The host has not been run on these inputs yet: the program was written and did not compile in the
+time left, so no fixture is committed and no host answer is claimed. The design and the check are
+recorded here so the next turn writes the program against them.
