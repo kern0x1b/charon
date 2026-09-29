@@ -137,6 +137,11 @@ static void defaults(VisionRecorder record)
  * image, because the port's own containers are the ones that exist and a request still runs: the
  * request path finds the model's first input whatever its type, and an image input is the case
  * the resampler in CharonVisionImage.h is there for. */
+static BOOL file_exists(NSURL *url)
+{
+    return url != nil && [[NSFileManager defaultManager] fileExistsAtPath:url.path];
+}
+
 /* A compile that is EXPECTED to fail on a host, and why. Any other container the cases name failing
  * to compile is a case going wrong -- a corpus without it, or the port breaking a path the picture
  * cases take -- and is recorded under "coreml.compile.unexpected" so the harness fails on it rather
@@ -177,7 +182,16 @@ static void coreml_model(CoreMLModels models, VisionRecorder record)
     NSURL *compiled;
     NSMutableString *said = [NSMutableString string];
 
-    if (models.glm_classifier == nil) {
+    /* A URL built with fileURLWithPath: is never nil for a file that is not there, so nil is not
+     * how absence shows up here: compileModelAtURL: is asked for a file that is not there and
+     * answers with a different code than a container that is present and cannot be run. The check
+     * has to ask the filesystem, and it is the harness that fails on the key either way. */
+    if (models.glm_classifier == nil || !file_exists(models.glm_classifier)) {
+        /* A container the cases NAME and the corpus does not have. Absent is not the same as failing,
+         * and it used to be invisible: the run recorded 45 keys either way and printed a pass, with
+         * the one value that differs between the two states -- picture/error -- the only sign. The
+         * harness fails on this key, by name. */
+        record(@"coreml.model.absent.glm_classifier", @"absent");
         return;
     }
     compiled = [MLModel compileModelAtURL:models.glm_classifier error:&failure];
@@ -338,7 +352,11 @@ static void picture_case(CoreMLModels models, VisionRecorder record)
     NSURL *compiled;
     VNCoreMLModel *model;
 
-    if (models.vision == nil) {
+    if (models.vision == nil || !file_exists(models.vision)) {
+        /* Same for the one container a case EXPECTS to fail. It is expected to be present and to
+         * fail: this host's Core ML does not run an image model, and the case records the refusal.
+         * Absent, it records nothing and the record loses the refusal. */
+        record(@"coreml.model.absent.vision_image", @"absent");
         return;
     }
     compiled = [MLModel compileModelAtURL:models.vision error:&failure];
