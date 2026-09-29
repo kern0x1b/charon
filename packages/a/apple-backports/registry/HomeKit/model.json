@@ -722,17 +722,6 @@
    "source": "HomeKit of the arm64e shared caches of 16.0 and 18.0 and the arm64 one of 12.0, and the documented contract of each member"
   },
   {
-   "api": "-[HMAccessory home]",
-   "kind": "property",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "iOS 10.0 is the release of HMAccessory.home, which the 26.2 header marks API_AVAILABLE(ios(10.0)) and API_UNAVAILABLE(macos) on HMAccessory.h:37",
-   "effect": "the home the accessory belongs to, and nil for one that belongs to none, which is what the header's own nullable allows",
-   "facts": "facts/HomeKit/HMAccessory.md",
-   "source": "the HomeKit header of SDK 26.2 for the contract, HMAccessory.h:37 quoted in the facts for its attributes and its nullability; no host HomeKit exists in any macOS SDK on this machine, so the check is the header's contract and the 12.0/16.0 caches' selector presence, not a host's answer"
-  },
-  {
    "api": "-[HMAccessoryProfile uniqueIdentifier]",
    "kind": "property",
    "introduced": "10.0",
