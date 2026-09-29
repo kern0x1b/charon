@@ -105,6 +105,75 @@ do {
     let constantStandard = column(try StandardScaler().fitted(on: constant).transformed(constant), "x")
     checkEqual("a constant column is centred on zero, not divided by a zero",
                constantStandard, [0, 0, 0, 0])
+
+    // The robust scaler, against the host's own answers.
+    //
+    // Every number below came from `probe/robust-scaler-host.swift`, kept in the tree beside this file
+    // and re-runnable:  `xcrun swiftc -O -o rsh robust-scaler-host.swift && ./rsh`.  It asks Apple's
+    // `RobustScaler` the same questions; nothing here is transcribed from Apple's source.
+    //
+    // The three facts it establishes:
+    //
+    //   1. the scale is the **width of `quantileRange`**, not a statistic of the data. The host's
+    //      `interQuartileRange` is 0.5 for five integers, 0.5 for 200 skewed non-integers, and 0.5 for
+    //      a **constant column** - where a data statistic would be 0. It is 0.8, 1.0, 0.25 and 0.0 for
+    //      those widths. Ten cases, `IQR == width` in every one.
+    //   2. the median is the data's median, the mean of the two middles for an even count: 2.5 for
+    //      `[1, 2, 3, 4]`, 3.0 for `[1.5, 2.5, 3.5, 4.5]`, 37.815 for the 200-value skewed set - each
+    //      exact against the hand computation the program also prints.
+    //   3. `applied` subtracts the median and divides by the scale, so for `[1, 2, 3, 4, 100]` at
+    //      `0.25...0.75` with median 3 and scale 0.5 the column is [-4, -2, 0, 2, 194].
+    //
+    // The port scaled by `1.4826 * MAD`, so (1) is the substantive difference: a statistic where the
+    // host has a configuration value. The review's F1 found `1.4826 -> 2.4826` left 0 failures, because
+    // nothing here pinned the divisor. These cases do.
+    func fitRobust(_ values: [Double], _ range: ClosedRange<Double> = 0.25...0.75) -> RobustScaler {
+        let single = table([("x", values)])
+        return try! RobustScaler(quantileRange: range).fitted(on: single)
+    }
+    // The file's own `column(_:_:)` returns `[Double?]`, and the neighbouring checks compare that
+    // directly rather than compacting it - a nil is part of what a transformed column can hold.
+    func scaled(_ scaler: RobustScaler, _ values: [Double]) -> [Double?] {
+        let single = table([("x", values)])
+        return column(scaler.transformed(single), "x")
+    }
+    let hostScaleWidths: [(ClosedRange<Double>, Double)] = [(0.25...0.75, 0.5), (0.1...0.9, 0.8),
+                                                            (0.0...1.0, 1.0), (0.0...0.25, 0.25),
+                                                            (0.4...0.6, 0.2)]
+    for (range, hostWidth) in hostScaleWidths {
+        checkClose("the host's scale for quantileRange \(range) is its width, \(hostWidth)",
+                   fitRobust([1, 2, 3, 4, 100], range).statistics[0, 1], hostWidth, 1e-12)
+    }
+    checkClose("a constant column's scale is the width too, where a statistic would be 0",
+               fitRobust([7, 7, 7, 7]).statistics[0, 1], 0.5, 1e-12)
+
+    checkClose("the host's median for [1, 2, 3, 4, 100] is 3.0",
+               fitRobust([1, 2, 3, 4, 100]).statistics[0, 0], 3.0, 1e-12)
+    checkClose("the host's median for [1, 2, 3, 4] is the mean of the middles, 2.5",
+               fitRobust([1, 2, 3, 4]).statistics[0, 0], 2.5, 1e-12)
+    checkClose("the host's median for [1.5, 2.5, 3.5, 4.5] is 3.0",
+               fitRobust([1.5, 2.5, 3.5, 4.5]).statistics[0, 0], 3.0, 1e-12)
+    var skewedHost: [Double] = []
+    for i in 0..<200 { skewedHost.append(Double(i) * 0.37 + 1.0) }
+    skewedHost[199] = 10_000.5
+    checkClose("the host's median for 200 skewed non-integers is 37.815",
+               fitRobust(skewedHost).statistics[0, 0], 37.815, 1e-9)
+
+    let hostFive = [1.0, 2.0, 3.0, 4.0, 100.0]
+    // The whole transformed column, against the host's own numbers: median 3, scale 0.5, so
+    // (x - 3) / 0.5 is [-4, -2, 0, 2, 194].
+    let appliedFive = scaled(fitRobust(hostFive), hostFive)
+    check("the host's applied column for [1, 2, 3, 4, 100] at 0.25...0.75 is the host's own [-4, -2, 0, 2, 194]",
+          appliedFive.count == 5 && zip(appliedFive, [-4.0, -2.0, 0.0, 2.0, 194.0]).allSatisfy { $0 == $1 },
+          "the port answers \(appliedFive)")
+    // At 0.1...0.9 the scale is 0.8, so applied(100) is 121.25 where it was 194.
+    let appliedNarrow = scaled(fitRobust([1, 2, 3, 4, 100], 0.1...0.9), hostFive)
+    check("the host's applied(100) at quantileRange 0.1...0.9 is 121.25, not 194",
+          appliedNarrow[4] == 121.25, "the port answers \(String(describing: appliedNarrow[4]))")
+    // A zero width: the scale is 0, so the division is skipped and the value is the unscaled deviation.
+    let appliedZeroWidth = scaled(fitRobust([1, 2, 3, 4, 100], 0.5...0.5), hostFive)
+    check("a zero width leaves the deviation unscaled: the host's applied(4) is 1.0",
+          appliedZeroWidth[3] == 1.0, "the port answers \(String(describing: appliedZeroWidth[3]))")
     let constantMinmax = column(try MinMaxScaler().fitted(on: constant).transformed(constant), "x")
     check("a constant column has no spread for a min-max scaler to divide by",
           constantMinmax == [0, 0, 0, 0] || constantMinmax == [7, 7, 7, 7],
