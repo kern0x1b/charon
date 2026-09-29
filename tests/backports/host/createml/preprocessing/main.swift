@@ -178,6 +178,26 @@ do {
     check("and keeps the preprocessor's fitted statistics",
           supervisedTransformer.preprocessor.statistics.rows == 0,
           "the port answers \(supervisedTransformer.preprocessor.statistics.rows) rows")
+    // ... and the *value* the inner estimator is fed, which is the question the case above does not
+    // ask. `update` transforms through `transformer.preprocessor`, and `makeTransformer()` hands over
+    // the preprocessor as it stands - unfitted, because `ComposedTransformer.init`
+    // (Preprocessing.swift:33) stores it as given. A preprocessor whose answer depends on its fit
+    // therefore transforms with nothing, and the estimator is fed something that is not the
+    // preprocessed feature at all. The case above only counted that the update arrived.
+    // Asserting the *number*, not that there is one: with a preprocessor whose answer depends on its
+    // fit, an unfitted one hands the estimator the raw column and a fitted one hands it the preprocessed
+    // column, and the two differ by the centre and the scale. A `RobustScaler` is the case to use - its
+    // answer is median-dependent, so an unfitted fit is visibly wrong rather than accidentally equal.
+    let robustUpdatable = PortCreateMLComponents.PreprocessingUpdatableSupervisedEstimator(
+        PortCreateMLComponents.RobustScaler(), CountingEstimator(annotationColumn: "x"),
+        annotationColumn: "y")
+    var robustTransformer = robustUpdatable.makeTransformer()
+    try robustUpdatable.update(&robustTransformer, with: table())
+    // The features are x = 1...8, whose median is 4.5 and whose `quantileRange 0.25...0.75` gives a
+    // scale of 0.5, so the preprocessed first value is (1 - 4.5) / 0.5 = -7. A pipeline that transformed
+    // through an unfitted preprocessor would hand the estimator the raw 1.
+    checkClose("a supervised updatable pipeline's estimator is fed the preprocessed feature, not an unfitted one",
+               robustTransformer.estimator.preprocessorScale ?? .nan, -7.0, 1e-9)
 } catch {
     print("FAIL the preprocessing comparison threw: \(error)")
     failures += 1
