@@ -3112,46 +3112,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSMatrixRandom",
-      "kind": "class",
-      "introduced": "13",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixRandomDistributionDescriptor",
-      "kind": "class",
-      "introduced": "13",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixRandomMTGP32",
-      "kind": "class",
-      "introduced": "13",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSMatrixRandomPhilox",
-      "kind": "class",
-      "introduced": "13",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSNDArrayBinaryPrimaryGradientKernel",
       "kind": "class",
       "introduced": "13",

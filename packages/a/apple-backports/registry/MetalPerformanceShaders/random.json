@@ -1,0 +1,266 @@
+{
+  "framework": "MetalPerformanceShaders",
+  "entries": [
+    {
+      "api": "MPSMatrixRandom",
+      "kind": "class",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor",
+      "kind": "class",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomMTGP32",
+      "kind": "class",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomPhilox",
+      "kind": "class",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "+[MPSMatrixRandomDistributionDescriptor defaultDistributionDescriptor]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "+[MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:standardDeviation:]",
+      "kind": "method",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "+[MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:standardDeviation:minimum:maximum:]",
+      "kind": "method",
+      "introduced": "14",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "+[MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:maximum:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandom encodeToCommandBuffer:destinationMatrix:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandom encodeToCommandBuffer:destinationVector:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandom initWithDevice:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomMTGP32 initWithCoder:device:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomMTGP32 initWithDevice:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomMTGP32 initWithDevice:destinationDataType:seed:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomMTGP32 initWithDevice:destinationDataType:seed:distributionDescriptor:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomMTGP32 synchronizeStateOnCommandBuffer:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomPhilox initWithCoder:device:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomPhilox initWithDevice:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomPhilox initWithDevice:destinationDataType:seed:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "-[MPSMatrixRandomPhilox initWithDevice:destinationDataType:seed:distributionDescriptor:]",
+      "kind": "method",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandom.batchSize",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandom.batchStart",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandom.destinationDataType",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandom.distributionType",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor.distributionType",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor.maximum",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor.mean",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor.minimum",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    },
+    {
+      "api": "MPSMatrixRandomDistributionDescriptor.standardDeviation",
+      "kind": "property",
+      "introduced": "13",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/MetalPerformanceShaders/Random.md",
+      "source": "the header of MPSMatrixRandom in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 and the published Philox4x32-10 reference vectors (tests/backports/host/mpsmatrix)"
+    }
+  ]
+}
