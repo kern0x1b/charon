@@ -32,7 +32,7 @@ system_status=$?
 set -e
 echo "tree: $(git -C "$here" rev-parse --short HEAD 2>/dev/null || echo unknown)  dirty $(git -C "$here" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
 echo "system: $(wc -l < "$build/system.txt") lines, exit $system_status"
-[ "$system_status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-60)"
+if [ "$system_status" -ne 0 ]; then echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-60)"; fi
 
 # The names this port carries, each under a name of its own. This is every class the port *defines*,
 # derived from nm -g --defined-only of its objects and not from one registry file: the matrix file
