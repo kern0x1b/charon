@@ -17,6 +17,12 @@ models=${MODELS:-$here/../../../../.agent-work/runs/coreml-models-2}
 # how the run was invoked
 models=$(cd "$(dirname "$models")" 2>/dev/null && pwd)/$(basename "$models")
 expected_records=45
+# The containers the cases name. This is the same list device/vision-cases.m builds its URLs from,
+# and it is checked here rather than inferred from the record: a container that is absent and a
+# container that is present and cannot be run produce the same number of records and differ on ONE
+# value (picture/error), and a run that is short a container must not be a run that passes. Kept in
+# step with the case file by the sentence above, which is where a new container is added.
+required="glm_classifier.mlmodel nn_image.mlmodel vision_image.mlmodel"
 build=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
@@ -29,10 +35,37 @@ if [ ! -d "$models" ]; then
     echo "    python3 $here/../../../../tools/coreml/make-models.py --out $models"
     exit 1
 fi
+missing=""
+for c in $required; do
+    [ -f "$models/$c" ] || missing="$missing $c"
+done
+if [ -n "$missing" ]; then
+    echo "the corpus is missing$missing, which the cases in $device/vision-cases.m name"
+    echo "vision_image is the one a case EXPECTS to fail: it is expected to be PRESENT and to fail,"
+    echo "and a corpus without it is short, not excused -- absent is not failing"
+    exit 1
+fi
 echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') Core ML containers in $models"
+echo "corpus: every container the cases name is here: $required"
 
 xcrun clang $common -I"$device" "$here/record.m" "$device/vision-cases.m" $libs -framework Vision -o "$build/system"
 VISION_COREML_MODELS="$models" VISION_RECORDS="$build/system.json" "$build/system"
+# A container the cases NAME and the corpus does not have. This is checked BEFORE the record is
+# written into the committed file, so a corpus that is short a container cannot leave a different
+# record behind: absent is not the same as a container that is present and fails, and the record is
+# where the two look alike. vision_image is the one a case expects to fail -- it is expected to be
+# PRESENT and to fail -- so a corpus without it is short, not excused.
+absent=$(python3 -c "
+import json
+d = json.load(open('$build/system.json'))
+print(' '.join(sorted(k[len('coreml.model.absent.'):] for k in d if k.startswith('coreml.model.absent.'))))
+" 2>/dev/null || echo "")
+if [ -n "$absent" ]; then
+    echo "a case recorded a container of its own as absent: $absent, and the corpus check above passed"
+    echo "a container that is expected to fail must be PRESENT and fail; absent is not failing, and the case records nothing for it"
+    exit 1
+fi
+
 python3 "$here/../foundation2/embed.py" "$build/system.json" "$device/vision-expectations.h"
 sed -i.bak 's/foundation2_expectations/vision_expectations/' "$device/vision-expectations.h" && rm -f "$device/vision-expectations.h.bak"
 # The record is committed (device/vision-expectations.h), so it may not carry this machine's home
