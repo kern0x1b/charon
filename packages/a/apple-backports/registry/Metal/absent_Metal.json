@@ -195,20 +195,22 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it configures per-buffer mutability tracking on a render or compute pipeline descriptor. This port's CharonMetalPipeline (MTLRenderPipelineDescriptor8.m) does not expose vertexBuffers/fragmentBuffers mutability at all - a real, scoped gap in the pipeline descriptor surface, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMTLPipelineBufferDescriptor",
+      "effect": "mutability reads and writes, and is MTLMutabilityDefault on a fresh one, the enumeration's own zero; the plist carries no bindings, so there is nothing to say a buffer is mutable or immutable and the default is the header's own; copyWithZone: keeps the mutability, because a copy that dropped it would not be a copy of anything usable",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLPipelineBufferDescriptorArray",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass; it configures per-buffer mutability tracking on a render or compute pipeline descriptor. This port's CharonMetalPipeline (MTLRenderPipelineDescriptor8.m) does not expose vertexBuffers/fragmentBuffers mutability at all - a real, scoped gap in the pipeline descriptor surface, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMTLPipelineBufferDescriptorArray",
+      "effect": "both subscript forms read and write the array, and a descriptor a caller sets is the one it gets back; the array starts EMPTY because the plist carries no bindings, so there is no descriptor for any index - the same documented absence as the binding lists in MTLReflection8.m",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLPointerType",

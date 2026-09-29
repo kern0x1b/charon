@@ -21,6 +21,7 @@
 #import "MTLTypeReflection8.m"
 #import "MTLReflection8.m"
 #import "MTLReflection10.m"
+#import "MTLReflection11.m"
 
 static int failures;
 
@@ -106,6 +107,20 @@ int main(int argc, char **argv)
             MTLFunctionConstant *constant = [[MTLFunctionConstant alloc] initWithNode:@{}];
             check([constant isRequired] == NO && constant.name.length == 0,
                   @"a constant with no node is not required and has no name");
+
+            // The 11.0 classes: a fresh buffer descriptor is the enumeration's default and its copy
+            // keeps it, and the array starts empty - the plist carries no bindings - and gives back
+            // exactly what a caller sets.
+            MTLPipelineBufferDescriptor *buffer = [[MTLPipelineBufferDescriptor alloc] init];
+            check(buffer.mutability == MTLMutabilityDefault,
+                  @"a fresh buffer descriptor is MTLMutabilityDefault");
+            id copied = [buffer copy];
+            check([copied mutability] == MTLMutabilityDefault, @"a copied descriptor keeps its mutability");
+            MTLPipelineBufferDescriptorArray *array = [[MTLPipelineBufferDescriptorArray alloc] init];
+            check([array objectAtIndexedSubscript:0] == nil, @"the buffer descriptor array starts empty");
+            array[2] = buffer;
+            check(array[2] == buffer && array[0] == nil,
+                  @"a descriptor set at an index reads back and the gaps stay empty");
 
             printf("       %lu argument(s): %lu named, %lu typed, accesses %lu read-only "
                    "%lu write-only %lu read-write\n",

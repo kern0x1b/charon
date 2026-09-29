@@ -696,3 +696,23 @@ input or a constant, so:
 `MTLAttribute` is **not** `MTLVertexAttribute`'s superclass — `MTLLibrary.h:37` and `:49` declare
 both from `NSObject` — so the 8.0 object and this one share a shape and not a hierarchy, and each
 carries its own.
+
+## The 11.0 reflection classes
+
+`MTLPipelineBufferDescriptor` and `MTLPipelineBufferDescriptorArray`, placed at **11.0** by
+`MTLPipeline.h`, measured conformant by `tests/backports/host/protocol-members.py`, and
+`release-split` puts the object at 11.0 with no other release in it. They describe how a stage's
+buffers are **bound**, not what they are.
+
+- A fresh descriptor's `mutability` is `MTLMutabilityDefault`, the enumeration's own zero
+  (`MTLPipeline.h:20`), and its `copyWithZone:` keeps it — a copy that dropped the mutability would
+  not be a copy of anything a caller can use. The default is right because the plist carries no
+  bindings, so there is nothing that says a buffer is mutable or immutable.
+- The array **starts empty**, for the same reason the binding lists in `MTLReflection8.m` do, and both
+  subscript forms read and write: what a caller sets is what it gets back, and `nil` clears, which is
+  what the header's `nullable` set says.
+
+**One implementation note worth keeping:** the array's storage is a dictionary keyed by index, not a
+padded `NSMutableArray`. Padding fills the gaps with `NSNull`, and a gap that answers a non-nil object
+is an entry nobody set — the host differential caught it, and the fix is the honest shape rather than
+an assertion relaxed to match.
