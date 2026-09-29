@@ -75,7 +75,10 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
   `facts/Metal/Compute.md` has the rest, including what a kernel `tools/air2cpu` refuses answers, and
   `tests/backports/host/air2cpu/compare.sh` holds the translation against Apple's own Metal where that
   comparison still runs - it does not on this machine while the Metal compiler service crash-loops, so what it
-  has shown is a past measurement and `facts/Metal/Compute.md` says which parts are still unmeasured - and on three kernels.
+  has shown is a past measurement, recorded in `.agent-work/runs/verify.log` of 2026-09-28 and not reproducible
+  now. On that run Metal answered for **12** kernels, the tool had translated **11** of them and the port answered
+  for all 11, and **0** of those 11 differed; the twelfth, `atomicFamilyKernel`, was refused by name.
+  `facts/Metal/Compute.md` carries the whole verdict block and says which parts are now unmeasured.
 * Tessellation, texture arrays, cubes, 3D textures, sampling with an offset or gradients, and a function constant of a vector type
   are not translated, and a function that needs one is not in the library.
 * A vertex texture: the SGX 543 has none.

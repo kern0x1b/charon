@@ -38,14 +38,32 @@ measurement and is marked as one.** The host's `MTLCompilerService` is in a cras
 * The **comparison summary can fail**: it refuses a duplicate row, a kernel Metal answered and the tool
   refused, and a kernel the source has that neither side answered.
 
-### MEASURED ON AN EARLIER TREE, NOT NOW — do not read this as current
+### MEASURED ON AN EARLIER TREE — recorded, and not reproducible now
 
+**Source, cited:** `.agent-work/runs/verify.log` (28 959 bytes, 2026-09-28 21:44) on the branch at
+`a19effdaf`, with the same verdicts in `.agent-work/runs/f1.log` and in `.agent-work/runs/mut2.log`
+— the last of which is the mutant run, whose red half brackets the same green rows. The command was
+`WORK=<dir> sh tests/backports/host/air2cpu/compare.sh` on a tree of **twelve** kernels, and the whole
+verdict block was:
+
+    refused atomicFamilyKernel the port did not translate this kernel, so there is no answer
+    match   atomicAddKernel  64 values agree with Metal
+    match   atomicKernel     64 values agree with Metal
     match   grid2Kernel      64 values agree with Metal
     match   grid3Kernel      64 values agree with Metal
+    match   indexKernel      64 values agree with Metal
+    match   orderKernel      64 values agree with Metal
+    match   orderKernel2     64 values agree with Metal
     match   scanKernel       64 values agree with Metal
+    match   stridedKernel    64 values agree with Metal
     match   sumKernel        64 values agree with Metal
     match   sumSharedKernel  64 values agree with Metal
-    compare: 6 kernel(s) Metal answered, 0 differ
+    compare: 12 kernel(s) Metal answered, 11 compared, 0 differ
+
+So the three numbers are three different things: **12** kernels Metal answered for, **11** of them the
+tool had translated and the port answered, and **0** differing among those 11. The twelfth,
+`atomicFamilyKernel`, was **refused** — the port said so by name and the run counted that as a refusal
+rather than a match.
 
 ### UNMEASURED
 
