@@ -1276,3 +1276,39 @@ media library; what *is* measured is that the release carries none of these memb
 port-created item - one built from a dictionary, which is exactly what the stand-in in the contract
 check is - is the only thing that can answer them here.
 <!-- /generated: 145 -->
+
+## 10.0 - `MPMediaItemArtwork100.m`
+
+    - (instancetype)initWithBoundsSize:(CGSize)boundsSize requestHandler:(UIImage *(^)(CGSize size))requestHandler MP_API(ios(10.0));
+
+What 6.1.3 has, measured with `tools/mach32_methods.py` and a negative control (a selector no framework
+has is absent): `MPMediaItemArtwork` declares 13 own instance methods - `initWithImage:`,
+`imageWithSize:`, `imageWithSize:atPlaybackTime:`, `imageDataWithSize:atPlaybackTime:`,
+`coverFlowImageWithSize:`, `albumImageWithSize:`, `albumImageDataWithSize:`, `hasArtworkAvailable`,
+`imageCropRect`, `bounds`, `_internal`, `set_internal:`, `dealloc` - and **not**
+`initWithBoundsSize:requestHandler:`. A genuine gap.
+
+The release declares `imageWithSize:` on `MPMediaItemArtwork` itself, so a category implementing it
+would be shadowed by the release's own method on the release's class and would never run. The
+initialiser is therefore a category method - nothing to shadow, the release has no such method -
+whose implementation **discards `self` and returns an instance of `CharonHandlerMediaItemArtwork`**, a
+port subclass that stores the bounds and the handler and overrides `imageWithSize:` and `bounds`. A
+subclass override is not shadowing: real artwork is an `MPConcreteMediaItemArtwork` and is untouched,
+and only artwork a caller made through this initialiser consults the handler, which is what the
+header describes. `isKindOfClass:` is true of `MPMediaItemArtwork` for the result, and the concrete
+class is a port subclass.
+
+Contract, in `tests/backports/host/mediaplayeritem/artwork.m`, with a handler that records the size it
+was asked for:
+
+    ok   the initialiser answers a kind of the class it is called on: an MPMediaItemArtwork
+    ok   imageWithSize: returns what the handler returned: the handler's image
+    ok   the handler was asked for the size the caller wanted: 300x150
+    ok   bounds is the size the initialiser was given: 120x60
+    artwork: OK (0 failures)
+
+and the mutant that ignores the handler is red for both reasons it should be:
+
+    RED  imageWithSize: returns what the handler returned: the handler's image
+    RED  the handler was asked for the size the caller wanted: other
+    artwork: 2 RED

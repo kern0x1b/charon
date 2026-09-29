@@ -502,16 +502,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "-[MPMediaItemArtwork initWithBoundsSize:requestHandler:]",
-   "kind": "method",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaItemArtwork a method like it: it arrived in iOS 10",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPNowPlayingInfoPropertyExternalContentIdentifier",
    "kind": "constant",
    "introduced": "10.0",

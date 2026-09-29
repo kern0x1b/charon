@@ -17,3 +17,18 @@ typedef NSNumber *MPMediaEntityPersistentID;
 @property (nonatomic, readonly) NSUInteger albumTrackNumber;
 @property (nonatomic, readonly) NSUInteger discNumber;
 @end
+
+// The artwork class, as the release declares it, so the port's subclass has something to override and
+// the check can see the override happen. The release's own imageWithSize: answers nil here, which is
+// what makes the override observable rather than accidental.
+@class UIImage;
+
+@interface MPMediaItemArtwork : NSObject
+- (instancetype)initWithImage:(id)image;
+- (UIImage *)imageWithSize:(CGSize)size;
+- (CGRect)bounds;
+@end
+
+@interface MPMediaItemArtwork (Charon100)
+- (instancetype)initWithBoundsSize:(CGSize)boundsSize requestHandler:(UIImage *(^)(CGSize size))requestHandler;
+@end
