@@ -129,3 +129,48 @@ is the whole window, and a divisor that counted only the values really there wou
 and fail all three of those. Both mutations are in `git log` as their own commits, and the tree carries
 neither.
 
+
+## The batch-normalisation gradient: the host's zeros, and what the header's formula gives
+
+**The inputs, exactly.** A 4x3 single precision batch, `source` and `incoming` both
+`{{1,2,3},{4,5,7},{2,8,1},{9,1,5}}`, `mean = {4, 5, 4}`, `variance = {8, 6, 6}`,
+`gamma = {2, 0.75, 1.5}`, `beta = {0.5, -0.5, 1}`, `epsilon = 0.001`, no neuron, no batch,
+result vectors prefilled with `0x7f` per element so a buffer the release left alone is
+distinguishable from one it filled with zero.
+
+**What the header's formula gives.** `MPSMatrixBatchNormalization.h` documents
+`resultGradientForGammaVector` as the gradient with respect to the gamma terms, which is
+`sum over feature vectors of dY * xhat`, with `xhat = (x - mean) / sqrt(variance + epsilon)`:
+
+    xhat, channel 0:  -1.06059, 0, -0.707063, 1.76766      (terms 1, 4, 2, 9)
+    gamma = -1.0606 - 1.4141 + 15.909 = 13.4342
+    gamma = 13.4342, 5.7150, 8.1643        beta = 16, 16, 16
+
+That is computed in the case file by a scalar loop, term by term, and it is what this port answers.
+
+**What the host answers: zeros, from two MPS entry points.**
+
+    MPSMatrixBatchNormalizationGradient   gamma 0, 0, 0    beta 0, 0, 0
+    MPSGraph normalizationGradient         gamma 0, 0, 0
+
+with `MTLCommandBufferStatusCommitted` and no error, against the prefilled `0x7f` — so the
+release wrote the zeros rather than leaving the buffers alone. The forward
+`MPSMatrixBatchNormalization` on the same inputs answers non-zero, so it is specific to the
+gradient.
+
+**Two MPS entry points agree on 0; the header's formula gives 13.43.** That is a host
+divergence, and this port follows the header.
+
+**The caveat, which is the reason it is written this way:** MPSGraph and
+MPSMatrixBatchNormalization are *not* independent oracles. Both are Apple's MPS, both reach the
+same internals, and a defect in one shared path would show in both. The two runs establish
+that this is MPS's answer and not a usage error in this case — which is what a second entry
+point can establish — and not that two independent implementations agree. One implementation,
+two doors.
+
+**What it took to get here, since three of the steps were misreadings rather than faults:** the
+outputs were memset to zero, so "not written" and "written zero" were the same thing; the
+`put` hex is little-endian byte order and `00008041` was read as 4.0 when it is 16.0; and a
+pointer print compared the case's C array with the object's buffer, which the comparison never
+mixed. Each of those produced a confident wrong number. The case file now prints the values as
+text beside the hex, which is what would have caught all three at once.
