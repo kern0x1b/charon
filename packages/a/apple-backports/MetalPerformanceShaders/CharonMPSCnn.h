@@ -24,16 +24,19 @@ typedef struct {
     const void *base;
     size_t width, height, channels;
     size_t stride;          // bytes from one pixel to the next along a row
+    size_t element;         // bytes in one value
 } CharonMPSCnnPlane;
 
 static inline const void *CharonMPSCnnPixel(const CharonMPSCnnPlane *plane, size_t x, size_t y, size_t channel)
 {
-    return (const char *)plane->base + (channel * plane->height + y) * plane->stride + x;
+    // The stride is a number of bytes and x is a number of pixels, so the pixel's own offset inside
+    // its row is x times the element size, not x.
+    return (const char *)plane->base + (channel * plane->height + y) * plane->stride + x * plane->element;
 }
 
 static inline void *CharonMPSCnnPixelMutable(CharonMPSCnnPlane *plane, size_t x, size_t y, size_t channel)
 {
-    return (char *)plane->base + (channel * plane->height + y) * plane->stride + x;
+    return (char *)plane->base + (channel * plane->height + y) * plane->stride + x * plane->element;
 }
 
 // The values of one image, as a plane per feature channel, copied in and out through the image's
@@ -53,6 +56,7 @@ static inline BOOL CharonMPSCnnTake(MPSImage *image, CharonMPSCnnPlane *plane, s
     plane->height = *height;
     plane->channels = *channels;
     plane->stride = stride;
+    plane->element = element;
     return YES;
 }
 
