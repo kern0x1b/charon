@@ -129,6 +129,35 @@ def main():
               "disagree, so one of them is wrong and neither can be trusted." % (grepped, declared))
         return 1
 
+    # THE TWO CHEAP CHECKS. Both are about a selector's SHAPE and cost nothing, and between them they are
+    # what the truncation of sixteen method rows needed and did not have: a row that is a strict prefix of
+    # another selector of the same class is a row whose argument list was cut short, and a selector with a
+    # colon in it that does not end in one is a selector cut off mid-keyword. Both were true for every one
+    # of sixteen rows in 9d79140eb and 6bbe351c9's predecessor, and neither was asked.
+    problems = []
+    method_rows = sorted(registry["method"])
+    for api in method_rows:
+        head = bare(api)
+        for other in method_rows:
+            if other == api:
+                continue
+            candidate = bare(other)
+            if candidate.startswith(head) and candidate != head and candidate.split(":")[0] == head.split(":")[0]:
+                problems.append("%s is a STRICT PREFIX of %s - the argument list is cut short"
+                                % (api, other))
+        if ":" in head and not head.endswith(":"):
+            problems.append("%s has a colon and does not end in one - the selector is cut off "
+                            "mid-keyword" % api)
+        if ":" not in head and not re.match(r'^\w+$', head):
+            problems.append("%s is neither a keyword list nor a unary name" % api)
+    if problems:
+        for line in problems[:20]:
+            print("FAIL " + line)
+        print("FAIL %d selector shape problems" % len(problems))
+        return 1
+    print("  selector shapes: no row is a strict prefix of another, and every selector ends in ':' per "
+          "keyword or is a unary name")
+
     missing = report("built, but no entry in registry", unregistered)
     extra = report("registered, but not built", orphan)
     if control:
