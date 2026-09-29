@@ -19,6 +19,23 @@ sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -w -Wno-unguarded-availability"
 libs="-framework Foundation -framework CoreGraphics -framework CoreVideo -framework CoreML"
 
+# THE CORPUS, and it decides the verdict. tools/coreml/make-models.py writes TEN containers:
+# glm, glm_classifier, nn_classifier, nn_embedding, nn_image, nn_layers, nn_layers_shape, pipeline,
+# tree_classifier, vision_image. On all ten this check is RED: `compared 770 keys, 0 differ, 48
+# missing` and `port: DIFFERS`. Every one of those 48 is under vision_image/, because that container is
+# the one make-models.py itself reports as "no host input" -- this host's Core ML does not run it, so
+# the description keys it would answer are in the host's record and not in the port's, and there is
+# nothing to compare them against. On the NINE that remain it is green: `compared 722 keys, 0 differ,
+# 0 missing` and `port: same as the system`. The count is printed on every run so the corpus a verdict
+# belongs to is never a guess.
+excluded=vision_image.mlmodel
+if [ -f "$models/$excluded" ]; then
+    echo "corpus: ten, $excluded INCLUDED -- this host's Core ML cannot run it, so expect 48 missing and a red run"
+else
+    echo "corpus: nine, $excluded excluded -- this host's Core ML cannot run it"
+fi
+echo "corpus: $(ls "$models" | grep -c '\.mlmodel$') containers in $models"
+
 if [ ! -d "$models" ]; then
     echo "no containers in $models: run sh tools/coreml/make-models.py --out $models first"
     exit 1

@@ -92,7 +92,14 @@ Each of these is refused with a line naming the layer, not approximated:
 description, every constraint, `-isAllowedValue:` over a battery of values, the providers, the keys,
 the options, the constants and a prediction per model -- and holds the port's own classes, compiled
 under names of their own, to that record: **722 keys compared, none differing, five recorded
-divergences**, over **eighteen mutants of the port, every one of them caught** -- the run prints
+divergences**, over **eighteen mutants of the port, every one of them caught** -- on **nine of the ten
+containers `tools/coreml/make-models.py` writes**, and which nine decides the verdict. The tenth is
+`vision_image`, the one `make-models.py` itself reports as `no host input`: this host's Core ML does
+not run that container, so the 48 description keys it would answer are in the host's record and not in
+the port's. On all ten the same command prints `compared 770 keys, 0 differ, 48 missing` and
+`port: DIFFERS`, every one of the 48 under `vision_image/`, so this number belongs to the nine and not
+to the ten. The run names the corpus it was given, on its own first line, and says which of the two
+it is. -- the run prints
 `mutants: 18 run, 0 surviving`, so a harness that silently compiled none of them cannot report a
 clean line, and a mutant is judged against the **port's own record** rather than the framework's,
 which is what makes "a mutant changed nothing" a thing the run can see. Nine things the obvious
@@ -174,8 +181,8 @@ on the same condition, which is also the exact string the port's own Foundation 
 `NSCoder+Collections14.m` when a collection is decoded from a coder of that kind -- the private
 selector is not reachable from here and is not the sort of thing this port calls, so the refusal is
 raised rather than taken. The case in `tests/backports/host/coreml` records both paths, so a change
-in either is caught: 722 keys compared, none differing, five recorded divergences, and the two
-builds agree on every one of them.
+in either is caught: 722 keys compared, none differing, five recorded divergences on the nine
+containers named above, and the two builds agree on every one of them.
 
 An **image** feature value does not round trip on either: a pixel buffer is not something a secure
 archive carries, so the value comes back of the image type and undefined, and the facts say so.
