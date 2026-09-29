@@ -1,0 +1,137 @@
+{
+ "framework": "VideoToolbox",
+ "entries": [
+  {
+   "api": "kVTCompressionPropertyKey_ConstantBitRate",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_EstimatedAverageBytesPerFrame",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_MinAllowedFrameQP",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_PreserveAlphaChannel",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_ReferenceBufferCount",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelRotationPropertyKey_FlipHorizontalOrientation",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelRotationPropertyKey_FlipVerticalOrientation",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelRotationPropertyKey_Rotation",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTRotation_0",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTRotation_180",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTRotation_CCW90",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTRotation_CW90",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 16.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelRotationProperties.h, the declaration's own availability"
+  }
+ ]
+}

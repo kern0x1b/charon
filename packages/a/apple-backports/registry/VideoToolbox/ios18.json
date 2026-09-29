@@ -1,0 +1,60 @@
+{
+ "framework": "VideoToolbox",
+ "entries": [
+  {
+   "api": "kVTCompressionPropertyKey_MaximumRealTimeFrameRate",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 18.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_ProjectionKind",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 18.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTCompressionPropertyKey_ViewPackingKind",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 18.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTDecompressionPropertyKey_AllowBitstreamToChangeFrameDimensions",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 18.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTDecompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTHDRPerFrameMetadataGenerationOptionsKey_HDRFormats",
+   "kind": "constant",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 18.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTHDRPerFrameMetadataGenerationSession.h, the declaration's own availability"
+  }
+ ]
+}

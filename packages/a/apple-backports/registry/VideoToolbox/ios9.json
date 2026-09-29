@@ -1,0 +1,49 @@
+{
+ "framework": "VideoToolbox",
+ "entries": [
+  {
+   "api": "kVTPixelTransferPropertyKey_DestinationColorPrimaries",
+   "kind": "constant",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 9.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelTransferProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelTransferPropertyKey_DestinationICCProfile",
+   "kind": "constant",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 9.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelTransferProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelTransferPropertyKey_DestinationTransferFunction",
+   "kind": "constant",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 9.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelTransferProperties.h, the declaration's own availability"
+  },
+  {
+   "api": "kVTPixelTransferPropertyKey_DestinationYCbCrMatrix",
+   "kind": "constant",
+   "introduced": "9.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "a VideoToolbox string constant SDK 26.2 declares as 9.0, and the release the port builds for lacks it",
+   "effect": "the string the header's own constant is documented to have, answered from the port",
+   "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
+   "source": "SDK 26.2, VideoToolbox/Headers/VTPixelTransferProperties.h, the declaration's own availability"
+  }
+ ]
+}
