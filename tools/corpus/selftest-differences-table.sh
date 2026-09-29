@@ -26,6 +26,21 @@ if [ $# -lt 3 ]; then
     exit 2
 fi
 ci=$1; modelio=$2; shift 2
+
+# The self-test needs the two compare.py outputs, which are what a differential run leaves behind and
+# which no suite in the tree produces - the light guard has no probe build.  So it is run by hand
+# after a run, and it says so and stands down rather than failing when the files are not there: a
+# self-test that cannot be run in most checkouts and reports that as a failure is a check that gets
+# ignored, and a check that gets ignored is worse than none.  Skipping is exit 0 with a line that
+# says what was skipped and how to produce it; it is not a pass of anything.
+for needed in "$ci" "$modelio"; do
+    if [ ! -f "$needed" ]; then
+        echo "selftest: skipped - $needed is not there. The file is what"
+        echo "  tests/backports/host/ciimage/pixel/run.sh and tests/backports/host/modelio/run.sh leave"
+        echo "  behind, followed by tests/backports/host/modelio/compare.py on the two answers.txt."
+        exit 0
+    fi
+done
 pages=("$@")
 
 failed=0

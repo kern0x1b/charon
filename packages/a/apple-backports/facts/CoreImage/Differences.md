@@ -115,6 +115,25 @@ An earlier report in this series gave Graphics 18, ModelIO 18, MetalKit 1. Those
 of the files this series adds or changes, compiled one at a time, with the SDK passed by hand: a
 band's subset, and passing the SDK by hand hides that the build records it.
 
+## The check, and how to run it
+
+Every count on this page is checked against the run by a script, and the script is not run by the
+light guard - it needs the two `compare.py` outputs, which are what a differential run leaves behind
+and which no suite in the tree produces. So it is run by hand after a run, and it stands down with a
+line saying so when the files are not there rather than failing:
+
+    BUILD=$PWD/.agent-work/ci sh tests/backports/host/ciimage/pixel/run.sh 0.0005
+    BUILD=$PWD/.agent-work/md sh tests/backports/host/modelio/run.sh
+    python3 tests/backports/host/modelio/compare.py $PWD/.agent-work/ci/host/answers.txt $PWD/.agent-work/ci/port/answers.txt 0.0005 ciimage > ci-diff.txt
+    python3 tests/backports/host/modelio/compare.py $PWD/.agent-work/md/host/answers.txt $PWD/.agent-work/md/port/answers.txt 0.0005 modelio > md-diff.txt
+    python3 tools/corpus/differences-table.py ci-diff.txt md-diff.txt --page packages/a/apple-backports/facts/CoreImage/Differences.md
+    sh tools/corpus/selftest-differences-table.sh ci-diff.txt md-diff.txt packages/a/apple-backports/facts/CoreImage/Differences.md
+
+`--page` may be given more than once and every page given is checked. The exit status is: 0 for a
+clean run, 1 for a finding, and 2 for a page or a run the tool cannot read - three outcomes that are
+told apart by the status and by the text, because a crash that exits 1 is indistinguishable from a
+finding, which is what a first version of this did.
+
 ## The count, and what it measures now that the whole tail is compared
 
     ciimage: 539 measurements, 454 the same, 77 different, 42 one side only (tolerance 0.0005)
