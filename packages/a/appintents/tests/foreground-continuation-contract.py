@@ -22,7 +22,13 @@ SDK = os.path.join(os.path.expanduser("~"), ".xmake/packages/i/iphoneos-sdk/26.2
                    "*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs",
                    "iPhoneOS26.2.sdk/System/Library/Frameworks/AppIntents.framework/Modules/"
                    "AppIntents.swiftmodule/arm64e-apple-ios.swiftinterface")
-ROWS = ["requestToContinueInForeground(_:continuation:)", "needsToContinueInForegroundError(_:continuation:)"]
+ROWS = [("requestToContinueInForeground(_:continuation:)", "requestToContinueInForeground"),
+        ("needsToContinueInForegroundError(_:continuation:)", "needsToContinueInForegroundError"),
+        # the second overload is not in the ledger, and a subset chosen by which row the ledger
+        # happens to carry is a metric rather than a shape -- so the check holds it to the same rule
+        ("needsToContinueInForegroundError(_:alwaysConfirm:)", "needsToContinueInForegroundError")]
+# what the framework's own declaration carries, and what a declaration here must carry too
+NEEDS = {"generic": True, "labels": True, "async": True, "throws": True}
 
 
 def main():
@@ -31,20 +37,39 @@ def main():
         sys.exit("foreground-continuation-contract: %s matches no file; a missing input is a hard error" % SDK)
     interface = "\n".join(open(p, encoding="utf-8", errors="replace").read() for p in found)
     text = open(SOURCE, encoding="utf-8", errors="replace").read()
-    declared = 0
-    for row in ROWS:
-        name = row.split("(")[0]
-        ours = re.search(r"public func %s[^\n]*" % re.escape(name), text)
-        theirs = re.search(r"[^\n]*public func %s[^\n]*" % re.escape(name), interface)
+    # a declaration in this file wraps onto the next line, and the label lives there: match over
+    # whitespace-normalised text, not per line
+    flat = re.sub(r"\s+", " ", text)
+    declared, failures = 0, []
+    for row, name in ROWS:
+        parts = row.split("(")[1].rstrip(")").split(":")
+        want_label = parts[1] if len(parts) > 1 and parts[0] == "_" else parts[0]
+        ours = [m.group(0) for m in re.finditer(r"public func %s(?:<[^>]*>)?\(.{0,220}?(?:->|$)" % re.escape(name), flat)]
+        theirs = [m.group(0).strip() for m in
+                  re.finditer(r"public func %s(?:<[^>]*>)?\(.{0,220}?(?:->|$)" % re.escape(name),
+                              re.sub(r"\s+", " ", interface))]
+        match = [d for d in ours if re.search(r"\b%s\s*:" % re.escape(want_label), d)]
         print("row   %s" % row)
-        print("  framework: %s" % (theirs.group(0).strip()[:150] if theirs else "NOT FOUND"))
-        if ours:
-            declared = declared + 1
-            print("  declared: %s" % ours.group(0).strip()[:150])
-        else:
-            print("  declared: **no** -- this is an empty extension today")
-    print("%d of %d rows declared" % (declared, len(ROWS)))
-    return 0
+        for t in sorted(set(theirs)):
+            print("  framework: %s" % t[:150])
+        if not match:
+            failures.append(row)
+            print("  declared: **no declaration with that label**")
+            continue
+        declared = declared + 1
+        decl = match[0]
+        print("  declared: %s" % decl.strip()[:150])
+        twin = next((t for t in theirs if re.search(r"\b%s\s*:" % re.escape(want_label), t)), "")
+        for what, needed in (("generic", "<" in twin), ("labels", ":" in twin),
+                             ("async", "async" in twin), ("throws", "throws" in twin)):
+            have = ("<" in decl) if what == "generic" else (":" in decl) if what == "labels" \
+                else (what in decl)
+            if needed and not have:
+                failures.append("%s: the framework's overload is %s and this declaration is not" % (row, what))
+    print("%d of %d rows declared, %d shape failure(s)" % (declared, len(ROWS), len(failures)))
+    for f in failures:
+        print("FAIL %s" % f)
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

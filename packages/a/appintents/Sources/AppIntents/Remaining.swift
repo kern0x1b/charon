@@ -228,6 +228,45 @@ extension CharonIntentResultText {
 }
 
 extension ForegroundContinuableIntent {
+    /// Run the continuation in place, and hand back what it produced.
+    ///
+    /// The framework's own declaration is
+    /// `requestToContinueInForeground<ResultValue>(_ dialog: IntentDialog? = nil, continuation:
+    /// @MainActor () async throws -> ResultValue = { () }) async throws -> ResultValue where
+    /// ResultValue: Sendable`, and this is that shape: the generic parameter is **carried through**,
+    /// not wrapped, so what the caller gets back is what its own closure produced and an error it
+    /// threw is thrown on.
+    ///
+    /// What a device does that this does not: the system puts the intent's window back in front and
+    /// keeps the run alive while it is there. This port's intent runs **inside the app's own
+    /// process**, so there is nothing to move in front of and nothing to keep alive -- the call runs
+    /// the continuation here, which is the same thing the framework's does from the app's point of
+    /// view. `facts/AppIntents/ForegroundContinuation.md` records that as the port's design.
+    @discardableResult
+    public func requestToContinueInForeground<ResultValue>(_ dialog: IntentDialog? = nil,
+                                                           continuation: @MainActor () async throws -> ResultValue = { () }) async throws -> ResultValue
+        where ResultValue: Sendable {
+        return try await continuation()
+    }
+
+    /// The error an intent hands back when it may not stay in the foreground, with the run's own
+    /// answer run as the continuation and the framework's own empty error returned -- which is what
+    /// the framework's own declaration returns, an `AppIntentError`.
+    public func needsToContinueInForegroundError(_ dialog: IntentDialog? = nil,
+                                                 continuation: (@MainActor () async throws -> Void)? = nil) -> AppIntentError {
+        if let continuation { Task { @MainActor in try? await continuation() } }
+        return AppIntentError()
+    }
+
+    /// The same error, asking the run to confirm first, which is the framework's second overload
+    /// (`alwaysConfirm: Bool = true`) and not a subset of the first: a caller that passes `false` is
+    /// saying it has already confirmed, and the answer is the same value either way on this port --
+    /// there is no system dialog to put in front of the user, which is the difference the facts file
+    /// names.
+    public func needsToContinueInForegroundError(_ dialog: IntentDialog? = nil,
+                                                 alwaysConfirm: Bool = true) -> AppIntentError {
+        return AppIntentError()
+    }
 }
 
 extension CharonForeground {
