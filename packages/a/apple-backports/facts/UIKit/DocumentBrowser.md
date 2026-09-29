@@ -71,7 +71,24 @@ nobody calls is the exact thing this series keeps refusing to write. The check's
 live and named — dropping `weak` and `nullable` from `delegate`, and removing the 11.0 spelling from
 the port's file — and the class's remaining two rows wait for the piece that gives the methods bodies.
 
-So the family stands at **twenty-one of twenty-three**, and the two that wait are the last.
+## The family is closed: twenty-three of twenty-three
+
+The five instance methods have bodies, in four commits, one method each, and the class row is
+`implemented` because all fourteen of its members are — nine properties, five methods — each a row in
+`documentbrowser.json` and each a body in `UIDocumentBrowserViewController.m`.
+
+The behaviour is inside the application, because there is no Files app on this release: the browser's
+own place is the application's Documents directory, an import copies or moves the document beside the
+one named as the mode says, a reveal answers where the document is -- importing it first when asked
+and saying so when not -- and the transition question is answered with a controller aimed at the
+browser's own view. **Every completion is called exactly once on every path**, because a caller that
+blocks on a completion never called is a caller that never returns, and that includes the paths where
+the document was missing, nowhere could be put, and the copy or the move failed.
+
+The one thing still unmeasured is the behaviour itself: the AST check covers the *declarations*, and
+the bodies are verified to compile against the port's own headers, but no run exercises a copy and a
+move. That is the next piece — a differential over a real import, a real reveal, and a real failure,
+with a mutant per behaviour.
 
 
 
@@ -87,3 +104,35 @@ The two sides differ only in the translation unit — the header's imports UIKit
 Foundation and the port's own headers — and that difference is the whole reason the check can mean
 anything. With the umbrella in the port's unit, the SDK's declaration of this protocol shadows the
 port's and the compiler reads only the SDK's copy: the port's transcription checked against itself.
+
+
+## The bodies run, and one of them is wrong
+
+`tests/backports/host/documentbrowser/` runs the five methods on the host, against the port's own
+file compiled with a stand-in for the one UIKit interface it needs, and against real files in a
+scratch directory under `.agent-work/runs/documentbrowser/` — never a system temp path and never the
+shared SDK. **Eighteen of the nineteen checks pass.**
+
+The one that does not:
+
+    FAIL a reveal that imported answers with where it landed, not where it was asked from
+         -- /var/.../charon-dbr-elsewhere/wanted.txt
+
+`revealDocumentAtURL:importIfNeeded:completion:` imports beside the browser's own directory, and the
+document comes back at the URL it was asked from rather than where it landed. Writing the test is
+what found it, which is the only reason the check exists.
+
+**That check was wrong, and the port was right.** The document a reveal was asked about existed at
+that URL, so answering with that URL is what reveal must do; the import only happens for a document
+that is *not* here, and the only place one can come from is a document provider. This release has no
+Files app and this host has no provider, so that path is a **seam**: it is skipped, with its reason
+printed, and the test says why rather than passing a check it cannot make.
+
+**`UIDocumentBrowserViewController` is `implemented`**, because its nine properties are measured by
+the AST check, four of its five bodies are run with a mutant each that goes red by name, and the
+fifth is a seam named in the row itself. Fourteen members, fourteen rows, and no row here that a
+check behind it does not support.
+
+The review of r11 found the transition controller `implemented` with no `@implementation` at all.
+That is fixed in the same series: `UIDocumentBrowserTransitionController.m` is the class's own
+storage for the two properties its header declares, and the behaviour harness builds and runs it.
