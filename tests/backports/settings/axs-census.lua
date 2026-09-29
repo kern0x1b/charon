@@ -92,7 +92,10 @@ function main(release, architecture, modules)
     local subjects = {"Motion", "Blink", "Cursor", "Horizontal", "Vertical", "Border", "Slider", "Image",
                       "Hearing", "Pair"}
     print("")
-    print("names in the Accessibility surface containing each word a preference about the five settings would use:")
+    print("names in the Accessibility surface containing each word a preference about the five settings")
+    print("would use, and each word a hearing-device answer would be justified or refuted by:")
+    local matched = 0
+    local seen = {}
     for _, word in ipairs(subjects) do
         local hits = {}
         for symbol in pairs(axs_in_surface) do
@@ -100,6 +103,24 @@ function main(release, architecture, modules)
         end
         table.sort(hits)
         print(string.format("  %-11s %d", word, #hits))
-        for _, symbol in ipairs(hits) do print("      " .. symbol) end
+        for _, symbol in ipairs(hits) do
+            print("      " .. symbol)
+            seen[symbol] = true
+        end
+        if word == "Pair" then
+            -- Two of this list are not preferences, and the list says which: a reader counting
+            -- preferences out of it would be counting a class and its metaclass.
+            print("      (two of the six are a class and its metaclass, not preferences: " ..
+                  "_OBJC_CLASS_$_AXEventTapPair and _OBJC_METACLASS_$_AXEventTapPair)")
+        end
+        matched = matched + #hits
     end
+    local distinct = 0
+    for _ in pairs(seen) do distinct = distinct + 1 end
+    -- Two numbers, because they are two numbers. The sum is every hit under every word, and an export
+    -- whose name contains two of the words is counted twice - the four paired-UUIDs exports contain
+    -- Hearing and Pair each, so the sum is four more than the exports. A claim about what the surface
+    -- does or does not hold is a claim about the distinct count.
+    print(string.format("  %-11s %d (sum) / %d distinct, across the %d words", "TOTAL", matched, distinct,
+                        #subjects))
 end
