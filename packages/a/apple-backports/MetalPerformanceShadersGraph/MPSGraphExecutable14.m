@@ -4,7 +4,6 @@
 
 #import "CharonMPSGraph.h"
 
-#include <stdio.h>
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
@@ -26,7 +25,6 @@
               targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
            executableDescriptor:(MPSGraphExecutableExecutionDescriptor *)executableDescriptor
 {
-    fprintf(stderr, "  executable init graph %p feeds %p targets %lu\n", graph, feeds, (unsigned long)targetTensors.count);
     if ((self = [super init])) {
         _graph = graph;
         _device = device;
@@ -83,7 +81,6 @@
     // The feeds are the graph's own, overlaid with the inputs given here, which is how a caller replaces
     // one placeholder's value between two runs of the same executable. The results are written into the
     // tensor data the caller allocated, so the answer is in a buffer the caller owns.
-    fprintf(stderr, "  run feeds %p keys %lu inputs %lu results %lu\n", _feeds, (unsigned long)_feeds.allKeys.count, (unsigned long)inputsArray.count, (unsigned long)resultsArray.count);
     NSMutableDictionary *feeds = [_feeds mutableCopy];
     // The inputs pair with the feed tensors in the order the placeholders were added to the graph, which
     // is the order the caller passed the inputs in. A dictionary's own key order is arbitrary, and
@@ -98,7 +95,6 @@
             [feedTensors addObject:tensor];
     for (NSUInteger i = 0; i < inputsArray.count && i < feedTensors.count; i++)
         feeds[feedTensors[i]] = inputsArray[i];
-    fprintf(stderr, "  merged feeds %lu\n", (unsigned long)feeds.count);
     NSDictionary *results = [_graph runWithFeeds:feeds
                                     targetTensors:_targetTensors
                                  targetOperations:_targetOperations];
