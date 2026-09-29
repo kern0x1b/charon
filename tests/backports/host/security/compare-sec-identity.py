@@ -11,7 +11,10 @@ No keychain is touched anywhere in this case.
 """
 import sys
 
-VALUES = {"copy-ref-same": 1, "create-present": 1, "certificates-copied": 1,
+# copy-ref-retains is the COUNTED +1, not an inference from pointer equality: a mutation that drops the
+# CFRetain in sec_identity_copy_ref leaves every other row here untouched, so without it that mutation
+# is invisible to this case.
+VALUES = {"copy-ref-same": 1, "copy-ref-retains": 1, "create-present": 1, "certificates-copied": 1,
            "copy-survives-source-change": 1, "access-true": 1, "handler-runs-per-certificate": 1,
            "access-empty-true": 1, "handler-runs-on-empty": 0, "copy_ref-of-nil": 0,
            "local-identity-holds": 1, "local-identity-present": 1}

@@ -54,7 +54,16 @@ int main(void)
         sec_identity_t identity = sec_identity_create((SecIdentityRef)standIn);
         if (!identity) { printf("WRONG\tcreate: NULL for a ref it was given\n"); return 1; }
         want("create-present", 1, 1);
+        //
+        // THE +1 IS COUNTED, NOT INFERRED. `copy_ref` hands back the caller's OWN CFTypeRef, so the
+        // one thing that can be wrong about it is the retain: with the +1, a caller that releases the
+        // copy leaves the wrapper still holding one. The stand-in is a CFDataRef, so CFGetRetainCount -
+        // public CoreFoundation, the same counter every ownership row here leans on - reads the count the
+        // port is responsible for. Pointer equality says the ref is the same; it cannot see a missing
+        // retain, and a mutation that DROPS the CFRetain leaves every other row in this file untouched.
+        CFIndex beforeCopy = CFGetRetainCount(standIn);
         SecIdentityRef got = sec_identity_copy_ref(identity);
+        want("copy-ref-retains", CFGetRetainCount(standIn) > beforeCopy ? 1 : 0, 1);
         if (got != (SecIdentityRef)standIn)
             printf("WRONG\tcopy_ref: the port answered a DIFFERENT ref than it was given\n"), failures++;
         else
