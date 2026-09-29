@@ -167,7 +167,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "FunctionConstant",
+      "reason": "MTLFunctionConstant, and the port declares it under that name at Metal/MTLReflection10.m:72",
       "effect": "name, type, index and isRequired are read from the node a caller hands it, and required is NO; a constant the plist has no record of is not required, and the dictionary that would hand these out is the empty one MTLFunction.functionConstantsDictionary already returns - the absence is the plist's, which writes arguments and no constants",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -801,7 +801,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "FunctionDescriptor",
+      "reason": "MTLFunctionDescriptor, which Metal/MTLReflection14.m:178 implements under that name",
       "effect": "name, specializedName, constantValues, options and binaryArchives are all carried and settable; options starts at MTLFunctionOptionNone, the enumeration's own zero, and the constant values are whatever a caller sets - the 16.4 SDK declares this class, so there is nothing to declare here",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -823,7 +823,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "FunctionLog, behind the port's own @protocol MTLFunctionLog",
+      "reason": "MTLFunctionLog, behind the port's own @protocol MTLFunctionLog",
       "effect": "type, encoderLabel, function and debugLocation are all carried and nil or the enumeration's zero: a function log is the GPU's own record of a kernel's execution, and this port dispatches through its AIR translation over OpenGL ES 2.0 on a driver that records nothing per invocation; so there IS no log, and the header's answer for a function with no logs is what these return; the members are real and the VALUE is absent by the device, which is the documented answer rather than a stub",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -834,7 +834,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "FunctionLogDebugLocation, behind the port's own @protocol",
+      "reason": "MTLFunctionLogDebugLocation, behind the port's own @protocol",
       "effect": "functionName, URL, line and column are all carried, built by an initializer a caller supplies; a debug location names where a log says something went wrong, and there is no log, so the value a caller gets is the one it passed and nothing the port invented",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
@@ -900,7 +900,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "LogContainer, behind the port's own @protocol MTLLogContainer",
+      "reason": "MTLLogContainer, behind the port's own @protocol MTLLogContainer",
       "effect": "an array of logs that is empty, plus the two NSFastEnumeration methods 26.2's declaration asks for; an EMPTY container is what a command buffer with no function logs has, and NSFastEnumeration over it returns nothing - 26.2 declares MTLLogContainer as <NSObject, NSFastEnumeration> at MTLFunctionLog.h:19",
       "source": "SDK 16.4, Metal",
       "facts": "facts/Metal/TypeTree.md"
