@@ -191,6 +191,9 @@ D=$S/SecCertificateNameDER10_3.m
 N=$S/SecTrustNetworkFetch7_0.m
 G=$S/SecTrustGetTrustResult7_0.m
 O=$S/SecObjectWrappers12_0.m
+SI=$S/SecObjectWrappersIdentity12_0.m
+SI16=$S/SecObjectWrappersIdentity16_0.m
+LI=$S/SecProtocolOptionsLocalIdentity.m
 PM=$S/SecProtocolMetadata13_0.m
 PMA="$S/SecProtocolMetadataAccessors13_0.m $S/SecProtocolMetadataAccessors16_0.m"
 PO=$S/SecProtocolOptions13_0.m
@@ -283,6 +286,7 @@ protocol_case protocol-options-ciphersuite $PC
 protocol_case protocol-options-strings    $PR
 protocol_case protocol-options-flags      $PF
 protocol_case protocol-options-data       $PD
+run_case sec-identity         compare-sec-identity.py        $H/sec-identity.m $SI $SI16 $LI $O
 protocol_case protocol-options-blocks     $PK
 run_case supported          compare-supported.py          $H/supported.m $F
 run_case padding           compare-padding.py           $H/padding.m $F
@@ -394,6 +398,38 @@ run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrapp
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
 # THE BLOCKS MUTATION MUST NOT COMPILE, and its call was LOST in the F3 revert - only the function
 # definition survived, so a run quietly stopped proving that. It is restored here beside the other two.
+# THE THREE sec-identity MUTANTS. MUTANT_SRC REPLACES the case's own port source: a mutant ADDED beside
+# the original gives duplicate symbols, and one built without it is building something else. Each is a
+# whole-file copy of the source with ONE line changed, so it differs in BEHAVIOUR and nothing else.
+make_mutant() {   # <out> <from> <old line> <new line>
+    python3 - "$1" "$2" "$3" "$4" <<'PY'
+import sys
+out, src, old, new = sys.argv[1:5]
+s = open(src).read()
+if s.count(old) != 1:
+    sys.exit("make_mutant: the anchor for %s matched %d times, not once" % (out, s.count(old)))
+open(out, "w").write(s.replace(old, new))
+print("  mutant %s written" % out.rsplit("/", 1)[-1])
+PY
+}
+make_mutant "$build/mutant-sec-identity-nocopy.m"   "$SI" \
+    '    _certificates = certificates ? (CFArrayRef)CFArrayCreateCopy(kCFAllocatorDefault, certificates) : NULL;' \
+    '    _certificates = certificates ? (CFArrayRef)CFRetain(certificates) : NULL;   // MUTANT: an ALIAS, not a copy'
+make_mutant "$build/mutant-sec-identity-noretain.m" "$SI" \
+    '    return held ? (SecIdentityRef)CFRetain(held) : NULL;' \
+    '    return held;   // MUTANT: no +1, so the object is the only owner and the caller is given a ref it does not hold'
+make_mutant "$build/mutant-sec-identity-nohandler.m" "$SI16" \
+    '        handler(wrapper);' \
+    '        (void)wrapper;   // MUTANT: the handler is NEVER CALLED'
+# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
+# same file as an extra source links it TWICE and every symbol collides.
+run_mutation sec-identity-nocopy   compare-sec-identity.py sec-identity
+# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
+# same file as an extra source links it TWICE and every symbol collides.
+run_mutation sec-identity-noretain compare-sec-identity.py sec-identity
+# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
+# same file as an extra source links it TWICE and every symbol collides.
+run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
 # it - passing it again as an extra source is a duplicate symbol, which is what it did first.
