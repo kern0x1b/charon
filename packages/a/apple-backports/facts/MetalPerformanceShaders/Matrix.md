@@ -45,21 +45,28 @@ own counts, so a number cannot outlive its code.
 ## A named divergence is not an exemption
 
 This was written the other way round and the coordinator was right to correct it. A case may be
-*named* in the runner so that a recount is a number about this port rather than about a property the
-release happens to have; it may not be *exempted* from being reproduced. The bar for a genuine host
-divergence is a proof that the behaviour is the macOS GPU or driver's and not MPS's own kernel, with
-that proof in this file. **None of the thirteen currently named meets that bar, and the port has work
-to do on all of them.**
+*named* in `tests/backports/host/mpsmatrix/owed.tsv`, with its reason, so that the count of what this
+port does not reproduce is a number about this port; it may not be *exempted* from being reproduced.
+The runner has no exemption list any more: `run.sh` grades every case it compared and one that is not
+bit-identical, not within the bound and not named in that file fails the run.
 
-How many cases the names actually remove is counted from the runner's own files, not
-from the length of the list: on macOS 27.0 (build 26A428) the filter drops **13 of 141**
-cases and **128** are compared, of which **58** differ - `sum` by one unit in the last place,
-`neuron` by 7.0e-05 and `batch-normalization` by 2.9e-06, and in the gradient families
-(`neuron-gradient-data`, `neuron-gradient-bias`, `fully-connected`) elements where one side is
-zero and the other is not. That run is on a **different operating system from every other
-measurement in this file**, which was taken against the MPS of macOS 26.5, so it does not
-settle any of the thirteen either way; it says only that the numbers move with the host's
-version and that a re-run has to name the macOS it ran on.
+The bar for a genuine host divergence is a proof that the behaviour is the macOS GPU or driver's and
+not MPS's own kernel, with that proof in this file. **The cases named in `owed.tsv` are not proved to
+be the host's, so the port has work to do on all of them.**
+
+What the last run measured, on macOS 27.0 (build 26A428), every figure below taken from
+`rank.py`'s own output and checked against this paragraph by
+`tests/backports/host/mpsmatrix/page-check.py`:
+
+    compared: 141 cases over the first 141 of each run
+    identical: 70   ulp (bound 64): 53   non-ulp: 18
+
+The largest distance among the cases that are rounding is **29** units in the last place
+(`softmax-gradient`, 2.05e-06 relative) and the smallest among those that are not is **751**
+(`neuron-gradient-data 15`, 5.65e-05 relative), so the 64-unit bound sits between two populations
+three orders of magnitude apart and not inside either. That run is on a **different operating system
+from every other measurement in this file**, which was taken against the MPS of macOS 26.5; it says
+that the numbers move with the host's version, and that a re-run has to name the macOS it ran on.
 
 The kernel's own parameters settle what the transposed line is. The probe prints them:
 
