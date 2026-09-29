@@ -27,7 +27,12 @@ restore_forward() { printf '%s\n' "$foriginal" > "$forward"; }
 trap restore EXIT INT TERM
 
 count() {
-    BUILD="$work" sh "$here/run.sh" 2>&1 | grep -E 'differing cases|DIFFERS in' | head -1
+    line=$(BUILD="$work" sh "$here/run.sh" 2>&1 | grep -E 'differing cases|DIFFERS in' | head -1)
+    if [ -z "$line" ]; then
+        echo "the harness produced no count, so the tree does not build or the run failed:" >&2
+        return 1
+    fi
+    printf '%s\n' "$line"
 }
 
 before=$(count)
