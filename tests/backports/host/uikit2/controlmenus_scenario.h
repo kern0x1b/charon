@@ -9,19 +9,33 @@
 // to the host's label machinery is a mix no device ever has: on 6.x there is no host method of that name at
 // all, so the port's own is what runs there. The recorder has no prefixed method and takes the public one,
 // which is the host's own - the right answer on that side.
+// Whether the class has a method of that name, asked through the class's method list and **not** through
+// -respondsToSelector:. NSSelectorFromString on a name that exists nowhere produces a selector that is
+// registered by no class and no category, and the runtime's optimised -respondsToSelector: traps on one - which
+// is the `brk #0xc472` an lldb run of the recorder stopped in, with a one-frame backtrace because the trap is
+// inside a tail call from the host's own -setAction:forSegmentAtIndex:. So the test asks the method list.
+static BOOL charon_has_method(Class cls, const char *name)
+{
+    if (!cls)
+        return NO;
+    for (Class c = cls; c; c = class_getSuperclass(c))
+        if (class_getInstanceMethod(c, NSSelectorFromString(@(name))))
+            return YES;
+    return NO;
+}
+
 static void charon_insert_action(UISegmentedControl *control, UIAction *action, NSUInteger index)
 {
-    SEL renamed = NSSelectorFromString(@"charonHostInsertSegmentWithAction:atIndex:animated:");
-    SEL published = NSSelectorFromString(@"insertSegmentWithAction:atIndex:animated:");
-    SEL chosen = [control respondsToSelector:renamed] ? renamed : published;
+    const char *renamed = "charonHostInsertSegmentWithAction:atIndex:animated:";
+    const char *published = "insertSegmentWithAction:atIndex:animated:";
+    SEL chosen = NSSelectorFromString(@(charon_has_method([control class], renamed) ? renamed : published));
     ((void (*)(id, SEL, UIAction *, NSUInteger, BOOL))objc_msgSend)(control, chosen, action, index, NO);
 }
 
 static const char *charon_insert_action_name(UISegmentedControl *control)
 {
-    return [control respondsToSelector:NSSelectorFromString(@"charonHostInsertSegmentWithAction:atIndex:animated:")]
-               ? "the port's own"
-               : "the host's own";
+    return charon_has_method([control class], "charonHostInsertSegmentWithAction:atIndex:animated:") ? "the port's own"
+                                                                                                   : "the host's own";
 }
 
 @interface MenuTarget : NSObject
