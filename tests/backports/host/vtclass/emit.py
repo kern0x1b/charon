@@ -37,6 +37,31 @@ def load_gen_body():
     return module
 
 
+WORKTREE = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                      "..", "..", "..", ".."))
+
+
+def load_emit_registry():
+    """emit-registry.py, by explicit path, with its __file__ asserted - the same rule as gen_body, and
+    for the same reason: a module named import once loaded a different copy and every count looked fine."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "emit-registry.py")
+    spec = importlib.util.spec_from_file_location("emit_registry", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert os.path.abspath(module.__file__) == path, "loaded a copy of emit-registry that is not this one"
+    return module
+
+
+def sdk_headers_by_file(text, sdk):
+    """The VideoToolbox headers as {path: text}, so a registry row can name the FILE and LINE its
+    declaration is on - a source a reader can open, rather than the framework's name."""
+    directory = os.path.join(sdk, "System/Library/Frameworks/VideoToolbox.framework/Headers")
+    out = {}
+    for path in sorted(glob.glob(os.path.join(directory, "*.h"))):
+        out[path] = open(path).read()
+    return out
+
+
 def main():
     gen_body = load_gen_body()
     sdk = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("VT_SDK", "")
@@ -364,6 +389,19 @@ def main():
     json.dump(summary, open(os.path.join(out, "summary.json"), "w"), indent=1, sort_keys=True)
     with open(os.path.join(out, "unavailable.tsv"), "w") as handle:
         handle.write("\n".join(absent) + "\n")
+    # THE REGISTRY ROWS AND THE FACTS FILE, from the same parse that produced the value files, so a row
+    # cannot describe a class the value file does not build. Without this the library exports seventeen
+    # classes and the registry records none of them, and backports.lua answers "built, but no entry in
+    # registry/" for every one - the gate failing on the family this series exists to build.
+    registry = load_emit_registry()
+    rows = registry.build_rows(gen_body, sdk_headers_by_file(text, sdk), protocols, classes,
+                               gen_body.ORDER)
+    registry_dir = os.path.join(WORKTREE, "packages", "a", "apple-backports", "registry", "VideoToolbox")
+    facts_dir = os.path.join(WORKTREE, "packages", "a", "apple-backports", "facts", "VideoToolbox")
+    written = registry.write(registry_dir, facts_dir, rows, gen_body.ORDER)
+    for name, count in written:
+        print("  registry %s: %d rows" % (name, count))
+    print("  registry rows: %d over %d class(es)" % (len(rows), len(gen_body.ORDER)))
     print("emitted %d classes to %s" % (len(summary), out))
     print("  %d accessors, %d class properties, %d properties the SDK marks API_UNAVAILABLE(ios)"
           % (sum(len(s["own"]) + len(s["inherited"]) for s in summary.values()),
