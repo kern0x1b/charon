@@ -90,35 +90,24 @@
       "source": "SDK 16.4, Metal, MTLComputePipeline.h and MTLComputeCommandEncoder.h"
     },
     {
-      "api": "-[MTLComputeCommandEncoder device]",
+      "api": "-[MTLCommandEncoder device]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "an encoder of the port runs a workgroup as one thread per thread of the group and joins them before the dispatch is encoded, with a rendezvous of a mutex and a condition variable because iOS 6 has no pthread_barrier",
+      "reason": "an encoder of the port runs a workgroup as one thread per thread of the group and joins them before the dispatch is encoded, with a rendezvous of a mutex and a condition variable because iOS 6 has no pthread_barrier - the member is declared by the protocol MTLCommandEncoder, which MTLComputeCommandEncoder inherits, and a protocol takes no category, so a -[MTLComputeCommandEncoder sel] row is one the lift refuses: the selector is not declared on the owner the row names. Named with the protocol that declares it, which is the spelling the lift reads, and the one the SDK's own header carries (MTLCommandEncoder.h:89 device, :95 label, :101 - (void)endEncoding).",
       "effect": "the device the encoder of the port answers for",
       "facts": "facts/Metal/Compute.md",
       "source": "SDK 16.4, Metal, MTLComputePipeline.h and MTLComputeCommandEncoder.h"
     },
     {
-      "api": "-[MTLComputeCommandEncoder label]",
+      "api": "-[MTLCommandEncoder label]",
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a name an application gives a resource, which the port keeps",
+      "reason": "a name an application gives a resource, which the port keeps - the member is declared by the protocol MTLCommandEncoder, which MTLComputeCommandEncoder inherits, and a protocol takes no category, so a -[MTLComputeCommandEncoder sel] row is one the lift refuses: the selector is not declared on the owner the row names. Named with the protocol that declares it, which is the spelling the lift reads, and the one the SDK's own header carries (MTLCommandEncoder.h:89 device, :95 label, :101 - (void)endEncoding).",
       "effect": "the name, read back",
-      "facts": "facts/Metal/Compute.md",
-      "source": "SDK 16.4, Metal, MTLComputePipeline.h and MTLComputeCommandEncoder.h"
-    },
-    {
-      "api": "-[MTLComputeCommandEncoder endEncoding]",
-      "kind": "method",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "an encoder of the port runs a workgroup as one thread per thread of the group and joins them before the dispatch is encoded, with a rendezvous of a mutex and a condition variable because iOS 6 has no pthread_barrier",
-      "effect": "an encoder of the port holds no work of its own, so there is nothing to submit; the dispatches it encoded have already been run",
       "facts": "facts/Metal/Compute.md",
       "source": "SDK 16.4, Metal, MTLComputePipeline.h and MTLComputeCommandEncoder.h"
     },
