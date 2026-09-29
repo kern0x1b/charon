@@ -22,6 +22,18 @@
  Specifying a list of known folders.
  FILEPROVIDER_API_AVAILABILITY_DESKTOP
  */
+// The macOS SDK the host differential builds against HAS these - NSFileProviderKnownFolders.h:21
+// and :46 - and the iOS 16.4 SDK the port builds with does not have the file at all. So the
+// declaration is made where it is missing and skipped where the SDK already has it: a second
+// @interface for a class the SDK declares is a duplicate definition, which is what the host build
+// answered before this guard.
+// The disconnect enums are in the SAME situation as the known folders, with one difference: the
+// macOS SDK declares the 16.0 method -disconnectWithReason:options:completionHandler: and the two
+// types it names, while the iOS 16.4 SDK declares the METHOD and neither type. So the guard below
+// is on the types themselves rather than on a file, and the port's method only compiles where the
+// SDK does not already have it.
+#if !__has_include(<FileProvider/NSFileProviderKnownFolders.h>)
+
 typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
     NSFileProviderDesktop = 1 << 0,
     NSFileProviderDocuments = 1 << 1
@@ -63,21 +75,5 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 /* FILEPROVIDER_API_AVAILABILITY_DESKTOP in 26.2; recorded for the reason above. */
 @end
 
-/**
- The reason a domain is disconnected, and the options it is disconnected with. The 16.4 SDK has
- neither: `disconnectWithReason:options:completionHandler:` is declared by that SDK's
- NSFileProviderManager.h and names two types the SDK does not define, which is the same gap as the
- known folders and is filled here for the same reason. Spelled as 26.2 spells them - the port's
- header carries the spellings, the macro and the behaviour.
- */
-typedef NS_ENUM(NSInteger, NSFileProviderDisconnectReason) {
-    NSFileProviderDisconnectReasonUnknown = 0,
-    NSFileProviderDisconnectReasonSignedOut = 1,
-    NSFileProviderDisconnectReasonQuotaExceeded = 2,
-    NSFileProviderDisconnectReasonServerUnreachable = 3
-};
 
-typedef NS_OPTIONS(NSUInteger, NSFileProviderDisconnectOptions) {
-    NSFileProviderDisconnectOptionNone = 0,
-    NSFileProviderDisconnectOptionDropPending = 1 << 0
-};
+#endif
