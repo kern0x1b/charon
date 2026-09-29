@@ -40,11 +40,18 @@ measurement and is marked as one.** The host's `MTLCompilerService` is in a cras
 
 ### MEASURED ON AN EARLIER TREE — recorded, and not reproducible now
 
-**Source, cited:** `.agent-work/runs/verify.log` (28 959 bytes, 2026-09-28 21:44) on the branch at
-`a19effdaf`, with the same verdicts in `.agent-work/runs/f1.log` and in `.agent-work/runs/mut2.log`
-— the last of which is the mutant run, whose red half brackets the same green rows. The command was
-`WORK=<dir> sh tests/backports/host/air2cpu/compare.sh` on a tree of **twelve** kernels, and the whole
-verdict block was:
+**The run's output is not in this repository, and cannot be.** The hook refuses it: run output is
+privacy-exempt content and belongs in `.agent-work/`, and the log also carries an absolute home path.
+So what this file cites is the run's **digest and where it is**, not the log:
+
+    where  .agent-work/worktrees/api-metal/.agent-work/runs/verify.log
+    when   2026-09-28 21:44        28959 bytes
+    tree   a19effdaf, kept on the ref keep/air2cpu-a19effdaf
+    sha256 6324a3c9b4e821c1956763e52f2d4c0e04df98c2a39d12be1989b4efdc325c6d
+
+That is the whole output of `WORK=<dir> sh tests/backports/host/air2cpu/compare.sh` on a tree of
+**twelve** kernels. Its verdict block, as recorded at the time and not independently checkable from
+this repository:
 
     refused atomicFamilyKernel the port did not translate this kernel, so there is no answer
     match   atomicAddKernel  64 values agree with Metal
@@ -64,6 +71,15 @@ So the three numbers are three different things: **12** kernels Metal answered f
 tool had translated and the port answered, and **0** differing among those 11. The twelfth,
 `atomicFamilyKernel`, was **refused** — the port said so by name and the run counted that as a refusal
 rather than a match.
+
+**The two other logs an earlier version of this file named are retracted.** One is a later run on a
+sixteen-kernel fixture and one is the mutant run, which is red by design; neither carries this block,
+and neither is cited.
+
+**It is a past measurement.** The host's `MTLCompilerService` is in a crash loop, so the oracle
+produces no library now and `compare.sh` stops with "the differential has nothing to compare". Nothing
+here is independently checkable from this repository, and the digest is what a reader with the worktree
+checks the log against.
 
 ### UNMEASURED
 

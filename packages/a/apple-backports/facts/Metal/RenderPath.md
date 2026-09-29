@@ -75,7 +75,8 @@ to encode, against 130 before the pipeline's bindings were worked out once when 
   `facts/Metal/Compute.md` has the rest, including what a kernel `tools/air2cpu` refuses answers, and
   `tests/backports/host/air2cpu/compare.sh` holds the translation against Apple's own Metal where that
   comparison still runs - it does not on this machine while the Metal compiler service crash-loops, so what it
-  has shown is a past measurement, recorded in `.agent-work/runs/verify.log` of 2026-09-28 and not reproducible
+  has shown is a past measurement, recorded in
+  a run log of 2026-09-28 that this repository does not carry, cited by digest, and not reproducible
   now. On that run Metal answered for **12** kernels, the tool had translated **11** of them and the port answered
   for all 11, and **0** of those 11 differed; the twelfth, `atomicFamilyKernel`, was refused by name.
   `facts/Metal/Compute.md` carries the whole verdict block and says which parts are now unmeasured.
