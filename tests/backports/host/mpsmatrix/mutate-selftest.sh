@@ -7,9 +7,9 @@
 # file byte-identical afterwards. The third case's abort is what proves the second is not a coincidence.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-MUTANTS_DIR=$scratch/mutants
 scratch=${1:-$here/../../../.agent-work/runs/mutate-selftest}
 rm -rf "$scratch"; mkdir -p "$scratch/mutants"; work=$scratch
+MUTANTS_DIR=$scratch/mutants
 cp "$here/mutants/metacharacter.anchor" "$here/mutants/metacharacter.repl" "$scratch/mutants/"
 fail=0
 export MUTANTS_DIR
@@ -54,12 +54,12 @@ fi
 
 # an anchor carrying the three characters that are metacharacters as a shell word: the transport is
 # the environment, so they arrive as themselves
-printf 'alpha (x) "q" $x\nbeta\n' > "$scratch/meta.txt"
+cat "$MUTANTS_DIR/metacharacter.anchor" > "$scratch/meta.txt"
 before=$(md5 -q "$scratch/meta.txt")
-mutate "$scratch/meta.txt" metacharacter
+mutate "$scratch/meta.txt" metacharacter 3 3
 case4=$(md5 -q "$scratch/meta.txt")
 if [ "$before" != "$case4" ] && grep -qF 'alpha (y) "q" $x' "$scratch/meta.txt"; then
-    printf 'case 4 anchor with ) " $x: the metacharacters survived, file changed -> ok\n'
+    printf 'case 4 anchor with EOF, ) " $x: the metacharacters survived, 3 lines for 3 -> ok\n'
 else
     printf 'case 4 anchor with ) " $x: FAILED\n'; fail=1
 fi
