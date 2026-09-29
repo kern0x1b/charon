@@ -28,11 +28,13 @@ out="${TMPDIR:-/tmp}/createml-differential.$$"
 #
 # The suites are therefore run with stdout unbuffered, so a print that precedes a trap is evidence.
 if [ "${KEEP:-0}" = "1" ]; then
-    trap '' EXIT
     echo "KEEP=1: keeping $out"
 fi
 mkdir -p "$out/modules"
-trap 'rm -rf "$out"' EXIT
+# The cleanup is here and nowhere else, so this is the only place that has to know about KEEP. It was
+# armed *after* a `trap '' EXIT` in the KEEP branch once, and re-armed the cleanup over it, so KEEP=1
+# kept nothing while saying it was keeping something.
+[ "${KEEP:-0}" = "1" ] || trap 'rm -rf "$out"' EXIT
 
 cp -R "$files" "$out/files"
 python3 - "$out/files" <<'PY'
