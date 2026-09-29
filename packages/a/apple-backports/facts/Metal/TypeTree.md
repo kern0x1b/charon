@@ -547,7 +547,7 @@ earlier check would have caught. The mutant in that check maps an unrecognised a
 **The absences, and which of them is which.** `MTLPointerType.pointee` is nil because opaque pointers
 mean the AIR carries no pointee — *the type is not in the data*, not a gap in the reader.
 `MTLTextureReferenceType.textureDataType` and an argument's `textureDataType` are `MTLDataTypeNone`
-because the plist carries none. `MTLArrayType.arrayStride` is 0 because the AIR carries a size and an
+because the plist carries none. `MTLArrayType.stride` (the header's own name) is 0 because the AIR carries a size and an
 alignment and **no stride** — that is an absent stride, not a zero-length array. A struct member the
 AIR did not name is **present with an empty name**, not absent from the list, because an LLVM 23
 `StructType` has element types and no per-element names. An access the metadata did not say is
@@ -570,3 +570,26 @@ piece and not a reader change.
 not pre-empt: the header ties a function log to the GPU's debug facility, and a device without it
 answers what the header documents for its absence — which is a statement about a row, not about the
 type tree.
+
+## Correction: what the library's own compile found that the host round-trip did not
+
+The reader was first delivered checked only by the host round-trip, which builds it with none of the
+library's flags. The library's own compile (`-Werror=objc-missing-property-synthesis` and the strict
+pointer types) refused it, and reading its warnings found four defects that no host check exercised:
+
+- `MTLArrayType.elementType` was declared here as an `MTLType *` where the header's own property is an
+  `MTLDataType`, so a caller read a pointer as an enumeration. It answers the element's data type now,
+  from the element node's scalar, and `MTLDataTypeNone` where the AIR gave none.
+- The four accessors the header declares for an array's element (`elementStructType`, `elementArrayType`,
+  `elementTextureReferenceType`, `elementPointerType`) were not defined, so a call to any of them was
+  an unrecognised selector. They answer from the element node by the same kind-to-class function a
+  struct member and an argument use; a pointer's two (`elementStructType`, `elementArrayType`) answer
+  nil, for the reason a pointer's pointee is empty.
+- The stride was written under a name no header declares (`arrayStride`); the header's is `stride`.
+- The two helpers `charonTyped:` and `charonDataTypeFromScalar:` were declared on classes that did not
+  define them, and are now two static functions the members and the arguments share.
+
+The library's flags catch what the host build does not: a property the class extension declares and
+the implementation does not synthesize, and a return that names a class the value is not. The check
+that would have caught all four is one compile of this file with the argument list of
+`modules/apple/backports.lua`, and `tests/backports/host/metal-census/reflection.sh` does not make one.

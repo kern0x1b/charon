@@ -27,8 +27,6 @@
 @property (nonatomic, copy) NSString *charonMemberName;
 @property (nonatomic, assign) NSUInteger charonMemberOffset;
 @property (nonatomic, strong) NSDictionary *charonMemberNode;
-- (MTLDataType)charonDataTypeFromScalar:(NSString *)scalar;
-- (MTLType *)charonTyped:(Class)wanted;
 @end
 
 // The storage is on MTLType because all six classes derive from it, and it is declared in a CLASS
@@ -41,10 +39,44 @@
     NSMutableArray *_members;
 }
 - (instancetype)initWithNode:(NSDictionary *)node;
-- (MTLDataType)charonDataTypeFromScalar:(NSString *)scalar;
-- (MTLType *)charonTyped:(Class)wanted;
 @end
 
+
+// MTLDataType from the plist's own scalar name, which is the name the emitter's typeOf() gave the
+// type. MTLDataTypeNone is the header's own "no type" case (MTLArgument.h:17) and is what an absent
+// or unknown scalar answers - not a case picked to be near.
+static MTLDataType CharonDataTypeFromScalar(NSString *scalar)
+{
+    static NSDictionary *table;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        table = (@{@"int32_t": @(MTLDataTypeInt), @"uint32_t": @(MTLDataTypeUInt),
+                    @"uint8_t": @(MTLDataTypeUChar), @"uint16_t": @(MTLDataTypeUShort),
+                    @"uint64_t": @(MTLDataTypeULong), @"float": @(MTLDataTypeFloat)});
+    });
+    NSNumber *found = scalar.length ? table[scalar] : nil;
+    return found ? (MTLDataType)found.unsignedIntegerValue : MTLDataTypeNone;
+}
+
+// The class a node of a given kind is, built from the node. Every accessor that answers "the struct
+// type", "the array type" and so on asks this one function with the node it reads, so a member and an
+// argument cannot disagree about which kind names which class.
+static id CharonTypedNode(NSDictionary *node, Class wanted)
+{
+    if (![node isKindOfClass:[NSDictionary class]])
+        return nil;
+    NSString *kind = node[@"kind"];
+    if ([wanted isEqual:MTLStructType.class] && [kind isEqualToString:@"struct"])
+        return [[MTLStructType alloc] initWithNode:node];
+    if ([wanted isEqual:MTLArrayType.class] &&
+        ([kind isEqualToString:@"array"] || [kind isEqualToString:@"vector"]))
+        return [[MTLArrayType alloc] initWithNode:node];
+    if ([wanted isEqual:MTLTextureReferenceType.class] && [kind isEqualToString:@"texture"])
+        return [[MTLTextureReferenceType alloc] initWithNode:node];
+    if ([wanted isEqual:MTLPointerType.class] && [kind isEqualToString:@"pointer"])
+        return [[MTLPointerType alloc] initWithNode:node];
+    return nil;
+}
 
 // The tree itself: the plist, read once, and the functions and arguments in it.
 @interface CharonMetalTypeTree : NSObject {
@@ -55,7 +87,6 @@
 - (NSArray *)functions;
 - (NSDictionary *)functionNamed:(NSString *)name;
 - (NSArray *)argumentsOfFunction:(NSDictionary *)function;
-- (NSArray *)descriptorsOfFunction:(NSDictionary *)function;
 @end
 
 @implementation CharonMetalTypeTree
@@ -111,25 +142,9 @@
     return self;
 }
 
-// MTLDataType from the plist's own scalar name, which is the name the emitter's typeOf() gave the
-// type. MTLDataTypeNone is the header's own "no type" case (MTLArgument.h:17) and is what an absent
-// or unknown scalar answers - not a case picked to be near.
-- (MTLDataType)charonDataTypeFromScalar:(NSString *)scalar
-{
-    static NSDictionary *table;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        table = (@{@"int32_t": @(MTLDataTypeInt), @"uint32_t": @(MTLDataTypeUInt),
-                    @"uint8_t": @(MTLDataTypeUChar), @"uint16_t": @(MTLDataTypeUShort),
-                    @"uint64_t": @(MTLDataTypeULong), @"float": @(MTLDataTypeFloat)});
-    });
-    NSNumber *found = scalar.length ? table[scalar] : nil;
-    return found ? (MTLDataType)found.unsignedIntegerValue : MTLDataTypeNone;
-}
-
 - (MTLDataType)dataType
 {
-    return [self charonDataTypeFromScalar:_node[@"scalar"]];
+    return CharonDataTypeFromScalar(_node[@"scalar"]);
 }
 
 // The type's own name: the scalar's name where the AIR gave one, the arg_type_name where it did, and
@@ -201,9 +216,34 @@
 // same shape in the plist and one class answers for both, which is what MTLArray.h says the type is.
 @implementation MTLArrayType
 
-- (MTLType *)elementType
+// The header's elementType is an MTLDataType, not a type object: the data type of the element, read
+// from the element's own scalar, and MTLDataTypeNone where the AIR gave the element none. The element
+// as an object is what the four element...Type accessors below answer.
+- (MTLDataType)elementType
 {
-    return _element;
+    NSDictionary *element = _node[@"elementType"];
+    return [element isKindOfClass:[NSDictionary class]] ? CharonDataTypeFromScalar(element[@"scalar"])
+                                                        : MTLDataTypeNone;
+}
+
+- (MTLStructType *)elementStructType
+{
+    return CharonTypedNode(_node[@"elementType"], MTLStructType.class);
+}
+
+- (MTLArrayType *)elementArrayType
+{
+    return CharonTypedNode(_node[@"elementType"], MTLArrayType.class);
+}
+
+- (MTLTextureReferenceType *)elementTextureReferenceType
+{
+    return CharonTypedNode(_node[@"elementType"], MTLTextureReferenceType.class);
+}
+
+- (MTLPointerType *)elementPointerType
+{
+    return CharonTypedNode(_node[@"elementType"], MTLPointerType.class);
 }
 
 - (NSUInteger)arrayLength
@@ -213,7 +253,7 @@
 
 // The stride is 0, and that is the absence rather than a value: the AIR carries a size and an
 // alignment and no stride, and a stride computed from them would be wrong for a padded element.
-- (NSUInteger)arrayStride
+- (NSUInteger)stride
 {
     return 0;
 }
@@ -226,6 +266,17 @@
 @implementation MTLPointerType
 
 - (MTLType *)pointee
+{
+    return nil;
+}
+
+// The two element accessors the header declares on a pointer: nil, for the same reason as pointee.
+- (MTLStructType *)elementStructType
+{
+    return nil;
+}
+
+- (MTLArrayType *)elementArrayType
 {
     return nil;
 }
@@ -250,6 +301,10 @@
 // struct - and nil is also what a member whose kind this build does not know gets.
 @implementation MTLStructMember
 
+@synthesize charonMemberName = _memberName;
+@synthesize charonMemberOffset = _memberOffset;
+@synthesize charonMemberNode = _memberNode;
+
 - (NSString *)name
 {
     return _memberName ?: @"";
@@ -263,44 +318,27 @@
 - (MTLDataType)dataType
 {
     return [_memberNode isKindOfClass:[NSDictionary class]]
-               ? [self charonDataTypeFromScalar:_memberNode[@"scalar"]] : MTLDataTypeNone;
-}
-
-- (MTLType *)charonTyped:(Class)wanted
-{
-    if (![_memberNode isKindOfClass:[NSDictionary class]])
-        return nil;
-    NSString *kind = _memberNode[@"kind"];
-    if ([wanted isEqual:MTLStructType.class] && [kind isEqualToString:@"struct"])
-        return [[MTLStructType alloc] initWithNode:_memberNode];
-    if ([wanted isEqual:MTLArrayType.class] &&
-        ([kind isEqualToString:@"array"] || [kind isEqualToString:@"vector"]))
-        return [[MTLArrayType alloc] initWithNode:_memberNode];
-    if ([wanted isEqual:MTLTextureReferenceType.class] && [kind isEqualToString:@"texture"])
-        return [[MTLTextureReferenceType alloc] initWithNode:_memberNode];
-    if ([wanted isEqual:MTLPointerType.class] && [kind isEqualToString:@"pointer"])
-        return [[MTLPointerType alloc] initWithNode:_memberNode];
-    return nil;
+               ? CharonDataTypeFromScalar(_memberNode[@"scalar"]) : MTLDataTypeNone;
 }
 
 - (MTLStructType *)structType
 {
-    return [self charonTyped:MTLStructType.class];
+    return CharonTypedNode(_memberNode, MTLStructType.class);
 }
 
 - (MTLArrayType *)arrayType
 {
-    return [self charonTyped:MTLArrayType.class];
+    return CharonTypedNode(_memberNode, MTLArrayType.class);
 }
 
 - (MTLTextureReferenceType *)textureReferenceType
 {
-    return [self charonTyped:MTLTextureReferenceType.class];
+    return CharonTypedNode(_memberNode, MTLTextureReferenceType.class);
 }
 
 - (MTLPointerType *)pointerType
 {
-    return [self charonTyped:MTLPointerType.class];
+    return CharonTypedNode(_memberNode, MTLPointerType.class);
 }
 
 - (NSUInteger)argumentIndex
@@ -324,8 +362,6 @@
 // own braces - which the non-fragile ABI allows and which is why the classes above use extensions.
 @interface MTLArgument (CharonTypeTree)
 - (instancetype)initWithNode:(NSDictionary *)node;
-- (MTLDataType)charonDataTypeFromScalar:(NSString *)scalar;
-- (MTLType *)charonTyped:(Class)wanted;
 @end
 
 @implementation MTLArgument {
@@ -395,22 +431,22 @@
 
 - (MTLDataType)bufferDataType
 {
-    return [self charonDataTypeFromScalar:_argument[@"scalar"]];
+    return CharonDataTypeFromScalar(_argument[@"scalar"]);
 }
 
 - (MTLStructType *)bufferStructType
 {
-    return [self charonTyped:MTLStructType.class];
+    return CharonTypedNode(_argument, MTLStructType.class);
 }
 
 - (MTLPointerType *)bufferPointerType
 {
-    return [self charonTyped:MTLPointerType.class];
+    return CharonTypedNode(_argument, MTLPointerType.class);
 }
 
 - (MTLArrayType *)bufferArrayType
 {
-    return [self charonTyped:MTLArrayType.class];
+    return CharonTypedNode(_argument, MTLArrayType.class);
 }
 
 // The threadgroup members answer 0 and nil: a threadgroup argument is one the AIR marked in address
