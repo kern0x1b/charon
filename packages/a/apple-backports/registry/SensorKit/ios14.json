@@ -424,9 +424,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryBooks",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryBooks\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -434,9 +434,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryBusiness",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryBusiness\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -444,9 +444,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryCatalogs",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryCatalogs\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -454,9 +454,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryDeveloperTools",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryDeveloperTools\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -464,9 +464,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryEducation",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryEducation\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -474,9 +474,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryEntertainment",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryEntertainment\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -484,9 +484,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryFinance",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryFinance\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -494,9 +494,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryFoodAndDrink",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryFoodAndDrink\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -504,9 +504,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryGames",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryGames\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -514,9 +514,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryGraphicsAndDesign",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryGraphicsAndDesign\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -524,9 +524,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryHealthAndFitness",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryHealthAndFitness\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -534,9 +534,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryKids",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryKids\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -544,9 +544,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryLifestyle",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryLifestyle\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -554,9 +554,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryMedical",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryMedical\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -564,9 +564,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryMiscellaneous",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryMiscellaneous\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -574,9 +574,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryMusic",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryMusic\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -584,9 +584,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryNavigation",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryNavigation\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -594,9 +594,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryNews",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryNews\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -604,9 +604,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryNewsstand",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryNewsstand\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -614,9 +614,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryPhotoAndVideo",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryPhotoAndVideo\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -624,9 +624,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryProductivity",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryProductivity\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -634,9 +634,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryReference",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryReference\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -644,9 +644,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryShopping",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryShopping\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -654,9 +654,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategorySocialNetworking",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategorySocialNetworking\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -664,9 +664,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategorySports",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategorySports\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -674,9 +674,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryStickers",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryStickers\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -684,9 +684,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryTravel",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryTravel\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -694,9 +694,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryUtilities",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryUtilities\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -704,9 +704,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "a device-usage category key, SRDeviceUsageCategoryKey = NSString * (SRDeviceUsageCategories.h:13), and a release with no SensorKit has no symbol of that name. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family the value is the string equal to the constant's own name: SRDeviceUsageCategoryWeather",
+      "effect": "the category key of the host's own SensorKit, the string \"SRDeviceUsageCategoryWeather\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -784,9 +784,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.motion.accelerometer",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.motion.accelerometer\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -804,9 +804,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.als",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.als\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -824,9 +824,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.deviceUsageReport",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.deviceUsageReport\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -864,9 +864,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.keyboardMetrics",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.keyboardMetrics\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -884,9 +884,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.messagesUsageReport",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.messagesUsageReport\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -904,9 +904,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.onWristState",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.onWristState\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -914,9 +914,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.pedometer.data",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.pedometer.data\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -924,9 +924,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.phoneUsageReport",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.phoneUsageReport\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -944,9 +944,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.motion.gyroscope",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.motion.gyroscope\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
@@ -984,9 +984,9 @@
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
+      "status": "implemented",
+      "reason": "`extern SRSensor const`, an NSString constant, and a release with no SensorKit has no symbol of that name. It is not a class: the runtime has no class of this name, and this registry's own row says kind=constant. The VALUE is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names, and for this family it is an identifier: com.apple.SensorKit.visits",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.visits\". NOT measured on an iOS device: this is what the host's framework holds and the guest measurement is owed.",
       "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
     },
     {
