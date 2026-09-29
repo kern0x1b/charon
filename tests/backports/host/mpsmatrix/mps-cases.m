@@ -85,7 +85,7 @@ static void pullResults(void)
 static void put(const char *name, const void *bytes, size_t length)
 {
     pullResults();
-    printf("%s %zu ", name, length);
+    printf("case %s %zu ", name, length);
     const unsigned char *p = (const unsigned char *)bytes;
     for (size_t i = 0; i < length; i++)
         printf("%02x", p[i]);
@@ -139,9 +139,9 @@ static void run(void (^encode)(id<MTLCommandBuffer>))
 
 static void casesDevice(void)
 {
-    printf("supports %d\n", (int)MPSSupportsMTLDevice(gDevice));
-    printf("preferred %d\n", MPSGetPreferredDevice(MPSDeviceOptionsDefault) != nil);
-    printf("rect %lld %lld %lld %lld %lld\n", (long long)MPSRectNoClip.origin.x, (long long)MPSRectNoClip.origin.y,
+    printf("case supports %d\n", (int)MPSSupportsMTLDevice(gDevice));
+    printf("case preferred %d\n", MPSGetPreferredDevice(MPSDeviceOptionsDefault) != nil);
+    printf("case rect %lld %lld %lld %lld %lld\n", (long long)MPSRectNoClip.origin.x, (long long)MPSRectNoClip.origin.y,
            (long long)MPSRectNoClip.size.width, (long long)MPSRectNoClip.size.height, (long long)MPSRectNoClip.size.depth);
 }
 
@@ -153,29 +153,29 @@ static void casesDescriptors(void)
                            MPSDataTypeInt32, MPSDataTypeUInt8, MPSDataTypeUInt16, MPSDataTypeUInt32};
     for (unsigned t = 0; t < 8; t++) {
         for (NSUInteger columns = 0; columns < 70; columns++)
-            printf("rowBytes %u %lu %zu\n", (unsigned)types[t], (unsigned long)columns,
+            printf("case rowBytes %u %lu %zu\n", (unsigned)types[t], (unsigned long)columns,
                    [MPSMatrixDescriptor rowBytesForColumns:columns dataType:types[t]]);
         for (NSUInteger length = 0; length < 70; length++)
-            printf("vectorBytes %u %lu %zu\n", (unsigned)types[t], (unsigned long)length,
+            printf("case vectorBytes %u %lu %zu\n", (unsigned)types[t], (unsigned long)length,
                    [MPSVectorDescriptor vectorBytesForLength:length dataType:types[t]]);
     }
     MPSMatrixDescriptor *m = [MPSMatrixDescriptor matrixDescriptorWithRows:2 columns:3 rowBytes:8 dataType:MPSDataTypeFloat32];
-    printf("descriptor %lu %lu %lu %lu %lu %u\n", (unsigned long)m.rows, (unsigned long)m.columns,
+    printf("case descriptor %lu %lu %lu %lu %lu %u\n", (unsigned long)m.rows, (unsigned long)m.columns,
            (unsigned long)m.matrices, (unsigned long)m.rowBytes, (unsigned long)m.matrixBytes, (unsigned)m.dataType);
     m.rowBytes = 16;
     m.rows = 5;
     m.columns = 4;
     m.dataType = MPSDataTypeFloat16;
-    printf("descriptor-mutated %lu %lu %lu %lu %lu %u\n", (unsigned long)m.rows, (unsigned long)m.columns,
+    printf("case descriptor-mutated %lu %lu %lu %lu %lu %u\n", (unsigned long)m.rows, (unsigned long)m.columns,
            (unsigned long)m.matrices, (unsigned long)m.rowBytes, (unsigned long)m.matrixBytes, (unsigned)m.dataType);
     MPSMatrixDescriptor *batched = [MPSMatrixDescriptor matrixDescriptorWithRows:2 columns:2 matrices:3 rowBytes:8 matrixBytes:24 dataType:MPSDataTypeFloat32];
-    printf("descriptor-batched %lu %lu\n", (unsigned long)batched.matrices, (unsigned long)batched.matrixBytes);
+    printf("case descriptor-batched %lu %lu\n", (unsigned long)batched.matrices, (unsigned long)batched.matrixBytes);
     MPSVectorDescriptor *v = [MPSVectorDescriptor vectorDescriptorWithLength:4 dataType:MPSDataTypeFloat32];
-    printf("vector-descriptor %lu %lu %lu\n", (unsigned long)v.length, (unsigned long)v.vectors, (unsigned long)v.vectorBytes);
+    printf("case vector-descriptor %lu %lu %lu\n", (unsigned long)v.length, (unsigned long)v.vectors, (unsigned long)v.vectorBytes);
     v.length = 9;
-    printf("vector-descriptor-mutated %lu %lu %lu\n", (unsigned long)v.length, (unsigned long)v.vectors, (unsigned long)v.vectorBytes);
+    printf("case vector-descriptor-mutated %lu %lu %lu\n", (unsigned long)v.length, (unsigned long)v.vectors, (unsigned long)v.vectorBytes);
     MPSVectorDescriptor *batchedVector = [MPSVectorDescriptor vectorDescriptorWithLength:4 vectors:3 vectorBytes:32 dataType:MPSDataTypeFloat32];
-    printf("vector-descriptor-batched %lu %lu\n", (unsigned long)batchedVector.vectors, (unsigned long)batchedVector.vectorBytes);
+    printf("case vector-descriptor-batched %lu %lu\n", (unsigned long)batchedVector.vectors, (unsigned long)batchedVector.vectorBytes);
 }
 
 #pragma mark - multiplication
@@ -630,23 +630,23 @@ static void casesSum(void)
 static void casesState(void)
 {
     MPSState *state = [[MPSState alloc] initWithResource:[gDevice newBufferWithLength:64 options:MTLResourceStorageModeShared]];
-    printf("state %lu %d %lu\n", (unsigned long)state.resourceCount, (int)[state resourceTypeAtIndex:0], (unsigned long)[state bufferSizeAtIndex:0]);
-    printf("state-is-temporary %d\n", (int)state.isTemporary);
-    printf("divergent state-size %lu\n", (unsigned long)[state resourceSize]);
+    printf("case state %lu %d %lu\n", (unsigned long)state.resourceCount, (int)[state resourceTypeAtIndex:0], (unsigned long)[state bufferSizeAtIndex:0]);
+    printf("case state-is-temporary %d\n", (int)state.isTemporary);
+    printf("case divergent state-size %lu\n", (unsigned long)[state resourceSize]);
     MPSState *fromBuffer = [[MPSState alloc] initWithDevice:gDevice bufferSize:128];
-    printf("state-buffer %lu %d %lu\n", (unsigned long)fromBuffer.resourceCount, (int)[fromBuffer resourceTypeAtIndex:0],
+    printf("case state-buffer %lu %d %lu\n", (unsigned long)fromBuffer.resourceCount, (int)[fromBuffer resourceTypeAtIndex:0],
            (unsigned long)[fromBuffer bufferSizeAtIndex:0]);
-    printf("state-lazy %d\n", [fromBuffer resourceAtIndex:0 allocateMemory:NO] == nil);
-    printf("state-allocated %d\n", [fromBuffer resourceAtIndex:0 allocateMemory:YES] != nil);
+    printf("case state-lazy %d\n", [fromBuffer resourceAtIndex:0 allocateMemory:NO] == nil);
+    printf("case state-allocated %d\n", [fromBuffer resourceAtIndex:0 allocateMemory:YES] != nil);
     MPSStateResourceList *list = [MPSStateResourceList resourceListWithBufferSizes:32, 64, 128, nil];
     MPSState *fromList = [[MPSState alloc] initWithDevice:gDevice resourceList:list];
-    printf("state-list %lu %lu %lu\n", (unsigned long)fromList.resourceCount, (unsigned long)[fromList bufferSizeAtIndex:0], (unsigned long)[fromList bufferSizeAtIndex:2]);
+    printf("case state-list %lu %lu %lu\n", (unsigned long)fromList.resourceCount, (unsigned long)[fromList bufferSizeAtIndex:0], (unsigned long)[fromList bufferSizeAtIndex:2]);
     NSArray<MPSState *> *batch = @[state, fromBuffer, fromList];
-    printf("divergent state-batch-size %lu\n", MPSStateBatchResourceSize(batch));
+    printf("case divergent state-batch-size %lu\n", MPSStateBatchResourceSize(batch));
     run(^(id<MTLCommandBuffer> commandBuffer) {
         MPSStateBatchSynchronize(batch, commandBuffer);
     });
-    printf("state-batch-synchronized 1\n");
+    printf("case state-batch-synchronized 1\n");
 
     // The read count belongs to a temporary state: the release asserts on adjusting one that is not
     // temporary, so the batch's read counts are read from temporaries made against a command buffer.
@@ -654,17 +654,17 @@ static void casesState(void)
         MPSState *a = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:32];
         MPSState *b = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:64];
         MPSState *c = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:96];
-        printf("temporary %d %d %d\n", (int)a.isTemporary, (int)b.isTemporary, (int)c.isTemporary);
-        printf("temporary-read-count %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
+        printf("case temporary %d %d %d\n", (int)a.isTemporary, (int)b.isTemporary, (int)c.isTemporary);
+        printf("case temporary-read-count %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
         NSArray<MPSState *> *temporaries = @[a, b, c];
         // Up by two, then down by one: the release asserts on a decrement that would take a count
         // below zero, so the case stays inside the range a read count can take.
         // The function's answer is the size of the batch, whatever it did to the counts: three states
         // answer three both times. The counts themselves are printed around it.
-        printf("temporary-batch-up %lu\n", MPSStateBatchIncrementReadCount(temporaries, 2));
-        printf("temporary-counts-up %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
-        printf("temporary-batch-down %lu\n", MPSStateBatchIncrementReadCount(temporaries, -1));
-        printf("temporary-counts-down %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
+        printf("case temporary-batch-up %lu\n", MPSStateBatchIncrementReadCount(temporaries, 2));
+        printf("case temporary-counts-up %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
+        printf("case temporary-batch-down %lu\n", MPSStateBatchIncrementReadCount(temporaries, -1));
+        printf("case temporary-counts-down %lu %lu %lu\n", (unsigned long)a.readCount, (unsigned long)b.readCount, (unsigned long)c.readCount);
         // Synchronizing a temporary is not a case the release accepts: a temporary's storage is not
         // readable from the CPU, which is the whole of what synchronizing is for.
     });
@@ -672,12 +672,12 @@ static void casesState(void)
     uint32_t predicate = 7;
     id<MTLBuffer> predicateBuffer = [gDevice newBufferWithBytes:&predicate length:4 options:MTLResourceStorageModeShared];
     MPSPredicate *yes = [MPSPredicate predicateWithBuffer:predicateBuffer offset:0];
-    printf("predicate %lu %lu\n", (unsigned long)yes.predicateOffset, (unsigned long)yes.predicateBuffer.length);
+    printf("case predicate %lu %lu\n", (unsigned long)yes.predicateOffset, (unsigned long)yes.predicateBuffer.length);
     id<MTLCommandBuffer> buffer = freshCommandBuffer();
     MPSCommandBuffer *wrapped = [MPSCommandBuffer commandBufferWithCommandBuffer:buffer];
     wrapped.predicate = yes;
-    printf("command-buffer %d %d\n", wrapped.commandBuffer == buffer, wrapped.predicate == yes);
-    printf("root-command-buffer %d\n", wrapped.rootCommandBuffer == buffer);
+    printf("case command-buffer %d %d\n", wrapped.commandBuffer == buffer, wrapped.predicate == yes);
+    printf("case root-command-buffer %d\n", wrapped.rootCommandBuffer == buffer);
     [wrapped prefetchHeapForWorkloadSize:1024];
     [buffer commit];
     [buffer waitUntilCompleted];
@@ -915,11 +915,11 @@ static void casesRandom(void)
         float pairs[][2] = {{-2, 3}, {0, 1}, {1.5f, 2.5f}, {-10, 10}};
         for (unsigned i = 0; i < 4; i++) {
             MPSMatrixRandomDistributionDescriptor *uniform = [MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:pairs[i][0] maximum:pairs[i][1]];
-            printf("distribution-uniform %u %d %.9g %.9g %.9g %.9g\n", i, (int)uniform.distributionType, uniform.minimum, uniform.maximum, uniform.mean, uniform.standardDeviation);
+            printf("case distribution-uniform %u %d %.9g %.9g %.9g %.9g\n", i, (int)uniform.distributionType, uniform.minimum, uniform.maximum, uniform.mean, uniform.standardDeviation);
             MPSMatrixRandomDistributionDescriptor *normal = [MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:1.25f standardDeviation:0.5f];
-            printf("distribution-normal %u %d %.9g %.9g %.9g %.9g\n", i, (int)normal.distributionType, normal.minimum, normal.maximum, normal.mean, normal.standardDeviation);
+            printf("case distribution-normal %u %d %.9g %.9g %.9g %.9g\n", i, (int)normal.distributionType, normal.minimum, normal.maximum, normal.mean, normal.standardDeviation);
             MPSMatrixRandomDistributionDescriptor *plain = [MPSMatrixRandomDistributionDescriptor defaultDistributionDescriptor];
-            printf("distribution-default %u %d %.9g %.9g %.9g %.9g\n", i, (int)plain.distributionType, plain.minimum, plain.maximum, plain.mean, plain.standardDeviation);
+            printf("case distribution-default %u %d %.9g %.9g %.9g %.9g\n", i, (int)plain.distributionType, plain.minimum, plain.maximum, plain.mean, plain.standardDeviation);
         }
     }
 }
@@ -929,10 +929,10 @@ int main(void)
     @autoreleasepool {
         gDevice = MTLCreateSystemDefaultDevice();
         if (!gDevice) {
-            printf("no device\n");
+            printf("case no device\n");
             return 1;
         }
-        printf("device %d\n", MPSSupportsMTLDevice(gDevice));
+        printf("case device %d\n", MPSSupportsMTLDevice(gDevice));
         @autoreleasepool {
             printf("group casesDevice\n");
             fflush(stdout);

@@ -92,16 +92,16 @@ if [ "$system_lines" -ne "$port_lines" ]; then
     echo "system stopped on: $(tail -1 "$build/system.txt" | cut -d' ' -f1-2)"
     echo "port   stopped on: $(tail -1 "$build/port.txt" | cut -d' ' -f1-2)"
 fi
-grep -v '^image ' "$build/system.txt" > "$build/system.cases"
-grep -v '^image ' "$build/port.txt" > "$build/port.cases"
+grep '^case ' "$build/system.txt" > "$build/system.cases" || true
+grep '^case ' "$build/port.txt" > "$build/port.cases" || true
 system_lines=$(wc -l < "$build/system.cases" | tr -d ' ')
 port_lines=$(wc -l < "$build/port.cases" | tr -d ' ')
 n=$system_lines
 [ "$port_lines" -lt "$n" ] && n=$port_lines
 head -n "$n" "$build/system.cases" > "$build/system.prefix"
 head -n "$n" "$build/port.cases" > "$build/port.prefix"
-cut -d' ' -f1 "$build/system.prefix" > "$build/system.names"
-cut -d' ' -f1 "$build/port.prefix" > "$build/port.names"
+cut -d' ' -f2 "$build/system.prefix" > "$build/system.names"
+cut -d' ' -f2 "$build/port.prefix" > "$build/port.names"
 if ! cmp -s "$build/system.names" "$build/port.names"; then
     # The cut lands inside a case, so the two name lists differ by one: the last name of the prefix.
     echo "the two runs reached different cases: $(diff "$build/system.names" "$build/port.names" | head -4 | tr '\n' ' ')"
