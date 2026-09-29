@@ -6,7 +6,7 @@
 # It mutates the library, so the tree is left exactly as it was found, and it says so if it cannot.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-root=$(cd "$here/../../../../.." && pwd)
+root=$(cd "$here/../../../.." && pwd)
 kernel=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixMultiplication10.m
 line='                    sum += a * c;'
 mutated='                    sum += a * c + 0.125;  // MUTATION'
@@ -19,7 +19,7 @@ fline='                double y = CharonMPSApplyNeuron(neuron.type, g * (x - mu)
 fmutated='                double y = CharonMPSApplyNeuron(neuron.type, g * (x - m) / sqrt(given + (double)_epsilon) + b0,  // MUTATION'
 work=${MUTATION_BUILD:-$root/.agent-work/runs/host/mpsmatrix-mutation}
 
-grep -q "$line" "$kernel" || { echo "the anchor is gone from $kernel; the mutation is not a check any more"; exit 1; }
+grep -qF "$line" "$kernel" || { echo "the anchor is gone from $kernel; the mutation is not a check any more"; exit 1; }
 restore() { printf '%s\n' "$original" > "$kernel"; }
 original=$(cat "$kernel")
 foriginal=$(cat "$forward")
@@ -67,7 +67,7 @@ smutated='    NSUInteger extent = _rows;  // MUTATION: the whole shape, not the 
 soriginal=$(cat "$sumkernel")
 restore_sum() { printf '%s\n' "$soriginal" > "$sumkernel"; }
 trap 'restore; restore_forward; restore_sum' EXIT INT TERM
-grep -q "$sline" "$sumkernel" || { echo "the sum anchor is gone"; exit 1; }
+grep -qF "$sline" "$sumkernel" || { echo "the sum anchor is gone"; exit 1; }
 printf '%s\n' "$smutated" > "$sumkernel"
 sduring=$(count)
 printf 'sum before   %s\n' "$sbefore"
@@ -87,7 +87,7 @@ scale_mut='                    NSUInteger which = startIndex + index;  // MUTATI
 soriginal2=$(cat "$sumkernel")
 restore_sum2() { printf '%s\n' "$soriginal2" > "$sumkernel"; }
 trap 'restore; restore_forward; restore_sum; restore_sum2' EXIT INT TERM
-grep -q "$scale_line" "$sumkernel" || { echo "the scale anchor is gone"; exit 1; }
+grep -qF "$scale_line" "$sumkernel" || { echo "the scale anchor is gone"; exit 1; }
 scbefore=$(count)
 printf '%s\n' "$scale_mut" > "$sumkernel"
 scduring=$(count)
@@ -109,7 +109,7 @@ bmut='            // MUTATION: zeros written, not untouched\n            if (res
 boriginal=$(cat "$bnk")
 restore_bn() { printf '%s\n' "$boriginal" > "$bnk"; }
 trap 'restore; restore_forward; restore_sum; restore_sum2; restore_bn' EXIT INT TERM
-grep -q "$bline" "$bnk" || { echo "the gradient anchor is gone"; exit 1; }
+grep -qF "$bline" "$bnk" || { echo "the gradient anchor is gone"; exit 1; }
 bbefore=$(count)
 printf '%s\n' "$bmut" > "$bnk"
 bduring=$(count)
@@ -122,4 +122,52 @@ if [ "$bbefore" = "$bduring" ] || [ "$bduring" = "$bafter" ]; then
     echo "the gradient mutation did not move the count either"
     exit 1
 fi
-echo "all five mutations move the count and all four reverts move them back: the harness can fail"
+
+# Three mutants on the scale guard's edge, which the three sum-start-index-boundary cases defend:
+# start 1 leaves one factor in the list and start 2 leaves none, so each side of the edge is a case.
+# The guard is `pairs = startIndex < factors ? factors - startIndex : 0` and the `pairs > _count` clamp
+# after it. Mutating either to an off-by-one must turn exactly those cases red and leave the rest.
+sk=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixSum11.m
+sedge_line='            NSUInteger pairs = startIndex < factors ? factors - startIndex : 0;'
+sclamp_line='                pairs = _count;'
+sedgeread=$(cat "$sk")
+restore_sedge() { printf '%s\n' "$sedgeread" > "$sk"; }
+trap 'restore; restore_forward; restore_sum; restore_sum2; restore_bn; restore_sedge' EXIT INT TERM
+grep -qF "$sedge_line" "$sk" || { echo "the scale guard's edge anchor is gone"; exit 1; }
+grep -qF "$sclamp_line" "$sk" || { echo "the scale guard's clamp anchor is gone"; exit 1; }
+edge_before=$(count)
+# side one: the guard admits startIndex == factors, which leaves no factors at all
+printf '%s\n' "$sedge_line" | sed 's|startIndex < factors|startIndex <= factors|' > "$sk"
+edge_one=$(count)
+printf '%s\n' "$sedge_line" > "$sk"
+# side two: the clamp off by one, so a start past the sources reads one factor too many
+printf '%s\n' "$sclamp_line" | sed 's|pairs = _count;|pairs = _count + 1;|' > "$sk"
+edge_two=$(count)
+restore_sedge
+edge_after=$(count)
+printf 'edge before    %s\n' "$edge_before"
+printf 'edge guard     %s\n' "$edge_one"
+printf 'edge clamp     %s\n' "$edge_two"
+printf 'edge reverted  %s\n' "$edge_after"
+if [ "$edge_before" = "$edge_one" ] || [ "$edge_before" = "$edge_two" ] || [ "$edge_two" = "$edge_after" ]; then
+    echo "a scale guard edge mutation did not move the count"
+    exit 1
+fi
+
+# A fourth mutant on the neuron application, so the fifteen sum neuron cases are defended as well: the
+# kernel applies the neuron at MPSMatrixSum11.m:195, and skipping it must be red on exactly that loop.
+grep -q 'CharonMPSApplyNeuron(neuron.type, sum, neuron.a' "$sk" || { echo "the neuron anchor is gone"; exit 1; }
+neuron_before=$(count)
+sed 's|CharonMPSApplyNeuron(neuron.type, sum, neuron.a|CharonMPSApplyNeuron(MPSCNNNeuronTypeNone, sum, neuron.a|' "$sk" > "$sk.new" && mv "$sk.new" "$sk"
+neuron_during=$(count)
+restore_sedge
+neuron_after=$(count)
+printf 'neuron before  %s\n' "$neuron_before"
+printf 'neuron mutated %s\n' "$neuron_during"
+printf 'neuron reverted %s\n' "$neuron_after"
+if [ "$neuron_before" = "$neuron_during" ] || [ "$neuron_during" = "$neuron_after" ]; then
+    echo "the neuron mutation did not move the count"
+    exit 1
+fi
+
+echo "all nine mutations move the count and all five reverts move them back: the harness can fail"
