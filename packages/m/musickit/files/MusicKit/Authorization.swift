@@ -52,18 +52,35 @@ public enum MusicDeveloperToken {
         set { developerToken = newValue }
     }
 
-    // Minting a token from a key is NOT here yet, and this is why. The signature itself is
-    // charon@micro-ecc's and the shim above already reaches it, but the *encoding* of a JOSE token
-    // needs base64url, and this release's Swift Foundation overlay marks
-    // `Data.base64EncodedString(options:)` as iOS 7. The port's lift lowers the availability of the
-    // Objective-C headers, which is where the backports put their marks, and not the Swift overlay's
-    // own, so the mark is still there. The two ways out are both small and both are the next
-    // delivery's first hour: base64url written over the bytes this module already has, or the
-    // Objective-C method reached through NSData with the overlay's own gate not in the way. Neither
-    // is guessed at here, because a token that cannot be signed must not look like one that can.
-    //
-    // What IS here is the other of the two documented ways to authenticate: a token minted
-    // elsewhere and handed over.
+    /// Mint a token from a web services authentication key, or answer nil when there is none.
+    ///
+    /// The payload is the three members Apple's own format names - the team, the time the token was
+    /// made and the hour it is good for - and the signature is ES256 over the header and the payload,
+    /// which is `charon@micro-ecc` through the shim above: the same curve work the CloudKit family
+    /// does, and one implementation of it.
+    ///
+    /// The base64url is this module's own rather than `Data.base64EncodedString(options:)`, which
+    /// this release's Swift Foundation overlay marks iOS 7. The port's lift lowers the availability of
+    /// the Objective-C headers, where the backports put their marks, and not the Swift overlay's own,
+    /// so that mark is still there with the lift applied. A JOSE token's three parts are base64url of
+    /// bytes this module already has; encoding them is not a place to wait for a Foundation.
+    public static func mint(keyIdentifier: String, teamIdentifier: String, privateKeyPEM: String) -> String? {
+        let key = Array(privateKeyPEM.utf8)
+        guard !key.isEmpty else { return nil }
+        let now = Int(Date().timeIntervalSince1970)
+        let header = #"{"alg":"ES256","kid":"\#(keyIdentifier)"}"#
+        let payload = #"{"iss":"\#(teamIdentifier)","iat":\#(now),"exp":\#(now + 3600)}"#
+        let signing = "\(header).\(payload)"
+        let message = Array(signing.utf8)
+        var der = [UInt8](repeating: 0, count: 80)
+        let length = key.withUnsafeBufferPointer { privateKey in
+            message.withUnsafeBufferPointer { body in
+                CharonMusicKitSignES256(privateKey.baseAddress, body.baseAddress, body.count, &der, der.count)
+            }
+        }
+        guard length > 0 else { return nil }
+        return "\(header).\(payload).\(CharonBase64URL.encode(Data(der[0..<Int(length)])))"
+    }
 }
 
 /// Base64url without the padding, which is what a JOSE token is made of.
