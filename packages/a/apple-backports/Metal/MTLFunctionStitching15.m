@@ -6,8 +6,8 @@
 // ONE OBJECT AT 16.0, which is what the ladder says and not what the headers' annotations say.
 // Every type in MTLFunctionStitching.h is API_AVAILABLE(ios(15.0)), and so is
 // MTLRenderPipelineFunctionsDescriptor in MTLRenderPipeline.h - the annotation says when a release
-// ALLOWS the API. release-split measures the objects built from this file at 16.0, because the cache
-// says when the SYMBOL is first exported, and the band is the cache's. The rows carry 16.0 for that
+// ALLOWS the API. release-split puts the objects built from this file in the 16.0 band, and reports that as
+// 'after 12.0, by 16.0, not a measured first release' - not a measured first export. The rows carry 16.0 for that
 // reason and this comment said 15.0, which was wrong. MTLLinkedFunctions is
 // NOT here: it is 14.0, and an object carrying both would be placed in neither band. MTLFunction-
 // StitchingGraph, its nodes and MTLStitchedLibraryDescriptor are, so they are.

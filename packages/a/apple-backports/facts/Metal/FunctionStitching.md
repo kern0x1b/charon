@@ -7,10 +7,17 @@ measures at **16.0 and no other release**.
 
 ## What the header says, as facts
 
-Every type is `API_AVAILABLE(macos(12.0), ios(15.0))` in `MTLFunctionStitching.h`. The **cache ladder
-places all of them at 16.0**, so the registry's `introduced` is 16.0 and not the header's annotation —
-the annotation says when a release *allows* the API, the ladder says when the symbol is *first
-exported*, and the band is the ladder's. That is why the object's name carries 15 and its rows say 16.
+Every type is `API_AVAILABLE(macos(12.0), ios(15.0))` in `MTLFunctionStitching.h`. The **cache
+ladder puts this object in the 16.0 band**, and it says so in its own words:
+
+```
+release-split: clean, every object file's symbols first-appear in one release (1 files, 12 symbols)
+```
+
+with a note that 16.0 means **"after 12.0, by 16.0, not a measured first release"** — a band, not a
+measurement. So the rows carry that wording, and nothing here claims the symbols were first exported at
+16.0. The object's name carries 15 because the family is the 15.0 API, and the rows say 16.0 because
+that is the band the ladder chose.
 
 The shapes, from the header's own declarations:
 

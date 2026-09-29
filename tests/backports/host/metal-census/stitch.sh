@@ -16,8 +16,6 @@ work=${WORK:-$root/.agent-work/runs/metal-census/stitch}
 work_ok "$work" || { echo "FAIL: WORK=$work is not a usable scratch path; see work-guard.sh" >&2; exit 1; }
 S="$root/packages/a/apple-backports"
 SRC="$S/Metal/MTLFunctionStitching15.m"
-. "$(dirname "$0")/work-guard.sh"
-work_ok "$work" || { echo "FAIL: WORK=$work is not a usable scratch path; see work-guard.sh" >&2; exit 1; }
 rm -rf "$work"
 mkdir -p "$work"
 
@@ -93,7 +91,7 @@ fi
 build() {   # $1 output name, $2 stitching source, $3 object name
     xcrun clang $common "$here/stitch.m" "$2" -c -o "$work/$3" 2> "$work/$1.log" || true
     xcrun clang $common -o "$work/$1" "$here/stitch.m" "$2" > "$work/$1.link" 2>&1 || {
-        echo "FAIL: $1 does not build" >&2; sed 's/^/    /' "$work/$1.link" | head -8 >&2; exit 1; }
+        echo "FAIL: $1 does not build" >&2; sed 's/^/    /' "$work/$1.link" | sed -n '/error:/,$p' | head -1 >&2; exit 1; }
 }
 
 echo "the round trip:"
