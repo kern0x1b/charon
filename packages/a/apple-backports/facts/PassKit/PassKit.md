@@ -179,3 +179,51 @@ The second mutant is the one the transcript was not checking before: an operatio
 on a continuation line indented four spaces, and the body filter wanted a letter after two spaces, so
 **nine error checks were running and being diffed without appearing in either transcript**. The host
 is the oracle for the error domain alone. Build and transcripts: `.agent-work/runs/passkit/`.
+
+## The two payment controllers are carried as CLASSES, not absent
+
+**The finding that changed this**, from the 6.1.3 gate over the first real library build:
+
+```
+categories whose class neither iOS 6.1.3 nor the package exports ...
+  PKPaymentAuthorizationController(CharonSecureElement: ...) and
+  PKPaymentAuthorizationViewController(CharonSecureElement: ...)
+```
+
+A category on a class nobody carries is dead code: the loader has nothing to attach it to. Both
+classes are measured absent from the armv7 cache of 6.1.3, and the registry said the CLASS was
+`absent` (10.0 and 8.0) while its six members said `implemented` — a contradiction the gate found
+and the registry did not.
+
+**The class exists on a device without a Secure Element.** That is the whole of the correction, and
+it is the standing rule: `absent` is for absent *hardware*, and the Secure Element is hardware, but
+its absence is not why the class is missing. A 4S-era iPod answers `+canMakePayments` **NO** — it does
+not lack the class, it answers the question. So:
+
+| class | release | base | what it answers |
+| --- | --- | --- | --- |
+| `PKPaymentAuthorizationController` | 10.0 | `NSObject` | three capability questions, all `NO` |
+| `PKPaymentAuthorizationViewController` | 8.0 | `UIViewController` | two capability questions, all `NO` |
+
+**One object per release**, which is the release-split gate's own rule and not tidiness: the class is
+8.0 and `+canMakePaymentsUsingNetworks:capabilities:` is 9.0, so that member is in
+`PKPaymentAuthorizationViewController9.m` and the class and its 8.0 members are in
+`PKPaymentAuthorizationViewController8.m`. An object carrying API of two releases is what that gate
+refuses. The 9.0 member is a category on the port's own class and the 8.0 object implements that
+class, so together they are one class in two objects.
+
+**What stays absent, and it is the hardware and not the backlog**: `-initWithRequest:` takes a
+`PKPaymentPass`, and **there is no `PKPaymentPass` in this release at all** (measured absent from the
+armv7 cache of 6.1.3), so a payment sheet over a pass that cannot exist is a sheet with nothing in it.
+The delegate callbacks are the same: they would report a presentation that cannot happen.
+
+**The stand-in**, following `CHARON_MEDIAPLAYER_STANDIN` / `MPMediaItemStandin.h` in MediaPlayer: a
+host that already has Apple's `PKPaymentAuthorizationController` gives a second `@implementation` of
+the name as a duplicate symbol, and the probe would then measure Apple's class. `CharonPassKitStandin.h`
+declares both classes as the SDK declares them and carries `PKMerchantCapability`, which the release's
+own headers do not declare and which the members are spelled with.
+
+**The probe asks whether the class is there, not only whether a member answers**: 52 check lines over
+40 member cases, 0 failures, both mutants red. Six of the lines are these two classes, and one of them
+checks the *superclass* — a renamed subclass of the host's class would answer all five questions
+correctly while being a class the release never had.
