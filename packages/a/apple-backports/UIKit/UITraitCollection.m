@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import <stdlib.h>
 #import "CharonTraitStyle.h"
 
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -107,6 +108,30 @@ static void charon_collect_controllers(UIViewController *controller, NSMutableOr
         charon_collect_controllers(presented, found);
 }
 
+// A trait change is delivered here, and what listens to one is not this file's business: the collection of iOS
+// 17 is carried from 6.0 and this object from 5.0, so a 5.0 object may not name a 6.0 symbol. The listeners
+// therefore register themselves, in the order they registered, and a release that carries none of them has an
+// empty list and delivers to nobody - which is what 5.x does, and what the header's own answer is there, since
+// the API these deliver is 17's.
+typedef void (*CharonTraitChangeObserver)(NSArray *environments, NSArray *previous);
+
+// A function pointer is not an object, so the listeners are held in a plain array of them, one allocation,
+// grown as they register; there are at most a handful and a registration happens once per class load.
+static CharonTraitChangeObserver *charon_trait_change_observers;
+static NSUInteger charon_trait_change_observer_count;
+
+void charon_add_trait_change_observer(CharonTraitChangeObserver observer)
+{
+    if (!observer)
+        return;
+    CharonTraitChangeObserver *grown =
+        realloc(charon_trait_change_observers, (charon_trait_change_observer_count + 1) * sizeof(*grown));
+    if (!grown)
+        return;
+    charon_trait_change_observers = grown;
+    charon_trait_change_observers[charon_trait_change_observer_count++] = observer;
+}
+
 static void charon_deliver_trait_changes(NSArray *environments, void (^change)(void))
 {
     NSMutableOrderedSet *found = [NSMutableOrderedSet orderedSet];
@@ -125,9 +150,11 @@ static void charon_deliver_trait_changes(NSArray *environments, void (^change)(v
     for (id<UITraitEnvironment> environment in found)
         [previous addObject:environment.traitCollection];
     change();
-    // The registrations of iOS 17 are called here, once per environment that was told, with the collection it
-    // had before the change: the port's trait change delivery is the one place a trait moves on this release.
-    charon_deliver_trait_registrations([found array], previous);
+    // The listeners of a trait change are called here, once the change is made, with the environments that were
+    // told and the collection each had before. The registration of iOS 17 is one of them: the port's trait
+    // change delivery is the one place a trait moves on this release, so this is where a registration fires.
+    for (NSUInteger index = 0; index < charon_trait_change_observer_count; index++)
+        charon_trait_change_observers[index]([found array], previous);
     NSUInteger index = 0;
     for (id<UITraitEnvironment> environment in found) {
         UITraitCollection *before = [previous objectAtIndex:index++];

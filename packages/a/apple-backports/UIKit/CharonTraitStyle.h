@@ -3,6 +3,22 @@
 UIUserInterfaceStyle charon_trait_style(UITraitCollection *collection);
 void charon_set_trait_style(UITraitCollection *collection, UIUserInterfaceStyle style);
 
+// A listener for a trait change, called with the environments that were told and the collection each had
+// before, once the change is made. The collection of iOS 17 registers one; see UITraitCollection.m for why a
+// listener registers itself rather than being called there by name.
+typedef void (*CharonTraitChangeObserver)(NSArray *environments, NSArray *previous);
+void charon_add_trait_change_observer(CharonTraitChangeObserver observer);
+
+// A reader for the value a collection carries for the trait a name is, asked with the name the description knows
+// that trait by. known answers whether the port has a definition for the name at all, and isDefault whether the
+// value is the one the trait class calls its own default - which is a trait the description prints as nothing.
+// Both are answers in their own right and neither is "no value": a trait the port has a definition for is read
+// through the definition's own home, and the extras dictionary is where the traits it has no definition for
+// live, so a caller that cannot tell the two apart reads a trait of the second kind out of the first kind's
+// place. The trait table is carried from 6.0 and a collection's description from 5.0, so the table registers a
+// reader and the description asks it; see UITraitCollection+Appearance13.m.
+// The type and the registrar are declared in CharonTraits17.h, beside the table they read.
+
 typedef struct {
     __unsafe_unretained NSString *name;
     NSInteger screenDefault;

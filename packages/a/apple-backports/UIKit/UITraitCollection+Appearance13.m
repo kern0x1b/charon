@@ -170,18 +170,45 @@ NSString *charon_trait_value_text(const CharonTraitDefinition *definition, id va
 // is the one its own class calls the default is not printed at all, and any other value is printed as the name
 // the trait's enumeration gives that case, or as the number where the enumeration has no name for it. The name
 // list of a kind is therefore read only for the values that are in it, and every other value prints as a number.
+static CharonTraitValueReader *charon_trait_value_readers;
+static NSUInteger charon_trait_value_reader_count;
+
+void charon_add_trait_value_reader(CharonTraitValueReader reader)
+{
+    if (!reader)
+        return;
+    CharonTraitValueReader *grown =
+        realloc(charon_trait_value_readers, (charon_trait_value_reader_count + 1) * sizeof(*grown));
+    if (!grown)
+        return;
+    charon_trait_value_readers = grown;
+    charon_trait_value_readers[charon_trait_value_reader_count++] = reader;
+}
+
 static void charon_add_trait(UITraitCollection *collection, NSMutableArray *traits, CharonTraitKind kind)
 {
     if (!kind.described)
         return;
-    // A trait reads through the table, which knows where each one lives: four of them are not in the extras
-    // dictionary at all, and a value read from the wrong place is no value.
-    const CharonTraitDefinition *definition = charon_trait_definition_for_name(kind.name);
-    id stored = definition ? charon_trait_value(collection, definition) : charon_trait_extras(collection)[kind.name];
-    // A trait whose value is its own class default is a collection that sets nothing for it, and the host prints
-    // nothing for that: the two paths that reach one value must print the same, whichever set it. A trait with no
-    // value at all is the same case seen from the other side.
-    if (!stored || (definition && charon_trait_is_default(collection, definition)))
+    // The trait table knows where each trait lives, and this object is carried from 5.0 while the table is
+    // carried from 6.0, so a 5.0 object may not name a 6.0 symbol. The table therefore registers a reader and
+    // this one asks it; with no reader registered there are no traits of the table, which is what a 5.x release
+    // has. A trait the table has a definition for is read through that definition's own home and nowhere else -
+    // four of them are not in the extras dictionary at all, and a value read from the wrong place is no value -
+    // so the reader says whether it knows the name, and the extras below is only for the names it does not.
+    for (NSUInteger index = 0; index < charon_trait_value_reader_count; index++) {
+        BOOL known = NO, isDefault = NO;
+        NSString *printed = charon_trait_value_readers[index](collection, kind.name, &known, &isDefault);
+        if (!known)
+            continue;
+        // A trait whose value is its own class default is a collection that sets nothing for it, and the host
+        // prints nothing for that: the two paths that reach one value must print the same, whichever set it.
+        if (printed && !isDefault)
+            [traits addObject:[NSString stringWithFormat:@"%@ = %@", kind.name, printed]];
+        return;
+    }
+    const CharonTraitDefinition *definition = NULL;
+    id stored = charon_trait_extras(collection)[kind.name];
+    if (!stored)
         return;
     if (kind.described == 3) {
         // The object traits of iOS 17: what a collection carries for a language or for the one BOOL, printed as
