@@ -68,14 +68,14 @@
     },
     {
       "api": "SecKeyCopyKeyExchangeResult()",
-      "effect": "a caller gets NULL, and the CFError is left NULL - the port sets no error, because this signature's documentation names no domain or code for an unsupported algorithm. A caller diffing a TLS handshake or an ECDH suite gets NO SHARED SECRET, where a later release would get one: the value is a refusal, not a wrong secret",
-      "facts": "facts/Security/SecKey.md",
+      "effect": "a caller gets NULL, and the CFError is left NULL - the port sets no error, because this signature's documentation names no domain or code for an unsupported algorithm. A caller diffing a TLS handshake or an ECDH suite gets NO SHARED SECRET, where a later release would get one: the value is a refusal, not a wrong secreta caller gets NULL, and the CFError names why: an NSError in NSOSStatusErrorDomain with errSecParam, the release's own code for a parameter it will not accept and the only one this signature's documentation leaves to say. An earlier version set no error at all, so a caller could not tell a refusal from an absence; the error is built in one place, CharonSecKeyFail, which the curve's refusals use as well. A key of the port's own kind exchanges over the curve and answers the 32 bytes a P-256 agreement makes - the X coordinate, or that digest of it when the algorithm's name ends in one - and the value is OpenSSL's own for the same two keys, byte for byte, measured on the host (tests/backports/host/seckeycurve). Nothing in the port sets that marker yet, because SecKeyCreateWithData is still absent, so no key of the release's keychain takes that path today.",
+      "facts": "facts/Security/SecKey.md and facts/Security/SecKeyElliptic.md",
       "introduced": "10.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "iOS 6.1.3's Security framework has NO EC KEY TYPE AT ALL, so there is nothing to exchange with: kSecAttrKeyTypeECSECPrimeRandom is API_AVAILABLE(macos(10.12), ios(10.0)) (SecItem.h:804-805) and arrived in iOS 10, while kSecAttrKeyTypeRSA is API_AVAILABLE(macos(10.7), ios(2.0)) (SecItem.h:784-785). With no EC key type constant, no SecKeyRef can hold an EC private key, and a key exchange needs a peer key of the same kind",
+      "reason": "the function arrived in iOS 10 and the release has NOTHING to exchange with, and that is measured rather than assumed: the armv7 shared cache of iOS 6.1.3 exports SecKeyRawSign, SecKeyRawVerify and no elliptic key agreement of any name, its only agreement being the finite-field SecDH family (SecDHComputeKey, SecDHGeneratePair), which is not a curve. It has an EC KEY TYPE - kSecAttrKeyTypeEC, SecItem.h:802-803, ios(4.0) - so the key a caller holds is real and the primitive underneath is not. An earlier version of this row read NO EC KEY TYPE AT ALL off kSecAttrKeyTypeECSECPrimeRandom, which is the 10.0 name for a different class; the two names are two lines apart in the same header. A key of THIS PACKAGE'S OWN KIND - one that carries its own private scalar, beside the kSecValueData SecKeyCreateWithData would have left, and that the release's keychain therefore does not hold - is answered by the curve in Security/SecKeyElliptic10.m instead, and the two are told apart by that one attribute. The public symbol is this one, once, for both: two objects of one library defining one name is a link error, and the 6.1.3 gate answered with four of them.",
       "source": "SDK 16.4, Security",
-      "status": "inert"
+      "status": "implemented"
     },
     {
       "api": "SecKeyCopyPublicKey()",
@@ -123,34 +123,34 @@
     },
     {
       "api": "SecKeyCreateSignature()",
-      "effect": "the algorithm chooses the padding the release's own SecKeyRawSign takes: kSecPaddingPKCS1SHA1 (0x8002) and the SHA224/256/384/512 family (0x8003-0x8006), all declared iOS 2.0 in kSecKey.h:198-218. An algorithm the release cannot carry is NULL with no error set, because this signature's documentation names no CFError domain or code for it",
-      "facts": "facts/Security/SecKey.md",
+      "effect": "the algorithm chooses the padding the release's own SecKeyRawSign takes: kSecPaddingPKCS1SHA1 (0x8002) and the SHA224/256/384/512 family (0x8003-0x8006), all declared iOS 2.0 in kSecKey.h:198-218. An algorithm the release cannot carry is NULL with no error set, because this signature's documentation names no CFError domain or code for it. An elliptic key of the release's own class takes kSecPaddingNone and is asked once more with kSecPaddingPKCS1 if the release refuses that, with whatever the release answers passed on; which of the two the 6.1.3 release takes is what tests/backports/host/seckeycurve/emulate.sh settles and it has not run, and a host cannot see it because the host's own SecKeyCreateSignature accepts either padding for an elliptic key (measured, with the EC padding row mutated to PKCS1: 93 checks, 0 failures). A key of the port's own kind is signed over the curve instead: a DER ECDSA signature over the SHA-256 of the data, in the low-s half micro-ecc produces, and measured on the host - micro-ecc's signature verifies under the host's own SecKeyVerifySignature, and a signature the host makes verifies through the port's own reader (tests/backports/host/seckeycurve, 93 checks, 0 failures).",
+      "facts": "facts/Security/SecKey.md and facts/Security/SecKeyElliptic.md",
       "introduced": "10.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls",
+      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls. A key of THIS PACKAGE'S OWN KIND - one that carries its own private scalar, beside the kSecValueData SecKeyCreateWithData would have left, and that the release's keychain therefore does not hold - is answered by the curve in Security/SecKeyElliptic10.m instead, and the two are told apart by that one attribute. The public symbol is this one, once, for both: two objects of one library defining one name is a link error, and the 6.1.3 gate answered with four of them.",
       "source": "SDK 16.4, Security",
       "status": "implemented"
     },
     {
       "api": "SecKeyIsAlgorithmSupported()",
-      "effect": "the key's own class decides: the release's SecKeyRawSign and SecKeyRawVerify carry the four RSA PKCS1 v1.5 digest algorithms and SecKeyEncrypt/SecKeyDecrypt carry the two RSA encryption ones; EC signing and key exchange are refused, and 6.1.3 has no primitive for either. No key exchange, no ECDH. A refusal is false, and no CFError is invented because the header documents no code for one",
-      "facts": "facts/Security/SecKey.md",
+      "effect": "the key's own class decides: the release's SecKeyRawSign and SecKeyRawVerify carry the four RSA PKCS1 v1.5 digest algorithms and SecKeyEncrypt/SecKeyDecrypt carry the two RSA encryption ones; EC signing and key exchange are refused, and 6.1.3 has no primitive for either. No key exchange, no ECDH. A refusal is false, and no CFError is invented because the header documents no code for one. An EC key of the release's own class is carried for signing and verifying, because SecKeyRawSign and SecKeyRawVerify are the release's own primitives and it has an EC key type (kSecAttrKeyTypeEC, SecItem.h:802-803, API_AVAILABLE(macos(10.9), ios(4.0))). A key of the port's own kind says true for a key exchange as well, beside the false the release's own key answers, and the same suite checks both answers, so the branch is entered on the marker and not on the class (measured on the host).",
+      "facts": "facts/Security/SecKey.md and facts/Security/SecKeyElliptic.md",
       "introduced": "10.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls",
+      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls. A key of THIS PACKAGE'S OWN KIND - one that carries its own private scalar, beside the kSecValueData SecKeyCreateWithData would have left, and that the release's keychain therefore does not hold - is answered by the curve in Security/SecKeyElliptic10.m instead, and the two are told apart by that one attribute. The public symbol is this one, once, for both: two objects of one library defining one name is a link error, and the 6.1.3 gate answered with four of them.",
       "source": "SDK 16.4, Security",
       "status": "implemented"
     },
     {
       "api": "SecKeyVerifySignature()",
-      "effect": "the release's SecKeyRawVerify, with the padding the algorithm names, so its PKCS1 padding is CHECKED during verification as kSecKey.h:684-690 documents. The answer is the Boolean, and no CFError is invented; errSecVerifyFailed = -67808 (SecBase.h:611) is the release's own code underneath",
-      "facts": "facts/Security/SecKey.md",
+      "effect": "the release's SecKeyRawVerify, with the padding the algorithm names, so its PKCS1 padding is CHECKED during verification as kSecKey.h:684-690 documents. The answer is the Boolean, and no CFError is invented; errSecVerifyFailed = -67808 (SecBase.h:611) is the release's own code underneath. An elliptic key is verified with the same kSecPaddingNone-then-PKCS1 rule the signing uses. A key of the port's own kind is verified over the curve, and the two are told apart by the marker and not by the class - measured on the host: a signature the host makes verifies through that reader, and one of another digest does not (tests/backports/host/seckeycurve).",
+      "facts": "facts/Security/SecKey.md and facts/Security/SecKeyElliptic.md",
       "introduced": "10.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls",
+      "reason": "the function arrived in iOS 10 and the release has the facility underneath it: the release signs, verifies, encrypts, decrypts and describes keys with its own calls. A key of THIS PACKAGE'S OWN KIND - one that carries its own private scalar, beside the kSecValueData SecKeyCreateWithData would have left, and that the release's keychain therefore does not hold - is answered by the curve in Security/SecKeyElliptic10.m instead, and the two are told apart by that one attribute. The public symbol is this one, once, for both: two objects of one library defining one name is a link error, and the 6.1.3 gate answered with four of them.",
       "source": "SDK 16.4, Security",
       "status": "implemented"
     }
