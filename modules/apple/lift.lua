@@ -1326,6 +1326,41 @@ end
 -- property's own attributes, and for a method whether it is a class's and its selector's parts paired in order with its
 -- parameters. nil where the text would not be the SDK's declaration: a property whose type needs a declarator around
 -- its name (a block or a function pointer), or a type that still carries an attribute the release does not replace.
+-- The attributes a declaration node carries, by clang's own kind, and the ones a redeclaration here cannot carry.
+-- AvailabilityAttr is written by member_declaration() itself, and SwiftPrivateAttr is written as the macro the SDK
+-- spells, so both are carried; every other attribute is a fact about the declaration this cannot repeat, and a
+-- redeclaration without it would say something the SDK does not.
+local function attributes_of(node)
+    local found = {}
+    for _, child in ipairs((node or {}).inner or {}) do
+        if child.kind and child.kind:endswith("Attr") then
+            table.insert(found, child.kind)
+        end
+    end
+    return found
+end
+
+local CARRIED_ATTRIBUTES = {AvailabilityAttr = true, SwiftPrivateAttr = true}
+
+function uncarried_attributes(node)
+    local left = {}
+    for _, kind in ipairs(attributes_of(node)) do
+        if not CARRIED_ATTRIBUTES[kind] then
+            table.insert(left, kind)
+        end
+    end
+    return left
+end
+
+local function has_attribute(node, kind)
+    for _, each in ipairs(attributes_of(node)) do
+        if each == kind then
+            return true
+        end
+    end
+    return false
+end
+
 function member_declaration(member, name, target)
     -- API_AVAILABLE(...) may nest parens (ios(8.0)), so the balanced match %b() is stripped, not [^)]*: it is the mark
     -- target replaces
@@ -1359,6 +1394,13 @@ function member_declaration(member, name, target)
             if member[accessor] and member[accessor].name then
                 table.insert(attributes, accessor .. "=" .. member[accessor].name)
             end
+        end
+        -- A property the SDK declares swift_private is one Swift must not see by its own name; a redeclaration that
+        -- dropped the attribute would show Swift a member of a name it did not have, so the redeclared property
+        -- carries the same macro the SDK's declaration spells. The fact is clang's own attribute kind; what is
+        -- written is the macro's name, which is what a header says and what the umbrella's Foundation defines.
+        if has_attribute(member, "SwiftPrivateAttr") then
+            table.insert(attributes, "NS_REFINED_FOR_SWIFT")
         end
         return string.format("@property (%s) %s %s API_AVAILABLE(ios(%s));", table.concat(attributes, ", "), type, name, target)
     end
@@ -2091,10 +2133,8 @@ local function computed(opt)
             for _, node in ipairs(found.reached) do
                 local by = owner_of(node)
                 table.insert(sources, by)
-                for _, child in ipairs(node.inner or {}) do
-                    if child.kind:endswith("Attr") and child.kind ~= "AvailabilityAttr" then
-                        table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, child.kind))
-                    end
+                for _, kind in ipairs(uncarried_attributes(node)) do
+                    table.insert(unreachable, string.format("%s is declared by %s with %s, which a redeclaration would not carry", api, by, kind))
                 end
                 local text = member_declaration(node, node.name, target)
                 if text then

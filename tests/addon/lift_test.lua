@@ -470,6 +470,26 @@ function failures(opt)
     expect_equal(found, "and one whose getter is not the accessor is not",
                  ((unrelated.getter or unrelated).name == "isTextDragActive") and "matched" or "refused", "refused")
 
+    -- A property the SDK declares swift_private (NS_REFINED_FOR_SWIFT) is one Swift must not see by its own
+    -- name. A redeclaration that dropped the attribute would show Swift a member it did not have, so the
+    -- redeclared property carries the same macro the SDK's declaration spells, and an attribute the redeclaration
+    -- still cannot carry is still refused by name.
+    local function property_with(attrs)
+        return {kind = "ObjCPropertyDecl", name = "destinationFrame", type = {qualType = "id"}, readonly = true,
+                inner = attrs}
+    end
+    local swift_private = property_with({{kind = "SwiftPrivateAttr"}})
+    expect_equal(found, "a property the SDK declares swift_private is redeclared with the macro",
+                 lift.member_declaration(swift_private, "destinationFrame", "6.0"),
+                 "@property (readonly, NS_REFINED_FOR_SWIFT) id destinationFrame API_AVAILABLE(ios(6.0));")
+    expect_equal(found, "and it carries no other attribute", table.concat(lift.uncarried_attributes(swift_private), ","), "")
+    local others = property_with({{kind = "AvailabilityAttr", introduced = "17.0"}, {kind = "SwiftPrivateAttr"},
+                                 {kind = "SwiftObjCMembersAttr"}})
+    expect_equal(found, "an attribute a redeclaration still cannot carry is refused by name",
+                 table.concat(lift.uncarried_attributes(others), ","), "SwiftObjCMembersAttr")
+    expect_equal(found, "and availability alone is carried",
+                 table.concat(lift.uncarried_attributes({inner = {{kind = "AvailabilityAttr"}}}), ","), "")
+
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
 
     -- A macro that expands to two declarations writes both their availability attributes at one place, so a
