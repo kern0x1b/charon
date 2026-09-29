@@ -28,7 +28,8 @@ int main(void)
     CMSampleTimingInfo timing = { CMTimeMake(1,2), CMTimeMake(2,1), kCMTimeInvalid, kCMTimeInvalid, 1 };
     size_t sizes[1] = { 0 };
     CMBlockBufferRef backing = NULL;
-    CMBlockBufferCreate(kCFAllocatorDefault, NULL, 0, kCMBlockBufferAssureMemoryNowFlag, &backing);
+    // 16.4 spells this CMBlockBufferCreateEmpty; there is no CMBlockBufferCreate
+    CMBlockBufferCreateEmpty(kCFAllocatorDefault, 0, kCMBlockBufferAssureMemoryNowFlag, &backing);
     OSStatus sb = CMSampleBufferCreate(kCFAllocatorDefault, backing, true, NULL, NULL, desc,
                                        1, 1, &timing, 1, sizes, &sbuf);
     printf("sample buffer status %d numSamples %ld isDataReady %d\n", (int)sb,
