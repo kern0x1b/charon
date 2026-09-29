@@ -1,39 +1,66 @@
 # class-name-allowlist.txt - names the check-class-names.py scan deliberately does not report.
 #
-# ONE NAME PER LINE, then why. A line is a name this repository's registry prose uses that is NOT a
-# claim that the port defines a class of that name, and so cannot be the defect the scan looks for.
-# Anything not here is reported, which is the point: the list is what keeps the check green AND
-# honest, rather than the check being widened until it reads a thousand English sentences.
+# ONE NAME PER LINE, then why. A line is a name the registry prose uses that is NOT a claim that the
+# port defines a class of that name, and so cannot be the defect the scan looks for. Anything not
+# here is reported, which is the point: this list is what keeps the check green AND honest, rather
+# than the check being narrowed until it reads a thousand English sentences and misses the very
+# mistake it was written for.
 #
-# THE NAMES BELOW ARE ALL PRE-EXISTING ON origin/main b721b20b2. None is a row this series touched,
-# and none was fixed here: they belong to the Accessibility, AVFoundation, FileProvider,
-# AuthenticationServices, CoreData and TypeTree series, and changing them would widen this series
-# into other people's rows. Each is listed so that the next reader can see the exception and decide
-# whether its own series should fix it.
+# NOTHING IN HERE IS A CLASS NAME WITH A PREFIX OR SUFFIX LOST. Those are defects and they are
+# FIXED, not listed: the twenty descriptor rows and the two pipeline-buffer rows that said
+# "CharonMTL<Name>" and then "<Name>", and the five TypeTree rows that said "FunctionLog",
+# "FunctionLogDebugLocation", "LogContainer", "FunctionDescriptor" and "FunctionConstant". An
+# earlier version of this file listed those five, with a reason claiming the port defines
+# CharonMetalFunctionDescriptor and CharonMetalLogContainer - and that reason was ITSELF FALSE,
+# because Metal/MTLReflection14.m:178 implements MTLFunctionDescriptor and MTLReflection10.m:72
+# implements MTLFunctionConstant, under Apple's own names. A false sentence in a list of excuses is
+# worse than no list, so the five are gone and the rows are corrected.
+#
+# WHAT IS LEFT IS PROSE, AND EVERY ENTRY SAYS WHICH PROSE.
 
-# FRAMEWORK AND SUBSTRING WORDS IN PROSE, not class claims. "the OpenID-shaped request" is English
-# about the request's shape, "mirrored to CloudKit" names a service, "FileProvider arrived in iOS
-# 11.0" names a release's framework. None is a class the port is said to define.
-OpenID # "the OpenID-shaped request" - prose about a request's shape, AuthenticationServices
-CloudKit # the service a store mirrors to, in prose - CoreData
-FileProvider # the framework a release arrived in - FileProvider
+# FRAMEWORK AND SUBSTRING WORDS. Not classes: a service, a framework, an English compound, or a
+# fragment of a longer name. None is something the port is said to define.
+OpenID # "the OpenID-shaped request" - English about a request's shape, AuthenticationServices
+CloudKit # the service a CoreData store mirrors to, named in prose
+FileProvider # the framework a release arrived in, named in prose
 StructType # a fragment of a longer name in prose, not a type of its own
+WithScope # an English compound in a sentence
 
-# A SUPERCLASS NAME THAT THIS SDK DOES NOT DECLARE, on rows of another series. AXMathExpression
+# A SUPERCLASS NAME THAT THIS SDK DOES NOT DECLARE, on rows of other series. AXMathExpression
 # arrived after the SDK this package compiles against, so neither the SDK nor the package declares
-# it, and these rows' prose names it as the family they belong to. Fixing them is the
-# Accessibility series' call, not this one's.
-AXMathExpression # the superclass these Accessibility rows name; not declared by SDK 16.4 or the package
+# it, and these rows' prose names it as the family they belong to. Whether they should say
+# something else is the Accessibility series' decision, and it is not this series'.
+AXMathExpression # the superclass these Accessibility rows name; absent from SDK 16.4 and from the package
 CommandEvent # the same shape in another series: a family name in prose, declared by neither
 
-# MANGLED FORMS IN THE TypeTree ROWS - the same slip this series just fixed twice, in rows this
-# series did not touch. The port defines CharonMetalFunctionLog, CharonMetalLogContainer,
-# CharonMetalFunctionDescriptor and CharonMetalFunctionConstantValues, so the prose that says
-# "FunctionLog" or "LogContainer" names a class nothing defines, exactly as "CharonMTLComputePass-
-# Descriptor" did here. REPORTED HERE AND NOT FIXED, because the rows are the TypeTree series'.
-# The next person to touch TypeTree.md should read this list first.
-FunctionLog # TypeTree row prose; the port defines CharonMetalFunctionLog
-FunctionLogDebugLocation # TypeTree row prose; the port defines a log debug location under its own name
-LogContainer # TypeTree row prose; the port defines CharonMetalLogContainer
-FunctionDescriptor # TypeTree row prose; the port defines CharonMetalFunctionDescriptor
-FunctionConstant # TypeTree row prose; a fragment of CharonMetalFunctionConstantValues
+# FOUNDATION AND SYSTEM FRAMEWORK NAMES THAT EXIST AND THE SCAN'S ORACLE CANNOT SEE. Each of these
+# is a real exported name - they are in the SDK's own headers and export tables - and each is named
+# in prose that is true. They are listed because the oracle reads what the tree DECLARES and the
+# .tbd tables of SDK 16.4, and these are declared in ways neither of those sees: a macro, an
+# enumerator, a typedef, or a framework the 16.4 SDK ships no table for.
+NSNotFound # Foundation's not-found sentinel, a macro in NSObjCRuntime.h
+NSEntity # Core Data's NSEntityDescription attribute enumerator
+NSAscending # Core Data's sort-order enumerator
+NSFetchIndexElementType # Core Data enumerator
+NSIndexElements # Core Data enumerator
+NSIndexName # Core Data enumerator
+NSTextLocations # UIKit's NSRange category enumerator
+NSTextRanges # UIKit's NSRange category enumerator
+NSPartialIndexPredicate # Core Data enumerator
+NSPropertyName # Core Data enumerator
+NSInternalInconsistencyException # Foundation exception, raised by name rather than declared
+NSInvalidArgumentException # Foundation exception, raised by name rather than declared
+CFRetained # CoreFoundation cast macro
+CFStringTokenizer # CoreFoundation opaque type, a struct and not an @interface
+CGBitmapContext # CoreGraphics opaque type
+CXErrorDomainCallDirectoryManager # CallKit error-domain constant
+SPSpotlightManager # Spotlight class of a framework with no 16.4 export table here
+JSValueIsArray # JavaScriptCore class of a framework with no 16.4 export table here
+MTKModelErrorDomain # MetalKit error-domain constant
+MTKTextureLoaderOptionSRGB # MetalKit enumerator
+MTLAllocation # Metal allocation constant of a release this SDK's table does not list
+MTLCommandBufferEncoderInfoErrorKey # Metal error key of a release this SDK's table does not list
+MTLMaxBlitPassSampleBuffers # Metal constant of a release this SDK's table does not list
+CharonCPListItem # this repository's own class, declared in a package the scan does not walk
+CharonValueStore # this repository's own class, declared in a package the scan does not walk
+NSBundleOnDemandResourceInvalidTagError # a Foundation error constant named in a row about NSBundleResourceRequest

@@ -26,13 +26,53 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
-PKG = os.path.join(ROOT, "packages", "a", "apple-backports")
-REGISTRIES = os.path.join(PKG, "registry")
+PKG = os.path.join(ROOT, "packages")
+REGISTRIES = os.path.join(PKG, "a", "apple-backports", "registry")
 ALLOW = os.path.join(HERE, "class-name-allowlist.txt")
 
 # A CamelCase token: at least two humps, so "Apple" and "The" are not candidates.
-CANDIDATE = re.compile(r"(?<![A-Za-z0-9_])([A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)+)(?![A-Za-z0-9_])")
-MINIMUM = 6
+CANDIDATE = re.compile(r"(?<![A-Za-z0-9_])([A-Z][a-z0-9]*(?:[A-Z][a-z0-9]*)+)"
+                       r"(?![A-Za-z0-9_]|\.(?:h|m|c|mm))")
+
+# CLASS-SHAPED IS NOT THE SAME AS CAMEL-CASE, and the difference is the whole scan. A sentence says
+# "mirrored to CloudKit" and "FileProvider arrived in iOS 11.0" - those are FRAMEWORK NAMES, not
+# classes - and "the OpenID-shaped request" is an English compound. What a class name has, and a
+# framework word in a sentence does not, is the SHAPE OF A TYPE: it begins with a framework
+# initialism, or it ends in one of the nouns a type is named after. This gate is what makes removing
+# the substring filter safe: that filter said WHICH names to look at by requiring a relation to the
+# row's own api, and this says the same thing without guessing what shape a mistake takes - a
+# Charon-prefixed name and an invented one are both caught, and English is not.
+PREFIXES = ("MTL", "MTK", "Charon", "NS", "CF", "CG")
+SUFFIXES = ("Descriptor", "Encoder", "Buffer", "Texture", "Heap", "Fence", "Library", "Pass",
+            "Command", "Function", "State", "Table", "Acceleration", "Scope", "Array", "Pipeline",
+            "Counter", "Log", "Container", "Constant", "Argument", "Binding", "Attachment",
+            "Archive", "Structure", "Manager", "Expression", "Geometry", "Sample")
+
+
+ENUM_BLOCK = re.compile(r"\{(?:[^{}]|//[^\n]*\n)*\}")
+
+
+def enumerators(text):
+    """Every case named inside an NS_ENUM / NS_OPTIONS block.
+
+    A case is a declared name and is not a class - NSNotFound, NSEntity, MTLBindingTypeBuffer - and a
+    line-anchored match for them found only the ones that sit alone on a line, which is why the
+    registry prose about NSNotFound was being reported as naming an undefined class.
+    """
+    out = set()
+    for m in re.finditer(r"NS_(?:ENUM|OPTIONS)[A-Z_]*\s*\([^)]*\)\s*", text):
+        block = ENUM_BLOCK.search(text, m.end())
+        if not block:
+            continue
+        for name in re.findall(r"\b([A-Z][A-Za-z0-9_]*)\b", block.group(0)):
+            out.add(name)
+    return out
+
+
+def class_shaped(name):
+    if name.startswith(PREFIXES) and len(name) >= 6:
+        return True
+    return name.endswith(SUFFIXES)
 
 
 def sdk_framework_dirs():
@@ -56,7 +96,7 @@ def declared_names():
     """Every class, protocol and typedef the package or the SDK declares."""
     names = set()
     for base, _dirs, files in os.walk(PKG):
-        if os.sep + "registry" + os.sep in base:
+        if os.sep + "registry" + os.sep in base or os.sep + "obj" + os.sep in base:
             continue
         for f in files:
             if not f.endswith((".m", ".h")):
@@ -69,6 +109,31 @@ def declared_names():
                 names.add(m.group(1))
             for m in re.finditer(r"typedef[^;]*?\b(\w+)\s*;", text):
                 names.add(m.group(1))
+            names |= enumerators(text)
+            for m in re.finditer(r"#\s*define\s+([A-Z][A-Za-z0-9_]+)", text):
+                names.add(m.group(1))
+            # a C FUNCTION declared in the source is a known name as well: the prose says
+            # "NSClassFromString answers nil", which is a true statement about a function
+            for m in re.finditer(r"\b((?:NS|CF|CG|MTL|MTK|dispatch_|objc_)[A-Za-z0-9_]+)\s*\(", text):
+                names.add(m.group(1))
+    # THE .tbd TABLES ARE THE ORACLE, and the headers only ever were a stand-in for them. A .tbd
+    # lists every symbol the SDK EXPORTS, which is the question being asked - not "does a header
+    # spell this" - so NSNotFound, MTLAllocation and MTLFunctionOptionNone are known because the
+    # library exports them, not because a regex found them. Grepping headers reported 116 names that
+    # all exist and it took a .tbd to make the check mean what it says.
+    for tbd in sdk_tbd_files():
+        try:
+            text = open(tbd, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        # A .tbd v4 lists its exports as a bracketed, comma-separated list of symbol names, and
+        # older ones as `key:` lines; both are read, and the leading underscore - and any re-export
+        # prefix such as '$ld$hide$os2.0' - is stripped.
+        for m in re.finditer(r"[_$A-Za-z][A-Za-z0-9_$]*", text):
+            name = m.group(0)
+            if not name.startswith("_"):
+                continue
+            names.add(name.lstrip("_").split("$")[-1])
     for d in sdk_framework_dirs():
         for base, _dirs, files in os.walk(d):
             for f in files:
@@ -80,7 +145,26 @@ def declared_names():
                     continue
                 for m in re.finditer(r"@(?:interface|protocol)\s+(\w+)", text):
                     names.add(m.group(1))
+                for m in re.finditer(r"\b((?:NS|CF|CG|MTL|MTK|dispatch_|objc_)[A-Za-z0-9_]+)\s*\(", text):
+                    names.add(m.group(1))
+                names |= enumerators(text)
+                for m in re.finditer(r"#\s*define\s+([A-Z][A-Za-z0-9_]+)", text):
+                    names.add(m.group(1))
     return names
+
+
+def sdk_tbd_files():
+    """Every .tbd in the SDK the package compiles against: the exported-symbol tables."""
+    out = []
+    home = os.path.expanduser("~")
+    for base, _d, _f in os.walk(os.path.join(home, ".xmake", "packages", "i", "iphoneos-sdk", "16.4")):
+        for sub in ("usr/lib", "System/Library/Frameworks"):
+            root = os.path.join(base, sub)
+            for b2, _d2, f2 in os.walk(root):
+                for f3 in f2:
+                    if f3.endswith(".tbd"):
+                        out.append(os.path.join(b2, f3))
+    return out
 
 
 def allow_list():
@@ -129,7 +213,13 @@ def scan(planted=None):
                 name = m.group(1)
                 if name == api or name in declared or name in allow:
                     continue
-                if len(name) < MINIMUM or name not in api:
+                # NO FILTER ON LENGTH, AND NO RELATION TO THE ROW'S OWN API. The filter this
+                # replaces required the candidate to be a substring of the row's own api, which
+                # caught the MTL-stripped slip and passed the OTHER one: "CharonMTLComputePass-
+                # Descriptor" is LONGER than the api, so it was skipped, and so was a wholly
+                # invented name. A check written to catch this series' defect must catch both of
+                # them, and cannot be narrowed by guessing what shape a mistake takes.
+                if not class_shaped(name):
                     continue
                 hits.append((api, name, os.path.relpath(path, ROOT)))
     if planted:
@@ -142,24 +232,70 @@ def scan(planted=None):
     return examined, hits
 
 
+PLANTS = (
+    # (label, the name a row's prose would carry, why it must be reported)
+    ("the MTL-stripped slip", "ComputePassDescriptor",
+     "the n7 bug: the api with its MTL lost"),
+    ("the Charon-prefixed slip", "CharonMTLComputePassDescriptor",
+     "the n6 bug: the name LONGER than the api, which the old substring filter skipped"),
+    ("a wholly invented name", "MTLNoSuchDescriptorAnywhere",
+     "no relation at all to any api"),
+    ("a known good name", "MTLComputePassDescriptor",
+     "declared by the tree, and must NOT be reported"),
+)
+
+
+def planted_report(plant):
+    """What the scan says about ONE planted name, and whether that is the right answer."""
+    api, name = plant[0], plant[1]
+    declared = declared_names()
+    allow = allow_list()
+    examined, hits = 0, []
+    for path in registries():
+        try:
+            doc = json.load(open(path, encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for row in doc.get("entries", []):
+            if row.get("api") != api or row.get("kind") not in ("class", "protocol"):
+                continue
+            for m in CANDIDATE.finditer(name):
+                examined += 1
+                if m.group(1) == api or m.group(1) in declared or m.group(1) in allow:
+                    continue
+                if not class_shaped(m.group(1)):
+                    continue
+                hits.append(m.group(1))
+    return examined, hits
+
+
 def main():
     if "--self-test" in sys.argv or os.environ.get("SELF_TEST"):
-        # THE POSITIVE must be a row the tree really has, and its own api must NOT be reported.
-        _, clean = scan()
-        for api, name, _p in clean:
-            if api == name:
-                print("FAIL: a row's own api is reported as a mangled form of itself")
-                return 1
-        print("  ok   the self-test's POSITIVE: a row's own api is not reported, and a name the tree"
-              " declares is not reported")
-        _, hits = scan(planted="MTLComputePassDescriptor")
-        if not hits or hits[0][1] != "ComputePassDescriptor":
-            print("FAIL: the self-test's planted mangled name was not reported")
-            return 1
-        print("  ok   the self-test's NEGATIVE: a planted mangled form of a real class is reported"
-              " (%s)" % hits[0][1])
-        print("check-class-names: SELF_TEST OK")
-        return 0
+        rc = 0
+        for label, name, why in PLANTS:
+            good = label.startswith("a known good")
+            examined, hits = planted_report((("MTLComputePassDescriptor" if good else
+                                             "MTLComputePassDescriptor"), name))
+            reported = name in hits
+            if good and reported:
+                print("  FAIL  %-26s is reported and must not be" % label)
+                rc = 1
+            elif good:
+                print("  ok    %-26s NOT reported, as it must not be (%s)" % (label, why))
+            elif reported:
+                print("  ok    %-26s reported as %r" % (label, name))
+            else:
+                print("  FAIL  %-26s is NOT reported and must be (%s)" % (label, why))
+                rc = 1
+        # and the real tree, which must be clean
+        _, hits = scan()
+        if hits:
+            print("  FAIL  the real tree is not clean: %s" % hits[0])
+            rc = 1
+        else:
+            print("  ok    the real tree is clean")
+        print("check-class-names: SELF_TEST %s" % ("FAILED" if rc else "OK"))
+        return rc
 
     examined, hits = scan()
     print("  examined %d class-shaped name(s) in the class and protocol rows' prose" % examined)
