@@ -196,6 +196,19 @@ Two findings, and both are the reason a header is not enough:
   and a tab accessory environment all read as their unspecified values on a release that is never
   being recorded or shown in a tab accessory, which is what the header's own comments say they mean.
 
+## One path the differential does not reach
+
+`UITraitCollection+Traits17.m` carries the collection's CGFloat reader,
+`-valueForCGFloatTrait:` and the `-valueForCGFloatTraitClass:` that forwards to it, beside the
+integer and object pair. `UITraitCollection.m` declares `-displayScale` and `-setDisplayScale:`
+of its own on the class itself, and a category method of the same name is the one the class
+answers with, so the differential's read of `-displayScale` never reaches the category's reader.
+The two paths are not two answers to one question: the category's reader is how a caller with a
+trait *class* asks, and the class's own is how the one named property asks. Measured, by putting
+one into the category's reader over a copy of the package and running the group:
+`checks=355 failures=0`, exit 0 - the read the port makes for a CGFloat trait is not held by
+anything, and a case that asks for it through `-valueForCGFloatTraitClass:` is what would.
+
 ## The device run that has not happened
 
 Everything above is the host's own UIKit and the port beside it. A real iPad 2 on 6.1.3 is the target
