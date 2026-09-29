@@ -21,7 +21,7 @@ set -eu
 root=${DDR_ROOT:?set DDR_ROOT to the port checkout}
 here=$(cd "$(dirname "$0")" && pwd)
 port=$root/packages/a/apple-backports/UIKit/UITextDragPreviewRenderer11.m
-build=${DDR_BUILD:-${TMPDIR:-/tmp}/charon-renderer-differential}
+build=${DDR_BUILD:-$root/.agent-work/runs/renderer-differential-build}
 sdk=$(xcrun --show-sdk-path)
 port_name=CharonHostCopyTextDragPreviewRenderer
 mkdir -p "$build"

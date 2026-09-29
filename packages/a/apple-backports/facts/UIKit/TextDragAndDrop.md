@@ -74,3 +74,23 @@ so a translation unit that includes only the umbrella header sees none of it, an
 against a name the header does not declare compiles as a root class and the gate says so later. The
 check that matches the build passes `-DUSE_UIKIT_PUBLIC_HEADERS=1` and the lift's vfs overlay; that
 is what `/tmp/checkbuild.sh` now does for this family.
+
+
+## What this series adds, counted
+
+The count is 19 registry rows, all in `registry/UIKit/dragdrop.json`, which goes from 81 entries to
+100. It is measured with
+
+    git diff 1924aeaa2..HEAD | grep -c '^+.*"api"'
+
+and it is 19, not the 45 an earlier report of this series claimed. The 45 was a sum of three
+different things across three different deliveries — the eleven interaction delegate rows, the eight
+renderer rows, and rows from a neighbouring family that this series never touched — added together as
+though they were one. They were not. The eleven and the eight are inside the 19; the rest were never
+part of this series, and saying so is the correction.
+
+What the 19 are, by file and kind:
+
+- 11 `UIDragInteractionDelegate` and `UIDropInteractionDelegate` questions the port already routed
+  and this series registers;
+- 8 `UITextDragPreviewRenderer` members: three methods and the five properties.
