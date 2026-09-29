@@ -86,10 +86,19 @@ harness rather than in the library:
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, and it is one again.
 
-**Where it stands: the binary family, the unary family, a chain, a constant and an integer division all
-agree with the release case for case and bit for bit.** The release's own framework still stops part
-way: `-[MPSGraph signWithTensor:name:]` exists in its headers but not in the binary on this host, so
-the sign case is where the comparison ends, and the port carries on past it.
+**Where it stands: fifteen cases agree with the release, bit for bit** - the binary family, the unary
+family, a chain and an integer division. Two of the case file's cases are not among them and are not
+counted as agreeing:
+
+* **A constant** cannot be asked for at all on this host. `-[MPSGraph constantWithShape:dataType:values:name:]`
+  aborts the process, so it is asked for **last**, after everything the host does answer, and the run
+  stops there on the host side. An earlier version of the case file had it in the middle of the unary
+  family, where it took seven cases down with it - and because the harness compared the shorter of the
+  two runs, those seven counted as agreeing.
+* **A placeholder's `dataType`** is the other one that is not comparable, for the reason below.
+
+The harness now **fails on a length mismatch** rather than truncating to the shorter side, and names the
+case each side last reached, so an abort in either run cannot be read as agreement.
 
 One thing the harness did teach, and which is written into the case file: **reading a shaped type's
 equality, or a placeholder's `dataType`, takes the release down** — it calls
