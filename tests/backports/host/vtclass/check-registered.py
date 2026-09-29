@@ -34,29 +34,32 @@ VT_DIR = os.path.join(WORKTREE, "packages", "a", "apple-backports", "VideoToolbo
 REGISTRY = os.path.join(WORKTREE, "packages", "a", "apple-backports", "registry", "VideoToolbox")
 
 
+def _members():
+    import importlib.util
+    path = os.path.join(HERE, "members.py")
+    spec = importlib.util.spec_from_file_location("vt_members", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert os.path.abspath(module.__file__) == path, "loaded a members.py that is not this one"
+    return module
+
+
 def built_names():
-    """What the value files implement: @implementation names, method selectors, property names."""
-    classes, methods, properties = set(), set(), set()
+    """What the value files implement, from members_of() - the ONE derivation, which reads the
+    declaration and the value file. This script's own regexes are gone: they read a hand-written
+    accessor as a METHOD, which is how sixteen properties were reported missing while a row for each
+    existed, and they did not see an inherited property the class restates."""
+    classes = set()
     for path in sorted(glob.glob(os.path.join(VT_DIR, "*.m"))):
-        text = open(path).read()
-        for name in re.findall(r'^@implementation\s+(\w+)', text, re.M):
+        for name in re.findall(r'^@implementation\s+(\w+)', open(path).read(), re.M):
             classes.add(name)
-        for name in re.findall(r'@interface\s+(VT\w+)\s*:', text):
-            classes.add(name)
-        # a macro accessor: CHARON_VALUE_PROPERTY(NSArray<NSNumber *> *, supportedRevisions)
-        for call in re.findall(r'CHARON_\w+_PROPERTY\((.*)\)', text):
-            for prop in re.findall(r'\b(\w+)\s*$', call.split(',')[-1].strip()) or []:
-                pass
-            last = call.split(',')[-1].strip()
-            if re.match(r'^\w+$', last):
-                properties.add(last)
-            properties.add(prop)
-        # a hand-written accessor: - (BOOL)usesPrecomputedFlow   /   + (NSIndexSet *)supportedRevisions
-        for _sign, selector in re.findall(r'([-+])\s*\([^)]*\)\s*(\w+)', text):
-            methods.add(selector)
-        for prop in re.findall(r'@property[^;]*?\s(\w+)\s*;', text):
-            properties.add(prop)
-    return classes, methods, properties
+    members = _members()
+    entries, accessors = set(), {}
+    for class_name in sorted(classes):
+        what = members.members_of(class_name)
+        entries |= what["entries"]
+        accessors.update(what["accessors"])
+    return entries, accessors
 
 
 def registered_names(registry_dir=REGISTRY):
@@ -98,31 +101,21 @@ def report(label, lines):
 
 def main():
     control = "--control" in sys.argv
-    classes, methods, properties = built_names()
+    entries, accessors = built_names()
     registry = registered_names()
-    print("built: %d classes, %d selectors, %d properties" % (len(classes), len(methods), len(properties)))
+    registered = {(kind, api) for kind in registry for api in registry[kind]}
+    counts = {}
+    for kind, _name in entries:
+        counts[kind] = counts.get(kind, 0) + 1
+    print("built: %d entries - %s" % (len(entries),
+                                      ", ".join("%d %s" % (counts[k], k) for k in sorted(counts))))
     print("registered: %d class, %d method, %d property rows"
           % tuple(len(registry[k]) for k in ("class", "method", "property")))
 
-    unregistered, orphan = [], []
-    for name in sorted(classes):
-        if name not in registry["class"]:
-            unregistered.append("built, but no entry in registry: %s (a class)" % name)
-    for kind, names in (("method", methods), ("property", properties)):
-        recorded = registry[kind]
-        for name in sorted(names):
-            if not any(bare(row) == name for row in recorded):
-                unregistered.append("built, but no entry in registry: %s (%s)" % (name, kind))
-    for kind in ("class", "method", "property"):
-        for row in registry[kind]:
-            head = bare(row)
-            if kind == "class":
-                found = row in classes
-            else:
-                found = head in methods or head in properties
-            if not found:
-                orphan.append("registered, but not built: %s (%s)" % (row, kind))
-
+    unregistered = ["built, but no entry in registry: %s (%s)" % (api, kind)
+                    for kind, api in sorted(entries - registered)]
+    orphan = ["registered, but not built: %s (%s)" % (api, kind)
+              for kind, api in sorted(registered - entries)]
     missing = report("built, but no entry in registry", unregistered)
     extra = report("registered, but not built", orphan)
     if control:
@@ -134,16 +127,16 @@ def main():
         data = json.load(open(victim))
         removed = data["entries"].pop(0)
         json.dump(data, open(victim, "w"), indent=1)
-        _, _, properties_ = built_names()
         after = registered_names(scratch)
-        target = bare(removed["api"])
-        named = [r for r in after["property"] | after["method"] if bare(r) == target]
+        target = (removed["kind"], removed["api"])
+        named = [r for r in after[removed["kind"]] if r == removed["api"]]
         print("  control: removed %s from %s on a scratch copy"
               % (removed["api"], os.path.basename(victim)))
         if not named:
             print("FAIL the control did NOT change what this script finds: deleting a row changed nothing")
             return 1
-        print("  control: the script now reports it: built, but no entry in registry: %s" % target)
+        print("  control: the script now reports it: built, but no entry in registry: %s (%s)"
+              % (target[1], target[0]))
         return 0
     if missing or extra:
         print("registry stand-in: NOT clean")

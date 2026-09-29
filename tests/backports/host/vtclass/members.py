@@ -1,0 +1,101 @@
+"""WHAT A CLASS HAS, derived once.
+
+    members_of("VTMotionBlurConfiguration") -> {"entries": {(kind, registry name), …}, "accessors": {…}}
+
+TWO FILES DISAGREEING ON ONE FACT IS THE FAILURE THIS SERIES HAS PRODUCED FOUR TIMES: the store line and
+the expectation both derived a key wrongly and the check read green; the global rename map and the
+header disagreed about a property's name; the availability rule was written twice and failed in opposite
+directions; and the registry's rows and the value file's accessors disagreed about
+`VTSuperResolutionScalerConfiguration.precomputedFlow`, whose GETTER is `usesPrecomputedFlow`. So there
+is one derivation, here, and the emitter and the stand-in both call it - the emitter reading back the
+text it just wrote, the stand-in reading the same files from disk.
+
+FOUR THINGS IT GETS RIGHT, each of which cost a wrong answer before:
+
+  A PROPERTY WITH A getter= REGISTERS UNDER ITS PROPERTY NAME. SDK 26.2 declares
+  `@property (nonatomic, readonly, getter=usesPrecomputedFlow) BOOL precomputedFlow;` - so the registry
+  row says precomputedFlow, and `usesPrecomputedFlow` is the ACCESSOR of that property, not a member of
+  its own. A row named after the getter records a member the file does not implement.
+
+  AN INHERITED PROPERTY THE CLASS RESTATES IS THE CLASS'S. A class states its protocol's properties
+  again in its own body, because a protocol's properties are not on the runtime property list of a class
+  that conforms, and the value walk reads that list. So the accessors exist and a row is owed for them.
+
+  AN ACCESSOR IS NOT A SEPARATE MEMBER. `- (CVPixelBufferRef)buffer` and
+  `CHARON_VALUE_PROPERTY(CVPixelBufferRef, buffer)` both implement the property `buffer`; reading either
+  as a method is how sixteen properties were reported missing while a row for each existed.
+
+  THE CLASS ITSELF IS A ROW, and its initialisers are rows named the SDK spells them.
+"""
+import os
+import re
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+WORKTREE = os.path.abspath(os.path.join(HERE, "..", "..", "..", ".."))
+VT_DIR = os.path.join(WORKTREE, "packages", "a", "apple-backports", "VideoToolbox")
+HEADER = os.path.join(VT_DIR, "CharonVideoToolbox.h")
+
+# The template's class lives in the file that carries the protocols, hand-written, with its initialiser
+# already in it. Every other class has a generated file of its own.
+TEMPLATE_CLASS = "VTMotionBlurConfiguration"
+TEMPLATE_FILE = "VideoToolboxValue26.m"
+
+INITIALISER = re.compile(r'^-\s*\(\s*instancetype\s*\)(initWith\w[\w:]*)', re.M)
+PROPERTY_ROW = re.compile(r'@property\s*\(([^)]*)\)\s*[^;]*?\s(\w+)\s*(?:[A-Z_][A-Z_0-9]*\s*(?:\([^)]*\))?)?;', re.S)
+MACRO_ACCESSOR = re.compile(r'CHARON_\w+_PROPERTY\((.*)\)', re.S)
+HAND_ACCESSOR = re.compile(r'([-+])\s*\([^)]*\)\s*(\w+)')
+INITIALISER_KEYWORD = re.compile(r'@"(charon\.private\.)?(\w+)"')
+
+
+def _value_file_for(class_name):
+    return os.path.join(VT_DIR, TEMPLATE_FILE if class_name == TEMPLATE_CLASS else class_name + ".m")
+
+
+def _registry_name(kind, class_name, member):
+    if kind == "class":
+        return class_name
+    if kind == "method":
+        return "-[%s %s]" % (class_name, member)
+    return "%s.%s" % (class_name, member)
+
+
+def members_of(class_name):
+    """(kind, registry name) for everything this class implements, and the accessor map beside it.
+
+    Returns {"entries": {(kind, registry name), …}, "accessors": {selector: property or None}} so a
+    caller can tell an accessor of a property from a method of its own.
+    """
+    header = open(HEADER).read()
+    source = open(_value_file_for(class_name)).read()
+
+    block = re.search(r'@interface\s+%s\b.*?@end' % re.escape(class_name), header, re.S)
+    if not block:
+        raise ValueError("%s: the port's header declares no such class" % class_name)
+    body = block.group(0)
+
+    entries = {("class", _registry_name("class", class_name, class_name))}
+    accessors = {}
+    # properties: the PROPERTY name, with its getter if it has one
+    for attrs, name in PROPERTY_ROW.findall(body):
+        entries.add(("property", _registry_name("property", class_name, name)))
+        getter = re.search(r'getter\s*=\s*(\w+)', attrs)
+        accessors[getter.group(1) if getter else name] = name
+    # initialisers, as the SDK spells the selector
+    for selector in INITIALISER.findall(body):
+        entries.add(("method", _registry_name("method", class_name, selector)))
+        accessors[selector] = None
+    # the accessors the value file actually implements, and the properties they belong to
+    for call in MACRO_ACCESSOR.findall(source):
+        last = call.split(",")[-1].strip()
+        if re.match(r'^\w+$', last):
+            accessors[last] = accessors.get(last)
+    for _sign, selector in HAND_ACCESSOR.findall(source):
+        if selector in accessors or re.match(r'^(init|initWith)', selector):
+            continue
+        accessors[selector] = None
+    return {"entries": entries, "accessors": accessors}
+
+
+def accessors_of_class(class_name):
+    """Just the accessor map, for a caller that has the entries already."""
+    return members_of(class_name)["accessors"]
