@@ -2688,14 +2688,20 @@
 
 @interface INRestaurantGuest ()
 {
-    NSString * _emailAddress;  // emailAddress
-    NSString * _phoneNumber;  // phoneNumber
+    NSString *               _emailAddress;  // emailAddress
+    NSPersonNameComponents * _nameComponents;  // nameComponents
+    NSString *               _phoneNumber;  // phoneNumber
 }
 @end
 
 @implementation INRestaurantGuest
     @synthesize emailAddress = _emailAddress;
     @synthesize phoneNumber = _phoneNumber;
+
+- (NSPersonNameComponents * _Nullable)nameComponents
+{
+    return _nameComponents;
+}
 
 - (void)setEmailAddress:(NSString *)emailAddress
 {
@@ -2705,6 +2711,18 @@
 - (void)setPhoneNumber:(NSString *)phoneNumber
 {
     _phoneNumber = [phoneNumber copy];
+}
+
+- (instancetype)initWithNameComponents:(NSPersonNameComponents *)nameComponents phoneNumber:(NSString *)phoneNumber emailAddress:(NSString *)emailAddress
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPerson class]))) {
+        _emailAddress = [emailAddress copy];
+        _nameComponents = [nameComponents copy];
+        _phoneNumber = [phoneNumber copy];
+    }
+    return self;
 }
 
 + (BOOL)supportsSecureCoding
@@ -3229,14 +3247,67 @@
 
 @interface INRideDriver ()
 {
-    NSString * _phoneNumber;  // phoneNumber
-    NSString * _rating;  // rating
+    NSString *               _displayName;  // displayName
+    INImage *                _image;  // image
+    NSPersonNameComponents * _nameComponents;  // nameComponents
+    INPersonHandle *         _personHandle;  // personHandle
+    NSString *               _phoneNumber;  // phoneNumber
+    NSString *               _rating;  // rating
 }
 @end
 
 @implementation INRideDriver
     @synthesize phoneNumber = _phoneNumber;
     @synthesize rating = _rating;
+
+- (NSString * _Nonnull)displayName
+{
+    return _displayName;
+}
+
+- (INImage * _Nullable)image
+{
+    return _image;
+}
+
+- (NSPersonNameComponents * _Nullable)nameComponents
+{
+    return _nameComponents;
+}
+
+- (INPersonHandle * _Nullable)personHandle
+{
+    return _personHandle;
+}
+
+- (instancetype)initWithPhoneNumber:(NSString *)phoneNumber nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPerson class]))) {
+        _displayName = [displayName copy];
+        _image = [image copy];
+        _nameComponents = [nameComponents copy];
+        _phoneNumber = [phoneNumber copy];
+        _rating = [rating copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating phoneNumber:(NSString *)phoneNumber
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INPerson class]))) {
+        _displayName = [displayName copy];
+        _image = [image copy];
+        _nameComponents = [nameComponents copy];
+        _personHandle = [personHandle copy];
+        _phoneNumber = [phoneNumber copy];
+        _rating = [rating copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {

@@ -2919,6 +2919,26 @@
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INTransferMoneyIntentResponse, which the class's own generated implementation answers",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INIntentSetImageKeyPath",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "_INIntentSetImageKeyPath",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     }
   ]
 }

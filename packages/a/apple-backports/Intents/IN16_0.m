@@ -469,14 +469,74 @@
 
 @interface INBoatReservation ()
 {
-    INBoatTrip * _boatTrip;  // boatTrip
-    INSeat *     _reservedSeat;  // reservedSeat
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    INBoatTrip *                     _boatTrip;  // boatTrip
+    NSDate *                         _bookingTime;  // bookingTime
+    INSpeakableString *              _itemReference;  // itemReference
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    INSeat *                         _reservedSeat;  // reservedSeat
 }
 @end
 
 @implementation INBoatReservation
     @synthesize boatTrip = _boatTrip;
     @synthesize reservedSeat = _reservedSeat;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservedSeat:(INSeat *)reservedSeat boatTrip:(INBoatTrip *)boatTrip
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _boatTrip = [boatTrip copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -570,14 +630,74 @@
 
 @interface INBusReservation ()
 {
-    INBusTrip * _busTrip;  // busTrip
-    INSeat *    _reservedSeat;  // reservedSeat
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INBusTrip *                      _busTrip;  // busTrip
+    INSpeakableString *              _itemReference;  // itemReference
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    INSeat *                         _reservedSeat;  // reservedSeat
 }
 @end
 
 @implementation INBusReservation
     @synthesize busTrip = _busTrip;
     @synthesize reservedSeat = _reservedSeat;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservedSeat:(INSeat *)reservedSeat busTrip:(INBusTrip *)busTrip
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _busTrip = [busTrip copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1258,14 +1378,91 @@
 
 @interface INFlightReservation ()
 {
-    INFlight * _flight;  // flight
-    INSeat *   _reservedSeat;  // reservedSeat
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INFlight *                       _flight;  // flight
+    INSpeakableString *              _itemReference;  // itemReference
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    INSeat *                         _reservedSeat;  // reservedSeat
 }
 @end
 
 @implementation INFlightReservation
     @synthesize flight = _flight;
     @synthesize reservedSeat = _reservedSeat;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservedSeat:(INSeat *)reservedSeat flight:(INFlight *)flight
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _flight = [flight copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions reservedSeat:(INSeat *)reservedSeat flight:(INFlight *)flight
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _flight = [flight copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -1686,10 +1883,17 @@
 
 @interface INLodgingReservation ()
 {
-    CLPlacemark *           _lodgingBusinessLocation;  // lodgingBusinessLocation
-    NSNumber *              _numberOfAdults;  // numberOfAdults
-    NSNumber *              _numberOfChildren;  // numberOfChildren
-    INDateComponentsRange * _reservationDuration;  // reservationDuration
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INSpeakableString *              _itemReference;  // itemReference
+    CLPlacemark *                    _lodgingBusinessLocation;  // lodgingBusinessLocation
+    NSNumber *                       _numberOfAdults;  // numberOfAdults
+    NSNumber *                       _numberOfChildren;  // numberOfChildren
+    INDateComponentsRange *          _reservationDuration;  // reservationDuration
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
 }
 @end
 
@@ -1698,6 +1902,80 @@
     @synthesize numberOfAdults = _numberOfAdults;
     @synthesize numberOfChildren = _numberOfChildren;
     @synthesize reservationDuration = _reservationDuration;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL lodgingBusinessLocation:(CLPlacemark *)lodgingBusinessLocation reservationDuration:(INDateComponentsRange *)reservationDuration numberOfAdults:(NSNumber *)numberOfAdults numberOfChildren:(NSNumber *)numberOfChildren
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _lodgingBusinessLocation = [lodgingBusinessLocation copy];
+        _numberOfAdults = [numberOfAdults copy];
+        _numberOfChildren = [numberOfChildren copy];
+        _reservationDuration = [reservationDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions lodgingBusinessLocation:(CLPlacemark *)lodgingBusinessLocation reservationDuration:(INDateComponentsRange *)reservationDuration numberOfAdults:(NSNumber *)numberOfAdults numberOfChildren:(NSNumber *)numberOfChildren
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _lodgingBusinessLocation = [lodgingBusinessLocation copy];
+        _numberOfAdults = [numberOfAdults copy];
+        _numberOfChildren = [numberOfChildren copy];
+        _reservationDuration = [reservationDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -2309,10 +2587,17 @@
 
 @interface INRentalCarReservation ()
 {
-    CLPlacemark *           _dropOffLocation;  // dropOffLocation
-    CLPlacemark *           _pickupLocation;  // pickupLocation
-    INRentalCar *           _rentalCar;  // rentalCar
-    INDateComponentsRange * _rentalDuration;  // rentalDuration
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    CLPlacemark *                    _dropOffLocation;  // dropOffLocation
+    INSpeakableString *              _itemReference;  // itemReference
+    CLPlacemark *                    _pickupLocation;  // pickupLocation
+    INRentalCar *                    _rentalCar;  // rentalCar
+    INDateComponentsRange *          _rentalDuration;  // rentalDuration
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
 }
 @end
 
@@ -2321,6 +2606,80 @@
     @synthesize pickupLocation = _pickupLocation;
     @synthesize rentalCar = _rentalCar;
     @synthesize rentalDuration = _rentalDuration;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL rentalCar:(INRentalCar *)rentalCar rentalDuration:(INDateComponentsRange *)rentalDuration pickupLocation:(CLPlacemark *)pickupLocation dropOffLocation:(CLPlacemark *)dropOffLocation
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _dropOffLocation = [dropOffLocation copy];
+        _itemReference = [itemReference copy];
+        _pickupLocation = [pickupLocation copy];
+        _rentalCar = [rentalCar copy];
+        _rentalDuration = [rentalDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions rentalCar:(INRentalCar *)rentalCar rentalDuration:(INDateComponentsRange *)rentalDuration pickupLocation:(CLPlacemark *)pickupLocation dropOffLocation:(CLPlacemark *)dropOffLocation
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _dropOffLocation = [dropOffLocation copy];
+        _itemReference = [itemReference copy];
+        _pickupLocation = [pickupLocation copy];
+        _rentalCar = [rentalCar copy];
+        _rentalDuration = [rentalDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -2454,9 +2813,16 @@
 
 @interface INRestaurantReservation ()
 {
-    NSNumber *              _partySize;  // partySize
-    INDateComponentsRange * _reservationDuration;  // reservationDuration
-    CLPlacemark *           _restaurantLocation;  // restaurantLocation
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INSpeakableString *              _itemReference;  // itemReference
+    NSNumber *                       _partySize;  // partySize
+    INDateComponentsRange *          _reservationDuration;  // reservationDuration
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    CLPlacemark *                    _restaurantLocation;  // restaurantLocation
 }
 @end
 
@@ -2464,6 +2830,78 @@
     @synthesize partySize = _partySize;
     @synthesize reservationDuration = _reservationDuration;
     @synthesize restaurantLocation = _restaurantLocation;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservationDuration:(INDateComponentsRange *)reservationDuration partySize:(NSNumber *)partySize restaurantLocation:(CLPlacemark *)restaurantLocation
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _partySize = [partySize copy];
+        _reservationDuration = [reservationDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _restaurantLocation = [restaurantLocation copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions reservationDuration:(INDateComponentsRange *)reservationDuration partySize:(NSNumber *)partySize restaurantLocation:(CLPlacemark *)restaurantLocation
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _partySize = [partySize copy];
+        _reservationDuration = [reservationDuration copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _restaurantLocation = [restaurantLocation copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -3293,14 +3731,91 @@
 
 @interface INTicketedEventReservation ()
 {
-    INTicketedEvent * _event;  // event
-    INSeat *          _reservedSeat;  // reservedSeat
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INTicketedEvent *                _event;  // event
+    INSpeakableString *              _itemReference;  // itemReference
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    INSeat *                         _reservedSeat;  // reservedSeat
 }
 @end
 
 @implementation INTicketedEventReservation
     @synthesize event = _event;
     @synthesize reservedSeat = _reservedSeat;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservedSeat:(INSeat *)reservedSeat event:(INTicketedEvent *)event
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _event = [event copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions reservedSeat:(INSeat *)reservedSeat event:(INTicketedEvent *)event
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _event = [event copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {
@@ -3332,14 +3847,91 @@
 
 @interface INTrainReservation ()
 {
-    INSeat *      _reservedSeat;  // reservedSeat
-    INTrainTrip * _trainTrip;  // trainTrip
+    NSURL *                          _URL;  // URL
+    NSArray<INReservationAction *> * _actions;  // actions
+    NSDate *                         _bookingTime;  // bookingTime
+    INSpeakableString *              _itemReference;  // itemReference
+    NSString *                       _reservationHolderName;  // reservationHolderName
+    NSString *                       _reservationNumber;  // reservationNumber
+    INReservationStatus              _reservationStatus;  // reservationStatus
+    INSeat *                         _reservedSeat;  // reservedSeat
+    INTrainTrip *                    _trainTrip;  // trainTrip
 }
 @end
 
 @implementation INTrainReservation
     @synthesize reservedSeat = _reservedSeat;
     @synthesize trainTrip = _trainTrip;
+
+- (NSURL * _Nullable)URL
+{
+    return _URL;
+}
+
+- (NSArray<INReservationAction *> * _Nullable)actions
+{
+    return _actions;
+}
+
+- (NSDate * _Nullable)bookingTime
+{
+    return _bookingTime;
+}
+
+- (INSpeakableString * _Nonnull)itemReference
+{
+    return _itemReference;
+}
+
+- (NSString * _Nullable)reservationHolderName
+{
+    return _reservationHolderName;
+}
+
+- (NSString * _Nullable)reservationNumber
+{
+    return _reservationNumber;
+}
+
+- (INReservationStatus)reservationStatus
+{
+    return _reservationStatus;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions URL:(NSURL *)URL reservedSeat:(INSeat *)reservedSeat trainTrip:(INTrainTrip *)trainTrip
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _URL = [URL copy];
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+        _trainTrip = [trainTrip copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithItemReference:(INSpeakableString *)itemReference reservationNumber:(NSString *)reservationNumber bookingTime:(NSDate *)bookingTime reservationStatus:(INReservationStatus)reservationStatus reservationHolderName:(NSString *)reservationHolderName actions:(NSArray<INReservationAction *> *)actions reservedSeat:(INSeat *)reservedSeat trainTrip:(INTrainTrip *)trainTrip
+{
+    // The header marks this class's -init unavailable, so the superclass's own
+    // -init is called through CharonCoding.h's one definition of it.
+    if ((self = charon_intents_super_init(self, [INReservation class]))) {
+        _actions = [actions copy];
+        _bookingTime = [bookingTime copy];
+        _itemReference = [itemReference copy];
+        _reservationHolderName = [reservationHolderName copy];
+        _reservationNumber = [reservationNumber copy];
+        _reservationStatus = reservationStatus;
+        _reservedSeat = [reservedSeat copy];
+        _trainTrip = [trainTrip copy];
+    }
+    return self;
+}
 
 + (BOOL)supportsSecureCoding
 {

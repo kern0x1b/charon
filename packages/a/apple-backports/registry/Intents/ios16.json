@@ -1969,10 +1969,11 @@
       "api": "-[INBoatReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:boatTrip:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBoatReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBoatReservation init]",
@@ -2006,10 +2007,11 @@
       "api": "-[INBusReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:busTrip:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBusReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBusReservation init]",
@@ -2205,19 +2207,21 @@
       "api": "-[INFlightReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:flight:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INFlightReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INFlightReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:reservedSeat:flight:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INFlightReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INFocusStatus initWithIsFocused:]",
@@ -2346,19 +2350,21 @@
       "api": "-[INLodgingReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:lodgingBusinessLocation:reservationDuration:numberOfAdults:numberOfChildren:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INLodgingReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INLodgingReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:lodgingBusinessLocation:reservationDuration:numberOfAdults:numberOfChildren:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INLodgingReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMediaDestination init]",
@@ -2488,19 +2494,21 @@
       "api": "-[INRentalCarReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:rentalCar:rentalDuration:pickupLocation:dropOffLocation:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRentalCarReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRentalCarReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:rentalCar:rentalDuration:pickupLocation:dropOffLocation:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRentalCarReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INReservation init]",
@@ -2534,19 +2542,21 @@
       "api": "-[INRestaurantReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservationDuration:partySize:restaurantLocation:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRestaurantReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRestaurantReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:reservationDuration:partySize:restaurantLocation:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRestaurantReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchForMediaIntent initWithMediaItems:mediaSearch:]",
@@ -2785,37 +2795,41 @@
       "api": "-[INTicketedEventReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:event:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTicketedEventReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTicketedEventReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:reservedSeat:event:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTicketedEventReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTrainReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:trainTrip:]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTrainReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTrainReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:reservedSeat:trainTrip:]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTrainReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTrainTrip initWithProvider:trainName:trainNumber:tripDuration:departureStationLocation:departurePlatform:arrivalStationLocation:arrivalPlatform:]",
@@ -4679,6 +4693,26 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INUpdateMediaAffinityIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "INIntentSetImageKeyPath",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+    },
+    {
+      "api": "_INIntentSetImageKeyPath",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     }
   ]
