@@ -126,7 +126,6 @@ run_mutation() {
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
         MUTANT_SRC=""
-# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
 EXPECTED_UNNOTICED="identity"
@@ -152,7 +151,6 @@ EXPECTED_UNNOTICED="identity"
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
         MUTANT_SRC=""
-# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
 EXPECTED_UNNOTICED="identity"
@@ -167,7 +165,6 @@ EXPECTED_UNNOTICED="identity"
             failures=$((failures + 1))
         fi
         MUTANT_SRC=""
-# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
 EXPECTED_UNNOTICED="identity"
@@ -175,7 +172,6 @@ EXPECTED_UNNOTICED="identity"
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
         MUTANT_SRC=""
-# THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
 EXPECTED_UNNOTICED="identity"
@@ -353,6 +349,14 @@ must_not_compile() {
     # do. The increment belongs at the top, like the other two runners.
     mutants=$((mutants + 1))
     name=$1; sources=$2
+    # A MISSING MUTANT FILE IS NOT A BUILD FAILURE AND NOT A PASS. Without this, a file that is simply
+    # absent makes the compiler fail for the wrong reason, and "refused by the compiler" - which is what
+    # this expectation REQUIRES - cannot be told from a mutant that was never written.
+    if [ ! -f "$build/mutant-$name.m" ]; then
+        echo "RED    $name mutation MISSING - the file was not written, so nothing was proved"
+        failures=$((failures + 1))
+        return
+    fi
     if xcrun clang $common "$H/$3.m" "$build/mutant-$name.m" $sources \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mustfail-$name" > "$build/mustfail-$name.log" 2>&1; then

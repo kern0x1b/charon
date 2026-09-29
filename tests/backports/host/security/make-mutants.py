@@ -21,6 +21,14 @@ def wrote(name, text):
     open(os.path.join(build, name), "w").write(text)
     WRITTEN.append(os.path.join(build, name))
 
+def clear_stale():
+    """EVERY mutant-*.m IS REMOVED BEFORE ANY IS WRITTEN. Cleaning up only what THIS RUN wrote, on
+    failure, is not enough: a mutant left by an EARLIER generation keeps its name, the driver builds
+    whatever is on disk, and a run is green on evidence that no longer corresponds to the sources."""
+    for name in os.listdir(build):
+        if name.startswith("mutant-") and name.endswith(".m"):
+            os.remove(os.path.join(build, name))
+
 def fail(message):
     for path in WRITTEN:
         if os.path.exists(path):
