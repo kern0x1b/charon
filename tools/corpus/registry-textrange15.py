@@ -7,7 +7,7 @@
 # The effects are the rules facts/UIKit/NSTextRange15.md records, and they are the only thing in this file that
 # is not mechanical: a reader who wants to know why an entry says what it says is sent there. The rows, their
 # kinds, their releases and the shape of an entry all come from the corpus and from the registry's own README.
-import csv, json, os, re, sys
+import csv, glob, json, os, re, sys
 
 CORPUS = os.path.expanduser("~/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv")
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "packages", "a",
@@ -194,6 +194,28 @@ def entry_for(row):
                     facts=FACTS, effect=effect, source=SOURCE)
     raise SystemExit("unhandled kind " + kind + " for " + api + " - give it the effect it answers, above")
 
+def refuse_a_row_another_file_owns(entries):
+    """One row lives in one registry file, and this script writes one file. Reading the other files of the
+    framework and refusing to write a row already in one of them is what keeps a re-run from putting a name in
+    the tree twice: the same api answered two ways in two files, which is the disagreement a reader cannot
+    resolve. It failed on NSTextContentStorageUnsupportedAttributeAddedNotification, which this script wrote
+    here as absent while registry/UIKit/uikit-constants.json carries the same api as implemented."""
+    here = os.path.basename(OUT)
+    written = {(e["api"], e.get("kind", "")) for e in entries}
+    folder = os.path.dirname(OUT)
+    clashes = []
+    for path in sorted(glob.glob(os.path.join(folder, "*.json"))):
+        if os.path.basename(path) == here:
+            continue
+        held = json.load(open(path))
+        for entry in (held if isinstance(held, list) else held.get("entries") or []):
+            key = (entry["api"], entry.get("kind", ""))
+            if key in written:
+                clashes.append("%s %s is in %s" % (key[1], key[0], os.path.basename(path)))
+    if clashes:
+        raise SystemExit("a row of this file is already in another one:\n  " + "\n  ".join(clashes))
+
+
 def main():
     rows, values = load_rows()
     entries, missing = [], []
@@ -206,6 +228,7 @@ def main():
     if missing:
         raise SystemExit("no effect written for:\n  " + "\n  ".join(missing))
     entries.sort(key=lambda e: (e["kind"], e["api"]))
+    refuse_a_row_another_file_owns(entries)
     with open(OUT, "w") as handle:
         json.dump({"framework": "UIKit", "entries": entries}, handle, indent=2)
         handle.write("\n")

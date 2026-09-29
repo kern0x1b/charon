@@ -14,11 +14,7 @@
 # M-numbers in an effect are the measurements in that facts file: M1 the host's content storage cannot be made,
 # M2 a bare manager's defaults, M3 a synchronization inside a transaction, M4 the list element's two factories,
 # M5 -initWithAttributedString: on a list element, M6 the item marker.
-import csv
-import json
-import os
-import re
-import sys
+import csv, glob, json, os, re, sys
 
 CORPUS = os.path.expanduser("~/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -182,6 +178,28 @@ def entry_for(row):
                 facts=FACTS, effect=effect, source=SOURCE)
 
 
+def refuse_a_row_another_file_owns(entries):
+    """One row lives in one registry file, and this script writes one file. Reading the other files of the
+    framework and refusing to write a row already in one of them is what keeps a re-run from putting a name in
+    the tree twice: the same api answered two ways in two files, which is the disagreement a reader cannot
+    resolve. It failed on NSTextContentStorageUnsupportedAttributeAddedNotification, which this script wrote
+    here as absent while registry/UIKit/uikit-constants.json carries the same api as implemented."""
+    here = os.path.basename(OUT)
+    written = {(e["api"], e.get("kind", "")) for e in entries}
+    folder = os.path.dirname(OUT)
+    clashes = []
+    for path in sorted(glob.glob(os.path.join(folder, "*.json"))):
+        if os.path.basename(path) == here:
+            continue
+        held = json.load(open(path))
+        for entry in (held if isinstance(held, list) else held.get("entries") or []):
+            key = (entry["api"], entry.get("kind", ""))
+            if key in written:
+                clashes.append("%s %s is in %s" % (key[1], key[0], os.path.basename(path)))
+    if clashes:
+        raise SystemExit("a row of this file is already in another one:\n  " + "\n  ".join(clashes))
+
+
 def main():
     rows, values = load_rows()
     entries, missing = [], []
@@ -202,6 +220,7 @@ def main():
     # exports it. One row lives in one registry file, so the constant belongs there and this script says nothing
     # about it: emitting it here made the two files disagree and put the same api in the tree twice.
     entries.sort(key=lambda e: (e["kind"], e["api"]))
+    refuse_a_row_another_file_owns(entries)
     with open(OUT, "w") as handle:
         json.dump({"framework": "UIKit", "entries": entries}, handle, indent=2)
         handle.write("\n")
