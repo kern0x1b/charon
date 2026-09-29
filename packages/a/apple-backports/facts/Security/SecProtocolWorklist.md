@@ -81,7 +81,11 @@ makes the 48 legible. What each row is measured against is not restated here:
 | `sec_protocol_options_set_challenge_block` | Options | :748 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios13.json | **built** |
 | `sec_protocol_options_set_verify_block` | Options | :767 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios13.json | **built** |
 
-## Why each group is owed, and what the answer will be
+## Why each group is INERT, and what answers it
+
+The heading this replaces said "Why each group is owed", and it stopped being true the moment the last
+owed row landed: the list owes nothing now. The section is kept because it is what makes the 48
+legible - it says what shape each group has and why - and it is not about debt any more.
 
 ### `sec_protocol_options_*` - a settings holder
 
@@ -93,7 +97,10 @@ stated as *the handshake ignores it*.
 
 **The FOUR that are NOT this shape** are the `get_default_*_protocol_version` accessors, which take
 no options object and are pure: they answer a documented default and are `implemented` rather than
-`inert`, because the value they return is a fact rather than a setting nobody reads.
+`inert`, because the value they return is a fact rather than a setting nobody reads. Those four are
+measured now, on 6.1.3 and on 6.0 - see `facts/Security/SecProtocolDefaults.md` for the probe, the
+logs and the digests - and the mutation returns a value below the enum's floor so the difference names
+the boundary rather than a number.
 
 ### `sec_protocol_metadata_*` beyond the three done
 
