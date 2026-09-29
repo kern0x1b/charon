@@ -23,3 +23,5 @@ tests/backports/emulate/calls/xmake-addons.lock
 *.swiftdoc
 *.swiftsourceinfo
 *.abi.json
+tools/.media-player-include.m
+tools/.media-player-include.m.ast
