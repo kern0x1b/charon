@@ -117,7 +117,7 @@
       "minimum": "6.0",
       "status": "inert",
       "reason": "the port carries CharonMetalBuffer and CharonMetalTexture, but the class misses required members of MTLResource, declared forward at MTLBuffer.h:17, so the conformance is not callable and the row must not raise a band floor through backports.lua:664",
-      "effect": "the members the class does implement are callable; these are NOT, and are owed: isAliasable and makeAliasable, which the buffer and the texture each miss - and the debug markers MTLResource declares",
+      "effect": "the members the class does implement are callable; these are NOT, and are owed: isAliasable and makeAliasable, which the buffer and the texture each miss - and the debug markers MTLResource declares; isAliasable and makeAliasable are still owed on both the buffer and the texture",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -146,8 +146,8 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the port ships CharonMetalSampler, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's sampler, declared at CharonMetal.h:186 and carried as a state a render pass reads",
+      "reason": "the port carries CharonMetalSampler and the class is conformant: its stripped compile is clean of BOTH -Wprotocol and -Wobjc-protocol-property-synthesis",
+      "effect": "every required member is callable, with the state a render pass reads",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {
@@ -156,8 +156,8 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the port ships CharonMetalFunction, which conforms to this protocol; the earlier reason quoted CharonMetalProtocols.h:51:35, a build error about MTLAllocation that the header no longer produces and that line no longer contains - the header compiles with the library's own flags and does not name MTLAllocation at all",
-      "effect": "the port's function, which the compute encoder dispatches through the air2cpu translation",
+      "reason": "the port carries CharonMetalFunction, and the class now implements the protocol's required members with the header's own documented answers: the two argument encoders answer nil (an argument buffer is Metal 3 and this port dispatches a device pointer and the three thread identifiers), functionConstantsDictionary is empty because the plist carries no constants, options is MTLFunctionOptionNone, patchType is MTLPatchTypeNone and patchControlPointCount is -1, and the vertex and stage-input attributes are the kernel's own argument list from the plist",
+      "effect": "every required member is callable: a caller that probes gets a value rather than unrecognized-selector, and a caller that uses the argument buffers gets nil",
       "source": "SDK 16.4, Metal; the behaviour is the one its header documents, and was not read from a shared cache"
     },
     {

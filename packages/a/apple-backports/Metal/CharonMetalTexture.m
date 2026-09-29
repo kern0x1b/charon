@@ -681,3 +681,13 @@ static BOOL wrapFor(MTLSamplerAddressMode mode, GLint *out)
 }
 
 @end
+
+// MTLTexture's gpuResourceID, at MTLTexture.h:427, which is a "Handle of the GPU resource suitable for
+// storing in an Argument Buffer" (:424) and is an MTLResourceID this port has no value for: the
+// device here is the port's own over OpenGL ES 2.0, and there is no GPU resource handle to hand out.
+// The header types it MTLResourceID and the row names it, so the answer is a typed zero rather than
+// a missing method: a missing property here is a selector that RAISES when read.
+- (MTLResourceID)gpuResourceID
+{
+    return (MTLResourceID)0;
+}

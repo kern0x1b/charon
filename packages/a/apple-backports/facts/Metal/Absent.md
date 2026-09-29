@@ -190,3 +190,34 @@ twelve keep theirs — `CharonMetalBuffer`, `CharonMetalDevice`, `CharonMetalEnc
 `MTLSharedEvent12`. A reviewer's independent run measured the same twelve refusing with
 `-Wprotocol` naming a member in each, and the control — the same tree with the pragmas in place —
 compiles clean.
+
+### update 2026-09-29: r3 — the acceptance test is BOTH diagnostics, and two rows are now honest
+
+A review measured the stripped compile **with `-Wobjc-protocol-property-synthesis` as well as
+`-Wprotocol`** and found two rows I had left `implemented` that are not: a protocol property nobody
+implements is auto-synthesized to nothing and **raises unrecognized-selector when read**, so it is a
+callable gap exactly as a missing method is. My r1 run checked `-Wprotocol` only, and the claim that
+four rows were conformant was false for two of them.
+
+**The two are now honest, by implementing rather than by demoting:**
+
+- **`MTLFunction`** — the two argument encoders answer `nil`, because an argument encoder is a Metal 3
+  *argument buffer* and this port dispatches a device pointer plus the three thread identifiers;
+  `functionConstantsDictionary` is `@{}` because the plist carries no constants; `options` is
+  `MTLFunctionOptionNone`, the enumeration's own zero and "Default usage" per
+  `MTLFunctionDescriptor.h:17`; `patchType` is `MTLPatchTypeNone`, which `MTLLibrary.h:127` names for
+  "not a post tessellation function"; `patchControlPointCount` is `-1`, the header's own value for a
+  shader that specified none; and `vertexAttributes` and `stageInputAttributes` are the kernel's
+  **real** argument list from the plist, each attribute built by the reader's own `MTLVertexAttribute`
+  through one helper so the two cannot drift apart.
+- **`MTLSamplerState`** — `gpuResourceID` answers a typed zero, because it is a "Handle of the GPU
+  resource suitable for storing in an Argument Buffer" (`MTLTexture.h:424`) and this device is the
+  port's own over OpenGL ES 2.0 with no GPU resource handle to hand out.
+
+**The remaining six selectors on `MTLLibrary`** — `newFunctionWithDescriptor:error:`, its
+completion-handler form, and the two intersection-function pairs — are iOS 14.0 function-descriptor
+forms the port does not carry, and the `MTLLibrary` row stays `inert` naming them.
+
+**And the citation corrected once more:** `MTLTexture.h` does not declare `<MTLResource>` at all — it
+imports `MTLResource.h` at `MTLTexture.h:10` and `MTLTexture.h:32` reads `MTLTextureType3D = 7,`. The
+base declaration is `MTLResource` in **`MTLResource.h`**, reached from `MTLTexture.h:10`'s import.
