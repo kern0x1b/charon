@@ -80,13 +80,35 @@ public struct Column<Element>: ColumnProtocol {
     public var name: String
     /// The column's values, in the box every view of this column shares. `storage` is `internal` and
     /// the views are in this file, so nothing outside can reach past the value semantics.
-    internal let storage: ColumnStorage<Element>
+    ///
+    /// `var`, not `let`, because a **mutation** has to be able to replace the box when the box is not
+    /// this column's alone - that is the whole of copy-on-write, and without the check a struct over a
+    /// shared reference is not value semantics at all. Measured: with `let` and no check, a copy of a
+    /// column that was written to wrote *through* to the original.
+    internal var storage: ColumnStorage<Element>
+
+    /// Take a box of this column's own before writing to it, when the box is shared.
+    ///
+    /// `isKnownUniquelyReferenced` is the only question worth asking: a column and a slice over it are
+    /// both holders of the same box, and a write through either has to reach the cells every holder
+    /// sees. Copying first is what makes the two independent again, and it costs one array copy only on
+    /// the write that needed it.
+    private mutating func takeUniqueBox() {
+        if !isKnownUniquelyReferenced(&storage) {
+            storage = ColumnStorage<Element>(storage.values)
+        }
+    }
     /// The column's cells, each of which may be missing. `Element` is the *value* type, so a nil
     /// here is a cell with no value and a `.some(nil)` a value that is itself an optional - the
     /// distinction the SDK keeps and this column now keeps with it.
     public var values: [Element?] {
         get { storage.values }
-        set { storage.values = newValue }
+        set {
+            // Replacing every cell is a mutation of every cell, so the box has to be this column's own
+            // first - otherwise a second column over the same values would see the replacement.
+            takeUniqueBox()
+            storage.values = newValue
+        }
     }
 
     /// The cells that hold a value, with the missing ones dropped. What most callers of a column
@@ -165,7 +187,22 @@ public struct Column<Element>: ColumnProtocol {
     /// possible, and it is the SDK's own subscript type.
     public subscript(position: Int) -> Element? {
         get { values[position] }
-        set { values[position] = newValue }
+        set {
+            takeUniqueBox()
+            values[position] = newValue
+        }
+    }
+
+    /// Write one cell into the box **every holder shares**, without taking it first.
+    ///
+    /// This is the slice's setter and nothing else's. A `ColumnSlice` is a *view* of its base, and a
+    /// write through it is meant to reach the base: the slice and the column are two holders of one box
+    /// on purpose, and that is the whole of what makes a slice a view rather than a copy. A copy of a
+    /// column is the opposite case - it is a value, so `subscript(position:)` takes the box first and
+    /// the copy ends up independent. Both are right, and mixing them is what the read-only-slice
+    /// workaround got wrong in the first place.
+    internal mutating func setCellInSharedBox(_ position: Int, _ value: Element?) {
+        storage.values[position] = value
     }
 
     public subscript(bounds: Range<Int>) -> ColumnSlice<Element> {
@@ -291,7 +328,9 @@ public struct ColumnSlice<Element>: ColumnProtocol, BidirectionalCollection {
 
     public subscript(position: Int) -> Element? {
         get { base[range.lowerBound + position] }
-        set { base[range.lowerBound + position] = newValue }
+        // Through the shared box on purpose: this is a view of `base`, and a write here is a write to
+        // the column. A copy of a column takes its own box instead - see `setCellInSharedBox`.
+        set { base.setCellInSharedBox(range.lowerBound + position, newValue) }
     }
 
     public subscript(bounds: Range<Int>) -> ColumnSlice<Element> {

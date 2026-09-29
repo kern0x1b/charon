@@ -254,9 +254,22 @@ extension DataFrame {
             return AnyColumn(Column<Any>(name: base.columnNames.joined(separator: ", "), row))
         }
 
+        /// A cell of one column of this row, which may be missing.
+        ///
+        /// Read through the column's own subscript, which answers `Any?` and answers **`nil`** for a
+        /// cell that has no value. `erasedValues` cannot be used here: it is `[Any]`, so a missing cell
+        /// has to become a value, and the one it became was `Optional<Any>.none as Any` - which
+        /// *describes* as `nil` and is not `== nil`. Measured against Apple's own, over the ordinary
+        /// form of `[1, nil, 3]`:
+        ///
+        ///     String(describing: f1.rows[1]["a"])  ->  nil
+        ///     String(describing: f2.rows[1]["a"])  ->  Optional(nil)   (the optional form)
+        ///
+        /// so a missing cell and a cell whose value is nil are different answers, and a caller's `if
+        /// let` has to take a different branch for each.
         public subscript(columnName: String) -> Any? {
             guard let column = base[columnName], index < column.count else { return nil }
-            return column.erasedValues[index]
+            return column[index]
         }
 
         public subscript<T>(columnID: ColumnID<T>) -> T? {

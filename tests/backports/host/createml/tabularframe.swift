@@ -479,6 +479,55 @@ checkEqual("an erased column reports the type it was made with",
 let mixed = PortTabularData.Column<Any>(name: "m", [1, "two"]).eraseToAnyColumn()
 checkEqual("a column of mixed values reports the type it was made with, not the first kind it found",
            String(describing: mixed.wrappedElementType), "Any")
+// The two Row cases, read through a `Row` and not through a column, because that is the only place
+// where a missing cell and a value that is nil come apart. Apple's own, over two frames of the same
+// data in the two forms:
+//
+//     var f1 = DataFrame(); f1.append(column: Column<Int>(name: "a", contents: [1, nil, 3]))
+//     var f2 = DataFrame(); f2.append(column: Column<Int?>(name: "a", contents: [1, nil, 3]))
+//     String(describing: f1.rows[1]["a"])   ->  nil
+//     String(describing: f2.rows[1]["a"])   ->  Optional(nil)
+//
+// The port, same two frames, same reads. The ordinary form's `nil` is a cell with no value; the
+// optional form's `Optional(nil)` is a cell whose value is nil, and a check that reads a column cannot
+// see the difference because a column answers `missingCount` and `wrappedElementType` and both forms are
+// answerable there.
+var rowOrdinary = PortTabularData.DataFrame()
+rowOrdinary.append(column: PortTabularData.Column<Int>(name: "a", contents: [1, nil, 3]))
+var rowOptional = PortTabularData.DataFrame()
+rowOptional.append(column: PortTabularData.Column<Int?>(name: "a", contents: [1, nil, 3]))
+let rowOrd1 = rowOrdinary.rowSequence[1]["a"]
+let rowOpt1 = rowOptional.rowSequence[1]["a"]
+check("a row cell that is missing is nil in the ordinary form, as Apple answers",
+      rowOrd1 == nil, "the port answers \(String(describing: rowOrd1))")
+// Copy-on-write across two columns built from equal values, which is the property the storage change to
+// `[Element?]` could have broken and which nothing else in the suite covers: a mutation of one must not
+// reach the other, and a mutation through a *slice* of one must not either.
+var cowA = PortTabularData.Column<Int>(name: "c", [1, 2, 3])
+var cowB = PortTabularData.Column<Int>(name: "c", [1, 2, 3])
+checkEqual("two columns built from equal values start equal", cowA.values, cowB.values)
+var cowCopy = cowA                                   // a struct, so this is a second value over the same box
+cowCopy[0] = 99
+checkEqual("a mutation of a copy does not reach the original", cowA[0], 1)
+checkEqual("and the mutation reached the copy", cowCopy[0], 99)
+cowA[1] = 77
+checkEqual("mutating the original afterwards does not reach the copy", cowCopy[1], 2)
+
+// And the missing-cell case, because a column that can hold a nil is a different sharing question: two
+// columns whose cells are equal *as optionals* share, and one whose gap is in a different place does not.
+var cowGap1 = PortTabularData.Column<Int>(name: "g", contents: [1, nil, 3])
+var cowGap2 = PortTabularData.Column<Int>(name: "g", contents: [1, nil, 3])
+checkEqual("two columns with the same gap report the same missing count",
+           cowGap1.eraseToAnyColumn().missingCount, cowGap2.eraseToAnyColumn().missingCount)
+var cowGapCopy = cowGap1
+cowGapCopy[0] = 42
+checkEqual("a mutation through a copy of a column with a gap does not reach the original",
+           cowGap1[0], 1)
+
+check("a row cell that is a nil value is Optional(nil) in the optional form, as Apple answers",
+      String(describing: rowOpt1) == "Optional(nil)",
+      "the port answers \(String(describing: rowOpt1))")
+
 check("eraseToAnyColumn is the public door, and it is Apple's name and result type",
       String(describing: PortTabularData.Column<Int>(name: "d", [1]).eraseToAnyColumn().count) == "1")
 
@@ -497,26 +546,40 @@ do {
     checkEqual("a slice of a slice", Array(column[1..<4][0..<2]), [1, 4])
     checkEqual("a column's enumerated pairs", column.presentValues.enumerated().map { "\($0.0):\($0.1)" },
                ["0:5", "1:1", "2:4", "3:2", "4:3"])
-    // `Column(_:)` is a **view**: the two share one box, so a write through either is a write through
-    // both. That is what makes a slice a view, and it is the aliasing a caller has to be told about.
+    // A **struct copy of a column is a value**, not a view. Measured on Apple's own, over
+    // `Column<Int>(name: "c", contents: [1, 2, 3])`:
+    //
+    //     var written = c; written[0] = 50
+    //     c[0..2]  ->  [Optional(1), Optional(2), Optional(3)]      unchanged
+    //
+    // These two checks used to assert the opposite - that the original *sees* the write through the
+    // copy - and they were asserting a divergence: `Column` is a struct over a shared box, and a struct
+    // without a uniqueness check is not a value. The check is `isKnownUniquelyReferenced`, and the box
+    // is replaced on the write that needed it.
     var written = column
     written[0] = 50
-    checkEqual("a write through a view of a column reaches the column", written.values,
+    checkEqual("a write through a copy of a column reaches the copy", written.values,
                [50, 1, 4, 2, 3])
-    checkEqual("and the original sees it, because they are one column", column.values,
-               [50, 1, 4, 2, 3])
+    checkEqual("and the original does not see it, because a struct copy is a value", column.values,
+               [5, 1, 4, 2, 3])
     var copied = Column<Int>(copying: column)
     copied[0] = 5
     checkEqual("a column built with init(copying:) is a copy of its own", column.values,
-               [50, 1, 4, 2, 3])
-    // A write through a *slice* reaches the column too, because the slice holds it by `var` and its
-    // subscript writes through — the repair for the bug that was originally worked around by making
-    // the slice read-only.
+               [5, 1, 4, 2, 3])
+    // A write through a *slice* reaches the column, because a slice is a **view** of its base and the
+    // two are one box on purpose. That is the other half of the story from the struct copy above, and it
+    // is why there are two writers: `Column.subscript` takes the box, `ColumnSlice.subscript` writes the
+    // one every holder shares.
+    //
+    // **The host's answer for this is not established.** The control that measured the struct copy ended
+    // the process - exit 133 - on the slice read, so the host's behaviour here is unmeasured. This
+    // check keeps the port's deliberate design (a slice is a view) and is *not* evidence about the
+    // host; the second host control is the thing to run before this is claimed to agree.
     var throughSlice = Column<Int>(copying: column)
     var slice = throughSlice[1..<3]
     slice[0] = 10
     checkEqual("a write through a slice reaches the column it is a view of", throughSlice.values,
-               [50, 10, 4, 2, 3])
+               [5, 10, 4, 2, 3])
 
     var frame = PortTabularData.DataFrame()
     frame.append(column: PortTabularData.Column<Int>(name: "id", [1, 2, 3]))
