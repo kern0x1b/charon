@@ -83,6 +83,21 @@ static void pullResults(void)
 
 // Flushed after every case: the oracle's own teardown crashes, and an unflushed stream loses every
 // answer printed since the last flush.
+// The name of the case about to run, written unbuffered and on its own, so that a process which dies
+// mid-case still leaves behind the name of the case that killed it. The differential's own message
+// used the last line the oracle PRINTED, which is the last case in the file and not the one that
+// died: the release's own kernel crashes at the eleventh neuron type and the message named a philox
+// case, which sent the reading of it entirely wrong for several turns.
+static void mark(const char *name)
+{
+    const char *path = getenv("CHARON_CASE_MARKER");
+    if (!path) return;
+    FILE *f = fopen(path, "w");
+    if (!f) return;
+    fprintf(f, "%s\n", name);
+    fclose(f);
+}
+
 static void put(const char *name, const void *bytes, size_t length)
 {
     if (strcmp(name, "gradient-reference-beta") == 0) {
@@ -172,36 +187,15 @@ static id<MTLCommandBuffer> freshCommandBuffer(void)
     return [queue commandBufferWithUnretainedReferences];
 }
 
-// The name of the case about to run, written unbuffered and on its own, so that a process which dies
-// mid-case still leaves behind the name of the case that killed it. The differential's own message
-// used the last line the oracle PRINTED, which is the last case in the file and not the one that
-// died: the release's own kernel crashes at the eleventh neuron type and the message named a philox
-// case, which sent the reading of it entirely wrong for several turns.
-static void mark(const char *name)
+static void run(const char *name, void (^encode)(id<MTLCommandBuffer>))
 {
-    const char *path = getenv("CHARON_CASE_MARKER");
-    if (!path) return;
-    FILE *f = fopen(path, "w");
-    if (!f) return;
-    fprintf(f, "%s\n", name);
-    fclose(f);
-}
-
-static void run(void (^encode)(id<MTLCommandBuffer>))
-{
+    mark(name);
     id<MTLCommandBuffer> buffer = freshCommandBuffer();
     encode(buffer);
     [buffer commit];
     [buffer waitUntilCompleted];
 }
 
-static void runMarked(const char *name, void (^encode)(id<MTLCommandBuffer>))
-{
-    mark(name);
-    run(encode);
-}
-
-#define runMarkedFor(name, ...) runMarked(name, ^(id<MTLCommandBuffer> commandBuffer) __VA_ARGS__)
 
 #pragma mark - the device questions
 
