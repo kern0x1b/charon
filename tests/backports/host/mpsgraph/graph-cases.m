@@ -5,6 +5,26 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShadersGraph/MetalPerformanceShadersGraph.h>
 
+
+// A case has to compile against both sides, and the SDK the port builds against - the iPhoneOS 16.4 one -
+// predates some of the methods the framework on this host has. They are declared here so the same call
+// is on both sides of the comparison; the spellings are the 26.2 headers', and the host's own framework
+// answers them.
+@interface MPSGraph (MPSGraph26)
+- (MPSGraphTensor *)squareWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)reciprocalWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)squareRootWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)reverseSquareRootWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)logarithmWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)absoluteWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)signWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)identityWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+- (MPSGraphTensor *)constantWithShape:(MPSShape *)shape
+                            dataType:(MPSDataType)dataType
+                              values:(NSData *)values
+                                name:(NSString *)name;
+@end
+
 static id<MTLDevice> gDevice;
 static MPSGraphDevice *gGraphDevice;
 
@@ -36,9 +56,11 @@ static MPSGraphTensorData *feed(const void *values, NSArray<NSNumber *> *shape, 
     for (NSNumber *dimension in shape) count *= (NSUInteger)dimension.integerValue;
     size_t bytes = count * MPSSizeofMPSDataType(type);
     id<MTLBuffer> buffer = [gDevice newBufferWithBytes:values length:bytes options:MTLResourceStorageModeShared];
-    MPSGraphTensorData *data = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape dataType:type];
-    remember(buffer, (void *)values, bytes);
-    return data;
+    // The feed is not remembered: a case's input array stays what the case put in it, and only the
+    // result buffer is read back. Remembering the feed as well meant the first put() overwrote every
+    // input array with what the run had left in that buffer, and both sides then agreed on the wrong
+    // numbers.
+    return [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape dataType:type];
 }
 
 static float leftValues[8] = {1, 2, 3, 4, -1, -2, -3, -4};
@@ -46,20 +68,22 @@ static float rightValues[8] = {10, 20, 30, 40, 0.5f, 2, -1, 4};
 static float resultValues[8];
 static float constantValues[4] = {0.25f, -0.25f, 0.5f, 2};
 static int32_t integerValues[4] = {7, -3, 11, 0};
+static int32_t integerDivisors[4] = {2, 2, 4, -4};
 static int32_t integerResult[4];
 
-static void run(MPSGraph *graph, NSArray<MPSGraphTensor *> *feeds, MPSGraphTensor *target, void *out, size_t bytes, MPSDataType type)
+static void run(MPSGraph *graph, NSArray<MPSGraphTensor *> *feeds, NSArray<MPSGraphTensorData *> *values, MPSGraphTensor *target, void *out, size_t bytes, MPSDataType type)
 {
     NSUInteger count = (NSUInteger)(bytes / MPSSizeofMPSDataType(type));
     id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
     MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:target.shape dataType:type];
+    remember(buffer, out, bytes);
     MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:target.shape dataType:type];
     NSMutableDictionary *shapedFeeds = [NSMutableDictionary dictionary];
     for (MPSGraphTensor *tensor in feeds) shapedFeeds[tensor] = shaped;
     MPSGraphExecutable *executable = [graph compileWithDevice:gGraphDevice feeds:shapedFeeds
                                                  targetTensors:@[target] targetOperations:@[] compilationDescriptor:nil];
     [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
-                          inputsArray:feeds resultsArray:@[destination] executionDescriptor:nil];
+                          inputsArray:values resultsArray:@[destination] executionDescriptor:nil];
     memcpy(out, [buffer contents], bytes);
 }
 
@@ -68,7 +92,7 @@ int main(void)
     @autoreleasepool {
         gDevice = MTLCreateSystemDefaultDevice();
         gGraphDevice = [MPSGraphDevice deviceWithMTLDevice:gDevice];
-        printf("device %d graph-device %d\n", MPSSupportsMTLDevice(gDevice), (int)gGraphDevice.type);
+        printf("graph-device %d\n", (int)gGraphDevice.type);
 
         // The builder side, as far as the release answers it on this host. Reading a shaped type's
         // equality and a placeholder's data type both make the framework call a selector its own
@@ -77,6 +101,48 @@ int main(void)
         // the rest of the builder side is checked in a program of its own.
         MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@2, @4] dataType:MPSDataTypeFloat32];
         printf("shaped dataType %d\n", (int)shaped.dataType);
+
+        // The unary family, over values that include a zero and negatives, which is what pins the
+        // release's square root: it answers the magnitude where the arithmetic itself is undefined.
+        struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } unary[] = {
+            {"square", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg squareWithTensor:a name:@"sq"]; }},
+            {"reciprocal", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg reciprocalWithTensor:a name:@"rec"]; }},
+            {"sqrt", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg squareRootWithTensor:a name:@"sqrt"]; }},
+            {"rsqrt", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg reverseSquareRootWithTensor:a name:@"rsqrt"]; }},
+            {"log", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg logarithmWithTensor:a name:@"log"]; }},
+            {"abs", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg absoluteWithTensor:a name:@"abs"]; }},
+            {"sign", ^MPSGraphTensor *(MPSGraph *gg, MPSGraphTensor *a) { return [gg signWithTensor:a name:@"sign"]; }},
+        };
+        for (unsigned i = 0; i < sizeof(unary) / sizeof(unary[0]); i++) {
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *t = unary[i].build(one, a);
+            memset(resultValues, 0, sizeof(resultValues));
+            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            put(unary[i].name, &resultValues[0], sizeof(resultValues));
+        }
+        // A constant added to a placeholder, and a chain, so a graph is read through more than one
+        // operation and through a value that was not fed.
+        {
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *c = [one constantWithShape:@[@2, @4] dataType:MPSDataTypeFloat32
+                                             values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
+            MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
+            memset(resultValues, 0, sizeof(resultValues));
+            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            put("constant", &resultValues[0], sizeof(resultValues));
+        }
+        {
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
+            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"b"];
+            MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
+            memset(integerResult, 0, sizeof(integerResult));
+            run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
+                                feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32);
+            put("integer-divide", &integerResult[0], sizeof(integerResult));
+        }
 
         // The arithmetic family, element by element.
         struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *, MPSGraphTensor *); } cases[] = {
@@ -91,19 +157,8 @@ int main(void)
             MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"b"];
             MPSGraphTensor *t = cases[i].build(one, a, b);
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a, b], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put(cases[i].name, &resultValues[0], sizeof(resultValues));
-        }
-        // The unary ones.
-        struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } unary[] = {
-        };
-        for (unsigned i = 0; i < 0; i++) {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *t = unary[i].build(one, a);
-            memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
-            put(unary[i].name, &resultValues[0], sizeof(resultValues));
         }
         // A chain, so the walk over the operations in order is checked too.
         {
@@ -114,7 +169,7 @@ int main(void)
             MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
             MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
             memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a, b], root, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@2, @4], MPSDataTypeFloat32)], root, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put("chain", &resultValues[0], sizeof(resultValues));
         }
 

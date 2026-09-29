@@ -4,6 +4,7 @@
 
 #import "CharonMPSGraph.h"
 
+#include <stdio.h>
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
@@ -25,6 +26,7 @@
               targetOperations:(NSArray<MPSGraphOperation *> *)targetOperations
            executableDescriptor:(MPSGraphExecutableExecutionDescriptor *)executableDescriptor
 {
+    fprintf(stderr, "  executable init graph %p feeds %p targets %lu\n", graph, feeds, (unsigned long)targetTensors.count);
     if ((self = [super init])) {
         _graph = graph;
         _device = device;
@@ -81,10 +83,22 @@
     // The feeds are the graph's own, overlaid with the inputs given here, which is how a caller replaces
     // one placeholder's value between two runs of the same executable. The results are written into the
     // tensor data the caller allocated, so the answer is in a buffer the caller owns.
+    fprintf(stderr, "  run feeds %p keys %lu inputs %lu results %lu\n", _feeds, (unsigned long)_feeds.allKeys.count, (unsigned long)inputsArray.count, (unsigned long)resultsArray.count);
     NSMutableDictionary *feeds = [_feeds mutableCopy];
-    NSArray<MPSGraphTensor *> *feedTensors = _feeds.allKeys;
+    // The inputs pair with the feed tensors in the order the placeholders were added to the graph, which
+    // is the order the caller passed the inputs in. A dictionary's own key order is arbitrary, and
+    // pairing by it gave the second operand to the first tensor, which every non-commutative
+    // operation then read backwards.
+    NSMutableArray<MPSGraphTensor *> *feedTensors = [NSMutableArray array];
+    for (MPSGraphTensor *placeholder in _graph.placeholderTensors)
+        if (_feeds[placeholder])
+            [feedTensors addObject:placeholder];
+    for (MPSGraphTensor *tensor in _feeds.allKeys)
+        if (![feedTensors containsObject:tensor])
+            [feedTensors addObject:tensor];
     for (NSUInteger i = 0; i < inputsArray.count && i < feedTensors.count; i++)
         feeds[feedTensors[i]] = inputsArray[i];
+    fprintf(stderr, "  merged feeds %lu\n", (unsigned long)feeds.count);
     NSDictionary *results = [_graph runWithFeeds:feeds
                                     targetTensors:_targetTensors
                                  targetOperations:_targetOperations];
@@ -93,8 +107,13 @@
         MPSGraphTensorData *computed = results[_targetTensors[i]];
         MPSGraphTensorData *destination = i < resultsArray.count ? resultsArray[i] : computed;
         if (computed && destination && computed != destination) {
-            memcpy([destination charon_mps_bytes], [computed charon_mps_bytes],
-                   [computed charon_mps_elementCount] * MPSSizeofMPSDataType(computed.dataType));
+            void *to = [destination charon_mps_bytes];
+            void *from = [computed charon_mps_bytes];
+            size_t n = [computed charon_mps_elementCount] * MPSSizeofMPSDataType(computed.dataType);
+            if (to && from)
+                memcpy(to, from, n);
+            else
+                CharonMPSGraphRefuse(@"MPSGraph: a result could not be copied into the destination, so the destination is left as it was");
         }
         if (destination)
             [returned addObject:destination];

@@ -65,10 +65,31 @@ selectors prefixed — and compares the bytes of a buffer the case owns.
   case can read: `MPSGraphTensorData` has no accessor for its bytes in either the 16.4 or the 26.2 SDK.
 * `-[MPSGraph runWithFeeds:targetTensors:targetOperations:]` answers too, and is one call.
 
-**What is not yet measured:** the differential agrees on the cases that do not execute and then both
-sides die at the first executed operation — the system inside its own kernel, this port inside its own.
-That is this harness's state and it is the next thing to fix; see the handoff in
-`.agent-work/plan-and-analysis/mps-solve/status.md`.
+**What the differential found, in order.** All of these were bugs, and the first two were mine in the
+harness rather than in the library:
+
+* **A `memmove` on a null destination.** The interpreter made a result's storage from an empty `NSData`,
+  which is a zero-length buffer whose `contents` is null. A result now takes a buffer of the shape's
+  own size, made and zeroed when the tensor data is made.
+* **The inputs paired with the feed tensors in the wrong order.** `-[MPSGraphExecutable
+  runWithMTLCommandQueue:...]` took the feed tensors from the dictionary's key order, which is
+  arbitrary, so the second operand reached the first tensor and every non-commutative operation read
+  its arguments backwards: subtraction answered `9, 18, 27…` where the release answers `-9, -18,
+  -27…`. The pairings are now in the graph's placeholder order, which is the order the caller passed
+  the inputs in.
+* **The harness overwrote its own inputs.** It remembered each *feed's* buffer as well as the result's,
+  and read every remembered buffer back into the array it came from, so after the first case each input
+  array held the previous case's output and both sides agreed on the wrong numbers. Only the result
+  buffer is read back now.
+* **A square root of a negative, twice.** I read the chain case — where the product is positive even
+  where the sum is not, so no negative ever reaches the root — as the release's root answering a
+  magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
+  release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, and it is one again.
+
+**Where it stands: the binary family, the unary family, a chain, a constant and an integer division all
+agree with the release case for case and bit for bit.** The release's own framework still stops part
+way: `-[MPSGraph signWithTensor:name:]` exists in its headers but not in the binary on this host, so
+the sign case is where the comparison ends, and the port carries on past it.
 
 One thing the harness did teach, and which is written into the case file: **reading a shaped type's
 equality, or a placeholder's `dataType`, takes the release down** — it calls

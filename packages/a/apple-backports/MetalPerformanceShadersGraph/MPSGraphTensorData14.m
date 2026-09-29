@@ -30,6 +30,24 @@
     return self;
 }
 
+- (instancetype)initWithDevice:(MPSGraphDevice *)device
+                   elementCount:(NSUInteger)elementCount
+                          shape:(NSArray<NSNumber *> *)shape
+                       dataType:(MPSDataType)dataType
+{
+    // Storage of its own, made and zeroed here: a result is written to rather than read from, and a
+    // tensor data with a buffer of the right size is the one shape both the interpreter and a caller
+    // holding a result can rely on.
+    if ((self = [super init])) {
+        _shape = [shape copy];
+        _dataType = dataType;
+        _device = device;
+        NSUInteger bytes = elementCount * MPSSizeofMPSDataType(dataType);
+        _buffer = [device.metalDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+    }
+    return self;
+}
+
 - (instancetype)initWithMTLBuffer:(id<MTLBuffer>)buffer
                             shape:(NSArray<NSNumber *> *)shape
                          dataType:(MPSDataType)dataType
@@ -81,12 +99,16 @@
         return [_buffer contents];
     // Data given as bytes is copied into a buffer of its own when the tensor is first read, so that
     // every tensor in a run is reached the same way whatever it was made from.
-    if (!_buffer && _owned) {
-        _buffer = [_device.metalDevice newBufferWithBytes:_owned.bytes
-                                                   length:_owned.length
-                                                  options:MTLResourceStorageModeShared];
+    if (!_buffer && _owned.length) {
+        id<MTLDevice> metal = _device.metalDevice;
+        if (!metal) {
+            CharonMPSGraphRefuse(@"MPSGraphTensorData: %lu bytes of data have nowhere to go: the tensor data has no device, so nothing was read",
+                                 (unsigned long)_owned.length);
+            return NULL;
+        }
+        _buffer = [metal newBufferWithBytes:_owned.bytes length:_owned.length options:MTLResourceStorageModeShared];
     }
-    return [_buffer contents];
+    return _buffer ? [_buffer contents] : NULL;
 }
 
 - (NSUInteger)charon_mps_elementCount

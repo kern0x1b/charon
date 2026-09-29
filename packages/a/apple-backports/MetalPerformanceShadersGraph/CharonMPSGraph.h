@@ -25,6 +25,11 @@
 // and written, so including it here means one definition rather than two.
 #import "../MetalPerformanceShaders/CharonMPS.h"
 
+// A graph that cannot run says so once, in the log, naming what it could not do, and writes nothing:
+// an operation the release would have faulted on leaves its output alone here rather than filling it
+// with something of another kind's meaning.
+#define CharonMPSGraphRefuse(...) NSLog(__VA_ARGS__)
+
 // The number of elements a tensor of a shape holds. A dimension below one is taken as one, which is
 // what a scalar's empty shape and a degenerate extent both come to.
 static inline NSUInteger CharonMPSGraphElementCount(NSArray<NSNumber *> *shape)
@@ -115,6 +120,10 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 @end
 
 @interface MPSGraphTensorData (CharonMPSGraph)
+- (instancetype)initWithDevice:(MPSGraphDevice *)device
+                   elementCount:(NSUInteger)elementCount
+                          shape:(NSArray<NSNumber *> *)shape
+                       dataType:(MPSDataType)dataType;
 - (id<MTLBuffer>)charon_mps_buffer;
 - (void *)charon_mps_bytes;
 - (NSUInteger)charon_mps_elementCount;

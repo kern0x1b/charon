@@ -9,6 +9,7 @@
 
 #import "CharonMPSGraph.h"
 
+#include <stdio.h>
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
@@ -238,8 +239,11 @@ static void CharonMPSGraphSetElement(MPSGraphTensorData *data, NSUInteger index,
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
     for (MPSGraphTensor *tensor in feeds)
         values[tensor] = feeds[tensor];
-    for (MPSGraphOperation *operation in _operations)
+    fprintf(stderr, "  graph: %lu operations, %lu values\n", (unsigned long)_operations.count, (unsigned long)values.count);
+    for (MPSGraphOperation *operation in _operations) {
+        fprintf(stderr, "    op %s kind %ld inputs %lu\n", [operation name].UTF8String, (long)[operation charon_mps_kind], (unsigned long)operation.inputTensors.count);
         [self charon_mps_runOperation:operation values:values];
+    }
     (void)targetOperations;
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
     for (MPSGraphTensor *tensor in targetTensors) {

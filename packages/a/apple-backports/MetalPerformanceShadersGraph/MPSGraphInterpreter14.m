@@ -29,9 +29,13 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     case CharonMPSGraphOperationKindReciprocal:
         return a == 0.0 ? INFINITY : 1.0 / a;
     case CharonMPSGraphOperationKindRsqrt:
-        return a <= 0.0 ? (a == 0.0 ? INFINITY : NAN) : 1.0 / sqrt(a);
+        return a < 0.0 ? NAN : 1.0 / sqrt(a);
     case CharonMPSGraphOperationKindSqrt:
-        return a <= 0.0 ? NAN : sqrt(a);
+        // A negative value has no real square root and the release answers a NaN for it, measured
+        // over a feed of (1, 2, 3, 4, -1, -2, -3, -4): the first four are 1, 1.41421, 1.73205, 2 and
+        // the last four are NaN. Zero's root is zero, and a zero's reverse root is a NaN with the
+        // divisor, which is what the table's own reciprocal gives.
+        return a < 0.0 ? NAN : sqrt(a);
     case CharonMPSGraphOperationKindExp:
         return exp(a);
     case CharonMPSGraphOperationKindLog:
@@ -63,26 +67,38 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     NSArray<MPSGraphTensor *> *inputs = operation.inputTensors;
     NSUInteger count = [output charon_mps_elementCount];
     MPSDataType dataType = output.dataType;
-    id<MTLDevice> device = ((MPSGraphTensorData *)values[inputs.firstObject]).device.metalDevice;
+    MPSGraphTensorData *first = values[inputs.firstObject];
+    id<MTLDevice> device = [first isKindOfClass:[MPSGraphTensorData class]] ? first.device.metalDevice
+                                                                        : self.charon_mps_device.metalDevice;
 
     if (kind == CharonMPSGraphOperationKindConstant) {
         NSData *values_ = [operation charon_mps_parameters][@"values"];
         if (!values_)
             return;
         MPSGraphTensorData *data = [[MPSGraphTensorData alloc] initWithDevice:[MPSGraphDevice deviceWithMTLDevice:device]
-                                                                          data:values_
+                                                                  elementCount:count
                                                                          shape:output.shape
                                                                       dataType:dataType];
+        memcpy([data charon_mps_bytes], values_.bytes, MIN(values_.length, count * MPSSizeofMPSDataType(dataType)));
         values[output] = data;
         return;
     }
 
+    // A value is tensor data, or the operation has nothing to read and is skipped rather than run on
+    // something else: the two are different classes and a message to the wrong one is a crash, not an
+    // answer. A caller whose feeds and inputs do not line up is told so here.
     MPSGraphTensorData *left = values[inputs.firstObject];
     MPSGraphTensorData *right = inputs.count > 1 ? values[inputs[1]] : nil;
-    if (!left)
+    if (left && ![left isKindOfClass:[MPSGraphTensorData class]])
+        left = nil;
+    if (right && ![right isKindOfClass:[MPSGraphTensorData class]])
+        right = nil;
+    if (!left) {
+        CharonMPSGraphRefuse(@"MPSGraph: an operation named %@ has no value for its first input, so nothing was written to its output", [operation name]);
         return;
+    }
     MPSGraphTensorData *result = [[MPSGraphTensorData alloc] initWithDevice:left.device
-                                                                     data:[NSData data]
+                                                             elementCount:count
                                                                     shape:output.shape
                                                                  dataType:dataType];
     // A tensor's storage is a buffer of its own, made when the tensor is first read, so that a run
