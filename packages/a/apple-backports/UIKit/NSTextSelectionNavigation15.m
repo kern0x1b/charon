@@ -230,9 +230,9 @@
         return [textSelection.textRanges copy];
     // A cursor has no contents, so a delete removes what a move over the same destination would have selected.
     // With no data source a move produces nothing, so what a delete removes is nothing and the range that comes
-    // back is the cursor's own 0-length range - which is what the header asks for after a deletion ("a 0-length
-    // range starting at the location of the first range returned"), and what the host answers in the same
-    // state (M10). allowsDecomposition only applies to a backward move over one character, and a decomposed
+    // back is the cursor's own empty range at its own location - which is what the header asks the selection
+    // left after a deletion to be, an empty range where the first range that was going to be removed began,
+    // and what the host answers in the same state (M10). allowsDecomposition only applies to a backward move over one character, and a decomposed
     // grapheme cluster is not a different destination, so the destination asked for is the one the header names.
     if (!_textSelectionDataSource)
         return [textSelection.textRanges copy];
