@@ -2662,16 +2662,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMediaCharacteristicIsOriginalContent",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayer.preventsDisplaySleepDuringVideoPlayback",
       "kind": "property",
       "introduced": "12.0",
@@ -2779,16 +2769,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVAsset a property like it: it arrived in iOS 13",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetDownloadTaskMediaSelectionPrefersMultichannelKey",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3102,26 +3082,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVFragmentedMovieContainsMovieFragmentsDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVFragmentedMovieDurationDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVFragmentedMovieMinder",
       "kind": "class",
       "introduced": "13.0",
@@ -3142,46 +3102,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVFragmentedMovieTrackSegmentsDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVFragmentedMovieTrackTimeRangeDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVFragmentedMovieWasDefragmentedNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMediaCharacteristicContainsAlphaChannel",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVMediaDataStorage",
       "kind": "class",
       "introduced": "13.0",
@@ -3199,26 +3119,6 @@
       "status": "absent",
       "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMovieReferenceRestrictionsKey",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVMovieShouldSupportAliasDataReferencesKey",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3322,26 +3222,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerItemMediaSelectionDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerItemRecommendedTimeOffsetFromLiveDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVSampleBufferDisplayLayer.preventsCapture",
       "kind": "property",
       "introduced": "13.0",
@@ -3393,26 +3273,6 @@
     },
     {
       "api": "AVSemanticSegmentationMatteTypeTeeth",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVURLAssetAllowsConstrainedNetworkAccessKey",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVURLAssetAllowsExpensiveNetworkAccessKey",
       "kind": "constant",
       "introduced": "13.0",
       "minimum": "6.0",
@@ -3482,16 +3342,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerEligibleForHDRPlaybackDidChangeNotification",
-      "kind": "constant",
-      "introduced": "13.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "-[AVAssetWriter flushSegment]",
       "kind": "method",
       "introduced": "14.0",
@@ -3509,26 +3359,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVAssetWriter a method like it: it arrived in iOS 14",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetDownloadTaskMinimumRequiredPresentationSizeKey",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetDownloadTaskPrefersHDRKey",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -3672,16 +3502,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVMediaCharacteristicContainsHDRVideo",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayerItem.allowedAudioSpatializationFormats",
       "kind": "property",
       "introduced": "14.0",
@@ -3722,39 +3542,9 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVSampleBufferDisplayLayerRequiresFlushToResumeDecodingDidChangeNotification",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVSemanticSegmentationMatteTypeGlasses",
       "kind": "constant",
       "introduced": "14.1",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVVideoAppleProRAWBitDepthKey",
-      "kind": "constant",
-      "introduced": "14.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVAssetDownloadTaskPrefersLosslessAudioKey",
-      "kind": "constant",
-      "introduced": "14.5",
       "minimum": "6.0",
       "status": "absent",
       "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
@@ -3879,16 +3669,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 14",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVSampleBufferDisplayLayerOutputObscuredDueToInsufficientExternalProtectionDidChangeNotification",
-      "kind": "constant",
-      "introduced": "14.5",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -4562,26 +4342,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerInterstitialEventMonitorCurrentEventDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventMonitorEventsDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayerItem.automaticallyHandlesInterstitialEvents",
       "kind": "property",
       "introduced": "15.0",
@@ -4622,16 +4382,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVPlayerItemTimeJumpedOriginatingParticipantKey",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVPlayerPlaybackCoordinator",
       "kind": "class",
       "introduced": "15.0",
@@ -4652,16 +4402,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVSampleBufferAudioRendererOutputConfigurationDidChangeNotification",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVURLAsset.variants",
       "kind": "property",
       "introduced": "15.0",
@@ -4669,16 +4409,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVURLAsset a property like it: it arrived in iOS 15",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVURLAssetURLRequestAttributionKey",
-      "kind": "constant",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     },
     {
@@ -5172,26 +4902,6 @@
       "source": "SDK 16.4, AVFoundation"
     },
     {
-      "api": "AVURLAssetHTTPUserAgentKey",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVURLAssetPrimarySessionIdentifierKey",
-      "kind": "constant",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
       "api": "AVVideoTransferFunction_Linear",
       "kind": "constant",
       "introduced": "16.0",
@@ -5219,46 +4929,6 @@
       "status": "absent",
       "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeErrorKey",
-      "kind": "constant",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeEventKey",
-      "kind": "constant",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeNotification",
-      "kind": "constant",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, AVFoundation"
-    },
-    {
-      "api": "AVPlayerInterstitialEventMonitorAssetListResponseStatusDidChangeStatusKey",
-      "kind": "constant",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, AVFoundation"
     }
   ]
