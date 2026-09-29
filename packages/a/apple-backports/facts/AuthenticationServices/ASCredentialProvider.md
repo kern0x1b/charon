@@ -17,7 +17,7 @@ The five members, all at `ios(12.0)`, and all read out of the header with clang'
 | `-prepareInterfaceToProvideCredentialForIdentity:` | nothing — the presentation is the system's |
 | `-prepareInterfaceForExtensionConfiguration` | nothing — the settings screen is the extension's own |
 | `-provideCredentialWithoutUserInteractionForIdentity:` | nothing — the system asks this only when its store already holds a matching credential, and the port has no store |
-| `-extensionContext` | `nil` — there is no system-provided context, and standing in an object that cannot complete anything would be worse |
+| `-extensionContext` | `nil` — there is no system-provided context, and standing in an object that cannot complete anything would be worse. **Its type is `id`, not the header's `ASCredentialProviderExtensionContext *`, and that is because `ios11.json` carries that class as absent** — the two are one fact, not two. When the context is carried the getter's type follows it, and the declaration at the getter says so |
 
 **A no-op default here is the base class behaving as a base class behaves, not a stub.** An extension
 that overrides a member gets its own behaviour; one that overrides none gets the release's own answer,

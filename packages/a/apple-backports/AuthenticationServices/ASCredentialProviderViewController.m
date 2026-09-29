@@ -60,9 +60,15 @@
 {
     // The header's getter for the context this controller completes requests into. On a device it is the
     // system-provided one; the port has none, and nil says so rather than standing in an object that
-    // cannot complete anything. The port's own ASCredentialProviderExtensionContext is the class an
-    // extension would complete into, and the getter is typed id here because this release's header has
-    // no such protocol to qualify with.
+    // cannot complete anything.
+    //
+    // The header types this ASCredentialProviderExtensionContext *, and the port declares it - (id).
+    // That is a real narrowing and it has one cause: registry/AuthenticationServices/ios11.json carries
+    // ASCredentialProviderExtensionContext as absent -- "the release has no credential provider
+    // extension or identity store for the system's AutoFill to consult, and a password that only looks
+    // kept would mislead" -- so there is no class here to name. The two are not independent facts and
+    // one line of this file must not read as if they were: when that class is carried, this getter's
+    // type follows it, and a reviewer reading either place should be able to find the other.
     return nil;
 }
 
