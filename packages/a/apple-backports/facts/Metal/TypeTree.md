@@ -647,3 +647,31 @@ green. `-Werror=objc-missing-property-synthesis` and the armv7 target are what c
 
 It is verified to bite: removing one `@synthesize` from the reader makes the script exit `1`, and with it
 in place the round trip is green and the mutant still red.
+
+## The reflection classes: what the plist carries, and what it does not
+
+`air2cpu` writes each function's **arguments** — index, name, access, texture data type, type tree,
+type name, size, alignment, and a struct's member list — and it carries **nothing** about a render
+pipeline's resource bindings, a function's constants, or a vertex attribute. Every reflection member
+is therefore either read from the argument list where that is the right answer, or answered with the
+header's own documented absence, and each row says which.
+
+| class | release | answered from |
+| --- | --- | --- |
+| `MTLRenderPipelineReflection` | 8.0 | the arguments, for real; the five binding lists are **empty** |
+| `MTLComputePipelineReflection` | 8.0 | the arguments, for real; `bindings` is **empty** |
+| `MTLVertexAttribute` | 8.0 | the argument node: name, index, data type; `active` YES, the patch-data getters NO |
+
+**The empty binding lists are not a stub and not a guess.** The port translates each kernel's
+argument list; it has nothing about which resources a pipeline binds. An empty list is the honest
+answer, and a fabricated binding list would describe a pipeline the port did not build.
+
+One thing the host check does **not** assert, and the reason is worth recording: the binding lists are
+`API_AVAILABLE(macCatalyst 16.0)` and the host binary targets 15, so calling them proves nothing about
+them. The checks are on the members that exist at 15 — the arguments, and a vertex attribute's index
+and `active` — and the emptiness is recorded in the row and here instead.
+
+`MTLVertexAttribute` is built from the argument **node**, not from an `MTLArgument`: the two are
+different objects and the port's class answers `initWithNode:`, so a check that passed an
+`MTLArgument` aborted with `-[MTLArgument objectForKey:]` rather than failing — which is what a
+crash in a check looks like when the call reaches a class that does not implement the selector.

@@ -48,10 +48,11 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the port's compute pipeline state",
+      "effect": "arguments is the kernel's argument list from the type tree, and bindings is EMPTY because the plist carries no bindings; the empty binding list is a documented absence, in the same sense as the render one",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLComputePipelineState",
@@ -88,10 +89,11 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the port's render pipeline state, and the arguments it reflects are the ones the plist carries",
+      "effect": "vertexArguments, fragmentArguments and tileArguments are the kernel's arguments from the type tree, and the five binding lists are EMPTY because the plist carries no bindings - the port translates argument lists, not a pipeline's resources; the empty binding lists are a documented absence, not a guess: air2cpu writes each function's arguments and nothing about bindings",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLStructMember",
@@ -120,10 +122,11 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one vertex attribute of a render pipeline, built from an argument node",
+      "effect": "name, attributeIndex and attributeType come from the node the plist carries, and active is YES with the patch-data getters NO; the patch-data members answer NO because the plist carries no patch or control-point flag - the header's own absence",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLComputePipelineDescriptor",
