@@ -115,3 +115,43 @@ function rather than by touching every other operation.
 Not written: reductions, matmul, convolution, pooling, normalization, activation, shape operations,
 control flow, random, optimizers, and the rest of the surface. Each is a family of the same shape, and
 each wants the differential to run a graph end to end first.
+
+## The R4 names this band adds, in full
+
+The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the
+private surface the two families use to share their own state, and each is a registered implemented name
+that no header the build sees declares. **27 of them**, read out of the compiled objects with
+`nm -g --defined-only`, not from the sources, so a declaration and a definition are not confused:
+
+* `-[MPSGraph charon_mps_addOperationOfKind]` — MPSGraph14.m
+* `-[MPSState charon_mps_appendBuffer]` — MPSState11.m
+* `-[MPSState charon_mps_appendResource]` — MPSState11.m
+* `-[MPSState charon_mps_appendTexture]` — MPSState11.m
+* `-[MPSGraph charon_mps_arithmetic]` — MPSGraph14.m
+* `-[MPSMatrixRandom charon_mps_batchOver]` — MPSMatrixRandom13.m
+* `-[MPSMatrixRandom charon_mps_configureWithDataType]` — MPSMatrixRandom13.m, MPSMatrixRandomMTGP3213.m, MPSMatrixRandomPhilox13.m
+* `-[MPSMatrixCopy charon_mps_destinationAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSCNNConvolutionDescriptor charon_mps_fold]` — MPSCNNConvolutionDescriptor10.m
+* `-[MPSCNNBatchNormalization charon_mps_foldFromDataSource]` — MPSCNNBatchNormalization12.m
+* `-[MPSCNNConvolutionWeightsAndBiasesState charon_mps_listOfBufferSizes]` — MPSCNNConvolutionWeightsAndBiasesState11.m
+* `-[MPSMatrixCopy charon_mps_offsetsAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSGraph charon_mps_operation]` — MPSGraph14.m
+* `-[MPSGraph charon_mps_runOperation]` — MPSGraph14.m, MPSGraphInterpreter14.m
+* `-[MPSMatrixLogSoftMax charon_mps_setLogarithmic]` — MPSMatrixLogSoftMax12.m, MPSMatrixSoftMax12.m
+* `-[MPSCNNPooling charon_mps_setMaximum]` — MPSCNNPooling10.m
+* `-[MPSCNNConvolutionDescriptor charon_mps_setNeuronParameterC]` — MPSCNNConvolutionDescriptor10.m
+* `-[MPSGraph charon_mps_setOutputTensors]` — MPSGraph14.m, MPSGraphOperation14.m
+* `-[MPSGraph charon_mps_setParameters]` — MPSGraph14.m, MPSGraphOperation14.m
+* `-[MPSCNNKernel charon_mps_setWindowWidth]` — MPSCNNKernel10.m, MPSCNNPooling10.m
+* `-[MPSMatrixCopy charon_mps_sourceAtIndex]` — MPSMatrixCopy11.m, MPSMatrixCopyDescriptor11.m
+* `-[MPSState charon_mps_temporaryWithBlock]` — MPSState11.m
+* `-[MPSMatrixCopyDescriptor charon_mps_withCount]` — MPSMatrixCopyDescriptor11.m
+* `-[MPSTemporaryMatrix charon_mps_withReadCount]` — MPSTemporaryMatrix11.m, MPSTemporaryVector12.m
+* `-[MPSMatrixRandom charon_mps_wordAtIndex]` — MPSMatrixRandom13.m
+* `-[MPSCNNPooling charon_mps_zeroPadSizeX]` — MPSCNNPooling10.m
+* `-[MPSCNNPooling charon_mps_zeroPadSizeY]` — MPSCNNPooling10.m
+
+The graph's are the interpreter's — its kinds, its per-operation wiring, its element accessors — and the
+matrix and CNN families' are the window, the fold, the state and the copy descriptor's. None of them is
+called by an application. Each needs the lift's sets re-measured in the same push as the ones that land
+with them, and the list is regenerated from the objects whenever the family changes.
