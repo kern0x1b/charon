@@ -112,3 +112,30 @@ that is the measured behaviour for the two the probes covered, and the third is 
 passes an **unfitted** preprocessor is the case where the two readings differ: if the host applies it,
 the values move; if the host ignores it, they do not. The port cannot be shown right for that caller
 until the probe builds.
+
+### Which construct crashes swiftc - bisected, and the reduction stops here
+
+`preprocessor-applied-host.swift` type-checks and then aborts the compiler. Bisected from a copy under
+`.agent-work/runs/probe-bisect/`, with the same `xcrun swiftc -Onone` the other probes use:
+
+    $ head -34 probe.swift > ctl.swift && xcrun swiftc -Onone -o ctl ctl.swift     # the control: BUILDS
+    $ head -40 probe.swift > p40.swift  && xcrun swiftc -Onone -o p40 p40.swift     # expected '}' in struct
+    $ head -56 probe.swift > p56.swift  && xcrun swiftc -Onone -o p56 p56.swift     # signal 6
+
+**The control is the first conformer alone** - the `Estimator` one, lines 23-34, closed at 34 - and it
+compiles. Adding the second conformer, `struct SupervisedRecorder: UpdatableSupervisedEstimator` at
+lines 37-57, aborts. The crash therefore needs **a second, complete** conformance to
+`UpdatableSupervisedEstimator` in a file that already has a complete `Estimator` conformance, whose
+nested `Transformer` carries `typealias Input`, `typealias Output` and an `async throws applied`.
+
+**What the reduction rules out.** An *incomplete* second conformer does not crash - it reports
+`type 'Second' does not conform to protocol ...` - whether the protocol is `UpdatableSupervisedEstimator`,
+`UpdatableEstimator` or `Estimator`, and whether the nested `Transformer` carries `firstSeen`, the
+`async applied`, or both. An empty plain struct after the control compiles. So the crash is not "two
+conformers in a file", not one particular protocol, and not a single member of the second one: it needs
+the whole second conformance to type-check and then aborts in the compiler.
+
+**Not reached.** Which part of the compiler this is - the conformance checker walking two instantiations
+of the same protocol family, the `Transformer` nested-type resolution, or the async witness - is not
+determined, and narrowing it further needs a different instrument than deleting lines. The reduction
+above is a boundary, not a cause, and the open question stands until a probe builds.

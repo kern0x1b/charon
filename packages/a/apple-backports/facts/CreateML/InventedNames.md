@@ -6,9 +6,23 @@ is derived, not typed:
     $ python3 tests/backports/host/createml/invented-names.py
 
 which walks `packages/c/createml/files/**/*.swift` for `public struct|class|enum|protocol`, walks the
-four macOS SDK interfaces for theirs, and reports the difference. **My run finds 53 rather than 54** -
-one type is declared in a form the walk does not match - and that difference is left visible rather
-than rounded away, because the count is the thing the owner is being asked to look at.
+four macOS SDK interfaces for theirs, and reports the difference.
+
+**Why it finds 53 and not 54: the walk matches only an unindented declaration.** Its pattern is
+`^public (struct|final class|class|enum|protocol)`, so it sees 108 top-level public types. A public
+declaration **inside** a type is not matched, and one of those is a type the owner is asking about:
+
+    packages/c/createml/files/CreateML/MLDataTable+CSV.swift:  ParsingOptions
+
+`ParsingOptions` is declared as an indented `public typealias`, and it has no name in any of the four
+interfaces either - so it is the 54th. The other indented `public typealias` declarations are 48 of them
+and are not new types: `Element`, `Index`, `Indices`, `SubSequence`, `Iterator`, `ArrayLiteralElement`,
+`Key`, `Value`, `Input`, `Output`, `Transformer`, `Annotation`, `Intermediate`, `ColumnType` - the
+standard-library aliases a conforming type writes, each repeated per conforming type.
+
+So the count is **53 top-level public types with no SDK name, plus `ParsingOptions`, which the walk's
+`^public` pattern misses because it is indented - 54 in total**, and the difference is a property of the
+walk's pattern rather than of the tree.
 
 **The decision is the owner's and nothing here decides it.** The table says, per type, whether the
 framework has the idea under another spelling, and why the type is public as far as the declaration
