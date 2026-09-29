@@ -7,6 +7,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -16,6 +17,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -25,6 +27,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -34,6 +37,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -43,6 +47,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -52,6 +57,7 @@
       "introduced": "17.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -61,6 +67,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -70,6 +77,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -79,6 +87,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -88,6 +97,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -97,6 +107,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -106,6 +117,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -115,6 +127,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -124,6 +137,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -133,6 +147,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -142,6 +157,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -151,6 +167,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -160,6 +177,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -169,6 +187,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -178,6 +197,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -187,6 +207,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -196,6 +217,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -205,6 +227,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -214,6 +237,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -223,6 +247,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -232,6 +257,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -241,6 +267,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -250,6 +277,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -259,6 +287,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -268,6 +297,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -277,6 +307,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -286,6 +317,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -295,6 +327,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -304,6 +337,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -313,6 +347,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -362,6 +397,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -371,6 +407,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -380,6 +417,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -389,6 +427,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -398,6 +437,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -407,6 +447,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -416,6 +457,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -425,6 +467,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -434,6 +477,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and tests/backports/host/mpsgraph compares the answer against the release's own over the case file's 15 cases. Fourteen are bit-identical on macOS 27.0 build 26A428; this one is not, and the harness exits 1 over it: the release answers four NaNs for a negative operand, where this port's table takes the magnitude, and the port's second row of the 2x4 case is a byte-for-byte repeat of its first, which this run does not account for. facts/MetalPerformanceShadersGraph/Core.md carries the two hex lines and calls the case owed.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -443,6 +487,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -452,6 +497,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -461,6 +507,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and tests/backports/host/mpsgraph compares the answer against the release's own over the case file's 15 cases. Fourteen are bit-identical on macOS 27.0 build 26A428; this one is not, and the harness exits 1 over it: the release answers four NaNs for a negative operand, where this port's table takes the magnitude, and the port's second row of the 2x4 case is a byte-for-byte repeat of its first, which this run does not account for. facts/MetalPerformanceShadersGraph/Core.md carries the two hex lines and calls the case owed.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -470,6 +517,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -479,6 +527,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -488,6 +537,7 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -537,6 +587,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -546,6 +597,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -555,6 +607,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -584,6 +637,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -623,6 +677,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     },
@@ -632,6 +687,7 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "tests/backports/host/mpsgraph compares this against the release's own over the case file's 15 cases; on macOS 27.0 build 26A428 this case is one of the fourteen that are bit-identical, and the run's exit 1 is over the sqrt case alone, which is named in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
     }

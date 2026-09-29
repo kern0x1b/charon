@@ -24,10 +24,23 @@ object's buffer, which the comparison never mixed. A fourth was mine and not the
 path one level short wrote the results into `tests/` while I read the worktree root's copy, which was
 stale for an afternoon.
 
-**What the harness measures now, as of the last run: 137 compared cases, 85 of them differing** — 73
-where both sides wrote and the values differ, and 12 where the host writes zeros and the port does not.
-Each run prints the tree it measured, so a count cannot outlive its code. The counts are in flux while
-the families are worked through and this paragraph is the one to re-measure, not to trust.
+**What the harness measures now, as of the last run.** The count of differing cases is not the number
+any more, because a count cannot tell a one-unit difference from a 94 %-wrong answer: it said 58 before
+the SoftPlus fix and 58 after it. `rank.py` grades each case instead — `identical`, `ulp` against a
+64-unit bound, or `non-ulp` — and a case that is not bit-identical, not within the bound and not named
+with a reason in `tests/backports/host/mpsmatrix/owed.tsv` fails the run. The five "host divergences"
+that used to be dropped from the comparison before anything was measured are gone; nothing is exempt
+any more.
+
+On macOS 27.0 build 26A428, over `compared: 141 cases`:
+
+    identical: 70   ulp (bound 64): 53   non-ulp: 18
+
+The 18 are named in `owed.tsv`, each with its reason, and the registry rows of the families behind them
+carry the same statement in their `effect`. The largest distance among the rounding cases is 26 units
+in the last place (`batch-normalization 12`, 2.93e-06 relative); the smallest non-ulp distance is 751
+units (`neuron-gradient-data 15`, GeLU). Each run prints the tree it measured and the grader prints its
+own counts, so a number cannot outlive its code.
 
 ## A named divergence is not an exemption
 
@@ -256,8 +269,13 @@ call so both facts are compared.
 
 ## Not carried yet
 
-`MPSMatrixSolveTriangular`, `MPSMatrixSolveLU`, `MPSMatrixSolveCholesky`, `MPSMatrixDecompositionLU`,
-`MPSMatrixDecompositionCholesky`, `MPSMatrixRandom`, `MPSMatrixRandomPhilox`, `MPSMatrixRandomMTGP32`
-and `MPSMatrixRandomDistributionDescriptor` are the linear solver and the random number generators, and
-they are the next part of this library. `MPSMatrixCopyToImage` needs `MPSImage`. Nothing in this file
-depends on them, and nothing above is affected by their absence.
+`MPSMatrixSolveTriangular`, `MPSMatrixSolveLU`, `MPSMatrixSolveCholesky`, `MPSMatrixDecompositionLU`
+and `MPSMatrixDecompositionCholesky` are the linear solvers, and they are the next part of this library.
+`MPSMatrixCopyToImage` needs `MPSImage`. Nothing in this file depends on them, and nothing above is
+affected by their absence.
+
+The random number generators were on this list once and are not any more: `MPSMatrixRandom`,
+`MPSMatrixRandomPhilox`, `MPSMatrixRandomMTGP32` and `MPSMatrixRandomDistributionDescriptor` are
+carried, in `MPSMatrixRandom13.m`, `MPSMatrixRandomPhilox13.m`, `MPSMatrixRandomMTGP3213.m` and
+`MPSMatrixRandomDistributionDescriptor13.m`, registered in `registry/MetalPerformanceShaders/random.json`
+with the measured spread, and written up in `facts/MetalPerformanceShaders/Random.md`.

@@ -86,9 +86,26 @@ harness rather than in the library:
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, and it is one again.
 
-**Where it stands: fifteen cases agree with the release, bit for bit** - the binary family, the unary
-family, a chain and an integer division. Two of the case file's cases are not among them and are not
-counted as agreeing:
+**Where it stands, measured on macOS 27.0 build 26A428: `tests/backports/host/mpsgraph/run.sh` exits 1
+with `port: DIFFERS in 1 cases` over `compared: 15 cases`.** Fourteen of the fifteen agree with the
+release, bit for bit - the binary family, most of the unary family, a chain and an integer division.
+The one that does not is `sqrt`, and it does not agree in the way the sentence above used to claim:
+
+    release  1  0.8333  0.4641  2  NaN  NaN  NaN  NaN
+    port     1  0.8333  0.4641  2  1    0.8333  0.4641  2
+
+Both sides answer the same first four. On the last four the release answers four NaNs - the IEEE answer
+for the square root of a negative, which is what the header's own operation means - and this port
+answers a byte-for-byte repeat of its own first four, which is not the magnitude of anything and is not
+explained: the feed is one buffer of eight values, the walk reads element `i` of it for `i` in 0..7, and
+`CharonMPSGraphElementCount` of a 2x4 shape is 8. The two differences are therefore separate: the
+release answers NaN where this port's table takes `sqrt(fabs(a))` (line `MPSGraphOperationKindSqrt` of
+`MPSGraphInterpreter14.m`), and the port's second row is a repeat that this run does not account for.
+Both are **owed**, and the case is named as such rather than counted as agreeing. The port's earlier
+claim on this case - the release answering `1, 1.41421, 1.73205, 2` for a feed of `1, 2, 3, 4, -1, -2,
+-3, -4` - does not reproduce on this host either, and is withdrawn above with the rest.
+
+Two of the case file's cases are not counted as agreeing:
 
 * **A constant** cannot be asked for at all on this host. `-[MPSGraph constantWithShape:dataType:values:name:]`
   aborts the process, so it is asked for **last**, after everything the host does answer, and the run
