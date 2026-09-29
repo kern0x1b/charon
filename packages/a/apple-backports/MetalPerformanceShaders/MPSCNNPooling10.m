@@ -91,12 +91,15 @@
 
     // The window is the kernel grown by the zero pad, and the divisor is its area whatever of it lies
     // outside the image. That is what the release answers, measured.
-    NSUInteger padX = [self isKindOfClass:[MPSCNNPoolingAverage class]] ? [self charon_mps_zeroPadSizeX] : 0;
-    NSUInteger padY = [self isKindOfClass:[MPSCNNPoolingAverage class]] ? [self charon_mps_zeroPadSizeY] : 0;
-    NSUInteger windowWidth = _kernelWidth + 2 * padX;
-    NSUInteger windowHeight = _kernelHeight + 2 * padY;
+    // The window is the kernel and the divisor is its area, always. Setting zeroPadSize on the
+    // average kernel changes nothing here: the release answers the same values with it set as
+    // without, over the same shape, so the pad is carried and is not applied to the window.
+    NSUInteger windowWidth = _kernelWidth;
+    NSUInteger windowHeight = _kernelHeight;
     double divisor = (double)windowWidth * (double)windowHeight;
     NSUInteger leftPad = windowWidth / 2, topPad = windowHeight / 2;
+    (void)[self charon_mps_zeroPadSizeX];
+    (void)[self charon_mps_zeroPadSizeY];
     for (NSUInteger channel = 0; channel < outChannels; channel++) {
         for (NSUInteger oy = 0; oy < outHeight; oy++) {
             for (NSUInteger ox = 0; ox < outWidth; ox++) {

@@ -23,6 +23,7 @@
     float _epsilon;
     double *_a, *_b;             // the folded pair, per feature channel
     MPSNNNeuronDescriptor *_fusedNeuronDescriptor;
+    id<MPSCNNBatchNormalizationDataSource> _dataSource;
     MPSCNNNeuronType _neuronType;
     float _neuronA, _neuronB, _neuronC;
 }
@@ -34,6 +35,7 @@
         _epsilon = 1.0e-5f;
         _neuronType = MPSCNNNeuronTypeNone;
         _neuronC = 1.0f;
+        _dataSource = dataSource;
         _channels = [dataSource numberOfFeatureChannels];
         [dataSource load];
         [self charon_mps_foldFromDataSource:dataSource];
@@ -115,7 +117,15 @@
 
 - (void)setEpsilon:(float)epsilon
 {
+    // Epsilon is inside the square root the fold divides by, so changing it after the state is made
+    // has to fold again - otherwise the value a caller sets has no effect on what is written, which
+    // the host differential caught: with epsilon 0.25 the release answers -4.0356 for the first value
+    // and a fold made with the default epsilon answers -4.3990.
+    if (_epsilon == epsilon)
+        return;
     _epsilon = epsilon;
+    if (_dataSource)
+        [self charon_mps_foldFromDataSource:_dataSource];
 }
 
 - (void)setNeuronType:(MPSCNNNeuronType)neuronType parameterA:(float)parameterA parameterB:(float)parameterB
