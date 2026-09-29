@@ -143,10 +143,11 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalAttribute",
+      "effect": "name, attributeIndex and attributeType are read from the argument node the type tree carries, the same way MTLVertexAttribute reads them, and active is YES; the two patch-data getters answer NO; the patch-data getters answer NO because the plist carries no patch or control-point flag, and a kernel this port dispatches is neither compute nor tessellated - the header's own absence",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLFence",
@@ -163,10 +164,11 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not corpus-demanded this pass (coordination/corpus, 2026-09-23 Tier 2 verdict); it describes compiled-shader reflection metadata, which this port's own library pipeline (CharonMetalLibrary.m) carries as a plain NSDictionary manifest read from library.json, not as live objects of this shape produced by a runtime compiler - there is none (facts/Metal/CompileOptions.md). Wrapping the manifest in the real reflection classes is real, scoped work for when demand asks for it, not a hardware wall.",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "CharonMetalFunctionConstant",
+      "effect": "name, type, index and isRequired are read from the node a caller hands it, and required is NO; a constant the plist has no record of is not required, and the dictionary that would hand these out is the empty one MTLFunction.functionConstantsDictionary already returns - the absence is the plist's, which writes arguments and no constants",
+      "source": "SDK 16.4, Metal",
+      "facts": "facts/Metal/TypeTree.md"
     },
     {
       "api": "MTLArgumentDescriptor",

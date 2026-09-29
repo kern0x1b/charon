@@ -675,3 +675,24 @@ and `active` — and the emptiness is recorded in the row and here instead.
 different objects and the port's class answers `initWithNode:`, so a check that passed an
 `MTLArgument` aborted with `-[MTLArgument objectForKey:]` rather than failing — which is what a
 crash in a check looks like when the call reaches a class that does not implement the selector.
+
+## The 10.0 reflection classes
+
+`MTLAttribute` and `MTLFunctionConstant`, both placed at **10.0** by `MTLLibrary.h` and both measured
+conformant by `tests/backports/host/protocol-members.py` — every protocol member defined, no
+exceptions. `release-split` puts the object at 10.0.1 with no other release in it.
+
+**What the plist carries decides both.** It writes a function's *arguments* and nothing about a stage
+input or a constant, so:
+
+- `MTLAttribute` is built from an argument node, exactly as `MTLVertexAttribute` is, and its
+  `patchData` / `patchControlPointData` getters answer `NO` — the plist has no patch flag to read, and a
+  kernel this port dispatches is neither compute nor tessellated. The header's own absence.
+- `MTLFunctionConstant`'s four members read a node a caller hands it, and `required` is `NO`: a constant
+  the plist has no record of is not required. The dictionary that would hand these out is the empty one
+  `MTLFunction.functionConstantsDictionary` already returns, and the absence is the plist's — it writes
+  arguments and no constants.
+
+`MTLAttribute` is **not** `MTLVertexAttribute`'s superclass — `MTLLibrary.h:37` and `:49` declare
+both from `NSObject` — so the 8.0 object and this one share a shape and not a hierarchy, and each
+carries its own.

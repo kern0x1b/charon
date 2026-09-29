@@ -20,6 +20,7 @@
 #import "MTLTypeReflection11.m"
 #import "MTLTypeReflection8.m"
 #import "MTLReflection8.m"
+#import "MTLReflection10.m"
 
 static int failures;
 
@@ -93,6 +94,18 @@ int main(int argc, char **argv)
             check([attribute attributeIndex] == index,
                   @"a vertex attribute's index is the argument's own index");
             check([attribute isActive], @"a vertex attribute of a bound argument is active");
+
+            // The 10.0 classes, from the same argument node: an MTLAttribute is the stage-input form
+            // of the same thing, and its patch-data getters are the header's NO because the plist has
+            // no patch flag to read.
+            MTLAttribute *stageInput = [[MTLAttribute alloc] initWithNode:[nodes firstObject]];
+            check(stageInput.attributeIndex == index,
+                  @"a stage input attribute's index is the argument's own index");
+            check([stageInput isActive] && ![stageInput isPatchData] && ![stageInput isPatchControlPointData],
+                  @"a stage input is active and is neither patch data nor a control point");
+            MTLFunctionConstant *constant = [[MTLFunctionConstant alloc] initWithNode:@{}];
+            check([constant isRequired] == NO && constant.name.length == 0,
+                  @"a constant with no node is not required and has no name");
 
             printf("       %lu argument(s): %lu named, %lu typed, accesses %lu read-only "
                    "%lu write-only %lu read-write\n",
