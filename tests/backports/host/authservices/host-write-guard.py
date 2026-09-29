@@ -17,13 +17,20 @@ port's own save-then-query runs against the port's own store under ``.agent-work
 **The rule is about the receiver, not the name.** The port's own store case does call
 ``-replaceCredentialIdentitiesWithIdentities:completion:`` -- that is the test the coordinator asked for
 -- and it sends it to ``PortASCredentialIdentityStore``, which is the port's class and writes the port's
-file. A send to the unprefixed class is the host's and is refused. So the test is per *statement*: split
-the probe on semicolons, and every statement naming a writing selector must also name a
-``Port``-prefixed store class, or be a comment.
+file. A send to the unprefixed class is the host's and is refused.
 
-The first version of this guard refused on the name alone and would have made the port's own store case
-impossible. The second compared line by line and caught a selector on a continuation line. Both were the
-same mistake: reading where a word is rather than what it is called on.
+**This file tests that per LINE, and it says so.** `code_statements()` drops the comment lines and
+returns the rest, and `main()` looks for the unprefixed class in what is left. The property is therefore
+narrower than "no send outside the chokepoint" -- that is `writing-selectors-scan.py`, which reads the
+four selectors by name and has the allowlist -- and this one answers the other half: a probe that cannot
+even NAME this Mac's store cannot hold it. **An earlier version of this docstring claimed a per-statement
+test that `main()` never made:** `statements()` was written, correct, and unreferenced, while the
+per-line reader was what actually ran. The reader is gone and this paragraph describes the one that is
+there, because a comment that describes a check is worse than no comment when the two disagree.
+
+The two earlier versions were the same mistake as the unreferenced reader: the first refused on the name
+alone and would have made the port's own store case impossible; the second compared line by line and
+caught a selector on a continuation line. Both read where a word is rather than what it is called on.
 """
 import os
 import sys
@@ -46,29 +53,6 @@ def code_statements(text):
             continue
         out.append(line)
     return out
-
-
-def statements(text):
-    """(statement, is_comment) for each semicolon-terminated piece of a source file."""
-    for line in text.split("\n"):
-        stripped = line.strip()
-        comment = stripped.startswith("//") or stripped.startswith("*") or stripped.startswith("/*")
-        yield line, comment
-    # The line test is not enough: a selector can be on a continuation line. So a statement is the text
-    # between semicolons, and the rule is applied to that.
-    buffer, comment = [], False
-    for line in text.split("\n"):
-        stripped = line.strip()
-        if not buffer and (stripped.startswith("//") or stripped.startswith("*") or stripped.startswith("/*")):
-            comment = True
-        if not stripped:
-            comment = False
-        buffer.append(line)
-        if stripped.endswith(";") or stripped.endswith("{"):
-            yield "\n".join(buffer), comment
-            buffer, comment = [], False
-    if buffer:
-        yield "\n".join(buffer), comment
 
 
 def main(argv):
