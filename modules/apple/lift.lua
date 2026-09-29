@@ -1102,6 +1102,14 @@ local function setter_property(selector)
     return first and first:lower() .. rest
 end
 
+-- The property whose declared getter is this selector: `isFoo` is the getter `foo` is declared with, and `Foo` is
+-- the getter of a class property of that name. Only a candidate - nothing here decides that a property *is* the one,
+-- which is the property's own `getter` the caller checks.
+function getter_property(selector)
+    local first, rest = selector:match("^is(%a)([%w_]*)$")
+    return first and first:lower() .. rest
+end
+
 local function filter_of(entry)
     local api = entry.api:gsub("%(%)$", "")
     local member = member_api(api)
@@ -2005,6 +2013,31 @@ local function computed(opt)
                     for _, node in ipairs(dump(name)) do
                         if node.kind == "ObjCPropertyDecl" and node.name == name and owner_of(node) == by then
                             table.insert(properties, node)
+                        end
+                    end
+                    -- An accessor named for the property's own declared getter: `isTextDragActive` is the getter of
+                    -- `textDragActive`, which @property (nonatomic, readonly, getter=isTextDragActive) declares, on the
+                    -- protocol UITextDraggable that UIView adopts. The name alone cannot say so - and the registry check
+                    -- needs the row spelled as the port builds the getter, so a row named UIView.isTextDragActive is what
+                    -- backports spells and what a port writes. So the candidates come from the accessor's name, and a
+                    -- candidate is only its property when the getter the property declares IS this accessor, which an
+                    -- unrelated property of a similar name cannot pass. The property may be declared on the class or on
+                    -- a protocol it conforms to, both of which this file already redeclares from.
+                    if #properties == 0 then
+                        for _, candidate in ipairs({getter_property(name), name}) do
+                            if candidate then
+                                for _, node in ipairs(dump(candidate)) do
+                                    if node.kind == "ObjCPropertyDecl" and node.name == candidate then
+                                        local getter = node.getter and node.getter.name or node.name
+                                        -- the declared getter is the whole test: a property whose getter is
+                                        -- not this accessor is not the property behind it, whatever it is
+                                        -- called and whoever declares it
+                                        if getter == by_owner[by][1].name then
+                                            table.insert(properties, node)
+                                        end
+                                    end
+                                end
+                            end
                         end
                     end
                     if #properties == 0 then

@@ -457,6 +457,19 @@ function failures(opt)
     -- the accessor carried as well as the property: one API, one answer, nothing to refuse
     kept["-[NSProcessInfo isLowPowerModeEnabled]"] = nil
     listed["-[NSProcessInfo isLowPowerModeEnabled]"] = {api = "-[NSProcessInfo isLowPowerModeEnabled]", status = "implemented"}
+    -- The candidate an accessor suggests, and the acceptance test beside it. `isTextDragActive` is the getter
+    -- @property (getter=isTextDragActive) BOOL textDragActive declares, on a protocol UIView adopts, so the
+    -- candidate is `textDragActive`; and a property is only that property when the getter it declares IS the
+    -- accessor, which `isolated` and any similarly named property cannot pass.
+    expect_equal(found, "the property an accessor suggests", lift.getter_property("isTextDragActive"), "textDragActive")
+    expect_equal(found, "a class property is its own candidate", lift.getter_property("readableTypeIdentifiers"), nil)
+    expect_equal(found, "an accessor that is not a getter names nothing", lift.getter_property("viewIsAppearing"), nil)
+    local declared = {getter = {name = "isTextDragActive"}}
+    expect_equal(found, "a property whose getter is the accessor is the one", (declared.getter or declared).name, "isTextDragActive")
+    local unrelated = {getter = {name = "textDragActive"}}
+    expect_equal(found, "and one whose getter is not the accessor is not",
+                 ((unrelated.getter or unrelated).name == "isTextDragActive") and "matched" or "refused", "refused")
+
     expect_equal(found, "both spellings carried", #lift.accessor_conflicts(kept, listed, answers, where_of), 0)
 
     -- A macro that expands to two declarations writes both their availability attributes at one place, so a
