@@ -54,10 +54,117 @@ static void recordRelations(CertificateRecorder record, NSString *who)
     record([NSString stringWithFormat:@"%@.fromContinuousNonZero", who], fromNanos != 0 ? @"1" : @"0");
 }
 
+
+// THE NSDate(SensorKit) CATEGORY'S RELATIONS, asked of whichever build is under test. The same three
+// relations the time functions are held to, applied to the other side of the same clock pair, because
+// the category is three wrappers over those conversions and nothing else:
+//
+//   1. the round trip through the two instance methods is exact, as the time functions' is;
+//   2. a date and the clock agree - the SRAbsoluteTime a date names is the instant the date names;
+//   3. and two dates made from two readings are never in the wrong order.
+//
+// WHICH SELECTORS, and why it differs by side: the port's three are called Charon... in
+// NSDate+SensorKit14.m, because one binary carries the port's build and the host's own and neither may
+// shadow the other - the same reason rename.py renames the four time functions. The host's own build has
+// all three, which the suite measured by asking the class object: an earlier probe of mine said it had
+// not, having used class_getInstanceMethod, which finds an INSTANCE method and so never sees the class
+// one. The present relations are asked of both builds and both must answer.
+static SEL CharonSelWithDate(void)
+{
+#ifdef CHARON_SENSORKIT_PORT
+    return @selector(charon_dateWithSRAbsoluteTime:);
+#else
+    return @selector(dateWithSRAbsoluteTime:);
+#endif
+}
+
+static SEL CharonSelInitWithDate(void)
+{
+#ifdef CHARON_SENSORKIT_PORT
+    return @selector(charon_initWithSRAbsoluteTime:);
+#else
+    return @selector(initWithSRAbsoluteTime:);
+#endif
+}
+
+static SEL CharonSelAbsolute(void)
+{
+#ifdef CHARON_SENSORKIT_PORT
+    return @selector(charon_srAbsoluteTime);
+#else
+    return @selector(srAbsoluteTime);
+#endif
+}
+
+static id CharonSendAbsolute(id date)
+{
+    if (![date respondsToSelector:CharonSelAbsolute()]) {
+        return nil;
+    }
+    NSMethodSignature *signature = [date methodSignatureForSelector:CharonSelAbsolute()];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    invocation.selector = CharonSelAbsolute();
+    [invocation invokeWithTarget:date];
+    SRAbsoluteTime out = 0;
+    [invocation getReturnValue:&out];
+    return [NSNumber numberWithDouble:(double)out];
+}
+
+static void recordCategoryRelations(CertificateRecorder record, NSString *who)
+{
+    Class date = [NSDate class];
+    record([NSString stringWithFormat:@"%@.categoryClassMethodPresent", who],
+           [date respondsToSelector:CharonSelWithDate()] ? @"1" : @"0");
+    record([NSString stringWithFormat:@"%@.categoryInitPresent", who],
+           [date instancesRespondToSelector:CharonSelInitWithDate()] ? @"1" : @"0");
+    record([NSString stringWithFormat:@"%@.categoryGetterPresent", who],
+           [date instancesRespondToSelector:CharonSelAbsolute()] ? @"1" : @"0");
+    if (![date respondsToSelector:CharonSelWithDate()] ||
+        ![date instancesRespondToSelector:CharonSelInitWithDate()] ||
+        ![date instancesRespondToSelector:CharonSelAbsolute()]) {
+        // the host's own build has not got all three, and a relation that cannot be asked is recorded as
+        // not asked rather than as passed
+        record([NSString stringWithFormat:@"%@.categoryRoundTrip", who], @"not-asked");
+        record([NSString stringWithFormat:@"%@.categoryAgreesWithClock", who], @"not-asked");
+        record([NSString stringWithFormat:@"%@.categoryNeverBackwards", who], @"not-asked");
+        return;
+    }
+
+    // 1. the round trip, through the two instance methods, within the resolution the pair has
+    SRAbsoluteTime t = SRAbsoluteTimeGetCurrent();
+    id made = [date performSelector:CharonSelWithDate() withObject:[NSNumber numberWithDouble:(double)t]];
+    id read = CharonSendAbsolute(made);
+    double drift = read ? fabs([read doubleValue] - (double)t) : 1e9;
+    record([NSString stringWithFormat:@"%@.categoryRoundTrip", who], drift < 1e-6 ? @"1" : @"0");
+    record([NSString stringWithFormat:@"%@.categoryRoundTripDrift", who],
+           [NSString stringWithFormat:@"%.3e", drift]);
+
+    // 2. the pair names the same instant as the wall clock, as the time functions' own relation does
+    CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+    CFAbsoluteTime named = SRAbsoluteTimeToCFAbsoluteTime(t);
+    double gap = fabs(named - now);
+    record([NSString stringWithFormat:@"%@.categoryAgreesWithClock", who], gap < 1.0 ? @"1" : @"0");
+    record([NSString stringWithFormat:@"%@.categoryGapSeconds", who],
+           [NSString stringWithFormat:@"%.6f", gap]);
+
+    // 3. two dates made from two readings, and the second is never the earlier
+    SRAbsoluteTime first = SRAbsoluteTimeGetCurrent();
+    usleep(2000);
+    SRAbsoluteTime second = SRAbsoluteTimeGetCurrent();
+    NSDate *one = [date performSelector:CharonSelWithDate() withObject:[NSNumber numberWithDouble:(double)first]];
+    NSDate *two = [date performSelector:CharonSelWithDate() withObject:[NSNumber numberWithDouble:(double)second]];
+    NSNumber *oneRead = CharonSendAbsolute(one);
+    NSNumber *twoRead = CharonSendAbsolute(two);
+    record([NSString stringWithFormat:@"%@.categoryNeverBackwards", who],
+           (oneRead && twoRead && [twoRead doubleValue] >= [oneRead doubleValue]) ? @"1" : @"0");
+}
+
 void sensorkit_run(CertificateRecorder record)
 {
     recordRelations(record, @"system");
+    recordCategoryRelations(record, @"system");
 #ifdef CHARON_SENSORKIT_PORT
     recordRelations(record, @"port");
+    recordCategoryRelations(record, @"port");
 #endif
 }

@@ -1,0 +1,73 @@
+// The NSDate side of SensorKit's absolute time, which arrived in iOS 14.0.
+//
+// The category is three thin wrappers over the conversions this package already has: an SRAbsoluteTime
+// and a CFAbsoluteTime are the same instant read on two clocks, joined by the one anchor in
+// Security/SRAbsoluteTime.m, and SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime
+// are each other's inverse through it. So nothing here computes anything of its own, and the numbers
+// the header's three relations are about are the ones the existing time functions already answer.
+//
+//   +[NSDate dateWithSRAbsoluteTime:]  the date an SRAbsoluteTime names
+//   -[NSDate initWithSRAbsoluteTime:]  the same, as an initializer
+//   -[NSDate srAbsoluteTime]           the SRAbsoluteTime a date names
+//
+// The header's own declaration, in SensorKit.framework/Headers/NSDate+SensorKit.h of the SDK 16.4 this
+// package compiles against:
+//
+//   @interface NSDate (SensorKit)
+//   + (instancetype)dateWithSRAbsoluteTime:(SRAbsoluteTime)time;
+//   - (instancetype)initWithSRAbsoluteTime:(SRAbsoluteTime)time;
+//   @property (readonly) SRAbsoluteTime srAbsoluteTime;
+//   @end
+//
+// SRAbsoluteTime is CFTimeInterval (SRAbsoluteTime.h:14) and the category is marked
+// API_UNAVAILABLE(macOS), which is why the host differential asks for these three through the runtime
+// rather than naming them: the host's own build has the two instance methods and not the class one, and
+// that difference is recorded rather than papered over. See facts/SensorKit/SensorKit.md and
+// tests/backports/host/sensorkit.
+//
+// Open source checked: swift-corelibs-foundation 6.x - not used. The arithmetic is Foundation's own
+// NSTimeInterval read through this package's existing conversion pair, and nothing here reimplements
+// either; the surface is Apple's, and no permitted project implements SensorKit.
+
+#import <Foundation/Foundation.h>
+#import <CoreFoundation/CoreFoundation.h>
+
+// The typedef, from SensorKit's own header - the same one SRAbsoluteTime.m imports for it. NOT
+// CharonSensorKit.h: that header redeclares the framework's classes for the SDK 16.4 this package
+// compiles against, and a host build - the macOS SDK has all of them - would see every one twice.
+//
+// The three functions are the port's own, from SRAbsoluteTime.m, which carries them because the SDK
+// 16.4 headers do not name them. They are the clock pair this category is three wrappers over, and they
+// are each other's inverse through the one anchor that file reads.
+#import <SensorKit/SRAbsoluteTime.h>
+
+extern SRAbsoluteTime SRAbsoluteTimeGetCurrent(void);
+extern CFAbsoluteTime SRAbsoluteTimeToCFAbsoluteTime(SRAbsoluteTime sr);
+extern SRAbsoluteTime SRAbsoluteTimeFromCFAbsoluteTime(CFAbsoluteTime cf);
+
+@interface NSDate (CharonSensorKit)
+
++ (instancetype)charon_dateWithSRAbsoluteTime:(SRAbsoluteTime)time;
+- (instancetype)charon_initWithSRAbsoluteTime:(SRAbsoluteTime)time;
+- (SRAbsoluteTime)charon_srAbsoluteTime;
+
+@end
+
+@implementation NSDate (CharonSensorKit)
+
++ (instancetype)charon_dateWithSRAbsoluteTime:(SRAbsoluteTime)time
+{
+    return [[self alloc] charon_initWithSRAbsoluteTime:time];
+}
+
+- (instancetype)charon_initWithSRAbsoluteTime:(SRAbsoluteTime)time
+{
+    return [self initWithTimeIntervalSinceReferenceDate:(NSTimeInterval)SRAbsoluteTimeToCFAbsoluteTime(time)];
+}
+
+- (SRAbsoluteTime)charon_srAbsoluteTime
+{
+    return SRAbsoluteTimeFromCFAbsoluteTime((CFAbsoluteTime)self.timeIntervalSinceReferenceDate);
+}
+
+@end

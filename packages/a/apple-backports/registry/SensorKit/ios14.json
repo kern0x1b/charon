@@ -1048,9 +1048,9 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a category on NSDate, and the port adds no category to a Foundation class here: the conversion SensorKit wants is between an SRAbsoluteTime and a date, and nothing in the framework's own surface calls it",
-      "effect": "not carried: respondsToSelector: answers NO for the selector",
+      "status": "implemented",
+      "reason": "an NSDate category of iOS 14.0, three wrappers over the clock pair this package already carries, and a release with no SensorKit has no such method. The category is three wrappers over the conversions this package already carries - SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime, each the other's inverse through the one anchor in Security/SRAbsoluteTime.m - so the answer is the same instant the header's own time functions already give, and the harness asks both of the host's own SensorKit and of the port for the same three relations: the round trip within a microsecond, agreement with CFAbsoluteTime within a second, and two dates made from two readings never in the wrong order (tests/backports/host/sensorkit, 16 records a side).",
+      "effect": "the date an SRAbsoluteTime names, or the SRAbsoluteTime a date names, over this release's own mach_absolute_time and CFAbsoluteTime joined by one anchor read from the release. The host's own SensorKit is held to the same three relations in tests/backports/host/sensorkit. NOT measured on an iOS device: the relations are the host's and the port's, and the guest measurement is owed.",
       "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
     },
     {
@@ -1267,9 +1267,9 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the other half of the same NSDate category, and for the same reason nothing calls it",
-      "effect": "not carried: respondsToSelector: answers NO for the selector",
+      "status": "implemented",
+      "reason": "an NSDate category of iOS 14.0, three wrappers over the clock pair this package already carries, and a release with no SensorKit has no such method. The category is three wrappers over the conversions this package already carries - SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime, each the other's inverse through the one anchor in Security/SRAbsoluteTime.m - so the answer is the same instant the header's own time functions already give, and the harness asks both of the host's own SensorKit and of the port for the same three relations: the round trip within a microsecond, agreement with CFAbsoluteTime within a second, and two dates made from two readings never in the wrong order (tests/backports/host/sensorkit, 16 records a side).",
+      "effect": "the date an SRAbsoluteTime names, or the SRAbsoluteTime a date names, over this release's own mach_absolute_time and CFAbsoluteTime joined by one anchor read from the release. The host's own SensorKit is held to the same three relations in tests/backports/host/sensorkit. NOT measured on an iOS device: the relations are the host's and the port's, and the guest measurement is owed.",
       "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
     },
     {
@@ -1659,9 +1659,9 @@
       "kind": "property",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a property of the SDK's own NSDate (SensorKit) category, and the port adds no category to a Foundation class: it would have to read an SRAbsoluteTime back off a date, and there is no reading on this release for it to read",
-      "effect": "not carried: respondsToSelector: answers NO for the accessor, and the port's own time conversions are reached through the four functions in SRAbsoluteTime.h, which an application can call without this",
+      "status": "implemented",
+      "reason": "an NSDate category of iOS 14.0, three wrappers over the clock pair this package already carries, and a release with no SensorKit has no such method. The category is three wrappers over the conversions this package already carries - SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime, each the other's inverse through the one anchor in Security/SRAbsoluteTime.m - so the answer is the same instant the header's own time functions already give, and the harness asks both of the host's own SensorKit and of the port for the same three relations: the round trip within a microsecond, agreement with CFAbsoluteTime within a second, and two dates made from two readings never in the wrong order (tests/backports/host/sensorkit, 16 records a side).",
+      "effect": "the date an SRAbsoluteTime names, or the SRAbsoluteTime a date names, over this release's own mach_absolute_time and CFAbsoluteTime joined by one anchor read from the release. The host's own SensorKit is held to the same three relations in tests/backports/host/sensorkit. NOT measured on an iOS device: the relations are the host's and the port's, and the guest measurement is owed.",
       "source": "the headers of SensorKit.framework in SDK 26.2; the release's armv7 6.1.3 cache, which has no SR* symbol"
     },
     {

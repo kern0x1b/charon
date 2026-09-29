@@ -124,3 +124,42 @@ Two things the host's own answers measured, which is why those relations are the
 
 **The device call test has not been run.** It would be the one thing that could catch a mistake in the
 store's key for a property, and the delivery says so.
+
+**The `NSDate(SensorKit)` category is the same clock on the other side, and its three rows are carried.**
+`+[NSDate dateWithSRAbsoluteTime:]`, `-[NSDate initWithSRAbsoluteTime:]` and `NSDate.srAbsoluteTime` are
+three wrappers over the two conversions this file already measures — `SRAbsoluteTimeToCFAbsoluteTime` and
+`SRAbsoluteTimeFromCFAbsoluteTime`, each the other's inverse through the one anchor — so nothing new is
+computed and the numbers are the ones the time functions already answer. The header's declaration is in
+`SensorKit.framework/Headers/NSDate+SensorKit.h` of the SDK 16.4, and `SRAbsoluteTime` is
+`CFTimeInterval` (`SRAbsoluteTime.h:14`).
+
+`tests/backports/host/sensorkit` now asks three more relations of **both** builds — the round trip through
+the two instance methods within a microsecond, a date and the clock agreeing within a second, and two
+dates made from two readings never in the wrong order — and the port's side answers 1, 1, 1 on six
+consecutive runs.
+
+**A measurement of mine that was wrong, and what it cost.** A probe I wrote to see whether the host's own
+build has `+[NSDate dateWithSRAbsoluteTime:]` answered **no**, and I built the comparator on it as an
+expected difference. The suite said otherwise: the host has all three. The probe used
+`class_getInstanceMethod`, which finds an **instance** method — the class method lives on the metaclass,
+so the probe could not see it. That is the second time in these two families a runtime lookup answered a
+question it was not asked (`SRSensor*` "0 of 10" from `objc_getClass`, in slice 1). The expected
+difference is gone and both sides are held to the same three relations.
+
+**The twelve rows of the reader's own surface stay `absent`, and this file's earlier reason for that
+still stands** — the delegate is the application's own object, so the port declares no protocol and emits
+no `__OBJC_PROTOCOL_$_` for it. What this slice adds is the host's own account of that surface, measured
+through the runtime rather than assumed: `SRSensorReaderDelegate` is present on the host and declares
+**exactly ten** methods, all `optional`, with the type encodings
+`v24@0:8@16`, `v32@0:8@16q24`, `v32@0:8@16@24` (×3), `B40@0:8@16@24@32`, `v40@0:8@16@24@32` and
+`v24@0:8@16` — so the surface is Apple's, it is exactly the ten rows this registry carries as absent, and
+the port's not declaring it is the measured right answer rather than an omission.
+
+**And the host's relation `roundTripWithinAMicrosecond` is flaky**, which is why the numbers above are
+"on six consecutive runs" and not "always": the HOST's own round trip failed once in eight runs of this
+suite (`DIFFERS the host's does not satisfy roundTripWithinAMicrosecond ('0')`). The relation is
+pre-existing and the host's own; this slice neither added it nor relaxed it, and it is named here
+because a gate that runs this suite may catch it red for a reason that is not the port's.
+
+Open source checked: swift-corelibs-foundation 6.x - not used. The arithmetic is Foundation's own
+`NSTimeInterval` read through this package's existing conversion pair, and the surface is Apple's.

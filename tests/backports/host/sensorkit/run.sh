@@ -27,20 +27,25 @@ python3 "$here/rename.py" "$appledir/registry/SensorKit/ios14.json" "$build/rena
 port() {
     dir=$1
     xcrun clang $common -DCHARON_SENSORKIT_PORT=1 -include "$build/rename.h" -I"$here" -I"$appledir/SensorKit" \
-        "$here/record.m" "$here/cases.m" "$dir/SRAbsoluteTime.m" $libs -o "$dir/run"
+        "$here/record.m" "$here/cases.m" "$dir/SRAbsoluteTime.m" "$dir/NSDate+SensorKit14.m" $libs -o "$dir/run"
 }
 rm -rf "$build/port"; mkdir -p "$build/port"
 cp "$appledir/SensorKit/SRAbsoluteTime.m" "$build/port/"
+cp "$appledir/SensorKit/NSDate+SensorKit14.m" "$build/port/"
 port "$build/port"
 SENSORKIT_RECORDS="$build/port.json" "$build/port/run"
 python3 "$here/compare.py" "$build/system.json" "$build/port.json"
 
 survived=0
 mutant() {
-    label=$1; from=$2; to=$3
+    # the file to mutate is the fourth argument and defaults to the time functions, because a plant that
+    # points at the category's own file and is applied to the time functions is not a mutation at all -
+    # which is what the first version of the category's plant did, and mutate.py said so by refusing.
+    label=$1; from=$2; to=$3; which=${4:-SRAbsoluteTime.m}
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
     cp "$appledir/SensorKit/SRAbsoluteTime.m" "$build/mutant/"
-    if ! python3 "$here/mutate.py" "$build/mutant/SRAbsoluteTime.m" "$from" "$to" >/dev/null; then
+    cp "$appledir/SensorKit/NSDate+SensorKit14.m" "$build/mutant/"
+    if ! python3 "$here/mutate.py" "$build/mutant/$which" "$from" "$to" >/dev/null; then
         echo "MUTATION DID NOT APPLY: $label"; survived=$((survived + 1)); return
     fi
     port "$build/mutant"
@@ -56,6 +61,10 @@ print(' '.join(k for k in sorted(set(a) | set(b)) if a.get(k) != b.get(k)))"); d
     fi
 }
 mutant "the round trip loses a second" "    return (SRAbsoluteTime)(anchor->absolute + (cf - anchor->absolute));" "    return (SRAbsoluteTime)(anchor->absolute + (cf - anchor->absolute) + 1.0);"
+mutant "the category's round trip gains a millisecond" \
+    "    return SRAbsoluteTimeFromCFAbsoluteTime((CFAbsoluteTime)self.timeIntervalSinceReferenceDate);" \
+    "    return SRAbsoluteTimeFromCFAbsoluteTime((CFAbsoluteTime)self.timeIntervalSinceReferenceDate) + 0.001;" \
+    "NSDate+SensorKit14.m"
 mutant "the reading does not advance" "    NSTimeInterval elapsed = CharonSensorKitSecondsFromTicks(mach_absolute_time() - anchor->continuous);" "    NSTimeInterval elapsed = 0.0;"
 if [ "$survived" -ne 0 ]; then echo "$survived mutations survived; the differential is not holding"; exit 1; fi
 echo "mutations: all caught"
