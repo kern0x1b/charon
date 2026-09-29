@@ -188,16 +188,27 @@ printed**:
     port  the same
     ref   the same
 
-**What differs is the last bit of a `float`.** Of the family's twenty-one cases, nineteen differ, and
-they differ only in the final hex digit of the words that differ:
+**What differs is a few units in the last place, and it is not always one.** Measured as the
+distance between the two `float` bit patterns, over the nineteen cases that differ:
 
-    batch-normalization 0    host[ 5] 18c15c40   port[ 5] 19c15c40
-    batch-normalization 2    host[ 0] 0025babd   port[ 0] f924babd
+| case | elements differing | ulp distances |
+| --- | --- | --- |
+| `batch-normalization 0`, `1` | 2 each | 1, 1 |
+| `batch-normalization 2` | 5 | **7**, 2, 1, 1, 1 |
+| `batch-normalization 3`, `5` | 6, 5 | all 1 |
+| `batch-normalization 4`, `6`, `8` | 1, 2, 4 | all 1 |
+| `batch-normalization 7` | 9 | 1, 2, 1, 1, 2, 2, 3, 2 |
+| `batch-normalization 9`, `11` | 3, 1 | 1, 1, 2 / 1 |
+| `batch-normalization 12` | 8 | **13**, 2, 3, 1, 1, 1, 1, 2 |
+| `batch-normalization 13`, `14`, `15` | 6, 4, 10 | 1–2, and 3 and 8 on case 15 |
+| `batch-normalization-statistics-result` | 4 | all 1 |
+| the three `gradient` cases | 3, 11, 3 | **not rounding at all** — the host writes zeros, so the distance is from zero |
 
-The port accumulates the normalisation in `double` and rounds once on the store; the release evaluates
-in `float32` throughout, so where the exact result lands near a tie the two round differently. That is
-the whole of the difference, and it is a rounding question rather than a structural one — the two
-missing roots, the given mean, and the divisor are all now correct.
+**So "the last bit" was wrong and is corrected here.** Most of the family is 1 ulp, which is a tie-break,
+but case 2 is 7 and case 12 is 13, which is a **precision** difference and not a rounding of the same
+value. That is what a `float32` evaluation against a `double` one looks like when the argument is
+already reduced - and it says the single-precision formulation has to be written in the order the
+release evaluates it, not merely narrowed.
 
 The fix is the port's to make: the same single-precision formulation the release uses, `float` from
 the multiply onwards. It is the ulp work, and it is the last thing this family's structure is waiting
