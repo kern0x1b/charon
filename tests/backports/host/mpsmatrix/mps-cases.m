@@ -263,7 +263,7 @@ static void casesMultiplication(void)
             multiplyOut[0][1] = multiplySeed[0][1];
             multiplyOut[1][0] = multiplySeed[1][0];
             multiplyOut[1][1] = multiplySeed[1][1];
-            run(^(id<MTLCommandBuffer> commandBuffer) {
+            run("multiply %d %d", ^(id<MTLCommandBuffer> commandBuffer) {
                 // A 3x3 descriptor for all three, so the same matrices serve whichever way round they
                 // are read: MPS refuses a matrix whose row stride cannot hold the columns asked of it.
                 MPSMatrix *a = matrixOf(&multiplyLeft[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
@@ -285,7 +285,7 @@ static void casesMultiplication(void)
         }
     }
     memset(multiplyHalfOut, 0, sizeof(multiplyHalfOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("matrix-vector %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&multiplyHalfLeft[0][0], MPSDataTypeFloat16, 4, 4, 1, 4 * sizeof(uint16_t), 16 * sizeof(uint16_t));
         MPSMatrix *b = matrixOf(&multiplyHalfRight[0][0], MPSDataTypeFloat16, 4, 4, 1, 4 * sizeof(uint16_t), 16 * sizeof(uint16_t));
         MPSMatrix *c = matrixOf(&multiplyHalfOut[0][0], MPSDataTypeFloat16, 4, 4, 1, 4 * sizeof(uint16_t), 16 * sizeof(uint16_t));
@@ -295,7 +295,7 @@ static void casesMultiplication(void)
     put("multiply-half", &multiplyHalfOut[0][0], sizeof(multiplyHalfOut));
 
     memset(batchOut, 0, sizeof(batchOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("matrix-vector %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&batchLeft[0][0][0], MPSDataTypeFloat32, 2, 2, 3, 2 * sizeof(float), 4 * sizeof(float));
         MPSMatrix *b = matrixOf(&batchRight[0][0][0], MPSDataTypeFloat32, 2, 2, 3, 2 * sizeof(float), 4 * sizeof(float));
         MPSMatrix *c = matrixOf(&batchOut[0][0][0], MPSDataTypeFloat32, 2, 2, 3, 2 * sizeof(float), 4 * sizeof(float));
@@ -319,7 +319,7 @@ static void casesVectorMultiplication(void)
     for (int transpose = 0; transpose < 2; transpose++) {
         vectorOut[0] = 0;
         vectorOut[1] = 0;
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("matrix-vector %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *a = matrixOf(&vectorMatrix[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
             MPSVector *in = vectorOf(vectorX, MPSDataTypeFloat32, 3, 1, 3 * sizeof(float));
             MPSVector *out = vectorOf(vectorOut, MPSDataTypeFloat32, 2, 1, 2 * sizeof(float));
@@ -350,7 +350,7 @@ static void casesCopy(void)
             MPSMatrixCopy *kernel = [[MPSMatrixCopy alloc] initWithDevice:gDevice copyRows:2 copyColumns:2
                                                           sourcesAreTransposed:transposeSource
                                                      destinationsAreTransposed:transposeDestination];
-            run(^(id<MTLCommandBuffer> commandBuffer) {
+            run("copy %d %d", ^(id<MTLCommandBuffer> commandBuffer) {
                 MPSMatrix *a = matrixOf(&copySource[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
                 MPSMatrix *b = matrixOf(&copyDestination[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
                 MPSMatrixCopyDescriptor *descriptor = [MPSMatrixCopyDescriptor descriptorWithSourceMatrix:a destinationMatrix:b offsets:offsets];
@@ -362,7 +362,7 @@ static void casesCopy(void)
         }
     }
     memset(permuteDestination, 0, sizeof(permuteDestination));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesCopy line 365", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&permuteSource[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrix *b = matrixOf(&permuteDestination[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrixCopyDescriptor *descriptor = [MPSMatrixCopyDescriptor descriptorWithSourceMatrix:a destinationMatrix:b offsets:(MPSMatrixCopyOffsets){0, 0, 0, 0}];
@@ -388,7 +388,7 @@ static float topKValues[2][3];
 static void casesSoftMax(void)
 {
     memset(softMaxPlain, 0, sizeof(softMaxPlain));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesSoftMax line 391", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&softMaxSource[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrix *out = matrixOf(&softMaxPlain[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrixSoftMax *kernel = [[MPSMatrixSoftMax alloc] initWithDevice:gDevice];
@@ -396,7 +396,7 @@ static void casesSoftMax(void)
     });
     put("softmax", &softMaxPlain[0][0], sizeof(softMaxPlain));
     memset(softMaxLogarithmic, 0, sizeof(softMaxLogarithmic));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesSoftMax line 399", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&softMaxSource[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrix *out = matrixOf(&softMaxLogarithmic[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrixLogSoftMax *kernel = [[MPSMatrixLogSoftMax alloc] initWithDevice:gDevice];
@@ -404,7 +404,7 @@ static void casesSoftMax(void)
     });
     put("logsoftmax", &softMaxLogarithmic[0][0], sizeof(softMaxLogarithmic));
     memset(softMaxGradient, 0, sizeof(softMaxGradient));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("neuron %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&softMaxIncoming[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrix *y = matrixOf(&softMaxPlain[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
         MPSMatrix *out = matrixOf(&softMaxGradient[0][0], MPSDataTypeFloat32, 2, 4, 1, 4 * sizeof(float), 8 * sizeof(float));
@@ -414,7 +414,7 @@ static void casesSoftMax(void)
     put("softmax-gradient", &softMaxGradient[0][0], sizeof(softMaxGradient));
     memset(topKIndices, 0, sizeof(topKIndices));
     memset(topKValues, 0, sizeof(topKValues));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("neuron %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&topKSource[0][0], MPSDataTypeFloat32, 2, 6, 1, 6 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *i = matrixOf(&topKIndices[0][0], MPSDataTypeUInt32, 2, 3, 1, 3 * sizeof(uint32_t), 6 * sizeof(uint32_t));
         MPSMatrix *v = matrixOf(&topKValues[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
@@ -448,7 +448,7 @@ static void casesNeuron(void)
 {
     for (unsigned t = 0; t < gTypeCount; t++) {
         memset(neuronOut, 0, sizeof(neuronOut));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("neuron %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&neuronSource[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
             MPSMatrix *out = matrixOf(&neuronOut[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
             MPSVector *b = vectorOf(neuronBias, MPSDataTypeFloat32, 4, 1, 4 * sizeof(float));
@@ -463,7 +463,7 @@ static void casesNeuron(void)
 
         memset(neuronGradientData, 0, sizeof(neuronGradientData));
         memset(neuronGradientBias, 0, sizeof(neuronGradientBias));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("neuron-gradient-data %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *g = matrixOf(&neuronIncoming[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
             MPSMatrix *in = matrixOf(&neuronSource[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
             MPSMatrix *out = matrixOf(&neuronGradientData[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
@@ -481,7 +481,7 @@ static void casesNeuron(void)
         put(name, neuronGradientBias, sizeof(neuronGradientBias));
     }
     memset(neuronPreluOut, 0, sizeof(neuronPreluOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("fully-connected %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&neuronSource[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *out = matrixOf(&neuronPreluOut[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
         MPSMatrixNeuron *kernel = [[MPSMatrixNeuron alloc] initWithDevice:gDevice];
@@ -506,7 +506,7 @@ static void casesFullyConnected(void)
 {
     for (unsigned t = 0; t < gTypeCount; t++) {
         memset(fullyConnectedOut, 0, sizeof(fullyConnectedOut));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("fully-connected %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&fullyConnectedInput[0][0], MPSDataTypeFloat32, 3, 2, 1, 2 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *w = matrixOf(&fullyConnectedWeights[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *out = matrixOf(&fullyConnectedOut[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
@@ -521,7 +521,7 @@ static void casesFullyConnected(void)
         put(name, &fullyConnectedOut[0][0], sizeof(fullyConnectedOut));
     }
     memset(fullyConnectedGradientData, 0, sizeof(fullyConnectedGradientData));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesFullyConnected line 524", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&fullyConnectedIncoming[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
         MPSMatrix *w = matrixOf(&fullyConnectedWeights[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
         MPSMatrix *out = matrixOf(&fullyConnectedGradientData[0][0], MPSDataTypeFloat32, 3, 2, 1, 2 * sizeof(float), 6 * sizeof(float));
@@ -533,7 +533,7 @@ static void casesFullyConnected(void)
 
     memset(fullyConnectedGradientWeights, 0, sizeof(fullyConnectedGradientWeights));
     memset(fullyConnectedGradientBias, 0, sizeof(fullyConnectedGradientBias));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesFullyConnected line 536", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&fullyConnectedIncoming[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
         MPSMatrix *in = matrixOf(&fullyConnectedInput[0][0], MPSDataTypeFloat32, 3, 2, 1, 2 * sizeof(float), 6 * sizeof(float));
         MPSMatrix *gw = matrixOf(&fullyConnectedGradientWeights[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
@@ -586,7 +586,7 @@ static void casesBatchNormalization(void)
 {
     for (unsigned t = 0; t < gTypeCount; t++) {
         memset(normOut, 0, sizeof(normOut));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("batch-normalization %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
             MPSMatrix *out = matrixOf(&normOut[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
             MPSVector *m = vectorOf(normGivenMean, MPSDataTypeFloat32, 3, 1, 3 * sizeof(float));
@@ -605,7 +605,7 @@ static void casesBatchNormalization(void)
     memset(normMean, 0, sizeof(normMean));
     memset(normVariance, 0, sizeof(normVariance));
     memset(normOut, 0, sizeof(normOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesBatchNormalization line 608", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *out = matrixOf(&normOut[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSVector *m = vectorOf(normMean, MPSDataTypeFloat32, 3, 1, 3 * sizeof(float));
@@ -645,7 +645,7 @@ static void casesBatchNormalization(void)
         id<MTLBuffer> probe = [gDevice newBufferWithLength:1 options:MTLResourceStorageModeShared];
         (void)probe;
     }
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("case line 648", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *g = matrixOf(&normIncoming[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *in = matrixOf(&normSource[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *out = matrixOf(&normGradientData[0][0], MPSDataTypeFloat32, 4, 3, 1, 3 * sizeof(float), 12 * sizeof(float));
@@ -719,7 +719,7 @@ static void casesSum(void)
 {
     for (unsigned t = 0; t < gTypeCount; t++) {
         memset(sumOut, 0, sizeof(sumOut));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("sum %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *b = matrixOf(&sumSecond[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *c = matrixOf(&sumThird[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
@@ -736,7 +736,7 @@ static void casesSum(void)
         put(name, &sumOut[0][0], sizeof(sumOut));
     }
     memset(sumOut, 0, sizeof(sumOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("sum-start-index-boundary %lu", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
         MPSMatrix *b = matrixOf(&sumSecond[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
         MPSMatrix *out = matrixOf(&sumOut[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
@@ -750,7 +750,7 @@ static void casesSum(void)
     // the scale guard's edge is exercised rather than assumed.
     for (NSUInteger start = 1; start <= 3; start++) {
         memset(sumOut, 0, sizeof(sumOut));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("sum-start-index-boundary %lu", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *b = matrixOf(&sumSecond[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
             MPSMatrix *out = matrixOf(&sumOut[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
@@ -765,7 +765,7 @@ static void casesSum(void)
     }
 
     memset(sumOut, 0, sizeof(sumOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesSum line 768", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
         MPSMatrix *out = matrixOf(&sumOut[0][0], MPSDataTypeFloat32, 2, 3, 1, 3 * sizeof(float), 6 * sizeof(float));
         // The release requires at least two matrices to sum, so the transposed source is given twice.
@@ -775,7 +775,7 @@ static void casesSum(void)
     put("sum-transpose", &sumOut[0][0], sizeof(sumOut));
 
     memset(sumOut, 0, sizeof(sumOut));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesSum line 778", ^(id<MTLCommandBuffer> commandBuffer) {
         // A two by three window read from each of two four column sources, the second from column one,
         // which is where the offset vector's second entry puts it.
         MPSMatrix *a = matrixOf(&sumFirst[0][0], MPSDataTypeFloat32, 3, 4, 1, 4 * sizeof(float), 12 * sizeof(float));
@@ -806,14 +806,14 @@ static void casesState(void)
     printf("state-list %lu %lu %lu\n", (unsigned long)fromList.resourceCount, (unsigned long)[fromList bufferSizeAtIndex:0], (unsigned long)[fromList bufferSizeAtIndex:2]);
     NSArray<MPSState *> *batch = @[state, fromBuffer, fromList];
     printf("divergent state-batch-size %lu\n", MPSStateBatchResourceSize(batch));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesState line 809", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSStateBatchSynchronize(batch, commandBuffer);
     });
     printf("state-batch-synchronized 1\n");
 
     // The read count belongs to a temporary state: the release asserts on adjusting one that is not
     // temporary, so the batch's read counts are read from temporaries made against a command buffer.
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("casesState line 816", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSState *a = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:32];
         MPSState *b = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:64];
         MPSState *c = [MPSState temporaryStateWithCommandBuffer:commandBuffer bufferSize:96];
@@ -869,7 +869,7 @@ static void casesDecomposition(void)
         memset(luResult, 0, sizeof(luResult));
         memset(luPivots, 0, sizeof(luPivots));
         memset(luStatus, 0, sizeof(luStatus));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("cholesky %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&luSource[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrix *out = matrixOf(&luResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrix *pivots = matrixOf(&luPivots[0], MPSDataTypeUInt32, 1, 4, 1, 4 * sizeof(uint32_t), 4 * sizeof(uint32_t));
@@ -887,7 +887,7 @@ static void casesDecomposition(void)
     memset(singularResult, 0, sizeof(singularResult));
     memset(singularPivots, 0, sizeof(singularPivots));
     memset(singularStatus, 0, sizeof(singularStatus));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("cholesky %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&singularSource[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
         MPSMatrix *out = matrixOf(&singularResult[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
         MPSMatrix *pivots = matrixOf(&singularPivots[0], MPSDataTypeUInt32, 1, 3, 1, 3 * sizeof(uint32_t), 3 * sizeof(uint32_t));
@@ -917,7 +917,7 @@ static void casesCholesky(void)
         memset(choleskyResult, 0, sizeof(choleskyResult));
         memset(choleskyStatus, 0, sizeof(choleskyStatus));
         float (*source)[4] = lower ? choleskyLower : choleskyUpper;
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("cholesky %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&source[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrix *out = matrixOf(&choleskyResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(choleskyStatus) options:MTLResourceStorageModeShared];
@@ -935,7 +935,7 @@ static void casesCholesky(void)
     }
     memset(indefiniteResult, 0, sizeof(indefiniteResult));
     memset(indefiniteStatus, 0, sizeof(indefiniteStatus));
-    run(^(id<MTLCommandBuffer> commandBuffer) {
+    run("solve-triangular %d %d %d %d", ^(id<MTLCommandBuffer> commandBuffer) {
         MPSMatrix *in = matrixOf(&indefinite[0][0], MPSDataTypeFloat32, 2, 2, 1, 2 * sizeof(float), 4 * sizeof(float));
         MPSMatrix *out = matrixOf(&indefiniteResult[0][0], MPSDataTypeFloat32, 2, 2, 1, 2 * sizeof(float), 4 * sizeof(float));
         id<MTLBuffer> status = [gDevice newBufferWithLength:sizeof(indefiniteStatus) options:MTLResourceStorageModeShared];
@@ -962,7 +962,7 @@ static void casesSolveTriangular(void)
                 for (int unit = 0; unit < 2; unit++) {
                     memset(triangularSolution, 0, sizeof(triangularSolution));
                     float (*source)[3] = upper ? triangularUpper : triangularLower;
-                    run(^(id<MTLCommandBuffer> commandBuffer) {
+                    run("solve-triangular %d %d %d %d", ^(id<MTLCommandBuffer> commandBuffer) {
                         MPSMatrix *in = matrixOf(&source[0][0], MPSDataTypeFloat32, 3, 3, 1, 3 * sizeof(float), 9 * sizeof(float));
                         // The right hand side is order x sides, or sides x order when the right hand
                         // side is on the right, which is the shape the release insists on.
@@ -992,7 +992,7 @@ static void casesSolveLU(void)
 {
     for (int transpose = 0; transpose < 2; transpose++) {
         memset(luSolution, 0, sizeof(luSolution));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("solve-lu %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&luResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrix *rhs = matrixOf(&luRight[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
             MPSMatrix *pivots = matrixOf(&luPivots[0], MPSDataTypeUInt32, 1, 4, 1, 4 * sizeof(uint32_t), 4 * sizeof(uint32_t));
@@ -1010,7 +1010,7 @@ static void casesSolveCholesky(void)
 {
     for (int upper = 0; upper < 2; upper++) {
         memset(luSolution, 0, sizeof(luSolution));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("solve-cholesky %d", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *in = matrixOf(&choleskyResult[0][0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrix *rhs = matrixOf(&luRight[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
             MPSMatrix *out = matrixOf(&luSolution[0][0], MPSDataTypeFloat32, 4, 2, 1, 2 * sizeof(float), 8 * sizeof(float));
@@ -1032,7 +1032,7 @@ static void casesRandom(void)
 {
     for (uint32_t seed = 0; seed < 3; seed++) {
         memset(randomWords, 0, sizeof(randomWords));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("philox-uint32 %u", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *out = matrixOf(&randomWords[0], MPSDataTypeUInt32, 4, 4, 1, 4 * sizeof(uint32_t), 16 * sizeof(uint32_t));
             MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeUInt32 seed:seed];
             [kernel encodeToCommandBuffer:commandBuffer destinationMatrix:out];
@@ -1045,7 +1045,7 @@ static void casesRandom(void)
         // and the scale and add of facts/MetalPerformanceShaders/Random.md.
         for (int which = 0; which < 2; which++) {
             memset(randomFloats, 0, sizeof(randomFloats));
-            run(^(id<MTLCommandBuffer> commandBuffer) {
+            run("philox-float32-uniform %u %d", ^(id<MTLCommandBuffer> commandBuffer) {
                 MPSMatrix *out = matrixOf(&randomFloats[0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
                 MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeFloat32 seed:seed
                                  distributionDescriptor:which == 0
@@ -1059,7 +1059,7 @@ static void casesRandom(void)
         // The normal distribution goes through the release's own single precision inverse normal, which
         // a sixteen digit one does not land on to the bit; named as a divergence, not compared.
         memset(randomFloats, 0, sizeof(randomFloats));
-        run(^(id<MTLCommandBuffer> commandBuffer) {
+        run("divergent philox-float32-normal %u", ^(id<MTLCommandBuffer> commandBuffer) {
             MPSMatrix *out = matrixOf(&randomFloats[0], MPSDataTypeFloat32, 4, 4, 1, 4 * sizeof(float), 16 * sizeof(float));
             MPSMatrixRandomPhilox *kernel = [[MPSMatrixRandomPhilox alloc] initWithDevice:gDevice destinationDataType:MPSDataTypeFloat32 seed:seed
                              distributionDescriptor:[MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:2 standardDeviation:3]];
