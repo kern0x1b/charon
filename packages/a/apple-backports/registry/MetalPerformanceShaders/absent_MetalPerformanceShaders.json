@@ -252,26 +252,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSCNNConvolution",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNConvolutionDescriptor",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSCNNCrossChannelNormalization",
       "kind": "class",
       "introduced": "10.0",
@@ -283,16 +263,6 @@
     },
     {
       "api": "MPSCNNFullyConnected",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNKernel",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
@@ -373,36 +343,6 @@
     },
     {
       "api": "MPSCNNNeuronTanH",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNPooling",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNPoolingAverage",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNPoolingMax",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
@@ -1472,16 +1412,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSCNNBatchNormalization",
-      "kind": "class",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSCNNBatchNormalizationDataSource",
       "kind": "protocol",
       "introduced": "11.3",
@@ -1583,16 +1513,6 @@
     },
     {
       "api": "MPSCNNConvolutionGradientStateNode",
-      "kind": "class",
-      "introduced": "11.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSCNNConvolutionWeightsAndBiasesState",
       "kind": "class",
       "introduced": "11.3",
       "minimum": "6.0",
