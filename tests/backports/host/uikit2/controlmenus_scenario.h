@@ -1,4 +1,28 @@
 #import "uirest.h"
+#import <objc/message.h>
+
+// A control made of actions, on whichever side this binary is.
+//
+// The port's -insertSegmentWithAction:atIndex:animated: is a carried selector on a host class, so the harness
+// renames it and the port's side answers -charonHostInsertSegmentWithAction:atIndex:animated:. Calling the
+// public one on the port's side would reach the **host's own** method, and a host method handing a port action
+// to the host's label machinery is a mix no device ever has: on 6.x there is no host method of that name at
+// all, so the port's own is what runs there. The recorder has no prefixed method and takes the public one,
+// which is the host's own - the right answer on that side.
+static void charon_insert_action(UISegmentedControl *control, UIAction *action, NSUInteger index)
+{
+    SEL renamed = NSSelectorFromString(@"charonHostInsertSegmentWithAction:atIndex:animated:");
+    SEL published = NSSelectorFromString(@"insertSegmentWithAction:atIndex:animated:");
+    SEL chosen = [control respondsToSelector:renamed] ? renamed : published;
+    ((void (*)(id, SEL, UIAction *, NSUInteger, BOOL))objc_msgSend)(control, chosen, action, index, NO);
+}
+
+static const char *charon_insert_action_name(UISegmentedControl *control)
+{
+    return [control respondsToSelector:NSSelectorFromString(@"charonHostInsertSegmentWithAction:atIndex:animated:")]
+               ? "the port's own"
+               : "the host's own";
+}
 
 @interface MenuTarget : NSObject
 @end
@@ -99,9 +123,9 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass)
                                           handler:^(id x) {}];
         UISegmentedControl *own = [[UISegmentedControl alloc] initWithItems:@[ @"seed" ]];
         NSString *outcome = ur_raised(^id {
-            [own insertSegmentWithAction:one atIndex:0 animated:NO];
-            return [NSString stringWithFormat:@"segments=%ld title=%@ back=%@", (long)own.numberOfSegments,
-                                              [own titleForSegmentAtIndex:0] ?: @"nil",
+            charon_insert_action(own, one, 0);
+            return [NSString stringWithFormat:@"via=%@ segments=%ld title=%@ back=%@", charon_insert_action_name(own),
+                                              (long)own.numberOfSegments, [own titleForSegmentAtIndex:0] ?: @"nil",
                                               [own actionForSegmentAtIndex:0].title ?: @"nil"];
         });
         [lines addObject:ur_line([@"an action from " stringByAppendingString:pair[0]], @[outcome])];
