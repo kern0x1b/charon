@@ -21,6 +21,8 @@ work=${MUTATION_BUILD:-$root/.agent-work/runs/host/mpsmatrix-mutation}
 
 grep -qF "$line" "$kernel" || { echo "the anchor is gone from $kernel; the mutation is not a check any more"; exit 1; }
 
+MUTANTS_DIR=$(dirname "$0")/mutants
+export MUTANTS_DIR
 . "$(dirname "$0")/mutate.sh"
 original=$(cat "$kernel")
 foriginal=$(cat "$forward")
