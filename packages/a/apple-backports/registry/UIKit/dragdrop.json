@@ -1035,7 +1035,7 @@
    "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
   },
   {
-   "api": "UIView.isTextDragActive",
+   "api": "UIView.textDragActive",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
@@ -1068,7 +1068,7 @@
    "source": "SDK 26.2 UITextDraggable.h / UITextDroppable.h; UIKit/UITextView+TextDragDrop11.m"
   },
   {
-   "api": "UIView.isTextDropActive",
+   "api": "UIView.textDropActive",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
