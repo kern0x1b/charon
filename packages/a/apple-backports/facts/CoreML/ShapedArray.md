@@ -211,3 +211,43 @@ with the port's signature and then read `[0]` gets a doubly optional and the hos
 cannot call it and the control above cannot reach it. The port's `isNil(at:)` is therefore only
 comparable through the host differential, which is weaker evidence than a control on pure Apple, and
 that is worth saying before the port's answer there is changed.
+
+## The port's `AnyColumn` against the SDK's, through the interface rather than the values
+
+Values agreeing is not the same as being Apple's type, so the comparison is the emitted module interface
+(`-emit-module-interface`) against the iPhoneOS 26.2 `TabularData.swiftinterface`, member by member.
+
+**Eight of the host's members are not in the port**, and every one of them is waiting on the six
+protocols and `AnyColumnSlice` rather than on a decision:
+
+| the host has | the port |
+| --- | --- |
+| `AnyColumnProtocol`, `Hashable` conformances | `@unchecked Sendable` only |
+| `var prototype: any AnyColumnPrototype { get }` | — |
+| `var hashValue: Int` | — |
+| `mutating func append(_ element: Any?)` | — |
+| `mutating func append(contentsOf other: AnyColumn)` | — |
+| `mutating func append(contentsOf other: AnyColumnSlice)` | — |
+| `mutating func remove(at index: Int)` | — |
+| `assumingType<T>(_) -> Column<T>` | `-> Column<T>?` - the argued departure; Apple's traps |
+
+**Three members are the port's own and are not Apple's**, which by the rule this series has been held
+to - an invented name must not be public - they should not be:
+
+- `init<T>(_ column: Column<T>)`, and the `ColumnSlice` and `DiscontiguousColumnSlice` forms. Apple's
+  initialisers are internal, so the port needs *some* way to build one from a typed column, and this is
+  it. Whether it should be `internal` and the frame should build through another door is open.
+- `var presentValues: [Any]` and `var erasedValues: [Any]` - two spellings of the same idea, neither
+  Apple's.
+- `var elementType: (any Any.Type)?` - inferred from the values, and now **redundant** with the
+  recorded `wrappedElementType`, which is the answer Apple gives. A second way to ask the same question,
+  answering it differently.
+
+**`AnyColumnSlice` is not declared in the port at all.** It is the first of the six protocols' work and
+the first item of the step that has not started.
+
+One apparent difference is not one: the interface prints `subscript(position: Swift::Int) -> Any?`
+while the port declares `subscript(_ position: Int) -> Any?`. A parameter with no label prints with its
+internal name, and `pStrings[0]` compiles against it while `[position: 0]` is an *extraneous argument
+label* error - so the two spellings agree and the printed form is a rendering, not a difference. Worth
+recording because reading the interface alone would have reported it as one.
