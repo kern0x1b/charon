@@ -110,6 +110,14 @@ public struct IntentItemSection<Item> where Item: _IntentValue {
     public let image: DisplayRepresentation.Image?
     public let items: [Item.ValueType]
 
+
+    /// The builder of a list of sections, under the name the framework nests it by: the
+    /// framework declares `IntentItemSection.Builder` as an enum inside the type
+    /// (`arm64e-apple-macos.swiftinterface:5003-5007`), and this module keeps one builder and
+    /// names it here the way `IntentItem.Builder` already is (`Items.swift:18`). A typealias
+    /// and not a second declaration: it is the same `IntentItemSectionBuilder`, and the row
+    /// the ledger carries is a name this module has to answer to.
+    public typealias Builder = IntentItemSectionBuilder<Item>
     public init(_ title: LocalizedStringResource, items: () -> [IntentItem<Item>]) {
         self.title = title
         self.subtitle = nil
