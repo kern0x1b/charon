@@ -28,19 +28,24 @@ mutate=${1:-}
 mkdir -p "$build"
 
 # Before anything is built or run: the host half must not name any of the four methods that write this
-# Mac's AutoFill state. Two halves, and they are different in kind, so they are named separately:
+# Mac's AutoFill state. Three checks answer three different questions, so each is named with the question
+# it answers, and none of them is a fourth thing:
 #
-#   the STATIC half   host-write-guard.py walks the probe's statements and requires every writing
-#                     selector to be dispatched inside one chokepoint, port_store_send(), or inside the
-#                     table that chokepoint compares against, and nowhere else. It is a reader, and it
-#                     is here to catch a send made anywhere else; it is NOT what stands between this
-#                     machine and its AutoFill state, because a probe sends selectors as strings
-#                     through a cast objc_msgSend and a reader cannot see that.
-#   the RUNTIME half  port-store-selftest.m asks the predicate the chokepoint uses -- the receiver's
+#   the GUARD        host-write-guard.py drops the comment lines and looks for this Mac's own
+#                     ASCredentialIdentityStore class NAME in what is left. The question is CAN A PROBE
+#                     EVEN HOLD THE HOST'S STORE. It does not look at the four writing selectors at all --
+#                     those are the scan's -- and it is not what stands between this machine and its
+#                     AutoFill state, because a probe sends selectors as strings through a cast
+#                     objc_msgSend and reading a file cannot see that.
+#   the SCAN         writing-selectors-scan.py greps the four writing selector names over the harness
+#                     sources with the allowlist. The question is CAN A WRITE BE DISPATCHED WITHOUT THE
+#                     RECEIVER CHECK -- every hit must be a comment, a string, or an allowlist line.
+#   the RUNTIME half port-store-selftest.m asks the predicate the chokepoint uses -- the receiver's
 #                     class name out of the runtime -- about this Mac's own
 #                     ASCredentialIdentityStore class object, with the four selectors as strings and
-#                     nothing sent. This is the half that protects the machine, and it does not depend
-#                     on reading any source.
+#                     nothing sent. The question is WOULD A WRITE TO THE HOST'S STORE GET THROUGH, and
+#                     this is the half that protects the machine, because it does not depend on reading
+#                     any source.
 python3 "$here/host-write-guard.py" "$here/values.m" "$here/hostshape.c"
 
 # One -D list, used by every build of the port: the three classes it implements, and the one key it owns.

@@ -43,8 +43,10 @@ FORBIDDEN = (
     "replaceCredentialIdentitiesWithIdentities",
     "removeAllCredentialIdentities",
 )
-# A statement is any text that is not a comment; the class the probe resolves is the question, so the
-# comment lines are the only ones allowed to name the host's store.
+# A LINE is what this reads, and the word is deliberate: a previous version of this comment said
+# "statement" while the function below is a per-line filter, and the two disagreed in the same way the
+# docstring did. The class the probe resolves is the question, so the comment lines are the only ones
+# allowed to name the host's store.
 def code_statements(text):
     out = []
     for line in text.split("\n"):
