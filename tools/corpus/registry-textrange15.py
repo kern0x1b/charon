@@ -16,8 +16,10 @@ FACTS = "facts/UIKit/NSTextRange15.md"
 SOURCE = ("UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under "
           ".agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m")
 
-OWNED = ("NSTextRange", "NSTextSelection", "NSTextElement", "NSTextParagraph", "NSTextSelectionNavigation",
-         "NSTextLocation", "NSTextSelectionDataSource")
+OWNED_CLASSES = ("NSTextRange", "NSTextSelection", "NSTextElement", "NSTextParagraph", "NSTextSelectionNavigation")
+OWNED_PROTOCOLS = ("NSTextLocation", "NSTextSelectionDataSource")
+# The constants of this group: the cases of the seven enumerations the headers declare.
+VALUES = re.compile(r"NSTextSelection(Affinity|Granularity|Navigation\w+)\w*$")
 # NSTextElementProvider is NSTextContentManager's protocol, and its seven members with it: nothing in this
 # group sends them, and the content manager is the next group's work.
 SKIP = re.compile(r"NSTextElementProvider")
@@ -111,24 +113,28 @@ def load_rows():
     the group that carries that class."""
     with open(CORPUS, newline="") as handle:
         rows = list(csv.DictReader(handle, delimiter="\t"))
-    keep = []
+    keep, values = [], []
     for row in rows:
         if row["framework"] != "UIKit" or row["lang"] != "objc":
             continue
         api = row["api"]
         if SKIP.search(api):
             continue
-        method = re.match(r"[-+]\[([A-Za-z_]+) ", api)
-        if method:
-            name = method.group(1)
-        elif "." in api:
-            name = api.split(".")[0]
-        else:
-            name = api
-        if name not in OWNED:
+        if api in OWNED_CLASSES or api in OWNED_PROTOCOLS:
+            keep.append(row)
             continue
-        keep.append(row)
-    return keep
+        method = re.match(r"[-+]\[([A-Za-z_]+) ", api)
+        name = method.group(1) if method else api.split(".")[0]
+        if name in OWNED_CLASSES or name in OWNED_PROTOCOLS:
+            keep.append(row)
+        elif VALUES.match(api):
+            # A case of an enumeration or a macro is written into the application by the compiler and neither
+            # side of the check can see it, so it gets no entry: registry/README.md. It is counted and named
+            # here, not dropped, so that a row of this group the script did not account for cannot pass by
+            # being skipped.
+            values.append(row)
+        # Anything else is another group's row and is not this script's business.
+    return keep, values
 
 def entry_for(row):
     api = row["api"]
@@ -149,20 +155,13 @@ def entry_for(row):
         effect = METHODS.get(api)
         return dict(api=api, kind=kind, introduced=row["introduced"], minimum="6.0", status="implemented",
                     facts=FACTS, effect=effect, source=SOURCE) if effect else None
-    if kind in ("constant", "enum"):
-        # A case of an enumeration or a macro is written into the application by the compiler and neither side
-        # of the check can see it, so it gets no entry: registry/README.md.
-        return "skip"
-    raise SystemExit("unhandled kind " + kind + " for " + api)
+    raise SystemExit("unhandled kind " + kind + " for " + api + " - give it the effect it answers, above")
 
 def main():
-    rows = load_rows()
-    entries, missing, skipped = [], [], 0
+    rows, values = load_rows()
+    entries, missing = [], []
     for row in rows:
         entry = entry_for(row)
-        if entry == "skip":
-            skipped += 1
-            continue
         if entry is None:
             missing.append(row["kind"] + " " + row["api"])
             continue
@@ -176,6 +175,9 @@ def main():
     kinds = {}
     for entry in entries:
         kinds[entry["kind"]] = kinds.get(entry["kind"], 0) + 1
-    print(f"{len(rows)} rows: {len(entries)} entries {kinds}, {skipped} header-only values with no entry")
+    print(f"{len(rows)} rows of the group: {len(entries)} entries {kinds}")
+    print(f"plus {len(values)} header-only values, which get no entry by registry/README.md:")
+    for name in sorted({v['api'] for v in values}):
+        print("  " + name)
 
 main()
