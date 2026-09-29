@@ -39,14 +39,31 @@ warnings appear and none appear unflipped, and **all seven of this protocol's qu
 optional**, so the required set is empty on both sides — which is what the header says and what the
 port now agrees with.
 
-## The fifteen rows that stay absent
+## The count, and which is right
 
-The other **fifteen** of the twenty-three are not claimed: the transition controller's two properties
-(`loadingProgress`, `targetView`), the view controller's nine properties, and the four instance
-methods, with the two `transitionControllerForDocument…` spellings counting as two rows for one
-method. A class is not `implemented` until all of its members are, so those wait for the pieces that
-build it: the transition controller's two properties, then the nine properties, then the instance
-methods, each with its own rows at the header's own availability and its own check.
+**Twenty-three is the right number and twenty-one was my error.** The corpus has twenty-three rows in
+this family, and the two pairs of duplicate spellings are *two rows each*, not one: they are
+different names with different `introduced` values — `didPickDocumentURLs:` at 11.0 and
+`didPickDocumentsAtURLs:` at 12.0, and `transitionControllerForDocumentURL:` at 11.0 and
+`transitionControllerForDocumentAtURL:` at 12.0 — so collapsing each pair to one method loses a row
+the corpus counts and the registry must answer. Eleven are on the view controller, two on the
+transition controller, one is the delegate protocol, and the remaining seven are its questions.
+
+## Eleven rows claimed, twelve to go
+
+`documentbrowser.json` now carries **eleven**: the delegate protocol and its seven questions, and
+the transition controller with both of its properties. All three groups are counted from the AST —
+the protocol's selectors from `mangledName`, the class's properties from the AST's property
+declarations — and not written out by hand, so the registry and the compiler cannot disagree about
+how many there are.
+
+The class is `implemented` because both of its members are, and its entry has moved out of
+`ios11.json` where it sat `absent` into the file the check covers. Its own check is the third
+control: dropping `weak` and `nullable` from `targetView` in a scratch copy is caught and named.
+
+**Twelve rows stay absent**: the view controller's nine properties and the three instance methods,
+counted the same way. A class is not `implemented` until all of its members are, so they wait for
+the piece that builds it.
 
 
 

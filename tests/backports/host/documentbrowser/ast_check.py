@@ -49,6 +49,21 @@ PORT_HEADER = os.path.join(PORT_DIR, "UIDocumentBrowserViewControllerDelegate.h"
 PORT_TYPES = os.path.join(PORT_DIR, "CharonDocumentBrowserTypes.h")
 
 METHOD_START = re.compile(r"^\s*[-+]\s*\(")
+# the class this piece also carries, its two properties, and the attributes the check compares
+CLASS = "UIDocumentBrowserTransitionController"
+CLASS_PORT = os.path.join(PORT_DIR, "UIDocumentBrowserTransitionController.h")
+# the type each side must agree on, as the AST's qualType writes it, nullability included: the
+# header's own declaration is the reference and both sides are compared with it, so the expected
+# spelling is the header's and the port has to match it rather than the other way round
+CLASS_PROPERTIES = {"loadingProgress": ("strong", "nonatomic", "nullable"),
+                    "targetView": ("weak", "nonatomic", "nullable")}
+# a forward declaration of what the class header names, so its own translation unit can be read
+# without the umbrella: the SDK declares this class too, and importing it would bring the SDK's copy
+CLASS_TU = """#import <Foundation/Foundation.h>
+@protocol UIViewControllerAnimatedTransitioning;
+@class UIView;
+#import "%(header)s"
+"""
 REQUIRED_WARNING = re.compile(
     r"method '([^']+)' in protocol '%s' not implemented" % PROTOCOL)
 
@@ -81,11 +96,11 @@ def _tu(header, port):
     return source
 
 
-def _clang(source, extra=()):
+def _clang(source, extra=(), name=PROTOCOL):
     return subprocess.run(
         ["xcrun", "clang", "-fsyntax-only", "-fobjc-arc", "-target", TARGET, "-isysroot", SDK,
          "-I", UIKIT_HEADERS, "-I", PORT_DIR, *extra,
-         "-Xclang", "-ast-dump=json", "-Xclang", "-ast-dump-filter=%s" % PROTOCOL, source],
+         "-Xclang", "-ast-dump=json", "-Xclang", "-ast-dump-filter=%s" % name, source],
         capture_output=True, text=True)
 
 
@@ -127,6 +142,63 @@ def required_selectors(header, port):
     if result.returncode != 0:
         raise SystemExit("the conformer did not compile: %s" % result.stderr[:400])
     return set(REQUIRED_WARNING.findall(result.stderr))
+
+
+def class_properties(header, port):
+    """The class's own properties from the AST, with the type and the attributes the check compares.
+
+    The type comes from the AST's own qualType with the availability macros stripped, so a port that
+    declared the property nullable where the header does not would answer a caller differently and
+    is caught. `strong` is the default and is not written on a property line, so what is compared is
+    a *changed* attribute: a property that lost `weak` or `nullable` is caught by the absence of the
+    key rather than by the presence of another.
+    """
+    folder = tempfile.mkdtemp()
+    source = os.path.join(folder, "tu.m")
+    if port:
+        open(source, "w").write(CLASS_TU % {"header": os.path.abspath(header)})
+    else:
+        open(source, "w").write('#import <UIKit/UIKit.h>\n#import "%s"\n' % os.path.abspath(header))
+    result = _clang(source, name=CLASS)
+    if result.returncode != 0:
+        raise SystemExit("clang failed for %s: %s" % (header, result.stderr[:400]))
+    decoder = json.JSONDecoder()
+    documents, index, raw = [], 0, result.stdout
+    while index < len(raw):
+        while index < len(raw) and raw[index] in " \n\t\r":
+            index += 1
+        if index >= len(raw):
+            break
+        document, index = decoder.raw_decode(raw, index)
+        documents.append(document)
+    found = {}
+
+    def walk(node):
+        if node.get("kind") == "ObjCPropertyDecl":
+            found[node.get("name")] = {
+                "type": _clean_type((node.get("type") or {}).get("qualType", "")),
+                "attrs": tuple(a for a in ("readonly", "copy", "nonatomic", "weak", "strong", "nullable")
+                               if node.get(a)),
+            }
+        for child in node.get("inner", []):
+            walk(child)
+
+    for document in documents:
+        walk(document)
+    return found
+
+
+def _clean_type(text):
+    for macro in ("API_AVAILABLE", "API_UNAVAILABLE", "API_DEPRECATED", "API_DEPRECATED_WITH_REPLACEMENT",
+                  "NS_SWIFT_NAME", "NS_SWIFT_UNAVAILABLE", "NS_REFINED_FOR_SWIFT", "NS_SWIFT_SENDABLE"):
+        while macro in text:
+            head = text.index(macro)
+            if "(" in text[head:head + 80] and ")" in text[head:head + 160]:
+                end = text.index(")", head) + 1
+            else:
+                end = head + len(macro)
+            text = text[:head] + text[end:]
+    return " ".join(text.split())
 
 
 def raw_count(path):
@@ -215,7 +287,38 @@ def main():
     print("  control, %s removed: the AST went %d -> %d and named it"
           % (victim, len(port), len(gone)))
 
-    print("PASS: the port's declaration is the header's, selectors and optionality")
+    # The transition controller: two properties, type and attributes from the AST on both sides.
+    header_class = class_properties(SDK_HEADER, False)
+    port_class = class_properties(CLASS_PORT, True)
+    print("%s: header %d properties, port %d"
+          % (CLASS, len(header_class), len(port_class)))
+    for name, want_attrs in sorted(CLASS_PROPERTIES.items()):
+        for source, label in ((header_class, "header"), (port_class, "port")):
+            if name not in source:
+                print("FAIL: %s does not declare %s, which the %s declares" % (label, name, label))
+                return 1
+    if header_class != port_class:
+        for name in sorted(set(header_class) | set(port_class)):
+            if header_class.get(name) != port_class.get(name):
+                print("FAIL: %s is %s in the header and %s in the port"
+                      % (name, header_class.get(name), port_class.get(name)))
+                return 1
+            for attribute in want_attrs:
+                if attribute not in source[name]["attrs"]:
+                    print("FAIL: %s declares %s without %s" % (label, name, attribute))
+                    return 1
+    # Control three: one attribute dropped from the port's copy, and it must be named.
+    control = os.path.join(RUNS, "control-attribute.h")
+    open(control, "w").write(open(CLASS_PORT, errors="replace").read()
+                            .replace("@property (weak, nullable, nonatomic) UIView *targetView",
+                                     "@property (nonatomic) UIView *targetView", 1))
+    broken = class_properties(control, True)
+    if broken.get("targetView", {}).get("attrs") == port_class["targetView"]["attrs"]:
+        print("FAIL: the control dropped weak and nullable from targetView and nothing noticed")
+        return 1
+    print("  control, targetView's weak and nullable dropped: caught")
+
+    print("PASS: the port's declaration is the header's, selectors, optionality, and the class")
     return 0
 
 

@@ -80,6 +80,36 @@
    "effect": "the document browser's delegate, declared as the 26.2 header declares it: seven questions, all of them optional, with the pick pair spelled two ways at 11.0 and 12.0",
    "facts": "facts/UIKit/DocumentBrowser.md",
    "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
+  },
+  {
+   "api": "UIDocumentBrowserTransitionController.loadingProgress",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the transition's own loadingProgress, as the header declares it: the progress of the document being loaded, for a transition that shows it, nonatomic, strong",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py, which reads the type and the attributes from the AST's own qualType and keys on both sides; the control that drops weak and nullable from targetView is caught"
+  },
+  {
+   "api": "UIDocumentBrowserTransitionController.targetView",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the transition's own targetView, as the header declares it: the view the transition animates to, nonatomic, weak",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, and checked against it by tests/backports/host/documentbrowser/ast_check.py, which reads the type and the attributes from the AST's own qualType and keys on both sides; the control that drops weak and nullable from targetView is caught"
+  },
+  {
+   "api": "UIDocumentBrowserTransitionController",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the object that drives a document browser transition, carrying where it is going and how far the load has got, and naming -init unavailable as the header does",
+   "facts": "facts/UIKit/DocumentBrowser.md",
+   "source": "the header of SDK 26.2, checked by tests/backports/host/documentbrowser/ast_check.py"
   }
  ]
 }
