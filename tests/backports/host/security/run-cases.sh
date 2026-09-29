@@ -39,7 +39,19 @@ run_case() {
         failures=$((failures + 1))
         return
     fi
-    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1 || true
+    ( cd "$work" && "$build/$name" ) > "$build/$name.out" 2>&1
+    status=$?
+    # A SIGNAL IS NOT A DIFFERENCE. exit 128+N is death by signal N, and the output is whatever was
+    # printed before the process died - so running the comparison on it would say "the port's class was
+    # not found" about a process that never got that far. Three mutations in this series were caught
+    # this way (134 for the C strings, 139 for the dispatch_data values) and each was reported as a
+    # harness failure rather than as the crash it was.
+    if [ "$status" -ge 128 ]; then
+        echo "CRASH  $name  crashed: signal $((status - 128)) (exit $status), not a difference"
+        sed 's/^/       /' "$build/$name.out" | tail -3
+        failures=$((failures + 1))
+        return
+    fi
     if python3 "$H/$compare" "$build/$name.out" > "$build/$name.green" 2>&1; then
         echo "GREEN  $name  $(tail -1 "$build/$name.green")"
     else
@@ -65,7 +77,13 @@ run_mutation() {
         failures=$((failures + 1))
         return
     fi
-    ( cd "$work" && "$build/mutant-$name" ) > "$build/mutant-$name.out" 2>&1 || true
+    ( cd "$work" && "$build/mutant-$name" ) > "$build/mutant-$name.out" 2>&1
+    status=$?
+    if [ "$status" -ge 128 ]; then
+        echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status), not a difference"
+        failures=$((failures + 1))
+        return
+    fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
         echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
         failures=$((failures + 1))
@@ -93,6 +111,26 @@ N=$S/SecTrustNetworkFetch7_0.m
 G=$S/SecTrustGetTrustResult7_0.m
 
 echo "== the Security host cases, from $(git -C "$work" rev-parse --short HEAD 2>/dev/null || echo '?') =="
+# The two verdicts a driver must keep apart, checked first so a driver that has conflated them says so
+# before it goes on to report anything else.
+if xcrun clang -Wall -o "$build/crash-case" "$H/crash-case.c" > "$build/crash-case.log" 2>&1; then
+    # set -e EXITS ON A FAILING SIMPLE COMMAND, so "cmd; status=$?" never reaches the assignment: the
+    # script died on the segfault before it could record the exit code it was trying to record, which is
+    # the same class of bug as the one this commit fixes. `cmd || status=$?` is the form that survives.
+    clean=0; missing=0; crashed=0
+    "$build/crash-case" clean   >/dev/null 2>&1 || clean=$?
+    "$build/crash-case" missing >/dev/null 2>&1 || missing=$?
+    "$build/crash-case" crash   >/dev/null 2>&1 2>/dev/null || crashed=$?
+    if [ "$clean" -eq 0 ] && [ "$missing" -eq 0 ] && [ "$crashed" -ge 128 ]; then
+        echo "GREEN  verdicts     the three shapes behave: clean 0, missing $missing, crash $crashed"
+    else
+        echo "RED    verdicts     clean $clean, missing $missing, crash $crashed - one shape is wrong"
+        failures=$((failures + 1))
+    fi
+else
+    echo "BUILD  crash-case FAILED to build"
+    failures=$((failures + 1))
+fi
 run_case supported          compare-supported.py          $H/supported.m $F
 run_case padding           compare-padding.py           $H/padding.m $F
 run_case verify-pairs      compare-verify-pairs.py      $H/verify-pairs.m $F
