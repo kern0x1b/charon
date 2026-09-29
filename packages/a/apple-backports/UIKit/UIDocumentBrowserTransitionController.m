@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIViewController.h>
-#import <UIKit/UIViewControllerAnimatedTransitioning.h>
+#import <UIKit/UIViewControllerTransitioning.h>
 
 #import "UIDocumentBrowserTransitionController.h"
 

@@ -21,7 +21,7 @@
 // everything else it names.
 #import <Foundation/Foundation.h>
 #import <UIKit/UIViewController.h>
-#import <UIKit/UIViewControllerAnimatedTransitioning.h>
+#import <UIKit/UIViewControllerTransitioning.h>
 
 @class UIBarButtonItem, UIDocumentBrowserAction, UIDocumentBrowserViewController;
 @protocol UIDocumentBrowserViewControllerDelegate;
