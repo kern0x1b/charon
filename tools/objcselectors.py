@@ -58,15 +58,18 @@ def methods(cache, ro, base_off, limit):
     # working reader return nothing.
     if mo >= limit:
         return []
-    entsize, count = struct.unpack_from('<II', cache._m, mo)
-    # The first word is NOT a stride and NOT a zero flag word: on this 6.1.3 cache it reads 0x0000000f
-    # for lists whose entries are plainly 12 bytes apart, so deriving the stride from it - or asserting
-    # the small-method-list flag bits are zero - would both refuse a list this tool can read. It is
-    # REPORTED instead, and the stride is the 12 bytes the raw dump measured.
-    step = 12
-    if entsize & 0xFFFF0000:
-        raise CacheError('a method list at 0x%x carries a word 0x%08x whose high bits I do not read'
-                         % (mo, entsize))
+    word, count = struct.unpack_from('<II', cache._m, mo)
+    # The first word is entsize | flags. The SMALL-method-list marker is BIT 31, and a 6.1.3 cache has no
+    # small method lists, so bit 31 set is a layout this tool does not read. The two LOW bits are the
+    # runtime's marks, set on every list in a cache, and are not flags to reject.
+    if word & 0x80000000:
+        raise CacheError('the method list at 0x%x is marked SMALL (bit 31 set, word 0x%08x), and a 6.1.3 '
+                         'cache has no small method lists, so this layout is not one I read' % (mo, word))
+    # The stride is DERIVED per list, not assumed: entsize is the word with the two flag bits cleared.
+    step = word & 0xfffc
+    if step != 12:
+        raise CacheError('the method list at 0x%x declares an entry size of %d and an armv7 method_t is 12 '
+                         'bytes, so this list is rejected rather than misread' % (mo, step))
     out = []
     for i in range(count):
         m = mo + 8 + i * step
