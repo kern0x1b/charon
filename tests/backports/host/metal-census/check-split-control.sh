@@ -23,6 +23,9 @@ for candidate in "$HOME"/.xmake/packages/i/iphoneos-sdk/16.4/*/Developer.app/Con
     if [ -f "$candidate/SDKSettings.json" ]; then SDK="$candidate"; break; fi
 done
 [ -n "$SDK" ] || { echo "FAIL: no iOS 16.4 SDK" >&2; exit 1; }
+# ONE guard for every script that removes a scratch path - see work-guard.sh.
+. "$(dirname "$0")/work-guard.sh"
+work_ok "$work" || { echo "FAIL: WORK=$work is not a usable scratch path; see work-guard.sh" >&2; exit 1; }
 rm -rf "$work"
 mkdir -p "$work/src" "$work/obj" "$work/obj-fixed"
 
@@ -47,7 +50,16 @@ if ( cd "$work/src" && ONLY_SPLIT=1 SPLIT_DIR="$work/obj" SPLIT_OUT="$work/split
     sed 's/^/    /' "$work/negative.out" >&2
     exit 1
 fi
-grep -E "^error: release-split" "$work/negative.out" | sed 's/^/    /' || true
+# IT MUST BE REJECTED BY CHECK 2, AND IT MUST NAME THE OBJECT. A half that merely exited non-zero
+# had detected nothing: it failed to COMPILE, or xmake was missing, or the objects dir was wrong.
+# Only release-split naming SecProtocolMetadataAccessors13_0.o is the gate refusing the object.
+if ! grep -qE "^error: release-split.*SecProtocolMetadataAccessors13_0\.o" "$work/negative.out"; then
+    echo "FAIL: the negative did not fail BY BEING DETECTED - release-split did not name" >&2
+    echo "  SecProtocolMetadataAccessors13_0.o, so nothing detected the mixed releases:" >&2
+    sed 's/^/    /' "$work/negative.out" | head -6 >&2
+    exit 1
+fi
+grep -E "^error: release-split.*SecProtocolMetadataAccessors13_0\\.o" "$work/negative.out" | sed 's/^/    /'
 
 # the FIXED pair: two objects, one release each
 rm -f "$work/src"/*.m
@@ -57,6 +69,18 @@ rm -f "$work/src"/*.m
     > "$work/src/SecProtocolMetadataAccessors16_0.m"
 build "$work/src" "$work/obj-fixed"
 echo "the POSITIVE - the fixed pair, which must pass:"
+# THE STATUS IS TAKEN BEFORE THE OUTPUT IS INDENTED. The positive used to be piped into sed, and a
+# pipeline's exit status is its LAST command's: sed succeeded, so `set -e` never saw the positive
+# fail, and a run in which the positive was the pre-fix object still printed "the negative fails
+# and the positive passes" and exited 0.
+positive_status=0
 ( cd "$work/src" && ONLY_SPLIT=1 SPLIT_DIR="$work/obj-fixed" SPLIT_OUT="$work/split-fixed.txt" \
-    WORK="$work/w2" sh "$here/pre-export.sh" ) | sed 's/^/    /'
+    WORK="$work/w2" sh "$here/pre-export.sh" ) > "$work/positive.out" 2>&1 || positive_status=$?
+sed 's/^/    /' "$work/positive.out"
+if [ "$positive_status" -ne 0 ]; then
+    echo "FAIL: the positive FAILED (exit $positive_status), so check 2 rejects the fixed pair too" >&2
+    exit 1
+fi
 echo "check-split-control: the negative fails and the positive passes"
+# THE SCRATCH IS REMOVED HERE.
+rm -rf "$work"

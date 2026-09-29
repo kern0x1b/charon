@@ -118,3 +118,18 @@ also aborts. Both aborts are why the probe counts in the callback and inspects a
 So the per-header table waits on a libclang that walks, or on an AST that carries a file for a
 definition. Neither exists here today, and the aggregate counts above are the most this census can
 stand behind.
+
+## The harnesses in `metal-census/`, and the one thing owed about them
+
+`stitch.sh`, `reflection.sh`, `argbinding.sh`, `pre-export.sh` and `check-split-control.sh` are the
+census's host harnesses. Each is 100755, each guards its scratch with `work-guard.sh` and removes it
+at the end, and each is run BY HAND from `packages/a/apple-backports` — **nothing in the tree runs
+them.** `git grep` finds each one named only by itself and by the facts file that describes it, and
+there is no test list, Makefile target or lua suite that drives this directory. `run.sh` in the same
+directory is MetalKit's own differential, not a harness runner.
+
+**Owed:** a runner that drives all of them, so a green run is something the machine records rather
+than something a band remembers. It is not done here because no such runner exists to add one to,
+and inventing a second entry point for harnesses that already have one would be the duplication
+this workspace forbids. The honest statement is the property itself: until a runner exists, these
+harnesses are run on demand, and a change to one of them is only exercised by whoever runs it.
