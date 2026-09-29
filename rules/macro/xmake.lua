@@ -16,12 +16,13 @@ rule("macro")
         if not project.required_package("swift-syntax") then
             raise("target(%s) is a macro plugin, and its project does not require charon@swift-syntax: the toolchain's own swift-syntax does not export CompilerPlugin, so there is nothing else to build it against", target:name())
         end
-        -- Own the sources: without this the target keeps xmake's *default* rules as well, and the
-        -- first real build measured what that does -- the rule's own `on_build` ran and produced its
-        -- usual output, and the default rules then treated the same .swift files as C and handed
-        -- swiftc `arm64-apple-ios` as an input file ("error opening input file 'arm64-apple-ios'").
-        -- A rule that is the whole build of its target says so, or it is one of two.
-        set_default(false)
+        -- Own the sources. `set_default(false)` was tried here first and **measured not to work**:
+        -- the next build after it failed with the identical "error opening input file
+        -- 'arm64-apple-ios'", because the default rules are the *target's*, and a rule's
+        -- `set_default` speaks for the task the rule defines, not for the target's rule set. The
+        -- only thing that replaces a target's rules is the project: `set_rules("macro", {rootdir = …})`
+        -- where I measured with `add_rules`. The rule says so here rather than leaving every project
+        -- to find it, and its own README line names the spelling.
     end)
 
     -- `on_build`, not `on_build_file`: a plugin is one executable from the target's whole source
