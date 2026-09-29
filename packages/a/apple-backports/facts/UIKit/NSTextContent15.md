@@ -98,7 +98,10 @@ don't produce any legal location". **`offsetFromLocation:toLocation:`** is `NSNo
 pair that is not one document's, the header's "when locations are not in the same document".
 
 **The elements are the document's paragraphs.** One `NSTextParagraph` per paragraph, cut at
-the paragraph endings, and a CR LF pair is one ending of two characters. The delegate's
+the paragraph endings, and a CR LF pair is one ending of two characters. The header names no
+other paragraph separator, so the Unicode line and paragraph separators are ordinary
+characters here; that is the port's reading and it is pinned by a case, because nothing
+above it would notice a change. The delegate's
 `-textContentStorage:textParagraphWithRange:` is asked first and its paragraph used when it
 gives one, which is the header's own "custom text paragraph" hook; otherwise the range's
 attributes are the paragraph's contents, which is the header's standard mapping.
@@ -191,7 +194,12 @@ that has no such protocol object — which is the truth for all four.
 - **What the host's element enumeration does**, and therefore whether the paragraph cut, the
   delegate hook and the two directions are right. They are written from the header and are the
   part of this delivery most worth a re-measurement on a build where a content manager can be
-  made.
+  made. What the header does settle is held by fourteen cases in
+  `tests/backports/host/uikit2/content15_test.m`: the forward cut for a line feed, a
+  carriage-return-and-line-feed pair, a lone carriage return, two endings in a row, a document
+  with no ending and a document with none of the separators the header names; the backward walk
+  from the end of the document, from a location and from a location at a paragraph's start; the
+  same walk over a CR LF document; and a range's own end deciding where the array stops.
 
 ## The probe
 

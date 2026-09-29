@@ -38,6 +38,9 @@
 @property (nonatomic, strong, nullable) NSTextStorage *textStorage;
 @property (nonatomic, copy, nullable) NSAttributedString *attributedString;
 @property (nonatomic, readonly) id documentRange;
+- (nullable id)enumerateTextElementsFromLocation:(nullable id)textLocation
+                                          options:(NSTextContentManagerEnumerationOptions)options
+                                       usingBlock:(BOOL (NS_NOESCAPE ^)(NSTextElement *element))block;
 - (NSString *)description;
 @end
 
@@ -68,6 +71,8 @@
 @end
 
 @interface CharonHostCharonTextLocation : NSObject
++ (instancetype)locationWithTextContentStorage:(id)textContentStorage offset:(NSInteger)offset;
+@property (nonatomic, readonly, weak) id textContentStorage;
 @property (nonatomic, readonly) NSInteger offset;
 @end
 
@@ -337,12 +342,132 @@ static void compare_storage(void)
                  "a content storage describes itself with its class and its document", described(port));
 }
 
+// The document cut into paragraphs. This is the one part of the storage the differential cannot reach and the
+// differential used not to reach at all: the host's own content storage cannot be made on the measured build
+// (the case above), so there is no second side to hold this against, and what is written here is the port held
+// against the rule the facts file states - one paragraph per paragraph ending, a CR LF pair one ending of two
+// characters, and a last paragraph that runs to the end of the document with no ending of its own. The rule is
+// in facts/UIKit/NSTextContent15.md, "The elements are the document's paragraphs"; the header names no other
+// paragraph separator, which is why the line separator and the paragraph separator characters are one paragraph
+// here rather than three, and that is pinned too so a change to it is a decision rather than a drift.
+static NSString *paragraph_bounds(NSArray *elements)
+{
+    NSMutableArray *parts = [NSMutableArray array];
+    for (CharonHostNSTextParagraph *element in elements) {
+        CharonHostCharonTextLocation *from = (CharonHostCharonTextLocation *)[element.elementRange valueForKey:@"location"];
+        CharonHostCharonTextLocation *to = (CharonHostCharonTextLocation *)[element.elementRange valueForKey:@"endLocation"];
+        [parts addObject:[NSString stringWithFormat:@"[%ld,%ld)", (long)from.offset, (long)to.offset]];
+    }
+    return [parts componentsJoinedByString:@" "];
+}
+
+// $1: the document's text, $2: the paragraph boundaries the rule gives it, $3: the case's name.
+static void check_paragraphs(NSString *text, NSString *expected, NSString *name)
+{
+    NSTextStorage *backing = [[NSTextStorage alloc] initWithAttributedString:
+                              [[NSAttributedString alloc] initWithString:text]];
+    CharonHostNSTextContentStorage *port = [[port_storage_class() alloc] initWithTextStorage:backing];
+    NSArray *elements = [port textElementsForRange:[port documentRange]];
+    charon_check([paragraph_bounds(elements) isEqualToString:expected], name.UTF8String,
+                 [NSString stringWithFormat:@"port %@", paragraph_bounds(elements)]);
+}
+
+static void compare_paragraphs(void)
+{
+    check_paragraphs(@"one\ntwo\nthree", @"[0,4) [4,8) [8,13)", @"a line feed ends a paragraph, and the last one runs to the end");
+    check_paragraphs(@"one\ntwo\n", @"[0,4) [4,8)", @"a document ending in a line feed has no empty paragraph after it");
+    check_paragraphs(@"one\r\ntwo\r\n", @"[0,5) [5,10)", @"a carriage return and a line feed are one ending of two characters");
+    check_paragraphs(@"one\rtwo\r", @"[0,4) [4,8)", @"a carriage return with no line feed after it ends a paragraph by itself");
+    check_paragraphs(@"one\n\ntwo", @"[0,4) [4,5) [5,8)", @"two endings in a row leave an empty paragraph between them");
+    // The header names no paragraph separator beyond the two C0 line endings, so the Unicode line and paragraph
+    // separators are ordinary characters here. This pins that reading: it is the port's own, and the facts file
+    // says so, but nothing above would notice if it changed.
+    check_paragraphs(@"one\u2028two\u2029three", @"[0,13)", @"the Unicode line and paragraph separators are not paragraph endings here");
+    check_paragraphs(@"plain", @"[0,5)", @"a document with no ending at all is one paragraph");
+
+    // The range's own end decides where the array stops, which is the header's "an array of NSTextElement
+    // intersecting the specified range in sequence": a range over the second paragraph only returns that one,
+    // and a range over two returns two, with the element that meets the range's end still in it.
+    NSTextStorage *backing = [[NSTextStorage alloc] initWithAttributedString:
+                              [[NSAttributedString alloc] initWithString:@"one\ntwo\nthree"]];
+    CharonHostNSTextContentStorage *port = [[port_storage_class() alloc] initWithTextStorage:backing];
+    CharonHostCharonTextLocation *at4 = [CharonHostCharonTextLocation locationWithTextContentStorage:port offset:4];
+    CharonHostCharonTextLocation *at8 = [CharonHostCharonTextLocation locationWithTextContentStorage:port offset:8];
+    CharonHostCharonTextLocation *at12 = [CharonHostCharonTextLocation locationWithTextContentStorage:port offset:12];
+    NSTextRange *second = [[NSTextRange alloc] initWithLocation:at4 endLocation:at8];
+    NSTextRange *firstTwo = [[NSTextRange alloc] initWithLocation:at4 endLocation:at12];
+    charon_check([paragraph_bounds([port textElementsForRange:second]) isEqualToString:@"[4,8)"],
+                 "a range over one paragraph returns that paragraph and no other",
+                 paragraph_bounds([port textElementsForRange:second]));
+    charon_check([paragraph_bounds([port textElementsForRange:firstTwo]) isEqualToString:@"[4,8) [8,13)"],
+                 "and a range over two returns both, the one that meets its end included",
+                 paragraph_bounds([port textElementsForRange:firstTwo]));
+    // Backward enumeration, which reads the document from its end: the header's own rule is that it starts with
+    // the element *preceding* the one containing a given location, and at the document's end when the location
+    // is nil, so the two are different and a forward case cannot stand for it.
+    NSMutableArray *backward = [NSMutableArray array];
+    [port enumerateTextElementsFromLocation:nil
+                                    options:NSTextContentManagerEnumerationOptionsReverse
+                                 usingBlock:^BOOL(NSTextElement *element) {
+                                     [backward addObject:element];
+                                     return YES;
+                                 }];
+    charon_check([paragraph_bounds(backward) isEqualToString:@"[8,13) [4,8) [0,4)"],
+                 "a backward enumeration with no location walks the paragraphs from the end of the document",
+                 paragraph_bounds(backward));
+    NSMutableArray *backwardAtTen = [NSMutableArray array];
+    [port enumerateTextElementsFromLocation:at12
+                                    options:NSTextContentManagerEnumerationOptionsReverse
+                                 usingBlock:^BOOL(NSTextElement *element) {
+                                     [backwardAtTen addObject:element];
+                                     return YES;
+                                 }];
+    charon_check([paragraph_bounds(backwardAtTen) isEqualToString:@"[4,8) [0,4)"],
+                 "and from a location it starts with the element before the one holding it",
+                 paragraph_bounds(backwardAtTen));
+    NSMutableArray *backwardInside = [NSMutableArray array];
+    [port enumerateTextElementsFromLocation:at4
+                                    options:NSTextContentManagerEnumerationOptionsReverse
+                                 usingBlock:^BOOL(NSTextElement *element) {
+                                     [backwardInside addObject:element];
+                                     return YES;
+                                 }];
+    charon_check([paragraph_bounds(backwardInside) isEqualToString:@"[0,4)"],
+                 "so a location at a paragraph's start enumerates the one before it, not its own",
+                 paragraph_bounds(backwardInside));
+    // A CR LF pair is one ending of two characters whichever way the walk goes, which is the other half of the
+    // paragraph rule and the part a lone-carriage-return document exercises from behind.
+    NSTextStorage *crlf = [[NSTextStorage alloc] initWithAttributedString:
+                           [[NSAttributedString alloc] initWithString:@"one\r\ntwo\r\nthree"]];
+    CharonHostNSTextContentStorage *crlfPort = [[port_storage_class() alloc] initWithTextStorage:crlf];
+    NSMutableArray *crlfBackward = [NSMutableArray array];
+    [crlfPort enumerateTextElementsFromLocation:nil
+                                       options:NSTextContentManagerEnumerationOptionsReverse
+                                    usingBlock:^BOOL(NSTextElement *element) {
+                                        [crlfBackward addObject:element];
+                                        return YES;
+                                    }];
+    charon_check([paragraph_bounds(crlfBackward) isEqualToString:@"[10,15) [5,10) [0,5)"],
+                 "a backward walk over a carriage-return-and-line-feed document cuts the same three paragraphs",
+                 paragraph_bounds(crlfBackward));
+
+    // A location of another document is not this storage's, and the storage refuses the range rather than
+    // answering with elements of its own - the header's rule for a range whose ends are not in the document.
+    CharonHostCharonTextLocation *elsewhere =
+        [CharonHostCharonTextLocation locationWithTextContentStorage:nil offset:4];
+    charon_check([port textElementsForRange:[[NSTextRange alloc] initWithLocation:elsewhere endLocation:at8]].count == 0,
+                 "a range whose start is not this document's intersects nothing",
+                 paragraph_bounds([port textElementsForRange:[[NSTextRange alloc] initWithLocation:elsewhere
+                                                                            endLocation:at8]]));
+}
+
 int main(void)
 {
     @autoreleasepool {
         compare_manager();
         compare_list_element();
         compare_storage();
+        compare_paragraphs();
         printf("checks=%d failures=%d\n", charon_checks, charon_failures);
     }
     return charon_failures;

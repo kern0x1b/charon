@@ -198,13 +198,15 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
         if (![textLocation isKindOfClass:[CharonTextLocation class]] || ((CharonTextLocation *)textLocation).textContentStorage != self)
             return nil;
         from = ((CharonTextLocation *)textLocation).offset;
-        // Going backward, the element that contains the location is the one that precedes it: the header says the
-        // backward enumeration starts there.
-        if (enumeration == NSTextContentManagerEnumerationOptionsReverse)
-            from = [self charon_paragraph_start_before:from];
     } else if (enumeration == NSTextContentManagerEnumerationOptionsReverse) {
         from = length;
     }
+    // Going backward the walk is over the paragraphs that END at an offset, so the offset it starts from is the
+    // end of the document when the location is nil - the last paragraph is the first one enumerated - and the
+    // start of the paragraph holding the location when it is not, because the header says the backward
+    // enumeration starts with the element *preceding* the one containing it.
+    if (enumeration == NSTextContentManagerEnumerationOptionsReverse)
+        from = textLocation ? [self charon_paragraph_start_before:from] : length;
     CharonTextLocation *edge = nil;
     for (NSInteger start = from;;) {
         NSInteger end = [self charon_paragraph_end_after:start limit:length];
@@ -225,7 +227,12 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
         } else {
             if (start <= 0)
                 break;
-            NSInteger paragraphStart = [self charon_paragraph_start_before:start];
+            // The paragraph that ends at `start`, which is the one before the paragraph holding the location and
+            // the next one further back after that. `start` moves to that paragraph's own start, so the walk ends
+            // at the document's first character and never revisits a paragraph.
+            NSInteger paragraphStart = [self charon_paragraph_start_before:start - 1];
+            if (paragraphStart >= start)
+                break;
             NSTextParagraph *paragraph = [self charon_paragraph_from:paragraphStart to:start];
             if (paragraph && ![self charon_should_enumerate:paragraph options:enumeration])
                 paragraph = nil;
@@ -243,20 +250,40 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
 }
 
 // The elements intersecting a range, in sequence: the enumeration from the range's start, stopping at its end.
+// The header's own word for the result is "intersecting", so an element is in the array only while it shares a
+// character with the range, and the enumeration stops at the first that does not - which is the last one, the
+// sequence being in document order. An element that begins exactly where the range ends does not share a
+// character with it and is not in the array.
 - (NSArray<NSTextElement *> *)textElementsForRange:(NSTextRange *)range
 {
     if (!range || !range.location)
         return @[];
     NSMutableArray *elements = [NSMutableArray array];
-    NSInteger end = (NSInteger)[self offsetFromLocation:range.location toLocation:range.endLocation];
-    if (end == NSNotFound)
+    // The two ends as offsets. -offsetFromLocation:toLocation: is the distance between them, not the position of
+    // the second, so a range over the second paragraph would be read as ending where it starts. A range made of
+    // one location ends at the document's end, which is what the header says the one-argument initialiser makes.
+    if ([self offsetFromLocation:range.location
+                     toLocation:range.endLocation ?: [self locationFromLocation:nil withOffset:0]] == NSNotFound)
         return @[];
+    NSInteger start = ((CharonTextLocation *)range.location).offset;
+    NSInteger length = (NSInteger)[[self attributedString] length];
+    NSInteger end = range.endLocation ? ((CharonTextLocation *)range.endLocation).offset : length;
     [self enumerateTextElementsFromLocation:range.location
                                     options:NSTextContentManagerEnumerationOptionsNone
                                  usingBlock:^BOOL(NSTextElement *element) {
+                                     if (!element.elementRange)
+                                         return NO;
+                                     NSInteger from = ((CharonTextLocation *)element.elementRange.location).offset;
+                                     NSInteger to = ((CharonTextLocation *)element.elementRange.endLocation).offset;
+                                     // Two ranges meet when each has a character the other has not, so the element
+                                     // is in the array while it both begins before the range's end and ends after
+                                     // its start. The enumeration is in sequence, so the first element that does
+                                     // not is the last one, and asking for more of them would be walking the
+                                     // document to throw the answers away.
+                                     if (from >= end || to <= start)
+                                         return NO;
                                      [elements addObject:element];
-                                     return end <= (NSInteger)[self offsetFromLocation:range.location
-                                                                                 toLocation:element.elementRange.endLocation];
+                                     return YES;
                                  }];
     return elements;
 }
@@ -302,30 +329,38 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
     for (NSInteger index = start; index < length; index++) {
         if (!charon_is_paragraph_ending(string, (NSUInteger)index))
             continue;
-        // A CR LF pair ends the paragraph at the LF, so the ending is both characters and the next paragraph
-        // starts after both.
-        if ([string characterAtIndex:(NSUInteger)index] == 13 && index + 1 < length &&
-            [string characterAtIndex:(NSUInteger)(index + 1)] == 10)
-            return index + 2;
+        // One character past the ending is the next paragraph's start, and a CR LF pair is one ending of two
+        // characters because charon_is_paragraph_ending does not call the CR of a pair an ending at all.
         return index + 1;
     }
     return length;
 }
 
+// The start of the paragraph that holds `offset`: the position just after the last paragraph ending before it,
+// with a CR LF pair one ending of two characters. It is found by walking the endings forward rather than by
+// stepping back from the offset, because stepping back stops at the first ending it meets and answers the
+// start of the paragraph AFTER that one - which is a paragraph's own start handed straight back, and a walk
+// that asks for the paragraph before that never moves.
 - (NSInteger)charon_paragraph_start_before:(NSInteger)offset
 {
     NSString *string = [self attributedString].string;
-    NSInteger index = offset;
-    while (index > 0) {
-        index--;
-        if (!charon_is_paragraph_ending(string, (NSUInteger)index))
+    NSInteger length = (NSInteger)string.length;
+    if (offset <= 0)
+        return 0;
+    if (offset > length)
+        offset = length;
+    NSInteger start = 0;
+    NSInteger index = 0;
+    while (index < offset) {
+        if (!charon_is_paragraph_ending(string, (NSUInteger)index)) {
+            index++;
             continue;
-        if ([string characterAtIndex:(NSUInteger)index] == 13 && index + 1 < (NSInteger)string.length &&
-            [string characterAtIndex:(NSUInteger)(index + 1)] == 10 && index + 1 == offset)
-            index--;
-        return index + 1;
+        }
+        index++;
+        if (index <= offset)
+            start = index;
     }
-    return 0;
+    return start;
 }
 
 #pragma mark - The element provider's own two questions
