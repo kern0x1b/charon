@@ -77,8 +77,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -87,8 +87,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -97,8 +97,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -107,8 +107,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -117,8 +117,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -127,8 +127,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -137,8 +137,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -147,8 +147,8 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "a CoreGraphics image is not a pixel buffer: these constructors are where Core ML turns one into the other, scaling and cropping it to the size a model asks for and taking an orientation, and this port does not carry that conversion -- so a model of the port's own takes its images as the pixel buffers +featureValueWithPixelBuffer: builds, and nothing here answers an image it did not convert",
-   "effect": "the method is not there: the selector is not sent at all",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
    "source": "SDK 16.4, CoreML"
   },
   {
