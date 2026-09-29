@@ -15,10 +15,16 @@
 
 @synthesize extent = _extent;
 
+// The extent is the whole pixels the rect covers, measured against the system over seven rects: the
+// origin goes down and the far side goes up, which is CGRectIntegral's own rule. Given 0.25 0.5 1.5
+// 1.75 the system answers 0 0 2 3; given -1.5 -2.5 0.5 0.5 it answers -2 -3 1 1; given 1.5 1.5 2.5 2.5
+// it answers 1 1 3 3. The port stored the caller's rect verbatim, so it answered 3.5 6.25 where the
+// system answers 4 7, and every operation on the shape then started from a different rect than the
+// system's did. CGRectStandardize first, so a rect given with a negative side is the rect it names.
 - (instancetype)initWithRect:(CGRect)rect
 {
     if ((self = [super init]))
-        _extent = rect;
+        _extent = CGRectIntegral(CGRectStandardize(rect));
     return self;
 }
 
