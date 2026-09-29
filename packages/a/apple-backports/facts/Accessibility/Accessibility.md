@@ -184,6 +184,35 @@ the copies share, the case could not see whether they did, and when the probe we
 copies in this port that rebuilt the attributed face through an initialiser where the system shares it.
 All four are fixed, and a mutant per class now holds each of them.
 
+### The two protocols, and how a caller gets their metadata
+
+`AXChart` and `AXDataAxisDescriptor` are rows of their own in the registry, and what the port carries for
+them is the declaration and the metadata: `modules/apple/backports.lua`'s `protocol_sources()` reads the
+two `implemented` protocol rows and writes `AccessibilityBackportsProtocols15.0.m`, which names each one
+so clang emits its metadata into that object. `Accessibility/CharonAccessibilityProtocols.h` is the
+header that generated source imports, and it exists because without it the build stops on "file not
+found" - the light guard says so by name.
+
+The port implements **no member** of either protocol: they are declarations an adopter answers, and the
+port has no class of its own that adopts them. What the case checks is that a caller can: it declares a
+class that adopts both, gives it values, and asks it - `conformsToProtocol:` for each, its title, its
+attributed title, the series count of the chart descriptor it was handed, and its own description. On the
+port those answers come from the port's own protocol metadata, and on the host from the framework's.
+
+The adopter is in **both** halves of the case, and that is the whole fix for a hole the first version of
+this case had: the system's Accessibility image does not list `AXChart` in its protocol list, so with no
+adopting class the name resolved on one side and not the other and four of the cases were comparing the
+case's own file with itself. `AXDataAxisDescriptor` never had the problem - the system's own image names
+it - and the case now has the adopter for both so the two halves are asked the same question. The port
+half is also given the generated protocols object, because that object is part of what the port ships and
+its absence would be a real defect; the host half is not, because the host's equivalent is the framework
+it links.
+
+The thirteen cases labelled `declaration.` are the ones that do not test the port's code: their members
+come from whichever header each side compiled against, so a change to Apple's header moves them and
+nothing under `packages/` can. They are counted apart from the behaviour cases in the summary line above,
+so "193 answer the same" is a claim about the port and not about a header.
+
 ### The three fields the port's copies drop, because the system's do
 
 The host's own `-copyWithZone:` drops three fields, and the port drops the same three. Measured twice on
