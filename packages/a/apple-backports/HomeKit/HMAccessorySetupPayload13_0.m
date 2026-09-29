@@ -27,27 +27,13 @@
 
 #import "CharonHomeKitInternal.h"
 
-@interface HMAccessorySetupPayload ()
-// The token is held as the SDK's own type and read only for its presence, and that is deliberate rather
-// than a shortcut: the port does not carry HMAccessoryOwnershipToken, so it cannot inspect what is inside
-// one, and pretending otherwise by copying its bytes would claim a check the port never made. A nil token
-// is not an error here even though the URL is not allowed to be nil -- the header types the token
-// nullable, and a caller that has none is answering a question the header lets it leave open.
-@property (nonatomic, strong, nullable) HMAccessoryOwnershipToken *charon_ownershipToken;
-@end
-
-@implementation HMAccessorySetupPayload
-
-// charon_setupPayloadURL belongs to the 11.3 object: the same ivar, one class, two release objects, and
-// a band from 13.0 up links both. @dynamic and not @synthesize, and that is the whole reason for the
-// choice: a second @synthesize of a property another object of the same class already synthesises is a
-// duplicate definition, while auto-synthesis here would satisfy the flag by creating a SECOND ivar for
-// the same property -- two objects linked into one binary with two different payloads' worth of URL, and
-// the 13.0 initialiser's URL invisible to the 11.3 object's getter. @dynamic says what is true: this
-// object does not define the accessors, the 11.3 object beside it does.
-@dynamic charon_setupPayloadURL;
-
-@synthesize charon_ownershipToken = _charon_ownershipToken;
+// A CATEGORY, not a second @implementation: two objects linked into one binary cannot both define
+// the class (the 6.1.3 gate stopped on duplicate _OBJC_CLASS_$_HMAccessorySetupPayload), so the object that
+// holds the class is the 11.3 one and this adds the 13.0 initialiser to it. The token's storage is that
+// object's, declared in the shared header; the token is held as the SDK's own type and read only for its
+// presence, because the port does not carry HMAccessoryOwnershipToken and cannot inspect one - copying its
+// bytes would claim a check the port never made. A nil token is not an error, the header types it nullable.
+@implementation HMAccessorySetupPayload (Charon13_0)
 
 - (instancetype)initWithURL:(NSURL *)setupPayloadURL
          ownershipToken:(HMAccessoryOwnershipToken *)ownershipToken
@@ -63,7 +49,7 @@
         // The URL goes into the 11.3 object's own storage, through the setter that object defines, so a
         // payload read by either object's accessor sees the URL it was made with.
         self.charon_setupPayloadURL = setupPayloadURL;
-        _charon_ownershipToken = ownershipToken;
+        self.charon_ownershipToken = ownershipToken;
     }
     return self;
 }

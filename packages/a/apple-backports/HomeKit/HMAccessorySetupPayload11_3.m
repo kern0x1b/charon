@@ -33,6 +33,7 @@
 @implementation HMAccessorySetupPayload
 
 @synthesize charon_setupPayloadURL = _charon_setupPayloadURL;
+@synthesize charon_ownershipToken = _charon_ownershipToken;  // written by the 13.0 object's initialiser
 
 // The header types both the parameter and the return nullable and says the object comes back "if
 // successful or nil on error". There is one failure the port can actually recognise, and it is the one

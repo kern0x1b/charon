@@ -171,6 +171,10 @@ HMHomeAccessControl *CharonHomeKitHomeAccessControl(HMHome *home, HMUser *user);
 // HMAccessory's own charon_homeIdentifier is shared between HMAccessoryServiceCharacteristic8_0.m and
 // HMAccessoryHome10_0.m.
 @interface HMAccessorySetupPayload () @property (nonatomic, strong, nullable) NSURL *charon_setupPayloadURL;
+// The token's storage is declared here and synthesised by the 11.3 object, the object that DEFINES the class:
+// a class has one @implementation, and an ivar cannot be added by a category. The 13.0 object reads and writes
+// it through the property; it does not define the storage.
+@property (nonatomic, strong, nullable) HMAccessoryOwnershipToken *charon_ownershipToken;
 @end
 
 // HMAccessorySetupResult is the other setup class with no public initialiser -- the header marks -init
