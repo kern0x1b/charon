@@ -129,10 +129,29 @@ line saying so when the files are not there rather than failing:
     python3 tools/corpus/differences-table.py ci-diff.txt md-diff.txt --page packages/a/apple-backports/facts/CoreImage/Differences.md
     sh tools/corpus/selftest-differences-table.sh ci-diff.txt md-diff.txt packages/a/apple-backports/facts/CoreImage/Differences.md
 
-`--page` may be given more than once and every page given is checked. The exit status is: 0 for a
-clean run, 1 for a finding, and 2 for a page or a run the tool cannot read - three outcomes that are
-told apart by the status and by the text, because a crash that exits 1 is indistinguishable from a
-finding, which is what a first version of this did.
+`--page` may be given more than once and every page given is checked. A page is read for its group
+table, for the group counts against the run, and for the one-sided figures of every family the run
+has one-sided lines in; **none of those three depends on how the page spells anything**, and a family
+named without backticks is read the same as one named with them. A page that carries the group table
+and states no figure for a family the run has is a finding, not a pass.
+
+The exit status is: 0 for a clean run, 1 for a finding, and 2 for a page or a run the tool cannot
+read - three outcomes told apart by the status and by the text, because a crash that exits 1 is
+indistinguishable from a finding, which is what a first version of this did.
+
+`tools/corpus/selftest-differences-table.sh` runs this command and the broken pages that go with it,
+and it is the record of what each check is for. The four cases that are one `continue` and one
+backtick apart, with what an earlier version of the tool did to each:
+
+| the page | expected | what the previous tool did |
+| --- | --- | --- |
+| the figures un-backticked, nothing else wrong | 0 | 0 - the page is right and is now read |
+| un-backticked, and one figure wrong | 1 | **0** - not read, and the group counts went with it |
+| un-backticked, and one group count wrong | 1 | **0** - the same |
+| a wrong group count, the figures backticked | 1 | 1 |
+
+The two rows marked 0 were measured passing when they should not have, and the self-test is what
+keeps them from passing again.
 
 ## The count, and what it measures now that the whole tail is compared
 
