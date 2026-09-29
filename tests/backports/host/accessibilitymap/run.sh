@@ -107,6 +107,20 @@ if python3 "$here/../common/compare.py" "$build/host.tsv" "$build/port.tsv" "$he
     echo "identical on $agreed of the $cases cases: the system and the port answer the same"
     echo "declared differences: $declared, each with both answers and a reason in expected-differences.tsv"
 
+    # The renderer protocol, at the name an application writes, in a binary that links the port's own
+    # objects and the protocol object the build generates. Not a second half of the differential: the
+    # alias that keeps the halves apart renames the protocol too, so the port half's protocol is not
+    # findable under the real name and the host's real name belongs to the framework. The check is here
+    # because it is part of the group, and its own control is what makes its three "found" answers mean
+    # anything.
+    if sh "$here/protocol-check.sh" > "$build/protocol.log" 2>&1; then
+        sed 's/^/protocol: /' "$build/protocol.log"
+    else
+        echo "the protocol check did not pass:" >&2
+        cat "$build/protocol.log" >&2
+        exit 1
+    fi
+
     # The factory, which only the port has, checked on its own and not against the system.
     if ACCESSIBILITY_SRC="$sources" FACTORY_BUILD="$build/factory" sh "$here/factory-probe.sh" > "$build/factory.log" 2>&1; then
         sed 's/^/factory: /' "$build/factory.log"
