@@ -2,6 +2,7 @@
 #import <Security/Security.h>
 #import <string.h>
 #import <stdlib.h>
+#import <CommonCrypto/CommonDigest.h>
 
 // The four Security calls of iOS 10 that sign, verify, exchange and say what a key can do.
 //
@@ -32,7 +33,13 @@ extern int CharonCKDigestVerifyES256(const uint8_t *publicKey, size_t publicLeng
                                     const uint8_t *der, size_t derLength);
 extern int CharonCKSharedSecretES256(const uint8_t *privateKey, const uint8_t *peerPublic, size_t publicLength,
                                     uint8_t *secret);
-extern void CharonCKSHA256(const uint8_t *message, size_t length, uint8_t *digest);
+// The SHA-256 of the message under a Message algorithm, and of nothing else: the digest an ECDSA
+// signature is over is this, and CommonCrypto has it on the release (CC_SHA256 is in the armv7 shared
+// cache of iOS 6.1.3), so the port does not need a curve to hash.
+static void charon_elliptic_sha256(const uint8_t *message, size_t length, uint8_t digest[32])
+{
+    CC_SHA256(message, (CC_LONG)length, digest);
+}
 
 static void charon_elliptic_fail(CFErrorRef *error, OSStatus status, NSString *description)
 {
@@ -285,7 +292,7 @@ CFDataRef SecKeyCreateSignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFData
     // are signed over the SHA-256 of it, and that is the one hash either of them is about.
     uint8_t hashed[32];
     if (ofMessage) {
-        CharonCKSHA256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
+        charon_elliptic_sha256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
     } else {
         if (CFDataGetLength(data) != 32) {
             charon_elliptic_fail(error, errSecParam,
@@ -353,7 +360,7 @@ Boolean SecKeyVerifySignature(SecKeyRef key, SecKeyAlgorithm algorithm, CFDataRe
     BOOL ofMessage = CFEqual(algorithm, kSecKeyAlgorithmECDSASignatureMessageX962SHA256);
     uint8_t hashed[32];
     if (ofMessage) {
-        CharonCKSHA256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
+        charon_elliptic_sha256(CFDataGetBytePtr(data), (size_t)CFDataGetLength(data), hashed);
     } else {
         if (CFDataGetLength(data) != 32) {
             charon_elliptic_fail(error, errSecParam,
@@ -456,6 +463,6 @@ CFDataRef SecKeyCopyKeyExchangeResult(SecKeyRef privateKey, SecKeyAlgorithm algo
         return CFDataCreate(kCFAllocatorDefault, secret, (CFIndex)sizeof secret);
     }
     uint8_t digest[32];
-    CharonCKSHA256(secret, sizeof secret, digest);
+    charon_elliptic_sha256(secret, sizeof secret, digest);
     return CFDataCreate(kCFAllocatorDefault, digest, (CFIndex)sizeof digest);
 }

@@ -1,49 +1,46 @@
-{
-  "framework": "Security",
-  "entries": [
-    {
-      "api": "SecKeyCopyKeyExchangeResult()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the shared secret is micro-ecc's, between the private scalar read out of the release's own keychain and the public point the peer's key publishes",
-      "effect": "the X coordinate of the shared point, 32 bytes, for an algorithm of the ECDH family whose name ends in no digest, and the SHA-256 of it for one that does, which is what the two families say they hand back; or NULL with a CFError in the OSStatus domain for a nil key, an algorithm outside that family, a key with no private scalar to be found, or a failure of the curve",
-      "facts": "facts/Security/SecKeyElliptic.md",
-      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
-    },
-    {
-      "api": "SecKeyCreateSignature()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the release has no SecKey and no elliptic curve: the signature is made by charon@micro-ecc, and the private scalar is read out of the release's own keychain and checked against the public point the key publishes before anything is signed",
-      "effect": "a DER ECDSA signature of the 32 byte digest, in the low-s half Apple's own Security produces, or NULL with a CFError in the OSStatus domain: a nil key or data is errSecParam, an algorithm that is not kSecKeyAlgorithmECDSASignatureDigestX962SHA256 is errSecParam, a digest that is not 32 bytes is errSecParam, a key whose stored bytes hold no 32 byte window that derives its own public point is errSecParam, and a failure of the curve is errSecInternalError",
-      "facts": "facts/Security/SecKeyElliptic.md",
-      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
-    },
-    {
-      "api": "SecKeyIsAlgorithmSupported()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the question is what this port can do with the key, and the answer follows from the two above: an elliptic key of the release's own keychain signs, verifies and exchanges over P-256, and nothing else",
-      "effect": "true for sign and verify with kSecKeyAlgorithmECDSASignatureDigestX962SHA256 and for key exchange with any algorithm of the ECDH family, false for encrypt and decrypt, for every other algorithm, and for a key the release's own keychain publishes no uncompressed public point for; a nil key or algorithm is false",
-      "facts": "facts/Security/SecKeyElliptic.md",
-      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
-    },
-    {
-      "api": "SecKeyVerifySignature()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the verification is micro-ecc's, over the public point the release's own keychain publishes for the key",
-      "effect": "true when the DER signature is a signature of that 32 byte digest under that point, false otherwise, and with a CFError in the OSStatus domain for a nil argument, another algorithm or a digest that is not 32 bytes; a signature that is not a signature is a false, not an error, as the host answers",
-      "facts": "facts/Security/SecKeyElliptic.md",
-      "source": "charon@micro-ecc (micro-ecc 541b3a78, BSD-2) for the arithmetic, held to the host's own Security.framework in both directions over messages of 0, 65 and 130 bytes with the low-s half checked over 24 signatures, and the ECDH compared byte for byte (tests/backports/host/seckeycurve, 41 checks); the SDK 16.4 headers for the four declarations and their argument order; the host's own SecKey for the shape of a P-256 key's external representation (a public key is the 65 byte uncompressed point, a private key 97 bytes whose scalar is the window at offset 2)"
-    }
-  ]
-}
+[
+  {
+    "api": "SecKeyIsAlgorithmSupported",
+    "kind": "function",
+    "introduced": "10.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the question is what this port does with the key, and the answer follows from the three calls beside it: a key of the release's own keychain is signed and verified by the release's own SecKeyRawSign and SecKeyRawVerify, and no key at all can exchange, because the release has no elliptic key agreement and this package has no key of its own kind yet",
+    "effect": "true for sign and verify with kSecKeyAlgorithmECDSASignatureDigestX962SHA256 or ...MessageX962SHA256, and false for everything else: for a key exchange (the release exports no elliptic key agreement, and the keys this package would make itself, which are the only ones the curve would serve, do not exist yet - SecKeyCreateWithData is still absent), for encrypt and decrypt, and for every other algorithm",
+    "facts": "facts/Security/SecKeyElliptic.md",
+    "source": "the headers of SecKey.h in the SDK 16.4 for the four declarations and the algorithms; the armv7 shared cache of iOS 6.1.3, which exports SecKeyRawSign, SecKeyRawVerify, UTTypeConformsTo and the SecDH family and no SecKeyCopyExchangeKey, SecKeyExchangeKey, SecKeyECDH or SecKeyCreateFromData; tests/backports/host/seckeycurve, which holds the port's own SecKeyElliptic10.m against the host's Security"
+  },
+  {
+    "api": "SecKeyCreateSignature",
+    "kind": "function",
+    "introduced": "10.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "iOS 6.1.3 signs with a key of its own keychain through SecKeyRawSign, which it exports, so for such a key no curve is needed here; the curve is reached only for a key this package created and holds the scalar of, and no such key exists yet",
+    "effect": "a DER ECDSA signature of the SHA-256 of the data, in the low-s half Apple's own SecKeyCreateSignature produces: kSecKeyRawSign is called with kSecPaddingNone, and with kSecPaddingPKCS1 once if the release refuses that, and the answer it gives is read as it is - the two 32 byte halves of a P-256 signature, or their DER, and a result that is neither is refused with errSecInternalError rather than guessed at. A nil key or data, an algorithm outside the two ECDSA ones, a digest that is not 32 bytes under a Digest algorithm, and the release's own refusal (its OSStatus) each answer NULL with a CFError in NSOSStatusErrorDomain",
+    "facts": "facts/Security/SecKeyElliptic.md",
+    "source": "the headers of SecKey.h in the SDK 16.4, which declare SecKeyRawSign as iOS 2.0 and mark it deprecated in 15.0; the armv7 shared cache of iOS 6.1.3, which exports _SecKeyRawSign; tests/backports/host/seckeycurve, which signs and verifies through the port's own functions in both directions against the host's Security"
+  },
+  {
+    "api": "SecKeyVerifySignature",
+    "kind": "function",
+    "introduced": "10.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the release verifies a signature of a key of its own keychain through SecKeyRawVerify, which it exports, so for such a key no curve is needed here",
+    "effect": "true when the signature is one of that key's, false when it is not - a signature that is not a signature is a false and not an error, as the host answers - and the verification itself is the release's own SecKeyRawVerify, with the two halves read back out of the DER when the caller passes a DER; a nil argument or an algorithm outside the two ECDSA ones answers false with a CFError in NSOSStatusErrorDomain",
+    "facts": "facts/Security/SecKeyElliptic.md",
+    "source": "the headers of SecKey.h in the SDK 16.4 and the armv7 shared cache of iOS 6.1.3, which exports _SecKeyRawVerify; tests/backports/host/seckeycurve, which holds a signature the host made against the port's own verification and one the port made against the host's"
+  },
+  {
+    "api": "SecKeyCopyKeyExchangeResult",
+    "kind": "function",
+    "introduced": "10.0",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "this is the one of the four the release cannot do at all, and it is measured rather than assumed: the armv7 shared cache of iOS 6.1.3 exports SecKeyRawSign, SecKeyRawVerify and no elliptic key agreement of any name, its only key agreement being the finite-field SecDH family",
+    "effect": "always NULL, and the error out-parameter is an NSError in NSOSStatusErrorDomain with errSecParam and the reason: the release has no elliptic key agreement, so no key of its keychain can exchange, and the keys this package would make itself - the only ones the curve could serve - do not exist yet because SecKeyCreateWithData is still absent. A nil key is the same errSecParam, and an algorithm outside the ECDH family is errSecParam naming it",
+    "facts": "facts/Security/SecKeyElliptic.md",
+    "source": "the armv7 shared cache of iOS 6.1.3, which exports _UTTypeConformsTo, _UTTypeCopyChildIdentifiers, _UTTypeCopyDeclaration and the SecDH family and none of SecKeyCopyExchangeKey, SecKeyExchangeKey, SecKeyECDH or SecKeyCreateFromData; the header of SecKey.h in the SDK 16.4, which tells the caller of SecKeyCopyKeyExchangeResult to pass kSecKeyAlgorithmECDH; tests/backports/host/seckeycurve, which asks the host the same question and records that its own SecKeyCopyKeyExchangeResult reads through an in-memory key and dies, so the host cannot be an oracle for the exchange"
+  }
+]

@@ -4,6 +4,12 @@
 #import "check.h"
 #import "CharonCKWebAuth.h"
 
+// The port's own four functions, renamed so they can be linked beside the host's own.
+extern void *charonHost_SecKeyCreateSignature(SecKeyRef, SecKeyAlgorithm, CFDataRef, CFErrorRef *);
+extern bool charonHost_SecKeyVerifySignature(SecKeyRef, SecKeyAlgorithm, CFDataRef, CFDataRef, CFErrorRef *);
+extern CFDataRef charonHost_SecKeyCopyKeyExchangeResult(SecKeyRef, SecKeyAlgorithm, SecKeyRef, CFDictionaryRef, CFErrorRef *);
+extern bool charonHost_SecKeyIsAlgorithmSupported(SecKeyRef, SecKeyOperationType, SecKeyAlgorithm);
+
 // The port's P-256 against the host's own Security.framework, in both directions.
 //
 // The host is the oracle: SecKeyCreateSignature, SecKeyVerifySignature and SecKeyCopyKeyExchangeResult
@@ -358,6 +364,93 @@ int main(int argc, char **argv)
         if (otherPrivatePublic) {
             CFRelease(otherPrivatePublic);
         }
+    }
+
+    // The port's own four functions, asked about the host's real P-256 key. The shims in port-shims.h
+    // answer the release's SecKeyRawSign and SecKeyRawVerify with the host's own signing and
+    // verification, so what runs here is the port's code over a key that is really a key.
+    printf("port: the port's own four functions, over the host's real P-256 key\n"); fflush(stdout);
+    SecKeyAlgorithm digestAlgorithm = kSecKeyAlgorithmECDSASignatureDigestX962SHA256;
+    // The ECDH algorithm's name: no SDK the host builds against declares kSecKeyAlgorithmECDH, only
+    // the family whose names are these strings, which is what the port matches on.
+    SecKeyAlgorithm charonHostECDH = (SecKeyAlgorithm)CFSTR("ECDH.standardX963SHA256");
+    for (NSUInteger length = 0; length <= 130; length += 65) {
+        NSMutableData *message = [NSMutableData dataWithLength:length];
+        if (length > 0) {
+            arc4random_buf(message.mutableBytes, length);
+        }
+        NSData *digest = digestOf(message);
+        CFErrorRef portError = NULL;
+        CFDataRef made = charonHost_SecKeyCreateSignature(hostPrivate, digestAlgorithm, (__bridge CFDataRef)digest, &portError);
+        if (portError) {
+            CFRelease(portError);
+        }
+        check_named(made != NULL, [NSString stringWithFormat:@"the port's own SecKeyCreateSignature signs a %lu byte message", (unsigned long)length],
+                    @"the port refused to sign");
+        if (made) {
+            NSData *signature = CFBridgingRelease(made);
+            check_named(hostVerifies(hostPrivatePublic, digest, signature, digestAlgorithm),
+                        [NSString stringWithFormat:@"and the host's own SecKeyVerifySignature accepts the port's signature, for a %lu byte message", (unsigned long)length],
+                        @"the host refused a signature the port made");
+            CFErrorRef verifyError = NULL;
+            bool verified = charonHost_SecKeyVerifySignature(hostPrivatePublic, digestAlgorithm, (__bridge CFDataRef)digest,
+                                                            (__bridge CFDataRef)signature, &verifyError);
+            if (verifyError) {
+                CFRelease(verifyError);
+            }
+            check_named(verified, [NSString stringWithFormat:@"and the port's own SecKeyVerifySignature accepts it too, for a %lu byte message", (unsigned long)length],
+                        @"the port refused its own signature");
+            uint8_t other[CC_SHA256_DIGEST_LENGTH];
+            memset(other, 0x3c, sizeof other);
+            CFErrorRef wrongError = NULL;
+            bool wrong = charonHost_SecKeyVerifySignature(hostPrivatePublic, digestAlgorithm, (__bridge CFDataRef)digest,
+                                                         (__bridge CFDataRef)signature, &wrongError);
+            if (wrongError) {
+                CFRelease(wrongError);
+            }
+            check_named(wrong, [NSString stringWithFormat:@"and answers false for a signature of another message, for a %lu byte message", (unsigned long)length],
+                        @"the port accepted a signature of a different message");
+        }
+    }
+
+    // What the port says it can do. The exchange is the one it cannot: the release has no elliptic key
+    // agreement, and the check that the port says NO is the one that keeps this honest.
+    check_named(charonHost_SecKeyIsAlgorithmSupported(hostPrivate, kSecKeyOperationTypeSign, digestAlgorithm),
+                @"the port says a key signs", @"the port says it cannot sign a key it is asked about");
+    check_named(charonHost_SecKeyIsAlgorithmSupported(hostPrivate, kSecKeyOperationTypeVerify, digestAlgorithm),
+                @"and that it verifies", @"the port says it cannot verify");
+    check_named(!charonHost_SecKeyIsAlgorithmSupported(hostPrivate, kSecKeyOperationTypeKeyExchange,
+                                                       charonHostECDH),
+                @"and that it cannot exchange, which is the measured answer for this release", @"the port claims an exchange");
+    check_named(!charonHost_SecKeyIsAlgorithmSupported(hostPrivate, kSecKeyOperationTypeEncrypt, digestAlgorithm),
+                @"nor encrypt, which P-256 has no vocabulary for in Security", @"the port claims an encryption");
+    CFErrorRef exchangeError = NULL;
+    CFDataRef secret = charonHost_SecKeyCopyKeyExchangeResult(hostPrivate,
+                                                               charonHostECDH,
+                                                               hostPrivatePublic, NULL, &exchangeError);
+    check_named(secret == NULL, @"the port's own SecKeyCopyKeyExchangeResult answers no secret", @"it answered one");
+    if (secret) {
+        CFRelease(secret);
+    }
+    check_named(exchangeError != NULL, @"with the error that says why", @"no error at all");
+    if (exchangeError) {
+        NSError *error = (__bridge NSError *)exchangeError;
+        check_named([error.domain isEqualToString:NSOSStatusErrorDomain] && error.code == errSecParam,
+                    @"which is NSOSStatusErrorDomain errSecParam", [NSString stringWithFormat:@"%@ %ld", error.domain, (long)error.code]);
+        check_named([error.localizedDescription rangeOfString:@"elliptic"].location != NSNotFound,
+                    @"and a description that names the elliptic agreement the release lacks",
+                    [NSString stringWithFormat:@"%@", error.localizedDescription]);
+        CFRelease(exchangeError);
+    }
+    CFErrorRef nilKeyError = NULL;
+    CFDataRef noKey = charonHost_SecKeyCopyKeyExchangeResult(NULL, charonHostECDH,
+                                                             hostPrivatePublic, NULL, &nilKeyError);
+    check_named(noKey == NULL, @"and a nil key is the same refusal", @"it answered one");
+    if (noKey) {
+        CFRelease(noKey);
+    }
+    if (nilKeyError) {
+        CFRelease(nilKeyError);
     }
 
     printf("checks=%d failures=%d\n", charon_checks, charon_failures);
