@@ -6,6 +6,14 @@
 #import <objc/message.h>
 #include <stdio.h>
 #import <objc/runtime.h>
+// This file calls the port's own API at the release it arrived in - 15.0, 16.0, 17.0, 18.0 and 26.0 -
+// while the differential compiles it for a macCatalyst 15.0 target, where those classes and protocols do
+// not exist and are declared by the test itself. That is the whole point of a differential against the
+// port's own objects: the host framework cannot answer, the port can, and the comparison is between the
+// two. The diagnostic is therefore off for the file and the declarations are the test's own, spelled
+// where they are used.
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 #import "check.h"
 
 #define NAMED(...) ([NSString stringWithFormat:__VA_ARGS__].UTF8String)
@@ -51,6 +59,11 @@ PORT_TRAIT(UITraitListEnvironment)
 PORT_TRAIT(UITraitTabAccessoryEnvironment)
 PORT_TRAIT(UITraitSplitViewControllerLayoutEnvironment)
 
+// The port's own collection class. It is not a UITraitCollection and does not inherit from one - the
+// harness renamed it - so a method of the port's declared here returns the port's class, as the port's
+// own sources do. Declaring the return type as the system's made every assignment of a port collection
+// to a port-typed variable a conversion, and a test that casts its way out of that reads as if the two
+// classes were one.
 @interface CharonHostUITraitCollection : NSObject <NSCopying, NSSecureCoding>
 + (instancetype)traitCollectionWithUserInterfaceIdiom:(UIUserInterfaceIdiom)idiom;
 + (instancetype)traitCollectionWithUserInterfaceStyle:(UIUserInterfaceStyle)style;
@@ -59,16 +72,16 @@ PORT_TRAIT(UITraitSplitViewControllerLayoutEnvironment)
 @property (nonatomic, readonly) UIUserInterfaceIdiom userInterfaceIdiom;
 @property (nonatomic, readonly) UIUserInterfaceStyle userInterfaceStyle;
 @property (nonatomic, readonly) CGFloat displayScale;
-+ (UITraitCollection *)traitCollectionWithTraits:(UITraitMutations)mutations;
-- (UITraitCollection *)traitCollectionByModifyingTraits:(UITraitMutations)mutations;
-+ (UITraitCollection *)traitCollectionWithCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
-- (UITraitCollection *)traitCollectionByReplacingCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
++ (instancetype)traitCollectionWithTraits:(__attribute__((noescape)) UITraitMutations)mutations;
+- (instancetype)traitCollectionByModifyingTraits:(__attribute__((noescape)) UITraitMutations)mutations;
++ (instancetype)traitCollectionWithCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
+- (instancetype)traitCollectionByReplacingCGFloatValue:(CGFloat)value forTrait:(UICGFloatTrait)trait;
 - (CGFloat)valueForCGFloatTrait:(UICGFloatTrait)trait;
-+ (UITraitCollection *)traitCollectionWithNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
-- (UITraitCollection *)traitCollectionByReplacingNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
++ (instancetype)traitCollectionWithNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
+- (instancetype)traitCollectionByReplacingNSIntegerValue:(NSInteger)value forTrait:(UINSIntegerTrait)trait;
 - (NSInteger)valueForNSIntegerTrait:(UINSIntegerTrait)trait;
-+ (UITraitCollection *)traitCollectionWithObject:(id)object forTrait:(UIObjectTrait)trait;
-- (UITraitCollection *)traitCollectionByReplacingObject:(id)object forTrait:(UIObjectTrait)trait;
++ (instancetype)traitCollectionWithObject:(id)object forTrait:(UIObjectTrait)trait;
+- (instancetype)traitCollectionByReplacingObject:(id)object forTrait:(UIObjectTrait)trait;
 - (id)objectForTrait:(UIObjectTrait)trait;
 - (NSSet *)changedTraitsFromTraitCollection:(UITraitCollection *)traitCollection;
 - (UIImageDynamicRange)imageDynamicRange;
@@ -87,8 +100,10 @@ PORT_TRAIT(UITraitSplitViewControllerLayoutEnvironment)
 // UIKitCore 26.2 declares the collection's 17.0 members in a class extension, which an application does not
 // see, so the test declares them to ask the system the same questions it asks the port.
 @interface UITraitCollection (CharonHostTraits17)
-+ (UITraitCollection *)traitCollectionWithTraits:(UITraitMutations)mutations;
-- (UITraitCollection *)traitCollectionByModifyingTraits:(UITraitMutations)mutations;
+// NS_NOESCAPE as the SDK spells both of these: the block is a trait mutation the constructor runs to
+// completion, and clang holds an override of a noescape parameter to the same contract.
++ (UITraitCollection *)traitCollectionWithTraits:(__attribute__((noescape)) UITraitMutations)mutations;
+- (UITraitCollection *)traitCollectionByModifyingTraits:(__attribute__((noescape)) UITraitMutations)mutations;
 - (NSSet *)changedTraitsFromTraitCollection:(UITraitCollection *)traitCollection;
 @end
 
@@ -311,7 +326,7 @@ static void compare_values(void)
     NSMutableArray *ports = [NSMutableArray array];
     for (Class system in systems)
         [ports addObject:port_trait(NSStringFromClass(system))];
-    charon_check(systems.count == ports.count, @"the two trait lists are the same length", @"the lists differ in length");
+    charon_check(systems.count == ports.count, "the two trait lists are the same length" , @"the lists differ in length");
     for (NSUInteger index = 0; index < systems.count && index < ports.count; index++) {
         Class system = systems[index], port = [ports objectAtIndex:index];
         NSString *name = NSStringFromClass(system);
@@ -418,25 +433,19 @@ static void compare_modifying(void)
                                                                  forTrait:port_trait(@"UITraitUserInterfaceStyle")];
     id portOther = [portStyle traitCollectionByReplacingNSIntegerValue:UIUserInterfaceStyleDark
                                                               forTrait:port_trait(@"UITraitUserInterfaceStyle")];
-    charon_check([portReplaced isEqual:portOther], @"replacing an NSInteger trait through either class is one collection",
+    charon_check([portReplaced isEqual:portOther], "replacing an NSInteger trait through either class is one collection" ,
                  @"the two classes of the same trait give two collections");
-    charon_check([(UITraitCollection *)portReplaced userInterfaceStyle] == UIUserInterfaceStyleDark,
-                 @"replacing an NSInteger trait changes it", @"the value did not change");
-    charon_check(portReplaced != portStyle && portStyle.userInterfaceStyle == UIUserInterfaceStyleLight,
-                 @"replacing leaves the collection it was made from alone", @"the base changed");
+    charon_check([(UITraitCollection *)portReplaced userInterfaceStyle] == UIUserInterfaceStyleDark, "replacing an NSInteger trait changes it" , @"the value did not change");
+    charon_check(portReplaced != portStyle && portStyle.userInterfaceStyle == UIUserInterfaceStyleLight, "replacing leaves the collection it was made from alone" , @"the base changed");
     id portScaleReplaced = [portStyle traitCollectionByReplacingCGFloatValue:2.5 forTrait:port_trait(@"UITraitDisplayScale")];
-    charon_check([(UITraitCollection *)portScaleReplaced displayScale] == 2.5, @"replacing a CGFloat trait changes it",
+    charon_check([(UITraitCollection *)portScaleReplaced displayScale] == 2.5, "replacing a CGFloat trait changes it" ,
                  @"the value did not change");
-    charon_check([(UITraitCollection *)portScaleReplaced userInterfaceStyle] == UIUserInterfaceStyleLight,
-                 @"replacing one trait keeps the others", @"a trait was lost");
+    charon_check([(UITraitCollection *)portScaleReplaced userInterfaceStyle] == UIUserInterfaceStyleLight, "replacing one trait keeps the others" , @"a trait was lost");
     id portLanguageReplaced = [portStyle traitCollectionByReplacingObject:@"de-DE"
                                                                   forTrait:port_trait(@"UITraitTypesettingLanguage")];
-    charon_check([[(UITraitCollection *)portLanguageReplaced typesettingLanguage] isEqualToString:@"de-DE"],
-                 @"replacing an object trait changes it", @"the value did not change");
-    charon_check([port valueForCGFloatTrait:port_trait(@"UITraitDisplayScale")] == 0,
-                 @"the port reads an unset CGFloat trait as its class default", @"it read a value of its own");
-    charon_check([port valueForNSIntegerTrait:port_trait(@"UITraitUserInterfaceStyle")] == 0,
-                 @"the port reads an unset NSInteger trait as its class default", @"it read a value of its own");
+    charon_check([[(UITraitCollection *)portLanguageReplaced typesettingLanguage] isEqualToString:@"de-DE"], "replacing an object trait changes it" , @"the value did not change");
+    charon_check([port valueForCGFloatTrait:port_trait(@"UITraitDisplayScale")] == 0, "the port reads an unset CGFloat trait as its class default" , @"it read a value of its own");
+    charon_check([port valueForNSIntegerTrait:port_trait(@"UITraitUserInterfaceStyle")] == 0, "the port reads an unset NSInteger trait as its class default" , @"it read a value of its own");
 }
 
 static void compare_changed(void)
@@ -485,7 +494,7 @@ static void compare_changed(void)
     COMPARE([names([portDark() changedTraitsFromTraitCollection:light()]) componentsJoinedByString:@","],
             [names([dark() changedTraitsFromTraitCollection:light()]) componentsJoinedByString:@","],
             "two collections differing in a style");
-    COMPARE([names([portLight() changedTraitsFromTraitCollection:portLight()]) componentsJoinedByString:@","],
+    COMPARE([names([portLight() changedTraitsFromTraitCollection:(UITraitCollection *)portLight()]) componentsJoinedByString:@","],
             [names([light() changedTraitsFromTraitCollection:light()]) componentsJoinedByString:@","],
             "a collection against itself");
     COMPARE([names([portDark() changedTraitsFromTraitCollection:nil]) componentsJoinedByString:@","],
@@ -515,14 +524,14 @@ static void compare_lists(void)
         if (![privateTraits containsObject:NSStringFromClass(trait)])
             [systemColorNamed addObject:trait];
     COMPARE(named_list([CharonHostUITraitCollection systemTraitsAffectingColorAppearance]),
-            named_list(systemColorNamed), @"systemTraitsAffectingColorAppearance, without the private traits");
+            named_list(systemColorNamed), "systemTraitsAffectingColorAppearance, without the private traits");
     NSArray *systemImage = [UITraitCollection systemTraitsAffectingImageLookup];
     NSMutableArray *systemImageNamed = [NSMutableArray array];
     for (Class trait in systemImage)
         if (![privateTraits containsObject:NSStringFromClass(trait)])
             [systemImageNamed addObject:trait];
     COMPARE(named_list([CharonHostUITraitCollection systemTraitsAffectingImageLookup]),
-            named_list(systemImageNamed), @"systemTraitsAffectingImageLookup, without the private traits");
+            named_list(systemImageNamed), "systemTraitsAffectingImageLookup, without the private traits");
     for (NSString *name in privateTraits)
         charon_check([systemColor containsObject:NSClassFromString(name)] || [systemImage containsObject:NSClassFromString(name)],
                      NAMED(@"the system still names the private trait %@", name),
@@ -616,13 +625,12 @@ static void compare_overrides(void)
     UIView *portView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
     id<UITraitOverrides> system = systemView.traitOverrides;
     id<UITraitOverrides> port = [portView charonHostTraitOverrides];
-    charon_check(system != nil && port != nil, @"both sides have a traitOverrides", @"one side has none");
+    charon_check(system != nil && port != nil, "both sides have a traitOverrides" , @"one side has none");
     COMPARE(shape_of([port description]), shape_of([system description]), "an overrides object with nothing set");
     [system setNSIntegerValue:UIUserInterfaceStyleDark forTrait:[UITraitUserInterfaceStyle class]];
     [port setNSIntegerValue:UIUserInterfaceStyleDark forTrait:port_trait(@"UITraitUserInterfaceStyle")];
     charon_check([system containsTrait:[UITraitUserInterfaceStyle class]] ==
-                      [port containsTrait:port_trait(@"UITraitUserInterfaceStyle")],
-                 @"containsTrait: answers the same on both sides after a set", @"the two sides disagree");
+                      [port containsTrait:port_trait(@"UITraitUserInterfaceStyle")], "containsTrait: answers the same on both sides after a set" , @"the two sides disagree");
     COMPARE(unwrapped_overrides([port description]), unwrapped_overrides([system description]),
             "an overrides object with one override");
     [system removeTrait:[UITraitUserInterfaceStyle class]];
@@ -636,12 +644,11 @@ static void compare_overrides(void)
     COMPARE(unwrapped_overrides([port description]), unwrapped_overrides([system description]),
             "an overrides object with a CGFloat and an object");
     UIView *other = [[UIView alloc] init];
-    charon_check(other.traitOverrides != system, @"two views have different overrides in the system", @"the system shares one");
-    charon_check([portView charonHostTraitOverrides] != [other charonHostTraitOverrides],
-                 @"two views have different overrides in the port", @"the port shares one");
+    charon_check(other.traitOverrides != system, "two views have different overrides in the system" , @"the system shares one");
+    charon_check([portView charonHostTraitOverrides] != [other charonHostTraitOverrides], "two views have different overrides in the port" , @"the port shares one");
     UIViewController *controller = [[UIViewController alloc] init];
-    charon_check(controller.traitOverrides != nil, @"a controller has overrides in the system", @"it has none");
-    charon_check([[controller charonHostTraitOverrides] class] == [port class], @"a controller's overrides is the same class as a view's",
+    charon_check(controller.traitOverrides != nil, "a controller has overrides in the system" , @"it has none");
+    charon_check([[controller charonHostTraitOverrides] class] == [port class], "a controller's overrides is the same class as a view's" ,
                  @"the port gives a controller another class");
 }
 
@@ -660,16 +667,15 @@ static void check_registration(void)
                                                                                               UITraitCollection *previous) {
                                                                                     calls++;
                                                                                 }];
-    charon_check(registration != nil, @"the port registers for a trait change", @"it answered nothing");
+    charon_check(registration != nil, "the port registers for a trait change" , @"it answered nothing");
     COMPARE(unprefix(NSStringFromClass([registration class])), @"_UITraitRegistration",
             "the class a registration is");
-    charon_check([registration conformsToProtocol:@protocol(UITraitChangeRegistration)],
-                 @"a registration adopts UITraitChangeRegistration", @"it does not");
-    charon_check([registration respondsToSelector:@selector(copy)], @"a registration is copyable", @"it is not");
+    charon_check([registration conformsToProtocol:@protocol(UITraitChangeRegistration)], "a registration adopts UITraitChangeRegistration" , @"it does not");
+    charon_check([registration respondsToSelector:@selector(copy)], "a registration is copyable" , @"it is not");
     COMPARE(shape_of([(id)registration description]), @"<_UITraitRegistration: >", "a registration, described");
     [view charonHostUnregisterForTraitChanges:registration];
     [view charonHostUnregisterForTraitChanges:registration];
-    charon_check(calls == 0, @"unregistering calls nothing", @"a handler ran");
+    charon_check(calls == 0, "unregistering calls nothing" , @"a handler ran");
     COMPARE(reason_of(^{
              [view charonHostUnregisterForTraitChanges:nil];
          }),
@@ -693,17 +699,14 @@ static void check_registration(void)
     id<UITraitChangeRegistration> action = [view charonHostRegisterForTraitChanges:@[port_trait(@"UITraitDisplayScale")]
                                                                        withTarget:view
                                                                          action:@selector(setNeedsLayout)];
-    charon_check(action != nil, @"withTarget:action: registers", @"it answered nothing");
+    charon_check(action != nil, "withTarget:action: registers" , @"it answered nothing");
     [view charonHostUnregisterForTraitChanges:action];
-    charon_check([view respondsToSelector:@selector(charonHostUpdateTraitsIfNeeded)],
-                 @"a view answers updateTraitsIfNeeded", @"it does not");
+    charon_check([view respondsToSelector:@selector(charonHostUpdateTraitsIfNeeded)], "a view answers updateTraitsIfNeeded" , @"it does not");
     [view charonHostUpdateTraitsIfNeeded];
     UIViewController *controller = [[UIViewController alloc] init];
-    charon_check([[controller charonHostTraitOverrides] class] == [view charonHostTraitOverrides].class,
-                 @"a controller's overrides is the same class as a view's", @"the port gives a controller another class");
-    charon_check(controller.traitOverrides != nil, @"a controller has overrides on the system too", @"it has none");
-    charon_check([controller respondsToSelector:@selector(charonHostUpdateTraitsIfNeeded)],
-                 @"a controller answers updateTraitsIfNeeded", @"it does not");
+    charon_check([[controller charonHostTraitOverrides] class] == [view charonHostTraitOverrides].class, "a controller's overrides is the same class as a view's" , @"the port gives a controller another class");
+    charon_check(controller.traitOverrides != nil, "a controller has overrides on the system too" , @"it has none");
+    charon_check([controller respondsToSelector:@selector(charonHostUpdateTraitsIfNeeded)], "a controller answers updateTraitsIfNeeded" , @"it does not");
 }
 
 

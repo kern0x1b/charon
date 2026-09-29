@@ -10,6 +10,14 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+// This file calls the port's own API at the release it arrived in - 15.0, 16.0, 17.0, 18.0 and 26.0 -
+// while the differential compiles it for a macCatalyst 15.0 target, where those classes and protocols do
+// not exist and are declared by the test itself. That is the whole point of a differential against the
+// port's own objects: the host framework cannot answer, the port can, and the comparison is between the
+// two. The diagnostic is therefore off for the file and the declarations are the test's own, spelled
+// where they are used.
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 #import "check.h"
 
 // The port's classes, as run.sh renames them, with the members the cases ask of them. The harness renames a
@@ -70,7 +78,10 @@
 @property (nullable, strong, readonly) NSTextRange *paragraphSeparatorRange;
 @end
 
-@interface CharonHostCharonTextLocation : NSObject
+// The port's own location type, declared as the port declares it: CharonTextLocation.h has
+// CharonTextLocation : NSObject <NSTextLocation>, and a range's ends are id<NSTextLocation> in the SDK's own
+// headers, so a test that hands this type to one without saying so is handed a warning instead.
+@interface CharonHostCharonTextLocation : NSObject <NSTextLocation>
 + (instancetype)locationWithTextContentStorage:(id)textContentStorage offset:(NSInteger)offset;
 @property (nonatomic, readonly, weak) id textContentStorage;
 @property (nonatomic, readonly) NSInteger offset;
@@ -125,8 +136,14 @@ static void compare_manager(void)
     [port setPrimaryTextLayoutManager:notInTheList];
     charon_check(system.primaryTextLayoutManager == nil && [port primaryTextLayoutManager] == nil,
                  "a primary that is not in the list is nil on both sides", @"one side kept it");
+    // A nil range on a manager with no document, which the header marks non-null. The nil is the case: what
+    // the two sides answer for it is one of the facts this file holds, so the diagnostic is off for this
+    // statement and for nothing else in the file.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     charon_check([system textElementsForRange:nil].count == 0 && [[port textElementsForRange:nil] count] == 0,
                  "a manager with no document has no elements on either side", @"one side has some");
+#pragma clang diagnostic pop
     compare_text(described(system), described(port), @"a bare manager, described");
 
     // The transaction, and a synchronization inside it. The host raises nothing and asks nothing, which is the
@@ -174,11 +191,16 @@ static void compare_manager(void)
     // The edit record, which the header says a concrete subclass invokes for each action, and which a manager
     // given nothing refuses on both sides rather than recording a pair of nils.
     BOOL systemRecorded = YES, portRecorded = YES;
+    // Two nil ranges again, and the same reason: the answer for them is what this file records, and a
+    // refusal is an answer too.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     @try {
         [system recordEditActionInRange:nil newTextRange:nil];
     } @catch (NSException *exception) {
         systemRecorded = NO;
     }
+#pragma clang diagnostic pop
     @try {
         [port recordEditActionInRange:nil newTextRange:nil];
     } @catch (NSException *exception) {
@@ -493,15 +515,10 @@ static void check_declared_protocol(void)
 {
     Class location = NSClassFromString(@"CharonHostCharonTextLocation");
     Class storage = NSClassFromString(@"CharonHostNSTextContentStorage");
-    charon_check(location != nil && storage != nil,
-                 @"the port's own location type and its storage are both in the process, renamed as the harness "
-                 @"renames them",
+    charon_check(location != nil && storage != nil, "the port's own location type and its storage are both in the process, renamed as the harness renames them" ,
                  @"one of the two is not");
-    charon_check(location != nil && class_adports(location, @protocol(NSTextLocation)),
-                 @"the port's own location type adopts the location protocol its header names", @"it adopts none");
-    charon_check(storage != nil && !class_adports(storage, @protocol(NSTextLocation)),
-                 @"and the storage beside it, which is not a location, answers no - which is what makes that "
-                 @"a reading and not a lookup",
+    charon_check(location != nil && class_adports(location, @protocol(NSTextLocation)), "the port's own location type adopts the location protocol its header names" , @"it adopts none");
+    charon_check(storage != nil && !class_adports(storage, @protocol(NSTextLocation)), "and the storage beside it, which is not a location, answers no - which is what makes that a reading and not a lookup" ,
                  @"a class that is not a location answers yes");
 }
 int main(void)
