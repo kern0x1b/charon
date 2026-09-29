@@ -513,6 +513,22 @@ release is new enough to export them, and are placed by the registry's `introduc
 `releases_in()` describes for a name nothing can place. None of the three is a problem and none is a
 mixed object; the numbers are here so the next band does not have to discover them again.
 
+**And the same four objects were built and measured again on the branch this group was re-cut on** - the
+map stack rebased onto `6fcdc631b` and this group cherry-picked onto its tip - because a number measured
+on one branch and copied onto another is a number nobody measured on the branch it ships on. The
+placements came out the same:
+
+```
+release-split: clean, every object file's symbols first-appear in one release (9 files, 43 symbols, 50 releases checked)
+CharonAXSettings17.o   the four 17.0 symbols       18.0
+CharonAXSettings18.o   the six 18.0 symbols       18.0
+CharonAXSettings26.o   the four 26.1 symbols       none
+CharonHearing15.o      the three hearing symbols  16.0
+```
+
+All nine sources of the library compile with the library flags for `armv7-apple-ios6.0` with no
+diagnostics of their own, and the light guard is its nine suites with no failure on that branch.
+
 ### What the check is, and what it caught
 
 `tests/backports/settings/check.m` is port-only, and the reason for each row is in its own header. It
