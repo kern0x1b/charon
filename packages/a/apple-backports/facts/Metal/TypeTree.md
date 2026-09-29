@@ -593,3 +593,57 @@ The library's flags catch what the host build does not: a property the class ext
 the implementation does not synthesize, and a return that names a class the value is not. The check
 that would have caught all four is one compile of this file with the argument list of
 `modules/apple/backports.lua`, and `tests/backports/host/metal-census/reflection.sh` does not make one.
+
+## The member audit, and what it found
+
+Every property and method the 16.4 `MTLArgument.h` declares for the seven classes, against what
+`MTLTypeReflection.m` defines — **per class**, because the first version of this audit matched member
+names globally and a definition on one class then counted for another.
+
+| class | declared | undefined when audited |
+| --- | ---: | ---: |
+| MTLType | 1 | 0 |
+| MTLStructMember | 7 | 0 |
+| MTLStructType | 2 | 0 |
+| MTLArrayType | 7 | 0 |
+| MTLPointerType | 6 | **4** |
+| MTLTextureReferenceType | 4 | **3** |
+| MTLArgument | 13 | **1** |
+
+**The compiler cannot see this class of gap.** It warns for an unimplemented *method*; a
+`@property (readonly)` of an SDK class that the implementation does not define is auto-synthesized and
+silently answers `0`, `nil` or `NO`. Eight members were in that state with no diagnostic anywhere.
+
+Where each answer comes from:
+
+| member | answer | measured or defaulted |
+| --- | --- | --- |
+| `MTLPointerType.elementType` | the element's data type | measured — the plist's scalar name |
+| `MTLPointerType.access` | the three words, same rule as `MTLArgument.access` | measured |
+| `MTLPointerType.alignment` | `alignSize` | measured — the header's "min alignment for the element data type" |
+| `MTLPointerType.dataSize` | `size` | measured — the header's "sizeof(T) for T \*argName" |
+| `MTLTextureReferenceType.access` | the same three words | measured |
+| `MTLTextureReferenceType.isDepthTexture` | `NO` | **the absence is the plist's** — it carries no depth flag |
+| `MTLTextureReferenceType.textureType` | `MTLTextureType2D` | **A DEFAULT, NOT A MEASUREMENT** |
+| `MTLArgument.active` | `YES` | the property's `getter=isActive` is the method the header names |
+
+`textureType` is the one to be careful about. The plist carries no texture type for a texture argument,
+and **`MTLTextureType`'s enumeration has no "none" case — it starts at 2D**, so there is no honest
+"absent" to return. The value is a default and is labelled one in the source and here: a texture
+argument this port carries is a 2D texture, because that is the shape the port builds. A caller reading
+it back gets the port's answer, not a measurement of the shader's.
+
+## The library's flags are now inside the check
+
+`reflection.sh` compiles `MTLTypeReflection.m` with the library's own argument list before it does
+anything else — `modules/apple/backports.lua`'s `compile()` at line 162 and `clang()` below it, against
+the **iOS 16.4 SDK** rather than the host's, because an `armv7-apple-ios6.1.3` object is compiled
+against the SDK that release has.
+
+This is the lesson, and it is worth stating plainly: **the host round-trip used none of the library's
+flags.** It proved the reader *reads a property list* and said nothing about whether the library that
+ships it *compiles* — which is how the 6.1.3 gate went red on a file the host check had been calling
+green. `-Werror=objc-missing-property-synthesis` and the armv7 target are what caught it.
+
+It is verified to bite: removing one `@synthesize` from the reader makes the script exit `1`, and with it
+in place the round trip is green and the mutant still red.
