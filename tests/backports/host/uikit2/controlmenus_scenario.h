@@ -32,10 +32,19 @@ static void charon_insert_action(UISegmentedControl *control, UIAction *action, 
     ((void (*)(id, SEL, UIAction *, NSUInteger, BOOL))objc_msgSend)(control, chosen, action, index, NO);
 }
 
-static const char *charon_insert_action_name(UISegmentedControl *control)
+static UISegmentedControl *charon_control_with_actions(CGRect frame, NSArray *actions)
 {
-    return charon_has_method([control class], "charonHostInsertSegmentWithAction:atIndex:animated:") ? "the port's own"
-                                                                                                   : "the host's own";
+    const char *renamed = "charonHostInitWithFrame:actions:";
+    SEL chosen = NSSelectorFromString(@(charon_has_method([UISegmentedControl class], renamed)
+                                           ? renamed
+                                           : "initWithFrame:actions:"));
+    return ((id (*)(id, SEL, CGRect, NSArray *))objc_msgSend)([UISegmentedControl alloc], chosen, frame, actions);
+}
+
+static NSString *charon_insert_action_name(UISegmentedControl *control)
+{
+    return charon_has_method([control class], "charonHostInsertSegmentWithAction:atIndex:animated:") ? @"the port's own"
+                                                                                                   : @"the host's own";
 }
 
 @interface MenuTarget : NSObject
@@ -110,7 +119,7 @@ static NSArray *menu_scenario(Class actionClass, Class menuClass)
     [lines addObject:ur_line(@"spaces", @[@(fixed.width), fixed.menu ?: @"nil", flexible.primaryAction ?: @"nil", ur_yes(fixed != flexible)])];
 
     UIAction *b1 = [actionClass actionWithTitle:@"B" image:nil identifier:@"idy" handler:^(id x) {}];
-    UISegmentedControl *sg = [[UISegmentedControl alloc] initWithFrame:CGRectMake(0, 0, 200, 30) actions:@[a, b1]];
+    UISegmentedControl *sg = charon_control_with_actions(CGRectMake(0, 0, 200, 30), @[ a, b1 ]);
     [lines addObject:ur_line(@"segments", @[@(sg.numberOfSegments), @(sg.selectedSegmentIndex), [sg titleForSegmentAtIndex:0] ?: @"nil", [sg titleForSegmentAtIndex:1] ?: @"nil", ur_yes([sg imageForSegmentAtIndex:0] != nil),
                                            ur_yes([sg actionForSegmentAtIndex:0] != a), ur_yes([[sg actionForSegmentAtIndex:0] isEqual:a]), @([sg segmentIndexForActionIdentifier:@"idy"]), @([sg segmentIndexForActionIdentifier:@"nope"])])];
     UIAction *cc = [actionClass actionWithTitle:@"C" image:nil identifier:@"idz" handler:^(id x) {}];
