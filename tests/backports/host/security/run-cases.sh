@@ -350,7 +350,25 @@ must_not_compile() {
     fi
 }
 
-python3 "$H/make-mutants.py" "$build" 2>/dev/null || true
+# make-mutants.py IS NOT OPTIONAL AND ITS FAILURE IS NOT SWALLOWED. It ran under
+# `2>/dev/null || true`, so a wrong anchor, a missing file or a write error was invisible here and the
+# driver went on to report a mutant as "refused by the compiler" - which reads as a PASS. A script that
+# writes the evidence a later verdict depends on must fail the run, and its output is kept.
+if ! python3 "$H/make-mutants.py" "$build" > "$build/make-mutants.log" 2>&1; then
+    echo "BUILD  make-mutants.py FAILED (exit non-zero) - the mutants this run will judge were not written"
+    sed 's/^/       /' "$build/make-mutants.log" | tail -3
+    failures=$((failures + 1))
+    mutants=0
+    mutants_noticed=0
+else
+    for want in mutant-blocks-challenge-into-keyupdate.m mutant-data-halfpair.m mutant-held-nocopy.m \
+                mutant-identity.m; do
+        if [ ! -f "$build/$want" ]; then
+            echo "BUILD  make-mutants.py reported success but $want is ABSENT - the evidence is not there"
+            failures=$((failures + 1))
+        fi
+    done
+fi
 run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
