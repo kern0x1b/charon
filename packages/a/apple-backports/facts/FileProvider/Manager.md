@@ -79,3 +79,22 @@ longer carries, so the target SDK has no version for them and they get **no regi
 would have to carry an `introduced` this SDK does not say. The ledger is not wrong to list them —
 it records the 16.4 surface — and the disagreement is recorded here rather than settled by picking
 one of the two.
+
+## The seven rows whose release is inferred from the class
+
+A member of `NSFileProviderManager` takes its release from its **own** `AvailabilityAttr`; failing
+that, from the **enclosing category's**; failing that, from the **class's**, which is `ios 11.0` — the
+attribute at line 4 of the dump. Seven rows resolve that way and the table's `source` column says so
+for each: `addDomain:completionHandler:`, `getDomainsWithCompletionHandler:`,
+`managerForDomain:`, `removeAllDomainsWithCompletionHandler:`, `removeDomain:completionHandler:`,
+`registerURLSessionTask:forItemWithIdentifier:completionHandler:` and
+`signalEnumeratorForContainerItemIdentifier:completionHandler:`.
+
+The reason they need it is a fact about the dump, not about the header: `-ast-dump-filter` prints a
+category's methods as **top-level declarations with no category above them**, so a member declared in
+a category arrives with no attribute and no parent to inherit from, and the scanner answers `none` for
+all seven. Only `MaterializedSet` — the one category of the eleven with a version of its own — is
+resolvable on its own account, and it is **16.0**; the other ten take the class's, and the two the
+corpus prices at 16.0 (`getUserVisibleURLForItemIdentifier:`, `removeDomain:mode:`,
+`getIdentifierForUserVisibleFileAtURL:`, `temporaryDirectoryURLWithError:`, `globalProgressForKind:`,
+`signalErrorResolved:`) each carry their own attribute, so they are not among the seven.

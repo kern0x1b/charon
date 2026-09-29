@@ -1,22 +1,24 @@
--init	none	-	
-?	none	-	macos-unavailable
-+managerForDomain:	none	-	
--signalEnumeratorForContainerItemIdentifier:completionHandler:	none	-	
+# NSFileProviderManager's members and the release each was introduced in, from the 26.2
+# header's own availability. A member's own attribute decides it; failing that the
+# enclosing category's; failing that the class's, which is ios 11.0; failing all of those,
+# none. The fourth column says which of those it was.
+member	release	source	note
+-init	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
++managerForDomain:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
+-signalEnumeratorForContainerItemIdentifier:completionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
 -getUserVisibleURLForItemIdentifier:completionHandler:	16.0	member	
 +getIdentifierForUserVisibleFileAtURL:completionHandler:	16.0	member	
--registerURLSessionTask:forItemWithIdentifier:completionHandler:	none	-	
-?	11.0	member	macos-unavailable
-?	11.0	member	macos-unavailable
+-registerURLSessionTask:forItemWithIdentifier:completionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
 -temporaryDirectoryURLWithError:	16.0	member	
-+writePlaceholderAtURL:withMetadata:error:	11.0	member	macos-unavailable
-+placeholderURLForURL:	11.0	member	macos-unavailable
-+addDomain:completionHandler:	none	-	
-+removeDomain:completionHandler:	none	-	
++writePlaceholderAtURL:withMetadata:error:	11.0	member	
++placeholderURLForURL:	11.0	member	
++addDomain:completionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
++removeDomain:completionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
 +removeDomain:mode:completionHandler:	16.0	member	
-+getDomainsWithCompletionHandler:	none	-	
-+removeAllDomainsWithCompletionHandler:	none	-	
++getDomainsWithCompletionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
++removeAllDomainsWithCompletionHandler:	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
 -signalErrorResolved:completionHandler:	16.0	member	
 -globalProgressForKind:	16.0	member	
-+defaultManager	none	-	macos-unavailable
--providerIdentifier	11.0	member	macos-unavailable
--documentStorageURL	11.0	member	macos-unavailable
++defaultManager	11.0	class-or-category	inferred from the class: a member with no AvailabilityAttr of its own takes the enclosing category, and failing that the class, whose own attribute is ios 11.0
+-providerIdentifier	11.0	member	
+-documentStorageURL	11.0	member	
