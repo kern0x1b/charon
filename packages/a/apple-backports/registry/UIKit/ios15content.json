@@ -2,16 +2,6 @@
   "framework": "UIKit",
   "entries": [
     {
-      "api": "CharonTextLocation",
-      "kind": "class",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "a position in a document: an offset and the document it is in, which is all NSTextLocation's one method - a comparison - needs, and which is what a range is made of; a name no SDK header declares, so the lift's sets are re-measured for it in this push (rule R4)",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
-    },
-    {
       "api": "NSTextContentManager",
       "kind": "class",
       "introduced": "15.0",

@@ -157,7 +157,18 @@ agreeing with the port is noticed.
 
 The port's own `NSTextLocation`, which the range layer's group had carried and then removed as
 unused, and this group needs again: a document's locations are the content storage's, and
-without a concrete location there is nothing to make a range of. It holds the document and the
+without a concrete location there is nothing to make a range of.
+
+**It takes no registry entry, and the reason is measured.** `nm -m` of the 6.1.3 gate's
+`libUIKitBackports.dylib` shows `_OBJC_CLASS_$_CharonTextLocation` as
+`non-external (was a private external)`: the class is in the library and the linker made it
+hidden, and the gate's `found.classes` sees exported classes only, so an entry claiming it is
+implemented cannot be satisfied — which is what the gate said, by name. The two precedents in
+this tree agree: `__NSConcreteUUID` **has** an entry, because `+[NSUUID alloc]` hands that class
+out and the system names it; the port's own `CharonListMenuDelegate` and `CharonListMenuHooks` are
+hidden in the same library and have **no** entry, because nothing hands them out. Rule R4 is
+satisfied by the SDK row that does exist and that the range layer's group already carries:
+`NSTextLocation`, the protocol, in `ios15textrange.json`. It holds the document and the
 offset, and that is all: `NSTextLocation` asks for a comparison, `-compare:` is the ordering of
 the two offsets, and `-isEqual:`/`-hash` follow it so a location can go into a set — which the
 header's `NSNotFound` case needs, since that answer is about two locations that are not each

@@ -175,9 +175,6 @@ def main():
         raise SystemExit("no effect written for:\n  " + "\n  ".join(missing))
     # The port's own location type, which no SDK header declares, so no corpus row names it: it is carried from
     # the release of the API that needed it, and rule R4 asks a delivery with such a name to say so.
-    entries.append(dict(api="CharonTextLocation", kind="class", introduced=PRIVATE["CharonTextLocation"],
-                         minimum="6.0", status="implemented", facts=FACTS, effect=EFFECTS["CharonTextLocation"],
-                         source=SOURCE))
     # A notification name is a symbol and not a case of an enumeration, so it takes an entry, and this one is
     # absent because the condition that posts it cannot arise in the port's document: it is posted when a text
     # attribute the storage cannot map to an element is added, and the port's elements carry the whole
@@ -202,8 +199,7 @@ def main():
     for entry in entries:
         kinds[entry["kind"]] = kinds.get(entry["kind"], 0) + 1
     print("  " + " ".join(f"{k}={v}" for k, v in sorted(kinds.items())))
-    print(f"{len(rows)} rows of the group plus the port's own location type and one notification: "
-          f"{len(entries)} entries")
+    print(f"{len(rows)} rows of the group plus one notification: {len(entries)} entries")
     print(f"plus {len(values)} header-only values, which get no entry by registry/README.md:")
     for name in sorted({v["api"] for v in values}):
         print("  " + name)
