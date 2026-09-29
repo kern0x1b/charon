@@ -24,7 +24,7 @@
 # the log - a reading taken earlier and copied is not a reading.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
-repo=$(cd "$here/../../../.." && pwd)
+repo=$(cd "$here/../../.." && pwd)
 # The coordination directory, from the home directory: a commit carrying an absolute
 # home path is refused by the hook, and rightly - it would not resolve on another machine.
 C=${COORDINATION:-$HOME/Git/projects/ios/coordination}
@@ -56,7 +56,8 @@ uptime | tee "$work/uptime.log"
 load1=$(uptime | sed -E 's/.*load averages: ([0-9.]+).*/\1/')
 slots=$(ls /tmp/fleet-heavy/machine/ 2>/dev/null | wc -l | tr -d ' ')
 echo "load1 = $load1, machine slots in use = $slots"
-if [ "$load1" -ge 12 ]; then
+# uptime prints a float; [ cannot compare one, and the error left the gate doing nothing at all.
+if awk -v load="$load1" 'BEGIN { exit !(load >= 12) }'; then
     echo "not run: load1 $load1 is not under 12"
     exit 0
 fi
@@ -76,7 +77,18 @@ else
     exit 2
 fi
 
-echo "=== install and run ==="
+# xmake has to run where the project that carries the emulate task is: from the repository root it
+# answers "xmake.lua not found, try generating it" and waits for a y/n that never comes. EMULATE_DIR
+# names it, and the run refuses rather than installing into nothing.
+emulate_dir=${EMULATE_DIR:-}
+if [ -z "$emulate_dir" ] || [ ! -f "$emulate_dir/xmake.lua" ]; then
+    echo "not run: EMULATE_DIR does not name a project with the emulate task (tried '$emulate_dir')"
+    echo "  the port's root has no xmake.lua, and the plugin that provides the task is in a katabasis"
+    echo "  checkout, so this run needs to be pointed at the project that carries it"
+    exit 0
+fi
+echo "=== install and run, from $emulate_dir ==="
+cd "$emulate_dir"
 FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate install
 FLEET_HEAVY_LANE=fast "$C/heavy.sh" xmake emulate run "$work/scenekitprojection"
 # The probe only when it has been built, and it cannot be until a swift-runtime install carries the
