@@ -299,7 +299,7 @@
       "status": "implemented",
       "facts": "facts/UIKit/UITrait17.md",
       "effect": "the protocol is there and class_conformsToProtocol: answers it, so a class an application writes can adopt it and the port's own classes do",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/traits17/probe.m and held by tests/backports/host/uikit2/traits17_test.m"
+      "source": "the conformance is the port's own: UITraitOverrides17.m declares NSObject (CharonTraitChange) <UITraitChangeObservable>, so the protocol is in NSObject's own class list, which check_registration in tests/backports/host/uikit2/traits17_test.m holds; the host's own UITrait.h declares the protocol's members"
     },
     {
       "api": "+[UITraitCollection traitCollectionWithCGFloatValue:forTrait:]",
@@ -402,6 +402,16 @@
       "source": "the host's own UIKit under Mac Catalyst, measured by the same probe (facts/UIKit/UITrait17.md, M6)"
     },
     {
+      "api": "-[NSObject registerForTraitChanges:withHandler:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "a registration on the object itself, which is where the port's CharonTraitChange category puts it",
+      "source": "the port builds it on NSObject, in the CharonTraitChange category; the SDK declares the same selector on UITraitChangeObservable, whose row above covers the protocol"
+    },
+    {
       "api": "-[UITraitChangeObservable registerForTraitChanges:withTarget:action:]",
       "kind": "method",
       "introduced": "17.0",
@@ -410,6 +420,16 @@
       "facts": "facts/UIKit/UITrait17.md",
       "effect": "a registration that calls the method with the environment, and with the collection it had before when the method takes two arguments",
       "source": "the host's own UIKit under Mac Catalyst, measured by the same probe (facts/UIKit/UITrait17.md, M6)"
+    },
+    {
+      "api": "-[NSObject registerForTraitChanges:withTarget:action:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "a registration that calls the method with the environment and the collection",
+      "source": "the port builds it on NSObject, in the CharonTraitChange category; the SDK declares the same selector on UITraitChangeObservable, whose row above covers the protocol"
     },
     {
       "api": "-[UITraitChangeObservable registerForTraitChanges:withAction:]",
@@ -422,6 +442,16 @@
       "source": "the host's own UIKit under Mac Catalyst, measured by the same probe (facts/UIKit/UITrait17.md, M6)"
     },
     {
+      "api": "-[NSObject registerForTraitChanges:withAction:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "a registration that calls the selector the port's category adds, with no environment",
+      "source": "the port builds it on NSObject, in the CharonTraitChange category; the SDK declares the same selector on UITraitChangeObservable, whose row above covers the protocol"
+    },
+    {
       "api": "-[UITraitChangeObservable unregisterForTraitChanges:]",
       "kind": "method",
       "introduced": "17.0",
@@ -430,6 +460,16 @@
       "facts": "facts/UIKit/UITrait17.md",
       "effect": "nothing, and nothing the second time, and nothing for a registration of another observable",
       "source": "the host's own UIKit under Mac Catalyst, measured by the same probe (facts/UIKit/UITrait17.md, M6)"
+    },
+    {
+      "api": "-[NSObject unregisterForTraitChanges:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "the way to take a registration back, on the object the port's category adds it to",
+      "source": "the port builds it on NSObject, in the CharonTraitChange category; the SDK declares the same selector on UITraitChangeObservable, whose row above covers the protocol"
     },
     {
       "api": "-[UIView updateTraitsIfNeeded]",
@@ -600,6 +640,36 @@
       "facts": "facts/UIKit/UITrait17.md",
       "effect": "an overrides object of the port's own class, one per owner, which holds what it is told and answers what it is not told about with the host's refusal",
       "source": "the host's own UIKit under Mac Catalyst, measured by the same probe (facts/UIKit/UITrait17.md, M5)"
+    },
+    {
+      "api": "-[UITraitCollection objectForTrait:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "the object the collection holds for a trait, which the port's own mapping answers",
+      "source": "the port reads the trait through the collection; with no row of its own this name resolved to the UITraitCollection class row, whose minimum is 5.0, and the object then held two minimums"
+    },
+    {
+      "api": "-[UITraitCollection valueForCGFloatTrait:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "the value of a CGFloat trait, read through the collection the port's mapping holds",
+      "source": "the port reads the trait through the collection; with no row of its own this name resolved to the UITraitCollection class row, whose minimum is 5.0, and the object then held two minimums"
+    },
+    {
+      "api": "-[UITraitCollection valueForNSIntegerTrait:]",
+      "kind": "method",
+      "introduced": "17.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITrait17.md",
+      "effect": "the value of an NSInteger trait, read through the collection the port's mapping holds",
+      "source": "the port reads the trait through the collection; with no row of its own this name resolved to the UITraitCollection class row, whose minimum is 5.0, and the object then held two minimums"
     }
   ]
 }

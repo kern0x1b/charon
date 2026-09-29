@@ -286,7 +286,7 @@ void charon_deliver_trait_registrations(NSArray *environments, NSArray *previous
 // is a controller rather than a view. A category on NSObject carries the four registration methods, because
 // UITraitChangeObservable is a protocol the SDK's own UITrait.h declares and the build SDK does not, and every
 // one of the four must answer them.
-@interface NSObject (CharonTraitChange)
+@interface NSObject (CharonTraitChange) <UITraitChangeObservable>
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withHandler:(UITraitChangeHandler)handler;
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withTarget:(id)target action:(SEL)action;
 - (id<UITraitChangeRegistration>)registerForTraitChanges:(NSArray<UITrait> *)traits withAction:(SEL)action;

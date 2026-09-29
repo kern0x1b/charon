@@ -681,6 +681,16 @@ static void compare_overrides(void)
 // from the probe that asked each first, and the port is held to it here.
 static void check_registration(void)
 {
+    // The protocol the port's own NSObject category adopts. NSObject is the system's own class, so renames()
+    // leaves it alone and the port's category lands on it - which is the point: the conformance is added to
+    // NSObject itself, so class_conformsToProtocol: on NSObject is what the registry row for
+    // UITraitChangeObservable claims, and that is what is checked here.
+    Class portObject = [NSObject class];
+    charon_check([portObject conformsToProtocol:@protocol(UITraitChangeObservable)],
+                 "the port's own NSObject adopts the trait-change protocol its registry row names",
+                 [NSString stringWithFormat:@"%@ adopts UITraitChangeObservable: %@", NSStringFromClass(portObject),
+                                            [portObject conformsToProtocol:@protocol(UITraitChangeObservable)] ? @"yes" : @"no"]);
+
     UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 10, 10)];
     __block int calls = 0;
     id<UITraitChangeRegistration> registration = [view charonHostRegisterForTraitChanges:@[port_trait(@"UITraitUserInterfaceStyle")]
