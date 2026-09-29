@@ -1,7 +1,7 @@
 #import <MetalKit/MetalKit.h>
 #import <ModelIO/ModelIO.h>
 
-static MDLVertexFormat CharonMDLFormatFromMetal(MTLVertexFormat format)
+MDLVertexFormat CharonMDLFormatFromMetal(MTLVertexFormat format)
 {
     switch (format) {
         case MTLVertexFormatFloat: return MDLVertexFormatFloat;
@@ -27,7 +27,7 @@ static MDLVertexFormat CharonMDLFormatFromMetal(MTLVertexFormat format)
     }
 }
 
-static MTLVertexFormat CharonMetalFormatFromMDL(MDLVertexFormat format)
+MTLVertexFormat CharonMetalFormatFromMDL(MDLVertexFormat format)
 {
     switch (format) {
         case MDLVertexFormatFloat: return MTLVertexFormatFloat;
@@ -107,25 +107,3 @@ MTLVertexDescriptor *MTKMetalVertexDescriptorFromModelIOWithError(MDLVertexDescr
 // and a format neither table has is one this port's shaders cannot be written against, so the value
 // form answers the same way the header's pair does - the conversion is made, and it returns what the
 // sibling returns with its error pointer unused.
-
-MDLVertexDescriptor *MTKModelIOVertexDescriptorFromMetal(MTLVertexDescriptor *metalDescriptor)
-{
-    return MTKModelIOVertexDescriptorFromMetalWithError(metalDescriptor, NULL);
-}
-
-MTLVertexDescriptor *MTKMetalVertexDescriptorFromModelIO(MDLVertexDescriptor *modelIODescriptor)
-{
-    return MTKMetalVertexDescriptorFromModelIOWithError(modelIODescriptor, NULL);
-}
-
-MDLVertexFormat MTKModelIOVertexFormatFromMetal(MTLVertexFormat vertexFormat)
-{
-    MDLVertexFormat format = CharonMDLFormatFromMetal(vertexFormat);
-    return format == MDLVertexFormatInvalid ? MDLVertexFormatInvalid : format;
-}
-
-MTLVertexFormat MTKMetalVertexFormatFromModelIO(MDLVertexFormat vertexFormat)
-{
-    MTLVertexFormat format = CharonMetalFormatFromMDL(vertexFormat);
-    return format == MTLVertexFormatInvalid ? MTLVertexFormatInvalid : format;
-}
