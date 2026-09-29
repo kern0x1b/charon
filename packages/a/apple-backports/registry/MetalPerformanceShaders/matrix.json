@@ -34,6 +34,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -43,6 +44,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -88,6 +90,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -97,6 +100,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -115,6 +119,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the logarithmic form subtracts the row's maximum before the logarithm, which is what the release does and what keeps the answer finite. Measured over the 2 cases: 1 bit-identical, 1 differs by 5 units in the last place, 3.39e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -133,6 +138,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -142,6 +148,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -151,6 +158,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -160,6 +168,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -169,6 +178,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -178,6 +188,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -655,6 +666,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -664,6 +676,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -673,6 +686,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -682,6 +696,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -691,6 +706,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -700,6 +716,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -709,6 +726,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -718,6 +736,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -727,6 +746,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -736,6 +756,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -745,6 +766,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -754,6 +776,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -763,6 +786,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -772,6 +796,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -781,6 +806,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -790,6 +816,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -799,6 +826,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -808,6 +836,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -898,6 +927,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -907,6 +937,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -916,6 +947,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -925,6 +957,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -934,6 +967,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -943,6 +977,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -952,6 +987,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -961,6 +997,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -970,6 +1007,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -979,6 +1017,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -988,6 +1027,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -997,6 +1037,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1006,6 +1047,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1015,6 +1057,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1069,6 +1112,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1078,6 +1122,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1087,6 +1132,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1096,6 +1142,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1105,6 +1152,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1114,6 +1162,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1123,6 +1172,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1132,6 +1182,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1141,6 +1192,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1150,6 +1202,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1159,6 +1212,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1168,6 +1222,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1177,6 +1232,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1186,6 +1242,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1195,6 +1252,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1204,6 +1262,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1213,6 +1272,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1222,6 +1282,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1231,6 +1292,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1240,6 +1302,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1249,6 +1312,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1258,6 +1322,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1267,6 +1332,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1276,6 +1342,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1285,6 +1352,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1294,6 +1362,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1303,6 +1372,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1312,6 +1382,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1321,6 +1392,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1330,6 +1402,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1339,6 +1412,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1348,6 +1422,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1357,6 +1432,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1366,6 +1442,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1375,6 +1452,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1384,6 +1462,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1393,6 +1472,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1402,6 +1482,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1826,6 +1907,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1835,6 +1917,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1844,6 +1927,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1853,6 +1937,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "y[i,j] = gamma[j] * (x[i,j] - mean[j]) / (variance[j] + epsilon) + beta[j] as the header writes it, in double, with the batch mean and variance taken from the caller's vectors when it gives them and computed over the batch when it does not. Measured over the 16 cases: 1 bit-identical and 15 differ, the largest 26 units in the last place and 2.93e-06 relative, which is the order the release accumulates in; the one bit-identical case is the statistics result.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1862,6 +1947,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1871,6 +1957,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -1880,6 +1967,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gamma and beta gradients are the header's formulas and are measured beside a hand-computed reference in the case file; the data gradient is the full backpropagation gamma/sqrt(variance+epsilon) * (dY - mean(dY) - yhat/n * sum(dY)), which is the form the forward's own definition implies. The release's data gradient is not that expression: it differs on 11 of the 12 elements of the case, by up to a factor of 3.79 and with a sign pattern that is not a constant per channel, and MPSMatrixBatchNormalization.h documents the forward only, so the release's backward is not derivable from it. That case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2024,6 +2112,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2033,6 +2122,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2042,6 +2132,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2051,6 +2142,7 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the k largest values of each row with their indices, selected on the CPU and written into the caller's index and value matrices. Measured over the 5 cases: the value matrix is bit-identical everywhere, and the index matrix differs on one case by 3 units in the last place on a subnormal (4.2e-45, 0.75 relative), which is a tie the release orders differently.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2060,6 +2152,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2069,6 +2162,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2078,6 +2172,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2087,6 +2182,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the input and the weight matrix with the bias added, accumulated in double and written as float32. Measured over the 10 cases: 2 bit-identical, 6 differ within 13 units in the last place, and 2 have a single element where a cancelling sum gives 0.0 on the release and 5.2e-09 or -1.6e-10 here, which is the two summations' order and not a different answer; those two cases are named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2132,6 +2228,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2141,6 +2238,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2150,6 +2248,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2159,6 +2258,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2168,6 +2268,7 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the product of the two matrices with the interior columns the descriptor names and the alpha and beta the caller sets, accumulated in double and written as float32; batchStart and batchSize bound the batch the release writes. Measured over the 16 multiplication cases: 15 bit-identical, and the one that differs is multiply-batch, where the release ignores batchStart and writes the matrices of the whole range while the port writes only the range the header names, so 4 of 12 elements are 1, 2, 3, 4 against 0. The port follows the header and that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv, with the six-row table in facts/MetalPerformanceShaders/Matrix.md.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2177,6 +2278,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2186,6 +2288,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2195,6 +2298,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "every neuron type of MPSCNNNeuronType.h is evaluated from that header's own formula on the CPU, in double, on the caller's alpha and bias. Measured over the 16 cases: 8 bit-identical, 7 differ within 5 units in the last place, and GeLU (type 15) differs by up to 7.02e-05 relative because the release's kernel is not the header's exact erf form; that case is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2204,6 +2308,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2213,6 +2318,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2222,6 +2328,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the bias gradient is the release's rule sum_i dY[i][j] * f'(alpha*x[i][j] + bias[j]) and the data gradient is dY * f'(z) * alpha, both from the same derivative table the forward is, and both now reading MPSCNNNeuronType.h exactly: SoftPlus without the magnitude of its exponent and Logarithm without a clamp at a*x+b = 0. Measured over the 16 gradient cases: 8 bit-identical and 7 within 9 units in the last place, the exception being GeLU (type 15) at up to 5.65e-05 relative, which is named as owed in tests/backports/host/mpsmatrix/owed.tsv names it, and tests/backports/host/mpsmatrix/rank.py prints the distance.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2231,6 +2338,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2240,6 +2348,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the softmax is normalised by the row's own sum in double and written as float32. Measured over the 6 cases: 5 bit-identical, 1 differs by 1 unit in the last place, 9.26e-08 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2249,6 +2358,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2258,6 +2368,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the gradient of the row softmax is the incoming gradient less the incoming gradient times the forward's own output, in double. Measured over the 4 cases: 3 bit-identical, 1 differs by 29 units in the last place, 2.05e-06 relative, which is the release's GPU accumulation order.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2267,6 +2378,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2276,6 +2388,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2285,6 +2398,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2294,6 +2408,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2303,6 +2418,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2312,6 +2428,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2321,6 +2438,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
@@ -2330,6 +2448,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
+      "effect": "the sum is walked on the CPU in the order the release walks it, with the bias read as a broadcast over the pair table, the scale indexed by component and the startIndex bounding the pairs by the factors left (facts/MetalPerformanceShaders/Matrix.md). Measured over the 16 sum cases: 11 bit-identical, 5 differ, the largest 1 unit in the last place and 1.19e-07 relative.",
       "facts": "facts/MetalPerformanceShaders/Matrix.md",
       "source": "the headers of MetalPerformanceShaders in the SDK of iOS 16.4, and the behaviour measured against the MPS of macOS 26.5 (tests/backports/host/mpsmatrix/run.sh)"
     },
