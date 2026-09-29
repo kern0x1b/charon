@@ -136,15 +136,16 @@ package("swift-syntax")
         -- further down. So the modules come from `os.filedirs` and are copied whole, and the
         -- objects from `os.files`.
         local products = path.join(build, "release")
-        local copied = 0
+        local modules_copied, objects_copied = 0, 0
         for _, entry in ipairs(os.filedirs(path.join(products, "*.swiftmodule"))) do
             os.cp(entry, path.join(package:installdir("lib"), "swift", "host", path.filename(entry)))
-            copied = copied + 1
+            modules_copied = modules_copied + 1
         end
         for _, entry in ipairs(os.files(path.join(products, "*.o"))) do
             os.cp(entry, path.join(package:installdir("lib"), path.filename(entry)))
-            copied = copied + 1
+            objects_copied = objects_copied + 1
         end
+        local copied = modules_copied + objects_copied
         for _, dir in ipairs({"SwiftSyntax", "_SwiftSyntaxCShims", "SwiftSyntaxPrivate"}) do
             local resources = path.join(products, "..", dir)
             if os.isdir(resources) then os.cp(resources, path.join(package:installdir("share"), dir)) end
@@ -152,6 +153,9 @@ package("swift-syntax")
         if copied == 0 then
             raise("%s built, and %s holds no .swiftmodule and no object: the products moved", package:name(), products)
         end
-        print("%s: %s installed at %s -- %s files: %s modules under lib/swift/host, the objects beside them",
-              package:name(), package:version_str(), package:installdir("lib"), copied)
+        -- `string.format`, not `print`'s own: Lua's print does not format, and the first run of
+        -- this line printed its own placeholders instead of the values.
+        print(string.format("%s: %s installed at %s -- %s modules under lib/swift/host and %s objects beside them (%s files)",
+                            package:name(), package:version_str(), package:installdir("lib"),
+                            modules_copied, objects_copied, copied))
     end)
