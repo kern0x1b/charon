@@ -87,10 +87,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release has no credential provider extension or identity store for the system's AutoFill to consult, and a password that only looks kept would mislead",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of AuthenticationServices"
+      "status": "implemented",
+      "effect": "one stored credential -- who may sign in to which service and in what order autofill offers them: -serviceIdentifier, -user and -recordIdentifier all readonly, -rank writable and defaulting to 0, the release's own -initWithServiceIdentifier:user:recordIdentifier: and +identityWithServiceIdentifier:user:recordIdentifier: kept as they are because this class marks only plain -init unavailable, -copyWithZone: carrying all four, and NSSecureCoding with the service identifier decoded as its own class because the system compares those by value",
+      "source": "macOS 27.0's own AuthenticationServices, asked with class_copyMethodList for the class's method list by tests/backports/host/authservices; the 26.2 header's contract; and the class's members as the header declares them, read by clang's AST",
+      "facts": "facts/AuthenticationServices/ASCredentialIdentity.md"
     },
     {
       "api": "ASWebAuthenticationSession.presentationContextProvider",

@@ -41,12 +41,18 @@ def methods_of(library):
     # reported a property as a bound method, and the first version of this read
     # "name 0x7b16 provider" under baseProperties as proof that a mutation had not taken when it had.
     inMethods = False
+    methodsAreClass = False
     for line in out.split("\n"):
         stripped = line.strip()
         if not stripped:
             continue
         if stripped.startswith("baseMethods"):
+            # The class prints TWO baseMethods lines: the class's own instance list and the metaclass's
+            # own list of class methods. Reading only the first is how +identityWithServiceIdentifier:...
+            # came back as unbound while the source defines it. Which list this is is in the symbol the
+            # line names: __OBJC_$_INSTANCE_METHODS_ or __OBJC_$_CLASS_METHODS_.
             inMethods = True
+            methodsAreClass = "CLASS_METHODS" in stripped
             continue
         if stripped.startswith(("baseProtocols", "ivars", "baseProperties", "baseClassMethods",
                                 "layout", "weakIvarLayout", "ro")):
@@ -75,7 +81,7 @@ def methods_of(library):
             # "name    0x3f08 copyWithZone:" -- the address and then the selector.
             parts = stripped.split(None, 2)
             if len(parts) == 3 and parts[1].startswith("0x"):
-                classes.setdefault(current, set()).add((parts[2], "class" if inMetaclass else "instance"))
+                classes.setdefault(current, set()).add((parts[2], "class" if methodsAreClass else "instance"))
     return classes
 
 
