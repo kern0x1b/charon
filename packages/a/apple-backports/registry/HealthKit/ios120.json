@@ -473,6 +473,28 @@
    "effect": "nothing: what was inserted is dropped and the series is invalid, which is the host's own raise on the next use",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, and the host's own wording of the refusal, read off the host on this machine"
+  },
+  {
+   "api": "HKQuantitySeriesSampleQuery",
+   "kind": "class",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series query, and the arm64 shared cache of 12.0 carries the class with its one initialiser of that release",
+   "effect": "a query for the quantities of one quantity sample, delivered one at a time and finished with a done",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries -initWithSample:quantityHandler: once and each of the three 13.0 members 0"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleQuery initWithSample:quantityHandler:]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "iOS 12.0 is the release of the quantity series query, and the arm64 shared cache of 12.0 carries the class with its one initialiser of that release",
+   "effect": "the quantity of that sample with the date it is of, then a final call with done and nothing, or the error it could not read with",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "the header of iOS 26.2 for the contract; the arm64 shared cache of iOS 12.0 for the values, which carries -initWithSample:quantityHandler: once and each of the three 13.0 members 0"
   }
  ]
 }
