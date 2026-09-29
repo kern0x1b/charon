@@ -1,33 +1,34 @@
-# The two result-builder families — `IntentItem.Builder` and `IntentItemSection.Builder`
+# The two result-builder families, and the shape check that reads all seven rows
 
-Both are the same shape of problem and the same reading, and the ledger carries seven rows between
-them (`IntentItem.Builder` 4, `IntentItemSection.Builder` 3).
+**The declarations were already in the tree** — `IntentItemSectionBuilder` with its two
+`buildBlock` overloads, `IntentItemBuilder` with its four, and the `Builder` typealiases the earlier
+`Items.swift` commit added. What was missing was a **check**, so the pieces here are the check and
+its result, not new declarations: six of the seven rows had nothing to commit, and saying otherwise
+would be a commit whose subject claims work it does not contain.
 
-**The shape defect, fixed.** The framework nests the builder: `IntentItemSection.Builder` is an enum
-*inside* `IntentItemSection` (`arm64e-apple-macos.swiftinterface:5003-5007`) and `IntentItem.Builder`
-inside `IntentItem` (`:4951-4960`). This module keeps one builder per family and names it in the type
-by a `typealias`, the way `IntentItem.Builder` already was (`Items.swift:18`) and
-`IntentItemSection.Builder` now is — **a typealias, not a second declaration**, so the same builder
-answers to the name the ledger carries.
+**The check**, `packages/a/appintents/tests/builder-contract.py`, reads the framework's own interface
+from the machine's `charon@iphoneos-sdk` 26.2 install and, for each row, asserts that the declaration
+exists here as a `static func` on the right type, inside a `@resultBuilder` type, **with the row's own
+label**. The label is the part that matters and the part a name-only search gets wrong:
+`buildBlock()` and `buildBlock(_:)` are one name with two spellings, and a search on the name alone
+finds the first for both -- which is what the first version of the checker did, and it reported the
+one-argument row as having no labels.
 
-**The reading, and why a reference rather than a call.** The digester prints a `@resultBuilder` type
-with **no members at all** — measured on these two families and on `Tips.GroupBuilder` in the kits —
-so a member cannot be found by name in the dump and a *call* would need a value of the type built
-first. A reference is enough and needs nothing constructed: each member is bound to a closure type
-that names the framework's signature, which is also what disambiguates the two `buildBlock`
-overloads.
+**The result**, from a run on 2026-09-28 (`exit 0`, 7 rows, 0 failures):
 
-| row | the reference |
-| --- | --- |
-| `IntentItem.Builder.buildArray(_:)` | `let array: ([IntentItem<String>]) -> [IntentItem<String>] = …buildArray` |
-| `IntentItem.Builder.buildBlock()` | `let empty: () -> [IntentItem<String>] = …buildBlock` |
-| `IntentItem.Builder.buildBlock(_:)` | `let one: (IntentItem<String>) -> [IntentItem<String>] = …buildBlock` |
-| `IntentItem.Builder.buildExpression(_:)` | `let expression: (IntentItem<String>) -> IntentItem<String> = …buildExpression` |
-| `IntentItemSection.Builder` + its two `buildBlock`s | the same, in `probe-itembuilder.swift` |
+ok  IntentItemSection.Builder                    the type: a typealias to IntentItemBuilder, and the interface nests an enum named Builder
+ok  IntentItemSection.Builder.buildBlock()       public static func buildBlock() -> [IntentItem<Value>] { return [] }
+ok  IntentItemSection.Builder.buildBlock(_:)     public static func buildBlock(_ item: IntentItem<Value>) -> [IntentItem<Value>] { return [item] }
+ok  IntentItem.Builder.buildExpression(_:)       public static func buildExpression(_ expression: IntentItem<Value>) -> IntentItem<Value> { return expression }
+ok  IntentItem.Builder.buildArray(_:)            public static func buildArray(_ items: [IntentItem<Value>]) -> [IntentItem<Value>] { return items }
+ok  IntentItem.Builder.buildBlock()              public static func buildBlock() -> [IntentItem<Value>] { return [] }
+ok  IntentItem.Builder.buildBlock(_:)            public static func buildBlock(_ item: IntentItem<Value>) -> [IntentItem<Value>] { return [item] }
+checked 7 row(s), 0 failure(s)
 
-**What is measured and what is not.** `IntentPerson`'s family is **placed**: its probe typechecks with
-0 errors against the module built from this tree, because that module already carried the
-declarations. These two families are **written and unmeasured**: both probes typecheck against a
-*built* module, and the module in the store predates the `IntentItemSection.Builder` typealias. One
-device compile of the module, then two typechecks, places all seven rows — and the load has been over
-the cap for this whole turn, so nothing was submitted and nothing of mine holds a slot.
+**What this check is and is not.** It is the *shape*: that each row is declared, statically, on a
+result-builder type, with the framework's labels, against the interface of the release the rows are
+written against. It is not the *behaviour*: the digester prints a `@resultBuilder` type's members not
+at all, and the call-site typecheck that would place the rows needs a module built from this tree —
+the one in the store predates the `IntentItemSection.Builder` typealias, so it answers
+`type 'IntentItemSection<String>' has no member 'Builder'`. That is the next thing when a slow slot is
+free, and it is a device compile, not a macro build.
