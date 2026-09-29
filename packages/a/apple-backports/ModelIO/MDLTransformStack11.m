@@ -1,4 +1,5 @@
 #import <ModelIO/ModelIO.h>
+#import "CharonMDLTransformMath.h"
 #import <simd/simd.h>
 #import <simd/simd.h>
 
@@ -16,63 +17,6 @@ typedef struct {
     __unsafe_unretained NSString *name;
     BOOL inverse;
 } CharonMDLOpRecord;
-
-static matrix_float4x4 CharonMDLFloat4x4(matrix_double4x4 value)
-{
-    matrix_float4x4 result;
-    for (size_t c = 0; c < 4; c++)
-        for (size_t r = 0; r < 4; r++)
-            result.columns[c][r] = (float)value.columns[c][r];
-    return result;
-}
-
-static matrix_double4x4 CharonMDLDouble4x4(matrix_float4x4 value)
-{
-    matrix_double4x4 result;
-    for (size_t c = 0; c < 4; c++)
-        for (size_t r = 0; r < 4; r++)
-            result.columns[c][r] = value.columns[c][r];
-    return result;
-}
-
-static matrix_double4x4 CharonMDLTranslation(vector_double3 translation)
-{
-    matrix_double4x4 result = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-    result.columns[3] = (vector_double4){translation.x, translation.y, translation.z, 1};
-    return result;
-}
-
-static matrix_double4x4 CharonMDLScale(vector_double3 scale)
-{
-    matrix_double4x4 result = {{scale.x, 0, 0, 0}, {0, scale.y, 0, 0}, {0, 0, scale.z, 0}, {0, 0, 0, 1}};
-    return result;
-}
-
-// One axis rotation by an angle in radians, its inverse turning the other way by as much.
-static matrix_double4x4 CharonMDLAxisRotation(int axis, double angle)
-{
-    double c = cos(angle), s = sin(angle);
-    matrix_double4x4 result = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-    result.columns[axis] = (vector_double4){c, s, 0, 0};
-    result.columns[(axis + 1) % 3] = (vector_double4){-s, c, 0, 0};
-    return result;
-}
-
-// Three axis angles composed in the order the operation was added with, the axes named as
-// MDLTransformOpRotationOrder names them, so XYZ is the product of X, Y and Z in that order.
-static matrix_double4x4 CharonMDLAngleRotation(vector_double3 angles, MDLTransformOpRotationOrder order)
-{
-    static const int axes[6] = {0, 1, 2, 0, 1, 2};
-    static const int orderOf[6] = {0, 1, 2, 1, 0, 2};
-    MDLTransformOpRotationOrder chosen = order >= MDLTransformOpRotationOrderXYZ && order <= MDLTransformOpRotationOrderZYX ? order
-                                                                                                                          : MDLTransformOpRotationOrderXYZ;
-    matrix_double4x4 result = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-    for (int k = 0; k < 6; k++) {
-        int axis = axes[orderOf[chosen - 1 + k]];
-        result = simd_mul(CharonMDLAxisRotation(axis, angles[axis]), result);
-    }
-    return result;
-}
 
 // The rotation matrix of a quaternion, by its own four components: the imaginary part first and the
 // real part last, which is the order a quaternion is written in.
@@ -105,20 +49,12 @@ static matrix_double4x4 CharonMDLMatrixInverse(matrix_double4x4 m)
     if (determinant == 0)
         return m;
     double d = 1.0 / determinant;
-    matrix_double4x4 inverse = {{c00 * d, -c10 * d, -c20 * d, -c30 * d},
-                                {-c01 * d, c11 * d, c21 * d, c31 * d},
-                                {-c02 * d, -c12 * d, c22 * d, c32 * d},
-                                {-c03 * d, -c13 * d, -c23 * d, c33 * d}};
+    matrix_double4x4 inverse;
+        inverse.columns[0] = (vector_double4){c00 * d, -c10 * d, -c20 * d, -c30 * d};
+        inverse.columns[1] = (vector_double4){-c01 * d, c11 * d, c21 * d, c31 * d};
+        inverse.columns[2] = (vector_double4){-c02 * d, -c12 * d, c22 * d, c32 * d};
+        inverse.columns[3] = (vector_double4){-c03 * d, -c13 * d, -c23 * d, c33 * d};
     return inverse;
-}
-
-static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
-{
-    double x = rotation.vector.x, y = rotation.vector.y, z = rotation.vector.z, w = rotation.vector.w;
-    matrix_double4x4 result = {{1 - 2 * (y * y + z * z), 2 * (x * y + z * w), 2 * (x * z - y * w), 0},
-                               {2 * (x * y - z * w), 1 - 2 * (x * x + z * z), 2 * (y * z + x * w), 0},
-                               {2 * (x * z + y * w), 2 * (y * z - x * w), 1 - 2 * (x * x + y * y), 0}, {0, 0, 0, 1}};
-    return result;
 }
 
 // What the operations share, as the methods the stack and the protocol below use. Each operation
@@ -205,7 +141,14 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
-    double angle = [_value doubleAtTime:time];
+    double angle = [_value doubleAtTime:time] * M_PI / 180.0;
+    // The angle of a rotation operation's animated scalar is in DEGREES, measured against the
+    // system: an operation set to 90 gives an exact quarter turn (col1 0 0 1, col2 0 -1 0) and
+    // one set to pi/2 gives 0 0.99962 0.02741, which is a turn of 0.02741 radians, and
+    // pi/2 degrees is 0.02742.  The value is converted here rather than at every read, so the
+    // unit is stated once.  (MDLTransform's own rotation is radians, which is the other way
+    // round and is why the two are not shared: measured, MDLTransform set to 90 gives
+    // 0 -0.44807 0.89400, a turn of 90 radians.)
     return CharonMDLAxisRotation(_axis, _record.inverse ? -angle : angle);
 }
 
@@ -275,7 +218,14 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
-    double angle = [_value doubleAtTime:time];
+    double angle = [_value doubleAtTime:time] * M_PI / 180.0;
+    // The angle of a rotation operation's animated scalar is in DEGREES, measured against the
+    // system: an operation set to 90 gives an exact quarter turn (col1 0 0 1, col2 0 -1 0) and
+    // one set to pi/2 gives 0 0.99962 0.02741, which is a turn of 0.02741 radians, and
+    // pi/2 degrees is 0.02742.  The value is converted here rather than at every read, so the
+    // unit is stated once.  (MDLTransform's own rotation is radians, which is the other way
+    // round and is why the two are not shared: measured, MDLTransform set to 90 gives
+    // 0 -0.44807 0.89400, a turn of 90 radians.)
     return CharonMDLAxisRotation(_axis, _record.inverse ? -angle : angle);
 }
 
@@ -345,7 +295,14 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
-    double angle = [_value doubleAtTime:time];
+    double angle = [_value doubleAtTime:time] * M_PI / 180.0;
+    // The angle of a rotation operation's animated scalar is in DEGREES, measured against the
+    // system: an operation set to 90 gives an exact quarter turn (col1 0 0 1, col2 0 -1 0) and
+    // one set to pi/2 gives 0 0.99962 0.02741, which is a turn of 0.02741 radians, and
+    // pi/2 degrees is 0.02742.  The value is converted here rather than at every read, so the
+    // unit is stated once.  (MDLTransform's own rotation is radians, which is the other way
+    // round and is why the two are not shared: measured, MDLTransform set to 90 gives
+    // 0 -0.44807 0.89400, a turn of 90 radians.)
     return CharonMDLAxisRotation(_axis, _record.inverse ? -angle : angle);
 }
 
@@ -427,7 +384,8 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
-    vector_double3 angles = [_value double3AtTime:time];
+    // Degrees, as the single-axis operations are: the same measurement, and the same conversion.
+    vector_double3 angles = [_value double3AtTime:time] * M_PI / 180.0;
     if (_record.inverse)
         angles = (vector_double3){-angles.x, -angles.y, -angles.z};
     return CharonMDLAngleRotation(angles, _order);
@@ -779,9 +737,17 @@ static matrix_double4x4 CharonMDLQuaternionMatrix(simd_quatd rotation)
 
 - (matrix_double4x4)double4x4AtTime:(NSTimeInterval)time
 {
-    matrix_double4x4 result = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+    // The operations multiply from the left as they are added: the first one added is the
+    // outermost.  Measured, for a stack holding a translate of (1, 2, 3) added first and a rotate
+    // of 90 degrees about X added second, the system answers
+    //   col0 1.00000 0.00000 0.00000 0.00000
+    //   col3 1.00000 2.00000 3.00000 1.00000
+    // so the translation is not rotated and the product is T*R.  Multiplying the other way round,
+    // R*T, puts the rotated translation in the last column: 1 -3 2 1, and that is not what the
+    // system does.
+    matrix_double4x4 result = CharonMDLDouble4x4Identity();
     for (id<MDLTransformOp> op in _ops)
-        result = simd_mul([op double4x4AtTime:time], result);
+        result = simd_mul(result, [op double4x4AtTime:time]);
     return result;
 }
 

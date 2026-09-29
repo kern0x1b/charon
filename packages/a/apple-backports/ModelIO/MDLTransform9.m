@@ -13,40 +13,39 @@ static matrix_float4x4 CharonMDLRotationMatrix(vector_float3 radians)
     float cx = cosf(radians.x), sx = sinf(radians.x);
     float cy = cosf(radians.y), sy = sinf(radians.y);
     float cz = cosf(radians.z), sz = sinf(radians.z);
-    matrix_float4x4 x = {{1, 0, 0, 0}, {0, cx, sx, 0}, {0, -sx, cx, 0}, {0, 0, 0, 1}};
-    matrix_float4x4 y = {{cy, 0, -sy, 0}, {0, 1, 0, 0}, {sy, 0, cy, 0}, {0, 0, 0, 1}};
-    matrix_float4x4 z = {{cz, sz, 0, 0}, {-sz, cz, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+    matrix_float4x4 x;
+        x.columns[0] = (vector_float4){1, 0, 0, 0};
+        x.columns[1] = (vector_float4){0, cx, sx, 0};
+        x.columns[2] = (vector_float4){0, -sx, cx, 0};
+        x.columns[3] = (vector_float4){0, 0, 0, 1};
+    matrix_float4x4 y;
+        y.columns[0] = (vector_float4){cy, 0, -sy, 0};
+        y.columns[1] = (vector_float4){0, 1, 0, 0};
+        y.columns[2] = (vector_float4){sy, 0, cy, 0};
+        y.columns[3] = (vector_float4){0, 0, 0, 1};
+    matrix_float4x4 z;
+        z.columns[0] = (vector_float4){cz, sz, 0, 0};
+        z.columns[1] = (vector_float4){-sz, cz, 0, 0};
+        z.columns[2] = (vector_float4){0, 0, 1, 0};
+        z.columns[3] = (vector_float4){0, 0, 0, 1};
     return simd_mul(x, simd_mul(y, z));
 }
 
-// The three axis angles of a rotation matrix, the standard reading of one whose trace is largest
-// about the axis it turns around most.
-static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
+
+// The identity, written by assigning its columns.  A braced initialiser of a simd matrix does not
+// build one: matrix_float4x4 is a struct of four vector_float4 columns, so {{1,0,0,0}, {0,1,0,0},
+// {0,0,1,0}, {0,0,0,1}} initialises the first column with the first group and warns
+// "excess elements in struct initializer" for the other three.  Measured, the four groups written
+// that way give col0 1 1 1 1 and columns 1 to 3 all zero, and the port's MDLTransformStack product
+// of a translate and a rotate came out with a zero bottom row where the system's is 0 0 0 1.
+static matrix_float4x4 CharonMDLIdentityFloat4x4(void)
 {
-    float trace = rotation.columns[0][0] + rotation.columns[1][1] + rotation.columns[2][2];
-    vector_float3 angles;
-    if (trace > 0) {
-        float s = sqrtf(trace + 1) * 2;
-        angles.z = asinf(MIN(1, MAX(-1, (rotation.columns[1][0] - rotation.columns[0][1]) / s)));
-        angles.x = atan2((rotation.columns[2][1] + rotation.columns[1][2]) / s, (rotation.columns[2][2] + rotation.columns[0][0]) / s);
-        angles.y = atan2((rotation.columns[0][2] + rotation.columns[2][0]) / s, (rotation.columns[0][0] + rotation.columns[2][2]) / s);
-    } else if (rotation.columns[0][0] > rotation.columns[1][1] && rotation.columns[0][0] > rotation.columns[2][2]) {
-        float s = sqrtf(1 + rotation.columns[0][0] - rotation.columns[1][1] - rotation.columns[2][2]) * 2;
-        angles.x = asinf(MIN(1, MAX(-1, (rotation.columns[2][1] - rotation.columns[1][2]) / s)));
-        angles.y = atan2((rotation.columns[1][0] + rotation.columns[0][1]) / s, (rotation.columns[2][2] + rotation.columns[0][0]) / s);
-        angles.z = atan2((rotation.columns[0][2] + rotation.columns[2][0]) / s, (rotation.columns[1][1] + rotation.columns[0][0]) / s);
-    } else if (rotation.columns[1][1] > rotation.columns[2][2]) {
-        float s = sqrtf(1 + rotation.columns[1][1] - rotation.columns[0][0] - rotation.columns[2][2]) * 2;
-        angles.x = atan2((rotation.columns[2][1] + rotation.columns[1][2]) / s, (rotation.columns[1][1] + rotation.columns[2][2]) / s);
-        angles.y = asinf(MIN(1, MAX(-1, (rotation.columns[0][2] - rotation.columns[2][0]) / s)));
-        angles.z = atan2((rotation.columns[0][1] + rotation.columns[1][0]) / s, (rotation.columns[1][1] + rotation.columns[0][0]) / s);
-    } else {
-        float s = sqrtf(1 + rotation.columns[2][2] - rotation.columns[0][0] - rotation.columns[1][1]) * 2;
-        angles.x = atan2((rotation.columns[1][2] + rotation.columns[2][1]) / s, (rotation.columns[2][2] + rotation.columns[0][0]) / s);
-        angles.y = atan2((rotation.columns[0][2] + rotation.columns[2][0]) / s, (rotation.columns[2][2] + rotation.columns[1][1]) / s);
-        angles.z = asinf(MIN(1, MAX(-1, (rotation.columns[1][0] - rotation.columns[0][1]) / s)));
-    }
-    return angles;
+    matrix_float4x4 identity;
+    identity.columns[0] = (vector_float4){1, 0, 0, 0};
+    identity.columns[1] = (vector_float4){0, 1, 0, 0};
+    identity.columns[2] = (vector_float4){0, 0, 1, 0};
+    identity.columns[3] = (vector_float4){0, 0, 0, 1};
+    return identity;
 }
 
 @implementation MDLTransform {
@@ -82,7 +81,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (instancetype)init
 {
-    return [self initWithMatrix:(matrix_float4x4){{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}} resetsTransform:YES];
+    return [self initWithMatrix:CharonMDLIdentityFloat4x4() resetsTransform:YES];
 }
 
 - (instancetype)initWithIdentity
@@ -118,7 +117,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 - (void)setIdentity
 {
-    [self setMatrix:(matrix_float4x4){{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}} forTime:0];
+    [self setMatrix:CharonMDLIdentityFloat4x4() forTime:0];
 }
 
 // A sample at a time already held replaces that sample rather than standing beside it, and a time
@@ -215,7 +214,11 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
                                   shear:(vector_float3)shear
                                   scale:(vector_float3)scale
 {
-    matrix_float4x4 result = {{scale.x, scale.x * shear.x, 0, 0}, {0, scale.y, scale.y * shear.y, 0}, {0, 0, scale.z, 0}, {0, 0, 0, 1}};
+    matrix_float4x4 result;
+        result.columns[0] = (vector_float4){scale.x, scale.x * shear.x, 0, 0};
+        result.columns[1] = (vector_float4){0, scale.y, scale.y * shear.y, 0};
+        result.columns[2] = (vector_float4){0, 0, scale.z, 0};
+        result.columns[3] = (vector_float4){0, 0, 0, 1};
     result = simd_mul(CharonMDLRotationMatrix(rotation), result);
     result.columns[3] = (vector_float4){translation.x, translation.y, translation.z, 1};
     return result;
@@ -275,7 +278,7 @@ static vector_float3 CharonMDLRotationAngles(matrix_float4x4 rotation)
 
 + (matrix_float4x4)globalTransformWithObject:(MDLObject *)object atTime:(NSTimeInterval)time
 {
-    matrix_float4x4 global = (matrix_float4x4){{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+    matrix_float4x4 global = CharonMDLIdentityFloat4x4();
     for (MDLObject *at = object; at; at = at.parent) {
         id<MDLTransformComponent> transform = at.transform;
         if (!transform)
