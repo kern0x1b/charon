@@ -1,7 +1,5 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 static GLenum compareFunction(MTLCompareFunction f)
 {

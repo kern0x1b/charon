@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 // The 9.0 blits are the 8.0 ones with a set of options on top, so they live in a category beside the
 // 8.0 class: a band from 9.0 on keeps both files and a band of 8.0 keeps only the class, which is
 // what the release it is built for can have.

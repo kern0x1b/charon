@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The timed wait of a shared event: a wait on the condition the event's state broadcasts when its
 // value is set, with the timeout the caller gives, and an answer of whether the value was reached

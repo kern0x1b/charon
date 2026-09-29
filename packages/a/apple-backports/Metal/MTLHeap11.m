@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
 // The 11.0 members of a heap and of the encoders that are told what a heap holds.

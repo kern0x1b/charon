@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The 13.0 blits between whole surfaces. -copyFromTexture:toTexture: is the convenience Metal
 // documents: as many whole surfaces as the two textures can match, level by level, and both of them

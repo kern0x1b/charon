@@ -1,8 +1,6 @@
 #import "CharonMetal.h"
 #import <objc/runtime.h>
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 @implementation CharonMetalDrawable {
     CharonMetalTexture *_texture;
