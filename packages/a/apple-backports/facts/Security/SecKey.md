@@ -71,8 +71,44 @@ as public. Where neither holds, the answer is NULL and a CFError.
 
 ## What is not carried
 
-`SecKeyCreateWithData`, `SecKeyCreateSignature`, `SecKeyVerifySignature`, `SecKeyCopyAttributes`,
-`SecKeyCopyKeyExchangeResult` and `SecKeyIsAlgorithmSupported` stay absent, each with its row in
-`registry/Security/absent_Security.json`. They are not out of reach - the release has `SecKeyRawSign`, `SecKeyRawVerify`
-and the same private entry points - but nothing has asked for them yet, and an entry point that is written without a
-caller to hold it to is an entry point nobody has checked.
+**Nothing about `SecKeyCreateWithData` is claimed, in either direction.** It is **owed**: the release
+*could* carry it, since `SecItemAdd` and the key classes are there, but no entry point has been written.
+`DecisionTable.md` marks the row **owed** for that reason, and the registry carries **no row for it at
+all** - not `absent`, because `absent` is for API only the hardware lacks and this is unfinished work,
+and not `implemented`, because there is no function. A caller building a key from raw bytes on 6.1.3 gets
+a NULL weak reference, and that is unrecorded on purpose until the entry point exists.
+
+### Owed, in full
+
+- **`SecKeyCreateWithData`** - the entry point itself, then its row.
+- **The guest measurement** of the keychain halves: `SecKeyCopyAttributes`'s shaping, the key lookup
+  inside `SecKeyIsAlgorithmSupported`, and an actual `SecKeyRawSign` / `SecKeyRawVerify` round trip
+  through the padding mapping. Every host case so far has driven the **pure** half with no key and no
+  keychain, so the padding mapping is checked and the signing is not. The slot is the coordinator's to
+  give; nothing is owed to a run that has not happened.
+- The 11 `SecTrust*`, 4 `SecCertificate*`, 2 `SecPolicy*` and 1 `SecAccessControl*` rows.
+- The 59 inert rows, and the export.
+
+The other five are carried, and their rows are in `registry/Security/ios10keys.json`:
+
+| API | What it does on the release |
+| --- | --- |
+| `SecKeyCopyAttributes` | the key's own keychain entry, asked with two-argument `SecItemCopyMatching` (`kSecKey.h:1162`) |
+| `SecKeyIsAlgorithmSupported` | the key's class against the table: four RSA PKCS1 digest algorithms for sign and verify, two RSA encryption ones, EC and key exchange refused |
+| `SecKeyCreateSignature` | `SecKeyRawSign` with the padding the algorithm names, `0x8002` and `0x8003`-`0x8006` (`kSecKey.h:198-218`) |
+| `SecKeyVerifySignature` | `SecKeyRawVerify` with the same padding, so its PKCS1 padding is *checked* (`kSecKey.h:684-690`) |
+| `SecKeyCopyKeyExchangeResult` | **inert**: always NULL, with the `CFError` left NULL. iOS 6.1.3 has **no EC key type at all** - `kSecAttrKeyTypeECSECPrimeRandom` is `API_AVAILABLE(macos(10.12), ios(10.0))` (`SecItem.h:804-805`) against `kSecAttrKeyTypeRSA`'s `ios(2.0)` (`SecItem.h:784-785`) - so no `SecKeyRef` can hold an EC private key and there is no peer to exchange with. No secret is invented |
+
+A refusal on the first four is NULL or `false` **with no `CFError` set**, because each signature's
+documentation names no domain or code for it, and the port does not manufacture one a caller would
+handle as though the SDK had promised it.
+
+### A disagreement this file had with itself
+
+An earlier revision of this file listed all six as "stay absent ... nothing has asked for them yet",
+while `DecisionTable.md` marked all six **implemented**. Both were wrong about the same five rows in
+opposite directions, and neither matched the tree: five entry points existed and one did not. The
+registry is what is state, so it now carries five rows in `ios10keys.json` (four implemented, one
+inert) and one in `absent_Security.json`. The table's middle column is a **decision** - whether the port
+*could* act - and its count line is a count of decisions, which is how a row marked implemented there
+came to be a function that was never written.

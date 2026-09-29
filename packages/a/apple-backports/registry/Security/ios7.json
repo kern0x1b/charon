@@ -1,27 +1,49 @@
 {
-  "framework": "Security",
   "entries": [
     {
-      "api": "kSecAttrSynchronizable",
-      "kind": "constant",
-      "introduced": "6.0",
+      "api": "SecTrustGetNetworkFetchAllowed()",
+      "effect": "the value the caller set is HELD and READ BACK: a set of trusts under a lock, compared by value, and a NULL trust is errSecParam. WHAT THE RELEASE DOES WITH IT IS NOTHING, and that is the part a caller has to know: 6.1.3 resolves a trust against the anchors it was given and NEVER fetches a missing intermediate, so setting the flag and evaluating gives a verdict computed WITHOUT the fetched chain - on a chain that needs one that is a FAILURE, not a slower success",
+      "facts": "facts/Security/SecTrust.md",
+      "introduced": "7.0",
+      "kind": "function",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a departure from 7.0 in what the keychain does with it: the keychain of iOS 6 takes the key and ignores it, and there is no iCloud Keychain to carry an item anywhere",
+      "reason": "iOS 7.0, one release after 6.1.3, and the release has no earlier spelling of it and no other SecTrust function that sets a network-fetch flag, so there is nothing to delegate to; the port holds and reads back what the caller set, which is what inert means",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "SecTrustSetNetworkFetchAllowed()",
+      "effect": "the value the caller set is HELD and READ BACK: a set of trusts under a lock, compared by value, and a NULL trust is errSecParam. WHAT THE RELEASE DOES WITH IT IS NOTHING, and that is the part a caller has to know: 6.1.3 resolves a trust against the anchors it was given and NEVER fetches a missing intermediate, so setting the flag and evaluating gives a verdict computed WITHOUT the fetched chain - on a chain that needs one that is a FAILURE, not a slower success",
+      "facts": "facts/Security/SecTrust.md",
+      "introduced": "7.0",
+      "kind": "function",
+      "minimum": "6.0",
+      "reason": "iOS 7.0, one release after 6.1.3, and the release has no earlier spelling of it and no other SecTrust function that sets a network-fetch flag, so there is nothing to delegate to; the port holds and reads back what the caller set, which is what inert means",
+      "source": "SDK 16.4, Security",
+      "status": "inert"
+    },
+    {
+      "api": "kSecAttrSynchronizable",
       "effect": "the constant is the string sync, the key of the attribute; an item added with it true or false is kept on this device only, and a query that names it, true, false or Any, finds the items of the device whichever it names",
       "facts": "facts/Security/kSecAttrSynchronizable.md",
-      "source": "Security of the arm64 shared cache of iOS 12.0, _kSecAttrSynchronizable at 0x1b01c2730 and _kSecAttrSynchronizableAny at 0x1b01c2a58, the strings sync and syna; an iPad 2 running 6.1.3 for what the keychain does with them"
+      "introduced": "6.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "a departure from 7.0 in what the keychain does with it: the keychain of iOS 6 takes the key and ignores it, and there is no iCloud Keychain to carry an item anywhere",
+      "source": "Security of the arm64 shared cache of iOS 12.0, _kSecAttrSynchronizable at 0x1b01c2730 and _kSecAttrSynchronizableAny at 0x1b01c2a58, the strings sync and syna; an iPad 2 running 6.1.3 for what the keychain does with them",
+      "status": "implemented"
     },
     {
       "api": "kSecAttrSynchronizableAny",
-      "kind": "constant",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a departure from 7.0 in what the keychain does with it: the keychain of iOS 6 takes the key and ignores it, and there is no iCloud Keychain to carry an item anywhere",
       "effect": "the constant is the string syna, the value of a query that matches an item synchronizable or not; an item added with it true or false is kept on this device only, and a query that names it, true, false or Any, finds the items of the device whichever it names",
       "facts": "facts/Security/kSecAttrSynchronizable.md",
-      "source": "Security of the arm64 shared cache of iOS 12.0, _kSecAttrSynchronizable at 0x1b01c2730 and _kSecAttrSynchronizableAny at 0x1b01c2a58, the strings sync and syna; an iPad 2 running 6.1.3 for what the keychain does with them"
+      "introduced": "7.0",
+      "kind": "constant",
+      "minimum": "6.0",
+      "reason": "a departure from 7.0 in what the keychain does with it: the keychain of iOS 6 takes the key and ignores it, and there is no iCloud Keychain to carry an item anywhere",
+      "source": "Security of the arm64 shared cache of iOS 12.0, _kSecAttrSynchronizable at 0x1b01c2730 and _kSecAttrSynchronizableAny at 0x1b01c2a58, the strings sync and syna; an iPad 2 running 6.1.3 for what the keychain does with them",
+      "status": "implemented"
     }
-  ]
+  ],
+  "framework": "Security"
 }

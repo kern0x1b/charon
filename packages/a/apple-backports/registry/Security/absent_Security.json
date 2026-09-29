@@ -62,27 +62,7 @@
       "source": "SDK 16.4, Security"
     },
     {
-      "api": "SecTrustGetNetworkFetchAllowed()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
       "api": "SecTrustGetTrustResult()",
-      "kind": "function",
-      "introduced": "7.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecTrustSetNetworkFetchAllowed()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
@@ -108,106 +88,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCopyAttributes()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCopyKeyExchangeResult()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCreateSignature()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyCreateWithData()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyIsAlgorithmSupported()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecKeyVerifySignature()",
-      "kind": "function",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecCertificateCopyCommonName()",
-      "kind": "function",
-      "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecCertificateCopyEmailAddresses()",
-      "kind": "function",
-      "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecCertificateCopyNormalizedIssuerSequence()",
-      "kind": "function",
-      "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecCertificateCopyNormalizedSubjectSequence()",
-      "kind": "function",
-      "introduced": "10.3",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 10, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Security"
     },
@@ -378,16 +258,6 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, Security"
-    },
-    {
-      "api": "SecTrustCopyKey()",
-      "kind": "function",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 14, and nothing in iOS 6 has what it names",
       "effect": "the function is not there: a weak reference to it is NULL",
       "source": "SDK 16.4, Security"
     },
