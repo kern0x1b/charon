@@ -42,7 +42,9 @@
                              accessory:(nullable HMAccessory *)accessory;
 @end
 
-@implementation HMAccessory
+// A category, not a second @implementation of the class: the class is implemented once, in
+// HMAccessoryServiceCharacteristic8_0.m, and a second definition of it is a duplicate symbol at the link.
+@implementation HMAccessory (CharonHome10)
 
 // The header's own word for the home: nullable, so an accessory that belongs to no home answers nil, and
 // the one that does is the home its own identifier names, built by the graph's entry point rather than
