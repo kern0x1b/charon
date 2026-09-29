@@ -13,20 +13,10 @@
 
 typedef void (^Answer)(NSString *name, NSString *value);
 
-// The port's renderer, compiled under this name (the build passes -D for it) so the system's and the
-// port's are both live in one process and can be asked the same questions.
-@interface CharonPortTextDragPreviewRenderer : NSObject
-- (instancetype)initWithLayoutManager:(NSLayoutManager *)layoutManager
-                                range:(NSRange)range
-                          unifyRects:(BOOL)unify;
-@property (nonatomic, readonly) NSLayoutManager *layoutManager;
-@property (nonatomic, readonly) UIImage *image;
-@property (nonatomic, readonly) CGRect firstLineRect;
-@property (nonatomic, readonly) CGRect bodyRect;
-@property (nonatomic, readonly) CGRect lastLineRect;
-- (void)adjustFirstLineRect:(inout CGRect *)first bodyRect:(inout CGRect *)body
-                lastLineRect:(inout CGRect *)last textOrigin:(CGPoint)origin;
-@end
+// The port's renderer, which the build compiles under this name from its own file alone. It is
+// reached by name at run time, so this translation unit never sees the rename and the class it
+// names is the one that is actually linked.
+static NSString *const kPortRendererName = @"CharonHostCopyTextDragPreviewRenderer";
 
 static NSString *CharonRect(CGRect rect)
 {
@@ -36,17 +26,27 @@ static NSString *CharonRect(CGRect rect)
 
 static NSLayoutManager *CharonMakeLayout(void)
 {
+    // Appended rather than assigned: a text storage that is set an attributed string in one go is
+    // fine, but appending is the form both runtimes take without complaint, and the fonts are
+    // checked because a nil attribute value is what a text storage refuses hardest.
+    UIFont *body = [UIFont systemFontOfSize:14];
+    UIFont *bold = [UIFont boldSystemFontOfSize:20];
+    if (!body || !bold)
+        return nil;
     NSTextStorage *storage = [[NSTextStorage alloc] init];
-    [storage setAttributedString:[[NSAttributedString alloc]
+    [storage appendAttributedString:[[NSAttributedString alloc]
         initWithString:@"the quick brown fox jumps over the lazy dog and keeps on running for a while"
-             attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:14]}]];
-    [storage addAttribute:NSFontAttributeName
-                    value:[UIFont boldSystemFontOfSize:20]
-                    range:NSMakeRange(20, 24)];
-    NSLayoutManager *layout = [[NSLayoutManager alloc] init];
-    [layout addTextContainer:nil];
+             attributes:@{NSFontAttributeName: body}]];
+    NSUInteger length = MIN((NSUInteger)24, [storage length]);
+    if (length)
+        [storage addAttribute:NSFontAttributeName value:bold range:NSMakeRange(20, length)];
+    if (!storage.length)
+        return nil;
     NSTextContainer *container = [[NSTextContainer alloc] initWithSize:CGSizeMake(200, 1000)];
     container.lineFragmentPadding = 5;
+    NSLayoutManager *layout = [[NSLayoutManager alloc] init];
+    // One addTextContainer: with the container, not a nil one and then a second: a nil container is
+    // what -insertTextContainer:atIndex: refuses, and the throw names this line.
     [layout addTextContainer:container];
     [layout ensureLayoutForTextContainer:container];
     return layout;
@@ -102,6 +102,10 @@ int main(void)
         NSMutableDictionary *port = [NSMutableDictionary dictionary];
         NSLayoutManager *hostLayout = CharonMakeLayout();
         NSLayoutManager *portLayout = CharonMakeLayout();
+        if (!hostLayout || !portLayout) {
+            printf("the release's text storage or fonts are unavailable here, nothing to compare\n");
+            return 2;
+        }
 
         for (NSValue *value in CharonCases()) {
             NSRange range = value.rangeValue;
@@ -110,14 +114,17 @@ int main(void)
                                  unify ? @"1" : @"0", (unsigned long)range.location, (unsigned long)range.length];
                 UITextDragPreviewRenderer *system = [[UITextDragPreviewRenderer alloc]
                     initWithLayoutManager:hostLayout range:range unifyRects:unify.boolValue];
-                CharonPortTextDragPreviewRenderer *ours = [[CharonPortTextDragPreviewRenderer alloc]
-                    initWithLayoutManager:portLayout range:range unifyRects:unify.boolValue];
                 CharonAsk(system, tag, ^(NSString *n, NSString *v) {
                     host[n] = v;
                 });
-                CharonAsk(ours, tag, ^(NSString *n, NSString *v) {
-                    port[n] = v;
-                });
+                // The port's class, by name: this translation unit is compiled without the rename,
+                // so the name it gives is the one that is actually linked in port.o.
+                Class portClass = NSClassFromString(kPortRendererName);
+                id ours = [[portClass alloc] initWithLayoutManager:portLayout range:range unifyRects:unify.boolValue];
+                if (ours)
+                    CharonAsk(ours, tag, ^(NSString *n, NSString *v) {
+                        port[n] = v;
+                    });
             }
         }
 
@@ -126,10 +133,12 @@ int main(void)
             initWithLayoutManager:nil range:NSMakeRange(0, 10) unifyRects:NO];
         host[@"empty.firstLineRect"] = CharonRect(systemEmpty.firstLineRect);
         host[@"empty.image"] = systemEmpty.image ? @"drew" : @"(nil)";
-        CharonPortTextDragPreviewRenderer *portEmpty = [[CharonPortTextDragPreviewRenderer alloc]
-            initWithLayoutManager:nil range:NSMakeRange(0, 10) unifyRects:NO];
-        port[@"empty.firstLineRect"] = CharonRect(portEmpty.firstLineRect);
-        port[@"empty.image"] = portEmpty.image ? @"drew" : @"(nil)";
+        Class portEmptyClass = NSClassFromString(kPortRendererName);
+        id portEmpty = [[portEmptyClass alloc] initWithLayoutManager:nil range:NSMakeRange(0, 10) unifyRects:NO];
+        if (portEmpty) {
+            port[@"empty.firstLineRect"] = CharonRect([portEmpty firstLineRect]);
+            port[@"empty.image"] = [portEmpty image] ? @"drew" : @"(nil)";
+        }
 
         NSUInteger compared = 0, differing = 0;
         NSArray<NSString *> *names = [[host allKeys] sortedArrayUsingSelector:@selector(compare:)];

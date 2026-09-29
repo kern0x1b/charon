@@ -1,40 +1,83 @@
 #!/bin/sh
-# build-renderer-differential.sh -- the renderer's five properties and its arithmetic, asked of the
-# system's own renderer and of the port's in one process, under Mac Catalyst. The port's file is
-# compiled under a second name with -D so both are live, and a mutant compiles a second copy of it
-# with one rect changed, so the comparison can be shown to go red.
+# build.sh -- the renderer's five properties and its arithmetic, asked of the system's own
+# UITextDragPreviewRenderer and of the port's in one process, under Mac Catalyst.
 #
-#   DDR_ROOT=<the checkout> sh .agent-work/plan-and-analysis/uikit-a/probe/build-renderer-differential.sh
+# The two classes are reached differently, and that is the whole trick:
 #
-# A heavy build, so it runs through heavy.sh, detached, and its log is read afterwards.
+#   * the port's file is compiled ALONE, with -D renaming the class it implements, so it is linked
+#     as a second class rather than colliding with the system's;
+#   * this comparison is compiled WITHOUT the -D, so its own translation unit still names the
+#     system's class, and the port's is reached by name at run time with NSClassFromString.
+#
+# So the -D reaches the port's translation unit alone. That is the usual reason a renamed class
+# comes out "not found": the rename reached the comparison too, or the renamed object was never
+# linked.
+#
+#   DDR_ROOT=<the checkout> FLEET_HEAVY_LANE=fast sh tests/backports/host/renderer-differential/build.sh
+#
+# A heavy build, so it runs through heavy.sh, and its output is the two logs it names.
 set -eu
+
 root=${DDR_ROOT:?set DDR_ROOT to the port checkout}
-probe=$root/.agent-work/plan-and-analysis/uikit-a/probe
+here=$(cd "$(dirname "$0")" && pwd)
 port=$root/packages/a/apple-backports/UIKit/UITextDragPreviewRenderer11.m
-build=${TMPDIR:-/tmp}/charon-renderer-differential
+build=${DDR_BUILD:-${TMPDIR:-/tmp}/charon-renderer-differential}
 sdk=$(xcrun --show-sdk-path)
+port_name=CharonHostCopyTextDragPreviewRenderer
 mkdir -p "$build"
 
-run() {
-    label=$1
-    files=$2
-    clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
-        -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
-        -D_UITextDragPreviewRenderer=CharonPortTextDragPreviewRenderer \
-        -I "$root/packages/a/apple-backports/UIKit" \
-        $files "$probe/renderer-compare.m" \
+# The port's own file, on its own, with the rename. Its include path is the port's UIKit directory
+# and nothing of the comparison's.
+echo "== the port's object, compiled alone with the rename:"
+set -x
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+    -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
+    -DUITextDragPreviewRenderer=$port_name \
+    -I "$root/packages/a/apple-backports/UIKit" \
+    -c "$port" -o "$build/port.o"
+set +x
+nm -gU "$build/port.o" | grep -E "OBJC_CLASS_\$_" | sed 's/^/   /'
+
+# The comparison, with no rename at all, so its TU names the system's class.
+echo "== the comparison, compiled without the rename:"
+set -x
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+    -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
+    -I "$root/packages/a/apple-backports/UIKit" \
+    -c "$here/compare.m" -o "$build/compare.o"
+set +x
+
+# The mutant: the same port file with one rect a point out, which is what a wrong adjustment is.
+sed 's/^        firstLineRect->origin = CGPointMake(firstLineRect->origin.x + origin.x,$/        firstLineRect->origin = CGPointMake(firstLineRect->origin.x + origin.x + 1,/' \
+    "$port" > "$build/mutant.m"
+grep -c "origin.x + 1" "$build/mutant.m"
+set -x
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+    -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
+    -DUITextDragPreviewRenderer=CharonMutantTextDragPreviewRenderer \
+    -I "$root/packages/a/apple-backports/UIKit" \
+    -c "$build/mutant.m" -o "$build/mutant.o"
+
+link() {
+    echo "== the link line:"
+    set -x
+    xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+        -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" "$@" \
         -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore \
-        -o "$build/$label"
-    "$build/$label" > "$build/$label.log" 2>&1 || true
-    printf '%s: ' "$label"
-    tail -1 "$build/$label.log"
+        -o "$build/probe"
+    set +x
 }
 
-# the clean pair: the port's renderer against the system's
-run clean "-I$probe $port"
+link "$build/compare.o" "$build/port.o"
+nm -gU "$build/probe" | grep -E "OBJC_CLASS_\$_(UITextDragPreviewRenderer|$port_name)" | sed 's/^/   both classes in the binary: /'
 
-# the mutant: one rect off by a point, which is what a wrong adjustment looks like
-sed 's/^        firstLineRect->origin = CGPointMake(firstLineRect->origin.x + origin.x,$/        firstLineRect->origin = CGPointMake(firstLineRect->origin.x + origin.x + 1,/' \
-    "$port" > "$build/renderer-mutant.m"
-grep -c "origin.x + 1" "$build/renderer-mutant.m"
-run mutant "-I$probe $build/renderer-mutant.m"
+echo "== the clean pair:"
+"$build/probe" > "$build/clean.log" 2>&1 || true
+tail -1 "$build/clean.log"
+grep -c DIFFER "$build/clean.log" || true
+
+link "$build/compare.o" "$build/mutant.o"
+echo "== the mutant:"
+"$build/probe" > "$build/mutant.log" 2>&1 || true
+tail -1 "$build/mutant.log"
+grep -c DIFFER "$build/mutant.log" || true
