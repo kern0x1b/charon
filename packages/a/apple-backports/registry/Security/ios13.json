@@ -311,7 +311,7 @@
     },
     {
       "api": "sec_protocol_options_set_challenge_block()",
-      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -322,7 +322,7 @@
     },
     {
       "api": "sec_protocol_options_set_key_update_block()",
-      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
+      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",
@@ -509,7 +509,7 @@
     },
     {
       "api": "sec_protocol_options_set_verify_block()",
-      "effect": "the block is HELD AS A COPY with its dispatch queue, and the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will The VERIFY block is the only one of the three that RECEIVES a sec_trust_t, and the port holds a type it does not itself supply - the sec_trust_t wrapper is one of the nine rows STILL OWED - so this row is not exercised end to end until that type exists, and the row says so rather than implying a run",
+      "effect": "the block is held with its dispatch queue - the design, and NOT yet measured for the queue: no test reads a queue back, and a mutation that DELETED the queue assignment survives the case. What IS measured is that the three are THREE SEPARATE SETTINGS: a key-update block, a challenge block and a verify block each have their own slot, and setting one leaves the other two unset. Measured: each set alone with its two neighbours read back, and all three set together. A NULL block CLEARS rather than leaving the previous one, and the neighbours are untouched when it does. The effect: nothing dispatches any of them, because no handshake will The VERIFY block is the only one of the three that RECEIVES a sec_trust_t, and the port holds a type it does not itself supply - the sec_trust_t wrapper is one of the nine rows STILL OWED - so this row is not exercised end to end until that type exists, and the row says so rather than implying a run",
       "facts": "facts/Security/SecProtocolWorklist.md",
       "introduced": "13.0",
       "kind": "function",

@@ -5,7 +5,8 @@ rather than a search. **48 rows: 17 `sec_protocol_metadata_*` and 31 `sec_protoc
 every one of the 48 has a declaration in `SecProtocolMetadata.h` or `SecProtocolOptions.h` - none of
 them is a name the headers do not have, which is why none of them is `absent` for that reason.
 
-**Status: 3 done, 44 built, 1 owed** (`sec_protocol_options_set_local_identity`). The three block setters were built this round
+**Status: 3 done, 44 built, 1 owed** - the one owed is `sec_protocol_options_set_local_identity`.
+The three block setters were built this round
 (`sec_protocol_options_set_key_update_block`, `set_challenge_block`, `set_verify_block`),
 so the ONE row still owed is `sec_protocol_options_set_local_identity` — and that one is
 blocked behind the `sec_identity_t` wrapper, which is one of the nine wrapper rows with no
@@ -68,9 +69,9 @@ block setters). The section "Why each group is owed" below is the plan those wra
 | `sec_protocol_options_set_tls_sct_enabled` | Options | :543 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
 | `sec_protocol_options_set_tls_renegotiation_enabled` | Options | :559 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
 | `sec_protocol_options_set_peer_authentication_required` | Options | :575 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
-| `sec_protocol_options_set_key_update_block` | Options | :729 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **owed** |
-| `sec_protocol_options_set_challenge_block` | Options | :748 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **owed** |
-| `sec_protocol_options_set_verify_block` | Options | :767 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **owed** |
+| `sec_protocol_options_set_key_update_block` | Options | :729 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
+| `sec_protocol_options_set_challenge_block` | Options | :748 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
+| `sec_protocol_options_set_verify_block` | Options | :767 | API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)) | ios11.json | **built** |
 
 ## Why each group is owed, and what the answer will be
 
@@ -130,4 +131,6 @@ returned nothing, so there was no release-side constant to defer to and the fall
 `sec_protocol_options_are_equal` (`:86`) reads back the settings the port **holds**, so it is
 `implemented` — it is the one thing the port can answer truthfully. The equality is its own state and
 nothing else: a comparison against the release's stack would compare nothing, because there is no such
-stack. The setters are built, each inert with the effect that the handshake ignores it, except the four named at the top, which remain owed.
+stack.The four are no longer the owed set: the three block setters are built, and the four
+certificate/trust wrapper rows are built and measured, so the one row still owed is
+`sec_protocol_options_set_local_identity`.

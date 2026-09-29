@@ -24,6 +24,11 @@
 // without the queue it was given for is a block held for a queue nobody owns. Assigning to a __strong ivar
 // copies; dispatch_retain and dispatch_release are ARC-FORBIDDEN on a dispatch object.
 //
+// WHAT IS MEASURED AND WHAT IS NOT, so the comment does not overclaim: the case proves the three are
+// SEPARATE settings, that a NULL block clears, and that the neighbours are untouched. IT DOES NOT READ
+// THE QUEUE BACK - a mutation that deleted `_verifyQueue = queue;` passes this case, because nothing
+// looks at the queue. So the queue's holding is the DESIGN and is untested, and the row says that.
+//
 // THE VERIFY BLOCK IS THE ONLY ONE OF THE THREE THAT RECEIVES A sec_trust_t, and that is recorded rather
 // than smoothed over: the port holds a type it does not itself supply, because the sec_trust_t wrapper is
 // one of the NINE ROWS STILL OWED. Holding a value whose producing type is owed is honest - the value is

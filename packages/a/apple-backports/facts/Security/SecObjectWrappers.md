@@ -58,7 +58,7 @@ available either: the header carries `API_AVAILABLE(ios(13.0))` on all nine, so 
 `armv7-apple-ios6.0` with `-Werror=unguarded-availability-new` fails on the header's own availability
 macros for the very API it provides. That much is in the build log either way.
 
-## Not implemented
+## State of the nine
 
 The nine rows stay as they are. This file records the header facts, the exact error, and the two design
 options, so the next attempt starts from the measurement instead of from the nine greps.
@@ -67,15 +67,15 @@ options, so the next attempt starts from the measurement instead of from the nin
 
 | api | kind | introduced | state | file |
 | --- | --- | --- | --- | --- |
-| `sec_identity_access_certificates()` | function | 13.0 | absent | `absent_Security.json` |
-| `sec_certificate_copy_ref()` | function | 12.0 | absent | `ios11.json` |
-| `sec_certificate_create()` | function | 12.0 | absent | `ios11.json` |
-| `sec_identity_copy_certificates_ref()` | function | 12.0 | absent | `ios11.json` |
-| `sec_identity_copy_ref()` | function | 12.0 | absent | `ios11.json` |
-| `sec_identity_create()` | function | 12.0 | absent | `ios11.json` |
-| `sec_identity_create_with_certificates()` | function | 12.0 | absent | `ios11.json` |
-| `sec_trust_copy_ref()` | function | 12.0 | absent | `ios11.json` |
-| `sec_trust_create()` | function | 12.0 | absent | `ios11.json` |
+| `sec_identity_access_certificates()` | function | 13.0 | **owed** | `absent_Security.json` |
+| `sec_certificate_copy_ref()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_certificate_create()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_identity_copy_certificates_ref()` | function | 12.0 | **owed** | `ios11.json` |
+| `sec_identity_copy_ref()` | function | 12.0 | **owed** | `ios11.json` |
+| `sec_identity_create()` | function | 12.0 | **owed** | `ios11.json` |
+| `sec_identity_create_with_certificates()` | function | 12.0 | **owed** | `ios11.json` |
+| `sec_trust_copy_ref()` | function | 12.0 | **built** | `ios12.json` |
+| `sec_trust_create()` | function | 12.0 | **built** | `ios12.json` |
 
 Eight of the nine are introduced at **12.0**, not 13.0; the ninth, `sec_identity_access_certificates`, is
 13.0. The `sec_identity_*` five are declared in `SecProtocolTypes.h` at `:218` (create), `:237`
@@ -96,3 +96,15 @@ asked for cannot be written rather than merely being hard.
 The slice that IS buildable is the two types whose refs are made without a keychain, and those four rows
 (`sec_certificate_create`, `sec_certificate_copy_ref`, `sec_trust_create`, `sec_trust_copy_ref`) are
 REAL WRAPPERS OF REAL REFS rather than answers that report an absence.
+
+**Four built, five owed.** The four are measured: a real `SecCertificateRef` from
+`SecCertificateCreateWithData` and a real `SecTrustRef` from `SecTrustCreateWithCertificates`, neither
+touching a keychain, with the retain balance **1 2 3 2 1**, `copy_ref` answering the same ref by pointer
+equality, and the weak-reference release reading nil after the scope drains.
+
+**The five identity rows are owed, and NOT because a wrapper is impossible** — a previous claim of mine
+said so and it is withdrawn: `sec_identity_create` and its siblings take a `SecIdentityRef` the caller
+already has and wrap it, exactly as `sec_certificate_create` wraps a `SecCertificateRef`, and no sentence
+of the header forbids it. What is missing is the TEST: a real `SecIdentityRef` cannot be made on this
+Mac without the Mac's keychain, so the case uses a stand-in `CFTypeRef` and says it is one, and a real
+identity is a guest measurement.
