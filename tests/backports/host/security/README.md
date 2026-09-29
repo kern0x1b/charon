@@ -170,5 +170,5 @@ shasum -a 256 tests/backports/host/security/sec-object-wrappers.m \
 
     0e134f43b64166c4e55a12f1f000cd36b1ad422922c937c49ee27487b11ad00c  tests/backports/host/security/sec-object-wrappers.m
     47e215633006060820d6a7e6ce53797bc371889b79f35d0e3d06e08bee6f7354  tests/backports/host/security/compare-sec-object-wrappers.py
-    94407e64ae0b098a09adb42eccee3c24833638792ee19d23ae4318272b4f59ca  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
+    c4fb20d9e4423c9127cbfdea7531b8a981a4aae89347106b2aa870ea33dbfbc9  packages/a/apple-backports/Security/SecObjectWrappers12_0.m
 

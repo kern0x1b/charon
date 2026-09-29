@@ -69,21 +69,20 @@
 
 //    303  sec_certificate_t sec_certificate_create(SecCertificateRef certificate)
 //
-// -Wall REPORTS -Wnonnull TWICE IN THIS FILE, AND NOT IN EITHER CREATOR. Re-run and the lines are:
-//
-//   SecObjectWrappers12_0.m:102:  null returned from function that requires a non-null return value
-//       inside SecCertificateRef sec_certificate_copy_ref(sec_certificate_t)
-//   SecObjectWrappers12_0.m:119:  the same warning
-//       inside SecTrustRef     sec_trust_copy_ref(sec_trust_t)
-//
-// The header DECLARES THE CREATORS WITHOUT A NULLABILITY ANNOTATION, and the getter pair with one:
-//   :188  sec_trust_create(SecTrustRef trust);
-//   :203  sec_trust_copy_ref(sec_trust_t trust);
-//   :303  sec_certificate_create(SecCertificateRef certificate);
-//   :318  sec_certificate_copy_ref(sec_certificate_t certificate);
-// so the annotation - and therefore the -Wnonnull - is on the GETTERS, and it fires on their own
-// `return NULL` for an object that holds nothing. THAT IS WHY THE CREATORS ARE _NULLABLE IN PRACTICE:
-// a caller may pass NULL, the wrapper records that it was given none, and the getter is where a caller
+// -Wall REPORTS -Wnonnull TWICE IN THIS FILE, AND IN NEITHER CREATOR: once inside
+// sec_certificate_copy_ref and once inside sec_trust_copy_ref, each on its own return NULL for an object
+// that holds nothing. The line numbers of that run are the transcript below, and they are kept in one
+// place on purpose: a line number in a comment goes stale as soon as a line is added above it.
+//   SecObjectWrappers12_0.m:101:  null returned from function that requires a non-null return value
+//   SecObjectWrappers12_0.m:120:  the same warning
+// The header puts the NULLABILITY THE OTHER WAY ROUND from what this comment used to say, and the
+// direction is the whole point: the two CREATORS carry an explicit _Nullable on their result
+// (SecProtocolTypes.h:187 and :302, each with SEC_RETURNS_RETAINED), and the two copy_ref GETTERS
+// carry no nullability annotation of their own - they sit inside the assume-nonnull region that runs
+// from :173 to :320, so they are nonnull by that region's assumption rather than by anything written
+// on them. So the annotation - and therefore the -Wnonnull - is on the GETTERS, and it fires on their
+// own `return NULL` for an object that holds nothing, and THAT IS WHY THE CREATORS ARE _NULLABLE: a
+// caller may pass NULL, the wrapper records that it was given none, and the getter is where a caller
 // finds out. The warning is the header's annotation meeting exactly that case, and it is left in place:
 // there is no non-null value for a getter to return when the object was never given a ref.
 //
@@ -105,8 +104,10 @@ SecCertificateRef sec_certificate_copy_ref(sec_certificate_t certificate)
 }
 
 //    188  sec_trust_t sec_trust_create(SecTrustRef trust)
-//  Always returns a wrapper, and is the _NULLABLE side of the pair: the -Wnonnull warnings are at
-//  :93 and :110, in the two copy_ref getters, not in either creator.
+//  Always returns a wrapper, and is the _NULLABLE side of the pair - the header says so on its result,
+//  not the copy_ref getter beside it. Neither -Wnonnull warning in this file is in a creator: both are
+//  in the two copy_ref getters the transcript above names, and the line numbers are in the transcript
+//  rather than here because they move with every line added above them.
 sec_trust_t sec_trust_create(SecTrustRef trust)
 {
     return (sec_trust_t)[[CharonSecTrust alloc] initWithTrust:trust];
