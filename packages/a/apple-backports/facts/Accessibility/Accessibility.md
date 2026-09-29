@@ -456,6 +456,21 @@ the host:
     user's accessory list, so **the host is never called for these two**, or for the third,
     `AXSupportsBidirectionalAXMFiHearingDeviceStreaming`, which answers NO because there is no hearing
     device and so nothing that could stream in either direction.
+
+    **What justifies the three is narrower than what the code first claimed, and the narrow claim is what
+    the census prints.** It first said the release's Accessibility surface held no hearing device, no
+    pairing and no Bluetooth audio-device symbol in it at all. That is false: the census lists **28**
+    hearing-named exports there, four of them about a paired-UUIDs preference
+    (`__AXSHearingSetPairedUUIDs`, `__AXSHearingCopyPairedUUIDs`, `kAXSPairedHearingUUIDsPreference`,
+    `kAXSPairedHearingUUIDsChangedNotification`). Every one of the 28 is a preference about a hearing-aid
+    **feature** - compliance, ear independence, the live-listen alert, the stream selection, the two demo
+    flags - in the VoiceOver preference surface, and **none of the 28 is an `AXMFiHearingDevice`
+    symbol**. That is the claim the three answers rest on: they are about hearing devices made as phone
+    accessories, and the release carries no API for one, in either direction, paired or streaming. The
+    subject list that would have printed the counterexamples had no word for hearing or pairing in it, so
+    the false sentence was checked by nothing; `axs-census.lua` prints both words now, and the three
+    registry rows name this measurement rather than the settings one that cannot answer a hearing
+    question.
   * `AXOpenSettingsFeature` calls its completion **once, synchronously, before returning**, with an error
     in the port's own domain naming **the section by its own name** and saying nothing was opened. The
     name rather than the number is a fix the check asked for: an assertion that the description names the
@@ -490,8 +505,9 @@ here, and the reason is in two parts that are both about the machine and neither
 
   * their declarations are `API_UNAVAILABLE(macos)`, the header's own statement that a Mac has no such
     device, so **no macOS program can call them at all** - and the answer a host would give is the
-    signed-in user's own accessory list, which is nobody's answer to what a phone with no hearing hardware
-    must say;
+    signed-in user's own accessory list, which is nobody's answer to what a phone whose surface carries
+    no hearing-device API must say - the narrow claim the census now prints, and the one the code's own
+    comment was reaching for past what it could measure;
   * there is no iOS runtime on this machine to run them on: `xcrun --show-sdk-path --sdk iphonesimulator`
     answers `SDK "iphonesimulator" cannot be located`, and the tree's device programs are run by the
     coordinator's gate, which a band does not invoke.

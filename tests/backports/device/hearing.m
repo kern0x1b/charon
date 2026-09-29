@@ -18,8 +18,11 @@
 //    * an assertion over `nm` of the built CharonHearing15.o, which the settings run makes and mutant
 //      M9 turns red on - it is an assertion and not a print, so a port that stopped defining one of the
 //      three fails the run;
-//    * tests/backports/settings/axs-census.lua, the measurement the answers are readings of: the release
-//      holds no hearing hardware symbol at all.
+//    * tests/backports/settings/axs-census.lua, the measurement the answers are readings of. It prints
+//      28 hearing-named exports in the release's Accessibility surface and every one is a preference
+//      about a hearing-aid feature - four of them about a paired-UUIDs preference - and none of the 28
+//      is an AXMFiHearingDevice symbol. That is the whole justification: the three functions are about
+//      hearing devices made as phone accessories, and the release carries no API for one.
 //
 //  This program is the one that can run them, and the gate is what runs it. It asks the port's three
 //  functions what the census says they must answer, and it also asks the release's own - the functions

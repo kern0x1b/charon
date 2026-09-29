@@ -81,7 +81,12 @@ function main(release, architecture, modules)
 
     -- The five subjects, by the words a preference about them would be named with. Every name that
     -- contains one is printed, because "none of them is a preference" is a claim about names.
-    local subjects = {"Motion", "Blink", "Cursor", "Horizontal", "Vertical", "Border", "Slider", "Image"}
+    -- The words a preference about the settings this library answers for would be named with, and the
+    -- words a hearing-device answer would be justified by. "Hearing" and "Pair" were missing, and the
+    -- reviewer's own walk of the same cache found pairing exports in this surface that the list could
+    -- not print, so the sentences in the code that said there were none were not checked by anything.
+    local subjects = {"Motion", "Blink", "Cursor", "Horizontal", "Vertical", "Border", "Slider", "Image",
+                      "Hearing", "Pair"}
     print("")
     print("names in the Accessibility surface containing each word a preference about the five settings would use:")
     for _, word in ipairs(subjects) do

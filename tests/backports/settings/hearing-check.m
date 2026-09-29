@@ -5,9 +5,10 @@
 // here is what can be checked without running: the three functions exist with the signatures the header
 // gives them, and each one's body is the answer, written so that the compiler is what holds it.
 //
-// The answers are readings of the release, measured by axs-census.lua: the Accessibility surface a
-// release the port carries holds has no hearing device, no pairing and no Bluetooth audio-device symbol
-// in it. An empty list for the pairing, the enumeration's own no-device case for the ear, and no for
+// The answers are readings of the release, measured by axs-census.lua: of the 28 exports in the
+// release's Accessibility surface with "Hearing" in the name, every one is a preference about a
+// hearing-aid feature and none is an AXMFiHearingDevice symbol, which is what justifies the three. An
+// empty list for the pairing, the enumeration's own no-device case for the ear, and no for
 // bidirectional streaming.
 //
 // OWED: running this. The program is built for armv7-apple-ios6.0 and there is no iOS runtime on this

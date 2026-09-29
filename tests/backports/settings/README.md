@@ -24,7 +24,11 @@ iphonesimulator` answers `SDK "iphonesimulator" cannot be located`. What holds t
     the SDK's own declarations of the three functions;
   * `nm` over the built `CharonHearing15.o`, which `run.sh` **asserts** rather than prints - it is what
     mutant M9 turns red on;
-  * `axs-census.lua`, which is the measurement the answers are readings of.
+  * `axs-census.lua`, which is the measurement the answers are readings of, and which is narrower than
+    what the code first claimed: the release's Accessibility surface holds 28 hearing-named exports, all
+    of them preferences about a hearing-aid feature and four of them about a paired-UUIDs preference, and
+    none of the 28 is an `AXMFiHearingDevice` symbol. That last part is what the three answers rest on,
+    and the census prints the list so the reading can be checked.
 
 The program that can run them is `tests/backports/device/hearing.m` - the tree's device-program shape,
 compiled clean for the port's own target, which asks the port's three functions for the answers the
