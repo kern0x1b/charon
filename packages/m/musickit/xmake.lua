@@ -60,7 +60,7 @@ package("musickit")
         os.vrunv(toolchain:tool("cc"), table.join(target, {"-I" .. path.join(os.scriptdir(), "files", "include"),
                  "-I" .. path.join(micro:installdir("include")), "-I" .. path.join("files"),
                  "-Os", "-fvisibility=hidden", "-c", path.join("files", "CharonC.c"),
-                 "-o", path.absolute(path.join("objects", "CharonC.o"))})
+                 "-o", path.absolute(path.join("objects", "CharonC.o"))}))
         os.vrunv(swiftc, table.join(swift.runtime_flags({
             architecture = package:arch(), deployment = minimum, sdk = sdk,
             resources = path.join(runtime:installdir(), "lib", "swift"),
