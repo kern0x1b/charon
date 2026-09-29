@@ -58,7 +58,7 @@ classes=$(python3 - "$root" <<'PY'
 import json, os, sys
 root = sys.argv[1]
 pairs = {
-    "MTLSamplerState": "CharonMetalTexture",        # gpuResourceID
+    "MTLSamplerState": "CharonMetalSampler",
     "MTLFunction": "CharonMetalLibrary",
     "MTLDepthStencilState": "CharonMetalDepthStencil",
     "MTLDrawable": "CharonMetalDrawable",
@@ -98,12 +98,20 @@ for line in $classes; do
     strip "$source"
     count=$( (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$source") 2>&1 \
              | grep -cE "not implemented|not synthesized" || true)
+    # EVERY diagnostic, with its text: a count cannot be acted on, and the point of this check is
+    # that the text names the member so a row can be fixed or the gap can be recorded.
+    # Only the diagnostics naming THIS row's protocol. CharonMetalLibrary implements MTLFunction AND
+    # MTLLibrary, and CharonMetalTexture implements MTLTexture AND MTLResource, so a class behind two
+    # rows reports both: counting every one of its diagnostics would make a row fail on gaps that
+    # belong to a different row - and the rows that DO own those gaps are already inert.
+    diagnostics=$( (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$source") 2>&1 \
+                  | grep -E "not implemented|not synthesized" | grep -F "in protocol '$protocol'" || true)
+    count=$(printf '%s' "$diagnostics" | grep -c . || true)
     if [ "$count" -eq 0 ]; then
         echo "  ok   $protocol via $class: no -Wprotocol, no -Wobjc-protocol-property-synthesis"
     else
         echo "  FAIL $protocol via $class: $count diagnostic(s) - a callable gap, so the row must be inert" >&2
-        (cd "$tree/apple-backports" && xcrun clang $flags -fsyntax-only "$source") 2>&1 \
-            | grep -E "not implemented|not synthesized" | sed 's/^/         /' >&2
+        printf '%s\n' "$diagnostics" | sed "s|.*Metal/$class.m|$class.m|" | sed 's/^/         /' >&2
         fail=1
     fi
 done
