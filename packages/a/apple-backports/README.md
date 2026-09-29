@@ -787,3 +787,30 @@ running 6.1.3, through a tweak loaded into an application the phone already
 has: forty-seven checks in one run, no failures. That run is where the font cache
 of this release showed up - a font scaled to the size it already has comes back
 as the same object, which no host can show.
+
+## iOS 17
+
+### CMTag, and the three bodies that are the SDK's
+
+`CMTag`, `CMTagCollection` and `CMTaggedBufferGroup` arrived at iOS 17, and the SDK this package is
+written against - 16.4 - has no header for any of them, so `CharonCMTag26.h` carries 26.2's own
+declarations. Nineteen of CMTag's twenty-five are functions with definitions in `CMTag17.m`; the other six
+are `CM_INLINE` in 26.2, so the header carries their bodies.
+
+**Three of those six bodies are the SDK's text, and that is not a choice: `CMTagGetValue`,
+`CMTagGetCategory` and `CMTagHasCategory`.** A struct field accessor is one expression, and for these
+three no other exists - `CMTagValue` is 26.2's `uint64_t`, the category is a 32-bit field, and the
+question `CMTagHasCategory` asks is answered by the single equality of two 32-bit patterns. Their rows say
+so and claim no independence. What the port stands on for them is the measurement, not the spelling: the
+host's answers over 672 values, in `tests/backports/host/coremedia7/cmtaginlines.m`.
+
+The other three - `CMTagIsValid`, `CMTagCategoryEqualToTagCategory`, `CMTagCategoryValueEqualToValue` -
+are the port's own, written from that measurement and composed through the package's own accessors
+rather than off the struct.
+
+**The port's bodies bind only on an SDK with no `CMTag.h`,** which is 16.4, the SDK the port targets. On
+an SDK that has one - the host's, where `<CoreMedia/CoreMedia.h>` includes `<CoreMedia/CMTag.h>` at its
+line 19 - Apple's definitions are compiled first and the port's text is shadowed before it is read. So no
+check in this repository compares the port's six against the host's: a two-table comparison on the host
+would compare Apple's inlines with Apple's. What is verified is that the port's bodies are the ones that
+bind on 16.4, by compiling them for `armv7-apple-ios6.0` against it.
