@@ -127,7 +127,11 @@ def main():
     for name in sorted(os.listdir(REGISTRY)):
         if not name.endswith(".json"):
             continue
-        entries = json.load(open(os.path.join(REGISTRY, name)))["entries"]
+        held = json.load(open(os.path.join(REGISTRY, name)))
+        # The registry writes a bare list in some files and {"entries": [...]} in others; a check
+        # that only reads one shape raises on the other, and a tool that cannot read the file it
+        # was written for reports nothing about it -- which reads like "no misses".
+        entries = held if isinstance(held, list) else held.get("entries", [])
         for entry in entries:
             if entry["kind"] != "method":
                 continue
