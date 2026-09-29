@@ -94,14 +94,69 @@ The other five are carried, and their rows are in `registry/Security/ios10keys.j
 | API | What it does on the release |
 | --- | --- |
 | `SecKeyCopyAttributes` | the key's own keychain entry, asked with two-argument `SecItemCopyMatching` (`kSecKey.h:1162`) |
-| `SecKeyIsAlgorithmSupported` | the key's class against the table: four RSA PKCS1 digest algorithms for sign and verify, two RSA encryption ones, EC and key exchange refused |
-| `SecKeyCreateSignature` | `SecKeyRawSign` with the padding the algorithm names, `0x8002` and `0x8003`-`0x8006` (`kSecKey.h:198-218`) |
+| `SecKeyIsAlgorithmSupported` | the key's class against the table: four RSA PKCS1 digest algorithms for sign and verify, the two ECDSA digest algorithms for an EC key, two RSA encryption ones, key exchange refused |
+| `SecKeyCreateSignature` | `SecKeyRawSign` with the padding the algorithm names - `0x8002` and `0x8003`-`0x8006` for RSA (`kSecKey.h:198-218`), `kSecPaddingNone` for an EC key and `kSecPaddingPKCS1` once if the release refuses that |
 | `SecKeyVerifySignature` | `SecKeyRawVerify` with the same padding, so its PKCS1 padding is *checked* (`kSecKey.h:684-690`) |
-| `SecKeyCopyKeyExchangeResult` | **inert**: always NULL, with the `CFError` left NULL. iOS 6.1.3 has **no EC key type at all** - `kSecAttrKeyTypeECSECPrimeRandom` is `API_AVAILABLE(macos(10.12), ios(10.0))` (`SecItem.h:804-805`) against `kSecAttrKeyTypeRSA`'s `ios(2.0)` (`SecItem.h:784-785`) - so no `SecKeyRef` can hold an EC private key and there is no peer to exchange with. No secret is invented |
+| `SecKeyCopyKeyExchangeResult` | **implemented for a key of the port's own kind, refused for every other**: the curve answers a real secret there, and every other key gets NULL with an `NSError` in `NSOSStatusErrorDomain` and `errSecParam` naming why. The refusal rests on a measurement, not on the key's type: the armv7 shared cache of 6.1.3 exports `SecKeyRawSign`, `SecKeyRawVerify` and no elliptic key agreement of any name, its only agreement being the finite-field `SecDH` family, which is not a curve |
 
 A refusal on the first four is NULL or `false` **with no `CFError` set**, because each signature's
 documentation names no domain or code for it, and the port does not manufacture one a caller would
-handle as though the SDK had promised it.
+handle as though the SDK had promised it. **The exchange is the exception and says so**: it answers
+`errSecParam`, which is the release's own code for a parameter it will not accept and the only one its
+documentation leaves, and it is built in one place - `CharonSecKeyFail` - which the curve's refusals
+use as well.
+
+### The EC key type, and what an earlier version of this file said about it
+
+**iOS 6.1.3 has an EC key type.** `SecItem.h:802-803` declares
+
+    extern const CFStringRef kSecAttrKeyTypeEC
+        API_AVAILABLE(macos(10.9), ios(4.0));
+
+and `kSecAttrKeyTypeECSECPrimeRandom` two lines below it (`:804-805`) is `ios(10.0)` - a *different*
+class, the one Apple's own 10.0 API names. An earlier version of this file read "NO EC KEY TYPE AT ALL"
+off `:804-805` against `:784-785`, stepping over the two lines that say otherwise, and this same file
+said the opposite 65 lines up: "A key type the release's generator will not make - and it has RSA and
+elliptic curve". The second of those two sentences is the true one.
+
+So the release's own primitive signs an EC key, and the four functions are carried for one:
+`SecKeyRawSign` and `SecKeyRawVerify` take an elliptic key and a digest, and the padding is this
+package's own mapping - `kSecPaddingNone`, which is what "the bytes as they are" means and is the only
+padding a curve has, asked once more with `kSecPaddingPKCS1` if the release refuses that, because some
+releases want the RSA padding name for the same call. **Which of the two the 6.1.3 release takes is
+still unmeasured**: `tests/backports/host/seckeycurve/emulate.sh` settles it and has not run, and a
+host differential cannot see it - the host's own `SecKeyCreateSignature` accepts either padding for an
+elliptic key, measured, with the EC row of the padding map mutated to PKCS1: 93 checks, 0 failures.
+
+### Two kinds of key, one public symbol
+
+Each of the four is carried for **two** kinds of key, and this file is the one of the two that
+answered for a key of the release's keychain:
+
+| key | sign | verify | exchange | says |
+| --- | --- | --- | --- | --- |
+| the release's own keychain, EC or RSA | `SecKeyRawSign` with the padding above | `SecKeyRawVerify` with it | refused, `errSecParam` | the table above |
+| the port's own kind: the marker `CharonSecKeyScalar` beside a 32 byte `kSecValueData` | the curve, over `charon@micro-ecc` | the curve | the curve | sign, verify and exchange |
+| a class the release takes nothing from - `kSecAttrKeyTypeAES` is `ios(NA)` | refused | refused | refused | false for everything |
+
+The public symbol for each of the four is in `SecurityFunctions10_0_1.m`, **once**, and it dispatches on
+one attribute; the curve is in `Security/SecKeyElliptic10.m`, which defines no public `SecKey*` symbol
+at all. That is not tidiness: two objects of one library defining one name is a link error, and the
+6.1.3 gate answered with four of them -
+`duplicate symbol '_SecKeyCreateSignature' in: Security/SecKeyElliptic10.o and
+Security/SecurityFunctions10_0_1.o` - because this file's file and that one could not see each other.
+
+The four functions were each *implemented twice* until that merge, and the registry could not see it:
+the rows were in two different registry files, and the check asks whether a row has code, not whether
+two files claim the same API. `registry/Security/ios10keys.json` holds one row per API now, and
+`facts/Security/SecKeyElliptic.md` is the other half - the curve, its measurement, and the three
+`Charon*` names the dispatch calls.
+
+The matrix is four kinds of key by four functions, and every cell has a red of its own:
+`tests/backports/host/seckeycurve/mutate-cells.py` holds sixteen cells, fourteen of them by a mutation
+in that driver and two - signing and verifying with a key of a class the release takes nothing from -
+by the pure table, because the host's own primitive refuses the same key a 128 bit AES key and no key
+can see that cell on a Mac (measured). What the whole matrix runs against is 93 checks, 0 failures.
 
 ### A disagreement this file had with itself
 

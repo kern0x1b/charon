@@ -940,12 +940,15 @@ Contacts exports all 207 and agrees with every one. `facts/Contacts/Values.md`.
 `SecKeyIsAlgorithmSupported` (10.0) are carried over `charon@micro-ecc` - Kenneth MacKay's P-256
 arithmetic, BSD-2, taken as a package of its own rather than written here - because iOS 6.1.3 has no
 way to make an ECDSA signature: `SecKeyCreateRandomKey` and `SecKeyCreateSignature` are both iOS 8.
-A key of the **release's own keychain** needs no curve at all: the armv7 cache of 6.1.3 exports
-`SecKeyRawSign` and `SecKeyRawVerify`, so the signing of such a key is the release's own arithmetic
-and the port only reads back what it hands over. The curve is reached for the keys the port makes
-itself, and the exchange answers the documented error, because that cache has no elliptic key
-agreement of any kind. `facts/Security/SecKeyElliptic.md`, and the probes that take the measurement
-again are `tests/backports/host/seckeycurve/` and `tests/backports/host/microecc/`.
+A key of the **release's own keychain** is signed by the release's own arithmetic: the armv7 cache of
+6.1.3 exports `SecKeyRawSign` and `SecKeyRawVerify`, and it has an EC key type - `kSecAttrKeyTypeEC`
+is `ios(4.0)` - so an elliptic key of its keychain is signed through those, with the padding the
+package chooses and the release's own status passed on. The curve is reached for the keys the package
+makes itself, which are the ones the release's keychain does not hold, and the exchange answers the
+documented error for every other key because that cache has no elliptic key agreement of any kind. All
+four functions are carried once, for both kinds of key, in `Security/SecurityFunctions10_0_1.m`.
+`facts/Security/SecKey.md` and `facts/Security/SecKeyElliptic.md`, and the probes that take the
+measurement again are `tests/backports/host/seckeycurve/` and `tests/backports/host/microecc/`.
 
 ### DCAppAttestService, the second half of DeviceCheck
 

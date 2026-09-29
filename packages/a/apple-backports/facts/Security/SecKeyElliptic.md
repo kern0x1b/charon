@@ -1,4 +1,25 @@
-# The elliptic half of SecKey, iOS 10: sign, verify, exchange, and what a key can do
+# The EC half of the four SecKey functions of iOS 10, for the keys this package makes itself
+
+The four public names - `SecKeyCreateSignature`, `SecKeyVerifySignature`,
+`SecKeyCopyKeyExchangeResult` and `SecKeyIsAlgorithmSupported` - are in
+`Security/SecurityFunctions10_0_1.m`, once, for two kinds of key at once, and this file is the half
+that answers for a key of **this package's kind**: one that carries its own private scalar, beside
+the `kSecValueData` `SecKeyCreateWithData` would have left, and that the release's keychain
+therefore does not hold. A key of the release's own keychain is signed, verified and asked about
+by the release's own `SecKeyRawSign` and `SecKeyRawVerify` in that file, beside the RSA row and
+the table; the matrix of which is which is in `facts/Security/SecKey.md`, and the four registry rows
+are in `registry/Security/ios10keys.json`.
+
+**This file defines no public `SecKey*` symbol.** `Security/SecKeyElliptic10.m` exports five
+`Charon`-prefixed names - `CharonSecurityKeyIsPortEC`, `CharonSecKeyECCarries`,
+`CharonSecKeyECSign`, `CharonSecKeyECVerify`, `CharonSecKeyECExchange` - and one shared error
+builder, `CharonSecKeyFail`, which `internal_symbol()` keeps out of the library's API. The
+dependency runs one way, public to internal, so no band can leave this file out and find a call
+undefined: it exports nothing a release can already have, and the public file was in every band
+already. The other arrangement is the one that was refused - the four public names were defined in
+both files, and the 6.1.3 gate answered
+`duplicate symbol '_SecKeyCreateSignature' in: Security/SecKeyElliptic10.o and
+Security/SecurityFunctions10_0_1.o`, with three more behind it.
 
 `SecKeyCreateSignature`, `SecKeyVerifySignature`, `SecKeyCopyKeyExchangeResult` and
 `SecKeyIsAlgorithmSupported` arrived with `SecKey` in iOS 10. `Security/SecKey100.m` already carries
@@ -108,7 +129,7 @@ that does.
 ## What was measured, and what was not
 
 **Measured**, against the host's own Security.framework in both directions
-(`tests/backports/host/seckeycurve`, **78 checks, none differing**): a signature the port makes verifies
+(`tests/backports/host/seckeycurve`, **93 checks, none differing**): a signature the port makes verifies
 under the host's `SecKeyVerifySignature`, and one the host makes verifies through the port, for
 messages of 0, 65 and 130 bytes; the host refuses the port's signature under SHA-384, so the
 algorithm is not being ignored; the port refuses the host's signature for another message; every
