@@ -40,6 +40,30 @@ static MPSVector *vectorOf(const void *values, MPSDataType type, NSUInteger leng
                                                                   vectorBytes:length * sizeof(float) dataType:type]];
 }
 
+// the names of the raw enum values, so a run says which type it asked for rather than only its number
+static const char *typeName(MPSCNNNeuronType t)
+{
+    switch (t) {
+        case MPSCNNNeuronTypeNone: return "None";
+        case MPSCNNNeuronTypeReLU: return "ReLU";
+        case MPSCNNNeuronTypeLinear: return "Linear";
+        case MPSCNNNeuronTypeSigmoid: return "Sigmoid";
+        case MPSCNNNeuronTypeHardSigmoid: return "HardSigmoid";
+        case MPSCNNNeuronTypeTanH: return "TanH";
+        case MPSCNNNeuronTypeAbsolute: return "Absolute";
+        case MPSCNNNeuronTypeSoftPlus: return "SoftPlus";
+        case MPSCNNNeuronTypeSoftSign: return "SoftSign";
+        case MPSCNNNeuronTypeELU: return "ELU";
+        case MPSCNNNeuronTypeReLUN: return "ReLUN";
+        case MPSCNNNeuronTypePReLU: return "PReLU";
+        case MPSCNNNeuronTypePower: return "Power";
+        case MPSCNNNeuronTypeExponential: return "Exponential";
+        case MPSCNNNeuronTypeLogarithm: return "Logarithm";
+        case MPSCNNNeuronTypeGeLU: return "GeLU";
+        default: return "unknown";
+    }
+}
+
 static void say(const char *step)
 {
     char line[128];
@@ -49,7 +73,10 @@ static void say(const char *step)
 
 static void oneCase(MPSCNNNeuronType type, const char *label)
 {
-    say("case begin");
+    char who[64];
+    int wn = snprintf(who, sizeof(who), "STEP case begin, type %d = %s, a %g b %g c %g\n",
+                      (int)type, typeName(type), 1.0f, 1.0f, 2.0f);
+    write(2, who, (size_t)wn);
     memset(normOut, 0, sizeof(normOut));
     say("buffers created");
     static id<MTLCommandQueue> queue;
@@ -92,7 +119,13 @@ int main(int argc, char **argv)
             oneCase((MPSCNNNeuronType)atoi(argv[2]), "chosen type");
         } else {
             for (int t = 0; t < 15; t++) {
-                printf("--- type %d\n", t); fflush(stdout);
+                if (t == MPSCNNNeuronTypePReLU) {
+                    // MPSMatrixBatchNormalization.mm:469 asserts `PReLU not supported.`, measured on
+                    // this host, so the one raw value that cannot be asked is named and stepped over
+                    printf("--- type %d PReLU skipped: the release asserts it is not supported\n", t);
+                    fflush(stdout);
+                    continue;
+                }
                 oneCase((MPSCNNNeuronType)t, "loop");
             }
         }
