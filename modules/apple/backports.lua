@@ -32,7 +32,16 @@ LIBRARIES = {
     -- SecKeyCreateSignature are iOS 8): Security/SecKeyElliptic10.m signs, verifies and exchanges over it
     -- for the keys this package makes itself. Every name it needs begins with Charon, so
     -- internal_symbol() keeps the curve out of this library's exports.
-    {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}},
+    --
+    -- c_archives, because the archive's API is C and this library keeps no .mm object in any band:
+    -- `archives` alone would be dropped by link()'s cxx rule in every band, and
+    -- SecKeyElliptic10.o would carry _CharonCKDigestSignES256, _CharonCKDigestVerifyES256 and
+    -- _CharonCKSharedSecretES256 undefined, with the wrapper that defines them on the link line
+    -- nowhere. Measured before this line: `SecurityBackports sources=28 has .mm=false
+    -- archives=micro-ecc on the link line: (empty) dropped: micro-ecc`, and
+    -- tests/addon/archive_language_test.lua failing on exactly that. The same shape charon-coding and
+    -- monocypher use, for the same reason.
+    {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}, c_archives = {"micro-ecc"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry
