@@ -13,11 +13,26 @@ LIBRARIES = {
     -- release from iOS 5.0 on and by none before it, so the class floor is 5.0; the imports are weak, so a
     -- release whose libicucore lacks them binds NULL and the class answers nil rather than faulting.
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}, libraries = {"icucore"}},
+    {name = "AppTrackingTransparencyBackports", folder = "AppTrackingTransparency", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "AdServicesBackports", folder = "AdServices", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "AppClipBackports", folder = "AppClip", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "AccountsBackports", folder = "Accounts", frameworks = {"Accounts", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CFNetworkBackports", folder = "CFNetwork", frameworks = {"CFNetwork", "CoreFoundation"}, libraries = {"FoundationBackports"}},
+    {name = "IOSurfaceBackports", folder = "IOSurface", frameworks = {"IOSurface", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreServicesBackports", folder = "CoreServices", frameworks = {"CoreServices", "CoreFoundation"}, libraries = {"FoundationBackports"}},
+    {name = "IOKitBackports", folder = "IOKit", frameworks = {"IOKit", "CoreFoundation"}, libraries = {"FoundationBackports"}},
+    {name = "BrowserKitBackports", folder = "BrowserKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
+    {name = "CoreNFCBackports", folder = "CoreNFC", frameworks = {"Foundation", "CoreFoundation"}, libraries = {"FoundationBackports"}},
+    {name = "GameKitBackports", folder = "GameKit", frameworks = {"GameKit", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "GraphicsBackports", folder = "Graphics", frameworks = {"CoreGraphics", "CoreImage", "CoreVideo", "ImageIO", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "UIKitBackports", folder = "UIKit", frameworks = {"UIKit", "Foundation", "CoreGraphics", "QuartzCore", "MobileCoreServices", "ImageIO"}, libraries = {"FoundationBackports", "GraphicsBackports"}, archives = {"box2d"}},
     {name = "CoreLocationBackports", folder = "CoreLocation", frameworks = {"CoreLocation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "CoreDataBackports", folder = "CoreData", frameworks = {"CoreData", "Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- micro-ecc is the P-256 arithmetic iOS 6 has no way to sign with (SecKeyCreateRandomKey and
+    -- SecKeyCreateSignature are iOS 8): Security/SecKeyElliptic10.m signs, verifies and exchanges over it
+    -- for the keys this package makes itself. Every name it needs begins with Charon, so
+    -- internal_symbol() keeps the curve out of this library's exports.
+    {name = "SecurityBackports", folder = "Security", frameworks = {"Security", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}},
     -- suitesparse-ordering is AMD and COLAMD, the two sparse orderings, as a static archive: the Sparse*
     -- solve family needs an ordering and this stack's own rows must not export one. The archive is not
     -- API of the image, and the archive ITSELF is not a proof of that: AMD and COLAMD mark their entry

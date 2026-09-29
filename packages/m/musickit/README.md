@@ -56,3 +56,40 @@ request.
 The catalogue types, the search and library requests, the responses, the players and
 `MusicLibrary`. The surface is 1316 rows; this is its foundation — the identity every item has and
 the authorization a client asks for before it uses any of it.
+
+## The catalogue, added
+
+`Catalog.swift` carries the requests and the types, against the documented Apple Music API:
+
+| | the path this sends |
+| --- | --- |
+| `MusicCatalogSearchRequest` | `GET /v1/catalog/{storefront}/search?term=…&types=…&limit=…&offset=…` |
+| `MusicCatalogResourceRequest` | `GET /v1/catalog/{storefront}/{type}/{id}?include=…` |
+| `MusicCatalogChartRequest` | `GET /v1/catalog/{storefront}/charts/{type}?limit=…` |
+| `MusicDataRequest` | whatever URL the caller built, which is what the interface's own is |
+
+and the types the service sends: `Song`, `Album`, `Artist`, `Playlist`, `Artwork`, and
+`MusicItemCollection` with its `next` URL for the page after. The storefront is the one the developer
+registered, and `us` is the documented default: this release has no way to ask a device its region
+(`Locale.current` is iOS 10), so a storefront a caller did not name is the registered default rather
+than a guess.
+
+**Measured: the whole module - identity, authorization, token, catalogue requests and types - compiles
+for `armv7-apple-ios6.1.3` under the port's flags.** The C shim builds on its own too.
+
+### Two things the build says, written down rather than argued with
+
+**`Sendable` is a warning, not a silence.** `URL`'s and `Artwork`'s `Sendable` conformances are gated
+above 6.1.3, so every type that conforms warns that a stored property is not `Sendable` — an error
+under the Swift 6 language mode, a warning here. The conformances are kept because the real surface
+has them, and the warnings are the honest cost of that at this release. The alternative — dropping
+`Sendable` — would be a smaller surface than a caller of MusicKit 26 writes.
+
+**The token can be handed over but not yet minted.** The signature is reached (the shim calls exactly
+what `CharonCKWebAuth.c` calls, so there is one implementation of the curve in the port), and a base64url
+is carried in the module, but a JOSE token's *encoding* would rather use
+`Data.base64EncodedString(options:)` and this release's Swift Foundation overlay marks it iOS 7. The
+lift lowers the Objective-C headers, where the backports put their marks, and not the Swift overlay's
+own. So `MusicDeveloperToken.developerToken` is carried and `mint` is not, and the comment in
+`Authorization.swift` names the two small ways out. A token minted elsewhere is one of the two
+documented ways to authenticate the API and needs nothing of this port but the request.
