@@ -36,7 +36,10 @@ static void hostDX(const float *dy, float *out)
     id<MTLBuffer> mbuf = [device newBufferWithBytes:mb length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> vbuf = [device newBufferWithBytes:vb length:12 options:MTLResourceStorageModeShared];
     id<MTLBuffer> gbuf = [device newBufferWithBytes:gb length:12 options:MTLResourceStorageModeShared];
-    id<MTLBuffer> outb = [device newBufferWithLength:48 options:MTLResourceStorageModeShared];
+    // A sentinel, so a zero of the formula and a byte the host never wrote are distinguishable.
+    float sentinel[12];
+    for (int i = 0; i < 12; i++) sentinel[i] = -1.0e30f;
+    id<MTLBuffer> outb = [device newBufferWithBytes:sentinel length:48 options:MTLResourceStorageModeShared];
     MPSMatrixDescriptor *md = [MPSMatrixDescriptor matrixDescriptorWithRows:4 columns:3 matrices:1
                                                                      rowBytes:12 matrixBytes:48 dataType:MPSDataTypeFloat32];
     MPSVectorDescriptor *vd = [MPSVectorDescriptor vectorDescriptorWithLength:3 vectors:1
@@ -76,6 +79,20 @@ int main(void) { @autoreleasepool {
     for (int i = 0; i < 12; i++) { double d = fabs(got[i] - sum[i]); if (d > worst) worst = d; }
     P("linearity: dY = e_0 + e_1 against the sum of the two columns, largest difference %.3g%s\n",
       worst, worst < 1e-5 ? " - linear" : " - NOT LINEAR");
+
+    P("\nelements the host leaves untouched, per unit column, and where they are\n");
+    for (int j = 0; j < N * C; j++) {
+        float e[12] = {0}, col[12];
+        e[j] = 1.0f;
+        hostDX(e, col);
+        int untouched = 0;
+        P("  e_%d:", j);
+        for (int i = 0; i < 12; i++) {
+            if (col[i] == -1.0e30f) { P(" %d", i); untouched++; }
+        }
+        if (!untouched) P(" (none)");
+        P("\n");
+    }
 
     P("\nthe Jacobian, rows = dX, columns = dY, each labelled by its element index in row-major order\n");
     P("        ");

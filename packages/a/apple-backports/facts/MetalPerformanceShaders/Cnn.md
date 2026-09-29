@@ -369,12 +369,15 @@ elements of dY's channel 0 — and `dX[1]` only in columns 1, 4 and 10, the four
 axis the standard formula has, and it is now measured rather than inferred from a formula that did not
 fit.
 
-**And the host does not fill the whole destination.** Several entries come back `-inf` or
-`258130233550829509922521088.0000` — an unwritten shared buffer's contents, not a computed value. The
-unwritten entries are whole channels of `dX`, the same signature as the per-parameter vectors it
-leaves untouched: the release writes some of its output and not all of it.
+**And the host fills the whole destination — a correction.** With a `-1.0e30` sentinel in the
+destination, **every one of the twelve unit columns comes back with all twelve elements written**
+(`(none)` untouched, twelve times). So the `-inf` and the astronomical values in the earlier run were
+not unwritten bytes at all: they are what the host's own formula produces on the inputs I chose, a
+division by a zero variance or an overflow inside its block. The port writes its twelve elements, and
+so does the host. The "partly unwritten" claim this paragraph made last turn is withdrawn, and the
+sentinel is what caught it.
 
-So the host's data gradient is **block diagonal on the feature channel**, **linear**, and **partly
-unwritten** — and the block itself is still not the standard form, since the sixteen variants of it did
-not fit. The next step is the block alone, one channel at a time, which removes the coupling between
+So the host's data gradient is **block diagonal on the feature channel** and **linear**, and it writes
+every element — and the block is still not the standard form, since the sixteen variants of it did not
+fit. The next step is the block alone, one channel at a time, which removes the coupling between
 channels and leaves a four by four operator to identify.
