@@ -119,16 +119,17 @@
     [device relinquish];
 }
 
+// The encoder of the port runs a workgroup as one thread per thread of the group, with a rendezvous
+// of a mutex and a condition variable, because iOS 6 has no pthread_barrier and a group run one
+// thread after another would let a thread past a barrier before its neighbours had written.
 - (id<MTLComputeCommandEncoder>)computeCommandEncoder
 {
-    NSLog(@"Metal: the graphics of this device run no compute functions");
-    return nil;
+    return (id<MTLComputeCommandEncoder>)[[CharonMetalComputeEncoder alloc] init];
 }
 
 - (id<MTLBlitCommandEncoder>)blitCommandEncoder
 {
-    NSLog(@"Metal: a blit command encoder has no form in this port yet");
-    return nil;
+    return (id<MTLBlitCommandEncoder>)[[CharonMetalBlitEncoder alloc] init];
 }
 
 - (id<MTLRenderCommandEncoder>)renderCommandEncoderWithDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor

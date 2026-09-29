@@ -135,11 +135,13 @@ NSError *CharonMetalError(NSInteger code, NSString *message)
     return (id<MTLSamplerState>)[[CharonMetalSampler alloc] initWithDescriptor:descriptor];
 }
 
+// A compute pipeline of the port is a kernel tools/air2cpu translated out of the AIR of the library
+// the function came from, run on the CPU because the drivers of iOS 6 are OpenGL ES 2.0 and there is
+// no compute shader to dispatch into (facts/OpenGLES/ES3Functions.md, measured on an iPhone 4S). A
+// kernel the tool refused is not in the table the pipeline looks in, and the answer says so by name.
 - (id<MTLComputePipelineState>)newComputePipelineStateWithFunction:(id<MTLFunction>)computeFunction error:(NSError **)error
 {
-    if (error)
-        *error = CharonMetalError(9, @"the graphics of this device run no compute functions");
-    return nil;
+    return (id<MTLComputePipelineState>)[[CharonMetalComputePipeline alloc] initWithFunction:computeFunction error:error];
 }
 
 - (id<MTLComputePipelineState>)newComputePipelineStateWithFunction:(id<MTLFunction>)computeFunction options:(MTLPipelineOption)options reflection:(MTLAutoreleasedComputePipelineReflection *)reflection error:(NSError **)error

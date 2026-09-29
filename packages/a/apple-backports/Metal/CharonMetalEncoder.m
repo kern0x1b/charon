@@ -45,6 +45,8 @@ static float halfToFloat(uint16_t h)
     BOOL _hasDepth, _hasStencil, _depthDirty;
     CharonMetalDepthStencil *_depthStencil;
     uint32_t _frontReference, _backReference;
+    __strong CharonMetalHeap *_heaps[8];
+    NSUInteger _heapCount;
 }
 
 @synthesize label;
@@ -200,8 +202,43 @@ static float halfToFloat(uint16_t h)
     glScissor((GLint)rect.x, _target.screen ? (GLint)(_target.height - rect.y - rect.height) : (GLint)rect.y, (GLsizei)rect.width, (GLsizei)rect.height);
 }
 
+// The heaps -useHeap: and -useHeaps:count: name, and the check a bind makes against them. Metal leaves
+// undefined what happens when a resource that did not come from one of them is bound, so the port says
+// which resource it was rather than passing it by: an application that lists heaps and then binds
+// something else has a bug the log names, and one that lists no heap is not checked at all.
+- (void)charonUseHeaps:(id<MTLHeap> const *)heaps count:(NSUInteger)count
+{
+    _heapCount = 0;
+    for (NSUInteger index = 0; index < count && index < 8; index++)
+        _heaps[_heapCount++] = heaps[index];
+}
+
+- (void)charonCheckHeapOf:(id)resource what:(const char *)what
+{
+    if (!_heapCount || !resource)
+        return;
+    id<MTLHeap> heap = [(id<MTLResource>)resource heap];
+    if (heap) {
+        for (NSUInteger index = 0; index < _heapCount; index++)
+            if (_heaps[index] == heap)
+                return;
+    }
+    NSLog(@"Metal: %s of a resource that did not come from one of the %lu heaps this encoder was given; the heaps were %@",
+          what, (unsigned long)_heapCount, [self charonHeapNames]);
+}
+
+- (NSString *)charonHeapNames
+{
+    NSMutableArray *names = [NSMutableArray array];
+    for (NSUInteger index = 0; index < _heapCount; index++)
+        [names addObject:_heaps[index].label ? _heaps[index].label
+                                            : [NSString stringWithFormat:@"heap %lu", (unsigned long)index]];
+    return [names componentsJoinedByString:@", "];
+}
+
 - (void)setVertexBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset atIndex:(NSUInteger)index
 {
+    [self charonCheckHeapOf:buffer what:"a vertex buffer"];
     if (index < 31) {
         _vertexBuffers[index] = (CharonMetalBuffer *)buffer;
         _vertexOffsets[index] = offset;
@@ -216,6 +253,7 @@ static float halfToFloat(uint16_t h)
 
 - (void)setFragmentBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset atIndex:(NSUInteger)index
 {
+    [self charonCheckHeapOf:buffer what:"a fragment buffer"];
     if (index < 31) {
         _fragmentBuffers[index] = (CharonMetalBuffer *)buffer;
         _fragmentOffsets[index] = offset;
@@ -230,6 +268,7 @@ static float halfToFloat(uint16_t h)
 
 - (void)setFragmentTexture:(id<MTLTexture>)texture atIndex:(NSUInteger)index
 {
+    [self charonCheckHeapOf:texture what:"a fragment texture"];
     if (index < 16)
     {
         _fragmentTextures[index] = (CharonMetalTexture *)texture;
@@ -442,6 +481,22 @@ static const GLfloat *rampOf(NSUInteger count)
             int compare = plan->textures[k].compare ? 1 : 0;
             if (sampler && (texture.appliedSampler != sampler || texture.appliedCompare != compare)) {
                 BOOL depth = texture.attachmentKind != 0;
+                // A format this device cannot filter, asked to be filtered, is what Metal answers with
+                // a validation error: the draw is refused rather than filtered in the encoding, and the
+                // log says which texture and which format, once per texture so a loop cannot flood it.
+                if (!depth && sampler.minFilter == GL_LINEAR && ![texture charonCanFilter]) {
+                    // Keyed by the TEXTURE and not by its name: two textures may carry one name, and a
+                    // set keyed by the name would let the second one's refusal go unlogged forever.
+                    // One line per texture, which is the most that can be said about a draw.
+                    static NSMutableSet *refused;
+                    static dispatch_once_t once;
+                    dispatch_once(&once, ^{ refused = [NSMutableSet set]; });
+                    if (![refused containsObject:(id)texture]) {
+                        [refused addObject:(id)texture];
+                        NSLog(@"Metal: a fragment texture of pixel format %d is filtered by a linear sampler and this device's driver cannot filter that format; the draw is drawn nearest instead, which is what a device without the format's linear filtering has",
+                              (int)texture.pixelFormat);
+                    }
+                }
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, depth ? GL_NEAREST : sampler.minFilter);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, depth ? GL_NEAREST : sampler.magFilter);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, sampler.wrapS);
