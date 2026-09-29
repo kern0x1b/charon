@@ -1,181 +1,142 @@
 #!/bin/sh
-# mutation.sh — can this harness fail? One term of the multiply accumulation is changed, the run is
-# repeated, and the count must move; the revert must move it back. A comparison that cannot fail is
-# not a comparison, and this is the check that it cannot.
+# mutation.sh — can this harness fail, and can the grader rank? One term of the multiply accumulation
+# is changed, the run is repeated, and the grader's own counts must move; the revert must move them
+# back. A comparison that cannot fail is not a comparison, and one that cannot tell a one-unit
+# difference from a 94 %-wrong answer is not a measurement either.
 #
-# It mutates the library, so the tree is left exactly as it was found, and it says so if it cannot.
+# Two things are true of the campaign and both were false of the one it replaces:
+#
+#   * It mutates a COPY of the library. The copy is made once under .agent-work, the run is pointed at
+#     it with MPS=, and every restore is a copy out of a pristine one. No tracked file is written at
+#     all: a run interrupted between a mutation and its restore used to leave the tree changed, and a
+#     script that can leave the tree changed does not belong on a shared worktree.
+#   * Every mutant is named. mutate.sh reads the anchor and the replacement from
+#     mutants/<site>.anchor and mutants/<site>.repl, so no shell parses C source and no anchor in this
+#     file can fall out of step with the file it names - which is what happened: the inline anchors this
+#     replaces had drifted from MPSMatrixBatchNormalization12.m and the campaign could not start.
+#
+# The count a mutant has to move is the grader's summary line, not a byte-exact count of differing
+# cases: that count read 58 before the SoftPlus fix and 58 after it, so a mutant wrong by 94 % did not
+# move it. The line carries all three numbers - identical, within the bound, beyond it - and a mutant
+# that is a wrong answer moves the third.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
-kernel=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixMultiplication10.m
-line='                    sum += a * c;'
-mutated='                    sum += a * c + 0.125;  // MUTATION'
-
-# A second mutant, on the forward batch-normalisation's mean: the formula is gamma * (x - mean) /
-# sqrt(variance + epsilon) + beta, and the mean there is the caller's. The mutant puts the computed
-# mean back, which is the defect this family had, and must turn the column that differs red.
-forward=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixBatchNormalization12.m
-fline='                double y = CharonMPSApplyNeuron(neuron.type, g * (x - mu) / sqrt(given + (double)_epsilon) + b0,'
-fmutated='                double y = CharonMPSApplyNeuron(neuron.type, g * (x - m) / sqrt(given + (double)_epsilon) + b0,  // MUTATION'
 work=${MUTATION_BUILD:-$root/.agent-work/runs/host/mpsmatrix-mutation}
+# Beside $work and not inside it: run.sh removes its own build directory at the start of every run, and
+# $work is that directory, so a copy kept under it is gone before the first mutant is applied.
+mps=$work.mps
+pristine=$work.mps.pristine
+rm -rf "$mps" "$pristine"
+mkdir -p "$mps" "$pristine"
+cp "$root/packages/a/apple-backports/MetalPerformanceShaders/"*.m "$mps"/
+cp "$root/packages/a/apple-backports/MetalPerformanceShaders/"*.h "$mps"/
+cp "$mps"/* "$pristine"/
+export MPS="$mps"
+echo "mutating a copy: $mps"
 
-grep -qF "$line" "$kernel" || { echo "the anchor is gone from $kernel; the mutation is not a check any more"; exit 1; }
-
-MUTANTS_DIR=$(dirname "$0")/mutants
+MUTANTS_DIR=${MUTANTS_DIR:-$here/mutants}
 export MUTANTS_DIR
-. "$(dirname "$0")/mutate.sh"
-original=$(cat "$kernel")
-foriginal=$(cat "$forward")
-restore_forward() { printf '%s\n' "$foriginal" > "$forward"; }
-trap restore EXIT INT TERM
+. "$here/mutate.sh"
 
+restore() { cp "$pristine/$(basename "$1")" "$1"; }
+
+# The grader's own summary line. run.sh's byte-exact "differing cases" count is gone, so a mutant read
+# by this line has to move a number that means something.
 count() {
-    line=$(BUILD="$work" sh "$here/run.sh" 2>&1 | grep -E 'differing cases|DIFFERS in' | head -1)
+    line=$(BUILD="$work" sh "$here/run.sh" 2>&1 | grep -E '^identical: ' | head -1)
     if [ -z "$line" ]; then
-        echo "the harness produced no count, so the tree does not build or the run failed:" >&2
+        echo "the harness produced no count, so the copy does not build or the run failed:" >&2
         return 1
     fi
     printf '%s\n' "$line"
 }
 
-before=$(count)
-printf 'before   %s\n' "$before"
-mutate "$kernel" "$line" "$mutated"
-during=$(count)
-printf 'mutated  %s\n' "$during"
-restore
-after=$(count)
-printf 'reverted %s\n' "$after"
+# One campaign: name a site, count, mutate, count, restore, count. All three counts are printed and the
+# middle one has to differ from the other two.
+campaign_run() {
+    _what=$1; _file=$2; _site=$3
+    _before=$(count)
+    mutate "$_file" "$_site" || return 1
+    _during=$(count)
+    restore "$_file"
+    _after=$(count)
+    printf '%-26s before   %s\n' "$_what" "$_before"
+    printf '%-26s mutated  %s\n' "$_what" "$_during"
+    printf '%-26s reverted %s\n' "$_what" "$_after"
+    if [ "$_before" = "$_during" ] || [ "$_during" = "$_after" ]; then
+        echo "the $_what mutation did not move the graded count; the harness is not measuring the library" >&2
+        return 1
+    fi
+}
 
-if [ "$before" = "$during" ] || [ "$during" = "$after" ]; then
-    echo "the mutation did not move the count; the harness is not measuring the library"
-    exit 1
-fi
-# The forward's mean, the same way.
-restore
-fbefore=$(count)
-printf '%s\n' "$fmutated" > "$forward"
-fduring=$(count)
-printf 'forward before   %s\n' "$fbefore"
-printf 'forward mutated  %s\n' "$fduring"
-restore_forward
-fafter=$(count)
-sbefore=$(count)
-printf 'forward reverted %s\n' "$fafter"
-if [ "$fbefore" = "$fduring" ] || [ "$fduring" = "$fafter" ]; then
-    echo "the forward mutation did not move the count either"
-    exit 1
-fi
-# A third mutant, on the sum's transposed clip: the release writes the intersection of the transposed
-# shape with the result descriptor and leaves the rest untouched, which a -1 sentinel in the result
-# shows. The mutant writes the whole shape, which is what the port did before the fix.
-sumkernel=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixSum11.m
-sline='    NSUInteger extent = _transpose ? (_rows < _columns ? _rows : _columns) : _rows;'
-smutated='    NSUInteger extent = _rows;  // MUTATION: the whole shape, not the intersection'
-soriginal=$(cat "$sumkernel")
-restore_sum() { printf '%s\n' "$soriginal" > "$sumkernel"; }
-trap 'restore; restore_forward; restore_sum' EXIT INT TERM
-grep -qF "$sline" "$sumkernel" || { echo "the sum anchor is gone"; exit 1; }
-printf '%s\n' "$smutated" > "$sumkernel"
-sduring=$(count)
-printf 'sum before   %s\n' "$sbefore"
-printf 'sum mutated  %s\n' "$sduring"
-restore_sum
-safter=$(count)
-printf 'sum reverted %s\n' "$safter"
-if [ "$sbefore" = "$sduring" ] || [ "$sduring" = "$safter" ]; then
-    echo "the sum mutation did not move the count either"
-    exit 1
-fi
-# A fourth mutant, on the sum's scale indexing: startIndex is a position in the flat list of scale
-# factors, so it is a component of the vector and not a vector index. The mutant reads it as a vector
-# index, which is what the port did before the fix and what answered all zeros.
-scale_line='                    NSUInteger which = (startIndex + index) / MAX((NSUInteger)1, scales.length);'
-scale_mut='                    NSUInteger which = startIndex + index;  // MUTATION: a vector index'
-soriginal2=$(cat "$sumkernel")
-restore_sum2() { printf '%s\n' "$soriginal2" > "$sumkernel"; }
-trap 'restore; restore_forward; restore_sum; restore_sum2' EXIT INT TERM
-grep -qF "$scale_line" "$sumkernel" || { echo "the scale anchor is gone"; exit 1; }
-scbefore=$(count)
-printf '%s\n' "$scale_mut" > "$sumkernel"
-scduring=$(count)
-printf 'scale before   %s\n' "$scbefore"
-printf 'scale mutated  %s\n' "$scduring"
-restore_sum2
-scafter=$(count)
-printf 'scale reverted %s\n' "$scafter"
-if [ "$scbefore" = "$scduring" ] || [ "$scduring" = "$scafter" ]; then
-    echo "the scale mutation did not move the count either"
-    exit 1
-fi
-# A fifth mutant, on the batch-norm gradient's per-parameter vectors: the release leaves them
-# untouched - a -1.0f sentinel survives - and the port now does the same. The mutant writes zeros there
-# instead, which is what a fresh buffer hides, and it must turn the two cases red.
-bnk=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixBatchNormalizationGradient12.m
-bline='            // The per-parameter gradients are left untouched. The release writes neither: with a'
-bmut='            // MUTATION: zeros written, not untouched\n            if (resultGradientForGammaVector) { { CharonMPSVectorView v = CharonMPSVectorViewOf(resultGradientForGammaVector); for (NSUInteger i = 0; i < v.length; i++) CharonMPSStore(CharonMPSVectorElement(&v, 0, i), v.dataType, 0, 0.0); } }'
-boriginal=$(cat "$bnk")
-restore_bn() { printf '%s\n' "$boriginal" > "$bnk"; }
-trap 'restore; restore_forward; restore_sum; restore_sum2; restore_bn' EXIT INT TERM
-grep -qF "$bline" "$bnk" || { echo "the gradient anchor is gone"; exit 1; }
-bbefore=$(count)
-printf '%s\n' "$bmut" > "$bnk"
-bduring=$(count)
-printf 'gradient before   %s\n' "$bbefore"
-printf 'gradient mutated  %s\n' "$bduring"
-restore_bn
-bafter=$(count)
-printf 'gradient reverted %s\n' "$bafter"
-if [ "$bbefore" = "$bduring" ] || [ "$bduring" = "$bafter" ]; then
-    echo "the gradient mutation did not move the count either"
+# How much of the campaign to run. Every mutant costs three full harness runs, and each run compiles
+# the 50 sources twice, so the ten-site campaign is about fifty minutes: CAMPAIGN=one runs one site,
+# derivatives runs the two the review found, all runs every site, and any other value is refused.
+campaign=${CAMPAIGN:-all}
+case "$campaign" in
+    one|derivatives|all) ;;
+    *) echo "CAMPAIGN is one of one, derivatives, all; not '$campaign'" >&2; exit 2 ;;
+esac
+
+sum=$mps/MPSMatrixSum11.m
+forward=$mps/MPSMatrixBatchNormalization12.m
+gradient=$mps/MPSMatrixBatchNormalizationGradient12.m
+multiply=$mps/MPSMatrixMultiplication10.m
+header=$mps/CharonMPS.h
+
+case "$campaign" in
+    one)
+        campaign_run "multiply accumulation" "$multiply" multiply-accumulation
+        ;;
+    all)
+        campaign_run "multiply accumulation" "$multiply" multiply-accumulation
+        campaign_run "forward mean" "$forward" forward-mean
+        campaign_run "sum transposed clip" "$sum" sum-transposed-clip
+        campaign_run "sum scale index" "$sum" sum-scale-index
+        campaign_run "gradient per-parameter" "$gradient" gradient-per-parameter
+        campaign_run "scale guard, edge" "$sum" scale-guard-edge-one
+        campaign_run "scale guard, clamp" "$sum" scale-guard-clamp-two
+        campaign_run "neuron application" "$sum" neuron-application
+        ;;
+esac
+
+if [ "$campaign" = derivatives ]; then campaign_end=1; fi
+
+# The two neuron derivatives the review found, and the two that show the grader ranks rather than only
+# detects: a mutant wrong by 94 % leaves a byte-exact count of differing cases exactly where it was.
+# exp(fabs(b*x)) makes the softplus derivative even where the function is not; the clamp answers 0
+# where the release answers the analytic a/((a*x+b) ln c). Both are written here rather than in
+# mutants/ because each is a multi-line replacement of a block, and the two files here are the text.
+[ "$campaign" = one ] && { echo ""; echo "one site ran: multiply accumulation"; exit 0; }
+
+sp_before=$(count)
+sed 's|        double t = b \* x;|        double e = exp(fabs(b * x)); return a * b * (e / (1.0 + e));|' \
+    "$header" > "$header.new" && mv "$header.new" "$header"
+sp_during=$(count)
+restore "$header"
+printf '%-26s before   %s\n' "softplus derivative" "$sp_before"
+printf '%-26s mutated  %s\n' "softplus derivative" "$sp_during"
+lg_before=$(count)
+sed 's|        return a / (t \* log(c));|        return t <= 0.0 ? 0.0 : a / (t * log(c));|' \
+    "$header" > "$header.new" && mv "$header.new" "$header"
+lg_during=$(count)
+restore "$header"
+hdr_after=$(count)
+printf '%-26s before   %s\n' "logarithm derivative" "$lg_before"
+printf '%-26s mutated  %s\n' "logarithm derivative" "$lg_during"
+printf '%-26s reverted %s\n' "both derivatives" "$hdr_after"
+if [ "$sp_before" = "$sp_during" ] || [ "$lg_before" = "$lg_during" ] || [ "$lg_during" = "$hdr_after" ]; then
+    echo "a neuron-derivative mutation did not move the graded count" >&2
     exit 1
 fi
 
-# Three mutants on the scale guard's edge, which the three sum-start-index-boundary cases defend:
-# start 1 leaves one factor in the list and start 2 leaves none, so each side of the edge is a case.
-# The guard is `pairs = startIndex < factors ? factors - startIndex : 0` and the `pairs > _count` clamp
-# after it. Mutating either to an off-by-one must turn exactly those cases red and leave the rest.
-sk=$root/packages/a/apple-backports/MetalPerformanceShaders/MPSMatrixSum11.m
-sedge_line='            NSUInteger pairs = startIndex < factors ? factors - startIndex : 0;'
-sclamp_line='                pairs = _count;'
-sedgeread=$(cat "$sk")
-restore_sedge() { printf '%s\n' "$sedgeread" > "$sk"; }
-trap 'restore; restore_forward; restore_sum; restore_sum2; restore_bn; restore_sedge' EXIT INT TERM
-grep -qF "$sedge_line" "$sk" || { echo "the scale guard's edge anchor is gone"; exit 1; }
-grep -qF "$sclamp_line" "$sk" || { echo "the scale guard's clamp anchor is gone"; exit 1; }
-edge_before=$(count)
-# side one: the guard admits startIndex == factors, which leaves no factors at all
-printf '%s\n' "$sedge_line" | sed 's|startIndex < factors|startIndex <= factors|' > "$sk"
-edge_one=$(count)
-printf '%s\n' "$sedge_line" > "$sk"
-# side two: the clamp off by one, so a start past the sources reads one factor too many
-printf '%s\n' "$sclamp_line" | sed 's|pairs = _count;|pairs = _count + 1;|' > "$sk"
-edge_two=$(count)
-restore_sedge
-edge_after=$(count)
-printf 'edge before    %s\n' "$edge_before"
-printf 'edge guard     %s\n' "$edge_one"
-printf 'edge clamp     %s\n' "$edge_two"
-printf 'edge reverted  %s\n' "$edge_after"
-if [ "$edge_before" = "$edge_one" ] || [ "$edge_before" = "$edge_two" ] || [ "$edge_two" = "$edge_after" ]; then
-    echo "a scale guard edge mutation did not move the count"
-    exit 1
-fi
+# The mutants that prove the reader is reading: a site whose anchor is a regex metacharacter has to be
+# found as text, or the campaign is a substitution that happens to work on this run's text.
+case "$campaign" in
+    all) campaign_run "metacharacter anchor" "$sum" metacharacter ;;
+esac
 
-# A fourth mutant on the neuron application, so the fifteen sum neuron cases are defended as well: the
-# kernel applies the neuron at MPSMatrixSum11.m:195, and skipping it must be red on exactly that loop.
-grep -q 'CharonMPSApplyNeuron(neuron.type, sum, neuron.a' "$sk" || { echo "the neuron anchor is gone"; exit 1; }
-neuron_before=$(count)
-sed 's|CharonMPSApplyNeuron(neuron.type, sum, neuron.a|CharonMPSApplyNeuron(MPSCNNNeuronTypeNone, sum, neuron.a|' "$sk" > "$sk.new" && mv "$sk.new" "$sk"
-neuron_during=$(count)
-restore_sedge
-neuron_after=$(count)
-printf 'neuron before  %s\n' "$neuron_before"
-printf 'neuron mutated %s\n' "$neuron_during"
-printf 'neuron reverted %s\n' "$neuron_after"
-if [ "$neuron_before" = "$neuron_during" ] || [ "$neuron_during" = "$neuron_after" ]; then
-    echo "the neuron mutation did not move the count"
-    exit 1
-fi
-
-echo "all nine mutations move the count and all five reverts move them back: the harness can fail"
+echo ""
+echo "the mutants that ran moved the graded counts and their reverts moved them back, in a copy of the"
+echo "library and with no tracked file written: the harness can fail, and the grader ranks what it measured"
