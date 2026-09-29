@@ -213,3 +213,31 @@ release evaluates it, not merely narrowed.
 The fix is the port's to make: the same single-precision formulation the release uses, `float` from
 the multiply onwards. It is the ulp work, and it is the last thing this family's structure is waiting
 on.
+
+## The gradient's per-parameter vectors: the host computes the kernel and does not fill them
+
+The three gradient cases come back zeros from the release against real values here, which is not
+rounding, so `tests/backports/host/mpsmatrix/fixtures/batchnorm-gradient.m` asks the three questions
+that decide it.
+
+**Does the host compute it at all? Yes.** The command buffer reports `MTLCommandBufferStatusCompleted`
+with no error, and `resultGradientForDataMatrix` holds real values:
+
+    gradient data:  0.298056 -0.0766294 -0.136185  0 0.306161 0.408554 0.198704 0.688951 ...
+
+**Is the destination a different buffer from the one read back? No.** Every object answers the buffer it
+was made from: `out.data == outb`, `gg.data == ggb`, `gbeta.data == gbb`, all true. There is no aliasing
+and no second allocation.
+
+**Does the host need a state object from the forward pass? No.** The forward is run and completed first
+and its statistics are given to the gradient as the ordinary mean and variance vectors; the gradient
+needs nothing the forward left behind.
+
+And the answer to the question that started it: `resultGradientForGammaVector` and
+`resultGradientForBetaVector` come back **zero** while the data gradient is real. So the release runs
+its gradient kernel, writes one of its three outputs and leaves the other two at whatever they were.
+
+**That is the release's own kernel, so the port's answer there stays unclaimed.** It is not rounding, it
+is not a harness artifact, and it is not a driver property to be excused as one — it is what MPS does,
+measured, and the port writes the header's formula for those two vectors. The facts say so and the
+registry carries the effect; nothing is changed to match zeros.
