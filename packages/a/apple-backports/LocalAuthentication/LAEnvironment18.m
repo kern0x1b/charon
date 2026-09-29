@@ -1,6 +1,10 @@
 #import <Foundation/Foundation.h>
 #import <objc/message.h>
 #import <LocalAuthentication/LAContext.h>
+// The generated protocols of this library, and the one place the body of LAEnvironmentObserver is
+// written down: the generated protocol source defines that protocol's object from this same header, so
+// a second copy of the body in this file would be a second definition of the same object.
+#import "CharonLocalAuthenticationProtocols.h"
 
 // The environment of iOS 18: what the device can authenticate the owner with, and in what state.
 //
@@ -30,10 +34,18 @@ typedef NS_ENUM(NSInteger, LACompanionType) {
 @class LAEnvironment;
 @class LAEnvironmentState;
 
-@protocol LAEnvironmentObserver <NSObject>
-@optional
-- (void)environment:(LAEnvironment *)environment stateDidChangeFromOldState:(LAEnvironmentState *)oldState;
-@end
+// The protocol's body is NOT written out here, and the header that carries it is imported above like
+// any other: writing it out gave one protocol two definitions in one library - this file's and the
+// generated protocol source's - and ld64 keeps whichever it reads first:
+//
+//   registry_test FAIL: LAEnvironment18.m declares @protocol LAEnvironmentObserver, which the generated
+//                      protocol source defines too, so two objects define that protocol object
+//
+// A forward declaration is not what replaces it: this file writes `@protocol(LAEnvironmentObserver)`,
+// and a forward declaration cannot take that - "@protocol is using a forward protocol declaration of
+// 'LAEnvironmentObserver'". The import is the one definition both this file and the generated source
+// read, and the generated source is what defines the object.
+@protocol LAEnvironmentObserver;
 
 @interface LAEnvironmentMechanism : NSObject
 + (instancetype)new NS_UNAVAILABLE;
