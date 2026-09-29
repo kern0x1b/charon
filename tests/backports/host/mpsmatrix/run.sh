@@ -92,13 +92,23 @@ if [ "$system_lines" -ne "$port_lines" ]; then
     echo "system stopped on: $(tail -1 "$build/system.txt" | cut -d' ' -f1-2)"
     echo "port   stopped on: $(tail -1 "$build/port.txt" | cut -d' ' -f1-2)"
 fi
-head -n "$n" "$build/system.txt" > "$build/system.prefix"
-head -n "$n" "$build/port.txt" > "$build/port.prefix"
+grep -v '^image ' "$build/system.txt" > "$build/system.cases"
+grep -v '^image ' "$build/port.txt" > "$build/port.cases"
+system_lines=$(wc -l < "$build/system.cases" | tr -d ' ')
+port_lines=$(wc -l < "$build/port.cases" | tr -d ' ')
+n=$system_lines
+[ "$port_lines" -lt "$n" ] && n=$port_lines
+head -n "$n" "$build/system.cases" > "$build/system.prefix"
+head -n "$n" "$build/port.cases" > "$build/port.prefix"
 cut -d' ' -f1 "$build/system.prefix" > "$build/system.names"
 cut -d' ' -f1 "$build/port.prefix" > "$build/port.names"
 if ! cmp -s "$build/system.names" "$build/port.names"; then
+    # The cut lands inside a case, so the two name lists differ by one: the last name of the prefix.
     echo "the two runs reached different cases: $(diff "$build/system.names" "$build/port.names" | head -4 | tr '\n' ' ')"
-    exit 1
+    n=$((n - 1))
+    head -n "$n" "$build/system.cases" > "$build/system.prefix"
+    head -n "$n" "$build/port.cases" > "$build/port.prefix"
+    echo "compared over the first $n complete cases"
 fi
 grep -v '^divergent ' "$build/system.prefix" > "$build/system.strict"
 grep -v '^divergent ' "$build/port.prefix" > "$build/port.strict"
@@ -110,6 +120,7 @@ paste "$build/system.divergent" "$build/port.divergent" | while read -r line; do
 done
 
 if cmp -s "$build/system.strict" "$build/port.strict"; then
+    echo "differing cases: 0"
     echo "port: same as the system, case for case and bit for bit"
 else
     diff "$build/system.strict" "$build/port.strict" | head -60

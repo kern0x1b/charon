@@ -10,6 +10,7 @@
 // Every case's data is at file scope, because a block cannot capture a C array.
 
 #import <Foundation/Foundation.h>
+#import <objc/runtime.h>
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
@@ -34,6 +35,38 @@ static void remember(id object, void *source, size_t bytes)
         gSources[gSourceCount].source = source;
         gSources[gSourceCount].bytes = bytes;
         gSourceCount++;
+    }
+}
+
+// Which image every compared class came out of, printed before anything else. A class of the port's
+// with the same name as one of the host's is registered once and a message sent to it reaches whichever
+// loaded first, so the run says which that was rather than leaving it to be inferred from a number that
+// came out wrong - which is exactly how the unrenamed generators went on comparing the host with itself
+// for a whole band.
+static void printClassImages(void)
+{
+    NSString *names[] = {
+        @"MPSKernel", @"MPSCommandBuffer", @"MPSPredicate", @"MPSState", @"MPSStateResourceList",
+        @"MPSMatrix", @"MPSMatrixDescriptor", @"MPSVector", @"MPSVectorDescriptor",
+        @"MPSTemporaryMatrix", @"MPSTemporaryVector", @"MPSMatrixRandom", @"MPSMatrixRandomPhilox",
+        @"MPSMatrixRandomMTGP32", @"MPSMatrixRandomDistributionDescriptor",
+        @"MPSMatrixMultiplication", @"MPSMatrixVectorMultiplication", @"MPSMatrixCopy",
+        @"MPSMatrixSoftMax", @"MPSMatrixFindTopK", @"MPSMatrixSum", @"MPSMatrixNeuron",
+        @"MPSMatrixNeuronGradient", @"MPSMatrixFullyConnected", @"MPSMatrixFullyConnectedGradient",
+        @"MPSMatrixBatchNormalization", @"MPSMatrixBatchNormalizationGradient",
+        @"MPSMatrixDecompositionLU", @"MPSMatrixDecompositionCholesky", @"MPSMatrixSolveLU",
+        @"MPSMatrixSolveCholesky", @"MPSMatrixSolveTriangular",
+        @"MPSCNNKernel", @"MPSCNNConvolution", @"MPSCNNPooling", @"MPSCNNPoolingAverage",
+        @"MPSCNNPoolingMax", @"MPSCNNBatchNormalization", @"MPSCNNConvolutionDescriptor",
+    };
+    for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
+        Class cls = NSClassFromString(names[i]);
+        printf("image %-40s %s\n", names[i].UTF8String,
+               cls ? (class_getImageName(cls) ?: "(none)") : "(absent)");
+        NSString *charon = [@"Charon" stringByAppendingString:names[i]];
+        Class mine = NSClassFromString(charon);
+        printf("image %-40s %s\n", charon.UTF8String,
+               mine ? (class_getImageName(mine) ?: "(none)") : "(absent)");
     }
 }
 
