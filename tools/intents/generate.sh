@@ -103,6 +103,7 @@ python3 "$here/gen-intents.py" --sdk "$PORT_SDK" --dump "$work/ast-port.json" \
 python3 "$here/gen-registry.py" --corpus "$CORPUS" --classes "$groups/10_0_1.txt" "$groups/10_3.txt" \
     --report "$work/report-10_0_1.json" --report "$work/report-10_3.json" \
     --out "$registry/ios10.json" --facts "$facts" --release 10.0.1 \
+        --causes "$work/causes.json" \
         --reason "a class of a later group of this same delivery"
 for entry in 11_0:11.0:ios11 \
             12_0:12.0:ios12 \

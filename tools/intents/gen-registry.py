@@ -417,7 +417,17 @@ def main():
         # The cause the generator recorded, and nothing else: a chain the SDK forbids, a value
         # this delivery does not carry, a class the headers only forward declare, a factory that
         # answers an array. Nothing else about the entry moves.
-        reason = vocabulary.get(causes.get(api))
+        # The generator records a cause under the member's own selector - "initWithEKRecurrenceRule:",
+        # "EKRecurrenceRule" - and the registry is asking under the whole row: "-
+        # [INDateComponentsRange EKRecurrenceRule]".  So the lookup never matched and every absent
+        # row of a class this delivery carries fell through to the group's blanket reason, which
+        # is why INDateComponentsRange's two EventKit rows read "a class of a later group of this
+        # same delivery" when the cause the generator had recorded for one of them was
+        # deferred_value and for the other now foreign_class.  The selector is tried too.
+        # "a class of the same name" no: "X" is the class and "selector]" is the member, so the
+        # selector is what follows the LAST space with the closing bracket off.
+        selector = api.rsplit(" ", 1)[-1][:-1] if " " in api else None
+        reason = vocabulary.get(causes.get(api) or causes.get(selector))
         if reason is None and owner in answered:
             # The generator read every header of the SDK this port compiles against and wrote
             # down every member it declared, implemented, withheld or did not find. A member of a

@@ -245,6 +245,9 @@ CAUSES = {
     "class_property":
         "a property of the class's own type on the class is the class's own identity, which the "
         "runtime holds, and there is no storage for it to keep",
+    "foreign_class":
+        "the type is a class of a framework this package does not carry, and no header of the "
+        "port's own SDK declares it, so there is nothing to keep the value in",
     "not_declared":
         "the SDK's own headers do not declare this member, so there is nothing to answer",
     "unanswered":
@@ -919,6 +922,22 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             out += written + [""]
 
     for method in interface.methods:
+        # An accessor whose return type is a class this package does not carry: there is
+        # nothing to keep the value in and no header of the port's own SDK that declares the
+        # class, so a body would not compile against one.  INDateComponentsRange's
+        # -EKRecurrenceRule is the one: it returns EventKit's EKRecurrenceRule, which the Intents
+        # header only forward declares, while the property of the same name takes iOS 11's
+        # INRecurrenceRule.  It was falling through to the group's blanket reason and the
+        # registry wrote "a class of a later group of this same delivery", which is not what
+        # stops it.
+        withheld = deferred_type(returns_of(method), intents, carried, forward)
+        if withheld and method.get("instance") is not False \
+                and not has_attr(method, "UnavailableAttr") \
+                and (method.get("name") or "") not in accessors \
+                and (method.get("name") or "") not in own \
+                and spelled(returns_of(method)).rstrip().endswith("*"):
+            skipped.append((method.get("name"), "foreign_class"))
+            continue
         built = factory(interface, method, resolution, interfaces)
         if built is False:
             causes_by_name["%s[%s %s]" % ("+" if method.get("instance") is False else "-",
