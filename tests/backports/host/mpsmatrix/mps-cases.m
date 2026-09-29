@@ -586,11 +586,12 @@ static void casesBatchNormalization(void)
         float referenceGamma[3] = {0, 0, 0}, referenceBeta[3] = {0, 0, 0};
         referenceGradient(&normSource[0][0], &normIncoming[0][0], &normGivenMean[0], &normGivenVariance[0],
                           0.001f, 4, 3, referenceGamma, referenceBeta);
-        put("reference-gradient-gamma", referenceGamma, sizeof(referenceGamma));
-        put("reference-gradient-beta", referenceBeta, sizeof(referenceBeta));
+        put("gradient-reference-gamma", referenceGamma, sizeof(referenceGamma));
+        put("gradient-reference-beta", referenceBeta, sizeof(referenceBeta));
+        printf("gradient-status %d error %s\n", (int)normStatus,
+               normError ? normError.localizedDescription.UTF8String : "(none)");
+        fflush(stdout);
     }
-    printf("gradient-status %d error %s\n", (int)normStatus, normError ? normError.localizedDescription.UTF8String : "(none)");
-    fflush(stdout);
     put("batch-normalization-gradient-data", &normGradientData[0][0], sizeof(normGradientData));
     put("batch-normalization-gradient-gamma", normGradientGamma, sizeof(normGradientGamma));
     put("batch-normalization-gradient-beta", normGradientBeta, sizeof(normGradientBeta));
