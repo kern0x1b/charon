@@ -2,16 +2,6 @@
  "framework": "MediaPlayer",
  "entries": [
   {
-   "api": "MPMediaItemPropertyIsExplicit",
-   "kind": "constant",
-   "introduced": "7.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 7, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPVolumeView.volumeWarningSliderImage",
    "kind": "property",
    "introduced": "7.0",
@@ -362,16 +352,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMediaItemPropertyHasProtectedAsset",
-   "kind": "constant",
-   "introduced": "9.2",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 9, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMediaPickerController.showsItemsWithProtectedAssets",
    "kind": "property",
    "introduced": "9.2",
@@ -532,16 +512,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMediaItemPropertyDateAdded",
-   "kind": "constant",
-   "introduced": "10.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPNowPlayingInfoPropertyExternalContentIdentifier",
    "kind": "constant",
    "introduced": "10.0",
@@ -672,16 +642,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMediaItemPropertyPlaybackStoreID",
-   "kind": "constant",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 10, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMusicPlayerApplicationController",
    "kind": "class",
    "introduced": "10.3",
@@ -809,16 +769,6 @@
    "status": "absent",
    "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 14",
    "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMediaItemPropertyIsPreorder",
-   "kind": "constant",
-   "introduced": "14.5",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
    "source": "SDK 16.4, MediaPlayer"
   },
   {
