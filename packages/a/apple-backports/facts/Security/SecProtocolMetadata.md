@@ -41,7 +41,7 @@ does not define.** It is the only answer that is not a lie about a negotiation.
 
 ## The third has a documented absence, and is answered properly
 
-> `@return Returns true if the PSKs were accessible, false otherwise.`  (`:267`)
+The header documents the return as true when the PSKs were accessible and false otherwise (`:267`).
 
 It returns `false`, and **does not run the handler**. A block that ran would hand the caller a PSK and a
 `psk_identity` that were never negotiated, and the caller would act on a secret that does not exist.

@@ -24,12 +24,9 @@ names suggest:
     43  SEC_OBJECT_DECL(sec_certificate);
 ```
 
-and the comment above them, which is the specification:
-
-> "These are os_object compatible and ARC-able wrappers around existing CoreFoundation Security types,
-> including: `SecTrustRef`, `SecIdentityRef`, and `SecCertificateRef`. They allow clients to use these
-> types in os_object-type APIs and data structures. The underlying CoreFoundation types may be extracted
-> and used by clients as needed."
+and the comment above them (`SecProtocolTypes.h:36`), which is the specification, in our words: the wrappers make
+the trust, identity and certificate CoreFoundation types usable in os_object-style APIs and under ARC, and the
+client can take the underlying CF type back out.
 
 So a wrapper is an **object that holds a CF ref** — the honest shape is a small class per type, holding
 the ref with a `CFRetain` its `dealloc` gives back, and the getters handing it out `+1`.
