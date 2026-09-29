@@ -127,7 +127,7 @@ with teeth to see, because a soft threshold that pushes the wrong way still *run
 
 ### The test, and the mutation that survives it
 
-`tests/backports/host/createml/l1/` — 9 checks, and deliberately the other way round from a
+`tests/backports/host/createml/l1/` — 14 checks, and deliberately the other way round from a
 differential:
 
 - the soft threshold on **both** sides of the kink, and a negative one keeping its sign — which is

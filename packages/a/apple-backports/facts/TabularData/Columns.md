@@ -95,5 +95,5 @@ The CSV and JSON readers and writers, the summaries (`NumericSummary`, `Categori
 writer *are* carried and are the way in on this port today.
 
 `tests/backports/host/createml/tabularframe.swift` holds the frame to the framework's documented
-rules and to the conformances themselves — **86 checks, 0 failures**, beside CreateML's 96, the linear
+rules and to the conformances themselves — **132 checks, 0 failures**, beside CreateML's 96, the linear
 models' 34 and the transformers' 35.

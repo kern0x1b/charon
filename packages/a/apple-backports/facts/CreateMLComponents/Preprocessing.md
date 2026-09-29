@@ -72,7 +72,7 @@ does.
 
 ## What the test is
 
-`tests/backports/host/createml/preprocessing/` — **17 checks, 0 failures.** A pipeline adds no
+`tests/backports/host/createml/preprocessing/` — **19 checks, 0 failures.** A pipeline adds no
 arithmetic, so the checks are about the two things it does change: the preprocessor's statistics
 travel with the model and its arithmetic is the port's own scaler's, which the transformers suite
 already holds to the closed form; and an update moves the inner estimator and leaves the
@@ -115,12 +115,13 @@ until the probe builds.
 
 ### Which construct crashes swiftc - bisected, and the reduction stops here
 
-`preprocessor-applied-host.swift` type-checks and then aborts the compiler. Bisected from a copy under
-`.agent-work/runs/probe-bisect/`, with the same `xcrun swiftc -Onone` the other probes use:
+`preprocessor-applied-host.swift` type-checks and then aborts the compiler. Bisected from a copy under `.agent-work/runs/probe-bisect/`, with the same `xcrun swiftc -Onone`
+the other probes use, and **from the full path of the probe in this tree** -
+`tests/backports/host/creematl/probe/preprocessor-applied-host.swift`:
 
-    $ head -34 probe.swift > ctl.swift && xcrun swiftc -Onone -o ctl ctl.swift     # the control: BUILDS
-    $ head -40 probe.swift > p40.swift  && xcrun swiftc -Onone -o p40 p40.swift     # expected '}' in struct
-    $ head -56 probe.swift > p56.swift  && xcrun swiftc -Onone -o p56 p56.swift     # signal 6
+    $ head -34 tests/backports/host/createml/probe/preprocessor-applied-host.swift > ctl.swift && xcrun swiftc -Onone -o ctl ctl.swift     # the control: BUILDS
+    $ head -40 tests/backports/host/createml/probe/preprocessor-applied-host.swift > p40.swift  && xcrun swiftc -Onone -o p40 p40.swift     # expected '}' in struct
+    $ head -56 tests/backports/host/creematl/probe/preprocessor-applied-host.swift > p56.swift  && xcrun swiftc -Onone -o p56 p56.swift     # signal 6
 
 **The control is the first conformer alone** - the `Estimator` one, lines 23-34, closed at 34 - and it
 compiles. Adding the second conformer, `struct SupervisedRecorder: UpdatableSupervisedEstimator` at

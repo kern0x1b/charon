@@ -1,90 +1,105 @@
 #!/usr/bin/env python3
-"""Print this package's host-suite counts, and check the facts files against them.
+"""Print this package's host-suite counts, and check every facts file that quotes one.
 
-The counts in the facts must come from a run, not from a hand. This runs the suite, reads what it
-printed, and reports:
+    $ python3 tests/backports/host/createml/suite-counts.py
+    $ python3 tests/backports/host/createml/suite-counts.py --from-run FILE
 
-  * the per-suite counts and the total, in the order the runner prints them;
-  * **the control**: every number a facts file states for a suite, and whether this run agrees - so a
-    stale number cannot survive a green run unnoticed.
+The control is the point. It does not take a list of files - it **scans the facts tree for every file
+that quotes a suite figure**, so a file it was not told about cannot be missed. The earlier version did
+take a list, and it had two holes that the review found: it named `facts/CreateML/Preprocessing.md`
+where the file is `facts/CreateMLComponents/Preprocessing.md` - the same basename in a different
+directory, so the check passed on the wrong file - and it never listed
+`facts/TabularData/Columns.md` at all. A hand-typed list cannot catch either, and a scan can catch both.
 
-    $ python3 tests/backports/host/creematl/suite-counts.py            # run the suite and report
-    $ python3 tests/backports/host/createml/suite-counts.py --from-run FILE   # parse a saved run
+A number is judged against **every** number the run produced, per suite and the total, so a file may
+cite several suites. The exit status is the check: 0 when every quoted figure is one this run produced,
+1 otherwise.
 """
+import pathlib
 import re
 import subprocess
 import sys
-import pathlib
 
 HERE = pathlib.Path(__file__).resolve().parent
-RUNNER = HERE / "run.sh"
-# The runner prints "<n> checks, <m> failures" once per suite, in the order it runs them.
+ROOT = HERE.parents[3]                      # <repo>/tests/backports/host/createml -> <repo>
+FACTS = ROOT / "packages/a/apple-backports/facts"
 SUITES = ["differential", "tabularframe", "linearmodels", "transformers",
           "metrics", "preprocessing", "l1", "model"]
-# The facts that state a count, and what each one is about.
-CLAIMED = {
-    "packages/a/apple-backports/facts/CreateML/TabularData.md": ("port's own suite", None),
-    "packages/a/apple-backports/facts/CoreML/ShapedArray.md": ("the suite", "tabularframe"),
-    "packages/a/apple-backports/facts/CreateML/Metrics.md": ("suite", "metrics"),
-    "packages/a/apple-backports/facts/CreateML/Preprocessing.md": ("suite", "preprocessing"),
-}
-
 COUNT = re.compile(r"\b(\d+) checks, (\d+) failures\b")
-NUM = re.compile(r"\*\*(\d+) checks")
-
-
-def counts_from(text):
-    found = COUNT.findall(text)
-    return [(int(c), int(f)) for c, f in found]
+# A figure a facts file quotes: "**89 checks**" or "17 checks" in prose.
+FIGURE = re.compile(r"(\d+)\s+checks?\b")
 
 
 def run():
-    out = subprocess.run([str(RUNNER)], capture_output=True, text=True, cwd=str(HERE)).stdout
-    return out
+    return subprocess.run([str(HERE / "run.sh")], capture_output=True, text=True, cwd=str(HERE)).stdout
+
+
+def in_scope(path):
+    """Is this facts file about *this* package?
+
+    Derived from the file's own text - it must mention `createml` or `CreateML` - and not from a list of
+    paths. The scan has to be wide enough that a file nobody remembered is still in scope: the two the
+    earlier version missed were `facts/CreateMLComponents/Preprocessing.md` and
+    `facts/TabularData/Columns.md`, and both mention this package. A scan with no scope at all is also
+    wrong, because every other package's facts quote their **own** suite's figures, and those are not
+    stale - they belong to a different run.
+    """
+    text = path.read_text(errors="replace")
+    return ("createml" in text or "CreateML" in text) and FIGURE.search(text) is not None
+
+
+def fact_files():
+    """Every in-scope facts file that quotes a figure - found by scanning, never by a list."""
+    return sorted(p for p in FACTS.rglob("*.md") if in_scope(p))
 
 
 def main():
     text = open(sys.argv[sys.argv.index("--from-run") + 1]).read() if "--from-run" in sys.argv else run()
-    got = counts_from(text)
+    got = [(int(c), int(f)) for c, f in COUNT.findall(text)]
     if not got:
         print("no '<n> checks, <m> failures' lines in the run - the suite did not get that far")
         return 1
-    print("per-suite, in the runner's order:")
-    for suite, (checks, failures) in zip(SUITES, got):
-        print("  %-14s %4d checks, %d failures" % (suite, checks, failures))
-    total_checks = sum(c for c, _ in got)
-    total_failures = sum(f for _, f in got)
-    print("  %-14s %4d checks, %d failures  across %d suites"
-          % ("TOTAL", total_checks, total_failures, len(got)))
     per = dict(zip(SUITES, [c for c, _ in got]))
+    total = sum(c for c, _ in got)
+    print("per-suite, in the runner's order:")
+    for suite, (c, f) in zip(SUITES, got):
+        print("  %-14s %4d checks, %d failures" % (suite, c, f))
+    print("  %-14s %4d checks, %d failures  across %d suites" % ("TOTAL", total, sum(f for _, f in got), len(got)))
 
     print()
-    print("the control - what the facts claim, against this run:")
-    # HERE is <repo>/tests/backports/host/createml, so the root is three parents up.
-    root = HERE.parents[3]
+    print("the control - every facts file that quotes a figure, found by scanning the tree:")
+    produced = sorted(set(list(per.values()) + [total]))
     problems = 0
-    for rel, (what, suite) in sorted(CLAIMED.items()):
-        path = root / rel
-        if not path.is_file():
-            print("  MISSING  %s" % rel)
-            problems += 1
-            continue
-        for claimed in NUM.findall(path.read_text()):
-            n = int(claimed)
-            # A file may cite several suites and the total, so a number is stale when the run
-            # produced no such number at all - not merely when it is not this file's one suite.
-            which = "the total" if n == total_checks else next(
-                (s for s, c in per.items() if c == n), None)
-            ok = which is not None
-            verdict = "agrees (%s)" % which if ok else "STALE - this run produced %s" % (
-                sorted(set(list(per.values()) + [total_checks])))
-            print("  %-58s claims %-5d (%s)  %s" % (path.name, n, what, verdict))
-            if not ok:
+    for path in fact_files():
+        rel = path.relative_to(ROOT).as_posix()
+        body = path.read_text(errors="replace")
+        # **A number this run produced is not enough.** 86 is the metrics suite's figure and it is also
+        # what `facts/TabularData/Columns.md` quotes about the *frame* suite, so judging against every
+        # produced number passes a figure that is real and mislabelled. A file that names one suite must
+        # quote that suite's figure or the total - that is the control per file class.
+        # A suite is named by its **path** - `host/createml/<suite>` - which is how a facts
+        # file cites one. A bare word is not enough: "model" and "l1" appear in ordinary prose,
+        # and matching them would put a file in the wrong class and hide a mislabelled figure.
+        named = [s for s in SUITES if "host/createml/" + s in body]
+        allowed = set()
+        if len(named) == 1:
+            allowed = {per[named[0]], total}
+            label = named[0]
+        else:
+            allowed = set(produced)
+            label = "any suite"
+        for m in FIGURE.finditer(body):
+            n = int(m.group(1))
+            if n in allowed:
+                which = "the total" if n == total and n not in [per[s] for s in named] \
+                    else next((s for s in named if per[s] == n), "another suite's")
+                print("  %-62s claims %-5d  agrees (%s)" % (rel, n, which))
+            else:
+                print("  %-62s claims %-5d  STALE for %s - it may quote %s"
+                      % (rel, n, label, sorted(allowed)))
                 problems += 1
-        for stale in ("425 checks", "17 checks"):
-            if stale in path.read_text():
-                print("  %-58s still contains the string %r" % (path.name, stale))
-                problems += 1
+    print()
+    print("  %d facts file(s) quote a figure; %d stale" % (len(fact_files()), problems))
     return 1 if problems else 0
 
 
