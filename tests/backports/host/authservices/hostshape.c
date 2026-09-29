@@ -62,7 +62,18 @@ static int one_method(const char *framework, const char *className, const char *
     if (!method)
         method = class_getClassMethod(cls, sel);
     if (!method) { fprintf(stderr, "no method -%s on %s\n", selectorName, className); return 1; }
-    printf("%s -%s types %s\n", className, selectorName, method_getTypeEncoding(method));
+    // The digits are removed and the ':' kept: the frame sizes and offsets are four bytes apart
+    // between the host's arm64 and the port's armv7, and a completion typed as a block is '@?' where
+    // the same completion typed as a SEL is '@:'. Keeping only the letters loses the ':'.
+    const char *encoding = method_getTypeEncoding(method);
+    char stripped[128];
+    size_t at = 0;
+    for (const char *cursor = encoding; *cursor && at + 1 < sizeof stripped; ++cursor) {
+        if (!(*cursor >= '0' && *cursor <= '9'))
+            stripped[at++] = *cursor;
+    }
+    stripped[at] = 0;
+    printf("%s -%s types %s raw %s\n", className, selectorName, stripped, encoding);
     return 0;
 }
 
