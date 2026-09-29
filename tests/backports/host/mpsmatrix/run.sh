@@ -12,7 +12,7 @@
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 mps=${MPS:-$here/../../../../packages/a/apple-backports/MetalPerformanceShaders}
-build=${BUILD:-$here/../../../.agent-work/runs/host/mpsmatrix}
+build=${BUILD:-$here/../../../../.agent-work/runs/host/mpsmatrix}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
