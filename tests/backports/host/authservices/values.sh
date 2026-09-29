@@ -180,14 +180,21 @@ run_mutant() {
     tag=$1
     anchorFile=""
     replFile=""
-    if [ "$tag" = "replace_from_file" ] || [ "$tag" = "_from_file" ]; then
-        # The marker is in the tag itself: run_mutant replace_from_file <anchor> <replacement> <target> <what>
-        anchorFile=$2; replFile=$3; target=$4; what=$5
-        shift
-    else
-        target=$2; anchor=$3; repl=$4; what=$5
-        shift
-    fi
+    # The marker is a SUFFIX on the tag, not a whole tag: it was two tags spelled out, and the third
+    # mutant -- the credential's copy -- was silently run in the INLINE form with another mutant's
+    # target, which is how a mutation meant for one class nearly mutated another.
+    case "$tag" in
+        *_from_file)
+            # run_mutant <tag>_from_file <anchor> <replacement> <target> <what>
+            anchorFile=$2; replFile=$3; target=$4; what=$5
+            shift
+            ;;
+        *)
+            # run_mutant <tag> <target> <old> <new> <what>
+            target=$2; anchor=$3; repl=$4; what=$5
+            shift
+            ;;
+    esac
     echo
     echo "-- $tag: $what"
     rm -rf "$build/$tag"
@@ -237,6 +244,8 @@ run_mutant() {
 
 status=0
 run_mutant operation ASAuthorizationOpenIDRequest.m "_requestedOperation = nil;" "_requestedOperation = [ASAuthorizationOperationImplicit copy];" "a fresh request's default operation becomes the implicit one" || status=1
-run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m ASPasswordCredential.m \
+run_mutant credential_from_file "$here/credential.anchor" "$here/credential.repl" ASPasswordCredential.m \
+    "a credential's copy drops the password, which is what makes it a copy of nothing" || status=1
+run_mutant replace_from_file "$here/replace.anchor" "$here/replace.repl" ASCredentialIdentityStore.m \
     "replace keeps the old identities: the set it starts from is what the store already held" || status=1
 exit "$status"

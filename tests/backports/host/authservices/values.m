@@ -217,6 +217,23 @@ static int store_case(void)
                     [NSArray arrayWithObject:second], ^(BOOL ok, NSError *error) { (void)ok; (void)error; });
     // Before the replace the store holds a set that is NOT what the replace will be given. A test that
     // replaced an empty store could not tell a superset from a replacement.
+    // A password credential is a VALUE, and the shape check only asks whether its members are bound. These
+    // three rows are what asks what they HOLD: a fresh credential holds what it was given, and its copy holds
+    // the same. A copy that dropped the password would be an object that looks like a credential and could not
+    // be used for one, and nothing else here can see that.
+    {
+        Class credentialClass = NSClassFromString(@"PortASPasswordCredential");
+        if (!credentialClass) { printf("  FAIL the port's password credential is not linked in\n"); return 1; }
+        SEL makeSel = sel_registerName("initWithUser:password:");
+        id (*make)(id, SEL, id, id) = (id (*)(id, SEL, id, id))objc_msgSend;
+        id allocated = ((id (*)(id, SEL))objc_msgSend)((id)credentialClass, sel_registerName("alloc"));
+        id credential = make(allocated, makeSel, @"alice", @"correct horse");
+        id credentialCopy = ask(credential, "copy");
+        printf("  store   credential fresh user %s\n", [ask(credential, "user") UTF8String] ?: "nil");
+        printf("  store   credential fresh pass %s\n", [ask(credential, "password") UTF8String] ?: "nil");
+        printf("  store   credential copy  pass %s\n", [ask(credentialCopy, "password") UTF8String] ?: "nil");
+    }
+
     printf("  store   before replace  %d identities\n", (int)self_identities(path));
 
     port_store_send(store, sel_registerName("replaceCredentialIdentitiesWithIdentities:completion:"),
