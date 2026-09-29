@@ -137,6 +137,37 @@ static void defaults(VisionRecorder record)
  * image, because the port's own containers are the ones that exist and a request still runs: the
  * request path finds the model's first input whatever its type, and an image input is the case
  * the resampler in CharonVisionImage.h is there for. */
+/* A compile that is EXPECTED to fail on a host, and why. Any other container the cases name failing
+ * to compile is a case going wrong -- a corpus without it, or the port breaking a path the picture
+ * cases take -- and is recorded under "coreml.compile.unexpected" so the harness fails on it rather
+ * than comparing a smaller record and calling it a pass. */
+static BOOL compile_failure_expected(NSString *container)
+{
+    if ([container isEqualToString:@"vision_image"]) {
+        /* This host's Core ML does not run an image model at all: tools/coreml/make-models.py
+         * reports that container as "no host input", so its compile cannot succeed here. The
+         * picture case records the refusal and reads on, which is what the record in
+         * facts/Vision/Vision.md was measured against. */
+        return YES;
+    }
+    return NO;
+}
+
+/* A compile outcome in fields that do not vary with the machine: the error's domain and code, and
+ * whether it failed. NOT failure.localizedDescription -- that is a framework sentence that names the
+ * model's file URL, so it carries an absolute path into a record that is committed, and it reads
+ * differently on every host. The other compile site already recorded domain and code this way. */
+static NSString *compile_outcome(NSString *container, NSError *failure, VisionRecorder record)
+{
+    record([NSString stringWithFormat:@"coreml.compile.%@", container],
+           [NSString stringWithFormat:@"failed domain=%@ code=%ld", failure.domain ?: @"(none)",
+                                      (long)failure.code]);
+    if (!compile_failure_expected(container)) {
+        record(@"coreml.compile.unexpected", container);
+    }
+    return @"failed";
+}
+
 static void coreml_model(CoreMLModels models, VisionRecorder record)
 {
     VNCoreMLModel *wrapper;
@@ -151,9 +182,11 @@ static void coreml_model(CoreMLModels models, VisionRecorder record)
     }
     compiled = [MLModel compileModelAtURL:models.glm_classifier error:&failure];
     if (compiled == nil) {
-        record(@"coreml.compile", failure.localizedDescription ?: @"(no error)");
+        compile_outcome(@"glm_classifier", failure, record);
         return;
     }
+    /* Nothing is recorded for a compile that worked, which is what the record said before this key
+     * existed: its absence is the success, and that keeps the record at 45 keys. */
     wrapper = [VNCoreMLModel modelForMLModel:[MLModel modelWithContentsOfURL:compiled error:&failure]
                                         error:&failure];
     record(@"coreml.model", [NSString stringWithFormat:@"%d input=%@", wrapper != nil,
@@ -316,6 +349,9 @@ static void picture_case(CoreMLModels models, VisionRecorder record)
     if (model == nil) {
         record(@"picture/error", [NSString stringWithFormat:@"%@/%ld", failure.domain ?: @"(none)",
                                                         (long)failure.code]);
+        if (!compile_failure_expected(@"vision_image")) {
+            record(@"coreml.compile.unexpected", @"vision_image");
+        }
         return;
     }
     record(@"picture/input", model.inputImageFeatureName ?: @"(nil)");
