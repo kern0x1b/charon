@@ -107,7 +107,7 @@ CHARON_MPS_NEURON_COMMON
     // header's own notation: the gradient with respect to gamma is the incoming gradient times the
     // normalised value, the gradient with respect to beta its column sums, and the gradient with
     // respect to the input the usual per-channel form
-    //     gamma / (v + epsilon) * (dY - mean(dY) - yhat / n * sum(dY))
+    //     gamma / sqrt(v + epsilon) * (dY - mean(dY) - yhat / n * sum(dY))
     // where yhat is the normalised value and n the number of feature vectors.
     NSUInteger available = in.rows - _secondarySourceMatrixOrigin.x;
     NSUInteger vectors = _sourceNumberOfFeatureVectors < available ? _sourceNumberOfFeatureVectors : available;
@@ -136,10 +136,13 @@ CHARON_MPS_NEURON_COMMON
             double g = gamma.length > column ? CharonMPSLoad(CharonMPSVectorElement(&gamma, 0, column), gamma.dataType, 0) : 1.0;
 #ifdef CHARON_BN_TRACE
             fprintf(stderr, "BNP ch%lu  mean %g variance %g gamma %g  -> divisor %g  rowBytes(in) %lu\n",
-                    (unsigned long)column, m, v, g, g / (v + (double)_epsilon),
+                    (unsigned long)column, m, v, g, g / sqrt(v + (double)_epsilon),
                     (unsigned long)in.rowBytes);
 #endif
-            double divisor = g / (v + (double)_epsilon);
+            // gamma / sqrt(variance + epsilon), which is not gamma / (variance + epsilon): the trace
+            // shows the port answering 0.1875, 0.125 and 0.333 where the root gives 0.530, 0.306 and
+            // 0.816, and that is what put channels 1 and 2 out.
+            double divisor = g / sqrt(v + (double)_epsilon);
             double sum = 0.0, gammaGradient = 0.0, betaGradient = 0.0;
             for (NSUInteger row = 0; row < vectors; row++) {
                 double d = CharonMPSLoad(CharonMPSMatrixElement(&gradient, b, _primarySourceMatrixOrigin.x + row, _primarySourceMatrixOrigin.y + column), gradient.dataType, 0);
