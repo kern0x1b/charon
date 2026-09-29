@@ -42,6 +42,8 @@
     BOOL _collecting;
     BOOL _finished;
 }
+@dynamic workoutActivities;
+@dynamic allStatistics;
 
 - (instancetype)initWithHealthStore:(HKHealthStore *)healthStore
                       configuration:(HKWorkoutConfiguration *)configuration
