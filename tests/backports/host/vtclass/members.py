@@ -25,7 +25,8 @@ FOUR THINGS IT GETS RIGHT, each of which cost a wrong answer before:
   `CHARON_VALUE_PROPERTY(CVPixelBufferRef, buffer)` both implement the property `buffer`; reading either
   as a method is how sixteen properties were reported missing while a row for each existed.
 
-  THE CLASS ITSELF IS A ROW, and its initialisers are rows named the SDK spells them. The pattern accepts
+  THE CLASS ITSELF IS A ROW, and its initialisers are rows named the SDK spells them. Comments are
+  stripped before anything is joined, for the reason above. The pattern accepts
   whatever the header puts between the parens and the selector - SDK 26.2 writes
   `- (nullable instancetype)initWith…` - because a pattern insisting the return type comes first finds
   NO initialiser at all, and then the registry has seventeen classes, no method rows, and a stand-in
@@ -134,6 +135,13 @@ def members_of(class_name):
     body = class_block(header, class_name)
     if body is None:
         raise ValueError("%s: the port's header declares no such class" % class_name)
+    # COMMENTS ARE STRIPPED, LINE BY LINE, BEFORE ANY DECLARATION IS JOINED. A // line carries no ';', so
+    # joined_declarations() buffers it - and then the comment, the initialiser and its two continuation
+    # lines arrive as ONE string that begins with '//', where ^[+-] can never match. That is why
+    # VTMotionBlurConfiguration reported no initialiser at all: the block was twenty lines and ended with
+    # the initialiser's own semicolon, and nothing could see it.
+    body = "\n".join(line for line in body.split("\n")
+                      if not line.strip().startswith(("//", "/*", "*", "*/")))
 
     entries = {("class", _registry_name("class", class_name, class_name))}
     accessors = {}

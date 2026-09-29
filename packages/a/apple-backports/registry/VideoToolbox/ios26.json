@@ -292,6 +292,17 @@
    "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTMotionBlurConfiguration initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:]",
+   "kind": "method",
+   "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
+   "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4393"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTMotionBlurParameters initWithSourceFrame:nextFrame:previousFrame:nextOpticalFlow:previousOpticalFlow:motionBlurStrength:submissionMode:destinationFrame:]",
    "kind": "method",
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
