@@ -30,6 +30,12 @@ common="$common -iframework $sdk/System/iOSSupport/System/Library/Frameworks -fo
 frameworks="-framework Foundation -framework Security -framework CoreFoundation"
 failures=0
 green=0
+# MUTANT_EXTRA ADDS sources the case does not link, for a mutant that lives in an object whose class
+# lives in another: the sec-identity-nohandler mutant is in the 16.0 object and calls the class the
+# 12.0 one defines, so the link needs that one file beside it. It is set by the mutation that needs
+# it and cleared at EVERY exit of run_mutation, including the build-failure one the author left out -
+# a stale value links the wrong object into the next mutant and the run says nothing.
+MUTANT_EXTRA=""
 # THE CONTROL IS MARKED, NOT THE CHECK WEAKENED. A mutant named here is EXPECTED to survive its
 # comparison; every other one that survives is a failure. The list is not a hole in the check - it is one
 # entry, and adding to it would turn the run green in a way nobody can read back.
@@ -140,13 +146,15 @@ run_mutation() {
     if [ ! -f "$build/mutant-$name.m" ]; then
         echo "RED    $name mutation NOT BUILT - nothing proved the case can fail"
         failures=$((failures + 1))
+        MUTANT_EXTRA=""
         return
     fi
-    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" \
+    if ! xcrun clang $common "$H/$casefile.m" "$build/mutant-$name.m" ${MUTANT_EXTRA:+"$MUTANT_EXTRA"} \
          -framework Foundation -framework Security -framework CoreFoundation \
          -o "$build/mutant-$name" > "$build/mutant-$name.log" 2>&1; then
         echo "BUILD  $name mutation FAILED to build"
         failures=$((failures + 1))
+        MUTANT_EXTRA=""
         return
     fi
     status=0
@@ -157,6 +165,7 @@ run_mutation() {
         # rather than leaving a crash and a non-zero exit to describe the same run.
         echo "CRASH  $name mutation  crashed: signal $((status - 128)) (exit $status) - NOTICED, and not a failure: a crash is a mutation the comparison caught"
         mutants_noticed=$((mutants_noticed + 1))
+        MUTANT_EXTRA=""
         return
     fi
     if python3 "$H/$compare" "$build/mutant-$name.out" > "$build/mutant-$name.red" 2>&1; then
@@ -167,9 +176,11 @@ run_mutation() {
             echo "RED    $name MUTATION WENT UNNOTICED - the comparison cannot tell this case from a broken one"
             failures=$((failures + 1))
         fi
+        MUTANT_EXTRA=""
     else
         echo "RED    $name mutation  $(grep -m1 DIFFERS "$build/mutant-$name.red" | cut -c9-)"
         mutants_noticed=$((mutants_noticed + 1))
+        MUTANT_EXTRA=""
     fi
 }
 
@@ -398,8 +409,9 @@ run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrapp
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers
 # THE BLOCKS MUTATION MUST NOT COMPILE, and its call was LOST in the F3 revert - only the function
 # definition survived, so a run quietly stopped proving that. It is restored here beside the other two.
-# THE THREE sec-identity MUTANTS. MUTANT_SRC REPLACES the case's own port source: a mutant ADDED beside
-# the original gives duplicate symbols, and one built without it is building something else. Each is a
+# THE THREE sec-identity MUTANTS. Each mutant REPLACES the case's own port source - run_mutation always
+# builds $build/mutant-<name>.m beside the case file - so a mutant ADDED beside the original instead
+# would give duplicate symbols, and one built without it is building something else. Each is a
 # whole-file copy of the source with ONE line changed, so it differs in BEHAVIOUR and nothing else.
 make_mutant() {   # <out> <from> <old line> <new line>
     python3 - "$1" "$2" "$3" "$4" <<'PY'
@@ -421,14 +433,13 @@ make_mutant "$build/mutant-sec-identity-noretain.m" "$SI" \
 make_mutant "$build/mutant-sec-identity-nohandler.m" "$SI16" \
     '        handler(wrapper);' \
     '        (void)wrapper;   // MUTANT: the handler is NEVER CALLED'
-# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
-# same file as an extra source links it TWICE and every symbol collides.
+# NO EXTRA SOURCE HERE: the mutant IS the case's own source, and run_mutation already builds
+# $build/mutant-<name>.m, so passing the same file again links it TWICE and every symbol collides.
 run_mutation sec-identity-nocopy   compare-sec-identity.py sec-identity
-# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
-# same file as an extra source links it TWICE and every symbol collides.
 run_mutation sec-identity-noretain compare-sec-identity.py sec-identity
-# NO MUTANT_SRC HERE: run_mutation already builds $build/mutant-<name>.m, and passing the
-# same file as an extra source links it TWICE and every symbol collides.
+# THE nohandler MUTANT IS THE ONE THAT NEEDS MORE: it lives in the 16.0 object and calls the class
+# the 12.0 one defines, so the 12.0 source goes on its link line beside the mutant.
+MUTANT_EXTRA=$SI
 run_mutation sec-identity-nohandler compare-sec-identity.py sec-identity
 must_not_compile blocks-challenge-into-keyupdate "$PK" protocol-options-blocks
 # data-halfpair IS SecProtocolOptionsData13_0.m, so it REPLACES the case's source and is not added beside
