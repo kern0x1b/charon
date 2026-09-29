@@ -121,18 +121,6 @@ int main(void)
             run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put(unary[i].name, &resultValues[0], sizeof(resultValues));
         }
-        // A constant added to a placeholder, and a chain, so a graph is read through more than one
-        // operation and through a value that was not fed.
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *c = [one constantWithShape:@[@2, @4] dataType:MPSDataTypeFloat32
-                                             values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
-            MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
-            memset(resultValues, 0, sizeof(resultValues));
-            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
-            put("constant", &resultValues[0], sizeof(resultValues));
-        }
         {
             MPSGraph *one = [MPSGraph new];
             MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
@@ -171,6 +159,19 @@ int main(void)
             memset(resultValues, 0, sizeof(resultValues));
             run(one, @[a, b], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@2, @4], MPSDataTypeFloat32)], root, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
             put("chain", &resultValues[0], sizeof(resultValues));
+        }
+        // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
+        // machine, so it is asked for after everything the host does answer. In the middle of the unary
+        // family it was taking seven cases down with it.
+        {
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *c = [one constantWithShape:@[@2, @4] dataType:MPSDataTypeFloat32
+                                             values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
+            MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
+            memset(resultValues, 0, sizeof(resultValues));
+            run(one, @[a], @[feed(&leftValues[0], @[@2, @4], MPSDataTypeFloat32)], t, &resultValues[0], sizeof(resultValues), MPSDataTypeFloat32);
+            put("constant", &resultValues[0], sizeof(resultValues));
         }
 
     }

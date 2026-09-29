@@ -64,9 +64,15 @@ echo "port: exit $port_status"
 
 n=$(wc -l < "$build/system.txt" | tr -d ' ')
 m=$(wc -l < "$build/port.txt" | tr -d ' ')
-[ "$m" -lt "$n" ] && n=$m
-head -n "$n" "$build/system.txt" > "$build/system.prefix"
-head -n "$n" "$build/port.txt" > "$build/port.prefix"
+if [ "$n" -ne "$m" ]; then
+    echo "the two runs produced different numbers of lines: system $n, port $m"
+    echo "the last case either side reached:"
+    echo "  system: $(tail -1 "$build/system.txt" | cut -d' ' -f1-3)"
+    echo "  port:   $(tail -1 "$build/port.txt" | cut -d' ' -f1-3)"
+    exit 1
+fi
+cp "$build/system.txt" "$build/system.prefix"
+cp "$build/port.txt" "$build/port.prefix"
 echo "compared: $n cases"
 if cmp -s "$build/system.prefix" "$build/port.prefix"; then
     echo "port: same as the system, case for case and bit for bit"
