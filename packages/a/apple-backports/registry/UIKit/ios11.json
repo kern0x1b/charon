@@ -534,9 +534,9 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading is driven by a drag in progress, which this release has no way to start",
-   "effect": "the class is not there; -[UIView addInteraction:] of the port accepts every interaction an application can build here, since the one case UIKit refuses cannot arise",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the interaction is added to a view with -addInteraction: and does its work while a drag hovers over it, and the port does carry a drag and a drop, in-process only: UIDragInteraction.m's own header says the preview is added to the application's own window and travels between the application's own windows, and that is the whole of it. spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. Not carried by the port either, and the reason is the one above rather than a limit on what the port chose",
+   "effect": "the class is not there, so -[UIView addInteraction:] of the port accepts every interaction an application can build here, since the one case the release refuses cannot arise",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UINavigationBar.prefersLargeTitles",
@@ -921,36 +921,36 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. Not carried by the port either",
    "effect": "the name is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UISpringLoadedInteractionContext",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. Not carried by the port either",
    "effect": "the name is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UISpringLoadedInteractionEffect",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. Not carried by the port either",
    "effect": "the name is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UISpringLoadedInteractionSupporting",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading opens what a drag hovers over, and there is no drag here to hover",
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. Not carried by the port either",
    "effect": "the name is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIFocusSystem",
@@ -1296,36 +1296,36 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the cadence says how eagerly items move out of the way of a drag",
-   "effect": "the property is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the cadence says how eagerly items move out of the way of a drag, and it is read by the view's own drag session while it carries a preview. The release has no such session and the port does carry a drag and a drop, in-process only: UIDragInteraction.m's own header says the preview is added to the application's own window and travels between the application's own windows, and that is the whole of it, so nothing reads the cadence. UICollectionView's interactive movement is carried, in UICollectionView+InteractiveMovement.m, and is the release's own",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UICollectionView is in the cache and its own selector table carries no such member"
   },
   {
    "api": "UICollectionView.hasUncommittedUpdates",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the flag reports on bookkeeping this release's collection view does not keep",
-   "effect": "the property is not there, as on a table view",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the flag reports whether an update group is open, and the group is opened by the class's own -beginUpdates and -endUpdates, which are the release's own methods: a category cannot override a method the class itself implements, so the port cannot see the group open or close. The port's -performBatchUpdates:completion: calls the release's own pair, and this collection view has no such method of its own at this release. Its table view twin, UITableView.hasUncommittedUpdates, is absent for the same reason and carries the same measurement",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly; the update grouping an application does is still the release's own and still works",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UICollectionView is in the cache and its own selector table carries no such member"
   },
   {
    "api": "-[UICollectionViewDelegate collectionView:shouldSpringLoadItemAtIndexPath:withContext:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "spring loading opens what a drag hovers over, and there is no drag here",
-   "effect": "the method is never asked for",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either. the port does carry a drag and a drop, in-process only: UIDragInteraction.m's own header says the preview is added to the application's own window and travels between the application's own windows, and that is the whole of it, but nothing hovers over an item, because a spring load is driven by something hovering and this release has no pointer and no hovering drag. The port does not answer this one and says so rather than routing a question nothing asks",
+   "effect": "the method is never asked for; the port routes the collection view delegate questions it can answer and those are implemented rows of dragdrop.json",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UICollectionViewDelegate is a protocol there and carries no such member"
   },
   {
    "api": "-[UITableViewDelegate tableView:shouldSpringLoadRowAtIndexPath:withContext:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the same: nothing hovers over a row here",
+   "reason": "spring loading is driven by a drag in progress that hovers, and this release has no way to start one which leaves the application, and no port-owned drag for it to be driven from either, and the table view half of the pair above. The port does not answer this one",
    "effect": "the method is never asked for",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UITableViewDelegate is a protocol there and carries no such member"
   },
   {
    "api": "UITableView.dragDelegate",
