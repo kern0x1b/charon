@@ -28,29 +28,59 @@ for name in files:
         externs.setdefault(sym, name)
 
 rows = json.load(open(REG))["entries"]
-apis = {r["api"] for r in rows}
-def base(api):
-    if api[:2] in ("+[", "-["):
-        return api[2:].split(" ")[0]
-    return api.split("(")[0].strip("+-[]")
 
-without_row = sorted(c for c in impl
+# A row is keyed by (kind, api), not by the name alone. `+[CKRecordID new]` and `CKRecordID` are
+# two different things the registry says something about, and keying both on the bare name made
+# the member row answer the class row's question: with the class row deleted, the member row still
+# put CKRecordID in the row set and every direction read 0. A method row is a member of a class, a
+# constant row is a global symbol of its own, and a class row is the class.
+def key(row):
+    return (row["kind"], row["api"])
+
+def owner(api):
+    """the class a member row belongs to"""
+    return api[2:].split(" ")[0] if api[:2] in ("+[", "-[") else api.split("(")[0].strip("+-[]")
+
+rows_by_key = {key(r): r for r in rows}
+class_rows = {r["api"]: r for r in rows if r["kind"] == "class"}
+member_rows = [r for r in rows if r["kind"] == "method"]
+row_apis = {r["api"] for r in rows}
+
+def defined_here(row):
+    """(kind, api) -> the file that defines it, or None. A method is defined by its class."""
+    if row["kind"] == "method":
+        return impl.get(owner(row["api"]))
+    if row["kind"] == "constant":
+        return externs.get(row["api"])
+    return impl.get(row["api"])
+
+without_row = sorted(("class", c) for c in impl
                      if not c.startswith("Charon")
-                     and c not in apis and ("+[%s new]" % c) not in apis)
-without_code = sorted(r["api"] for r in rows
-                     if r.get("status") == "implemented"
-                     and base(r["api"]) not in impl and base(r["api"]) not in externs)
+                     and c not in row_apis and ("+[%s new]" % c) not in row_apis)
+without_code = sorted(key(r) for r in rows
+                      if r.get("status") == "implemented" and defined_here(r) is None)
 # The third direction, and the one this series' own CKSyncEngine row fell into: a row that says
-# `absent` while the tree defines the class. The owner's rule is that `absent` is only for hardware
-# the device physically lacks, so a row reading `absent` over code that is here is a false claim
-# about the tree - and nothing caught it, which is how it survived a review read and a green check.
-wrong_status = sorted(r["api"] for r in rows
-                      if r.get("status") == "absent" and base(r["api"]) in impl)
+# `absent` while the tree defines it. The owner's rule is that `absent` is only for hardware the
+# device physically lacks, so a row reading `absent` over code that is here is a false claim about
+# the tree - and nothing caught it, which is how it survived a review read and a green check.
+wrong_status = sorted(key(r) for r in rows
+                      if r.get("status") == "absent" and defined_here(r) is not None)
+# The fourth: a member row that is carried while its class is not. A member cannot exist without
+# its class, so `+[CKRecordID new]` reading `implemented` beside a class row that is `absent`, or
+# with no class row at all, says the class is here and not here in the same breath. A constant row
+# is a global symbol and stands on its own, so only a method row is asked this.
+orphan = sorted(key(r) for r in member_rows
+                if r.get("status") == "implemented"
+                and (owner(r["api"]) not in class_rows
+                     or class_rows[owner(r["api"])].get("status") == "absent"))
+def label(ks):
+    return ["%s %s" % (k, a) for k, a in ks]
 print("implementations in the %d sources: %d" % (len(files), len(impl)))
 print("rows in values.json: %d" % len(rows))
-print("implemented with no row: %d %s" % (len(without_row), without_row))
-print("rows with no definition: %d %s" % (len(without_code), without_code))
-print("marked absent but defined here: %d %s" % (len(wrong_status), wrong_status))
+print("implemented with no row: %d %s" % (len(without_row), label(without_row)))
+print("rows with no definition: %d %s" % (len(without_code), label(without_code)))
+print("marked absent but defined here: %d %s" % (len(wrong_status), label(wrong_status)))
+print("member carried without its class: %d %s" % (len(orphan), label(orphan)))
 
 # A CHECK THAT CANNOT FAIL IS NOT EVIDENCE, and this one could not: it printed its numbers and
 # returned nothing, so `python3 ...; echo $?` read 0 whatever it had found. The gate's own rule is
@@ -59,10 +89,13 @@ print("marked absent but defined here: %d %s" % (len(wrong_status), wrong_status
 # exit says so.
 if without_row:
     print("FAIL a definition with no registry row, which is the gate's \"built, but no entry in"
-          " registry/\": %s" % ", ".join(without_row))
+          " registry/\": %s" % ", ".join(label(without_row)))
 if without_code:
-    print("FAIL a row with no definition in this tree: %s" % ", ".join(without_code))
+    print("FAIL a row with no definition in this tree: %s" % ", ".join(label(without_code)))
 if wrong_status:
     print("FAIL a row marked absent while the tree defines it, which is only for hardware the"
-          " device lacks: %s" % ", ".join(wrong_status))
-sys.exit(1 if (without_row or without_code or wrong_status) else 0)
+          " device lacks: %s" % ", ".join(label(wrong_status)))
+if orphan:
+    print("FAIL a member row carried while its class row is absent or missing, which says the"
+          " class is here and not here at once: %s" % ", ".join(label(orphan)))
+sys.exit(1 if (without_row or without_code or wrong_status or orphan) else 0)

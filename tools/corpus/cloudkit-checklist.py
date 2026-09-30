@@ -69,9 +69,14 @@ def carried():
             continue
         data = json.load(open(os.path.join(REG, name)))
         for row in (data["entries"] if isinstance(data, dict) else data):
+            # Keyed by (kind, api), not by the name alone: `+[CKRecordID new]` is a member of
+            # CKRecordID, not a row for CKRecordID, and keying both on the bare name let a member
+            # row stand in for a class row that was not there. A sweep name counts as carried only
+            # through a class row of its own.
             api = row["api"]
-            base = api[2:].split(" ")[0] if api[:2] in ("+[", "-[") else api.split("(")[0].strip("+-[]")
-            out.setdefault(base, name)
+            if row["kind"] != "class":
+                continue
+            out.setdefault(api, name)
     return out
 
 
@@ -99,11 +104,29 @@ def main():
     row_only = [n for n in names if n in rows and n not in code]
     code_only = [n for n in names if n in code and n not in rows]
     owed = [n for n in names if n not in rows and n not in code]
+    # The same contradiction the mirror reports as its fourth direction, read here over the sweep's
+    # own names: a member row carried while its class row is absent or missing.
+    carried_members = []
+    if os.path.isdir(REG):
+        for name in sorted(os.listdir(REG)):
+            if not name.endswith(".json"):
+                continue
+            data = json.load(open(os.path.join(REG, name)))
+            for row in (data["entries"] if isinstance(data, dict) else data):
+                if row.get("kind") != "method" or row.get("status") != "implemented":
+                    continue
+                api = row["api"]
+                cls = api[2:].split(" ")[0] if api[:2] in ("+[", "-[") else api.split("(")[0].strip("+-[]")
+                row_ = [r for r in (data["entries"] if isinstance(data, dict) else data)
+                        if r["kind"] == "class" and r["api"] == cls]
+                if not row_ or row_[0].get("status") == "absent":
+                    carried_members.append(api)
     print("the sweep lists %d CloudKit API names; %d SELECTOR-FRAGMENTS rows ignored (%s)"
           % (len(names), len(ignored), (ignored[0]["sample"][:46] + "...") if ignored else "none"))
     print("carried, a row and a definition here: %d %s" % (len(both), both))
     print("  a row with no definition here: %d %s" % (len(row_only), row_only))
     print("  a definition here with no row:  %d %s" % (len(code_only), code_only))
+    print("  member carried without its class: %d %s" % (len(carried_members), carried_members))
     print("  owed to the six commits: %d" % len(owed))
     by_group = {}
     for name in owed:
@@ -111,7 +134,7 @@ def main():
     for group in GROUPS:
         if by_group.get(group):
             print("     %-11s %2d  %s" % (group, len(by_group[group]), ", ".join(by_group[group][:3]) + " ..."))
-    return 0 if not (row_only or code_only) else 1
+    return 0 if not (row_only or code_only or carried_members) else 1
 
 
 def _group_of(name):

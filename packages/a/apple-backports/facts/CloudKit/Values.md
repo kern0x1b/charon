@@ -120,3 +120,28 @@ worked around:
   in the other - and `CKShareParticipant` twice, the two properties in one and `-initWithType:` in the
   other. Each pair is one category now, carrying every member it had between them. The pile's own final
   commit carries the same duplication, so this is not a replay artefact.
+
+## A row is keyed by (kind, api), not by the name
+
+Both reports keyed a row on its bare name, so `+[CKRecordID new]` and `CKRecordID` were one key. A
+member row then answered the class row's question: delete the class row and leave the member row
+`implemented`, and every direction in both scripts read 0 and exited 0. Measured on this tree before
+the fix:
+
+    class row CKRecordID deleted, +[CKRecordID new] left implemented
+      cloudkit-registry-mirror.py   exit 0   (every direction 0)
+      cloudkit-checklist.py         exit 0   (every direction 0)
+
+Both are keyed by `(kind, api)` now, and a fourth direction reads a member row against its class: a
+member cannot exist without its class, so `+[CKRecordID new]` reading `implemented` beside a class row
+that is `absent`, or with no class row at all, says the class is here and not here in the same breath. A
+`constant` row is a global symbol and stands on its own - the twenty-five constants in this registry
+(`CKErrorDomain`, `CKRecordTypeShare` and the rest) are not members of anything, and asking them for a
+class row would be the same mistake pointed the other way. After the fix, the same two plants:
+
+    class row deleted          mirror exit 1   checklist exit 1
+    class row marked absent    mirror exit 1   checklist exit 1
+
+The checklist counts a sweep name as carried only through a class row of its own, which is why it now
+also reads `a definition here with no row: ['CKRecordID']` where it read nothing at all: the member row
+had been standing in for the class row that was not there.
