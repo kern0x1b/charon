@@ -109,6 +109,36 @@ Two more, and both are about what the build measures rather than what it carries
   build checks for a protocol with no `implemented` registry row -- the case added to
   `tests/addon/registry_test.lua` only sees the ones the generator emits.
 
+## What the registry says about what this port carries
+
+`registry/CoreML/absent_CoreML.json` holds the SDK's Core ML APIs this port does not carry. Every row in it was
+adjudicated against the built objects - the 21 sources of `CoreML/` compiled with the package's own flags, and
+`nm -gU` plus `otool -oV` over the 21 objects, which define 23 classes, 6 protocols and 262 method entries - and
+the three kinds of row answer differently:
+
+- **`MLBatchProvider` is carried.** `CoreML/MLFeatureProvider.m` declares *and defines* it: a protocol a
+  conforming class names as an object at run time, and on a release with no Core ML there is nothing to define
+  it but this port. Its row said `absent` and "the protocol is not there", which was false; it is `implemented`.
+- **The nine `-init`/`+new` rows are absent, and that is the whole truth.** Apple declares all of them
+  `NS_UNAVAILABLE` ("cannot construct MLKey without parameters", `MLKey.h:27-29` and its four siblings): an
+  application compiled against Core ML's own header cannot send them and one that sends by name gets
+  `doesNotRecognizeSelector`. The port's objects inherit NSObject's and there is no body of the port's to carry.
+- **The other 28 are owed, and the vocabulary has no word for it.** They are `absent`, which is true - nothing in
+  the 21 objects defines `MLModelCollection`, `MLTask`, `MLWritable`, `MLModel.availableComputeDevices` or the
+  22 methods - but `absent` ranks as a real gap in `tools/corpus/aggregate.py` and `tools/crash-demand.py`, so
+  scheduled work reads as a decline. The row that would say it, and every tool that would have to learn a new
+  status, are in the commit that writes them.
+
+**The header-only enumeration is carried by its header, and that has a row.** `MLMultiArrayDataType` is one
+`enum` row and its six cases six `constant` rows, each in the band the SDK dates it in (11.0 for
+Double/Float32/Int32, 14.0 for Float64/Float, 16.0 for Float16), with the values the header writes -
+`0x10000|64`, `0x10000|64`, `0x10000|32`, `0x10000|16`, `0x10000|32`, `0x20000|32`. The value is Apple's own and
+the consumer inlines it at compile time, so what the port carries is the header and there is nothing to define:
+`implemented`, which is what the registry already calls 42 enum rows and 197 struct rows. Lowering a row of
+this shape needed `modules/apple/lift.lua` to match an `enum` or a `struct` declaration the way it already
+matched a `type`, and to read `inert` - the registry's word for "the port carries it and there is nothing of its
+own to define" - as carried rather than as a gap.
+
 ## What the host differential found, and what it changed
 
 `tests/backports/host/coreml` records what a real Core ML answers for the same containers -- every

@@ -2,6 +2,28 @@
  "framework": "CoreML",
  "entries": [
   {
+   "api": "MLMultiArrayDataTypeFloat64",
+   "kind": "constant",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLMultiArrayDataTypeFloat64 = 0x10000 | 64: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "effect": "the consumer writes MLMultiArrayDataTypeFloat64 and the SDK's own value (0x10000 | 64) is what its code carries; no release's Core ML carries a different one",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one"
+  },
+  {
+   "api": "MLMultiArrayDataTypeFloat",
+   "kind": "constant",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLMultiArrayDataTypeFloat = 0x10000 | 32: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "effect": "the consumer writes MLMultiArrayDataTypeFloat and the SDK's own value (0x10000 | 32) is what its code carries; no release's Core ML carries a different one",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one"
+  },
+  {
    "api": "+[MLModel loadContentsOfURL:configuration:completionHandler:]",
    "kind": "method",
    "introduced": "14.0",
