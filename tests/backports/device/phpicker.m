@@ -81,6 +81,35 @@ static void spin(NSTimeInterval seconds)
     PHPickerFilter *any = [PHPickerFilter anyFilterMatchingSubfilters:@[[PHPickerFilter imagesFilter], [PHPickerFilter videosFilter]]];
     CHECK(any != nil, "a filter of several kinds is made");
 
+    // The filters of iOS 15 and 16, the compositions, and the two properties of iOS 15. Every one of
+    // them is called here, so a name the library does not carry is an exception rather than a line
+    // nobody reads; what each of them answers is in facts/PhotosUI/Filters.md, and the comparison
+    // with the host's own framework is tests/backports/host/photosui/run.sh.
+    NSArray *kinds = @[@"panoramasFilter", @"screenshotsFilter", @"screenRecordingsFilter", @"slomoVideosFilter",
+                       @"timelapseVideosFilter", @"depthEffectPhotosFilter", @"burstsFilter", @"cinematicVideosFilter"];
+    for (NSString *kind in kinds) {
+        SEL selector = NSSelectorFromString(kind);
+        charon_check([PHPickerFilter respondsToSelector:selector], "PHPickerFilter answers every filter the SDK declares",
+                     [NSString stringWithFormat:@"+%@ is not answered", kind]);
+        charon_check([PHPickerFilter performSelector:selector] != nil, "every filter of a kind makes a filter",
+                     [NSString stringWithFormat:@"+%@ made nothing", kind]);
+    }
+    CHECK(([PHPickerFilter allFilterMatchingSubfilters:@[[PHPickerFilter imagesFilter], [PHPickerFilter videosFilter]]] != nil), "a filter of every kind of both is made");
+    CHECK(([PHPickerFilter allFilterMatchingSubfilters:@[]] != nil), "a conjunction of no filters constrains nothing and is made");
+    CHECK(([PHPickerFilter notFilterOfSubfilter:[PHPickerFilter imagesFilter]] != nil), "the negation of a filter is made");
+    CHECK(([PHPickerFilter notFilterOfSubfilter:nil] != nil), "the negation of nothing is made");
+    CHECK([PHPickerFilter playbackStyleFilter:PHAssetPlaybackStyleImage] != nil && [PHPickerFilter playbackStyleFilter:PHAssetPlaybackStyleVideo] != nil, "a filter of either style the release knows is made");
+    CHECK([PHPickerFilter playbackStyleFilter:PHAssetPlaybackStyleUnsupported] != nil, "and so is one of a style it does not");
+
+    PHPickerConfiguration *stateful = [[PHPickerConfiguration alloc] init];
+    CHECK(stateful.selection == PHPickerConfigurationSelectionDefault, "a configuration starts with the default selection");
+    CHECK(stateful.preselectedAssetIdentifiers != nil && stateful.preselectedAssetIdentifiers.count == 0, "and with an empty array of preselected identifiers, not with nil");
+    stateful.selection = PHPickerConfigurationSelectionOrdered;
+    stateful.preselectedAssetIdentifiers = @[@"one", @"two"];
+    PHPickerConfiguration *statefulCopy = [stateful copy];
+    CHECK(statefulCopy.selection == PHPickerConfigurationSelectionOrdered, "a copy holds the selection that was set");
+    CHECK(([statefulCopy.preselectedAssetIdentifiers isEqualToArray:@[@"one", @"two"]]), "and the identifiers that were set");
+
     Receiver *receiver = [[Receiver alloc] init];
     PHPickerViewController *picker = [[PHPickerViewController alloc] initWithConfiguration:config];
     picker.delegate = receiver;
@@ -144,6 +173,64 @@ static void spin(NSTimeInterval seconds)
     CHECK(!hasChild, "a filter that matches nothing of this release shows no library");
     CHECK(live.calls == 1 && live.results.count == 0, "and reports no results once it has appeared");
     [self dismiss];
+
+    // What a composed filter shows is asked of the picker itself, which is the only public way to
+    // ask it: the release's picker is given the media types the filter names, and reading them back
+    // off the child is what the 14.0 rows were proved with. Three compositions, each presented and
+    // dismissed, and the two methods of iOS 16 called on a picker that is really there.
+    NSArray *both = @[@"public.image", @"public.movie"];
+    NSArray *composed = @[
+        @[@"a conjunction of no filters shows everything", [PHPickerFilter allFilterMatchingSubfilters:@[]], both],
+        @[@"the negation of the image filter shows movies", [PHPickerFilter notFilterOfSubfilter:[PHPickerFilter imagesFilter]], @[@"public.movie"]],
+        @[@"a filter of the video style shows movies", [PHPickerFilter playbackStyleFilter:PHAssetPlaybackStyleVideo], @[@"public.movie"]],
+        @[@"a filter of a kind this release cannot tag shows nothing", PHPickerFilter.panoramasFilter, @[]],
+    ];
+    for (NSArray *each in composed) {
+        PHPickerConfiguration *configuration = [[PHPickerConfiguration alloc] init];
+        configuration.filter = each[1];
+        PHPickerViewController *composite = [[PHPickerViewController alloc] initWithConfiguration:configuration];
+        Receiver *compositeReceiver = [[Receiver alloc] init];
+        composite.delegate = compositeReceiver;
+        [self present:composite];
+        spin(0.5);
+        UIImagePickerController *shown = nil;
+        for (UIViewController *candidate in composite.childViewControllers)
+            if ([candidate isKindOfClass:[UIImagePickerController class]])
+                shown = (UIImagePickerController *)candidate;
+        NSArray *wanted = each[2];
+        charon_check(wanted.count == 0 ? shown == nil : [shown.mediaTypes isEqualToArray:wanted],
+                     "a composed filter shows what it names",
+                     [NSString stringWithFormat:@"%@: wanted %@, the release's picker was given %@",
+                      each[0], wanted, shown ? shown.mediaTypes : @"nothing"]);
+        [self dismiss];
+    }
+
+    // The two methods of iOS 16, on a picker that is really there, and the two forms of the limited
+    // library picker on the library this port carries.
+    PHPickerConfiguration *plainAgain = [[PHPickerConfiguration alloc] init];
+    PHPickerViewController *fourth = [[PHPickerViewController alloc] initWithConfiguration:plainAgain];
+    Receiver *fourthReceiver = [[Receiver alloc] init];
+    fourth.delegate = fourthReceiver;
+    [fourth deselectAssetsWithIdentifiers:@[@"nonesuch"]];
+    [fourth moveAssetWithIdentifier:@"nonesuch" afterAssetWithIdentifier:nil];
+    CHECK(YES, "the two methods of iOS 16 answer on a picker and change nothing");
+
+    Class libraryClass = NSClassFromString(@"PHPhotoLibrary");
+    Dl_info libraryInfo;
+    CHECK(libraryClass != Nil && dladdr((__bridge void *)libraryClass, &libraryInfo) != 0 && [@(libraryInfo.dli_fname).lastPathComponent isEqualToString:@"libPhotosBackports.dylib"], "PHPhotoLibrary comes from the backports");
+    PHPhotoLibrary *library = [PHPhotoLibrary sharedPhotoLibrary];
+    CHECK([library respondsToSelector:@selector(presentLimitedLibraryPickerFromViewController:)], "the library answers the picker of iOS 14");
+    CHECK([library respondsToSelector:@selector(presentLimitedLibraryPickerFromViewController:completionHandler:)], "and the one of iOS 15");
+    [library presentLimitedLibraryPickerFromViewController:self.window.rootViewController];
+    CHECK(YES, "presenting it changes nothing, because this release's library is never limited");
+    __block NSArray *newlySelected = nil;
+    __block BOOL answered = NO;
+    [library presentLimitedLibraryPickerFromViewController:self.window.rootViewController completionHandler:^(NSArray<NSString *> *assets) {
+        newlySelected = assets;
+        answered = YES;
+    }];
+    spin(0.3);
+    CHECK(answered && newlySelected.count == 0, "and the other form says that no assets were newly selected");
 
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
         PHPickerViewController *modal = [[PHPickerViewController alloc] initWithConfiguration:plain];

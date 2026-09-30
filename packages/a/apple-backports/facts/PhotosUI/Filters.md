@@ -76,6 +76,15 @@ a filter matches - there is no public query for it, on this port or on the host:
 - a `nil` array is read as an empty one. The header's parameter is not nullable, and the
   release's picker asks for nothing else.
 
+`tests/backports/host/photosui/run.sh` was run against the host's own PhotosUI on 2026-09-30 and
+answers both edges from the other side: the host's implementation takes the process down on an
+empty array, on a nil array and on `PHAssetPlaybackStyleUnsupported`, so there is no host answer
+for those three to match and the readings above are not contradicted by one. The other
+thirty-five questions it asks, the two sides answer the same - eleven filters, six composition
+inputs, six playback styles, the configuration's defaults and its copy, and the two methods of
+iOS 16 - and the four that differ are listed with their reasons in that test's
+`stated-differences.tsv`.
+
 ## What is not here
 
 The picker still shows the release's own picker, and a filter of panoramas therefore shows
@@ -84,3 +93,14 @@ of iOS 6 - no API of it restricts the library to a subset - and not of the filte
 answers what the release's library can say. Making the picker show a subset would mean
 carrying a list of the library's assets in the picker, which is a row about
 `PHPickerViewController` and not about these eleven.
+
+## Where it is proved
+
+`tests/backports/host/photosui/run.sh` builds the six objects of this family for the host
+against a transcription of the SDK's declarations and asks the resulting binary the same
+questions as one linked against the host's own framework, then compares the answers line for
+line; `--mutated` changes one of them and must fail, which is what shows the comparison can
+fail. `tests/backports/device/phpicker.m` calls every filter and every composition on a
+device, and asks the picker itself which media types a composed filter produced, since that is
+the only public way to ask. That test is compiled here and not run: the run is a device, and the
+coordinator's.

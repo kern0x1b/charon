@@ -30,66 +30,6 @@
       "reason": "every method of the protocol takes a PHLivePhotoView, and that class is not carried for the reason its own row gives, so a class could conform to a protocol whose subject does not exist and would never be handed one to be asked about",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "PHLivePhotoView.h of the iOS 16.4 SDK and of the iOS 26.2 SDK, whose four delegate methods all take a PHLivePhotoView; registry/PhotosUI/absent_PhotosUI.json for the row of that class; tools/cache-index/first-rung.py, which reads PHLivePhotoViewDelegate first at 9.2 and no held release of this port below it"
-    },
-    {
-      "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:]",
-      "kind": "method",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the picker is not a wall: it is owed and not yet written, and once written it can honestly present nothing to manage, since iOS 6's library access is never limited",
-      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:completionHandler:]",
-      "kind": "method",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the picker is not a wall: it is owed and not yet written, and once written it can honestly present nothing to manage, since iOS 6's library access is never limited",
-      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, PhotosUI"
-    },
-    {
-      "api": "PHPickerConfiguration.selection",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the property is not a wall: it is owed and not yet written, and once written it can honestly report only the one item iOS 6's picker chooses, with no order to keep",
-      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of PhotosUI"
-    },
-    {
-      "api": "PHPickerConfiguration.preselectedAssetIdentifiers",
-      "kind": "property",
-      "introduced": "15.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the property is not a wall: it is owed and not yet written, and once written it can honestly show nothing pre-chosen, since iOS 6's picker never opens with items already selected",
-      "effect": "until it is written the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of PhotosUI"
-    },
-    {
-      "api": "-[PHPickerViewController deselectAssetsWithIdentifiers:]",
-      "kind": "method",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the method is not a wall: it is owed and not yet written, and once written it can honestly deselect nothing, since iOS 6's picker holds no multi-item selection to take items out of",
-      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of PhotosUI"
-    },
-    {
-      "api": "-[PHPickerViewController moveAssetWithIdentifier:afterAssetWithIdentifier:]",
-      "kind": "method",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the method is not a wall: it is owed and not yet written, and once written it can honestly reorder nothing, since iOS 6's picker holds no multi-item selection to put in order",
-      "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of PhotosUI"
     }
   ]
 }

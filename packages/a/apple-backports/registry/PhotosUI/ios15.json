@@ -88,6 +88,39 @@
       "effect": "the media types the subfilter does not name, and the filter that names nothing when the subfilter named both",
       "facts": "facts/PhotosUI/Filters.md",
       "source": "PHPicker.h of the iOS 16.4 SDK, the SDK this package compiles against, for the declaration and its availability; ALAsset.h and ALAssetsFilter.h of the same SDK for everything the release's library can say about an asset (type, location, duration, orientation, date, representations, URLs, and the three type constants; the filters allPhotos, allVideos and allAssets); and tools/cache-index/first-rung.py over the 50 held rungs, which answers NONE for _ALAssetTypePanorama and _ALAssetTypePhotoStream"
+    },
+    {
+      "api": "PHPickerConfiguration.selection",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the value is kept and read back, and the picker of this port delivers its one result when the user chooses, which is the behaviour of the default and of the ordered selection alike: a release picker chooses one item, so there is no order to keep and nothing to deliver continuously",
+      "effect": "PHPickerConfigurationSelectionDefault (0) to start, whatever was set after that, and the same value on a copy; a value the 16.4 header does not name is kept as given, as selectionLimit keeps a limit the release cannot honour",
+      "facts": "facts/PhotosUI/PickerState.md",
+      "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
+    },
+    {
+      "api": "PHPickerConfiguration.preselectedAssetIdentifiers",
+      "kind": "property",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header's own rule is that the array should be empty when selectionLimit is 1 or no photo library is specified, and this port's configuration never names one - -initWithPhotoLibrary: takes a library and does not keep it, because iOS 6's library is not an application's own - so the picker preselects nothing, which is the case the header describes",
+      "effect": "an empty array to start, never nil; whatever was set is kept, copied and read back, and the picker preselects none of it because -[PHPickerResult assetIdentifier] is nil whatever the configuration was made with",
+      "facts": "facts/PhotosUI/PickerState.md",
+      "source": "the differential of tests/backports/host/photosui, which asks the host's own PhotosUI and this port the same 38 questions and compares the answers line for line (34 the same, 4 outside what the host answers at all, each stated with its reason); the header of PhotosUI of the iOS 16.4 SDK for the contract and its wording"
+    },
+    {
+      "api": "-[PHPhotoLibrary presentLimitedLibraryPickerFromViewController:completionHandler:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "as the form of iOS 14: this port's library is never limited, so no user is asked and no newly selected asset exists. The block is called anyway, which is this port's choice and not a reading of the header: the header says the block is called upon the user finishing their selection and does not say what happens when there is no selection to finish, and a caller that presents the picker and dismisses itself from the block would otherwise wait for a user who is never asked",
+      "effect": "nothing is presented and the block is called once with no newly selected assets, an empty array; a nil block is not called",
+      "facts": "facts/PhotosUI/LimitedLibrary.md",
+      "source": "PHPhotoLibrary+PhotosUISupport.h of the iOS 16.4 SDK for the wording, ALAssetsLibrary.h:45-52 of the same SDK for the four values of the release's own authorization, and the host's own PHPhotoLibrary+PhotosUISupport.h, which declares the method API_UNAVAILABLE(macos) inside `#if TARGET_OS_IPHONE || TARGET_OS_MACCATALYST` - so no host can be asked about it and the port's answer rests on the header's own words"
     }
   ]
 }
