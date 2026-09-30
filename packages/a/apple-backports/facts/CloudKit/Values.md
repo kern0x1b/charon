@@ -177,3 +177,36 @@ The claim as written in `eed61c206` is withdrawn rather than amended: the commit
 section is the correction. Its other measurements are unaffected - the checklist, the mirror, the
 `registry_test` exit and the eleven CloudKit compiles were each run directly against the checkout and
 are not touched by this.
+
+## One object carries one release, and one minimum
+
+The band machinery puts an object in the band of the release its API arrived in, so an object whose
+symbols first appear in two releases belongs to no band at all. The gate refuses it as "an object
+carries API that arrived in one release, so split it", and `tools/release-split.lua` measures the same
+thing out of the compiled symbols. Measured on the objects of this tree before the split:
+
+    CKOperations10.o  MIXED-RELEASES  10.0.1,8.3
+    CKValues10.o      MIXED-RELEASES  10.0.1,8.0,8.3
+
+`CKAcceptSharesOperation` is 8.3 and the four discover and fetch-share operations are 10.0.1, so the
+first is `CKOperations83.m` now. `CKShareParticipant` is 8.0 and joins `CKValues8.m`, the first
+release's own value file, and `CKUserIdentity` is 8.3 and is `CKValues83.m`. After the split:
+
+    xmake l tools/release-split.lua <objects> <out> <iPhoneOS16.4.sdk>
+    release-split: clean, every object file's symbols first-appear in one release (28 files, 185 symbols, 50 releases checked)
+
+The releases are read from the held dyld caches, so 10.0.1 is the first rung that **exports** the
+discover and fetch-share symbols and the arrival is bounded from above by it, the way release-split's
+own note says for the rungs the ladder skips. The rows said 10.0 where the measurement says 10.0.1,
+and the three moved classes said 10.0 where the measurement says 8.3 and 8.0; all thirteen now carry
+the release they were measured at, because a row that names another release than the object is the
+same defect the split fixes.
+
+The second half of the gate's finding is the registry's `minimum`, which is the release an **object**
+is carried from: the minimum of the entries its API answers to, and an object whose entries name
+different minimums is refused, "the earliest would carry API below its minimum, the latest would drop
+API the registry carries earlier". `CKSyncEngine17.o` had three rows at 6.0 and eighteen naming none,
+which is two answers. Every one of the object's thirty rows now names 6.0, the value the three already
+gave, and never above 10: armv7's last deployment is 10, and a minimum above it would take the object
+out of every band that can link it. A minimum at or below the deployment bounds nothing, which is why
+6.0 is the answer that both satisfies the rule and keeps the object in every band.

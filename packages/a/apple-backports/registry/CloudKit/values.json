@@ -233,7 +233,7 @@
   {
     "api": "CKQuerySubscription",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the record type, the predicate and the options are kept; a subscription made without an identifier is given one",
@@ -243,7 +243,7 @@
   {
     "api": "CKRecordZoneSubscription",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the zone is kept; a subscription made without one is the default zone of the current owner",
@@ -253,7 +253,7 @@
   {
     "api": "CKDatabaseSubscription",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "a database subscription is the database's, and its type is the database notification",
@@ -263,7 +263,7 @@
   {
     "api": "CKDatabaseNotification",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the subscription it belongs to is read from the payload",
@@ -273,17 +273,17 @@
   {
     "api": "CKUserIdentity",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "8.3",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the record identifier, the contact identifiers, whether there is an iCloud account and the lookup information are kept and read back as given",
-    "source": "packages/a/apple-backports/CloudKit/CKValues10.m",
+    "source": "packages/a/apple-backports/CloudKit/CKValues83.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {
     "api": "CKUserIdentityLookupInfo",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "an email address, a phone number or a record identifier, one of the three, and each of the three array factories builds one per element",
@@ -293,11 +293,11 @@
   {
     "api": "CKShareParticipant",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "8.0",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the identity, the permission, the role, the type, the acceptance status and the participant identifier are kept and read back as given",
-    "source": "packages/a/apple-backports/CloudKit/CKValues10.m",
+    "source": "packages/a/apple-backports/CloudKit/CKValues8.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -583,7 +583,7 @@
   {
     "api": "CKShareMetadata",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
     "effect": "the record the share is of, the URL it is shared under, the owner, the participant type, the permission, the status and the role are kept and read back as given",
@@ -778,6 +778,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "a scope says which zones a fetch is about, as some of them or as all but some of them, and never both; -containsZoneID: answers the scope itself, and a nil zone is in none of them",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -788,6 +789,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "a scope of a send is also a scope of records, and a record scope says which records whatever zone they are in; a zone save or a zone delete is about a zone and not about a record, so a record scope does not contain it",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -798,6 +800,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the scope, the group the fetch belongs to, and the zones to ask about first; a new one has a group and no prioritised zones",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -808,6 +811,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the scope and the group the send belongs to; a new one has a group",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -818,6 +822,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "one of the two reasons a sync began and the options it began with; both initialisers refuse, which is the header's own marking, because a context a caller made would be a context the engine never ran",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -828,6 +833,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "as the fetch context, and for a send",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -838,6 +844,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the changes the engine has not sent, the database changes it has not acted on, and the zones whose server changes it has not fetched; all three are copies, so the only way in is the four add and remove methods and the only way out is the same four. Measured: the host traps on +new and -init, so a caller who writes them loses the process; this port refuses, naming the two ways a state is had",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -868,6 +875,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the database the engine walks, the state it resumes from, the delegate it answers, and whether it syncs on its own; a new one does not sync on its own, because an application that has not said when it wants a sync is not asked for one",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -878,6 +886,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "one of the twelve moments of a sync, carrying a type and whichever of the twelve members the type names; a delegate handed one with a nil member is being told a moment that has nothing further in it",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -888,6 +897,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the state was persisted, and this is what was persisted",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -898,6 +908,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the account moved: the kind of change, who it is and who it was",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -908,6 +919,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "what the engine is about to fetch, with the reason and the options it began with",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -918,6 +930,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "what it has just fetched, with the same context",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -928,6 +941,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "which zone it is about to fetch",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -938,6 +952,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "which zone it fetched and, when that zone refused, the error for that zone",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -948,6 +963,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "which zone it has finished with, and its error if it refused",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -958,6 +974,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "what the engine is about to send, with the reason and the options it began with",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -968,6 +985,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "what it has just sent, with the same context",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -978,6 +996,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the zones it saved and deleted, the zone saves that failed with the zone and the error, and the zone deletes that failed keyed by the zone - a refusal is handed over with the zone it was about, because a caller cannot find that zone again by itself",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -988,6 +1007,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the records it saved and deleted, the record saves that failed with the record and the error, and the record deletes that failed keyed by the identifier",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -998,6 +1018,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the records and the zones the service reports gone",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1008,6 +1029,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a record the service reports gone, with the type it had, which a record identifier does not carry of itself",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1018,6 +1040,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a zone the service reports gone, and which of the three reasons it gives: deleted, purged, or the user reset their encrypted data",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1028,6 +1051,7 @@
     "reason": "a record-zone deletion the sync engine has read and not yet carried out, so it is a value here: it needs its zone's identifier and nothing else to exist",
     "effect": "the zone the engine will delete on its next pass, answerable as given",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1038,6 +1062,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a record the service refused to save, with the error; the record is handed over because a caller has to decide what to do about it and cannot find it again by itself",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1048,6 +1073,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a zone the service refused to save, with the error, for the same reason",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1058,6 +1084,7 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a zone the state is holding to be saved, with the zone itself",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1068,8 +1095,8 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a change to the database itself - a zone to save or a zone to delete - the state is holding, made from the zone or from its identifier and the type that says which of the two it is",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
-    "facts": "facts/CloudKit/Values.md",
-    "minimum": "6.0"
+    "minimum": "6.0",
+    "facts": "facts/CloudKit/Values.md"
   },
   {
     "api": "CKSyncEnginePendingRecordZoneChange",
@@ -1079,8 +1106,8 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "a change to a record or a zone the state is holding until it has been sent, made from a record and its type, from a zone to save or from a zone to delete, and kept as it was made; a caller makes one to add a change to the state and the engine is what removes it once it has been sent",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
-    "facts": "facts/CloudKit/Values.md",
-    "minimum": "6.0"
+    "minimum": "6.0",
+    "facts": "facts/CloudKit/Values.md"
   },
   {
     "api": "CKSyncEngineRecordZoneChangeBatch",
@@ -1090,13 +1117,13 @@
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "what a send of one zone is made of: the records to save and the identifiers to delete, taken either from the pending changes and the delegate's provider - where a record the delegate has not read is not sent - or from the caller, and whether the zone is all of it or none of it",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
-    "facts": "facts/CloudKit/Values.md",
-    "minimum": "6.0"
+    "minimum": "6.0",
+    "facts": "facts/CloudKit/Values.md"
   },
   {
     "api": "CKDiscoverUserIdentitiesOperation",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "users/discover with the email, the phone number or the record identifier of each lookup; an identity the service refused arrives as that item's own error and the operation's is CKErrorPartialFailure with the failures under CKPartialErrorsByItemIDKey; nothing to look up is CKErrorInvalidArguments and no request is made",
@@ -1106,7 +1133,7 @@
   {
     "api": "CKDiscoverAllUserIdentitiesOperation",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "users/lookup with nothing in it, which is how the service answers for every identity a container knows; each is handed to the per-identity block in the order the service gave them",
@@ -1116,7 +1143,7 @@
   {
     "api": "CKFetchShareMetadataOperation",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "shares/metadata with the share URLs, and the root record when -shouldFetchRootRecord says so; a share URL the service could not resolve arrives as that item's own error, and a share's metadata is never instantiated by an application, so this is the only way one is made",
@@ -1126,7 +1153,7 @@
   {
     "api": "CKFetchShareParticipantsOperation",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "10.0.1",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "users/lookup with the lookups; the participant of a refused lookup arrives as that item's own error, and the deprecated block of iOS 10 is called as well as the iOS 15 one a caller of either has",
@@ -1176,11 +1203,11 @@
   {
     "api": "CKAcceptSharesOperation",
     "kind": "class",
-    "introduced": "10.0",
+    "introduced": "8.3",
     "status": "implemented",
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "shares/accept with the URLs of the metadata it was given; a share the service refused to accept arrives as that item's own error, and the accepted share is the one the metadata named",
-    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations83.m",
     "facts": "facts/CloudKit/Values.md"
   }
   ],

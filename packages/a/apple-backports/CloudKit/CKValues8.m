@@ -739,3 +739,32 @@ static NSString *const CharonCKKeyRelativeLocation = @"relativeLocation";
 }
 
 @end
+
+// CKShareParticipant is a value of the first release, and the participant a share carries is
+// one of them: built, kept and read back, with nothing reaching the network. It sat in
+// CKValues10.m beside CKUserIdentity, which is 8.3, and a file carrying 8.0, 8.3 and 10.0.1
+// symbols belongs to no band.
+
+#pragma mark - CKShareParticipant
+
+@implementation CKShareParticipant
+{
+    NSString *_participantID;
+}
+
+- (instancetype)initWithType:(CKShareParticipantType)type
+{
+    self = [super init];
+    if (self) {
+        _type = type;
+    }
+    return self;
+}
+
+- (NSString *)description
+{
+    return [NSString stringWithFormat:@"<CKShareParticipant: %p; userIdentity=%@, permission=%ld, role=%ld, type=%ld, acceptanceStatus=%ld, participantID=%@>",
+            self, _userIdentity, (long)_permission, (long)_role, (long)_type, (long)_acceptanceStatus, _participantID];
+}
+
+@end
