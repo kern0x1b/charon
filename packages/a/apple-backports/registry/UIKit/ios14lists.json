@@ -679,16 +679,18 @@
       "kind": "property",
       "introduced": "14.0",
       "status": "absent",
-      "reason": "the release has no focus system to move a selection",
-      "effect": "the property is not there: respondsToSelector: answers NO"
+      "reason": "the release has no focus system to move a selection, and at 4.3 no UICollectionView at all: measured, neither selectionFollowsFocus nor setSelectionFollowsFocus: is on the 6.1.3 class (120 instance methods), and first-rung.py reads the name at 16.0, which is after every release this port builds",
+      "effect": "the property is not there: respondsToSelector: answers NO",
+      "source": "tools/corpus/objc-inventory.lua over the armv7 dyld shared cache of iOS 6.1.3 and of iOS 4.3, read class-scoped: each row's own class or protocol, its own selector, on each of the two releases this port builds; the same answer from the stored inventory release_inventory() keeps, and the two agree on all 41 rows"
     },
     {
       "api": "UITableView.selectionFollowsFocus",
       "kind": "property",
       "introduced": "14.0",
       "status": "absent",
-      "reason": "the release has no focus system to move a selection",
-      "effect": "the property is not there: respondsToSelector: answers NO"
+      "reason": "the release has no focus system to move a selection: measured, neither selectionFollowsFocus nor setSelectionFollowsFocus: is on the UITableView of 6.1.3 (412 instance methods) or of 4.3 (323), and first-rung.py reads the name at 16.0, which is after every release this port builds",
+      "effect": "the property is not there: respondsToSelector: answers NO",
+      "source": "tools/corpus/objc-inventory.lua over the armv7 dyld shared cache of iOS 6.1.3 and of iOS 4.3, read class-scoped: each row's own class or protocol, its own selector, on each of the two releases this port builds; the same answer from the stored inventory release_inventory() keeps, and the two agree on all 41 rows"
     },
     {
       "api": "UIConfigurationColorTransformerGrayscale",
