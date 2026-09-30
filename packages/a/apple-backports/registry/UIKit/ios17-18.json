@@ -2793,6 +2793,86 @@
       "effect": "NO, which is what the host answers in every state measured - fresh, immediately after an animated -setContentOffset:animated:YES, 120ms and 1s later, and mid-zoom - so the getter reports that no animation is in flight, and there is no setter because the host has none and UIScrollView.h declares the property readonly",
       "source": "UIKit/UIScrollView+ContentAlignment17.m, which defines -isZoomAnimating; the property name is not a selector and the getter is what is implemented - measured by compiling [s scrollAnimating] against the host SDK, which fails with \"no visible @interface for 'UIScrollView' declares the selector 'scrollAnimating'\", while [s isZoomAnimating] compiles, and UIScrollView.h:221,262 declare the property (nonatomic, readonly, getter=isZoomAnimating). The host answers NO in every state measured, including immediately after an animated -setContentOffset:",
       "facts": "facts/UIKit/UIKit17Absence.md"
+    },
+    {
+      "api": "UITextView.writingToolsCoordinator",
+      "kind": "property",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the writing assistant needs the coordinator Apple added in 18.2, and no held release carries the name. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "UITextView.subclassForWritingToolsCoordinator",
+      "kind": "property",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the same coordinator, read as a class instead of an instance, and the same measurement answers for it: no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "UIWritingToolsCoordinator",
+      "kind": "class",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the coordinator of the writing assistant, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "UIWritingToolsCoordinatorContext",
+      "kind": "class",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the context the assistant is driven in, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "UIWritingToolsCoordinatorDelegate",
+      "kind": "protocol",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the delegate the assistant calls back, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "UIWritingToolsCoordinatorAnimationParameters",
+      "kind": "class",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the animation the assistant is given, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "-[UIResponderStandardEditActions showWritingTools:]",
+      "kind": "method",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the selector that shows the assistant, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
+    },
+    {
+      "api": "-[UIApplication defaultStatusForCategory:error:]",
+      "kind": "method",
+      "introduced": "18.2",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the per-category default status, which arrived in 18.2. no held release carries it. Measured with tools/cache-index/first-rung.py over the fifty held rungs, whose top rung is 18.0: the name answers NONE. The index's own controls are in the same table and do answer: NSObject 3.0 and UIResponderStandardEditActions 10.0.1, so a NONE here is the index finding nothing rather than the index finding nothing at all",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "tools/cache-index/first-rung.py over the held rungs, and the SDK 26.2 declaration"
     }
   ]
 }
