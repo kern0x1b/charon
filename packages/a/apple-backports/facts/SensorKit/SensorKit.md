@@ -8,12 +8,13 @@ store a payload could be read out of. Everything below is that one fact and what
 ## The witnesses this page's numbers come out of
 
 Four paths, and every count below is one of their outputs. A number on this page that names none of
-them is not evidence, and this page used to carry several.
+them is not evidence, and this page used to carry several. There are five now:
 
 | what it answers | the path | what a run of it prints |
 | --- | --- | --- |
 | the 57 string constants, the port's against the host's own SensorKit | `tests/backports/host/sensorkit-names/run.sh` | `sensorkit-names: 57 names compared, 0 differing`, then three plants and the empty control |
 | the four time functions, both sides in one binary | `tests/backports/host/sensorkit/run.sh` | the three relations, and the port's side `1, 1, 1` |
+| which of the delegate's ten the reader sends, in the source and in the armv7 object | `tests/backports/host/sensorkit-reader/run.sh` | `4 of 10 protocol methods sent`, `4 of 10 protocol selectors in the object`, 5 plants |
 | what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
 | one symbol's release of first appearance, over the held ladder | `tools/cache-index/first-rung.py` | one TSV line per name, or `NONE` |
 
@@ -140,28 +141,85 @@ once, in `CharonSensorKitNames.h`, behind one guard per release: each release ob
 guard and imports the header, and the harness's `names-extra.m` defines all six and imports it. One
 definition of each string in the tree, read seven ways.
 
-## What the delegate's ten methods are
+## What the delegate's ten methods are, and which four the port reaches
 
 **There are ten of them, all `@optional`, and the port's reader sends four.** That is the whole shape
 of this corner, and the numbers are the SDK 26.2 header's own: `@protocol SRSensorReaderDelegate
 <NSObject>` at `SRSensorReader.h:21`, `@optional` at `:22`, and ten declarations between `:40` and
 `:84`, the protocol's `@end` at `:86`.
 
-The delegate is the application's own object, so there are two halves and they are different:
+`tests/backports/host/sensorkit-reader/run.sh` is what produces that split, twice over, and its own
+output is the claim:
 
-- **four are sent, and an application that implements them is reached.** `-startRecording` and
-  `-stopRecording` send `startRecordingFailedWithError:` and `stopRecordingFailedWithError:`; `-fetch:`
-  sends `fetchingRequest:failedWithError:`; `-fetchDevices` sends `fetchDevicesDidFailWithError:`. Each
-  carries SensorKit's own `SRErrorDataInaccessible` from `SRError.h`, which is "Data is not accessible at
-  this time" and is exactly right: there is no store behind any of the four. Each is guarded by
-  `respondsToSelector:` on the delegate, so a subscriber that implements one is messaged and one that
-  does not is not messaged at all — never messaged wrongly.
-- **six are never sent, and nothing here pretends otherwise**: `fetchingRequest:didFetchResult:` and
-  `didCompleteFetch:` need a fetch that produced a result, `didFetchDevices:` needs a device list the
-  port will not invent, `didChangeAuthorizationStatus:` needs a status that changes when this reader's
-  never does — it answers `denied` and stays there — and `sensorReaderWillStartRecording:` and
-  `sensorReaderDidStopRecording:` report a recording that this release never begins. That is the same
-  wall as the four: no daemon collects anything, so there is no result, no device and no change.
+```
+sensorkit-reader: 4 of 10 protocol methods sent, 0 failures
+sensorkit-reader-object: 4 of 10 protocol selectors in the object, 0 failures
+sensorkit-reader: OK - 10 protocol methods, 4 sent and 4 in the object, 5 plants noticed
+```
+
+The first line reads the port's own `SRSensorReader.m` and names all ten, SENT or NEVER. The second reads
+the **compiled armv7 object** — built `armv7-apple-ios6.1.3` against the 16.4 SDK and dumped with
+`otool -v -s __TEXT __objc_methname` — and is a different claim: an object's `__objc_methname` is what
+the linker binds `@selector()` references against, so a selector in that section is one the reader can
+actually send. Both halves have plants: three change the source (a send removed, a send swapped for one
+of the six, the authorization no longer `denied`), a fourth hands the check a reader that sends nothing
+at all, and a fifth is the swap again carried through the compiler, so the object check is not merely
+agreeing with the source check by construction. All five are noticed.
+
+**Why this is not a differential, and that is measured rather than assumed.** There is no behavioural
+oracle for `SRSensorReader` on this machine. The host's own `SensorKit.framework` declares the class and
+implements nothing — `respondsToSelector:` is 0 for `+authorizationStatus` and `+sharedReader` — and the
+port's `CharonSensorKit.h` cannot be compiled against the host's newer SDK at all: clang answers
+`typedef redefinition with different types ('NSInteger' vs 'enum SRAcousticSettingsSampleLifetime')`
+for the fifteen enumerations it redeclares, because the host's SensorKit spells them `NS_ENUM`. Building
+the port's reader for Catalyst against the 16.4 SDK instead was tried and does not work either, on this
+SDK: `Foundation/NSURL.h:10` imports `Foundation/NSURLHandle.h`, which the store's 16.4 SDK does not
+carry.
+
+The four, and the six, are these:
+
+| sent by the port's reader | from | why it is the answer |
+| --- | --- | --- |
+| `sensorReader:startRecordingFailedWithError:` | `-startRecording` | there is no store to start recording into |
+| `sensorReader:stopRecordingFailedWithError:` | `-stopRecording` | nothing is recording, so this is a stop that did not happen |
+| `sensorReader:fetchingRequest:failedWithError:` | `-fetch:` | no store, no readings, no payload |
+| `sensorReader:fetchDevicesDidFailWithError:` | `-fetchDevices` | the device list is the one fetch that could succeed without a database, and the port will not invent one |
+
+Each of the four carries SensorKit's own `SRErrorDomain` and its own `SRErrorDataInaccessible` from
+`SRError.h` — "Data is not accessible at this time", which is exactly what is true here — and each is
+guarded by `respondsToSelector:` on the delegate, so a subscriber that implements one is messaged and
+one that does not is not messaged at all, never messaged wrongly.
+
+| never sent, and why | |
+| --- | --- |
+| `sensorReader:fetchingRequest:didFetchResult:` | it hands over a result and `-fetch:` has none: the request fails instead |
+| `sensorReader:didCompleteFetch:` | it says a fetch finished, and no fetch in this port ever does |
+| `sensorReader:didChangeAuthorizationStatus:` | `-authorizationStatus` answers `SRAuthorizationStatusDenied` and nothing writes to it, so there is no change to report |
+| `sensorReaderWillStartRecording:` | it says a recording is about to begin, and none ever does |
+| `sensorReaderDidStopRecording:` | it says a recording stopped, and `-stopRecording` answers with the failure callback because there was never a recording |
+| `sensorReader:didFetchDevices:` | it hands over a device list, and the port will not fabricate one |
+
+Every one of the six is `@optional`, so a conformer may leave it out and the compiler accepts that. A
+conformer that implements one is never called, which is the SDK's own behaviour on a device that collects
+nothing — **the port does not fabricate a result, a device list or a status change to make a callback
+fire**, and that is the line every one of those six rows rests on.
+
+**The protocol itself is now carried**, which it was not before: the delegate is the application's own
+object, so nothing in the port adopts `SRSensorReaderDelegate`, and a port that emits a protocol's
+metadata only where a class adopts it therefore emitted none — so an application compiled against the
+SDK found no such protocol at run time and could not conform to one it declared.
+`CharonSensorKitProtocols.h` names it and the object `modules/apple/backports.lua` generates from the
+registry row, `SensorKitBackportsProtocols14.0.m`, makes clang emit
+`__OBJC_PROTOCOL_$_SRSensorReaderDelegate`. Measured by compiling that generated object for
+`armv7-apple-ios6.1.3` against the 16.4 SDK and reading the symbol out of it with `nm -gU`. The header
+forward-declares the protocol and lets the umbrella import supply the body, because the 16.4 SDK already
+declares it with one — the same shape `CharonMetalProtocols.h` uses — and a forward declaration on its
+own is not a protocol: `@protocol X;` emits nothing, and `protocol_getMethodDescriptionCount` on it
+would answer 0 for all ten.
+
+**What is still not claimed.** That a device reaches a subscriber. The call test on the emulator has not
+been run; what is proven here is that the armv7 object carries the four selectors, the source sends
+exactly those four, and each carries SensorKit's own error.
 
 ## The four shapes in the source, each forced by something measured
 
@@ -238,14 +296,14 @@ so the probe could not see it. That is the second time in these two families a r
 question it was not asked (`SRSensor*` "0 of 10" from `objc_getClass`, in slice 1). The expected
 difference is gone and both sides are held to the same three relations.
 
-**The eleven rows of the reader's own surface stay `absent`, and this file's earlier reason for that
-still stands** — the delegate is the application's own object, so the port declares no protocol and emits
-no `__OBJC_PROTOCOL_$_` for it. What this slice adds is the host's own account of that surface, measured
-through the runtime rather than assumed: `SRSensorReaderDelegate` is present on the host and declares
-**exactly ten** methods, all `optional`, with the type encodings
-`v24@0:8@16`, `v32@0:8@16q24`, `v32@0:8@16@24` (×3), `B40@0:8@16@24@32`, `v40@0:8@16@24@32` and
-`v24@0:8@16` — so the surface is Apple's, it is exactly the ten rows this registry carries as absent, and
-the port's not declaring it is the measured right answer rather than an omission.
+**The host's account of that surface, measured through the runtime rather than assumed:**
+`SRSensorReaderDelegate` is present on the host and declares **exactly ten** methods, all `optional`,
+with the type encodings `v24@0:8@16`, `v32@0:8@16q24`, `v32@0:8@16@24` (×3), `B40@0:8@16@24@32`,
+`v40@0:8@16@24@32` and `v24@0:8@16` — so the surface is Apple's and it is exactly the ten rows above.
+What this page used to conclude from it — that the port's not declaring the protocol is the measured
+right answer — is no longer what the tree does: the protocol is carried now, and the ten are split four
+sent and six never sent, each row saying which. The one row of the reader's own surface still `absent`
+is `-[SRSensorReader init]`, and the section above says why.
 
 **And the host's relation `roundTripWithinAMicrosecond` is flaky**, which is why the numbers above are
 "on six consecutive runs" and not "always": the HOST's own round trip failed once in eight runs of this

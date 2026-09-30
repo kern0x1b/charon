@@ -1507,104 +1507,125 @@
       "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
     },
     {
+      "api": "SRSensorReaderDelegate",
+      "kind": "protocol",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the reader's delegate is the APPLICATION's own object, so nothing in this port adopts the protocol - which is why the port emitted no __OBJC_PROTOCOL_$_ for it and an application compiled against the SDK found no such protocol at run time. It is carried anyway, because a delegate protocol nothing ships is a protocol an application cannot conform to: CharonSensorKitProtocols.h names it and the generated SensorKitBackportsProtocols14.0.m makes clang emit the metadata, so NSProtocolFromString finds it on a release that has no SensorKit",
+      "effect": "the protocol exists at run time with its ten @optional methods and no required one, which is what the 26.2 header declares: @protocol SRSensorReaderDelegate <NSObject> at SRSensorReader.h:21, @optional at :22, the ten declarations between :40 and :84. Four of the ten the port's reader sends and six nothing sends, each row saying which",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the 16.4 SDK this package compiles against declares the same protocol with a body at its own SRSensorReader.h:21, so the port forward-declares it and lets the umbrella import supply that body rather than transcribing a header the build already has; the emitted metadata is measured by compiling the generated object for armv7-apple-ios6.1.3 and reading __OBJC_PROTOCOL_$_SRSensorReaderDelegate out of it with nm"
+    },
+    {
       "api": "-[SRSensorReaderDelegate sensorReader:didChangeAuthorizationStatus:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:59 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: the reader's -authorizationStatus answers SRAuthorizationStatusDenied and nothing writes to it, so there is no change to report - and a change is the only thing this message is for",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didCompleteFetch:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:47 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: it says a fetch finished, and no fetch in this port ever does: every one of the reader's three collection entry points answers with a failure callback",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didFetchDevices:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:83 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: it hands over a device list, and the port will not fabricate one: -fetchDevices answers through sensorReader:fetchDevicesDidFailWithError: instead",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchDevicesDidFailWithError:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:84 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. THIS ONE IS SENT: the port's own reader sends it from --fetchDevices, because the device list is the one fetch that could in principle succeed without a database, and the port will not invent a list it cannot measure",
+      "effect": "reached. An application that implements it is messaged, with SensorKit's own SRErrorDomain and its own SRErrorDataInaccessible, which is \"Data is not accessible at this time\" and is exactly what is true here; one that does not implement it is not messaged at all, because the send is guarded by respondsToSelector:; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchingRequest:didFetchResult:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:40 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: it hands over a result, and -fetch: has none to hand over: the request fails instead, through sensorReader:fetchingRequest:failedWithError:",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchingRequest:failedWithError:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:52 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. THIS ONE IS SENT: the port's own reader sends it from --fetch:, because no store, no readings and no payload, so the request cannot be answered and the SDK's own error is the answer",
+      "effect": "reached. An application that implements it is messaged, with SensorKit's own SRErrorDomain and its own SRErrorDataInaccessible, which is \"Data is not accessible at this time\" and is exactly what is true here; one that does not implement it is not messaged at all, because the send is guarded by respondsToSelector:; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:startRecordingFailedWithError:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:70 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. THIS ONE IS SENT: the port's own reader sends it from --startRecording, because there is no store to start recording into, so this is the SDK's own answer for a recording that cannot begin",
+      "effect": "reached. An application that implements it is messaged, with SensorKit's own SRErrorDomain and its own SRErrorDataInaccessible, which is \"Data is not accessible at this time\" and is exactly what is true here; one that does not implement it is not messaged at all, because the send is guarded by respondsToSelector:; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:stopRecordingFailedWithError:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:81 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. THIS ONE IS SENT: the port's own reader sends it from --stopRecording, because nothing is recording, so this is a stop that did not happen, and the SDK's own answer for that is the failure callback rather than the one saying recording stopped",
+      "effect": "reached. An application that implements it is messaged, with SensorKit's own SRErrorDomain and its own SRErrorDataInaccessible, which is \"Data is not accessible at this time\" and is exactly what is true here; one that does not implement it is not messaged at all, because the send is guarded by respondsToSelector:; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReaderDidStopRecording:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:76 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: it says a recording stopped, and -stopRecording answers with sensorReader:stopRecordingFailedWithError: because there was never a recording to stop",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReaderWillStartRecording:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the delegate is the application's own object: no class of this port conforms to SRSensorReaderDelegate, so the port carries the protocol not at all, and a class that declares the conformance emits the protocol in its own translation unit",
-      "effect": "the selector is not carried: respondsToSelector: on the port's SRSensorReaderDelegate answers NO for it. The reader still SENDS these messages - that is the other half of the contract and it is implemented - but it declares no protocol and emits no __OBJC_PROTOCOL_$_ for it, so a subscriber that implements them is reached and a subscriber that does not is never messaged",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "an @optional member of SRSensorReaderDelegate, declared at SRSensorReader.h:65 of SDK 26.2 and introduced in iOS 14.0, the release the protocol arrived in. NOTHING HERE SENDS IT, and that is measured rather than assumed: it says a recording is about to begin, and none ever does",
+      "effect": "carried as the promise it is and never messaged. It is @optional, so a conformer may leave it out and the compiler accepts that; one that implements it is simply never called, which is the SDK's own behaviour on a device that collects nothing. The port does not fabricate a result, a device list or a status change to make a callback fire; nothing here is a device measurement, because no device has been asked and the call test on the emulator has not been run, which tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red says so about",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its @optional marker; the port's own SRSensorReader.m for what it sends; the witness is tests/backports/host/sensorkit-reader/run.sh, which prints all ten as SENT or NEVER from the port's own source and the same four read back out of the armv7 object's __TEXT,__objc_methname, with five plants that each turn it red"
     },
     {
       "api": "-[SRSleepSession init]",
