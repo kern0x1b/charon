@@ -8,3 +8,9 @@
 #import <objc/NSObject.h>
 
 @protocol AVPlayerViewControllerDelegate;
+// The PiP delegate is declared by the SDK this package compiles against, so its body comes from that
+// import and only the name is repeated here - which is what the row of AVPictureInPictureControllerDelegate
+// needs: the protocol row is `implemented`, the object defines __OBJC_PROTOCOL_$_... because
+// CharonAVPlayerPictureInPictureRelay adopts it, and a generated source naming it has to find the
+// declaration in this header or in a header of this folder it imports.
+@protocol AVPictureInPictureControllerDelegate;
