@@ -24,6 +24,18 @@
 
 static int gChecks = 0;
 static int gFailures = 0;
+static NSMutableArray *gAnswers = nil;
+
+// The answers as `label<TAB>detail` lines, so the port's own run can be diffed against this one
+// question by question. A run that prints answers nobody compares is a transcript; this is the half
+// of the differential `run.sh` reads.
+static void answer(NSString *label, NSString *detail)
+{
+    if (gAnswers == nil) {
+        return;
+    }
+    [gAnswers addObject:[NSString stringWithFormat:@"%@\t%@", label, detail]];
+}
 
 // A check states what the header says and compares it with what the framework answered. Each one
 // names the header line it rests on, so a reader can see the expectation is Apple's and not ours.
@@ -34,6 +46,7 @@ static void check(NSString *what, BOOL ok, NSString *detail)
         gFailures++;
     }
     printf("%-4s %-58s %s\n", ok ? "ok" : "FAIL", what.UTF8String, detail.UTF8String);
+    answer(what, detail);
 }
 
 static NSString *describe(id object)
@@ -73,9 +86,12 @@ static id sendUnavailable(id target, SEL selector, ...)
     return nil;
 }
 
-int main(void)
+int main(int argc, const char *argv[])
 {
     @autoreleasepool {
+        if (argc > 1) {
+            gAnswers = [NSMutableArray array];
+        }
         printf("# the machine: %s\n", [[[NSProcessInfo processInfo] hostName] UTF8String]);
         printf("# CarPlay: %s\n", [[[NSBundle bundleWithIdentifier:@"com.apple.CarPlay"] bundlePath]
             ?: @"(not loadable by path)" UTF8String]);
@@ -202,10 +218,16 @@ int main(void)
             NSError *error = nil;
             NSData *coded = [NSKeyedArchiver archivedDataWithRootObject:state requiringSecureCoding:YES
                                                                 error:&error];
+            // The allowed classes are the state's own plus the value classes it holds, and both sides
+            // of the diff use this same call: a state carries an array of strings and an image, so a
+            // reader that does not allow them cannot read it, and the comparison is only meaningful
+            // if both sides are asked the same question.
             CPVoiceControlState *back = coded == nil ? nil
-                : [NSKeyedUnarchiver unarchivedObjectOfClass:[CPVoiceControlState class]
-                                                    fromData:coded
-                                                       error:&error];
+                : [NSKeyedUnarchiver unarchivedObjectOfClasses:
+                       [NSSet setWithObjects:[CPVoiceControlState class], [NSString class],
+                                             [NSArray class], [UIImage class], nil]
+                                                  fromData:coded
+                                                     error:&error];
             check(@"a state survives an NSSecureCoding round trip with its identifier",
                   back != nil && [back.identifier isEqualToString:@"charon.listening"],
                   back ? describe(back.identifier) : [NSString stringWithFormat:@"nil (%@)",
@@ -366,6 +388,11 @@ int main(void)
         }
 
         printf("\nchecks=%d failures=%d\n", gChecks, gFailures);
+        if (gAnswers != nil) {
+            NSString *text = [gAnswers componentsJoinedByString:@"\n"];
+            [text writeToFile:[NSString stringWithUTF8String:argv[1]] atomically:YES
+                 encoding:NSUTF8StringEncoding error:NULL];
+        }
         return gFailures == 0 ? 0 : 1;
     }
 }
