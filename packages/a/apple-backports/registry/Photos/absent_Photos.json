@@ -17,7 +17,7 @@
       "introduced": "8",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the cancelled flag in the info of a content editing request, of iOS 8; nothing in the port produces or consumes it, because the family it belongs to is not carried: -[PHAsset requestContentEditingInputWithOptions:completionHandler:], which is not in the registry at all. The value the release's own Photos holds is the string \"PHContentEditingInputCancelledKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the cancelled flag in the info of a content editing request, of iOS 8; the claim is about the release: iOS 6 has no content editing at all: its photo library is ALAssetsLibrary, which adds and reads an asset and edits none, so there is no request, no input, no output and no adjustment data whose info could carry this key. The value the release's own Photos holds is the string \"PHContentEditingInputCancelledKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHContentEditingInputCancelledKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -27,7 +27,7 @@
       "introduced": "8",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the error in the info of a content editing request, of iOS 8; nothing in the port produces or consumes it, because the family it belongs to is not carried: -[PHAsset requestContentEditingInputWithOptions:completionHandler:], which is not in the registry at all. The value the release's own Photos holds is the string \"PHContentEditingInputErrorKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the error in the info of a content editing request, of iOS 8; the claim is about the release: iOS 6 has no content editing at all: its photo library is ALAssetsLibrary, which adds and reads an asset and edits none, so there is no request, no input, no output and no adjustment data whose info could carry this key. The value the release's own Photos holds is the string \"PHContentEditingInputErrorKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHContentEditingInputErrorKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -47,7 +47,7 @@
       "introduced": "8",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the in-the-cloud flag in the info of a content editing request, of iOS 8; nothing in the port produces or consumes it, because the family it belongs to is not carried: -[PHAsset requestContentEditingInputWithOptions:completionHandler:], which is not in the registry at all. The value the release's own Photos holds is the string \"PHContentEditingInputResultIsInCloudKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the in-the-cloud flag in the info of a content editing request, of iOS 8; the claim is about the release: iOS 6 has no content editing at all: its photo library is ALAssetsLibrary, which adds and reads an asset and edits none, so there is no request, no input, no output and no adjustment data whose info could carry this key. The value the release's own Photos holds is the string \"PHContentEditingInputResultIsInCloudKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHContentEditingInputResultIsInCloudKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -67,7 +67,7 @@
       "introduced": "9.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the cancelled flag in the info of a live photo request, of iOS 9.1; nothing in the port produces or consumes it, because the family it belongs to is not carried: +[PHLivePhoto requestLivePhotoWithResourceFileURLs:placeholderImage:targetSize:contentMode:resultHandler:], and PHLivePhoto with it: a live photo is a still image and a video carrying Apple's paired-media metadata, and ALAssetsLibrary on this release can add a photo and a video and cannot pair them. The value the release's own Photos holds is the string \"PHLivePhotoInfoCancelledKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the cancelled flag in the info of a live photo request, of iOS 9.1; the claim is about the release: iOS 6's photo library cannot make a live photo: one is a still image and a video carrying Apple's paired-media metadata, ALAssetsLibrary can add a photo and a video and cannot pair them, and no release this port supports reads that metadata. The value the release's own Photos holds is the string \"PHLivePhotoInfoCancelledKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHLivePhotoInfoCancelledKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -77,7 +77,7 @@
       "introduced": "9.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the error in the info of a live photo request, of iOS 9.1; nothing in the port produces or consumes it, because the family it belongs to is not carried: +[PHLivePhoto requestLivePhotoWithResourceFileURLs:placeholderImage:targetSize:contentMode:resultHandler:], and PHLivePhoto with it: a live photo is a still image and a video carrying Apple's paired-media metadata, and ALAssetsLibrary on this release can add a photo and a video and cannot pair them. The value the release's own Photos holds is the string \"PHLivePhotoInfoErrorKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the error in the info of a live photo request, of iOS 9.1; the claim is about the release: iOS 6's photo library cannot make a live photo: one is a still image and a video carrying Apple's paired-media metadata, ALAssetsLibrary can add a photo and a video and cannot pair them, and no release this port supports reads that metadata. The value the release's own Photos holds is the string \"PHLivePhotoInfoErrorKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHLivePhotoInfoErrorKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -87,7 +87,7 @@
       "introduced": "9.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key of the degraded flag in the info of a live photo request, of iOS 9.1; nothing in the port produces or consumes it, because the family it belongs to is not carried: +[PHLivePhoto requestLivePhotoWithResourceFileURLs:placeholderImage:targetSize:contentMode:resultHandler:], and PHLivePhoto with it: a live photo is a still image and a video carrying Apple's paired-media metadata, and ALAssetsLibrary on this release can add a photo and a video and cannot pair them. The value the release's own Photos holds is the string \"PHLivePhotoInfoIsDegradedKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "the key of the degraded flag in the info of a live photo request, of iOS 9.1; the claim is about the release: iOS 6's photo library cannot make a live photo: one is a still image and a video carrying Apple's paired-media metadata, ALAssetsLibrary can add a photo and a video and cannot pair them, and no release this port supports reads that metadata. The value the release's own Photos holds is the string \"PHLivePhotoInfoIsDegradedKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHLivePhotoInfoIsDegradedKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -127,7 +127,7 @@
       "introduced": "11",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the option of a live photo's playback render, of iOS 11; nothing in the port produces or consumes it, because the family it belongs to is not carried: -[PHLivePhotoEditingContext prepareLivePhotoForPlaybackWithTargetSize:options:], and the live photo editing context with it. The value the release's own Photos holds is the string \"LivePhotoShouldRenderAtPlaybackTime\", which is NOT its own name, which is the guess the other seven of these invite (facts/Photos/Constants.md)",
+      "reason": "an option of a live photo's playback render, of iOS 11; the claim is about the release: there is no live photo and no live photo editing context on this release, for the same reason the info keys above are absent. The value the release's own Photos holds is the string \"LivePhotoShouldRenderAtPlaybackTime\", which is NOT its own name, which is the guess the other seven of these invite (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"LivePhotoShouldRenderAtPlaybackTime\", not the symbol's own name",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },
@@ -167,7 +167,7 @@
       "introduced": "15",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the key under which a cloud identifier that matched more than one resource gives the array of local identifiers, of iOS 15; nothing in the port produces or consumes it, because the family it belongs to is not carried: a cloud identifier that matched more than one resource (PHPhotosErrorMultipleLocalIdentifiersFound, 3202), which a release with no iCloud container cannot produce. The value the release's own Photos holds is the string \"PHLocalIdentifiersErrorKey\", which is its own name (facts/Photos/Constants.md)",
+      "reason": "a key in the userInfo of the error reported when a cloud identifier matched more than one resource, of iOS 15; the claim is about the release: iOS 6's photo library has no iCloud container, no cloud identifier and no public way to be given one, so no cloud identifier can match a resource, let alone two. The value the release's own Photos holds is the string \"PHLocalIdentifiersErrorKey\", which is its own name (facts/Photos/Constants.md)",
       "effect": "the symbol is not there: a weak reference to it is NULL. Its value, once the family is carried, has to be \"PHLocalIdentifiersErrorKey\"",
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the value, read out of the device's own Photos.framework; tools/cache-index/first-rung.py for the first held rung that carries the name; facts/Photos/Constants.md for all of it"
     },

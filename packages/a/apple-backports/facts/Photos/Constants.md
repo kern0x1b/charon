@@ -12,8 +12,17 @@ Photos.framework, and what it would take for each row to become `implemented`.
 cache, a 393216-byte header and the bodies in `.01` ... `.44`, read through the port's own cache reader
 (`modules/apple/dyld.lua`) because the address space of a split cache and the slide a stored pointer
 carries are that code's business, not a second parser's. The tool prints, per symbol, the image that
-exports it, the address, and the constant string the pointer in the symbol's storage names. Every one
-of the eight is exported by `/System/Library/Frameworks/Photos.framework/Photos`:
+exports it, the address, and the constant string the pointer in the symbol's storage names.
+
+Not `tools/cfconst/cache32.py`, which the queue header names for a C symbol's value: that tool reads a
+**32-bit** Mach-O and refuses anything else ("not a 32-bit Mach-O"), and this device's 16.0 library is
+arm64e, 64-bit, and split -- and no armv7 image of a release this port can run holds these names at
+all, since the armv7 rungs of the held ladder stop at 9.3.6. So the eight values below are read by the
+one tool that can read that image, and there is no second architecture here to cross-check them
+against; what the run does check is internal, that the pointer in the symbol's storage names a string
+whose bytes are NUL-terminated within the storage the next export bounds.
+
+Every one of the eight is exported by `/System/Library/Frameworks/Photos.framework/Photos`:
 
 | symbol | introduced | value | address |
 | --- | --- | --- | --- |
@@ -65,9 +74,12 @@ release that introduced it. That is the tool's own rule and not a disagreement w
 
 ## Why the rows stay `absent`
 
-A constant is landed when the thing that produces or consumes it exists, because a key nothing builds
-a dictionary with is a name with the right value and no user -- the shape the tree forbids. None of the
-three families is carried, and each is absent for a reason of its own:
+An `absent` row's claim is about the **release**, not about the port: what iOS 6 does not have is in
+each row's `reason`, and each of the three families is named there in the release's own terms -- no
+content editing at all, no live photo it can pair, no iCloud container and no cloud identifier. What
+follows is the other half, and it is not a row: what the port would have to build for the key to become
+`implemented`, because a constant is landed when the thing that produces or consumes it exists, and a
+key nothing builds a dictionary with is a name with the right value and no user.
 
 - **Content editing (8.0).** The three keys are the keys of the info dictionary
   `-[PHAsset requestContentEditingInputWithOptions:completionHandler:]` hands its result handler, and
