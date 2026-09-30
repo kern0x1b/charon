@@ -1,0 +1,122 @@
+{
+ "framework": "PDFKit",
+ "entries": [
+  {
+   "api": "PDFDocument",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a document over the release's own CGPDFDocument: -initWithURL: and -initWithData: are the header's own factories (PDFDocument.h:138 and :139 - the header has no class factory at all, and its comment names \"either the init method, initWithURL:, or initWithData:\"), a PDF the release cannot open is nil and a URL that is not a file URL is nil",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit under macOS, in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 10 MISMATCHES 0 over the ten facts the host can answer, with the fifteen it cannot named per line",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[PDFDocument pageCount]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the release's own CGPDFDocumentGetNumberOfPages, which both bands export, read through the port's document; a document that could not be opened has no CGPDFDocument and answers 0",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit under macOS, in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 10 MISMATCHES 0 over the ten facts the host can answer, with the fifteen it cannot named per line",
+   "ledger": "?"
+  },
+  {
+   "api": "-[PDFDocument pageAtIndex:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the release's own CGPDFDocumentGetPage inside the port's PDFPage, nil for an index at or past the count, which is what the release's NULL says; the page holds the page as a Get and owns only a reference to the document, because a page released while its document is alive is the direction CoreGraphics does not support",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit under macOS, in a process that contains no port object, against the port's objects in a process that contains no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 10 MISMATCHES 0 over the ten facts the host can answer, with the fifteen it cannot named per line",
+   "ledger": "missing"
+  },
+  {
+   "api": "PDFDocument.documentAttributes",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the port reads the document's Info dictionary through the release's own CGPDFDocumentGetInfo and its own string reader, and the port's own -documentAttribute: answers any single key. The host's PDFDocument has NEITHER -documentAttributes NOR -documentAttribute:, so no fact here is compared: the run prints each one as NOT-COMPARED-no-such-method rather than counting it as agreement",
+   "reason": "the host answers neither accessor, so this is a port-only reading and a row may not say a host compared it",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the release's own CGPDFDocumentGetInfo and CGPDFDictionaryGetString, both exported by 6.1.3 and 4.3; the host's PDFKit has no such methods, which tests/backports/host/pdfkit-document/run.sh prints per fact",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[PDFDocument documentAttribute:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "one key out of the same Info dictionary the port holds; nil for a key the document does not carry",
+   "reason": "the host's PDFDocument has no such method, so nothing here is host-checked",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the release's own dictionary and string readers; the host's PDFKit does not implement the accessor, which the run names",
+   "ledger": "?"
+  },
+  {
+   "api": "-[PDFPage boundsForBox:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the release's own CGPDFPageGetBoxRect for the box asked for, a zero rect for a page that could not be opened; a box the page does not carry reads as its media box, which is the format's own rule",
+   "reason": "the host's PDFPage has neither -boundsForBox: nor -mediaBox, so nothing here is host-checked",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the release's own CGPDFPageGetBoxRect, exported by both bands; the host's PDFKit has no such accessor, which the run names",
+   "ledger": "missing"
+  },
+  {
+   "api": "PDFPage.mediaBox",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "-boundsForBox: with the media box, read from the release's own CGPDFPageGetBoxRect",
+   "reason": "the host's PDFPage has no such property, so nothing here is host-checked",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "as -boundsForBox:, through the release's own reader",
+   "ledger": "?"
+  },
+  {
+   "api": "PDFPage.cropBox",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "-boundsForBox: with the crop box, read from the release's own CGPDFPageGetBoxRect; a page with no crop box answers its media box",
+   "reason": "the host's PDFPage has no such property, so nothing here is host-checked",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "as -boundsForBox:, through the release's own reader",
+   "ledger": "?"
+  },
+  {
+   "api": "PDFPage.rotation",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the page dictionary's own /Rotate read through the release's own CGPDFDictionaryGetInteger, 0 for a page with no /Rotate, and the format's counter-clockwise count converted to Apple's clockwise one",
+   "reason": "no fact in the run reaches this member, so no row may say a host compared it",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the release's own CGPDFDictionaryGetInteger, exported by both bands; NOT covered by the current run, which compares only what the host's PDFPage answers",
+   "ledger": "missing"
+  },
+  {
+   "api": "PDFPage.string",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "what the port holds for the page's text, nil until a caller sets it. NOT a scan: the release exports CGPDFScannerCreate and does NOT export CGPDFScannerScanString or CGPDFScannerGetString on 6.1.3 or on 4.3, so a -string that scanned the page would claim something the release cannot answer. The scanned extraction is owed",
+   "reason": "the host's PDFPage DOES carry -string - measured on this host with class_copyMethodList and dladdr naming the same PDFKit the harness links, 193 instance methods with -[PDFPage string] among them - so no host fact covers it YET: the run compares pageCount and the past-the-end page, and the comparison of an extraction against the host's -string is owed",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the dyld export tables of both bands: CGPDFScannerCreate exported, CGPDFScannerScanString and CGPDFScannerGetString not exported; the host's PDFPage string was not compared by this run",
+   "ledger": "missing"
+  }
+ ]
+}
