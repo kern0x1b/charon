@@ -1611,21 +1611,23 @@
    "api": "-[UIPasteboard setObjects:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the objects are written through NSItemProviderWriting, which this release has nothing of",
-   "effect": "the method is not there",
-   "source": "UIKit of iOS 11.0 arm64",
-   "minimum": "6.0"
+   "status": "implemented",
+   "reason": "the port composes the release's own -setValue:forPasteboardType: over the release's own type lists",
+   "effect": "each object is stored through the release's own -setValue:forPasteboardType:, under the first entry of the release's own type list for its class - the string list for a string or for anything describable, the URL list for an NSURL. The first entry because the port answers only for the type it was given: storing under every entry would write the same bytes under type strings the application did not ask about, and -dataForPasteboardType: would answer for types it never named - so if a list holds one entry the first is the only choice, and if it holds several the rest are left as the release has them. An object with no description, or a release naming no list, is not stored, because the release would have no type to store it under. How many entries each list holds is measured by tests/backports/device/pasteboard10.m, which prints the count beside the provenance check",
+   "source": "objc.inventory on the 6.1.3 and 4.3 caches, whose negative controls both answered 'the port must carry it', says the release ships UIPasteboard with -setItems:, -items and -setValue:forPasteboardType:, and the release's selector table holds all three; the type lists are the release's own, read the same way in facts/UIKit/UIPasteboardIOS10.md",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/UIPasteboardIOS10.md"
   },
   {
    "api": "-[UIPasteboard setObjects:localOnly:expirationDate:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the same",
-   "effect": "the method is not there",
-   "source": "UIKit of iOS 11.0 arm64",
-   "minimum": "6.0"
+   "status": "implemented",
+   "reason": "the options are recorded by UIPasteboard+Items10.m's own record writer",
+   "effect": "the objects are stored exactly as -setObjects: stores them, and the two options are READ and recorded against the pasteboard through -charonRecordOptions:, which touches nothing else - the release's storer is not called, because -setItems: sets the board's items and an empty call would empty the board. Neither option is applied: this release has no store that syncs between devices and no item expiry, so it can honour neither",
+   "source": "as -setObjects:, over the same measured release primitives",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/UIPasteboardIOS10.md"
   },
   {
    "api": "UINavigationItem.backButtonTitle",

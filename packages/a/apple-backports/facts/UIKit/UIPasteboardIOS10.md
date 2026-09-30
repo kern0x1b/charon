@@ -35,20 +35,33 @@ UIKit of iOS 6.1.3 armv7, read for what the release already has; and the host's 
   the release's own limit, the same one its `-images` and `-strings` have, and not a guess of the port's: what the port
   answers is exactly what the pasteboard of this release can hand over.
 
-## The method that is not carried
+## The method, and what it promises that this release cannot keep
 
 - `-setItems:options:` rebuilds the items as representations with loader blocks, checks their values, and passes them with
   the options to `-_setItemsAndSave:options:`, which sets the collection's local-only flag and its expiration date from
   `UIPasteboardOptionLocalOnly` and `UIPasteboardOptionExpirationDate`, checking that they are an `NSNumber` and an
   `NSDate`, and saves the collection through the service. An expiration has to clear the pasteboard when the date comes,
   after the application that set it has gone, which only the service can do; password managers rely on it. A port in the
-  application's process cannot keep that promise, and pretending to is worse than not offering the method.
-- `UIPasteboardTypeAutomatic` is the type identifier `com.apple.uikit.type-automatic`, which `-setItems:options:` reads to
-  choose a representation by the class of the value; it means nothing without that method.
+  application's process cannot keep that promise.
+- The port therefore CARRIES `-setItems:options:`, as a category over the release's own class, and the promise it cannot
+  keep is stated in the row's effect instead of being hidden: the items go to the release's own `-setItems:`, the two
+  option keys are read and recorded against the pasteboard, and neither is applied. An application that needs an item
+  to expire, or to stay off other devices, gets the release's behaviour and not the service's - which is what calling a
+  release API could only have given it anyway.
+- `UIPasteboardTypeAutomatic` is the type identifier `com.apple.uikit.type-automatic`, which the release's own
+  `-setItems:options:` reads to choose a representation by the class of the value. The port's category does not read it,
+  because the port's method hands its items to the release's plain `-setItems:`; the identifier is still exported, and
+  what the port's member does with a value of that type is what the release's storer does with it.
+
+## The type lists, and how many entries each holds
+
+`tests/backports/device/pasteboard10.m` walks the four list symbols and proves each is the release's own; it now also reads each one through its `dlsym` address, checks that it is a non-empty array, and prints its count beside the provenance line. The run that quotes those counts has NOT happened yet - the emulated session is a separate round - so nothing in the registry claims a number. The port's rule does not need one: `-[UIPasteboard setObjects:]` stores under the first entry because the port answers only for the type it was given, which is the only choice when a list holds one entry and leaves the rest untouched when it holds several. When the run happens the counts land here and in the row, and the rule stands either way.
 
 ## The option keys are exported
 
-The two option keys exist as `NSString`s with the system's own values (`expirationDate` and `localOnly`, as `host/tail2/run.sh` reads them), so an application that refers to the symbols directly, without a check of the release, loads and does not read a null pointer. Nothing reads them: `-setItems:options:` stays undeclared for the reason above, so an application that asks whether the pasteboard responds to it does not hand over a secret that the port could not clear.
+The two option keys exist as `NSString`s with the system's own values (`expirationDate` and `localOnly`, as `host/tail2/run.sh` reads them), so an application that refers to the symbols directly, without a check of the release, loads and does not read a null pointer. Both are now READ, by the port's `-setItems:options:` and by its `-setObjects:localOnly:expirationDate:`, through `-charonRecordOptions:`, which writes the port's own record and calls no storer - `-setItems:` sets the board's items, so an empty call made to record the options would empty the board. Their rows moved from `inert` to `implemented` with that same statement in their effect: the keys are read and recorded, and the release applies neither.
+
+What the release does with an item is its own answer. The run above measured a write on an emulated iOS 6.0 being taken and silently lost, with `-setStrings:` the one that raises; it did not measure `-setItems:` and nothing here claims it raises. The port's member hands the items over and does not assert what comes back.
 
 ## What the device run reached, and what it could not
 
