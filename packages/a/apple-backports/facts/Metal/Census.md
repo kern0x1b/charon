@@ -150,6 +150,7 @@ argbinding.sh            packages/a/apple-backports/facts/Metal/ArgumentBindings
 check-facts-pointers.sh  (nothing in the tree)
 check-harness-invokers.sh (nothing in the tree)
 check-protocol-rows.sh   (nothing in the tree)
+check-series-self-review.sh (nothing in the tree)
 check-split-control.sh   packages/a/apple-backports/facts/Metal/FunctionStitching.md
 counters.sh              packages/a/apple-backports/facts/Metal/CounterConstants.md
 descriptors.sh           packages/a/apple-backports/facts/Metal/Descriptors14.md

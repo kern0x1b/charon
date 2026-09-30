@@ -69,6 +69,38 @@ def enumerators(text):
     return out
 
 
+def class_prefixes(registry_path):
+    """The three-letter prefixes the CLASS and PROTOCOL rows of THIS registry use.
+
+    DERIVED FROM THE ROWS, which is what "a framework initialism" means in practice, and it names no
+    framework: registry/Metal's class rows are all MTL* so its set is one prefix, and MapKit's are MK*
+    so its set is the MK* prefixes. The first version of this filter was startswith(("MTL", "MPS"))
+    beside a comment that said "framework initialism", and a third framework was covered by neither.
+    An attempt to take the prefixes of EVERY api in the registry was no better: a three-letter prefix
+    is shared by almost anything CamelCase in the same file, so it accepted every value.
+    """
+    try:
+        doc = json.load(open(registry_path, encoding="utf-8"))
+    except (OSError, ValueError):
+        return set()
+    rows = doc if isinstance(doc, list) else doc.get("entries", [])
+    return {r.get("api", "")[:3] for r in rows
+            if r.get("kind") in ("class", "protocol") and len(r.get("api", "")) >= 3}
+
+
+def names_a_type(name):
+    """A name that ends in a noun TYPES are named after - and nothing else.
+
+    This is the narrower half of class_shaped, and it is the half a CONSTANT row's prose needs: the
+    values such a row carries are "NSPersistentStoreConnectionPoolMaxSize", "TotalCycles",
+    "PostTessellationCycles" and "timestamp", none of which ends in a type noun, while a planted
+    MTLZorpblaxDescriptor does. The wider half - an initialism of three or more characters - would
+    accept every NS-prefixed value in Foundation, which is the noise a real-tree run went red on.
+    Deriving this from the noun list rather than from a framework's letters is what keeps it right
+    for every framework, and it names none of them."""
+    return name.endswith(SUFFIXES)
+
+
 def class_shaped(name):
     if name.startswith(PREFIXES) and len(name) >= 6:
         return True
@@ -421,12 +453,16 @@ def scan(planted=None):
     allow = allow_list()
     unresolved = set()
     for _api, name, _p, kind in all_candidates:
-        # A CONSTANT ROW IS SCANNED FOR A CLASS-LIKE NAME ONLY: one beginning with a framework
-        # initialism. A constant row's prose legitimately names the VALUE it carries -
-        # "timestamp", "PostTessellationCycles", "MTLBinaryArchiveDomain" - and those are not claims
-        # that the port defines a type. The reviewer planted MTLZorpblaxDescriptor in a constant
-        # row's effect and this check called the tree clean, because constant rows were not read.
-        if kind == "constant" and not name.startswith(("MTL", "MPS")):
+        # A CONSTANT ROW IS SCANNED TOO, for a CLASS-LIKE name, and class_shaped() is the whole
+        # filter: a name ending in a noun a type is named after, or opening with an initialism of
+        # three or more characters. A constant row's prose legitimately names the VALUE it carries -
+        # "timestamp", "TotalCycles", "PostTessellationCycles" - and none of those is class-shaped,
+        # so none of them reaches the lookup. The reviewer planted MTLZorpblaxDescriptor in a
+        # constant row's effect and this check called the tree clean, because constant rows were not
+        # read at all. An earlier version of this filter tried to be derived from the registry's
+        # api names instead, and that accepted nearly every value: a three-letter prefix is shared
+        # by almost anything CamelCase in the same file, and the real tree went red.
+        if kind == "constant" and not (name[:3] in class_prefixes(_p) and names_a_type(name)):
             continue
         if not class_shaped(name):
             continue
@@ -438,7 +474,7 @@ def scan(planted=None):
     for api, name, path, kind in all_candidates:
         if name == api or name in declared or name in live or name in allow:
             continue
-        if kind == "constant" and not name.startswith(("MTL", "MPS")):
+        if kind == "constant" and not (name[:3] in class_prefixes(path) and names_a_type(name)):
             continue
         if not class_shaped(name):
             continue

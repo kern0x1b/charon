@@ -84,3 +84,11 @@ CFRetained # no declaration in SDK 16.4; the word occurs once, in Apple's own do
 # have. The uncached oracle used to absorb it by sweeping every Capitalised token out of every
 # header's prose, which is why it passed before and not now: the index reads DECLARATIONS.
 NSBlock # not declared in SDK 16.4; the word occurs in Apple's doc prose only
+
+# ONE NAME, AND IT IS A SHAPE FALSE POSITIVE RATHER THAN A DEFECT. A CONSTANT row's prose is now
+# scanned for a class-shaped name - a three-letter prefix this registry's own CLASS rows use, AND a
+# ending in a noun types are named after - because a planted MTLZorpblaxDescriptor in a constant row
+# went unseen. No shape test separates "a class" from "a value that looks like one", and this is the
+# residue: MapKit's own constant row carries the VALUE MKPOICategoryLibrary, which begins like a
+# MapKit class and ends like a type. It is a value, the row is implemented, and nothing is undefined.
+MKPOICategoryLibrary # a MapKit constant row's VALUE, class-shaped and defined by the row itself
