@@ -102,3 +102,107 @@ CHARON_AX_MATH_CONTENT(AXMathExpressionText)
 }
 
 @end
+
+#pragma mark - the four containers of one array
+
+// These four keep the array they were given and answer the very same one, which is what the host
+// does for Fenced, TableRow and TableCell (measured: identity equal in each of the three). They are
+// written as one macro because they are one class with four names, which is what the header says:
+// `AXMathExpressionRow`, `AXMathExpressionTable`, `AXMathExpressionTableRow` and
+// `AXMathExpressionTableCell` each declare `initWithExpressions:` and `expressions` and nothing else.
+#define CHARON_AX_MATH_EXPRESSIONS_ONLY(CLASS)                                           \
+    @implementation CLASS {                                                              \
+        NSArray<AXMathExpression *> *_expressions;                                        \
+    }                                                                                    \
+    - (instancetype)initWithExpressions:(NSArray<AXMathExpression *> *)expressions        \
+    {                                                                                    \
+        self = [super init];                                                             \
+        if (self) {                                                                      \
+            _expressions = expressions;                                                  \
+        }                                                                                \
+        return self;                                                                     \
+    }                                                                                    \
+    - (NSArray<AXMathExpression *> *)expressions                                         \
+    {                                                                                    \
+        return _expressions;                                                             \
+    }                                                                                    \
+    @end
+
+// Row and Table are built by that macro too, and answer the same array the host does not: it answers
+// nil for exactly these two and the array for the other three. They are named apart so that a reader
+// comparing the two sides sees which pair is which without counting, and
+// CharonAXMathExpression.h's header comment, the differential's expected-differences.tsv and
+// facts/Accessibility/Accessibility.md all say what the difference is and why.
+CHARON_AX_MATH_EXPRESSIONS_ONLY(AXMathExpressionTableRow)
+CHARON_AX_MATH_EXPRESSIONS_ONLY(AXMathExpressionTableCell)
+CHARON_AX_MATH_EXPRESSIONS_ONLY(AXMathExpressionRow)
+CHARON_AX_MATH_EXPRESSIONS_ONLY(AXMathExpressionTable)
+
+#pragma mark - AXMathExpressionUnderOver
+
+@implementation AXMathExpressionUnderOver {
+    AXMathExpression *_baseExpression;
+    AXMathExpression *_underExpression;
+    AXMathExpression *_overExpression;
+}
+
+- (instancetype)initWithBaseExpression:(AXMathExpression *)baseExpression
+                       underExpression:(AXMathExpression *)underExpression
+                         overExpression:(AXMathExpression *)overExpression
+{
+    self = [super init];
+    if (self) {
+        _baseExpression = baseExpression;
+        _underExpression = underExpression;
+        _overExpression = overExpression;
+    }
+    return self;
+}
+
+- (AXMathExpression *)baseExpression
+{
+    return _baseExpression;
+}
+
+- (AXMathExpression *)underExpression
+{
+    return _underExpression;
+}
+
+- (AXMathExpression *)overExpression
+{
+    return _overExpression;
+}
+
+@end
+
+#pragma mark - AXMathExpressionRoot
+
+@implementation AXMathExpressionRoot {
+    NSArray<AXMathExpression *> *_radicandExpressions;
+    AXMathExpression *_rootIndexExpression;
+}
+
+- (instancetype)initWithRadicandExpressions:(NSArray<AXMathExpression *> *)radicandExpressions
+                          rootIndexExpression:(AXMathExpression *)rootIndexExpression
+{
+    self = [super init];
+    if (self) {
+        _radicandExpressions = radicandExpressions;
+        _rootIndexExpression = rootIndexExpression;
+    }
+    return self;
+}
+
+- (NSArray<AXMathExpression *> *)radicandExpressions
+{
+    return _radicandExpressions;
+}
+
+- (AXMathExpression *)rootIndexExpression
+{
+    return _rootIndexExpression;
+}
+
+@end
+
