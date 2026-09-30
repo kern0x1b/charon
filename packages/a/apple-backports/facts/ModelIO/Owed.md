@@ -96,24 +96,52 @@ It is **position-dependent, not comment-dependent**, and variant A loses a face 
 is encoded: copying that would make the port drop faces silently. `tri.ply` is written comment-free so both
 sides measure the same file, and the divergence keeps its own fixture.
 
-## Malformed input: the system throws, and the port returns
+## Malformed input: the system LOGS AND LOADS, and so does the port
 
-Measured on a polygon file whose `faceVertexIndices` name a vertex that does not exist:
+A polygon file whose `faceVertexIndices` name a vertex the points do not have. What the system does, with the
+command that produced it - `tests/backports/host/modelio/throw.m`, which wraps `initWithURL:` in `@try`/`@catch`
+and prints the outcome either way, because a log line alone cannot tell a raised error from a quiet load:
 
 ```
-  system:  Bad: face vertex index out of bound.
-           *** Terminating app due to uncaught exception 'NSInvalidArgumentException',
-               reason: '-[MDLObject submeshWithIndexBuffer:vertexBuffer:vertexOffset:indexCount:indexType:geometryType:material:]'
-  port:    charon-usda-bad-index file face=0 id=99 vertexCount=5      then an early return
+$ ./throw bad.usda            # faceVertexIndices = [0, 1, 99] over three points
+    Bad: face vertex index out of bound.
+    bad.usda LOADED meshes=1
 ```
 
-The host's behaviour is deterministic across every run and is a **throw that terminates the process**, not a
-warning and not a nil return. The port's is a diagnostic on stderr and a quiet return, which is why the
-out-of-range case is still unexercised end to end: the differential's port probe reads the fixtures it
-writes itself, so a planted file never reaches the reader.
+**It logs, and it LOADS.** No exception, the asset is not nil, and the mesh comes back with no submeshes,
+because the faces after the bad one were never built.
 
-**Decision, by parity policy: mirror the throw.** A caller that gets a nil mesh back from a malformed asset
-will read past it; a caller that gets an exception can handle it. The port should raise
-`NSInvalidArgumentException` with a reason naming the file, the face and the index, and the refusal stays
-where it is — the arithmetic that produced an index past the end is now fixed, so the guard only ever sees a
-genuinely malformed file. **Not done in this series; it is the next one.**
+**This section previously said the opposite** - that the host raises `NSInvalidArgumentException`,
+terminates the process, and that the port should therefore do the same. That was wrong, and what it was read
+off was a probe of ours:
+
+```
+$ ./inspect bad.usda           # prints mesh.vertexCount and mesh.submeshes.firstObject
+    Bad: face vertex index out of bound.
+    bad.usda THREW NSInvalidArgumentException: -[MDLObject submeshes]: unrecognized selector
+```
+
+`submeshes` was nil because the system had **already returned an empty mesh**, and our probe dereferenced it.
+The system never raised; our probe raised about the system. Both the "terminates" claim and the
+"unexercised end to end" claim that followed from it are withdrawn: the case is exercised end to end, by
+`tests/backports/host/modelio/refusal.sh`.
+
+The port's behaviour matches, and there is a test with a red control:
+
+```
+$ ./refusal.sh
+    Bad: face vertex index out of bound.
+    refusal: the port logs the bad index by name and loads the asset, as the system does
+    exit 0
+$ # with the port's refusal message removed
+    FAIL  the port did not report the bad index by name      exit 1
+```
+
+The red control removes only the message and the test fails naming what it expected, so the test is about the
+refusal and not about the file compiling. **Nothing about raising is owed.** Parity is reached by logging and
+loading, which is what both now do.
+
+This was the second time in this file that a "measured" claim turned out to be a fact about the instrument
+rather than about the subject; the first was `MDLMeshBufferMap` reported as absent from the SDK, when a quoted
+`grep` had simply not matched it. Both were caught the same way - by running the measurement again and reading
+what it printed rather than what it was assumed to print.

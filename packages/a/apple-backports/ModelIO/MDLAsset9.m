@@ -840,7 +840,8 @@ static NSString *CharonMDLUSDAArray(NSString *text, NSString *after, NSString **
     return [text substringWithRange:NSMakeRange(open + 1, close > open ? close - open - 1 : 0)];
 }
 
-static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects, id<MDLMeshBufferAllocator> allocator)
+static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects,
+                              id<MDLMeshBufferAllocator> allocator, NSString *name)
 {
     NSString *text = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     if (!text)
@@ -938,9 +939,22 @@ static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects
                                            face[c - 1].unsignedIntegerValue, face[c].unsignedIntegerValue};
                 for (int part = 0; part < 3; part++) {
                     if (triangle[part] >= mesh.vertexCount) {
-                        fprintf(stderr, "charon-usda-bad-index file face=%lu id=%lu vertexCount=%lu\n",
-                                (unsigned long)faceIndex, (unsigned long)triangle[part],
-                                (unsigned long)mesh.vertexCount);
+                        // The SYSTEM LOGS AND LOADS on a face index past the end of the points. Measured on
+                        // a polygon file whose faceVertexIndices name a vertex it does not have:
+                        //
+                        //   stderr:  Bad: face vertex index out of bound.
+                        //   result:  loaded, meshes=1
+                        //
+                        // It does NOT raise, and it does NOT drop the file: the mesh comes back with no
+                        // submeshes, because the faces after the bad one were never made. So the port logs
+                        // in the same shape and returns the mesh it has, rather than raising - which is what
+                        // this used to be argued into, on the belief that the host terminated. It did not: the
+                        // termination seen earlier was a probe of OURS dereferencing the nil submesh of a mesh
+                        // the host had already given us empty.
+                        // The system names the file and says what was wrong, in that shape:
+                        //   Bad: face vertex index out of bound.
+                        fprintf(stderr, "%s: face vertex index out of bound.\n",
+                                name.lastPathComponent.UTF8String);
                         return;
                     }
                     CharonMDLSourceIndexAdd(&mesh, (uint32_t)triangle[part]);
@@ -982,7 +996,7 @@ static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects
     else if ([extension isEqualToString:@"ply"])
         CharonMDLReadPLY(data, _objects, allocator);
     else if ([extension isEqualToString:@"usda"])
-        CharonMDLReadUSDA(data, _objects, allocator);
+        CharonMDLReadUSDA(data, _objects, allocator, _URL.path);
 }
 
 @end
