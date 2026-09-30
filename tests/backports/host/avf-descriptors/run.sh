@@ -149,7 +149,16 @@ if [ "${AVF_WRITE_BASELINE:-0}" != 0 ]; then
     cp "$build/port.table" "$baseline_dir/port.baseline"
     echo "baseline written under AVF_WRITE_BASELINE=1"
 elif [ "$mutant" = 0 ] || [ "$control" != 0 ]; then
-    :   # a plain run compares against the baseline and leaves it alone
+    # A plain run compares against the baseline and leaves it alone - and if there is no baseline it
+    # says so here, in the script's own FAIL: shape. A fresh clone has none, and without this the join
+    # died with a Python traceback on the one path nobody had walked: all three of the demonstrations
+    # in the commit that introduced the flag had a baseline present, because two of them write it.
+    [ -f "$baseline_dir/port.baseline" ] || {
+        echo "FAIL: no baseline beside this run, so the port-only rows would be compared against"
+        echo "      nothing. Write one and run again:"
+        echo "        AVF_WRITE_BASELINE=1 sh tests/backports/host/avf-descriptors/run.sh"
+        exit 1
+    }
 else
     [ -f "$baseline_dir/port.baseline" ] || {
         echo "FAIL: the mutant was asked for with no baseline beside it. Run this script once with no"
