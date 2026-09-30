@@ -41,7 +41,8 @@ if ! "$build/check-fixture" "$build/fixtures"; then
 fi
 
 # side A: the host only
-xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework PDFKit \
+# AppKit too: the host's PDFView is an AppKit view and its symbols do not link without it
+xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework AppKit -framework PDFKit \
     -o "$build/host-side" 2> "$build/host.log" || {
     echo "BUILD the host side did not compile:"; head -8 "$build/host.log" | sed 's/^/    /'; exit 1; }
 # side B: the port only, with no macOS PDFKit anywhere
@@ -54,7 +55,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework PDF
 # -Wall and NOT -w: -w switches the warning off, and -Werror does not switch a disabled warning
 # back on, so with -w the completeness check was decorative - it said nothing while a body was missing.
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
-    "$port/PDFDocument11.m" "$port/PDFPage11.m" \
+    "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
 
@@ -118,7 +119,8 @@ compared = differences = skipped = 0
 # the SINGULAR accessor's presence is EXPECTED to differ: the port implements what the host lacks, and
 # that is why its row stays inert.  Named here, inside the loop, so it is neither compared nor counted as
 # a difference.
-EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported", "page0.annotations.supported")
+EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported", "page0.annotations.supported",
+                     "view.window.supported")
 # and the ones this run cannot compare at all, with the reason it prints for each
 NOT_COMPARED = {
     "dataRepresentation.length": ("the port's own bytes against the host's REWRITTEN document, and a "

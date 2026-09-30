@@ -66,6 +66,34 @@ int main(int argc, char **argv)
             printf("%s.documentAttributes.keys=%lu\n", name, (unsigned long)keys.count);
             for (NSString *key in keys)
                 printf("%s.documentAttributes.key.%s\n", name, [(NSString *)key UTF8String]);
+            // PDFView with NO WINDOW, the same cases in the same order as the port side
+            {
+                PDFView *view = [[PDFView alloc] init];
+                printf("%s.view.window.supported=%d\n", name,
+                       (int)[view respondsToSelector:sel_registerName("window")]);
+                printf("%s.view.document.before=%s\n", name, view.document ? "an-object" : "(nil)");
+                view.document = document;
+                printf("%s.view.document=%s\n", name, view.document ? "an-object" : "(nil)");
+                printf("%s.view.currentPage=%s\n", name, view.currentPage ? "an-object" : "(nil)");
+                printf("%s.view.scaleFactor=%.4f\n", name, view.scaleFactor);
+                printf("%s.view.minScaleFactor=%.4f\n", name, view.minScaleFactor);
+                printf("%s.view.maxScaleFactor=%.4f\n", name, view.maxScaleFactor);
+                printf("%s.view.autoScales=%d\n", name, (int)view.autoScales);
+                printf("%s.view.displayMode=%ld\n", name, (long)view.displayMode);
+                printf("%s.view.displayBox=%ld\n", name, (long)view.displayBox);
+                printf("%s.view.displayDirection=%ld\n", name, (long)view.displayDirection);
+                printf("%s.view.pageShadowsEnabled=%d\n", name, (int)view.pageShadowsEnabled);
+                view.displayBox = 0;
+                printf("%s.view.displayBox.afterMedia=%ld\n", name, (long)view.displayBox);
+                if (view.document.pageCount > 0)
+                    [view goToPage:[view.document pageAtIndex:0]];
+                printf("%s.view.goToPage.currentPage=%s\n", name,
+                       view.currentPage ? "an-object" : "(nil)");
+                view.document = nil;
+                printf("%s.view.document.afterNil=%s\n", name, view.document ? "an-object" : "(nil)");
+                printf("%s.view.currentPage.afterNil=%s\n", name,
+                       view.currentPage ? "an-object" : "(nil)");
+            }
             for (NSString *key in @[ @"Title", @"Author", @"Creator" ]) {
                 id value = attributes[key];
                 printf("%s.documentAttributes.%s=%s\n", name, [(NSString *)key UTF8String],

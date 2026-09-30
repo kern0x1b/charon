@@ -72,6 +72,35 @@ int main(int argc, char **argv)
                    document.documentURL ? [document.documentURL lastPathComponent].UTF8String : "(nil)");
             printf("%s.dataRepresentation.length=%lu\n", name,
                    (unsigned long)document.dataRepresentation.length);
+                // PDFView with NO WINDOW, which is what this release offers: the host answers these
+                // with no window and never shown, and so does the port.
+                PDFView *view = [[PDFView alloc] init];
+                // -window is a UIView property and the port's PDFView is NOT a UIView: neither band
+                // carries UIKit's PDFView, so the fact is the selector's presence, answered by both.
+                printf("%s.view.window.supported=%d\n", name,
+                       (int)[view respondsToSelector:sel_registerName("window")]);
+                printf("%s.view.document.before=%s\n", name, view.document ? "an-object" : "(nil)");
+                view.document = document;
+                printf("%s.view.document=%s\n", name, view.document ? "an-object" : "(nil)");
+                printf("%s.view.currentPage=%s\n", name, view.currentPage ? "an-object" : "(nil)");
+                printf("%s.view.scaleFactor=%.4f\n", name, view.scaleFactor);
+                printf("%s.view.minScaleFactor=%.4f\n", name, view.minScaleFactor);
+                printf("%s.view.maxScaleFactor=%.4f\n", name, view.maxScaleFactor);
+                printf("%s.view.autoScales=%d\n", name, (int)view.autoScales);
+                printf("%s.view.displayMode=%ld\n", name, (long)view.displayMode);
+                printf("%s.view.displayBox=%ld\n", name, (long)view.displayBox);
+                printf("%s.view.displayDirection=%ld\n", name, (long)view.displayDirection);
+                printf("%s.view.pageShadowsEnabled=%d\n", name, (int)view.pageShadowsEnabled);
+                // the VALIDATING setter: the host refuses a box the document does not have
+                view.displayBox = 0;   // kPDFDisplayBoxMediaBox, which every page has
+                printf("%s.view.displayBox.afterMedia=%ld\n", name, (long)view.displayBox);
+                // the one windowful member, compared on the part both sides can answer: the page left
+                if (view.document.pageCount > 0)
+                    [view goToPage:[view.document pageAtIndex:0]];
+                printf("%s.view.goToPage.currentPage=%s\n", name, view.currentPage ? "an-object" : "(nil)");
+                view.document = nil;
+                printf("%s.view.document.afterNil=%s\n", name, view.document ? "an-object" : "(nil)");
+                printf("%s.view.currentPage.afterNil=%s\n", name, view.currentPage ? "an-object" : "(nil)");
             // the page must not outlive the document: a page holds its own reference to the
             // CGPDFDocument, and a page still alive when the document deallocs means the page's dealloc
             // releases a document that is already gone

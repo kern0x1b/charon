@@ -42,6 +42,25 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nullable) NSData *dataRepresentation;
 @end
 
+// PDFView without a window, which is the whole of what this release can offer for it.  The defaults
+// are the host's own, measured with no window and never shown; see PDFView11.m and
+// facts/PDFKit/Document11.md.  Three members a plan named are NOT this API and are not declared:
+// -pageCount, -canDisplayPage:, -usePageViewController: and -scaleToFit, none of which PDFView.h
+// declares and none of which the host answers.
+@interface PDFView : NSObject
+@property (nonatomic, nullable) PDFDocument *document;
+@property (nonatomic, readonly, nullable) PDFPage *currentPage;
+@property (nonatomic) CGFloat scaleFactor;
+@property (nonatomic, readonly) CGFloat minScaleFactor;
+@property (nonatomic, readonly) CGFloat maxScaleFactor;
+@property (nonatomic) BOOL autoScales;
+@property (nonatomic) NSInteger displayMode;
+@property (nonatomic) NSInteger displayDirection;
+@property (nonatomic) NSInteger displayBox;      // a VALIDATING setter; see PDFView11.m
+@property (nonatomic, setter=enablePageShadows:) BOOL pageShadowsEnabled;
+- (void)goToPage:(nullable PDFPage *)page;       // the one windowful member; the current page is compared
+@end
+
 @interface PDFPage : NSObject
 // The port's own initializer over the release's own page: neither release carries PDFPage, so the
 // page object is made here rather than found.  Not Apple's API.

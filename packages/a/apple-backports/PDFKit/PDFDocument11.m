@@ -160,10 +160,11 @@
     return _attributes[attributeName];
 }
 
-// Whether the release's own readers can see an /Encrypt: they cannot.  There is NO trailer accessor
-// in the 26.2 CoreGraphics headers - grep for kCGPDFContextTrailer and for Encrypt across
-// CGPDFDictionary.h and CGPDFContext.h returns nothing - and CGPDFDocument offers no reader for the
-// trailer at all, only -CGPDFDocumentGetInfo.  So the /Encrypt key is not reachable from a
+// Whether the release's own readers can see an /Encrypt: they cannot.  There is no trailer accessor
+// in the 26.2 CoreGraphics headers - grepping kCGPDFContextTrailer across CGPDFDictionary.h and
+// CGPDFContext.h finds nothing, and the one Encrypt the grep DOES return is
+// kCGPDFContextEncryptionKeyLength (CGPDFContext.h:192), a write-side constant for a context this port
+// never makes.  CGPDFDocument offers no reader for the trailer at all, only -CGPDFDocumentGetInfo.  So the /Encrypt key is not reachable from a
 // CGPDFDocument through anything the release exposes, and the port cannot read the thing that would
 // make a document locked.
 //

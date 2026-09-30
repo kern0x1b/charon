@@ -218,7 +218,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "inert",
-   "effect": "NO. The 26.2 CoreGraphics headers expose NO trailer accessor - grep for kCGPDFContextTrailer and for Encrypt across CGPDFDictionary.h and CGPDFContext.h returns nothing - and CGPDFDocument offers only -CGPDFDocumentGetInfo, so /Encrypt is unreachable from a CGPDFDocument and the port cannot read the key that would make a document encrypted. The host answers 0 on every fixture compared, so NO is the agreed answer over that region; the region NOT compared is a document that carries /Encrypt",
+   "effect": "NO. The 26.2 CoreGraphics headers expose no trailer accessor: grepping kCGPDFContextTrailer across CGPDFDictionary.h and CGPDFContext.h finds nothing, and the one Encrypt the grep DOES return is kCGPDFContextEncryptionKeyLength (CGPDFContext.h:192) - a write-side constant for a context this port never makes, which says nothing about a document's own key. CGPDFDocument offers only -CGPDFDocumentGetInfo, so /Encrypt is unreachable from a CGPDFDocument and the port cannot read the key that would make a document encrypted. The host answers 0 on every fixture compared, so NO is the agreed answer over that region; the region NOT compared is a document that carries /Encrypt",
    "reason": "measured and recorded in the effect",
    "facts": "facts/PDFKit/Document11.md",
    "source": "the header grep above, and the host's 0 on all six fixtures"
@@ -266,6 +266,138 @@
    "reason": "measured and recorded in the effect",
    "facts": "facts/PDFKit/Document11.md",
    "source": "measured: the host's own annotation count is 0 on every fixture, and the port's /Annots lookup is the same dictionary read"
+  },
+  {
+   "api": "PDFView",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a view with no window, which is the whole of what this release can offer: a document holder with the settings a caller sets and reads back. Its defaults are the host's own - scaleFactor 1, minScaleFactor 0.1, maxScaleFactor 100, autoScales NO, displayMode singlePage, displayBox cropBox, displayDirection vertical, pageShadowsEnabled YES - and NOT a UIView, so it answers no -window and the run names that as an expected difference rather than counting it as agreement",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.document",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the document the view is showing, held as a plain reference: the header declares PDFView.document a retain (PDFView.h:79), which is the opposite direction from a page's weak document (PDFPage.h:70). Setting it gives the view a current page at once, and clearing it takes that page with it - both measured",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.currentPage",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the page the view is on: the host answers an-object as soon as a document is set, with no window and no page shown, and nil as soon as the document is cleared. the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.scaleFactor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.minScaleFactor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.maxScaleFactor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.autoScales",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.displayMode",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides; setting it sticks and reads back, measured",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.displayDirection",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides; setting it sticks and reads back, measured",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.displayBox",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a VALIDATING setter, which is the one member here where the host's answer is a decision rather than a store: setting cropBox on a document with no crop box is REFUSED and the old value reads back, and the port declines the same box the same way. Setting the media box, which every page has, is taken",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "PDFView.pageShadowsEnabled",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the host's answer with NO WINDOW and never shown, measured on box-all, charon-fixture-3 and box-rotated and identical on all three; the port is in the same position - neither band carries UIKit's PDFView and a port view has nowhere to be put - so the comparison is windowless on both sides",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFView and PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit and no AppKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 205 MISMATCHES 0, and tests/backports/host/pdfkit-document/tools/host-view-windowless.m is the probe the defaults were read off"
+  },
+  {
+   "api": "-[PDFView goToPage:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the ONE windowful member in this set, and only the part both sides can answer is compared: the CURRENT PAGE the call leaves behind, which is measured. The scrolling half is the window-bound part - a view with no window has nothing to scroll - and is not claimed",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host implements -goToPage: (respondsToSelector: 1) and the port's leaves the same current page; what is NOT compared is any scroll position, which needs a window neither side has"
   }
  ]
 }

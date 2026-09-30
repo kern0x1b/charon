@@ -218,6 +218,25 @@ answer is "state and Apple's answers without a window".  PDFAnnotation and PDFSe
 last, because they are models over the page dictionary where the appearance and line-style members
 will hit the same layout-heuristic wall that put `-string` in `inert` with a measured region.
 
+## PDFView windowless, measured - and the plan's cases corrected by it
+
+`tools/host-view-windowless.m` asks the host's PDFView with NO WINDOW and never shown, which is the
+port's position too.  Measured on box-all, charon-fixture-3 and box-rotated, identical on all three:
+
+    window                 (nil)          document      (nil) before a document, an-object after, (nil) again
+    currentPage            an-object as soon as a document is set - no window, no page shown
+    scaleFactor 1          minScaleFactor 0.1   maxScaleFactor 100   autoScales 0
+    displayMode 1          displayBox 1           displayDirection 0   pageShadowsEnabled 1
+    set displayMode=twoUpContinuous reads back 3;  set displayBox=cropBox reads back 1, REJECTED
+    document=nil takes currentPage to nil with it
+    canDisplayPage: supported=0    goToPage: supported=1    scaleToFit: supported=0
+
+THREE OF THE PLAN'S CASES ARE NOT THE API, and the measurement is what says so: the iOS PDFView.h declares
+no -pageCount, no -canDisplayPage:, no -usePageViewController:, no -scaleToFit, and the host's PDFView
+answers canDisplayPage: supported=0 and scaleToFit supported=0.  A comparison on them would have been a
+comparison of things neither side is asked for.  -goToPage: IS the host's, and it is the one windowful
+member here.  The windowless members that are really the API are the ones measured above.
+
 ## The host's character count, measured, and why the port cannot match it yet
 
 -numberOfCharacters is NOT behind the wall that put -string in inert, and that is worth saying because I
@@ -236,6 +255,32 @@ is not obtainable, so the row is inert with the region named, and the run does n
 it hands back, so its byte count is not the file's.  Measured host 886 / 896 / 897 / 805 / 8784 / 10116
 against the port's 644 / 655 / 655 / 569 / 8775 / 10105 on the six fixtures - every pair two different
 documents, and a count of them is not a fact either side can agree on.
+
+## The members this package names and refuses, which are not rows
+
+Three members a plan named are NOT this API and carry NO registry row, because a row records what the
+package's surface is and these are not on it.  A reader scanning the registry for a member must not
+find one, and a census must not count one:
+
+  -pageCount, -canDisplayPage:, -scaleToFit on PDFView    the 26.2 PDFView.h declares NONE of the
+                                                          three, and the host answers canDisplayPage:
+                                                          supported=0 and scaleToFit supported=0
+  -usePageViewController:                                 the header declares the TWO-ARGUMENT form
+                                                          -usePageViewController:withViewOptions:,
+                                                          which is a different member from the one a
+                                                          plan named; no row for either
+  PDFView.pageCount                                        MISATTRIBUTED and the sharpest of them:
+                                                          pageCount is PDFDocument's property
+                                                          (PDFDocument.h:231) and the same file
+                                                          already carries -[PDFDocument pageCount] as
+                                                          implemented.  A second row for the name
+                                                          would describe a member that class has
+                                                          never had.
+
+The port does not implement any of them, and `CharonPDFKit.h:46-49` says so where a reader looks for
+what the port offers.  `tools/declared-check.py` is the mechanical form of that sentence: it reads every
+PDFKit registry row against the 26.2 headers of the member's OWN class and names any row that does not
+name a declared member, so a row like these cannot be added again by accident.
 
 ## The rows
 
