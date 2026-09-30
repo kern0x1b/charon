@@ -1059,6 +1059,28 @@
     "source": "the host's own WebKit under Mac Catalyst; the iOS 18.4 web-extension API, read off the host while building the classes of this series (the probes are the band's own and are not yet in the tree -- facts/WebKit/WebExtension.md holds the answers they gave)"
   },
   {
+    "api": "WKWebExtensionErrorDomain",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the error domain an extension's own failure answers with: the host raises NSError in this domain for an extension that is not enabled, and the port raises the same, so a caller's catch block matches what the host would have raised",
+    "effect": "a caller comparing the domain string compares a real answer on both sides",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, read off the host while building the classes of this series; the 16.4 SDK does not carry the symbol, so the name is the host's and the row is the only place the port says where it came from"
+  },
+  {
+    "api": "WKWebExtensionMatchPatternErrorDomain",
+    "kind": "constant",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "the error domain a match pattern's own failure answers with: the host raises NSError in this domain for a pattern it will not match, and the port raises the same, so a caller that tests the domain is not guessing at a string",
+    "effect": "a caller comparing the domain string compares a real answer on both sides",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst, read off the host while building the classes of this series; the 16.4 SDK does not carry the symbol, so the name is the host's and the row is the only place the port says where it came from"
+  },
+  {
     "api": "WKWebView",
     "kind": "class",
     "introduced": "8.0",
