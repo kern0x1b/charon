@@ -579,6 +579,26 @@
     "effect": "the string the host's own constant holds, read back",
     "source": "packages/a/apple-backports/CloudKit/CKConstants10.m",
     "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareMetadata",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the record the share is of, the URL it is shared under, the owner, the participant type, the permission, the status and the role are kept and read back as given",
+    "source": "packages/a/apple-backports/CloudKit/CKValues10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKShareMetadata new]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"Do not instantiate CKShare.Metadata, obtain them from CKFetchShareMetadataOperation or platform-specific scene / app delegate callbacks.\", which are the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKValues10.m",
+    "facts": "facts/CloudKit/Values.md"
   }
   ],
   "framework": "CloudKit"
