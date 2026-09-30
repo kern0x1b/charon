@@ -114,4 +114,67 @@ grep -v '^ok ' "$build/controller-port.log" || true
 note "controller-port: exit=$result log=$build/controller-port.log"
 [ "$result" = 0 ] || failed "the port's controller family does not answer what this host answers"
 
+# ---------------------------------------------------------------- the extension family, port against system
+# The same shape as the controller family above, and last because it needs what that section built: the
+# port's objects, the renames, and WEBEXT_MANIFEST exported. The questions are in one header, the system's
+# answers are recorded with no port code in the process, and the port is then asked the same questions.
+mkdir -p "$build/ext"
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" "$here/webextension-extension_system.m" "$harness/check.m" $frameworks -o "$build/ext/system"
+xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+    "$here/webextension-extension_test.m" "$harness/check.m" $built $frameworks -o "$build/ext/port"
+ext_expected="$build/extension.expected"
+if CHARON_EXPECTED="$ext_expected" "$build/ext/system" > "$build/ext/system.log" 2>&1; then
+    note "extension-system: exit=0 answers=$(grep -c '^case ' "$ext_expected" | tr -d ' ') log=$build/ext/system.log"
+else
+    failed "extension-system: exit=$? log=$build/ext/system.log"
+fi
+if CHARON_EXPECTED="$ext_expected" "$build/ext/port" > "$build/ext/port.log" 2>&1; then
+    result=0
+else
+    result=$?
+fi
+grep -v '^ok ' "$build/ext/port.log" || true
+note "extension-port: exit=$result log=$build/ext/port.log"
+[ "$result" = 0 ] || failed "the port's extension family does not answer what this host answers"
+
+# The red control, IN the harness: one answer of the port is changed, and this comparison has to go red on
+# it. A comparison that has only ever been green is not evidence -- it would be equally green with the cases
+# reading nothing -- and the twenty-two rows this section holds are exactly the class of evidence that has
+# bitten this series twice.
+#
+# The mutation is a COPY of the port's own source, so the tree is never edited, and it is one accessor
+# rather than a code path: -displayName stops reading the manifest's "name" and answers a planted string,
+# so the case extension.displayName has to go red.
+#
+# A mutation has to touch an answer THIS section compares. The first version of this block mutated
+# WKWebExtensionDataTypeLocal and proved the wrong thing twice over: that constant is defined in
+# WKWebExtensionController.m, so the mutation did not land at all, and once it was pointed at the right file
+# it reached the CONTROLLER's case constant.DataTypeLocal and left every extension case green -- a red light
+# in the wrong building.
+mutant="$build/mutant"
+mkdir -p "$mutant"
+sed 's|return \[self charon_manifestString:@"name"\];|return @"PLANTED_name";|' \
+    "$sources/WKWebExtension.m" > "$mutant/WKWebExtension.m"
+if grep -q PLANTED_name "$mutant/WKWebExtension.m"; then
+    xcrun clang $target $port_flags -I"$sources" $(cat "$build/renames.flags") -c "$mutant/WKWebExtension.m" -o "$mutant/WKWebExtension.o" 2> "$mutant/compile.log"
+    mutant_objects=""
+    for o in $built; do
+        if [ "$o" = "$build/port/WKWebExtension.m.o" ]; then
+            mutant_objects="$mutant_objects $mutant/WKWebExtension.o"
+        else
+            mutant_objects="$mutant_objects $o"
+        fi
+    done
+    xcrun clang $target -fobjc-arc -w -I"$harness" -I"$here" -I"$sources" -DCHARON_HOST_DIFFERENTIAL=1 $(cat "$build/renames.flags") \
+        "$here/webextension-extension_test.m" "$harness/check.m" $mutant_objects $frameworks -o "$build/ext/port-mutant"
+    if CHARON_EXPECTED="$ext_expected" "$build/ext/port-mutant" > "$build/ext/port-mutant.log" 2>&1; then
+        failed "RED CONTROL: the comparison is green with a planted displayName, so it is reading nothing"
+    else
+        note "red control: exit=$? with a planted displayName, and the case that moved is:"
+        grep -E '^ +(port|system) +case' "$build/ext/port-mutant.log" | sed 's/^ */    /' | head -4
+    fi
+else
+    failed "RED CONTROL: the mutation did not land, so no mutant was built and nothing was proven"
+fi
+
 exit $status

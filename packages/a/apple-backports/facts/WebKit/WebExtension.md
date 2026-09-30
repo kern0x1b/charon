@@ -175,3 +175,36 @@ declares and they agree exactly, case for case: `WKWebExtensionError` (9), `WKWe
 (4), `WKWebExtensionMatchPatternOptions` (1) and `WKWebExtensionDataRecordError` (1). The 26.2 headers
 declare 3 more the port does not carry at all -- `WKWebExtensionContextError`, `WKWebExtensionMessagePortError`, `WKWebExtensionTabChangedProperties` -- which is
 owed work, not a numbering defect.
+
+## The manifest's own twenty-two members, held to a comparison
+
+`WKWebExtension` is the one class on this side whose members are all about a file on disk: there is no
+`WKWebExtension` object until an extension is loaded, so every answer here is an answer about a manifest.
+`tests/backports/host/webkit/manifest/manifest.json` is that manifest, committed beside the programs and
+handed to both sides by `run.sh`, and the twenty-two rows each name the case that holds it in
+`webextension-extension_scenario.h` — the same shape as the controller family's: the questions in one
+header, compiled twice, once with no port code in the process and once with the renames, `dladdr` saying
+which image answered, and `run.sh`'s exit status as the verdict.
+
+Nothing here needs a window, a web view or a user. The loader answers on the main queue and the scenario
+turns the run loop until every case has been asked, so the count is claimed and checked (32) and a lost
+case cannot pass quietly. `-defaultLocale` is asked for its `localeIdentifier` rather than its description,
+because a description is an object dump and two runs would never agree.
+
+**The comparison found three wrong answers, none of which any build or test had caught:**
+
+| member | the port said | the host says | why |
+| --- | --- | --- | --- |
+| `displayActionLabel` | nil | the action's `default_title` | the label is a string *inside* the `action` object; reading the `action` key answers a dictionary, which is not a string and so came back nil |
+| `defaultLocale` | nil | `en` | the messages live in `_locales/<identifier>/messages.json`, and the port looked for `_locales/<identifier>.lproj`. Both layouts are now read, and the measured one is named first |
+| `hasOptionsPage` | YES for `options_ui` only | YES for `options_page` **and** for `options_ui` | measured with each key alone: the release answers 1 either way, so the port reads both |
+
+A fourth was a coincidence rather than a wrong answer, and it is worth naming because a green run did not
+mean it: `hasOverrideNewTabPage` read `chrome_url_overrides`, which is the key the release reads, while the
+fixture carried `override_new_tab_page`, which nothing reads. The host answered 0 and the port answered 0
+and the two agreed for no reason at all. The fixture now carries `chrome_url_overrides {"newtab": ...}` and
+both answer 1 — measured. Two keys were measured on the host to settle it, each with the other removed.
+
+**The patterns are sorted before they are compared.** A set's enumeration order is not part of an answer,
+and the first version joined them in whatever order the set handed over, which made two runs of the same
+build disagree with each other.

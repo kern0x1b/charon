@@ -21,7 +21,6 @@
     "default_popup": "popup.html"
   },
   "options_page": "options.html",
-  "override_new_tab_page": "newtab.html",
   "background": {
     "service_worker": "background.js"
   },
@@ -55,5 +54,8 @@
         "https://example.com/*"
       ]
     }
-  ]
+  ],
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
 }

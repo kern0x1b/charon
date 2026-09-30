@@ -140,7 +140,12 @@
 
 - (NSString *)charon_manifestString:(NSString *)key
 {
-    id value = _manifest[key];
+    return [self charon_manifestString:key inDictionary:_manifest];
+}
+
+- (NSString *)charon_manifestString:(NSString *)key inDictionary:(NSDictionary *)dictionary
+{
+    id value = dictionary[key];
     if (![value isKindOfClass:[NSString class]])
         return nil;
     /* A manifest is allowed to carry the _locales substitutions, and the release substitutes them. */
@@ -155,9 +160,17 @@
     NSString *identifier = _manifest[@"default_locale"];
     if (![identifier isKindOfClass:[NSString class]])
         return nil;
-    NSString *messages = [_resourcePath stringByAppendingPathComponent:
-                          [NSString stringWithFormat:@"_locales/%@.lproj", identifier]];
-    if (![[NSFileManager defaultManager] fileExistsAtPath:messages])
+    /* The messages live in _locales/<identifier>/messages.json, and that is the layout measured: a
+     * bundle with _locales/en/messages.json answers "en". A first version looked for
+     * _locales/<identifier>.lproj, which is the layout a bundle's own resources use, and answered nil
+     * for a manifest that does have its messages. Both are accepted here, because both are a layout the
+     * release reads, and the one that was measured is named first. */
+    NSFileManager *files = [NSFileManager defaultManager];
+    NSString *asFolder = [_resourcePath stringByAppendingPathComponent:
+                          [NSString stringWithFormat:@"_locales/%@/messages.json", identifier]];
+    NSString *asLproj = [_resourcePath stringByAppendingPathComponent:
+                         [NSString stringWithFormat:@"_locales/%@.lproj", identifier]];
+    if (![files fileExistsAtPath:asFolder] && ![files fileExistsAtPath:asLproj])
         return nil;
     return [NSLocale localeWithLocaleIdentifier:identifier];
 }
@@ -184,7 +197,14 @@
 
 - (NSString *)displayActionLabel
 {
-    return [self charon_manifestString:@"action"];
+    /* The label is the action's default_title, not the action itself: measured, a manifest whose
+     * "action" is {"default_title": "The probe's action", "default_popup": ...} answers
+     * "The probe's action", and reading the "action" key answers the dictionary, which is not a string
+     * at all and so came back nil. */
+    id action = _manifest[@"action"];
+    if (![action isKindOfClass:[NSDictionary class]])
+        return nil;
+    return [self charon_manifestString:@"default_title" inDictionary:action];
 }
 
 - (NSString *)version
@@ -311,11 +331,18 @@
 
 - (BOOL)hasOptionsPage
 {
-    return [self charon_manifestHasKey:@"options_ui"];
+    /* Both keys, because the release answers YES for both: measured with "options_page" alone and again
+     * with "options_ui" alone, each answering 1. A port that read only one of them answers NO for a
+     * manifest that has the other, which is the same defect as reading a symbol name for a value. */
+    return [self charon_manifestHasKey:@"options_page"] || [self charon_manifestHasKey:@"options_ui"];
 }
 
 - (BOOL)hasOverrideNewTabPage
 {
+    /* chrome_url_overrides, and specifically its newtab: measured, a manifest carrying
+     * chrome_url_overrides {"newtab": ...} answers 1. The fixture used to carry "override_new_tab_page"
+     * instead, which is not a key this framework reads, so the host answered 0 and the port answered 0
+     * and the two agreed for no reason at all. The key is the Chrome one the release reads. */
     return [self charon_manifestHasKey:@"chrome_url_overrides"];
 }
 
