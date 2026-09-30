@@ -292,6 +292,36 @@ PORT_ONLY = []
 PORT_OWNED_CLASS = []
 
 
+def chain_blocked(cluster):
+    """Whether the library's SDK makes this cluster's initializer a designated one it cannot chain.
+
+    Read from the header itself, not from a list of clusters: 16.4 declares 63 of the 142 and marks the
+    initializer NS_DESIGNATED_INITIALIZER on 60 of those 63 - Basic, BridgedDeviceBasic and TestCluster it
+    declares without the attribute, and those three are exactly the objects the compiler does not warn
+    about. The annotation is what makes clang ask the initializer to call a designated initializer of the
+    superclass, and MTRCluster declares -init NS_UNAVAILABLE, so there is no such call to write.
+    """
+    if not DECLARED_LINES_16:
+        return False
+    block, _ = cluster_block(DECLARED_LINES_16, cluster)
+    if block is None:
+        return False
+    return any("NS_DESIGNATED_INITIALIZER" in text
+               for _, text in declarations(block) if INIT.match(text))
+
+
+SUPPRESSED_CHAIN = """// This cluster's @interface is the SDK's own - iPhoneOS 16.4 declares {cluster} - and it marks
+// -initWithDevice:endpointID:queue: NS_DESIGNATED_INITIALIZER, so clang asks the initializer below to call
+// a designated initializer of the superclass. MTRCluster.h:40 declares -init NS_UNAVAILABLE, so that call
+// cannot be written: `self = [super init]` is `error: 'init' is unavailable`. The initializer therefore does
+// what it can - it keeps the three arguments in the ivars below - and this one diagnostic is silenced HERE
+// and named, the way MTLRasterizationRate13.m silences its own. The four ways of writing the chain that
+// were measured, and the repository's convention, are in coordination/crutches.md.
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
+"""
+
+
 def own_interface_block(block):
     """The block's OWN @interface: from its @interface line to its first @end, and no category after it.
 
@@ -1289,6 +1319,8 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     """
     body = [PREAMBLE.format(name=os.path.basename(path), cluster=cluster,
                             supers=supers or "Matter cluster", cache=cache_reads)]
+    if chain_blocked(cluster):
+        body.append(SUPPRESSED_CHAIN.format(cluster=cluster))
     body.append("// A class EXTENSION, not a category: it carries the storage and is invisible at\n"
                 "// runtime, so the port's class is still the only implementation of the name.\n")
     body.append("@interface %s () {\n" % cluster)

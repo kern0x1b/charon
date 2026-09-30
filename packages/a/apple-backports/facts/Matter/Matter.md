@@ -33,8 +33,7 @@ methods the header declares answer as Apple documents: no value, and an error.
     the 143 objects, the package's own flags
                                         armv7-apple-ios6.0, iPhoneOS16.4.sdk, -fobjc-arc -Os -Wall
                                         -Werror=objc-missing-property-synthesis, xargs -P 2, one log per
-                                        object: 143 of 143 compiled, 0 errors, and the only warning left is
-                                        -Wobjc-designated-initializers on 60 objects - see below
+                                        object: 143 of 143 compiled, 0 errors, 0 warnings
     the same 143 objects for armv7-apple-ios4.3
                                         0 of 143 compile, and the same diagnostic is in all 143 logs
     tests/backports/host/matter/plants.sh
@@ -48,22 +47,30 @@ selector the file defines is in the contract - it named 700 on `MTRBaseClusterTe
 invented instance method injected into one emitted object is caught and named, so the reverse direction is
 not vacuous.
 
-**The one warning the library's own flags report is the designated initializer, and it cannot be satisfied.**
-60 of the 143 objects are the clusters SDK 16.4 declares, so their `@interface` is the SDK's own and it marks
-`-initWithDevice:endpointID:queue:` `NS_DESIGNATED_INITIALIZER`; clang then asks the initializer to chain to a
-designated initializer of the superclass, and the superclass `MTRCluster` declares `-init NS_UNAVAILABLE`, so
+**The designated-initializer diagnostic cannot be satisfied, and the 60 objects that raise it silence it
+where the repository silences it.** 60 of the 143 objects are the clusters SDK 16.4 declares AND marks
+`-initWithDevice:endpointID:queue:` `NS_DESIGNATED_INITIALIZER` on: clang then asks the initializer to chain
+to a designated initializer of the superclass, and the superclass `MTRCluster` declares
+`-init NS_UNAVAILABLE` (MTRCluster.h:40 in 16.4, :42 in 26.2), so
 
     self = [super init];        error: 'init' is unavailable
 
-is the measurement, not an assumption, and it is the same whether the call is written plainly or through a
-category or a class extension that redeclares `-init` (both probed; the attribute stays). The port does not
-chain, does not suppress the diagnostic with a pragma, and does not redeclare the superclass initializer, so
-the warning stands on those 60 objects: it is reported here rather than silenced, and the initializer does the
-work that matters - it writes the device, the endpoint and the queue it was given into the three ivars the
-class declares (`@(endpoint)` when the header's deprecated `initWithDevice:endpoint:queue:` hands it a
-`uint16_t`). This repository's own convention for the same diagnostic is a per-file
-`#pragma clang diagnostic ignored "-Wobjc-designated-initializers"`, which about twenty backport files carry;
-adding it here is the coordinator's call, not this series'.
+is the measurement, not an assumption, and it is the same through a category or a class extension that
+redeclares `-init` (both probed; the attribute stays). Four ways of writing the chain are measured in
+`coordination/crutches.md`. What the 60 objects therefore carry is
+
+    #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
+directly under the imports, with the reason in the comment above it, which is where this repository puts that
+pragma - `MTLRasterizationRate13.m`, `GCMouseInput.m`, `CXCall10.m` and about twenty others. The predicate is
+read from the SDK, not from a list: `chain_blocked()` is true where 16.4's own block carries the attribute on
+the initializer, which is 60 of the 63 clusters 16.4 declares - `MTRBaseClusterBasic`,
+`MTRBaseClusterBridgedDeviceBasic` and `MTRBaseClusterTestCluster` it declares without it, and those three
+objects get no pragma. The 79 objects whose `@interface` the port writes carry none either.
+
+The initializer itself does the work that matters: it writes the device, the endpoint and the queue it was
+given into the three ivars its class declares, boxing the `uint16_t` that the header's deprecated
+`initWithDevice:endpoint:queue:` hands it.
 
 **The differential does not build here, and the reason is the port's own types header.** `CharonMatterTypes.h`
 declares every cluster class SDK 16.4 lacks, because the library compiles against 16.4 and an object that

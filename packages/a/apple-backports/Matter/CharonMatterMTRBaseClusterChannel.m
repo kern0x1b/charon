@@ -25,6 +25,15 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+// This cluster's @interface is the SDK's own - iPhoneOS 16.4 declares MTRBaseClusterChannel - and it marks
+// -initWithDevice:endpointID:queue: NS_DESIGNATED_INITIALIZER, so clang asks the initializer below to call
+// a designated initializer of the superclass. MTRCluster.h:40 declares -init NS_UNAVAILABLE, so that call
+// cannot be written: `self = [super init]` is `error: 'init' is unavailable`. The initializer therefore does
+// what it can - it keeps the three arguments in the ivars below - and this one diagnostic is silenced HERE
+// and named, the way MTLRasterizationRate13.m silences its own. The four ways of writing the chain that
+// were measured, and the repository's convention, are in coordination/crutches.md.
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+
 // A class EXTENSION, not a category: it carries the storage and is invisible at
 // runtime, so the port's class is still the only implementation of the name.
 @interface MTRBaseClusterChannel () {
