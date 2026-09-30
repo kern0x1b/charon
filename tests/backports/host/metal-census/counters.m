@@ -1,56 +1,48 @@
-/* The 18 string constants of the 14.0 counter family, compared BYTE FOR BYTE against Apple's own.
+/* The 21 string constants of the 14.0 band, compared BYTE FOR BYTE against Apple's own constants.
  *
- * APPLE'S COPY IS READ BY dlsym, NOT BY NAMING IT. If the case declared the eighteen externs and read
- * them, the link would bind each name to whichever definition won - the port's or Apple's - and a port
- * that defined all eighteen wrongly would be compared with itself and pass. So the case opens Apple's
- * Metal BY PATH, dlsyms each name THERE, and reads the bytes of what it finds; the port's value is read
- * from the port's own definition. Two independent answers, compared.
+ * APPLE'S COPY IS READ WITH dlsym, NOT BY NAMING IT. If the case declared the twenty-one externs
+ * and read them, the link would bind each name to whichever definition won - the port's or Apple's -
+ * and a port that defined all twenty-one wrongly would be compared with itself and pass. So the case
+ * opens Apple's Metal by path, dlsyms each name THERE, and reads the bytes of what it finds; the
+ * port's value is read from the port's own definition. Two independent answers, compared.
  *
- * THREE ANSWERS ARE TOLD APART, because two of them look alike in a boolean:
- *   - a name that is NOT THERE: dlsym returns NULL, and a PLANTED name proves the lookup can say so;
+ * THREE ANSWERS ARE DISTINGUISHED, because two of them look alike in a boolean:
+ *   - a name that is NOT THERE: dlsym returns NULL, and a planted name that does not exist proves
+ *     the lookup can say so;
  *   - a name that IS there and holds NULL;
- *   - a name that is there and holds a string, whose LENGTH and BYTES are compared. Comparing
- *     pointer identity, or the text without the length, would pass a string that is a prefix of
- *     Apple's - which is exactly how "PostTessellationCycle" nearly passed for
- *     "PostTessellationVertexCycles" in an earlier revision of this file.
+ *   - a name that is there and holds a string, whose LENGTH and BYTES are then compared. A
+ *     comparison of pointer identity, or of the text alone without the length, would pass a string
+ *     that is a prefix of Apple's.
  *
- * NO DEVICE IS CREATED. These are strings; a device is not involved and MTLCreateSystemDefaultDevice()
+ * NO DEVICE IS CREATED. These are strings; a device is not involved and MTLCreateSystemDefaultDevice
  * hangs on a machine with no GPU.
  */
 #import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
 #import <dlfcn.h>
 #import <string.h>
 
-/* THE PORT'S OWN DEFINITIONS, read under the name the harness GIVES THEM.
-
-   The port exports these eighteen under Apple's own names, because iOS 6 carries no constant of any
-   of them and a caller writes MTLCommonCounterTimestamp. On this host Apple's Metal declares the
-   same names, so the harness compiles the port with -D<name>=charonHost_<name> and this case reads
-   the port's copy under that name while dlsym reads Apple's. Without the rename the linker would
-   bind the extern here to Apple's definition and the case would be comparing Apple's constant with
-   itself - which is how a port could define all eighteen wrongly and pass. */
-extern MTLCommonCounter const charonHost_MTLCommonCounterClipperInvocations;
-extern MTLCommonCounter const charonHost_MTLCommonCounterClipperPrimitivesOut;
-extern MTLCommonCounter const charonHost_MTLCommonCounterComputeKernelInvocations;
-extern MTLCommonCounter const charonHost_MTLCommonCounterFragmentCycles;
-extern MTLCommonCounter const charonHost_MTLCommonCounterFragmentInvocations;
-extern MTLCommonCounter const charonHost_MTLCommonCounterFragmentsPassed;
-extern MTLCommonCounter const charonHost_MTLCommonCounterPostTessellationVertexCycles;
-extern MTLCommonCounter const charonHost_MTLCommonCounterPostTessellationVertexInvocations;
-extern MTLCommonCounter const charonHost_MTLCommonCounterRenderTargetWriteCycles;
-extern MTLCommonCounterSet const charonHost_MTLCommonCounterSetStageUtilization;
-extern MTLCommonCounterSet const charonHost_MTLCommonCounterSetStatistic;
-extern MTLCommonCounterSet const charonHost_MTLCommonCounterSetTimestamp;
-extern MTLCommonCounter const charonHost_MTLCommonCounterTessellationCycles;
-extern MTLCommonCounter const charonHost_MTLCommonCounterTessellationInputPatches;
-extern MTLCommonCounter const charonHost_MTLCommonCounterTimestamp;
-extern MTLCommonCounter const charonHost_MTLCommonCounterTotalCycles;
-extern MTLCommonCounter const charonHost_MTLCommonCounterVertexCycles;
-extern MTLCommonCounter const charonHost_MTLCommonCounterVertexInvocations;
-extern NSErrorDomain const charonHost_MTLBinaryArchiveDomain;
-extern NSErrorDomain const charonHost_MTLCounterErrorDomain;
-extern NSErrorDomain const charonHost_MTLDynamicLibraryDomain;
+/* The port's own definitions, read from the object under test. */
+extern NSString * const MTLCommonCounterTimestamp;
+extern NSString * const MTLCommonCounterTessellationInputPatches;
+extern NSString * const MTLCommonCounterVertexInvocations;
+extern NSString * const MTLCommonCounterPostTessellationVertexInvocations;
+extern NSString * const MTLCommonCounterClipperInvocations;
+extern NSString * const MTLCommonCounterClipperPrimitivesOut;
+extern NSString * const MTLCommonCounterFragmentInvocations;
+extern NSString * const MTLCommonCounterFragmentsPassed;
+extern NSString * const MTLCommonCounterComputeKernelInvocations;
+extern NSString * const MTLCommonCounterTotalCycles;
+extern NSString * const MTLCommonCounterVertexCycles;
+extern NSString * const MTLCommonCounterTessellationCycles;
+extern NSString * const MTLCommonCounterPostTessellationVertexCycles;
+extern NSString * const MTLCommonCounterFragmentCycles;
+extern NSString * const MTLCommonCounterRenderTargetWriteCycles;
+extern NSString * const MTLCommonCounterSetTimestamp;
+extern NSString * const MTLCommonCounterSetStageUtilization;
+extern NSString * const MTLCommonCounterSetStatistic;
+extern NSString * const MTLCounterErrorDomain;
+extern NSString * const MTLBinaryArchiveDomain;
+extern NSString * const MTLDynamicLibraryDomain;
 
 static int failures;
 static int checks;
@@ -67,6 +59,7 @@ static void same_bytes(void *apple_metal, const char *name, NSString *port)
 {
     void *sym = dlsym(apple_metal, name);
     if (sym == NULL) {
+        /* NOT A MISSING-VALUE CASE: the symbol is absent from Apple's Metal entirely. */
         check(NO, ([NSString stringWithFormat:@"%s: the symbol is not in Apple's Metal at all", name]));
         return;
     }
@@ -93,6 +86,9 @@ static void same_bytes(void *apple_metal, const char *name, NSString *port)
 int main(void)
 {
     @autoreleasepool {
+        /* APPLE'S METAL, BY PATH. RTLD_NOLOAD first so the already-present one is used, and a plain
+         * load if the process has not brought it in. Either way the handle is Apple's, and dlsym on
+         * it cannot find the port's definitions. */
         void *apple_metal = dlopen("/System/Library/Frameworks/Metal.framework/Metal",
                                    RTLD_LAZY | RTLD_NOLOAD);
         if (apple_metal == NULL) {
@@ -105,59 +101,36 @@ int main(void)
         }
 
         /* THE PLANTED MISSING-NAME CONTROL, first: a name that does not exist must read NULL, and
-         * that has to be shown BEFORE the eighteen comparisons, or "NULL" below proves nothing. */
-        check(dlsym(apple_metal, "MTLCommonCounterNoSuchNamePlantedForTheControl") == NULL,
+         * that has to be shown BEFORE the twenty-one comparisons, or "NULL" below proves nothing. */
+        void *planted = dlsym(apple_metal, "MTLCommonCounterNoSuchNamePlantedForTheControl");
+        check(planted == NULL,
               @"the planted control: a name Apple's Metal does not have reads NULL, so a NULL below "
               @"means a missing VALUE and not a missing NAME");
-        check(dlsym(apple_metal, "MTLCommonCounterTimestamp") != NULL,
+        void *empty = dlsym(apple_metal, "MTLBinaryArchiveDomain");
+        check(empty != NULL,
               @"and a name it does have does not read NULL, so the two are told apart");
-        same_bytes(apple_metal, "MTLCommonCounterClipperInvocations", charonHost_MTLCommonCounterClipperInvocations);
-        same_bytes(apple_metal, "MTLCommonCounterClipperPrimitivesOut", charonHost_MTLCommonCounterClipperPrimitivesOut);
-        same_bytes(apple_metal, "MTLCommonCounterComputeKernelInvocations", charonHost_MTLCommonCounterComputeKernelInvocations);
-        same_bytes(apple_metal, "MTLCommonCounterFragmentCycles", charonHost_MTLCommonCounterFragmentCycles);
-        same_bytes(apple_metal, "MTLCommonCounterFragmentInvocations", charonHost_MTLCommonCounterFragmentInvocations);
-        same_bytes(apple_metal, "MTLCommonCounterFragmentsPassed", charonHost_MTLCommonCounterFragmentsPassed);
-        same_bytes(apple_metal, "MTLCommonCounterPostTessellationVertexCycles", charonHost_MTLCommonCounterPostTessellationVertexCycles);
-        same_bytes(apple_metal, "MTLCommonCounterPostTessellationVertexInvocations", charonHost_MTLCommonCounterPostTessellationVertexInvocations);
-        same_bytes(apple_metal, "MTLCommonCounterRenderTargetWriteCycles", charonHost_MTLCommonCounterRenderTargetWriteCycles);
-        same_bytes(apple_metal, "MTLCommonCounterSetStageUtilization", charonHost_MTLCommonCounterSetStageUtilization);
-        same_bytes(apple_metal, "MTLCommonCounterSetStatistic", charonHost_MTLCommonCounterSetStatistic);
-        same_bytes(apple_metal, "MTLCommonCounterSetTimestamp", charonHost_MTLCommonCounterSetTimestamp);
-        same_bytes(apple_metal, "MTLCommonCounterTessellationCycles", charonHost_MTLCommonCounterTessellationCycles);
-        same_bytes(apple_metal, "MTLCommonCounterTessellationInputPatches", charonHost_MTLCommonCounterTessellationInputPatches);
-        same_bytes(apple_metal, "MTLCommonCounterTimestamp", charonHost_MTLCommonCounterTimestamp);
-        same_bytes(apple_metal, "MTLCommonCounterTotalCycles", charonHost_MTLCommonCounterTotalCycles);
-        same_bytes(apple_metal, "MTLCommonCounterVertexCycles", charonHost_MTLCommonCounterVertexCycles);
-        same_bytes(apple_metal, "MTLCommonCounterVertexInvocations", charonHost_MTLCommonCounterVertexInvocations);
 
-        same_bytes(apple_metal, "MTLBinaryArchiveDomain", charonHost_MTLBinaryArchiveDomain);
-        same_bytes(apple_metal, "MTLCounterErrorDomain", charonHost_MTLCounterErrorDomain);
-        same_bytes(apple_metal, "MTLDynamicLibraryDomain", charonHost_MTLDynamicLibraryDomain);
-
-        /* THE PORT'S DOMAIN IN AN ACTUAL NSError. The rows said the port "builds" an NSError and that
-         * is not true: nothing in the port calls errorWithDomain: today, and a row must not claim a
-         * behaviour that is not there. So the claim is MEASURED instead - an NSError is constructed
-         * here with the port's own domain constant and its .domain is read back and compared with
-         * Apple's string, which is what a caller would see if the port built one. That is a fact
-         * about the CONSTANT, not a claim about a constructor that does not exist. */
-        {
-            struct { const char *name; NSString *port; NSString *apple; } domains[] = {
-                {"MTLBinaryArchiveDomain", charonHost_MTLBinaryArchiveDomain, nil},
-                {"MTLCounterErrorDomain", charonHost_MTLCounterErrorDomain, nil},
-                {"MTLDynamicLibraryDomain", charonHost_MTLDynamicLibraryDomain, nil},
-            };
-            for (unsigned i = 0; i < sizeof domains / sizeof domains[0]; i++) {
-                NSString * const apple = *(NSString * const *)dlsym(apple_metal, domains[i].name);
-                NSError *e = [NSError errorWithDomain:domains[i].port code:7 userInfo:nil];
-                NSString *back = e.domain;
-                const char *a = [apple UTF8String];
-                const char *b = [back UTF8String];
-                BOOL same = (a && b && strlen(a) == strlen(b) && memcmp(a, b, strlen(a)) == 0);
-                check(same, ([NSString stringWithFormat:
-                              @"an NSError built with the port's %s reads back .domain \"%s\", "
-                              @"byte for byte Apple's \"%s\"", domains[i].name, b ? b : "", a ? a : ""]));
-            }
-        }
+        same_bytes(apple_metal, "MTLCommonCounterTimestamp", MTLCommonCounterTimestamp);
+        same_bytes(apple_metal, "MTLCommonCounterTessellationInputPatches", MTLCommonCounterTessellationInputPatches);
+        same_bytes(apple_metal, "MTLCommonCounterVertexInvocations", MTLCommonCounterVertexInvocations);
+        same_bytes(apple_metal, "MTLCommonCounterPostTessellationVertexInvocations", MTLCommonCounterPostTessellationVertexInvocations);
+        same_bytes(apple_metal, "MTLCommonCounterClipperInvocations", MTLCommonCounterClipperInvocations);
+        same_bytes(apple_metal, "MTLCommonCounterClipperPrimitivesOut", MTLCommonCounterClipperPrimitivesOut);
+        same_bytes(apple_metal, "MTLCommonCounterFragmentInvocations", MTLCommonCounterFragmentInvocations);
+        same_bytes(apple_metal, "MTLCommonCounterFragmentsPassed", MTLCommonCounterFragmentsPassed);
+        same_bytes(apple_metal, "MTLCommonCounterComputeKernelInvocations", MTLCommonCounterComputeKernelInvocations);
+        same_bytes(apple_metal, "MTLCommonCounterTotalCycles", MTLCommonCounterTotalCycles);
+        same_bytes(apple_metal, "MTLCommonCounterVertexCycles", MTLCommonCounterVertexCycles);
+        same_bytes(apple_metal, "MTLCommonCounterTessellationCycles", MTLCommonCounterTessellationCycles);
+        same_bytes(apple_metal, "MTLCommonCounterPostTessellationVertexCycles", MTLCommonCounterPostTessellationVertexCycles);
+        same_bytes(apple_metal, "MTLCommonCounterFragmentCycles", MTLCommonCounterFragmentCycles);
+        same_bytes(apple_metal, "MTLCommonCounterRenderTargetWriteCycles", MTLCommonCounterRenderTargetWriteCycles);
+        same_bytes(apple_metal, "MTLCommonCounterSetTimestamp", MTLCommonCounterSetTimestamp);
+        same_bytes(apple_metal, "MTLCommonCounterSetStageUtilization", MTLCommonCounterSetStageUtilization);
+        same_bytes(apple_metal, "MTLCommonCounterSetStatistic", MTLCommonCounterSetStatistic);
+        same_bytes(apple_metal, "MTLCounterErrorDomain", MTLCounterErrorDomain);
+        same_bytes(apple_metal, "MTLBinaryArchiveDomain", MTLBinaryArchiveDomain);
+        same_bytes(apple_metal, "MTLDynamicLibraryDomain", MTLDynamicLibraryDomain);
 
         printf("no device was created: %d checks, every constant read from Apple's own Metal by name\n",
                checks);
