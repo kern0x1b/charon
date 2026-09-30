@@ -2130,7 +2130,7 @@
       "status": "absent",
       "reason": "the base of a calendar view's selection behaviours; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICalendarSelectionMultiDate",
@@ -2140,7 +2140,7 @@
       "status": "absent",
       "reason": "lets a calendar view select several dates; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICalendarSelectionMultiDateDelegate",
@@ -2150,7 +2150,7 @@
       "status": "absent",
       "reason": "the delegate of a calendar view's multiple-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UICalendarSelectionSingleDate",
@@ -2160,7 +2160,7 @@
       "status": "absent",
       "reason": "lets a calendar view select one date; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICalendarSelectionSingleDateDelegate",
@@ -2170,7 +2170,7 @@
       "status": "absent",
       "reason": "the delegate of a calendar view's single-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UICalendarView",
@@ -2180,7 +2180,7 @@
       "status": "absent",
       "reason": "a month calendar with decorations and selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICalendarViewDecoration",
@@ -2190,7 +2190,7 @@
       "status": "absent",
       "reason": "a mark drawn under a date of a calendar view; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICalendarViewDelegate",
@@ -2200,7 +2200,7 @@
       "status": "absent",
       "reason": "the delegate asked for a calendar view's decorations; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory) and the 16.0 cache carries no such name either, so the SDK's 16.0 is uncorroborated by the cache of that release"
     },
     {
       "api": "UICellAccessoryPopUpMenu",
@@ -2210,7 +2210,7 @@
       "status": "absent",
       "reason": "a list cell accessory that shows a menu of choices; the port lays out the other accessories itself (facts/UIKit/UICellAccessory.md) and shows a UIMenu as an action sheet (facts/UIKit/UIContextMenuInteraction.md), so the two could make this one - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UICollectionView.selfSizingInvalidation",
@@ -2260,7 +2260,7 @@
       "status": "absent",
       "reason": "what the title menu of a document's navigation bar shows about it - its metadata, drag item and share action; the release's navigation bar has no title menu, so there is nothing to show it in - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIEditMenuConfiguration",
@@ -2270,7 +2270,7 @@
       "status": "absent",
       "reason": "where and with what an edit menu interaction shows its menu; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIEditMenuInteraction",
@@ -2280,7 +2280,7 @@
       "status": "absent",
       "reason": "shows an edit menu of UIMenu elements at a point of a view; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIEditMenuInteractionAnimating",
@@ -2290,7 +2290,7 @@
       "status": "absent",
       "reason": "the animator an edit menu interaction hands its delegate as the menu shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UIEditMenuInteractionDelegate",
@@ -2300,7 +2300,7 @@
       "status": "absent",
       "reason": "asked by an edit menu interaction for its menu and told when it shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UIFindInteraction",
@@ -2310,7 +2310,7 @@
       "status": "absent",
       "reason": "shows the find bar over a view that can be searched; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIFindInteractionDelegate",
