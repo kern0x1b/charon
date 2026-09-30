@@ -85,21 +85,21 @@ int main(void)
             NEDNSSettings *built = [[cls alloc] init];
             /* read through the typed getter, not through KVC: a KVC read of an integer property is
                an NSNumber that is never nil, so `== nil` would read NO with an inverted getter too */
-            emit_bool("portOnly.dnsProtocol.default", built.dnsProtocol == (NEDNSProtocol)0);
+            emit("portOnly.dnsProtocol.default", built.dnsProtocol == (NEDNSProtocol)0 ? "YES" : "NO");
             [built setDnsProtocol:NEDNSProtocolTLS];
-            emit_bool("portOnly.dnsProtocol.afterSet", built.dnsProtocol == NEDNSProtocolTLS);
+            emit("portOnly.dnsProtocol.afterSet", built.dnsProtocol == NEDNSProtocolTLS ? "TLS" : "other");
             emit_bool("portOnly.domainName.default", built.domainName == nil);
             emit_bool("portOnly.domainName.isNil", built.domainName == nil);
             [built setValue:@"example.com" forKey:@"domainName"];
-            emit_id("portOnly.domainName.afterSet", [built valueForKey:@"domainName"]);
-            emit_bool("portOnly.allowFailover.default", built.allowFailover == NO);
+            emit("portOnly.domainName.afterSet", [built valueForKey:@"domainName"] ? [[built valueForKey:@"domainName"] UTF8String] : "(nil)");
+            emit("portOnly.allowFailover.default", built.allowFailover ? "YES" : "NO");
             [built setAllowFailover:YES];
-            emit_bool("portOnly.allowFailover.afterSet", built.allowFailover);
+            emit("portOnly.allowFailover.afterSet", built.allowFailover ? "YES" : "NO");
             NSError *codingError = nil;
             NSData *coded = [NSKeyedArchiver archivedDataWithRootObject:built requiringSecureCoding:YES error:&codingError];
             id decoded = coded ? [NSKeyedUnarchiver unarchivedObjectOfClass:cls fromData:coded error:&codingError] : nil;
-            emit_id("portOnly.coding.domainName", [decoded valueForKey:@"domainName"]);
-            emit_bool("portOnly.coding.allowFailover", [(NEDNSSettings *)decoded allowFailover]);
+            emit("portOnly.coding.domainName", [decoded valueForKey:@"domainName"] ? [[decoded valueForKey:@"domainName"] UTF8String] : "(nil)");
+            emit("portOnly.coding.allowFailover", [(NEDNSSettings *)decoded allowFailover] ? "YES" : "NO");
         }
 #endif
 
