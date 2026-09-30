@@ -311,7 +311,7 @@ Each of the four carries SensorKit's own `SRErrorDomain` and its own `SRErrorDat
 guarded by `respondsToSelector:` on the delegate, so a subscriber that implements one is messaged and
 one that does not is not messaged at all, never messaged wrongly.
 
-| never sent, and why | |
+| never sent — status `inert`, not `implemented` | why |
 | --- | --- |
 | `sensorReader:fetchingRequest:didFetchResult:` | it hands over a result and `-fetch:` has none: the request fails instead |
 | `sensorReader:didCompleteFetch:` | it says a fetch finished, and no fetch in this port ever does |
@@ -323,7 +323,16 @@ one that does not is not messaged at all, never messaged wrongly.
 Every one of the six is `@optional`, so a conformer may leave it out and the compiler accepts that. A
 conformer that implements one is never called, which is the SDK's own behaviour on a device that collects
 nothing — **the port does not fabricate a result, a device list or a status change to make a callback
-fire**, and that is the line every one of those six rows rests on.
+fire**.
+
+**Those six are `inert`, and `implemented` was wrong for them.** `registry/README.md` defines `inert` as
+*declared, does nothing, and says so once in the log the first time it is used* — which is exactly a
+method the protocol declares and nothing sends. `implemented` says the port's reader reaches a
+subscriber, and for these six it does not; a row that claims `implemented` while its own effect says
+"never messaged" is a row contradicting itself, which is what `registry-coherence` reported and is right.
+`inert` is also the safer of the two to want: a caller that waits on `sensorReader:didCompleteFetch:`
+waits for ever on this release, and that is the failure the four failure callbacks exist to avoid. The
+four the reader really sends stay `implemented`.
 
 **The protocol itself is now carried, and it is the header that had to be real.** The delegate is the
 application's own object, so nothing in the port adopts `SRSensorReaderDelegate` — which is why the port

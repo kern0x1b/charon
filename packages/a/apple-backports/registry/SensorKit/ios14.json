@@ -1529,7 +1529,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:59. NOTHING SENDS IT, because -authorizationStatus answers denied and never changes",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because -authorizationStatus answers denied and never changes. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didCompleteFetch:]",
@@ -1540,7 +1540,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:47. NOTHING SENDS IT, because no fetch in this port ever finishes",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because no fetch in this port ever finishes. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didFetchDevices:]",
@@ -1551,7 +1551,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:83. NOTHING SENDS IT, because the port will not fabricate a device list",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because the port will not fabricate a device list. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchDevicesDidFailWithError:]",
@@ -1573,7 +1573,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:40. NOTHING SENDS IT, because it hands over a result and -fetch: has none",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because it hands over a result and -fetch: has none. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchingRequest:failedWithError:]",
@@ -1617,7 +1617,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:76. NOTHING SENDS IT, because -stopRecording answers with the failure callback instead",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because -stopRecording answers with the failure callback instead. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReaderWillStartRecording:]",
@@ -1628,7 +1628,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:65. NOTHING SENDS IT, because no recording ever begins",
       "effect": "declared and never messaged. The port ships the protocol, so the method is in the protocol the runtime knows and a conformer may rely on its being optional and leave it out; nothing in this port ever sends it, because no recording ever begins. inert rather than implemented is the honest status for a callback nothing sends: a caller waiting on it waits for ever, and the port does not fabricate a result, a device list or a status change to make it fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the absence of a send measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSleepSession init]",
