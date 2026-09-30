@@ -14,6 +14,12 @@
 -- tests/addon/registry_test.lua proves the rule on synthetic objects, which is where a rule of this
 -- shape is settled, and calls the same offenders() this calls.
 --
+-- ROOT is resolved against the current directory and, failing that, against the PROJECT's own root,
+-- which is where xmake found this project however the run was invoked - so an absolute ROOT and a run
+-- from any directory of the project both land on the package. Reading nothing is never a clean bill of health: a run that read zero objects prints a
+-- different sentence and exits non-zero, because "nothing is owed" and "nothing was read" must never
+-- print the same line.
+--
 -- Objects are the files, so the grouping is by the file that DEFINES a class and never by the row's
 -- `source` field: that field is a transcription, it can be wrong, and eight were - the rows of
 -- CKSyncEngineConfiguration and of the six scopes, options and contexts named CKSyncEngine17.m while
@@ -117,14 +123,41 @@ function main(...)
         if value == "--framework" then
             framework = args[index + 1]
             index = index + 2
-        elseif not framework and not value:match("^%-") then
+        elseif not value:match("^%-") then
             root = value
             index = index + 1
         else
             index = index + 1
         end
     end
-    root = root or "packages/a/apple-backports"
+    -- the package, wherever this was run from: the given ROOT, else the default relative to the cwd,
+    -- else the default relative to this script
+    local package = "packages/a/apple-backports"
+    local candidates = {}
+    if root then
+        table.insert(candidates, root)
+    else
+        table.insert(candidates, package)
+        table.insert(candidates, path.join(os.projectdir() or ".", package))
+    end
+    local chosen
+    for _, candidate in ipairs(candidates) do
+        if os.isdir(path.join(candidate, "registry")) then
+            chosen = candidate
+            break
+        end
+    end
+    if not chosen and root then
+        print(string.format("registry-one-minimum: read nothing - %s is not a package (no registry"
+            .. " under it)", root))
+        os.exit(1)
+    end
+    if not chosen then
+        print(string.format("registry-one-minimum: read nothing - no package at %s;"
+            .. " pass the path to packages/a/apple-backports", table.concat(candidates, " or ")))
+        os.exit(1)
+    end
+    root = chosen
     local found, objects = offenders(root, framework)
     for _, one in ipairs(found) do
         print(string.format("%s: an object is carried from one release on, and its rows name the"
@@ -134,5 +167,10 @@ function main(...)
     print(string.format("registry-one-minimum: %d object(s) with rows read%s, %d mixing%s", objects,
                         framework and (" (" .. framework .. ")") or "", #found,
                         #found == 1 and "" or "s"))
+    if objects == 0 then
+        print("registry-one-minimum: read nothing - the registry of " .. root .. " names no object with"
+              .. " a row, which is a read that measured nothing and not a tree that owes nothing")
+        os.exit(1)
+    end
     os.exit(#found == 0 and 0 or 1)
 end

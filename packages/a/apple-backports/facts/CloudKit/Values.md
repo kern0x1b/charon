@@ -290,22 +290,39 @@ mostly members rather than classes - 491 properties, 347 methods, 135 constants,
 27 typealiases, 7 classes, 4 protocols. The registry's 118 rows are the classes this series carries and
 what they answer; the ledger is the whole surface.
 
-By class family, biggest first, the owed members cluster like this:
+**The counting rule, in one line, so the table beside it can be recomputed: the count for a class is
+the number of distinct `api` spellings the ledger attributes to it, where a class is attributed its own
+rows, a member (`-[CKRecordID recordID]`) and a dotted name (`CKRecord.recordID`,
+`CKContainer.Application.PermissionBlock`) are attributed to the class that heads the spelling, and a
+bare `CKErrorDomain`-style constant is attributed to itself, because the ledger spells it bare and
+attributing it to a class would need a name-prefix guess.** The script that prints the table is
+`tools/corpus/cloudkit-owed.py`, committed with this file, and it reads the same ledger:
 
-| class | owed | what it is |
+    $ python3 tools/corpus/cloudkit-owed.py --class CKSyncEngine
+    CKSyncEngine                      169 owed of 169 distinct
+
+| class | owed distinct apis | what it is |
 | --- | --- | --- |
-| `CKContainer` | 21 | the container's accounts, status and configuration surface |
-| `CKShare` | 16 | the share object of iOS 10 and its metadata, acceptance and participants |
-| `CKDatabase` | 14 | the database's notifications, subscriptions and zone fetch |
-| `CKRecord` | 14 | the record's fields, change tracking and the key-value setting protocol |
-| `CKSyncEngine` | 8 | the engine's remaining delegate and event surface |
-| `CKUserIdentityLookupInfo` | 8 | the lookup info's own members |
-| `CKRecordKeyValueSetting` | 7 | the protocol the record's fields answer to |
-| `CKSyncEngineState` | 6 | the state object's own members |
-| `CKRecordZone` | 5 | the zone object's own members |
-| `CKSyncEngineDelegate` | 5 | the delegate the engine calls back into |
+| `CKContainer` | 52 | the container's accounts, status and configuration surface |
+| `CKShare` | 35 | the share object of iOS 10 and its metadata, acceptance and participants |
+| `CKDatabase` | 73 | the database's notifications, subscriptions, zones and change tokens |
+| `CKRecord` | 49 | the record's fields, change tracking and the key-value setting protocol |
+| `CKSyncEngine` | 169 | the engine's delegate, events, scopes and contexts |
+| `CKUserIdentityLookupInfo` | 11 | the lookup info's own members |
+| `CKRecordKeyValueSetting` | 8 | the protocol the record's fields answer to |
+| `CKSyncEngineState` | 10 | the state object's own members and its serialization |
+| `CKRecordZone` | 12 | the zone object's own members |
+| `CKSyncEngineDelegate` | 7 | the delegate the engine calls back into |
 
-`CKContainer` is the next family, and the count is a count of the ledger's rows for that class, not a
+The nine rows above are the owed distinct spellings each class heads. A reviewer's independent count of
+the same ledger put several of these lower (`CKContainer` 46, `CKShare` 80, `CKSyncEngine` 249,
+`CKRecordZone` 28) and three of them above what this rule prints; the difference is the owner rule, not
+the ledger - a bare constant is counted against itself here and a nested name against its head, and a
+rule that attributes a bare `CKErrorDomain` to `CKError` would move every cell by a different amount
+again. The rule above is the one committed with the script, and `python3 tools/corpus/cloudkit-owed.py
+--class NAME` prints any cell of it.
+
+`CKDatabase` is the next family by that rule, and the count is a count of distinct owed spellings, not a
 judgement about what it is worth: a member is owed when no row and no definition exist for it here, and
 a member whose behaviour is already answered by a class this series carries is not owed work, it is a row
 to be written. The two owed *classes* - names the sweep lists that nothing in the pile ever carried -
