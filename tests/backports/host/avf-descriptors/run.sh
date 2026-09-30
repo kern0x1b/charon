@@ -40,7 +40,7 @@ avf=$root/packages/a/apple-backports/AVFoundation
 #
 # If the probe does not report its own count there is nothing to check against, and this says so and
 # stops. It does not fall back to a number, because a fallback is how 49, 63 and 71 got here.
-sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9 AVAudioFile8 AVAudioFile8Members"
+sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9 "
 control=${CONTROL:-0}
 break=${BREAK:-0}
 mutant=${AVFMUTANT:-0}
@@ -52,7 +52,7 @@ mkdir -p "$build/src" "$build/o" "$baseline_dir"
 renames=""
 for name in AVPlayerMediaSelectionCriteria AVCaptureBracketedStillImageSettings \
             AVCaptureAutoExposureBracketedStillImageSettings AVCaptureManualExposureBracketedStillImageSettings \
-            AVAssetResourceRenewalRequest AVMediaSelection AVMutableMediaSelection AVAudioFile; do
+            AVAssetResourceRenewalRequest AVMediaSelection AVMutableMediaSelection; do
     renames="$renames -D$name=charon_host_$name"
 done
 
@@ -209,6 +209,12 @@ import os
 import sys
 
 NO_ORACLE = "no-oracle-forwarding-object"
+# The second marker from the probe: the scenario a row names did not happen on this host, so the row has
+# no answer to compare in EITHER direction. It is counted, so it stays visible, and it is NOT counted as a
+# difference: the baseline beside this run was written on a host where the scenario did happen, and holding
+# this run against it measures the two hosts, not the port. That is the difference between this marker and
+# NO_ORACLE, which describes the port.
+NOT_ON_THIS_HOST = "scenario-not-applicable-on-this-host"
 
 def load(path):
     rows = {}
@@ -236,6 +242,7 @@ say = report.write
 
 differs = 0
 portonly = 0
+inapplicable = 0
 allowed = 0        # rows where the port answers a header-declared member and this host does not
 for k in set(host) | set(port):
     hv, pv, bv = host.get(k), port.get(k), base.get(k)
@@ -243,6 +250,10 @@ for k in set(host) | set(port):
     # so it is held against the port's own unmutated baseline. So is any row either side answers
     # NO_ORACLE for - the class exists and the framework is the oracle, but this instance is a
     # forwarding object, so there is nothing here to read. A ~ row must NEVER read the host side.
+    if NOT_ON_THIS_HOST in ((hv or "") + (pv or "")):
+        inapplicable += 1
+        say("INAPPLICABLE %-64s the scenario this row names did not happen on this host\n" % k)
+        continue
     if k.startswith("~") or NO_ORACLE in ((hv or "") + (pv or "")):
         portonly += 1
         if bv is not None and pv == bv:
@@ -272,15 +283,16 @@ for k in set(host) | set(port):
         differs += 1
 if report is not sys.stdout:
     report.close()
-print("%d %d %d" % (differs, portonly, allowed))
+print("%d %d %d %d" % (differs, portonly, allowed, inapplicable))
 PYEOF
 )
 set -- $counts
 differs_n=$1
 portonly_n=$2
 allowed_n=$3
+inapplicable_n=$4
 [ -s "$build/rows.log" ] && cat "$build/rows.log"
-echo "rows that differ: $differs_n   port-only rows (no host oracle, held against the baseline): $portonly_n   allowed (the port answers more): $allowed_n"
+echo "rows that differ: $differs_n   port-only rows (no host oracle, held against the baseline): $portonly_n   allowed (the port answers more): $allowed_n   inapplicable here (the scenario did not happen on this host): $inapplicable_n"
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     if [ "$differs_n" = 0 ]; then

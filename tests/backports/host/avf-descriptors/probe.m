@@ -55,6 +55,11 @@ static int rowIndex;
 // unmutated baseline instead of against the host, which is the port-only row the metadata harness
 // uses, and which is the only way a mutation of it can still be seen.
 #define NO_ORACLE @"no-oracle-forwarding-object"
+// A second marker, and the difference is not cosmetic. NO_ORACLE means the object exists and forwards,
+// so the port is a forwarding instance and there is nothing to read -- the port IS the answer. This one
+// means the SCENARIO the row names could not happen on this host at all, so there is no answer to read
+// and no baseline recorded elsewhere can stand in for one.
+#define NOT_ON_THIS_HOST @"scenario-not-applicable-on-this-host"
 
 static void row(const char *key, NSString *v)
 {
@@ -230,8 +235,15 @@ int main(void)
                             ? ((id (*)(id, SEL))objc_msgSend)(made, out) : nil);
                 }
             } else {
-                row("~VALUES criteria preferredLanguages after the factory", NO_ORACLE);
-                row("~VALUES criteria preferredMediaCharacteristics after the factory", NO_ORACLE);
+                // This host has no criteria factory, so the scenario these two rows name DID NOT HAPPEN
+                // here. The stored baseline holds what a host WITH the factory answered, and comparing
+                // this against that is a statement about two different hosts, not about the port: it
+                // reads as a difference while the port is doing nothing wrong. So the row says the
+                // scenario was inapplicable and is marked, not baselined away -- if a host regains the
+                // factory the row goes back to reading the real oracle, and the marker is then a lie the
+                // probe will not tell.
+                row("~VALUES criteria preferredLanguages after the factory", NOT_ON_THIS_HOST);
+                row("~VALUES criteria preferredMediaCharacteristics after the factory", NOT_ON_THIS_HOST);
             }
         }
 
@@ -294,18 +306,13 @@ int main(void)
             structure("AVAssetResourceRenewalRequest", members, 4);
         }
 
-        // ---- AVAudioFile, the first owner the bulk generator named. Structural: presence, superclass,
-        // instance size and the selectors an instance answers. The URL-backed VALUES it computes are
-        // asked through the port's own designated initialiser and are ~ rows, because the host's own
-        // AVAudioFile is a class cluster whose -init needs a real file on this build and there is
-        // nothing here to point it at.
-        {
-            static const char *members[] = {"url", "length", "framePosition", "isOpen", "processingFormat",
-                                            "fileFormat", "initForReading:error:", "readIntoBuffer:error:",
-                                            "readIntoBuffer:frameCount:error:", "close",
-                                            "writeFromBuffer:error:"};
-            structure("AVAudioFile", members, 11);
-        }
+        // ---- AVAudioFile is NOT asked here, and that is a change with a reason. The port's section was
+        // cut rather than shipped: the probe aborted inside -initWithPCMFormat:frameCapacity: on the
+        // port's own processingFormat, the cause was never established, and a check whose cause is
+        // unknown is owed, not carried. A probe that kept asking would have gone on asking the host the
+        // fourteen structural questions the port no longer answers, and every one of them would have
+        // read as a difference -- fourteen red rows that say nothing about the port. The owed line lives
+        // in coordination/api-queue.md, and the class comes back with its probe section.
 
         // ---- the media selection pair.
         {
