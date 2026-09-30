@@ -112,43 +112,47 @@
     },
     {
       "api": "NSInflectionAgreementArgumentAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the port answers the host's own value, NSInflectionAgreementArgument, which the differential reads out of both images and compares",
       "introduced": "17.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSInflectionAgreementArgumentAttributeName (the value is read with dlsym from each side and compared)",
+      "status": "implemented",
+      "facts": "facts/Foundation/Morphology.md"
     },
     {
       "api": "NSInflectionAgreementConceptAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the port answers the host's own value, NSInflectionAgreementConcept, which the differential reads out of both images and compares",
       "introduced": "17.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSInflectionAgreementConceptAttributeName (the value is read with dlsym from each side and compared)",
+      "status": "implemented",
+      "facts": "facts/Foundation/Morphology.md"
     },
     {
       "api": "NSInflectionConceptsKey",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the port answers the host's own value, NSContextInflectionConcepts, which the differential reads out of both images and compares",
       "introduced": "17.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSInflectionConceptsKey (the value is read with dlsym from each side and compared)",
+      "status": "implemented",
+      "facts": "facts/Foundation/Morphology.md"
     },
     {
       "api": "NSInflectionReferentConceptAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the port answers the host's own value, NSInflectionReferentConcept, which the differential reads out of both images and compares",
       "introduced": "17.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSInflectionReferentConceptAttributeName (the value is read with dlsym from each side and compared)",
+      "status": "implemented",
+      "facts": "facts/Foundation/Morphology.md"
     },
     {
       "api": "NSLocale.languageIdentifier",
@@ -172,11 +176,11 @@
     },
     {
       "api": "NSMorphologyPronoun",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "effect": "the class is there on both sides: the differential asks NSClassFromString for each name and reads the port's answer beside the host's, and the two implementations are proved apart by dladdr on the port's IMP",
       "introduced": "17.0",
       "kind": "class",
       "minimum": "6.0",
-      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately)",
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case class.NSMorphologyPronoun",
       "status": "implemented"
     },
     {
