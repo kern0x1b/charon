@@ -163,13 +163,12 @@
     },
     {
       "api": "NSInflectionRuleExplicit",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "effect": "the class is there on both sides and the differential asks NSClassFromString for the name on each, with dladdr on the port's IMP proving the two implementations apart",
       "introduced": "15.0",
       "kind": "class",
       "minimum": "6.0",
-      "reason": "the class is in the library and compiles, but the differential does not measure it: the differential never constructs one, so nothing measures this class. Owed: a case that does.",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case class.NSInflectionRuleExplicit",
+      "status": "implemented"
     },
     {
       "api": "NSInlinePresentationIntentAttributeName",
@@ -202,13 +201,12 @@
     },
     {
       "api": "NSMorphologyAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the port answers the host's own value, NSMorphology",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
-      "reason": "the class is in the library and compiles, but the differential does not measure it: a constant class the differential does not name. Owed: a case that does.",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSMorphologyAttributeName",
+      "status": "implemented"
     },
     {
       "api": "NSMorphologyCustomPronoun",
