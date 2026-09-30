@@ -37,6 +37,14 @@ xcrun clang $flags $RENAME -I "$FOUNDATION" -o "$BUILD/differential" \
 [ -x "$BUILD/differential" ] || { echo "no binary at $BUILD/differential" >&2; exit 1; }
 echo "bytes $(wc -c < "$BUILD/differential" | tr -d ' ')"
 
+# Which image answered, before the verdict is read: dladdr on both sides' IMPs, so a
+# comparison that quietly compared the port with itself cannot pass unnoticed.
+xcrun clang $flags $RENAME -I "$FOUNDATION" -o "$BUILD/provenance" "$here/provenance.m" \
+    "$FOUNDATION/CharonMorphology.m" "$FOUNDATION/NSMorphologyCustomPronoun.m" \
+    "$FOUNDATION/NSMorphologyPronoun.m" "$FOUNDATION/NSInflectionRule.m" \
+    "$FOUNDATION/NSInflectionRuleExplicit.m" -framework Foundation
+"$BUILD/provenance"
+
 verdict=$("$BUILD/differential" "$here/expected.txt" | tail -1) || verdict="checks=? failures=?"
 echo "verdict $verdict"
 case "$verdict" in

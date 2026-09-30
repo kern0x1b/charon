@@ -91,18 +91,27 @@ FOUNDATION_EXPORT NSAttributedStringKey const NSInflectionAgreementConceptAttrib
 FOUNDATION_EXPORT NSAttributedStringKey const NSInflectionAgreementArgumentAttributeName;
 FOUNDATION_EXPORT NSAttributedStringKey const NSInflectionReferentConceptAttributeName;
 
-/* Five enumerations the 16.4 SDK -- the one this port compiles against -- does not declare, and
-   that the 26.2 header does. Transcribed from
-   iPhoneOS26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSMorphology.h, lines
-   47-89, the values verbatim and in the header's own order. The 16.4 header declares only
-   NSGrammaticalGender, NSGrammaticalPartOfSpeech and NSGrammaticalNumber; the other five arrived
-   with ios(17.0) per the header's own API_AVAILABLE, so the port has to spell them itself for the
-   releases below that. Each is behind its own guard, the pattern nw_connection.m uses for
-   nw_connection_state_setup: a build SDK that does declare one must not see a second typedef for
-   it. Nothing here is inferred - every enumerator is the header's, and the facts page names the
-   file and lines. */
+/* Six names the build SDK may or may not declare, guarded on the SDK's own version rather than on
+   a macro of our own. The per-name #ifndef this first used does not work: the host's Foundation, which
+   is newer than the device's, declares all six, and a macro nothing else sets is never set there --
+   the host build failed with "redefinition of enumerator NSGrammaticalPronounTypePersonal" against
+   its own header. The 26.2 header's API_AVAILABLE puts the five enumerations at ios(17.0) and
+   macos(14.0); the class NSMorphologyPronoun is declared in the same header. So a build SDK at or
+   above those versions has its own, and only a build SDK below them needs the port to spell them.
+   Both sets are Apple's own and enumerate the same values, so which one a build sees changes no
+   answer -- only which declaration the compiler binds.
 
-#ifndef CHARON_NSGRAMMATICALCASE_DECLARED
+   The values below are transcribed from
+   iPhoneOS26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSMorphology.h, lines
+   47-89 (the five enumerations) and 108-113 (the class), verbatim and in the header's order. */
+
+#if defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && __MAC_OS_X_VERSION_MAX_ALLOWED >= 140000
+#define CHARON_MORPHOLOGY_26_NAMES 1
+#elif defined(__IPHONE_OS_VERSION_MAX_ALLOWED) && __IPHONE_OS_VERSION_MAX_ALLOWED >= 170000
+#define CHARON_MORPHOLOGY_26_NAMES 1
+#endif
+
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 typedef NS_ENUM(NSInteger, NSGrammaticalCase) {
     NSGrammaticalCaseNotSet = 0,
     NSGrammaticalCaseNominative,
@@ -120,56 +129,43 @@ typedef NS_ENUM(NSInteger, NSGrammaticalCase) {
     NSGrammaticalCaseLocative,
     NSGrammaticalCaseTranslative
 };
-#define CHARON_NSGRAMMATICALCASE_DECLARED 1
 #endif
 
-#ifndef CHARON_NSGRAMMATICALPRONOUNTYPE_DECLARED
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 typedef NS_ENUM(NSInteger, NSGrammaticalPronounType) {
     NSGrammaticalPronounTypeNotSet = 0,
     NSGrammaticalPronounTypePersonal,
     NSGrammaticalPronounTypeReflexive,
     NSGrammaticalPronounTypePossessive
 };
-#define CHARON_NSGRAMMATICALPRONOUNTYPE_DECLARED 1
 #endif
 
-#ifndef CHARON_NSGRAMMATICALPERSON_DECLARED
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 typedef NS_ENUM(NSInteger, NSGrammaticalPerson) {
     NSGrammaticalPersonNotSet = 0,
     NSGrammaticalPersonFirst,
     NSGrammaticalPersonSecond,
     NSGrammaticalPersonThird
 };
-#define CHARON_NSGRAMMATICALPERSON_DECLARED 1
 #endif
 
-#ifndef CHARON_NSGRAMMATICALDETERMINATION_DECLARED
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 typedef NS_ENUM(NSInteger, NSGrammaticalDetermination) {
     NSGrammaticalDeterminationNotSet = 0,
     NSGrammaticalDeterminationIndependent,
     NSGrammaticalDeterminationDependent
 };
-#define CHARON_NSGRAMMATICALDETERMINATION_DECLARED 1
 #endif
 
-#ifndef CHARON_NSGRAMMATICALDEFINITENESS_DECLARED
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 typedef NS_ENUM(NSInteger, NSGrammaticalDefiniteness) {
     NSGrammaticalDefinitenessNotSet = 0,
     NSGrammaticalDefinitenessIndefinite,
     NSGrammaticalDefinitenessDefinite
 };
-#define CHARON_NSGRAMMATICALDEFINITENESS_DECLARED 1
 #endif
 
-/* One class the 16.4 SDK does not declare at all, and that the 26.2 header does: NSMorphologyPronoun.
-   Transcribed from iPhoneOS26.2.sdk/.../Foundation.framework/Headers/NSMorphology.h:108-113 - the
-   superclass, the two protocols, the two initialisers the header marks unavailable, and the three
-   that build one. Without an interface the compiler treats the port's own @implementation as a root
-   class, and '[super init]' and the inherited +class are then errors; with it, they compile. The
-   properties the carry reads are declared in the same block. Guarded by its own name, as the five
-   enumerations are. */
-
-#ifndef CHARON_NSMORPHOLOGYPRONOUN_DECLARED
+#ifndef CHARON_MORPHOLOGY_26_NAMES
 @interface NSMorphologyPronoun : NSObject <NSCopying, NSSecureCoding>
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
@@ -180,7 +176,6 @@ typedef NS_ENUM(NSInteger, NSGrammaticalDefiniteness) {
 @property (readonly, strong) NSMorphology *morphology;
 @property (readonly, strong, nullable) NSMorphology *dependentMorphology;
 @end
-#define CHARON_NSMORPHOLOGYPRONOUN_DECLARED 1
 #endif
 
 @interface NSMorphology (CharonGrammatical17)
