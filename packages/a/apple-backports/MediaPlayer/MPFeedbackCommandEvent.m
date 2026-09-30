@@ -6,17 +6,40 @@
 // code and cannot shadow anything, so there is nothing native for it to be. `absent` is for a member
 // whose answer needs hardware the device lacks, and none of this family needs any.
 //
-// THIS ONE IS NOT AN OPTIONAL EXTRA. The port already carries four public events whose public shape
-// names this class as their ancestor - MPRatingCommandEvent, MPSkipIntervalCommandEvent,
-// MPChangePlaybackRateCommandEvent and MPChangePlaybackPositionCommandEvent - and the corpus filed this
-// row `absent` on the ground that "the class arrived in iOS 7.1". The release carrying nothing is true
-// and is not the question. The question is what a caller writes:
+// WHY THIS CLASS IS CARRIED, stated at its real size.
 //
-//   [event isKindOfClass:[MPFeedbackCommandEvent class]]
+// The first draft of this file justified it by a gap in the port's own event hierarchy: "the port already
+// carries four public events whose public ancestor chain names this class, so [event
+// isKindOfClass:[MPFeedbackCommandEvent class]] answered NO for every event it builds". That was false,
+// and the header says so. MPRemoteCommandEvent.h at SDK 26.2 declares MPRatingCommandEvent,
+// MPSkipIntervalCommandEvent, MPChangePlaybackRateCommandEvent and MPChangeLanguageOptionCommandEvent
+// all as `: MPRemoteCommandEvent` - flat, not `: MPFeedbackCommandEvent` - and grep for
+// "@interface.*: MPFeedbackCommandEvent" over MediaPlayer.framework/Headers finds NOTHING in 26.2 and
+// nothing in 16.4. No class Apple publishes derives from it. The port followed 26.2 for its siblings and
+// so should not claim a chain the SDK does not have.
 //
-// which answers NO for every event this port builds, where on the release that class exists and the
-// event is one of its instances. The port's own header declares all four as MPRemoteCommandEvent, so
-// the chain a caller walks has a link missing that Apple's own chain has. Carrying the class closes it.
+// What is true, and is the whole justification: this is a PUBLIC class the SDK declares at
+// MP_API(ios(7.1)) with one member, and 6.1.3 carries neither it nor its selector. Measured with
+// tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): no class
+// whose name holds 'CommandEvent' is among the 236 classes and none of the 41 categories adds one, and
+// all 236 were read and none declares isNegative; in the release's whole-cache selector list
+// (selectors_armv7.txt, 113981 distinct names) -isNegative is on one line, because some other framework's
+// class declares that name, which is the trap facts/MediaPlayer/MPMediaItem.md:105 records for
+// albumTrackNumber - so the per-class read above is what decides it. -aSelectorNoFrameworkHas is absent
+// as the control.
+//
+// So before this, NSClassFromString(@"MPFeedbackCommandEvent") answered nil and `[MPFeedbackCommandEvent
+// new]` was a call on nil. After it, the class exists, a caller may construct one, set -isNegative and
+// read it back, and ask isKindOfClass: of it. That is what carried means here: a real, addressable
+// object, not a wire-up. Like every other event class this port carries, it is never messaged by the
+// port's own bridge - Apple's entry point for that is -[MPRemoteCommand deliverEvent:], which is on no
+// line of the 6.1.3 selector universe and has no MPRemoteCommand class among the 236 to hang on, and
+// which no file under packages/a/apple-backports/ defines either, and the
+// port's own -charon_dispatch: (MPRemoteCommandCenter71.m:133) is reached only from the subtype switch at
+// :250-275, which handles the ten UIEventSubtypeRemoteControl* cases UIEvent.h declares in 26.2 and 16.4
+// (100 through 109) and which has no feedback case at any availability. MPFeedbackCommand's own row in
+// ios71remotecommand.json has said "never messaged by this port's own bridge, since no old-style
+// feedback gesture exists" since it landed; this event's row now says the same about itself.
 //
 // New code over the base MPRemoteCommandCenter71.m already carries. The header line it implements:
 //
@@ -29,7 +52,7 @@
 // the getter.
 //
 // Readwrite in the port where the header has it readonly, like every other event the port carries: an
-// event the port builds has to be able to carry the feedback it is an event *about*, and a new class
+// event a caller builds has to be able to carry the feedback it is an event *about*, and a new class
 // shadows nothing.
 
 #import <Foundation/Foundation.h>

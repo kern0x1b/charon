@@ -11,11 +11,28 @@
 // necessary and not sufficient and the per-class read is what decides a member. A class the release does
 // not have is new code and cannot shadow anything, so there is nothing native for it to be.
 //
-// The port already CARRIES the command that produces it - MPChangeShuffleModeCommand, introduced 8.0, in
-// ios71remotecommand.json - and iOS 6's UIEventTypeRemoteControl has no shuffle-mode subtype, so that
-// command has never had an event to deliver. This is that event, for the reason its repeat-mode
-// neighbour states at length. One object per release, per band()'s own rule: this file holds the 8.0
-// shuffle event and not the 8.0 repeat one, which is its own file.
+// WHAT IT IS NOT, and it is the same thing its repeat-mode neighbour beside it gets wrong if you let it,
+// so it is said here too rather than left to be copied. The port already CARRIES the command this event
+// belongs to - MPChangeShuffleModeCommand, introduced 8.0, ios71remotecommand.json - and that command's own
+// row already says "a real, stateful object; never messaged by this port's own bridge, since no old-style
+// shuffle-mode gesture exists". Nothing in this tree makes it otherwise:
+//   - Apple's entry point for handing a command an event is -[MPRemoteCommand deliverEvent:], which is on
+//     no line of the 6.1.3 selector universe and has no MPRemoteCommand class to hang on - the 236 hold
+//     none - and which the port does not define either: no file under packages/a/apple-backports/
+//     DEFINES a deliverEvent: method.
+//   - the port's own -charon_dispatch: (MPRemoteCommandCenter71.m:133) is called from exactly one place,
+//     the subtype switch at :250-275, and that switch maps ten cases and this is not one of them.
+//   - UIEvent.h in SDK 26.2 AND 16.4 declares exactly those ten subtypes, 100 through 109, with no
+//     shuffle-mode case at any availability. No UIEvent on any iOS can carry a shuffle-mode change.
+//
+// So this class is CARRIED as a real, addressable MPChangeShuffleModeCommandEvent a caller may construct,
+// set -shuffleType and -preservesShuffleMode on, and hand to its own handler; and it is never messaged by
+// this port's own bridge, because there is no gesture to message it from. The corpus filed this row
+// `absent` with the reason "the class arrived in iOS 8.0"; the truth is narrower: the class is here and
+// works, and nothing on this device produces one.
+//
+// One object per release, per band()'s own rule: this file holds the 8.0 shuffle event and not the 8.0
+// repeat one, which is its own file.
 //
 // New code over the base MPRemoteCommandCenter71.m already carries. The header lines it implements,
 // quoted:

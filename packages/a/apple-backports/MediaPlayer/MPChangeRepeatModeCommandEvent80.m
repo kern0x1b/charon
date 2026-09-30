@@ -12,12 +12,39 @@
 // not have is new code and cannot shadow anything, so there is nothing native for it to be. `absent` is
 // for a member whose answer needs hardware the device lacks, and none of this family needs any.
 //
-// The port already CARRIES the command that produces it - MPChangeRepeatModeCommand, introduced 8.0, in
-// ios71remotecommand.json - and iOS 6's UIEventTypeRemoteControl has no repeat-mode subtype, so that
-// command has never had an event to deliver. This is that event: without it the port's own command is an
-// addressable object with no answer, which is what the corpus filed this row as. The port's bridge
-// builds every command event lazily by class, so carrying the event is what makes the command reach a
-// handler when one is set.
+// WHAT IT IS NOT, because the first draft of this file claimed it and was wrong. The port already CARRIES
+// the command this event belongs to - MPChangeRepeatModeCommand, introduced 8.0, ios71remotecommand.json -
+// and that command's own row already says the honest thing: "a real, stateful object; never messaged by
+// this port's own bridge, since no old-style repeat-mode gesture exists". The first draft here said the
+// port's bridge builds every command event lazily by class, so carrying the event is what makes the
+// command reach a handler. It does not, and no commit in this tree makes it: MPRemoteCommandCenter71.m's
+// switch at :250-275 maps exactly TEN UIEventSubtypeRemoteControl* cases to ten commands, and this event
+// is not among them.
+//
+// The measurement that settles it, because "the bridge does not do it" is only half a claim:
+//   - Apple's entry point for handing a command an event is -[MPRemoteCommand deliverEvent:]. It is on
+//     NO line of the 6.1.3 selector universe (113981 distinct names, controls prepareToPlay 1 and
+//     aSelectorNoFrameworkHas 0), and there is no MPRemoteCommand class among the 236 to declare it. The
+//     port does not define it either: no file under packages/a/apple-backports/ DEFINES a deliverEvent:
+//     method - the name appears in this family's own prose about it and in no @implementation. The
+//     port's equivalent is its own -charon_dispatch: (MPRemoteCommandCenter71.m:133), and that is
+//     called from exactly one place, the switch.
+//   - that switch handles ten subtypes: Play, Pause, Stop, TogglePlayPause, NextTrack, PreviousTrack,
+//     BeginSeekingForward, EndSeekingForward, BeginSeekingBackward, EndSeekingBackward.
+//   - and UIEvent.h in SDK 26.2 AND in 16.4 declares exactly those ten, 100 through 109, with no
+//     repeat-mode, shuffle-mode, rating, playback-rate or feedback case at any availability. There is no
+//     iOS version whose UIEvent can carry a repeat-mode change, so no code path anywhere can build this
+//     event from a UIEvent. A repeat-mode change on this release is a setting in Settings.app and nothing
+//     else, and it reaches an application through no API at all.
+//
+// So this class is CARRIED as what it actually is: a real, addressable MPChangeRepeatModeCommandEvent that
+// a caller may construct, set -repeatType and -preservesRepeatMode on, and hand to its own handler. It is
+// never messaged by this port's own bridge, for the reason measured above - which is the same honest
+// posture MPChangeRepeatModeCommand's own row has carried since it landed, and the same one
+// MPChangePlaybackPositionCommandEvent's row words as "the event type MPChangeRepeatModeCommand would
+// deliver if this release had a scrubbing gesture to source it from". The corpus filed this row `absent`
+// with the reason "the class arrived in iOS 8.0"; the truth is narrower and better: the class is here and
+// works, and nothing on this device produces one.
 //
 // New code over the base MPRemoteCommandCenter71.m already carries. The header lines it implements,
 // quoted:

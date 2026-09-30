@@ -1,4 +1,4 @@
-# The command events iOS 6.1.3 has no name for, and the chain a caller walks
+# The command events iOS 6.1.3 has no name for
 
 `facts/MediaPlayer/MPMediaItem.md` records what this port carries of `MPMediaItem`. This file records the
 seven command-event rows of the MediaPlayer queue that were filed `absent` on the ground that "the class
@@ -36,28 +36,55 @@ members is the port's to carry.
 So every one of these classes is new code that cannot shadow anything. `absent` is for a member whose
 answer needs hardware the device lacks; none of these needs any. They are carried.
 
-## The gap that made this more than a formality
+## What these three are, at their real size
 
-The port already carried four public events whose **public** ancestor chain names this class:
-`MPRatingCommandEvent`, `MPSkipIntervalCommandEvent`, `MPChangePlaybackRateCommandEvent` and
-`MPChangePlaybackPositionCommandEvent` (`registry/MediaPlayer/ios71remotecommand.json`,
-`mpchangeplaybackposition.json`, `mpchangeplaybackrate.json`, `mpratingcommandevent.json`). A caller who
-writes
+**They are not wired to anything, and the first draft of this page claimed they were.** It said the
+port's bridge "builds every command event lazily by class, so carrying the event is what makes the
+command reach a handler", and that `MPFeedbackCommandEvent` closed a link missing from the ancestor
+chain four carried events walk. Both are false, and here is the measurement that says so.
 
-```objc
-[event isKindOfClass:[MPFeedbackCommandEvent class]]
+**`deliverEvent:` is Apple's entry point for handing a command an event, and nothing here has it.**
+
+| question | answer | how it was read |
+| --- | --- | --- |
+| `-deliverEvent:` on 6.1.3? | **no line** in the 113981-name list | `grep -cxF "deliverEvent:" ~/.charon/dyld/6.1.3/selectors_armv7.txt` -> 0; controls `prepareToPlay` 1, `aSelectorNoFrameworkHas` 0 |
+| an `MPRemoteCommand` to declare it on 6.1.3? | none of the 236 classes | `tools/mach32_methods.py`, image `0x31fe3000` |
+| does the port define it? | **nothing** | `grep -rn deliverEvent packages/a/apple-backports/` reads no file |
+| what does the port use instead? | its own `-charon_dispatch:` | `MPRemoteCommandCenter71.m:133` |
+| who calls it? | **one place**, the subtype switch | `MPRemoteCommandCenter71.m:250-275` |
+| what does that switch map? | ten cases: Play, Pause, Stop, TogglePlayPause, NextTrack, PreviousTrack, BeginSeekingForward, EndSeekingForward, BeginSeekingBackward, EndSeekingBackward | read from the switch |
+| could any iOS send more? | **no** - `UIEvent.h` in SDK **26.2 and 16.4** declares exactly those ten, `100` through `109`, with no repeat-mode, shuffle-mode, rating, playback-rate or feedback case at any availability | both SDK headers, read |
+
+So no `UIEvent` on any iOS can carry a repeat-mode, shuffle-mode or feedback change, and no code path in
+this tree builds any of these three events. A repeat-mode change on this release is a switch in
+Settings.app and nothing else; it reaches an application through no API at all.
+
+**And the ancestor chain does not exist.** The first draft said the port's four carried events walk
+through `MPFeedbackCommandEvent`. `MPRemoteCommandEvent.h` at 26.2 declares `MPRatingCommandEvent`,
+`MPSkipIntervalCommandEvent`, `MPChangePlaybackRateCommandEvent` and
+`MPChangeLanguageOptionCommandEvent` all as `: MPRemoteCommandEvent` - flat - and
+
+```
+grep -n "@interface.*: MPFeedbackCommandEvent" .../MediaPlayer.framework/Headers/*.h
 ```
 
-got **NO** for every event this port builds. On the release that class exists and every feedback event is
-one of its instances. Nothing in the port's header said otherwise - the classes were declared as
-`MPRemoteCommandEvent`, which is the port's own base and a real class - so no compiler and no reviewer of
-the earlier series could see it. Carrying `MPFeedbackCommandEvent` closes the link.
+finds **nothing in 26.2 and nothing in 16.4**. No class Apple publishes derives from it. The port
+followed 26.2 when it declared its siblings over `MPRemoteCommandEvent`, which is the right call, and
+then this page claimed a chain the SDK does not have.
 
-The 8.0 pair is the same defect one step along: the port carries `MPChangeRepeatModeCommand` and
-`MPChangeShuffleModeCommand` (8.0, `ios71remotecommand.json`), and `MPRemoteCommandCenter71.m` builds
-every command event lazily by class, so both commands had an event class that did not exist. iOS 6's
-`UIEventTypeRemoteControl` has no repeat-mode and no shuffle-mode subtype, so the port's bridge never
-sends one - an addressable command with no answer is what the corpus filed as `absent`.
+## What the three are therefore carried as
+
+Real, addressable objects: a caller may construct one, set its properties, and hand it to its own
+handler. Before these commits `NSClassFromString(@"MPFeedbackCommandEvent")` answered nil,
+`[MPChangeRepeatModeCommandEvent new]` messaged nil, and the corpus's blanket "the class arrived in
+iOS 7.1 / 8.0" stood in for both. They are never messaged by this port's own bridge.
+
+That is the posture every sibling row in this family has carried since it landed -
+`ios71remotecommand.json` writes of `MPRatingCommand` "never messaged by this port's own bridge, since
+no old-style rating gesture exists", of `MPSkipIntervalCommand` the same for skipping, and of
+`MPChangePlaybackPositionCommandEvent` "the event type MPChangePlaybackPositionCommand would deliver
+**if this release had a scrubbing gesture to source it from**". These three now say the same about
+themselves instead of claiming a wire-up.
 
 ## What each answers
 
@@ -77,7 +104,9 @@ sends one - an addressable command with no answer is what the corpus filed as `a
   `MPMediaItem.isCompilation` and `MPMediaItem.hasProtectedAsset` already use
   (`facts/MediaPlayer/MPMediaItem.md:61,79`). A probe that asked for `negative` would have learned
   nothing about this family.
-- **`NO` is what an event that set nothing answers**, and it is the declared zero of `BOOL`.
+- **`NO` is what an event that set nothing answers**, and it is the declared zero of `BOOL`. The subject
+  is a **caller-constructed** event: nothing in this tree builds one for a repeat-mode, shuffle-mode or
+  feedback change, and the section above is the measurement for that.
 - **`MPRepeatType` has no "unknown" case** - `MPRemoteControlTypes.h:17` gives `MPRepeatTypeOff`,
   `MPRepeatTypeOne`, `MPRepeatTypeAll` - and `MPShuffleType` has none either
   (`MPRemoteControlTypes.h:11`: `MPShuffleTypeOff`, `MPShuffleTypeItems`, `MPShuffleTypeCollections`).
