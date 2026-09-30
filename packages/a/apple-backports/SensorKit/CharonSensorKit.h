@@ -160,6 +160,16 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, assign) SRFaceMetricsContext context;
 @property (nonatomic, readonly, strong, nullable) NSArray<SRFaceMetricsExpression *> *wholeFaceExpressions;
 @property (nonatomic, readonly, strong, nullable) NSArray<SRFaceMetricsExpression *> *partialFaceExpressions;
+// faceAnchor is ARFaceAnchor * in the 26.2 header (SRFaceMetrics.h:72), and ARKit is not a framework this
+// package carries, so there is no such type here to declare the property over. It is declared as id
+// rather than left out, and that is the load-bearing part: the archiver walks the DECLARED property
+// list, so a property that is not declared cannot be read back and an archived reading would silently
+// lose the one field that ties a face reading to the camera frame it came from. SRFetchResult.sample
+// is already declared this way for the same reason - its SampleType is a generic parameter rather than a
+// class. The host's own SensorKit declares faceAnchor and does not implement it, so there is no oracle
+// for the value; what the port answers is whatever an application archived under the name, and nil when
+// nothing was, which is what the header's own nullable-for-everything-about-a-camera says.
+@property (nonatomic, readonly, strong, nullable) id faceAnchor;
 @end
 
 @interface SRFaceMetricsExpression : NSObject
@@ -199,7 +209,12 @@ typedef NSUInteger SRWristTemperatureCondition;
 
 // A night of sleep, and the speech the microphone heard in it. -soundClassification is declared by
 // SoundAnalysis and -speechRecognition by Speech, neither of which this package carries, so those two
-// are registered absent and are not declared here; the rest of the class is real.
+// are declared as id rather than left out: the archiver walks the DECLARED property list, so a property
+// that is not declared cannot be read back, and an archived speech reading would lose the two fields
+// that say what was said and what was heard. Both are nullable in the 26.2 header
+// (SRSpeechMetrics.h:151 and :152) and both read nil from the port with nothing archived under them,
+// which is what the host's own SensorKit answers for a metrics object with no session - measured, in the
+// section of facts/SensorKit/SensorKit.md that names the harness.
 @interface SRSleepSession : NSObject
 @property (nonatomic, readonly, copy, nullable) NSString *identifier;
 @property (nonatomic, readonly, strong, nullable) NSDate *startDate;
@@ -222,6 +237,12 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, strong, nullable) SRAudioLevel *audioLevel;
 @property (nonatomic, readonly, strong, nullable) SRSpeechExpression *speechExpression;
 @property (nonatomic, readonly, assign) SRSpeechMetricsSessionFlags sessionFlags;
+// speechRecognition is SFSpeechRecognitionResult * in the 26.2 header and soundClassification is
+// SNClassificationResult *, and Speech and SoundAnalysis are not frameworks this package carries - so
+// they are id here, for the reason the class comment above gives: a property the archiver cannot see
+// cannot be read back.
+@property (nonatomic, readonly, strong, nullable) id speechRecognition;
+@property (nonatomic, readonly, strong, nullable) id soundClassification;
 @end
 
 @interface SRSpeechMetrics (CharonSensorKit172)

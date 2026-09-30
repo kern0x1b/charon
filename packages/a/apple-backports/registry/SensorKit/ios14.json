@@ -1295,10 +1295,11 @@
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a category on NSString in SensorKit's own header, and the port adds no category to a Foundation class: it would have to read a deletion record's sensor, and there is no record to read on this release",
-      "effect": "not carried: respondsToSelector: answers NO for the selector",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "a CATEGORY on NSString in the framework's own header, - (nullable SRSensor)sr_sensorForDeletionRecordsFromSensor at SRSensors+SRDeletionRecord.h:15. The row was absent with the reason \"the port adds no category to a Foundation class\", and that reason was wrong: this framework contradicts it twice over already, NSDate+SensorKit14.m being a category on NSDate in this same folder. What is true is that the earlier reason bundled a second claim into it - \"it would have to read a deletion record's sensor\" - and this method reads no record and asks for no sensor. It is a string-to-string mapping, and the host's own SensorKit.framework carries the category and answers it",
+      "effect": "the receiver with \".tombstones\" appended, or nil when the receiver already ends in it. That is measured, not derived from the name: the host answers \".tombstones\" for \"\", \"hello.tombstones\" for \"hello\", and \"tombstones.tombstones\" for \"tombstones\" (no leading dot, so it is not already suffixed), preserves case and whitespace verbatim, and answers nil for every input already ending in the suffix. The nil half is why the header declares the return nullable at all: a deletion record's own sensor name handed back would be a sensor that collects nothing, and asking twice gives nil the second time. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSensors+SRDeletionRecord.h of SDK 26.2 for the declaration, its SRSensor return type and its nullable; the host's own SensorKit.framework for every answer, and the witness is tests/backports/host/sensorkit-tombstones/run.sh: two processes - the port's category linked into one, the host's SensorKit opened in the other - compared over 58 inputs, with three mutations that each turn it red and an empty host file that is red for comparing nothing"
     },
     {
       "api": "-[SRAcousticSettings init]",
@@ -1393,20 +1394,22 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a count derived from a sentiment analysis, and the analysis is Apple's: nothing on this release produces the per-category counts the port would have to read",
-      "effect": "not carried: respondsToSelector: answers NO for the selector",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts), at SRKeyboardMetrics.h:303 for words and :306 for emoji, arrived in iOS 15.0. The row was absent with the reason \"the count is derived from a sentiment analysis, and the analysis is Apple's\" - which is true of the CLASSIFICATION and false of the count. The port does not classify anything: it reads the count out of the same store every other property of this class reads, under a key made of the selector and the category, because a count per category is ten numbers and one key per method would hold one of them",
+      "effect": "zero when nothing is stored under that key, which is the host's own answer and not this port's: measured over all ten SRKeyboardMetricsSentimentCategory cases, wordCountForSentimentCategory: and emojiCountForSentimentCategory: answer 0 on the host's SensorKit too, for a metrics object with no session. A count that were archived under the key reads back as that count. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten-case enumeration at :283-:292; the host's own SensorKit.framework for the answer, and the witness is tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations"
     },
     {
       "api": "-[SRKeyboardMetrics wordCountForSentimentCategory:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the same derived count, over words rather than emoji, for the same reason",
-      "effect": "not carried: respondsToSelector: answers NO for the selector",
-      "source": "the headers of SRSensorReader.h and SRError.h in SDK 26.2 for the spellings and the error code"
+      "status": "implemented",
+      "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts), at SRKeyboardMetrics.h:303 for words and :306 for emoji, arrived in iOS 15.0. The row was absent with the reason \"the count is derived from a sentiment analysis, and the analysis is Apple's\" - which is true of the CLASSIFICATION and false of the count. The port does not classify anything: it reads the count out of the same store every other property of this class reads, under a key made of the selector and the category, because a count per category is ten numbers and one key per method would hold one of them",
+      "effect": "zero when nothing is stored under that key, which is the host's own answer and not this port's: measured over all ten SRKeyboardMetricsSentimentCategory cases, wordCountForSentimentCategory: and emojiCountForSentimentCategory: answer 0 on the host's SensorKit too, for a metrics object with no session. A count that were archived under the key reads back as that count. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten-case enumeration at :283-:292; the host's own SensorKit.framework for the answer, and the witness is tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations"
     },
     {
       "api": "-[SRPhotoplethysmogramAccelerometerSample init]",
@@ -1480,9 +1483,9 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks -init NS_UNAVAILABLE and -initWithSensor: is the only way in, so a reader is made the way the SDK makes one",
-      "effect": "not carried: the selector is not implemented, and +sharedReader reaches the class through -initWithSensor: instead",
-      "source": "the header of SRSensorReader.h in SDK 26.2 (init NS_UNAVAILABLE, initWithSensor: the way in)"
+      "reason": "the 26.2 header marks it NS_UNAVAILABLE - \"- (instancetype)init NS_UNAVAILABLE;\" at SRSensorReader.h:53, with +new marked the same way at :54 - so it is not API a caller writes and the port's way in is -initWithSensor:, which the header leaves open and which SRSensorReader.m implements",
+      "effect": "not carried, and this row stays absent rather than becoming an implementation that raises. The host's own SensorKit answers -init by raising, and the answer is worth having on record: NSInternalInconsistencyException with the message \"Use initWithSensor:\" - Apple's own text, measured by tests/backports/host/sensorkit-value/host-answers.m. It is still absent, because +[SRSensorReader new] is already an implemented row in this file and +new calls -init: making this raise would change what that row answers, and that row is not this series' to change. Implementing it is a one-line body and a decision about +new with it",
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration and its NS_UNAVAILABLE; the host's own SensorKit.framework for what -init raises, read by tests/backports/host/sensorkit-value"
     },
     {
       "api": "-[SRSensorReader startRecording]",
@@ -2368,10 +2371,11 @@
       "kind": "property",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "its type is ARKit, which this package does not carry, and there is no such type here to answer with",
-      "effect": "not carried: respondsToSelector: answers NO for the accessor, and the row's value is a measurement of a sensor this release cannot report either - the 6.1.3 cache carries no SensorKit symbol at all, measured with objc.binary_inventory",
-      "source": "the header of SensorKit.framework in SDK 26.2 for the type; the release's armv7 6.1.3 cache, which has no SR* symbol"
+      "status": "implemented",
+      "reason": "ARFaceAnchor * in the 26.2 header (SRFaceMetrics.h:72), and ARKit is not a framework this package carries, so the row was absent for the same reason as the two speech properties. The hardware is named and measured too: a face reading needs the TrueDepth camera this fleet has no device for, and the iPhone 4S and the iPad 2 have no sensor of the kind at all. It is declared as id and reads the store under its own name, which is what keeps an archived reading whole",
+      "effect": "nil when nothing is archived under \"faceAnchor\", which is what a reading with no camera behind it can be. THIS ONE HAS NO ORACLE, and the row says so rather than implying one: the host's own SensorKit declares -faceAnchor and does not implement it, so sending it raises \"unrecognized selector sent to instance\" - measured, in the harness tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations, which records that as a limit rather than a disagreement. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the absence of any host implementation is measured by tests/backports/host/sensorkit-value/host-answers.m, and the port's side is tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations"
     },
     {
       "api": "SRFaceMetrics.partialFaceExpressions",
@@ -3950,10 +3954,11 @@
       "kind": "property",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "its type is SoundAnalysis, which this package does not carry, and there is no such type here to answer with",
-      "effect": "not carried: respondsToSelector: answers NO for the accessor, and the row's value is a measurement of a sensor this release cannot report either - the 6.1.3 cache carries no SensorKit symbol at all, measured with objc.binary_inventory",
-      "source": "the header of SensorKit.framework in SDK 26.2 for the type; the release's armv7 6.1.3 cache, which has no SR* symbol"
+      "status": "implemented",
+      "reason": "SNClassificationResult * in the 26.2 header (SRSpeechMetrics.h:152), and SoundAnalysis is not a framework this package carries, so the row was absent for the same reason as speechRecognition and is now carried for the same reason: the archiver walks the DECLARED property list, so an undeclared property cannot be read back. It is declared as id and reads the store under its own name",
+      "effect": "nil when nothing is archived under \"soundClassification\", which is what the host's own SensorKit answers for a metrics object with no session - measured, and nil there too. Whatever an application archived under the name reads back as that value. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's own SensorKit.framework for the answer, and the witness is tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations"
     },
     {
       "api": "SRSpeechMetrics.speechExpression",
@@ -3971,10 +3976,11 @@
       "kind": "property",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "its type is Speech, which this package does not carry, and there is no such type here to answer with",
-      "effect": "not carried: respondsToSelector: answers NO for the accessor, and the row's value is a measurement of a sensor this release cannot report either - the 6.1.3 cache carries no SensorKit symbol at all, measured with objc.binary_inventory",
-      "source": "the header of SensorKit.framework in SDK 26.2 for the type; the release's armv7 6.1.3 cache, which has no SR* symbol"
+      "status": "implemented",
+      "reason": "SFSpeechRecognitionResult * in the 26.2 header (SRSpeechMetrics.h:151), and Speech is not a framework this package carries, so the row was absent with the reason \"there is no such type here to answer with\". The type is still not here and the property is now carried anyway, for the reason the port already gives for SRFetchResult.sample: the archiver walks the DECLARED property list, so a property this package does not declare cannot be read back, and an archived speech reading would silently lose the one field that says what was said. It is declared as id and reads the store under its own name",
+      "effect": "nil when nothing is archived under \"speechRecognition\", which is what the host's own SensorKit answers for a metrics object with no session - measured, and nil there too. Whatever an application archived under the name reads back as that value. NOT a device measurement: no device has been asked and the guest measurement is owed",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's own SensorKit.framework for the answer, and the witness is tests/backports/host/sensorkit-value/run.sh: the host's own SensorKit asked for both counts over all ten sentiment categories and for both speech properties, and the port's five accessors read back out of the compiled armv7 objects, with five mutations"
     },
     {
       "api": "SRSpeechMetrics.timeSinceAudioStart",

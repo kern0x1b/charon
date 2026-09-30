@@ -21,12 +21,18 @@ CHARON_VALUE_PROPERTY(NSString *, productType)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRFaceMetrics
-@dynamic version, sessionIdentifier, context, wholeFaceExpressions, partialFaceExpressions;
+@dynamic version, sessionIdentifier, context, wholeFaceExpressions, partialFaceExpressions, faceAnchor;
 CHARON_VALUE_PROPERTY(NSString *, version)
 CHARON_VALUE_PROPERTY(NSString *, sessionIdentifier)
 CHARON_SCALAR_PROPERTY(SRFaceMetricsContext, context)
 CHARON_VALUE_PROPERTY(NSArray *, wholeFaceExpressions)
 CHARON_VALUE_PROPERTY(NSArray *, partialFaceExpressions)
+// faceAnchor is ARFaceAnchor * in the header and ARKit is not a framework this package carries, so it is
+// declared as id and read out of the store under its own name like every other property here. Nil is
+// what comes back when nothing was archived under it, which is what the host's own framework answers
+// for a face reading - except that the host does not implement it at all, so that nil is the port's and
+// the row says so.
+CHARON_VALUE_PROPERTY(id, faceAnchor)
 @end
 @implementation SRFaceMetrics (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
@@ -53,12 +59,20 @@ CHARON_SCALAR_PROPERTY(double, dominance)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRSpeechMetrics
-@dynamic sessionIdentifier, sessionFlags, timestamp, audioLevel, speechExpression;
+@dynamic sessionIdentifier, sessionFlags, timestamp, audioLevel, speechExpression,
+         speechRecognition, soundClassification;
 CHARON_VALUE_PROPERTY(NSString *, sessionIdentifier)
 CHARON_SCALAR_PROPERTY(SRSpeechMetricsSessionFlags, sessionFlags)
 CHARON_VALUE_PROPERTY(NSDate *, timestamp)
 CHARON_VALUE_PROPERTY(SRAudioLevel *, audioLevel)
 CHARON_VALUE_PROPERTY(SRSpeechExpression *, speechExpression)
+// The two whose types Speech and SoundAnalysis own, so they are id here and nil from the store when
+// nothing was archived under them. Both are nullable in the header, and BOTH read nil on the host's own
+// SensorKit for a metrics object with no session - measured over ten categories' worth of the same
+// shape in the harness facts/SensorKit/SensorKit.md names. Declaring them matters beyond the accessor:
+// the archiver walks the declared property list, so an undeclared one is dropped on the way out.
+CHARON_VALUE_PROPERTY(id, speechRecognition)
+CHARON_VALUE_PROPERTY(id, soundClassification)
 @end
 @implementation SRSpeechMetrics (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION

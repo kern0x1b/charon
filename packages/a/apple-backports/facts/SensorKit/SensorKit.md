@@ -7,14 +7,16 @@ store a payload could be read out of. Everything below is that one fact and what
 
 ## The witnesses this page's numbers come out of
 
-Four paths, and every count below is one of their outputs. A number on this page that names none of
-them is not evidence, and this page used to carry several. There are five now:
+Seven paths, and every count below is one of their outputs. A number on this page that names none of
+them is not evidence, and this page used to carry several.
 
 | what it answers | the path | what a run of it prints |
 | --- | --- | --- |
 | the 57 string constants, the port's against the host's own SensorKit | `tests/backports/host/sensorkit-names/run.sh` | `sensorkit-names: 57 names compared, 0 differing`, then three plants and the empty control |
 | the four time functions, both sides in one binary | `tests/backports/host/sensorkit/run.sh` | the three relations, and the port's side `1, 1, 1` |
 | which of the delegate's ten the reader sends, in the source and in the armv7 object | `tests/backports/host/sensorkit-reader/run.sh` | `4 of 10 protocol methods sent`, `4 of 10 protocol selectors in the object`, 5 plants |
+| the deletion-record sensor name, the port's category against the host's | `tests/backports/host/sensorkit-tombstones/run.sh` | `58 inputs compared, 0 differing`, three mutations, the empty control |
+| what the host answers for the five value members, and what the port's objects carry | `tests/backports/host/sensorkit-value/run.sh` | the three HOST lines, `5 of 5 accessors`, 5 plants |
 | what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
 | one symbol's release of first appearance, over the held ladder | `tools/cache-index/first-rung.py` | one TSV line per name, or `NONE` |
 
@@ -63,7 +65,7 @@ made through `-initWithSensor:`, the only way the header leaves open, with the a
 for a sensor that exists on some devices and not others, and one that cannot be asked for data either
 way. No device list is fabricated.
 
-## The four measurements the build forced, and the four absences that follow from them
+## The four measurements the build forced, and what follows from them
 
 The lowered **16.4** SDK this package compiles against is four minor versions behind the one this
 package develops against, and the gap is the whole reason `CharonSensorKit.h` exists:
@@ -73,7 +75,7 @@ package develops against, and the gap is the whole reason `CharonSensorKit.h` ex
 | **19 of the 38 classes** | compiling a probe of all 38 names against the 16.4 headers | declared in `CharonSensorKit.h` — same superclass, selectors, property types, no ivars, and the availability annotations left out, as the other three redeclarations in this package do |
 | **15 of 25 property types** | the same probe, then the header compiled and read for collisions | declared; the other ten, including nine integer enumerations the 26.2 headers spell differently from the 16.4 ones, are left to the SDK |
 | **13 properties on 6 classes** | a per-class diff of the two headers' property lists | declared in `(CharonSensorKitNNN)` categories, one per release, because a class the SDK declares cannot be declared again |
-| **4 property types from frameworks this package does not carry** | a probe naming `ARFaceAnchor`, `SNClassificationResult`, `SFSpeechRecognitionResult`, `SampleType` against the build's headers | **not carried**: `SRFaceMetrics.faceAnchor`, `SRSpeechMetrics.soundClassification`, `SRSpeechMetrics.speechRecognition`, `SRFetchResult.sample`. There is no such type here to answer with, and a property declared over one would read nil for ever |
+| **4 property types from frameworks this package does not carry** | a probe naming `ARFaceAnchor`, `SNClassificationResult`, `SFSpeechRecognitionResult`, `SampleType` against the build's headers | **declared as `id` and carried, all four**: `SRFaceMetrics.faceAnchor`, `SRSpeechMetrics.soundClassification`, `SRSpeechMetrics.speechRecognition`, `SRFetchResult.sample`. The TYPE is still not here — there is no `ARFaceAnchor`, `SNClassificationResult` or `SFSpeechRecognitionResult` in this package — but the property is, and that is the part that matters: the archiver walks the DECLARED property list, so a property this package does not declare cannot be read back and an archived reading silently loses that field. `SampleType` is a generic parameter rather than a class, which is why `SRFetchResult.sample` was already carried this way and the other three were not; see the section on the five value members |
 
 ## The 57 string constants, and why the eighteen newest could not be carried before
 
@@ -140,6 +142,106 @@ harness has to walk that whole list from a single host-compilable source. They a
 once, in `CharonSensorKitNames.h`, behind one guard per release: each release object defines its own
 guard and imports the header, and the harness's `names-extra.m` defines all six and imports it. One
 definition of each string in the tree, read seven ways.
+
+## The one method the host answered that no rule could have been derived from
+
+**`-[NSString sr_sensorForDeletionRecordsFromSensor]`**, `SRSensors+SRDeletionRecord.h:15`, iOS 14.0. The
+row was `absent` with the reason *"the port adds no category to a Foundation class: it would have to read
+a deletion record's sensor, and there is no record to read on this release"*. Both halves of that were
+wrong, and the first is contradicted by this framework's own folder: `NSDate+SensorKit14.m` is a category
+on `NSString`'s sibling `NSDate` and is the row for `+[NSDate dateWithSRAbsoluteTime:]`. The second
+confused the method with the store: it is a string-to-string mapping that reads no record, asks for no
+sensor and needs no device.
+
+**The host's own `SensorKit.framework` carries the category and answers it**, over fifty-eight inputs,
+and `tests/backports/host/sensorkit-tombstones/run.sh` compares the port's answers to the host's input by
+input — two processes, because both sides are a category on `NSString` and one process would have the
+port checked against itself. Its own lines:
+
+```
+sensorkit-tombstones: 58 inputs compared, 0 differing
+sensorkit-tombstones: 58 inputs compared, 26 differing     <- the nil half removed
+sensorkit-tombstones: 58 inputs compared, 32 differing     <- the suffix appended twice
+sensorkit-tombstones: 58 inputs compared, 31 differing     <- the receiver ignored
+sensorkit-tombstones: 0 inputs compared, 58 differing      <- the empty-host control
+sensorkit-tombstones: OK - 58 inputs, 2 processes, 3 mutations noticed, the empty control red
+```
+
+The rule the host holds is short and is not the obvious one:
+
+- a string that does **not** already end in `.tombstones` → the string with `.tombstones` appended
+- a string that **does** already end in `.tombstones` → **`nil`**
+
+and it holds for inputs that are not sensor names at all. `""` answers `.tombstones`; `hello` answers
+`hello.tombstones`; `tombstones`, which has no leading dot and so is not already suffixed, answers
+`tombstones.tombstones`. Case and whitespace are preserved verbatim, so it is a suffix test and not a
+lookup table — which is why the twenty-two inputs in the harness are the port's own sensor names and the
+thirty-six others are the empty string, words that are not sensors, already-suffixed strings, case
+variants and whitespace variants. **The `nil` half is the whole reason the header declares the return
+`nullable`**: a deletion record's own sensor name handed back would be a sensor that collects nothing,
+and asking twice gives `nil` the second time.
+
+Two instrument facts from building that harness, both of which cost a run:
+
+- **the `dlopen` is load-bearing and its order matters.** Asked *before* `/System/Library/Frameworks/SensorKit.framework`
+  is opened, all fifty-eight inputs raise `NSInvalidArgumentException` "unrecognized selector sent to
+  instance", because the category lives in the framework and has not been loaded. A harness that forgot
+  it would have reported 58 failures and looked like the port disagreeing with the host.
+- **`performSelector:` cannot carry an `NSInteger` return.** The first attempt at the counts below went
+  through it and printed ten lines of `(nil)` for `wordCountForSentimentCategory:`, which is garbage, not
+  an answer — and a garbage number read as zero would have agreed with the port for the wrong reason.
+
+## The five value members, and what the host answers for them
+
+`tests/backports/host/sensorkit-value/run.sh` measures the host once and holds the port to it, then holds
+the port twice over — in its source and in its compiled armv7 objects — because a source check alone
+passes on a method the compiler never emitted and an object check alone passes on one that returns a
+constant. Its own lines:
+
+```
+HOST COUNTS   10 categories, every word and emoji count 0: yes
+HOST PROPERTY speechRecognition and soundClassification both nil: yes
+HOST INIT     RAISES NSInternalInconsistencyException: Use initWithSensor:
+sensorkit-value-host: 0 failures
+sensorkit-value: 5 of 5 accessors in the source and in the object, 0 failures
+sensorkit-value: OK - 5 accessors in the source and in the object, 5 plants noticed
+```
+
+| member | the port answers | the host answers |
+| --- | --- | --- |
+| `-[SRKeyboardMetrics wordCountForSentimentCategory:]` | the count in the store, `0` when none | **`0`**, for all ten categories |
+| `-[SRKeyboardMetrics emojiCountForSentimentCategory:]` | the count in the store, `0` when none | **`0`**, for all ten categories |
+| `SRSpeechMetrics.speechRecognition` | the value in the store, `nil` when none | **`nil`** |
+| `SRSpeechMetrics.soundClassification` | the value in the store, `nil` when none | **`nil`** |
+| `SRFaceMetrics.faceAnchor` | the value in the store, `nil` when none | **no oracle**: it declares the property and does not implement it, so sending it raises |
+
+Zero and nil are the SDK's own answers, and for the two counts that matters: a count of nothing typed in
+a category is **zero**, not nil and not an error. The port invents no classification of a keyboard
+session — a count is whatever an application archived under the key, which is the selector and the
+category together, because a count per category is ten numbers and one key per method would hold one of
+them.
+
+**Two of the five plants survived the first version of this harness and the check was fixed rather than
+the plants.** A count that answered a constant `7`, and a count whose key had forgotten the category so
+that all ten answered the same number, both passed a check that only asked whether the method existed and
+used `longLongValue`. `check_values.py` now checks the three things that make the key right — that the
+selector is in it, that the category is in it, and that both reach the string — and the run says
+`2 plants survived; this check proves nothing` when it does.
+
+**`SRFaceMetrics.faceAnchor` has no oracle, and the row says so rather than implying one.** A face
+reading needs the TrueDepth camera, and this fleet has no device with one: the iPhone 4S and the iPad 2
+have no sensor of that kind at all. The port carries it anyway, as `id`, because the archiver walks the
+declared property list — a property this package does not declare cannot be read back, and an archived
+reading would silently lose the field that ties a face reading to the camera frame it came from.
+
+## `-[SRSensorReader init]`: absent, and why it is not simply implemented
+
+The host's own answer is worth having on record because it is Apple's own text:
+`NSInternalInconsistencyException`, **`Use initWithSensor:`**. The row stays `absent` anyway, and the
+reason is a row this series is not touching: `+[SRSensorReader new]` is already an `implemented` entry in
+this same file, and `+new` calls `-init`, so implementing `-init` to raise would change what that row
+answers. That is a decision about `+new` and it belongs with its owner, not here. The body is one line
+and it is owed.
 
 ## What the delegate's ten methods are, and which four the port reaches
 
