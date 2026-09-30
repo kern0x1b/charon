@@ -35,7 +35,7 @@ repeats the measurement on every run and compares the bytes.
 
 ## A name is not a value
 
-Four of the eighteen are not what their name suggests, and all eighteen are distinct:
+Four of the twenty-one are not what their name suggests, and all twenty-one are distinct:
 
 - `MTLCommonCounterSetTimestamp` is `timestamp` — nine bytes, all lower case.
 - `MTLCommonCounterSetStageUtilization` is `stageutilization`.
@@ -48,10 +48,10 @@ Four of the eighteen are not what their name suggests, and all eighteen are dist
 
 Apple's copy is read by **`dlsym` on Apple's Metal, by name, from a handle opened by path** — not by
 naming the extern, because the link would bind each name to whichever definition won and a port that
-defined all eighteen wrongly would be compared with itself. The port's copies are **renamed** while
+defined all twenty-one wrongly would be compared with itself. The port's copies are **renamed** while
 they are compiled for the host (`-D<name>=charonHost_<name>`), so the two sets coexist and the case
-reads one of each. `counters.sh` proves both sides: the host binary holds all eighteen **renamed**,
-and the device object holds all eighteen **under Apple's own names**, which is what a caller on iOS 6
+reads one of each. `counters.sh` proves both sides: the host binary holds all twenty-one **renamed**,
+and the device object holds all twenty-one **under Apple's own names**, which is what a caller on iOS 6
 binds to.
 
 Three answers are told apart, because two look alike in a boolean: a name that is **not there**
@@ -65,7 +65,7 @@ with no GPU.
 
 ## The mutants
 
-One per constant, eighteen in all, each changing exactly one value and each red on its own line. The
+One per constant, twenty-one in all, each changing exactly one value and each red on its own line. The
 mutation is **scoped to the constant's own definition line**, so changing one value cannot change
 another's, and a mutation that does not build is `RUN FAILED` with a non-zero exit and is never
 counted as red.
@@ -78,7 +78,7 @@ counted as red.
 | `MTLCounterErrorDomain` | `MTLCounters.h:202` | `MTLCounterErrorDomain` (21 bytes) | `MTLCounterSampleBufferError` |
 | `MTLDynamicLibraryDomain` | `MTLDynamicLibrary.h:14` | `MTLDynamicLibraryDomain` (23 bytes) | `MTLDynamicLibraryError` |
 
-The same shape as the eighteen: the header declares the name and never the string, and
+The same shape as the twenty-one: the header declares the name and never the string, and
 **`Metal.apinotes` is where the SDK says which error class each domain belongs to** — it binds
 `MTLBinaryArchiveError`, `MTLCounterSampleBufferError` and `MTLDynamicLibraryError` to these three.
 So the string is Apple's own, measured by dlsym, and the case compares the bytes and the length.
