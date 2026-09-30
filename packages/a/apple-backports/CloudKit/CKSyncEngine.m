@@ -23,11 +23,13 @@
 /** The error every walk answers, and it is the transport's own: no account, so no request. */
 static NSError *CharonCKSyncEngineNoAccount(void)
 {
-    return [NSError errorWithDomain:CharonCKErrorDomain
-                               code:CharonCKErrorNotAuthenticated
-                           userInfo:@{NSLocalizedDescriptionKey:
-                                         @"this release has no iCloud account, so the service is not"
-                                         " reachable; every request answers the transport's own refusal"}];
+    // THE TRANSPORT'S OWN ERROR, by its own builder: CharonCKError is what every refusal in this library
+    // is made of, and it answers in Apple's CKErrorDomain, so a caller reads the engine's refusal and the
+    // transport's as the same thing - which is what they are.
+    return CharonCKError(CKErrorNotAuthenticated,
+                         @"this release has no iCloud account, so the service is not reachable and"
+                         " every request answers the transport's own refusal",
+                         nil);
 }
 
 @implementation CKSyncEngineConfiguration
@@ -36,7 +38,9 @@ static NSError *CharonCKSyncEngineNoAccount(void)
     // configuration.
     CKDatabase *_database;
     CKSyncEngineStateSerialization *_stateSerialization;
+    __weak id _delegate;
     NSString *_subscriptionID;
+    BOOL _automaticallySync;
 }
 
 // EXPLICIT, because the library compiles with -Werror=objc-missing-property-synthesis: the three
@@ -46,17 +50,24 @@ static NSError *CharonCKSyncEngineNoAccount(void)
 @synthesize stateSerialization = _stateSerialization;
 @synthesize delegate;
 @synthesize subscriptionID = _subscriptionID;
+@synthesize automaticallySync = _automaticallySync;
 
 - (instancetype)initWithDatabase:(CKDatabase *)database
               stateSerialization:(nullable CKSyncEngineStateSerialization *)stateSerialization
                         delegate:(nullable id)delegate
 {
-    self = [super init];
-    if (self) {
-        _database = database;
-        _stateSerialization = stateSerialization;
-        _delegate = delegate;
+    // -init is NS_UNAVAILABLE in the header, so this class is built only through the initialiser the
+    // header declares - which is what the caller wrote anyway.
+    CKDatabase *held = database;
+    CKSyncEngineStateSerialization *heldState = stateSerialization;
+    __weak id heldDelegate = delegate;
+    self = [CKSyncEngineConfiguration alloc];
+    if (!self) {
+        return nil;
     }
+    ((CKSyncEngineConfiguration *)self).database = held;
+    ((CKSyncEngineConfiguration *)self).stateSerialization = heldState;
+    ((CKSyncEngineConfiguration *)self).delegate = heldDelegate;
     return self;
 }
 
@@ -74,11 +85,14 @@ static NSError *CharonCKSyncEngineNoAccount(void)
     if (!configuration) {
         return nil;
     }
-    self = [super init];
-    if (self) {
-        _state = [[CKSyncEngineState alloc] init];
+    // -init is NS_UNAVAILABLE here too: the engine is built through -initWithConfiguration:, and the
+    // state is the one this series already carries.
+    CKSyncEngine *built = [CKSyncEngine alloc];
+    if (!built) {
+        return nil;
     }
-    return self;
+    built->_state = [[CKSyncEngineState alloc] initForSyncEngine:built];
+    return built;
 }
 
 - (CKDatabase *)database
