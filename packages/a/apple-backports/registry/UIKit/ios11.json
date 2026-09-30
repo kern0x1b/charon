@@ -1029,36 +1029,36 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol exists so that VoiceOver can walk a table by rows and columns, and this release's VoiceOver never asks",
-   "effect": "the protocol is not there; a table is read out in the order its elements come",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the protocol exists so that VoiceOver can walk a table by rows and columns, and this release's VoiceOver never asks. It is also a protocol the port does not carry: nothing in the tree declares it and no object adopts it, so declaring it would put a name in the registry with nothing behind it. Not carried by the port either, and this is why: an implemented protocol row needs an object that adopts it",
+   "effect": "the protocol is not there, so a table is read out in the order its elements come",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIAccessibilityContainerDataTableCell",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the cell half of the same conversation, which nothing here starts",
+   "reason": "the cell half of the same conversation, which nothing here starts, and which the port does not carry for the same reason as the table half. Not carried by the port either",
    "effect": "the protocol is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIAccessibilityContentSizeCategoryImageAdjusting",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol makes an image grow with an accessibility content size category, and this release has one category and no accessibility sizes",
-   "effect": "the protocol is not there; an image keeps the size the application gives it",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the protocol makes an image grow with an accessibility content size category. The port carries the categories themselves -- UIContentSizeCategoryAccessibilityLarge and its siblings are implemented rows of base.json, and UIContentSizeCategoryIsAccessibilityCategory() is one of this file's -- but nothing here draws an image at a size it was asked for, so a protocol that says an image adjusts would be believed and never consulted. Its sibling UIContentSizeCategoryAdjusting is inert, in ios7-10demand.json, which is the status the tree uses for a protocol the release's own machinery would ask and does not",
+   "effect": "the protocol is not there, and an image keeps the size the application gives it",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIAccessibilityLocationDescriptor",
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the descriptor names a point of a view for VoiceOver to act on, and nothing in this release reads one",
-   "effect": "the class is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the descriptor names a point of a view for an assistive technology to act on, and nothing in this release reads one: the VoiceOver of this era asks for a view and its attributes, never for a point. Not carried by the port either",
+   "effect": "the class is not there, so NSClassFromString answers nil and a compile-time reference to it is a link the port cannot satisfy",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UICollectionViewFlowLayout.sectionInsetReference",
@@ -1125,9 +1125,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "dragging is begun and carried by a system service this release does not run",
+   "reason": "dragging is begun and carried by a system service this release does not run, so nothing here is ever the source of a drag for an assistive technology to describe. The port does carry a drag, but only in-process, UIDragInteraction.m's header says so, so nothing this release reads the descriptors",
    "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-   "source": "UIKit of iOS 11.0 arm64",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member",
    "minimum": "6.0"
   },
   {
@@ -1135,9 +1135,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "dragging is begun and carried by a system service this release does not run",
-   "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the same for the receiving end, and it is the same service: there is no drop an assistive technology could be offered a point for. The port does carry an in-process drop, which an assistive technology is not offered",
+   "effect": "the name is not there, and an application that asks for it before dropping keeps its own path",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member",
    "minimum": "6.0"
   },
   {
@@ -1145,9 +1145,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the container type tells an assistive technology how to group an element's children, and this release's VoiceOver groups them by the release's own rules and never reads the hint. Carrying it as a stored value would be a flag read and believed for nothing. The port's own accessible strings live beside it: UIAccessibility+Focus.m carries the notifications and UIAccessibilityQueries10.m the queries this release can answer",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. An application that sets it has told an assistive technology nothing that changes",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member"
   },
   {
    "api": "NSItemProvider.teamData",
@@ -1201,45 +1201,45 @@
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the owner is UIAccessibilityReadingContent, and the port carries no such protocol: nothing here adopts one and nothing sends it, so the member is a question nobody asks. The attributed strings the port does carry are on the object every accessibility element is -- NSObject.accessibilityAttributedLabel, .accessibilityAttributedHint and .accessibilityAttributedValue, all implemented rows of this file. Not carried by the port either: no header of its own declares the protocol and no object adopts it",
+   "effect": "the member is not there, and so is the protocol that declares it; an application that conforms to it gets no protocol object and an override is never called. What VoiceOver reads is the plain accessibility properties",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIAccessibilityReadingContent is a protocol there and carries no such member"
   },
   {
    "api": "-[UIAccessibilityReadingContent accessibilityAttributedPageContent]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "as accessibilityAttributedContentForLineNumber:, the owner protocol is not carried and this is the page half of the same question. Not carried by the port either: no header of its own declares the protocol and no object adopts it",
+   "effect": "the member is not there, and so is the protocol that declares it; VoiceOver reads the plain accessibility properties",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIAccessibilityReadingContent is a protocol there and carries no such member"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedLabelForComponent:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "UIPickerViewAccessibilityDelegate is a protocol the port does not carry, and its plain counterpart pickerView:accessibilityLabelForComponent: is a member the port already answers through the release's own picker accessibility. Not carried by the port either",
+   "effect": "the member is not there, and so is the protocol that declares it; the release reads the plain label",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIPickerViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedHintForComponent:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the hint half of the same pair, on a protocol the port does not carry. Not carried by the port either",
+   "effect": "the member is not there, and so is the protocol that declares it; the release reads the plain hint",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIPickerViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "-[UIScrollViewAccessibilityDelegate accessibilityAttributedScrollStatusForScrollView:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "UIScrollViewAccessibilityDelegate is a protocol the port does not carry, and this release's VoiceOver reads a scroll view's state from the release's own attributes rather than by asking a delegate for an attributed string. Not carried by the port either",
+   "effect": "the member is not there, and so is the protocol that declares it",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIScrollViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UICollectionView.dragDelegate",
