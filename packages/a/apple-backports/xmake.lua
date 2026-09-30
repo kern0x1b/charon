@@ -184,6 +184,7 @@ package("apple-backports")
         local cache = firmware.ensure(package:arch(), deployment, {tool = tool})
         local libraries = table.join((package:config("mps") or package:config("mpsgraph")) and {"MPSBackports"} or {}, package:config("mpsgraph") and {"MPSGraphBackports"} or {}, package:config("network") and {"NetworkBackports"} or {}, {"FoundationBackports"}, (package:config("uikit") or package:config("avkit") or package:config("usernotificationsui") or package:config("notificationcenter")) and {"UIKitBackports"} or {},
                                      package:config("sensorkit") and {"SensorKitBackports"} or {},
+                                     package:config("cloudkit") and {"CloudKitBackports"} or {},
                                      package:config("corelocation") and {"CoreLocationBackports"} or {},
                                      package:config("coredata") and {"CoreDataBackports"} or {},
                                      package:config("security") and {"SecurityBackports"} or {},
