@@ -1,708 +1,711 @@
-{"framework": "UIKit", "entries": [
- {
-  "api": "UIGraphicsRendererFormat",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsRendererFormat.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsRendererContext",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsRenderer",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsRenderer.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsImageRendererFormat",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsImageRendererFormat.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsImageRendererContext",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsImageRendererContext.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsImageRenderer",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4",
-  "effect": "on an iPhone4,1 running 6.1.3 CoreGraphics makes no sRGB space, so the renderer draws in device RGB, as the release's own UIKit does: the same pixels, and PNG and JPEG with no colour profile"
- },
- {
-  "api": "+[UIGraphicsRenderer contextWithFormat:]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "the private pool that hands a CGContext out again is not carried: it needs _dispatch_source_type_memorypressure and dispatch_queue_attr_make_with_autorelease_frequency, which iOS 6 does not export",
-  "effect": "every context is freshly made rather than possibly reused, which is strictly the safer of the two; no declared API reaches the pool, so nothing an application can observe changes",
-  "facts": "facts/UIKit/UIGraphicsRenderer.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "CGBitmapGetAlignedBytesPerRow()",
-  "kind": "function",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "private to CoreGraphics and in no header; the image renderer's bytes per row is its answer, so Charon declares and calls it rather than guessing an alignment",
-  "effect": "checked present in every shared cache from 3.1.3 to 10.3.4, so it is exported over the whole band; no fallback is needed",
-  "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "CGContextGetBlendMode()",
-  "kind": "function",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
-  "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
-  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "CGContextGetLineWidth()",
-  "kind": "function",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
-  "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
-  "facts": "facts/UIKit/UIGraphicsRendererContext.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsPDFRenderer",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsPDFRendererFormat",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UIGraphicsPDFRendererContext",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-  "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4"
- },
- {
-  "api": "UICubicTimingParameters",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "iOS 10 throws away the timing function it resolves for a builtin curve, so -controlPoint1 and -controlPoint2 answer CGPointZero for every named curve; a later UIKit keeps it and answers the real points, and those are used",
-  "facts": "facts/UIKit/UICubicTimingParameters.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
- },
- {
-  "api": "_UIViewCubicTimingFunction",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "private to UIKit and in no header; carried under Apple's own name because UICubicTimingParameters archives it as an object, so the class name is part of the archive",
-  "facts": "facts/UIKit/_UIViewCubicTimingFunction.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
- },
- {
-  "api": "UISpringTimingParameters",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UISpringTimingParameters.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
- },
- {
-  "api": "-[UISpringTimingParameters settlingDuration]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "private, and it calls +[UIView _durationOfSpringAnimationWithMass:stiffness:damping:velocity:], which iOS 6 has not got, so the formula itself is carried; the duration is taken for each component of the initial velocity and the larger answered",
-  "facts": "facts/UIKit/UISpringTimingParameters.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
- },
- {
-  "api": "UIViewPropertyAnimator",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "the blocks run through UIView's own animation and, for an interruptible animator, are paused and scrubbed from there, which is what UIKit does; only the animations this animator added are held, by layer and key, so nothing else on those layers is stopped",
-  "effect": "the behaviour is held to on an emulated iPhone3,1 running iOS 6.0 and on an iPhone4,1 running 6.1.3, where one scrub step costs about a hundred microseconds against a frame of sixteen thousand",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ",
-  "facts": "facts/UIKit/UIViewPropertyAnimator.md"
- },
- {
-  "api": "UIViewAnimating",
-  "kind": "protocol",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIViewPropertyAnimator.md",
-  "source": "the protocol UIViewPropertyAnimator itself conforms to; its members (state, fractionComplete, isReversed, startAnimation, pauseAnimation, stopAnimation:, finishAnimationAtPosition:) are UIViewPropertyAnimator's own, registered on the class above"
- },
- {
-  "api": "UIViewImplicitlyAnimating",
-  "kind": "protocol",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIViewPropertyAnimator.md",
-  "source": "the protocol UIViewPropertyAnimator itself conforms to, incorporating UIViewAnimating; its own members (the addAnimations:/addCompletion: family and continueAnimationWithTimingParameters:durationFactor:) are UIViewPropertyAnimator's own, registered on the class above"
- },
- {
-  "api": "UIViewPropertyAnimator.scrubsLinearly",
-  "kind": "property",
-  "introduced": "11.0",
-  "minimum": "6.0",
-  "maximum": "11.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
-  "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
-  "effect": "from 11.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
- },
- {
-  "api": "UIViewPropertyAnimator.pausesOnCompletion",
-  "kind": "property",
-  "introduced": "11.0",
-  "minimum": "6.0",
-  "maximum": "11.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
-  "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
-  "effect": "from 11.0 the release animates with its own class and the property is not there: respondsToSelector: answers NO"
- },
- {
-  "api": "-[NSCoder encodeCGVector:forKey:]",
-  "kind": "method",
-  "introduced": "7.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "UIKit's geometry coding gained the vector after iOS 6 and the SDK header carries no availability for it, so nothing warns at compile time; a spring's archive raised an unrecognised selector on iOS 6 until this was carried",
-  "facts": "facts/UIKit/UISpringTimingParameters.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
- },
- {
-  "api": "-[NSCoder decodeCGVectorForKey:]",
-  "kind": "method",
-  "introduced": "7.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "the other half of the same pair",
-  "facts": "facts/UIKit/UISpringTimingParameters.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
- },
- {
-  "api": "UIFeedbackGenerator",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIFeedbackGenerator.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
- },
- {
-  "api": "UIImpactFeedbackGenerator",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIFeedbackGenerator.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
- },
- {
-  "api": "UINotificationFeedbackGenerator",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIFeedbackGenerator.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
- },
- {
-  "api": "UISelectionFeedbackGenerator",
-  "kind": "class",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "inert",
-  "reason": "it marks each detent of a turning picker with a tick, which the Taptic Engine makes and an iPhone 4S motor cannot: the motor needs 40 ms before it moves at all, which is slower than the detents it would mark; the class exists on a device with no Taptic Engine and plays nothing there",
-  "effect": "the class is declared and -selectionChanged returns without playing anything; the corpus of nine applications names the class in six, five of them as a hard import that stops the program from loading where it is absent",
-  "facts": "facts/UIKit/UIFeedbackGenerator.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
- },
- {
-  "api": "-[UIImage imageWithHorizontallyFlippedOrientation]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "the release copies the image with a private initializer and sets the orientation bits of its flags, whose place in the object is private and differs between releases; the port builds the copy from public API",
-  "effect": "an image that holds no pixels, no frames and no Core Image data is answered as itself and keeps its orientation, where the release answers a copy that says it is mirrored; nothing can be drawn from either",
-  "facts": "facts/UIKit/UIImageHorizontalFlip.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and the host's own UIKit run beside the port through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UIScreen.maximumFramesPerSecond",
-  "kind": "property",
-  "introduced": "10.3",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIScreenMaximumFramesPerSecond.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and UIKit of iOS 6.0 for the interval it asks",
-  "maximum": "10.3"
- },
- {
-  "api": "UIPasteboard.hasStrings",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
- },
- {
-  "api": "UIPasteboard.hasURLs",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
- },
- {
-  "api": "UIPasteboard.hasImages",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
- },
- {
-  "api": "UIPasteboard.hasColors",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
- },
- {
-  "api": "-[UIPasteboard setItems:options:]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "absent",
-  "reason": "an expiration date has to clear the pasteboard after the application that set it has gone, which only the pasteboard service can do, and password managers rely on it; a port in the application's process cannot keep that promise, and ignoring the option would leave a secret on the pasteboard",
-  "effect": "the method is not declared, so respondsToSelector: answers NO",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
- },
- {
-  "api": "UIPasteboardOptionLocalOnly",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "inert",
-  "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
-  "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
- },
- {
-  "api": "UIPasteboardOptionExpirationDate",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "inert",
-  "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
-  "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
-  "facts": "facts/UIKit/UIPasteboardIOS10.md",
-  "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
- },
- {
-  "api": "-[UISelectionFeedbackGenerator selectionChanged]",
-  "kind": "method",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "maximum": "10.0",
-  "status": "inert",
-  "reason": "a tick per detent is below the floor of the iPhone 4S motor, and an iPad 2 has none",
-  "effect": "it returns at once and plays nothing, as the release does on a device with no Taptic Engine",
-  "facts": "facts/UIKit/UIFeedbackGenerator.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
- },
- {
-  "api": "UITextContentTypeName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeNamePrefix",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeGivenName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeMiddleName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeFamilyName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeNameSuffix",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeNickname",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeJobTitle",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeOrganizationName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeLocation",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeFullStreetAddress",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeStreetAddressLine1",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeStreetAddressLine2",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeAddressCity",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeAddressState",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeAddressCityAndState",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeSublocality",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeCountryName",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypePostalCode",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeTelephoneNumber",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeEmailAddress",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeURL",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextContentTypeCreditCardNumber",
-  "kind": "constant",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
-  "maximum": "10.0"
- },
- {
-  "api": "UITextField.textContentType",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "maximum": "10.0",
-  "status": "inert",
-  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
-  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
- },
- {
-  "api": "UITextView.textContainerInset",
-  "kind": "property",
-  "introduced": "7.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "reason": "UITextView on this release carries no TextKit surface at all (measured on the iPad 2, 6.1.3: no textContainer/layoutManager/textStorage selector; its ivars are entirely WebKit's own, m_webView/UIWebDocumentView, m_body/DOMHTMLElement, m_frame/WebFrame), so there is no NSTextContainer for this property to describe",
-  "effect": "the value round-trips exactly (kept, handed back unmodified) and is applied as the WebKit document body's CSS padding, confirmed on the iPad 2 by reading DOMCSSStyleDeclaration.padding back after setting the property; nothing that presumes a real text container (glyph-level measurement, container size) is added",
-  "facts": "facts/UIKit/TextSystem7.md",
-  "source": "the iPad 2, 6.1.3: UITextView's ivars (class introspection) and a live app run confirming the round trip and the DOM padding it produces"
- },
- {
-  "api": "UITextView.textContentType",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "maximum": "10.0",
-  "status": "inert",
-  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
-  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
- },
- {
-  "api": "UISearchBar.textContentType",
-  "kind": "property",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "maximum": "10.0",
-  "status": "inert",
-  "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
-  "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
- },
- {
-  "api": "UITextInputTraits",
-  "kind": "protocol",
-  "introduced": "10.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "the protocol UITextField, UITextView and UISearchBar conform to; its textContentType member, the one this release added (10.0), is those three classes' own, registered above as inert"
- },
- {
-  "api": "UITextContentTypeUsername",
-  "kind": "constant",
-  "introduced": "11.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string username; the host's UIKit through Mac Catalyst",
-  "maximum": "11.0"
- },
- {
-  "api": "UITextContentTypePassword",
-  "kind": "constant",
-  "introduced": "11.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string password; the host's UIKit through Mac Catalyst",
-  "maximum": "11.0"
- },
- {
-  "api": "UITextContentTypeNewPassword",
-  "kind": "constant",
-  "introduced": "12.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string new-password; the host's UIKit through Mac Catalyst",
-  "maximum": "12.0"
- },
- {
-  "api": "UITextContentTypeOneTimeCode",
-  "kind": "constant",
-  "introduced": "12.0",
-  "minimum": "6.0",
-  "status": "implemented",
-  "facts": "facts/UIKit/UITextContentType.md",
-  "source": "UIKitCore of the arm64 cache of iOS 12.0, the string one-time-code; the host's UIKit through Mac Catalyst",
-  "maximum": "12.0"
- }
-]}
+{
+  "framework": "UIKit",
+  "entries": [
+    {
+      "api": "UIGraphicsRendererFormat",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRendererFormat.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsRendererContext",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsRenderer",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsRenderer.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsImageRendererFormat",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsImageRendererFormat.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsImageRendererContext",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsImageRendererContext.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsImageRenderer",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4",
+      "effect": "on an iPhone4,1 running 6.1.3 CoreGraphics makes no sRGB space, so the renderer draws in device RGB, as the release's own UIKit does: the same pixels, and PNG and JPEG with no colour profile"
+    },
+    {
+      "api": "+[UIGraphicsRenderer contextWithFormat:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the private pool that hands a CGContext out again is not carried: it needs _dispatch_source_type_memorypressure and dispatch_queue_attr_make_with_autorelease_frequency, which iOS 6 does not export",
+      "effect": "every context is freshly made rather than possibly reused, which is strictly the safer of the two; no declared API reaches the pool, so nothing an application can observe changes",
+      "facts": "facts/UIKit/UIGraphicsRenderer.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "CGBitmapGetAlignedBytesPerRow()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "private to CoreGraphics and in no header; the image renderer's bytes per row is its answer, so Charon declares and calls it rather than guessing an alignment",
+      "effect": "checked present in every shared cache from 3.1.3 to 10.3.4, so it is exported over the whole band; no fallback is needed",
+      "facts": "facts/UIKit/UIGraphicsImageRenderer.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "CGContextGetBlendMode()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
+      "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
+      "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "CGContextGetLineWidth()",
+      "kind": "function",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "private to CoreGraphics and in no header; the renderer context reads the blend mode and line width through it",
+      "effect": "exported by CoreGraphics on 6.0 and on 9.3.5, the two ends of the band",
+      "facts": "facts/UIKit/UIGraphicsRendererContext.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsPDFRenderer",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsPDFRendererFormat",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UIGraphicsPDFRendererContext",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
+      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+    },
+    {
+      "api": "UICubicTimingParameters",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "iOS 10 throws away the timing function it resolves for a builtin curve, so -controlPoint1 and -controlPoint2 answer CGPointZero for every named curve; a later UIKit keeps it and answers the real points, and those are used",
+      "facts": "facts/UIKit/UICubicTimingParameters.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+    },
+    {
+      "api": "_UIViewCubicTimingFunction",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "private to UIKit and in no header; carried under Apple's own name because UICubicTimingParameters archives it as an object, so the class name is part of the archive",
+      "facts": "facts/UIKit/_UIViewCubicTimingFunction.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+    },
+    {
+      "api": "UISpringTimingParameters",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UISpringTimingParameters.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+    },
+    {
+      "api": "-[UISpringTimingParameters settlingDuration]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "private, and it calls +[UIView _durationOfSpringAnimationWithMass:stiffness:damping:velocity:], which iOS 6 has not got, so the formula itself is carried; the duration is taken for each component of the initial velocity and the larger answered",
+      "facts": "facts/UIKit/UISpringTimingParameters.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ"
+    },
+    {
+      "api": "UIViewPropertyAnimator",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the blocks run through UIView's own animation and, for an interruptible animator, are paused and scrubbed from there, which is what UIKit does; only the animations this animator added are held, by layer and key, so nothing else on those layers is stopped",
+      "effect": "the behaviour is held to on an emulated iPhone3,1 running iOS 6.0 and on an iPhone4,1 running 6.1.3, where one scrub step costs about a hundred microseconds against a frame of sixteen thousand",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, with the newest implementation on the host where the two differ",
+      "facts": "facts/UIKit/UIViewPropertyAnimator.md"
+    },
+    {
+      "api": "UIViewAnimating",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewPropertyAnimator.md",
+      "source": "the protocol UIViewPropertyAnimator itself conforms to; its members (state, fractionComplete, isReversed, startAnimation, pauseAnimation, stopAnimation:, finishAnimationAtPosition:) are UIViewPropertyAnimator's own, registered on the class above"
+    },
+    {
+      "api": "UIViewImplicitlyAnimating",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewPropertyAnimator.md",
+      "source": "the protocol UIViewPropertyAnimator itself conforms to, incorporating UIViewAnimating; its own members (the addAnimations:/addCompletion: family and continueAnimationWithTimingParameters:durationFactor:) are UIViewPropertyAnimator's own, registered on the class above"
+    },
+    {
+      "api": "UIViewPropertyAnimator.scrubsLinearly",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "maximum": "11.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
+      "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
+      "effect": "below 11.0 the port carries the property and answers YES for the answer it was set; from 11.0 the release animates with its own class and the property is not there, which is what this row's maximum says"
+    },
+    {
+      "api": "UIViewPropertyAnimator.pausesOnCompletion",
+      "kind": "property",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "maximum": "11.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIViewPropertyAnimatorScrubbing.md",
+      "source": "UIKit of the arm64 caches of iOS 11.0, 12.0 and 18.0, the host's own UIKit measured beside the port",
+      "effect": "below 11.0 the port carries the property and answers YES for the answer it was set; from 11.0 the release animates with its own class and the property is not there, which is what this row's maximum says"
+    },
+    {
+      "api": "-[NSCoder encodeCGVector:forKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "UIKit's geometry coding gained the vector after iOS 6 and the SDK header carries no availability for it, so nothing warns at compile time; a spring's archive raised an unrecognised selector on iOS 6 until this was carried",
+      "facts": "facts/UIKit/UISpringTimingParameters.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
+    },
+    {
+      "api": "-[NSCoder decodeCGVectorForKey:]",
+      "kind": "method",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the other half of the same pair",
+      "facts": "facts/UIKit/UISpringTimingParameters.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, absent from the armv7 cache of 6.0"
+    },
+    {
+      "api": "UIFeedbackGenerator",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "UIImpactFeedbackGenerator",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "UINotificationFeedbackGenerator",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "UISelectionFeedbackGenerator",
+      "kind": "class",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "it marks each detent of a turning picker with a tick, which the Taptic Engine makes and an iPhone 4S motor cannot: the motor needs 40 ms before it moves at all, which is slower than the detents it would mark; the class exists on a device with no Taptic Engine and plays nothing there",
+      "effect": "the class is declared and -selectionChanged returns without playing anything; the corpus of nine applications names the class in six, five of them as a hard import that stops the program from loading where it is absent",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "-[UIImage imageWithHorizontallyFlippedOrientation]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the release copies the image with a private initializer and sets the orientation bits of its flags, whose place in the object is private and differs between releases; the port builds the copy from public API",
+      "effect": "an image that holds no pixels, no frames and no Core Image data is answered as itself and keeps its orientation, where the release answers a copy that says it is mirrored; nothing can be drawn from either",
+      "facts": "facts/UIKit/UIImageHorizontalFlip.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and the host's own UIKit run beside the port through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UIScreen.maximumFramesPerSecond",
+      "kind": "property",
+      "introduced": "10.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIScreenMaximumFramesPerSecond.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method, and UIKit of iOS 6.0 for the interval it asks",
+      "maximum": "10.3"
+    },
+    {
+      "api": "UIPasteboard.hasStrings",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
+    },
+    {
+      "api": "UIPasteboard.hasURLs",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
+    },
+    {
+      "api": "UIPasteboard.hasImages",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
+    },
+    {
+      "api": "UIPasteboard.hasColors",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4 for the question the release asks, UIKit of iOS 6.1.3 armv7 for the type lists and -containsPasteboardTypes: that answer it, and the host's own UIKit under Mac Catalyst through tests/backports/host/pasteboard10"
+    },
+    {
+      "api": "-[UIPasteboard setItems:options:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "an expiration date has to clear the pasteboard after the application that set it has gone, which only the pasteboard service can do, and password managers rely on it; a port in the application's process cannot keep that promise, and ignoring the option would leave a secret on the pasteboard",
+      "effect": "the method is not declared, so respondsToSelector: answers NO",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, read method by method and the Pasteboard framework it calls"
+    },
+    {
+      "api": "UIPasteboardOptionLocalOnly",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
+      "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "UIPasteboardOptionExpirationDate",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "inert",
+      "reason": "the keys are read only by -setItems:options:, which is not carried, so nothing reads them here",
+      "effect": "the symbol is exported with the system's own string, so code that refers to it loads; -setItems:options: is still not declared, so an application that checks for it does not give an option that the port could not keep",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
+    },
+    {
+      "api": "-[UISelectionFeedbackGenerator selectionChanged]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "maximum": "10.0",
+      "status": "inert",
+      "reason": "a tick per detent is below the floor of the iPhone 4S motor, and an iPad 2 has none",
+      "effect": "it returns at once and plays nothing, as the release does on a device with no Taptic Engine",
+      "facts": "facts/UIKit/UIFeedbackGenerator.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, CoreMedia and AudioToolbox of the armv7 cache of iOS 6.0, and the vibrator of an iPhone4,1"
+    },
+    {
+      "api": "UITextContentTypeName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeNamePrefix",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeGivenName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeMiddleName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeFamilyName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeNameSuffix",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeNickname",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeJobTitle",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeOrganizationName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeLocation",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeFullStreetAddress",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeStreetAddressLine1",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeStreetAddressLine2",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeAddressCity",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeAddressState",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeAddressCityAndState",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeSublocality",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeCountryName",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypePostalCode",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeTelephoneNumber",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeEmailAddress",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeURL",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextContentTypeCreditCardNumber",
+      "kind": "constant",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the string read from the constant; the host's UIKit through Mac Catalyst",
+      "maximum": "10.0"
+    },
+    {
+      "api": "UITextField.textContentType",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "maximum": "10.0",
+      "status": "inert",
+      "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+      "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+    },
+    {
+      "api": "UITextView.textContainerInset",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "UITextView on this release carries no TextKit surface at all (measured on the iPad 2, 6.1.3: no textContainer/layoutManager/textStorage selector; its ivars are entirely WebKit's own, m_webView/UIWebDocumentView, m_body/DOMHTMLElement, m_frame/WebFrame), so there is no NSTextContainer for this property to describe",
+      "effect": "the value round-trips exactly (kept, handed back unmodified) and is applied as the WebKit document body's CSS padding, confirmed on the iPad 2 by reading DOMCSSStyleDeclaration.padding back after setting the property; nothing that presumes a real text container (glyph-level measurement, container size) is added",
+      "facts": "facts/UIKit/TextSystem7.md",
+      "source": "the iPad 2, 6.1.3: UITextView's ivars (class introspection) and a live app run confirming the round trip and the DOM padding it produces"
+    },
+    {
+      "api": "UITextView.textContentType",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "maximum": "10.0",
+      "status": "inert",
+      "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+      "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+    },
+    {
+      "api": "UISearchBar.textContentType",
+      "kind": "property",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "maximum": "10.0",
+      "status": "inert",
+      "reason": "the type is a hint to the keyboard's autofill, which iOS 6 does not have",
+      "effect": "the string is kept as a copy, handed back and never read; the default is nil, as in the release",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKit of the armv7s cache of iOS 10.3.4, the host's UIKit through Mac Catalyst"
+    },
+    {
+      "api": "UITextInputTraits",
+      "kind": "protocol",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "the protocol UITextField, UITextView and UISearchBar conform to; its textContentType member, the one this release added (10.0), is those three classes' own, registered above as inert"
+    },
+    {
+      "api": "UITextContentTypeUsername",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKitCore of the arm64 cache of iOS 12.0, the string username; the host's UIKit through Mac Catalyst",
+      "maximum": "11.0"
+    },
+    {
+      "api": "UITextContentTypePassword",
+      "kind": "constant",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKitCore of the arm64 cache of iOS 12.0, the string password; the host's UIKit through Mac Catalyst",
+      "maximum": "11.0"
+    },
+    {
+      "api": "UITextContentTypeNewPassword",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKitCore of the arm64 cache of iOS 12.0, the string new-password; the host's UIKit through Mac Catalyst",
+      "maximum": "12.0"
+    },
+    {
+      "api": "UITextContentTypeOneTimeCode",
+      "kind": "constant",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/UIKit/UITextContentType.md",
+      "source": "UIKitCore of the arm64 cache of iOS 12.0, the string one-time-code; the host's UIKit through Mac Catalyst",
+      "maximum": "12.0"
+    }
+  ]
+}
