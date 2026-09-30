@@ -1108,9 +1108,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "The owner MPSCNNConvolutionDataSource is a PROTOCOL and not a class, which is what the class-scoped read says: objc-inventory.lua over the 16.0 arm64e cache lists MPSCNNConvolutionDataSource under `protocol`, not under `class`, and its protocol entry carries the selector updateWithCommandBuffer:gradientState:sourceState:. So the name is real and belongs to a delegate contract, and what is absent is the CONFORMER: the port carries no class that adopts MPSCNNConvolutionDataSource and no code that sends updateWithCommandBuffer:gradientState:sourceState:, so nothing ever calls it. MPSCNNConvolution.h:435 declares the name and no availability macro stands above that declaration. The port's own MPS kernels walk images on the CPU inside their encode, so no GPU is involved in this row",
-      "effect": "nothing: the message is never sent, so a delegate that implements it is simply not called, and respondsToSelector: on the port's own objects answers honestly rather than claiming a delegate the port has",
-      "source": "the class-scoped protocol entry read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua, and the header of MPSCNNConvolution.h in the SDK of iOS 16.4"
+      "reason": "neither iOS 6 nor the backports have a MPSCNNConvolutionDataSource that sends anything like it: the message arrived in iOS 11",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "-[MPSCNNConvolutionDataSource updateWithGradientState:sourceState:]",
@@ -1118,9 +1118,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "The owner MPSCNNConvolutionDataSource is a PROTOCOL and not a class, which is what the class-scoped read says: objc-inventory.lua over the 16.0 arm64e cache lists MPSCNNConvolutionDataSource under `protocol`, not under `class`, and its protocol entry carries the selector updateWithGradientState:sourceState:. So the name is real and belongs to a delegate contract, and what is absent is the CONFORMER: the port carries no class that adopts MPSCNNConvolutionDataSource and no code that sends updateWithGradientState:sourceState:, so nothing ever calls it. MPSCNNConvolution.h:435 declares the name and no availability macro stands above that declaration. The port's own MPS kernels walk images on the CPU inside their encode, so no GPU is involved in this row",
-      "effect": "nothing: the message is never sent, so a delegate that implements it is simply not called, and respondsToSelector: on the port's own objects answers honestly rather than claiming a delegate the port has",
-      "source": "the class-scoped protocol entry read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua, and the header of MPSCNNConvolution.h in the SDK of iOS 16.4"
+      "reason": "neither iOS 6 nor the backports have a MPSCNNConvolutionDataSource that sends anything like it: the message arrived in iOS 11",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "-[MPSNNPadding inverse]",
@@ -1128,9 +1128,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "The owner MPSNNPadding is a PROTOCOL and not a class, which is what the class-scoped read says: objc-inventory.lua over the 16.0 arm64e cache lists MPSNNPadding under `protocol`, not under `class`, and its protocol entry carries the selector inverse. So the name is real and belongs to a delegate contract, and what is absent is the CONFORMER: the port carries no class that adopts MPSNNPadding and no code that sends inverse, so nothing ever calls it. MPSNeuralNetworkTypes.h:369 declares the name and no availability macro stands above that declaration. The port's own MPS kernels walk images on the CPU inside their encode, so no GPU is involved in this row",
-      "effect": "nothing: the message is never sent, so a delegate that implements it is simply not called, and respondsToSelector: on the port's own objects answers honestly rather than claiming a delegate the port has",
-      "source": "the class-scoped protocol entry read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua, and the header of MPSNeuralNetworkTypes.h in the SDK of iOS 16.4"
+      "reason": "neither iOS 6 nor the backports give MPSNNPadding a method like it: it arrived in iOS 11",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNAdd",
@@ -1188,9 +1188,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "A protocol is a contract, not a computation, so nothing on this row could be a GPU encode in the first place: MPSCNNBatchNormalization.h:150 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). What decides it is whether anything in the port CONFORMS to it, and the class-scoped read answers that from the release's own side and the port's own side together. The release: objc-inventory.lua over the 16.0 arm64e cache lists MPSCNNBatchNormalizationDataSource under `protocol` with 17 instance selectors - -beta,-copyWithZone:device:,-encodeWithCoder:,-epsilon,-gamma,-initWithCoder:,-label,-load,-mean,-numberOfFeatureChannels,-purge,-updateGammaAndBetaWithBatchNormalizationState:,-updateGammaAndBetaWithCommandBuffer:batchNormalizationState:,-updateMeanAndVarianceWithBatchNormalizationState:,-updateMeanAndVarianceWithCommandBuffer:batchNormalizationState:,-variance - so the contract is real and its members are named. The port: MPSCNNBatchNormalization, which is the class that would conform, is a class the port DOES carry (cnn.json, implemented), and it takes its gamma, beta, mean and variance from a state object rather than from a delegate - MPSCNNBatchNormalization12.m's initializer path and the state class's own - so no object in the package adopts the protocol and none of these members is ever sent. The port's own MPS kernels walk images on the CPU inside their encode, so no GPU bears on this row either. What is missing is an object that adopts the protocol, which is owed work rather than a capability this host lacks",
-      "effect": "nothing observable, and that is the point: the protocol's members are never sent, so a class that implemented MPSCNNBatchNormalizationDataSource would simply never be called. respondsToSelector: on the port's objects answers honestly for each of the 17 members, and a class that declares conformance without an object to send to would claim a contract nothing honours",
-      "source": "the class-scoped protocol entry - the 17 instance selectors - read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSCNNBatchNormalization.h in the SDK of iOS 16.4; and the port's own registry and MPSCNNBatchNormalization12.m for what the conforming class actually does"
+      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNBatchNormalizationGradient",
@@ -1428,9 +1428,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "A protocol is a contract, not a computation, so nothing on this row could be a GPU encode in the first place: MPSCNNInstanceNormalization.h:91 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). What decides it is whether anything in the port CONFORMS to it, and the class-scoped read answers that from the release's own side and the port's own side together. The release: objc-inventory.lua over the 16.0 arm64e cache lists MPSCNNInstanceNormalizationDataSource under `protocol` with 13 instance selectors - -beta,-copyWithZone:device:,-encodeWithCoder:,-epsilon,-gamma,-initWithCoder:,-label,-load,-numberOfFeatureChannels,-purge,-updateGammaAndBetaWithCommandBuffer:instanceNormalizationStateBatch:,-updateGammaAndBetaWithInstanceNormalizationStateBatch: - so the contract is real and its members are named. The port: MPSCNNInstanceNormalization, which is the class that would conform, is a class the port DOES carry (the registry, implemented), and it takes its gamma, beta, mean and variance from a state object rather than from a delegate - MPSCNNBatchNormalization12.m's initializer path and the state class's own - so no object in the package adopts the protocol and none of these members is ever sent. The port's own MPS kernels walk images on the CPU inside their encode, so no GPU bears on this row either. What is missing is an object that adopts the protocol, which is owed work rather than a capability this host lacks",
-      "effect": "nothing observable, and that is the point: the protocol's members are never sent, so a class that implemented MPSCNNInstanceNormalizationDataSource would simply never be called. respondsToSelector: on the port's objects answers honestly for each of the 13 members, and a class that declares conformance without an object to send to would claim a contract nothing honours",
-      "source": "the class-scoped protocol entry - the 13 instance selectors - read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSCNNInstanceNormalization.h in the SDK of iOS 16.4; and the port's own registry and MPSCNNBatchNormalization12.m for what the conforming class actually does"
+      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNInstanceNormalizationGradient",
