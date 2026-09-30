@@ -639,16 +639,6 @@
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
-   "api": "AVPlayerItem.nowPlayingInfo",
-   "kind": "property",
-   "introduced": "16.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 16",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPAdTimeRange",
    "kind": "class",
    "introduced": "16.0",
