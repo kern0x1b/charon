@@ -8,7 +8,7 @@ $ python3 tools/corpus/surface-diff-latest.py NetworkExtension --rows <path>
   family is in the registry
 $ awk -F'\t' 'NR>1 {c[$7]++}' coordination/corpus/ledger/NetworkExtension.tsv
   needs: code 567, code+lift 22, swift-module 116, lift 278, none 3   (986 rows in all)
-  the rows that need code, by kind: class 77, method 188, property 302
+  the rows that need code, by kind: class 77, method 188, property 302, constant 22 = 589
 ```
 
 So the 589 the coordinator quotes is the **needs code** subset (567 + 22), not the whole
