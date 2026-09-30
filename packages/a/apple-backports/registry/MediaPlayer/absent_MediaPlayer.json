@@ -12,24 +12,26 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPVolumeView.wirelessRouteActive",
+   "api": "MPVolumeView.isWirelessRouteActive",
    "kind": "property",
    "introduced": "7.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "the class does not carry the route state: MPVolumeView has 54 own instance methods and 0 own class methods and none of the image's 41 categories extends it, and its route UI (showsRouteButton, setRouteButtonImage:forState:, routeButtonRectForBounds:, _displayAudioRoutePicker) is drawn from MPAudioDeviceController's private tables, which no public API on this release reads. AVAudioSession exists on 6.1.3 (first rung 3.0) and reports the AUDIO route; reporting an audio output as a wireless route would be another API's answer under this property's name. the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. And the port has already answered this question once: MediaPlayerConstants70.m carries MPVolumeViewWirelessRouteActiveDidChangeNotification and posts it never",
+   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises. A getter that answered NO would report no AirPlay receiver on a device that has one, which is why it is absent and not inert",
+   "source": "SDK 26.2, MPVolumeView.h - the property at MP_API(ios(7.0)) declares getter=isWirelessRouteActive, so that is the selector and the property name is not a selector on any platform",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
-   "api": "MPVolumeView.wirelessRoutesAvailable",
+   "api": "MPVolumeView.areWirelessRoutesAvailable",
    "kind": "property",
    "introduced": "7.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "the class does not carry the route state: MPVolumeView has 54 own instance methods and 0 own class methods and none of the image's 41 categories extends it, and its route UI (showsRouteButton, setRouteButtonImage:forState:, routeButtonRectForBounds:, _displayAudioRoutePicker) is drawn from MPAudioDeviceController's private tables, which no public API on this release reads. AVAudioSession exists on 6.1.3 (first rung 3.0) and reports the AUDIO route; reporting an audio output as a wireless route would be another API's answer under this property's name. the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. And the port has already answered this question once: MediaPlayerConstants70.m carries MPVolumeViewWirelessRoutesAvailableDidChangeNotification, its value read from iOS 7.0's own armv7 cache with tools/cfconst.py, and posts it never - there is no state whose change is worth posting. Carrying the property would add a second accessor over the same missing state",
+   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises. A getter that answered NO would report no AirPlay receiver on a device that has one, which is why it is absent and not inert",
+   "source": "SDK 26.2, MPVolumeView.h - the property at MP_API(ios(7.0)) declares getter=areWirelessRoutesAvailable, so that is the selector and the property name is not a selector on any platform; the row is spelled for the accessor as MPMediaItem.isCompilation is",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "MPVolumeViewWirelessRouteActiveDidChangeNotification",
@@ -323,9 +325,10 @@
    "introduced": "9.3",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS, and the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. The answer is the library adding an iTunes Store purchase, which needs the Store and an account MediaPlayer reaches through APIs this release does not have: MPMediaLibrary's own 110 instance and 23 class methods are all local-library work. An implementation would have had to invent the Store it answered from",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, because there is nothing on the device to answer from",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "-[MPMediaLibrary getPlaylistWithUUID:creationMetadata:completionHandler:]",
@@ -333,9 +336,10 @@
    "introduced": "9.3",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaLibrary a method like it: it arrived in iOS 9",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS, and the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. The answer is the playlist identified by a UUID in the user's iCloud account. 6.1.3 has no iCloud music library: the image's cloud classes - MPCloudController, MPCloudDownloadButton, MPCloudAssetDownloadController - are an app's own download cache, and MPMediaPlaylist's own 15 methods hold no UUID-keyed lookup at all",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, because there is no cloud library to look in",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "-[MPMediaPlaylist addItemWithProductID:completionHandler:]",
@@ -343,9 +347,10 @@
    "introduced": "9.3",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a method like it: it arrived in iOS 9",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS, and the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. As the library row states, the answer is an iTunes Store purchase this release cannot reach; and MPMediaPlaylist's own 15 methods - initWithPersistentID: (a local persistent ID), -items, -count, -persistentID, -valueForProperty:, -playlistAttributes, -mediaTypes, -representativeItem, -existsInLibrary, -isEqual:, -encodeWithCoder:, -initWithCoder: and the artwork loader - hold no mutator at all",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, because there is nothing to add from and nowhere Apple would add it to",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "-[MPMediaPlaylist addMediaItems:completionHandler:]",
@@ -353,9 +358,10 @@
    "introduced": "9.3",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a method like it: it arrived in iOS 9",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS, and the release's whole-cache selector list ~/.charon/dyld/6.1.3/selectors_armv7.txt - 113981 distinct names, a list of names and not a count per class - carries this selector on no line at all. Apple adds the items to the playlist's CLOUD copy; 6.1.3's playlist is a local synced collection whose own 15 methods hold no mutator at all. Appending to the local playlist would answer something Apple's own does not, which is the failure this port exists to avoid rather than the success it looks like",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, because the collection this call changes does not exist on this release",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "-[MPMusicPlayerController setQueueWithStoreIDs:]",
@@ -363,9 +369,10 @@
    "introduced": "9.3",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 9",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS. MPMusicPlayerController has 64 own instance methods and 5 own class methods and NONE of them takes a Store ID in any spelling: setQueueWithStoreIDs: and setQueueWithItemIDs: are both on no line of the release's whole-cache selector list, and what the release has is setQueueWithQuery:, setQueueWithItemCollection:, setQueueWithSeedItems:, setQueueWithGeniusMixPlaylist: and setQueueWithQuery:firstItem:. And there is nothing to resolve an ID to: a Store ID is what MPMediaItem.playbackStoreID holds, that property is this port's own 10.3 carry (registry/MediaPlayer/ios10_3mpitem.json) reading a key the release has no value for, and facts/MediaPlayer/MPMediaItem.md records that none of the 22 MPMediaItem getters is declared anywhere in the release - so a store queue on this device has no items at all, by two independent reads",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, because a queue of Store IDs has no members on this release",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "MPErrorDomain",
@@ -532,9 +539,10 @@
    "introduced": "10.1",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSUserActivity a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "the class arrived in iOS 8: tools/cache-index/first-rung.py answers 8.0 for NSUserActivity, the oldest HELD release that carries the name, and it is not among 6.1.3's 236 classes; externalMediaContentIdentifier is on no line of the release's whole-cache selector list. A category on a class the release does not have compiles, links and then never installs, so the image would carry a category nobody can attach and the row would claim a respondsToSelector: answer for a class that does not exist - that is ef271700's finding D on ARKit, where a conformance-only category made no metadata and the dylib had 0 occurrences of the name",
+   "effect": "the class and the accessor are both not there: NSClassFromString answers nil for each, so the property is not a name anything can be sent",
+   "source": "SDK 26.2, NSUserActivity+MediaPlayerAdditions.h, @property (nonatomic, copy, nullable) NSString *externalMediaContentIdentifier MP_API(ios(10.1))",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "-[MPMusicPlayerController appendQueueDescriptor:]",
@@ -728,9 +736,10 @@
    "introduced": "16.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS. There is no such class among the 236, becomeActiveIfPossibleWithCompletion: is on no line of the release's whole-cache selector list, and the object a session exists to activate is MPNowPlayingInfoCenter, whose own 5 instance methods are _pushNowPlayingInfoAndRetry:, setNowPlayingInfo:, nowPlayingInfo, _init and init, with one own class method, +defaultCenter. So canBecomeActive has nothing that could answer YES, active would be NO on every call, and all eight declared members would be a fabricated NO or a stored value nothing reads - which is the object's absence in another name. What 6.1.3 does offer for the same job is already carried: MPRemoteCommandCenter71.m bridges the commands onto UIEventTypeRemoteControl and MediaPlayerConstants70.m carries the now-playing keys; a session is the 16.0 shape of that, not a 6.1.3 one",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes, and carrying it would have meant answering every member with a constant",
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   },
   {
    "api": "MPNowPlayingSessionDelegate",
@@ -738,9 +747,10 @@
    "introduced": "16.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
+   "reason": "read with tools/mach32_methods.py from the armv7 cache of 6.1.3 (MediaPlayer image at 0x31fe3000): 236 classes, 41 categories read WITH THE CLASS EACH ONE EXTENDS. The same object as the MPNowPlayingSession row: both delegate callbacks are about a session that cannot exist on this release, and nowPlayingSessionDidChangeActive: is on no line of the release's whole-cache selector list. A protocol alone would be the protocol of nothing",
    "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, MediaPlayer"
+   "source": "SDK 16.4, MediaPlayer",
+   "facts": "facts/MediaPlayer/AbsentRows.md"
   }
  ]
 }
