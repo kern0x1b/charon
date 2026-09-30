@@ -129,12 +129,15 @@ int main(void)
             [p.horizontal setObject:@2 atIndexedSubscript:0];
             check([p.horizontal objectAtIndexedSubscript:0].intValue == 2, @"a sample written at 0 reads back 2");
             check([p.horizontal objectAtIndexedSubscript:5] == nil,
-                  @"a past-the-end sample reads nil in the port, as the header's nullable element says");
+                  @"a past-the-end sample reads nil in the port - and the header does NOT declare that"
+                  @" getter nullable, so this is a DEVIATION, printed below next to Apple's 0");
             MTLRasterizationRateLayerDescriptor *h =
                 [[MTLRasterizationRateLayerDescriptor alloc] initWithSampleCount:MTLSizeMake(2, 2, 1)];
             id applePastEnd = [h.horizontal objectAtIndexedSubscript:5];
-            printf("  note measured divergence: past-the-end sample index, the port answers nil and "
-                   "Apple's own object answers %s\n",
+            printf("  note measured deviation: past-the-end SAMPLE index - MTLRasterizationRate.h:24 "
+                   "does not declare that getter nullable, Apple's own object answers %s and the port "
+                   "answers nil; the LAYER members at :136 and :189 ARE nullable and both sides "
+                   "answer nil\n",
                    applePastEnd ? [[applePastEnd description] UTF8String] : "nil");
             checks++;
         }

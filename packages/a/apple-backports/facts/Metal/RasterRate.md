@@ -50,9 +50,20 @@ for on a host with no device and those two then read back `9.88131e-324`, so com
 would be comparing against uninitialised memory. What the port answers instead is the count the
 caller built the layer with.
 
-**One measured divergence is recorded, not asserted away:** for a sample index past the end of a
-layer's array, Apple's own object answers **0**, where the header declares the element nullable and
-the port answers **nil**. The case prints both and says so.
+**What is null and what is not, probed rather than assumed.** `MTLRasterizationRate.h` declares four
+members `_Nullable` and the sample array's indexed getter is **not** one of them:
+
+| member | header | Apple answers | the port answers | |
+| --- | --- | --- | --- | --- |
+| `MTLRasterizationRateLayerArray objectAtIndexedSubscript:` (`:136`) | `_Nullable` | `nil` | `nil` | agree, and the port's `nil` is what the contract says |
+| `MTLRasterizationRateMapDescriptor layerAtIndex:` (`:189`) | `_Nullable` | `nil` | `nil` | agree |
+| `MTLRasterizationRateSampleArray objectAtIndexedSubscript:` (`:24`) | **not** nullable | `0` | `nil` | **a deviation** |
+
+The sample row is the one to be honest about: the header does **not** promise `nil` there, Apple's
+own object hands back a non-null `NSNumber` carrying `0`, and the port hands back `nil`. That is a
+deviation from a non-null contract, taken because a port with no device has no sample to read and
+`nil` says that, where `0` would claim a measurement. It is a difference, not a matching, and the
+case prints both answers so it stays visible.
 
 ## The mutants
 

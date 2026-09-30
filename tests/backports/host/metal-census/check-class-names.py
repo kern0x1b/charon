@@ -428,6 +428,24 @@ def registries():
             yield full
 
 
+def constant_prefixes(registry_path, wide_scans=None):
+    """The prefix set a CONSTANT row in this registry is scanned against, or None if it has none.
+
+    A registry with class or protocol rows derives from those. One with NEITHER - a real shape here -
+    used to derive an EMPTY set, and "not in an empty set" is true of every name, so every constant row
+    in it was skipped and the registry reported itself clean. So the second source is the registry's
+    OWN API NAMES: the same derivation, wider, still narrower than the type-noun test, and reported in
+    `wide_scans` so the shape is visible rather than silent.
+    """
+    prefixes = class_prefixes(registry_path)
+    if prefixes:
+        return prefixes
+    wide = class_prefixes(registry_path, wide=True)
+    if wide and wide_scans is not None:
+        wide_scans.setdefault("its own api names", set()).add(os.path.relpath(registry_path, ROOT))
+    return wide
+
+
 def constant_row_scanned(registry_path):
     """Can this registry's constant rows be scanned, and on WHAT?
 
@@ -504,16 +522,18 @@ def scan(planted=None, unscanned=None, unscannable=None, wide_scans=None):
         # api names instead, and that accepted nearly every value: a three-letter prefix is shared
         # by almost anything CamelCase in the same file, and the real tree went red.
         if kind == "constant":
-            source = constant_row_scanned(_p)
-            if wide_scans is None:
-                wide_scans = {}
-            if source is None:
+            prefixes = constant_prefixes(_p, wide_scans)
+            if not prefixes:
                 unscannable.add(os.path.relpath(_p, ROOT))
                 continue
-            if source != "class rows":
-                wide_scans.setdefault(source, set()).add(os.path.relpath(_p, ROOT))
-            continue
-        if not class_shaped(name):
+            # NO `continue` HERE. The branch above only decides WHICH prefix set applies; the candidate
+            # then goes through the same shape test and the same lookup as every other row. An earlier
+            # version ended this branch with `continue`, and so no constant-row candidate was ever
+            # checked: the comment said constant rows were scanned and the code scanned none, and six
+            # plants were green - two of which had been red in the series before this change.
+            if not (name[:3] in prefixes and names_a_type(name)):
+                continue
+        elif not class_shaped(name):
             continue
         if name in live or name in allow:
             continue
@@ -524,16 +544,13 @@ def scan(planted=None, unscanned=None, unscannable=None, wide_scans=None):
         if name == api or name in declared or name in live or name in allow:
             continue
         if kind == "constant":
-            source = constant_row_scanned(path)
-            if wide_scans is None:
-                wide_scans = {}
-            if source is None:
+            prefixes = constant_prefixes(path, wide_scans)
+            if not prefixes:
                 unscannable.add(os.path.relpath(path, ROOT))
                 continue
-            if source != "class rows":
-                wide_scans.setdefault(source, set()).add(os.path.relpath(path, ROOT))
-            continue
-        if not class_shaped(name):
+            if not (name[:3] in prefixes and names_a_type(name)):
+                continue
+        elif not class_shaped(name):
             continue
         hits.append((api, name, path))
     if planted:

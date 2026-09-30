@@ -378,7 +378,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the container a layer keeps its sample rates in, with the two indexed members the header declares",
-      "effect": "the port DEFINES MTLRasterizationRateSampleArray under APPLE'S OWN NAME, and tests/backports/host/metal-census/rasterrate.m compares it against Apple's own object of the same class with no device created; a sample written at an index reads back there and a past-the-end index reads nil, as the header's nullable element says; MEASURED DIVERGENCE: Apple's own object answers 0 there, and that is recorded rather than asserted equal",
+      "effect": "a sample written at an index reads back there; a past-the-end index reads nil in the port where Apple's own object answers a non-null 0, and the header does NOT declare that getter nullable - MTLRasterizationRate.h:24 has no _Nullable while the layer's own do at :136, :143, :189 and :198 - so this is a DEVIATION from a non-null contract, taken because a port with no device has no sample to read",
       "source": "SDK 16.4 MTLRasterizationRate.h, that class's own declaration; the semantics measured against Apple's own objects on the host; the cache ladder's band for this symbol is 13.0, and it reports that no release is held between 12.0 and 14.0, so 13.0 means after 12.0 and by 14.0, not a measured first release",
       "facts": "facts/Metal/RasterRate.md"
     },
