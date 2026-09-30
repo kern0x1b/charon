@@ -31,6 +31,16 @@ typedef NS_OPTIONS(NSUInteger, WKWebExtensionMatchPatternOptions) {
     WKWebExtensionMatchPatternOptionsMatchBidirectionally = 1 << 2,
 } API_AVAILABLE(ios(18.4));
 
+// The match pattern's error domain and codes, from the 26.2 SDK's NS_ERROR_ENUM, which numbers
+// them from 1 in the order it declares them.
+extern NSString *const WKWebExtensionMatchPatternErrorDomain;
+typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
+    WKWebExtensionMatchPatternErrorUnknown = 1,
+    WKWebExtensionMatchPatternErrorInvalidScheme,
+    WKWebExtensionMatchPatternErrorInvalidHost,
+    WKWebExtensionMatchPatternErrorInvalidPath,
+} API_AVAILABLE(ios(18.4));
+
 // The match pattern, which the extension's permission sets are made of. Its own matching behaviour
 // is a later family; what WKWebExtension needs to exist is the class and the string form.
 @interface WKWebExtensionMatchPattern : NSObject <NSCopying>
