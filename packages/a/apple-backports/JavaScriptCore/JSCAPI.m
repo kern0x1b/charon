@@ -8,10 +8,12 @@
  * in facts/JavaScriptCore/CAPI.md, and tests/backports/host/jscontext/checks.m holds each one to the
  * host's own JavaScriptCore.
  *
- * The release's C API is what this answers over, and none of what is called below is absent from it:
- * JSValueIsObject, JSValueToBoolean, JSValueToStringCopy, JSStringIsEqualToUTF8CString, the four
- * property functions and their string forms, all exported since 3.0 (first-rung.py over the held
- * rungs), each present in the 6.1.3 armv7 cache and in the 4.3 one this package also builds.
+ * The release's C API is what this answers over, and nothing called here is absent from it. Directly:
+ * JSValueToStringCopy, JSStringRelease and the four property functions. Through the two helpers of
+ * JSInternal.m: JSValueIsObject, JSValueToBoolean, JSStringIsEqualToUTF8CString, JSObjectCallAsFunction
+ * and the rest of what charon_js_is_array and charon_js_is_date ask. All exported since 3.0
+ * (first-rung.py over the 50 held rungs, the oldest held rung carrying each), each present in the 6.1.3
+ * armv7 cache and in the 4.3 one this package also builds.
  */
 
 /*
@@ -122,9 +124,10 @@ bool JSObjectDeletePropertyForKey(JSContextRef context, JSObjectRef object, JSVa
  * A context's name and its inspectable flag are the Web Inspector's two fields for a context:
  * what the inspector lists a context under, and whether it may attach to it at all. This port
  * carries no Web Inspector - there is no protocol here that could be refused or attached - so
- * nothing on it reads either. They are carried, they answer the answer this port can give, and they
- * say so in the log the first time an application reaches them, which is what a row marked inert is
- * for. The row is not bridged to -[JSContext name] and -[JSContext setInspectable:], which keep
+ * nothing on it reads either. They are carried, they answer what this port can answer - nothing, and a
+ * NULL or a NO - and the three of them that take a value say so in the log the first time an
+ * application reaches it, which is what a row marked inert is for. None of the four is bridged to
+ * -[JSContext name] and -[JSContext setInspectable:], which keep
  * their own value in the wrapper: that registry holds wrappers weakly, by design, so a store a C
  * client could reach would have to outlive the wrapper and die with the context, and the only such
  * store the release has - a JSWeakObjectMap - holds JavaScript values rather than a name. Stated
