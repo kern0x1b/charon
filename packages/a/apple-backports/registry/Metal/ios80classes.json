@@ -6,9 +6,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLBlitCommandEncoder12.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalBlitEncoder, because it is port machinery and not API. The class is defined in Metal/MTLBlitCommandEncoder12.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 24 methods are defined in packages/a/apple-backports/Metal/MTLBlitCommandEncoder12.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 24 methods defined, and a reader sees them at packages/a/apple-backports/Metal/MTLBlitCommandEncoder12.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of MTLBlitCommandEncoder, whose API arrived in 8.0"
     },
     {
@@ -16,9 +16,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalBuffer.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalBuffer, because it is port machinery and not API. The class is defined in Metal/CharonMetalBuffer.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 36 methods are defined in packages/a/apple-backports/Metal/CharonMetalBuffer.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 36 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalBuffer.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -26,9 +26,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalQueue.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalCommandBuffer, because it is port machinery and not API. The class is defined in Metal/CharonMetalQueue.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 20 methods are defined in packages/a/apple-backports/Metal/CharonMetalQueue.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 20 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalQueue.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -36,9 +36,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLComputeCommandEncoder8.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalComputeEncoder, because it is port machinery and not API. The class is defined in Metal/MTLComputeCommandEncoder8.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 11 methods are defined in packages/a/apple-backports/Metal/MTLComputeCommandEncoder8.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 11 methods defined, and a reader sees them at packages/a/apple-backports/Metal/MTLComputeCommandEncoder8.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -46,9 +46,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLComputePipeline8.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalComputePipeline, because it is port machinery and not API. The class is defined in Metal/MTLComputePipeline8.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 12 methods are defined in packages/a/apple-backports/Metal/MTLComputePipeline8.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 12 methods defined, and a reader sees them at packages/a/apple-backports/Metal/MTLComputePipeline8.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -56,9 +56,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDepthStencil.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDepthStencil, because it is port machinery and not API. The class is defined in Metal/CharonMetalDepthStencil.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 3 methods are defined in packages/a/apple-backports/Metal/CharonMetalDepthStencil.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 3 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalDepthStencil.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -66,9 +66,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDevice.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDevice, because it is port machinery and not API. The class is defined in Metal/CharonMetalDevice.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 83 methods are defined in packages/a/apple-backports/Metal/CharonMetalDevice.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 83 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalDevice.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -76,9 +76,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDrawable.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDrawable, because it is port machinery and not API. The class is defined in Metal/CharonMetalDrawable.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 10 methods are defined in packages/a/apple-backports/Metal/CharonMetalDrawable.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 10 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalDrawable.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -86,9 +86,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalEncoder.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalEncoder, because it is port machinery and not API. The class is defined in Metal/CharonMetalEncoder.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 42 methods are defined in packages/a/apple-backports/Metal/CharonMetalEncoder.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 42 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalEncoder.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -96,9 +96,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalLibrary.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalFunction, because it is port machinery and not API. The class is defined in Metal/CharonMetalLibrary.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 52 methods are defined in packages/a/apple-backports/Metal/CharonMetalLibrary.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 52 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalLibrary.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -106,9 +106,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDrawable.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalLayerState, because it is port machinery and not API. The class is defined in Metal/CharonMetalDrawable.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 10 methods are defined in packages/a/apple-backports/Metal/CharonMetalDrawable.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 10 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalDrawable.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -116,9 +116,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalLibrary.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalLibrary, because it is port machinery and not API. The class is defined in Metal/CharonMetalLibrary.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 23 methods are defined in packages/a/apple-backports/Metal/CharonMetalLibrary.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 23 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalLibrary.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -126,9 +126,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalPipeline.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalPipeline, because it is port machinery and not API. The class is defined in Metal/CharonMetalPipeline.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 11 methods are defined in packages/a/apple-backports/Metal/CharonMetalPipeline.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 11 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalPipeline.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -136,9 +136,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalQueue.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalQueue, because it is port machinery and not API. The class is defined in Metal/CharonMetalQueue.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 20 methods are defined in packages/a/apple-backports/Metal/CharonMetalQueue.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 20 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalQueue.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -146,9 +146,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalTexture.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalSampler, because it is port machinery and not API. The class is defined in Metal/CharonMetalTexture.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 53 methods are defined in packages/a/apple-backports/Metal/CharonMetalTexture.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 53 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalTexture.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     },
     {
@@ -156,9 +156,9 @@
       "kind": "class",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "ignored",
-      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalTexture.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
-      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalTexture, because it is port machinery and not API. The class is defined in Metal/CharonMetalTexture.m and the band's export list does not and should not contain it",
+      "status": "implemented",
+      "reason": "a class of the port's own under a name no SDK header declares, and it is BUILT: 71 methods are defined in packages/a/apple-backports/Metal/CharonMetalTexture.m, which a reader can read. The row said absent with the reason 'nothing is claimed to be built under this name' - nothing needs to be, the port builds it, and the row did not say so",
+      "effect": "the object exists and answers: 71 methods defined, and a reader sees them at packages/a/apple-backports/Metal/CharonMetalTexture.m. What each one answers is the port's own model of the GPU-less case, not Apple's - these objects stand in for MTL types, so their behaviour is this port's and no dyld cache answers for them",
       "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
     }
   ]
