@@ -1,4 +1,16 @@
 {
   "framework": "Metal",
-  "entries": []
+  "entries": [
+    {
+      "api": "CharonMetalEventState",
+      "kind": "class",
+      "introduced": "12.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "BOTH halves, because both are true and a reader needs them together. FIRST: the name is the port's own, under a name no SDK header declares and no SDK surface contains - grep -c CharonMetalDevice coordination/corpus/sdk-26.2-surface.tsv is 0 - so NO RELEASE EVER CARRIES IT and that is why this row is about the release and not about the port. SECOND, which the row used to leave out: the port DOES build it, 27 methods, at packages/a/apple-backports/Metal/MTLSharedEvent12.m. The earlier row said only 'nothing is claimed to be built under this name', and that half was false",
+      "effect": "no release exports CharonMetalEventState and none ever did, so nothing in a band's inventory can answer the name and the row claims nothing about SDK behaviour with it. The port builds it as a stand-in for the MTL type, compiled hidden (xmake.lua:15 sets the package's -fvisibility=), so it is not exported either and could not be listed as implemented",
+      "source": "SDK 16.4, Metal, the header of MTLSharedEvent, whose API arrived in 12.0",
+      "facts": "facts/Metal/PortInternals.md"
+    }
+  ]
 }

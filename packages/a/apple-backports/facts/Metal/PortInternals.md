@@ -44,22 +44,32 @@ Three separate facts, each checkable:
    no branch structure, no constant and no return value to port. What these objects answer is the port's
    own model of the GPU-less case, and a row in an SDK ledger has no business claiming to describe it.
 
-THEY ARE NOT ROWS ANY MORE, and the check this page now feeds is backports.lua:1950, "built, but no
-entry in registry/". A CharonMetal object is built by the port, is hidden, and can never appear in any
-release inventory - so while a row existed for it, that check was answering about a name the ledger has
-no business holding, and the row was doing nothing except stopping the check reporting its seventeen
-port-internal neighbours. That is the whole failure: a row that suppressed a diagnostic.
+THE ROWS CAME BACK, and the reason is the best thing in this page. Deleting them fixed a real
+diagnostic and broke the 4.3 band in the same commit, and the second failure is the one that matters:
+backports.lua:2014 `minimums()` reads `entry_of(listed, name)` and takes `entry.minimum` for every name
+an object carries - and it never reads `entry.status`. So a row whose api is a port-internal name is
+perfectly legal, and its minimum is the only thing it is read for.
 
-The fix is one line in the unlisted computation at :1867, using release-split.lua:100's own prefix rule -
-bare:startswith("charon_") or bare:startswith("Charon") - so a built port-internal object is no longer
-reported as an unlisted build, and every OTHER unlisted build still is. The check keeps its teeth: a
-non-Charon object that is built and unlisted is still named.
+Five objects every band carries depend on exactly that:
 
-They were also never `ignored`, which means the release carries the name and the port declines to, and no
-release ever exported CharonMetalDevice. And they were never `implemented`, which needs a definition the
-band EXPORTS, and hidden visibility rules that out however many methods the class has. There was no
-status available to these rows, which is the reviewer's point and it is right: an SDK ledger carries SDK
-API. The port's answer to "what does the GPU-less case look like" belongs here, in prose a reader can
-check, and not in a row whose every field has to be true of a release.
+  CharonMetalLibrary.o        names _CharonAttributesFromFunction  -> CharonMetalLibrary      minimum 6.0
+  MTLBlitCommandEncoder10.o   names _OBJC_CLASS_$_CharonMetalSharedEvent -> CharonMetalSharedEvent minimum 6.0
+  MTLHeap11.o, MTLHeap13.o    name  _OBJC_CLASS_$_CharonMetalHeap   -> CharonMetalHeap          minimum 6.0
+  MTLSharedEvent15.o          names _OBJC_CLASS_$_CharonMetalSharedEvent
+
+Without the rows the 4.3 band has no minimum for those five, cannot place them, and cannot link - while
+6.1.3 stays GREEN, because everything they name is also carried at 6.0. A band-placement defect is
+invisible at the higher rung. That is why both bands run.
+
+So the rows are load-bearing and what made them look like noise is that they read like API. The status
+they carry is absent, and it has to be: implemented needs a definition the band EXPORTS and hidden
+visibility rules that out, ignored means the release carries the name and it never did, and owed is not
+a landing state. absent plus a minimum is the only shape that satisfies minimums() and the registry test
+at once.
+
+THE ONE-LINE RULE IN backports.lua STAYS, because it guards a different set: the port objects that have
+no row at all. A built Charon-prefixed object with no row is not API of any release and should not be
+reported as an unlisted build; every other unlisted build still is, since the guard is an extra conjunct
+on the existing condition.
 
 This page is deliberately NOT one of those. It describes port machinery, and it says so in its title.
