@@ -41,12 +41,14 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 TOOL = os.path.join(HERE, "registry-absent.py")
 FACTS_ROWS = os.path.join(HERE, "registry-facts-rows.py")
+SHAPE = os.path.join(HERE, "registry-shape.py")
 ROOT = os.path.dirname(HERE)
 # The scratch is inside this worktree and not the system temp path: the owner's rule, and a test that
 # writes outside the tree is a test whose leftovers nobody sweeps.
 SCRATCH = os.path.join(ROOT, ".agent-work", "selftest-registry-absent")
 
 failures = []
+checks = []
 
 
 def run(arguments, cwd=ROOT):
@@ -57,7 +59,12 @@ def run_facts_rows(arguments, cwd=ROOT):
     return subprocess.run([sys.executable, FACTS_ROWS] + arguments, capture_output=True, text=True, cwd=cwd)
 
 
+def run_shape(arguments, cwd=ROOT):
+    return subprocess.run([sys.executable, SHAPE] + arguments, capture_output=True, text=True, cwd=cwd)
+
+
 def check(name, condition, detail=""):
+    checks.append(name)
     if condition:
         print("ok   %s" % name)
         return
@@ -147,7 +154,22 @@ def main():
               "exit %d, stdout: %s, stderr: %s" % (result.returncode, result.stdout.strip()[:60],
                                                     result.stderr.strip()[:70]))
 
-        # 7. and the same tool on a registry that is there, where it does print
+        # 7. --against with a ref that does not resolve: a comparison that never happened, and the
+        #    run has to say so and fail rather than report zero problems (the review's finding)
+        planted = "0" * 40
+        result = run_shape([os.path.join(ROOT, "packages/a/apple-backports/registry"), "--against", planted])
+        check("a ref that does not resolve is refused by name",
+              result.returncode != 0 and planted in (result.stdout + result.stderr)
+              and "0 problem(s)" not in result.stdout,
+              "exit %d, said: %s" % (result.returncode, (result.stdout + result.stderr).strip()[:90]))
+
+        # 8. and a ref that does resolve: the run must say how many row lists it compared
+        result = run_shape([os.path.join(ROOT, "packages/a/apple-backports/registry"), "--against", "HEAD"])
+        check("a ref that resolves is compared, and the run says how many",
+              result.returncode == 0 and "row list(s) compared against HEAD" in result.stdout,
+              "exit %d, said: %s" % (result.returncode, result.stdout.strip()[-90:]))
+
+        # 9. and the same tool on a registry that is there, where it does print
         result = run_facts_rows([os.path.join(ROOT, "packages/a/apple-backports/registry"),
                                  "facts/Foundation/NSURLResourceKeyStrings.md", "7.0-18.0"])
         check("a real registry is counted, and says so on stdout",
@@ -156,7 +178,7 @@ def main():
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
 
-    print("%d checks, %d failures" % (8, len(failures)))
+    print("%d checks, %d failures" % (len(checks), len(failures)))
     if failures:
         raise SystemExit(1)
 
