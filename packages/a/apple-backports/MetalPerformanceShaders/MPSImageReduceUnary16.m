@@ -42,8 +42,7 @@
 // the sum is taken in double and divided once, which leaves the result within one float32 ulp. The
 // harness's reference uses that same bound, and states it.
 
-#import "CharonMPS.h"
-#import "CharonMPSImage.h"
+#import "CharonMPSReduce.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 // ONE scoped suppression, and it is recorded in coordination/crutches.md with the reason. The SDK marks
@@ -57,36 +56,6 @@
 // ("Cannot directly initialize MPSImageReduceUnary") and aborts, so there is no successful chain to write.
 #pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 
-// Which of the four operations, and over which axis. The eight concrete classes differ only in these two.
-typedef NS_ENUM(NSInteger, CharonMPSReduceOperation) {
-    CharonMPSReduceMin = 0,
-    CharonMPSReduceMax,
-    CharonMPSReduceMean,
-    CharonMPSReduceSum,
-};
-
-@interface MPSImageReduceUnary ()
-// Internal, and the base's real designated initialiser. This is how a concrete class says which of the
-// eight operations it is and over which axis, without a subclass reaching into the base's storage and
-// without going through the base's refusing -initWithDevice: below.
-//
-// WHY THIS IS NOT AN `init` METHOD, which is the whole of the crutch recorded in
-// coordination/crutches.md: NS_DESIGNATED_INITIALIZER is only accepted on a method whose name begins with
-// "init", so this cannot be marked designated - clang rejects the attribute outright with
-// "'objc_designated_initializer' attribute only applies to init methods of interface or class extension".
-// The SDK marks the base's -initWithDevice: NS_UNAVAILABLE (:44-47) and each concrete class's
-// -initWithDevice: NS_DESIGNATED_INITIALIZER, so clang requires the concrete one to call a designated
-// initializer of the base, and the base's only designated initializer is -initWithCoder:device:, which
-// cannot know which of the eight operations to build and takes a nonnull coder this path has no use for.
-// Passing a nil coder to it was tried and is worse than the warning: it passes null to a nonnull parameter.
-//
-// The native fix, when one exists, is a header of our own that declares the hierarchy's designated
-// initializer; the release's own chain is unreachable from outside because the class it would have to be
-// declared on is the SDK's.
-- (instancetype)charon_initWithDevice:(id<MTLDevice>)device
-                            byColumn:(BOOL)byColumn
-                            operation:(CharonMPSReduceOperation)operation;
-@end
 
 @implementation MPSImageReduceUnary {
     MTLRegion _clipRectSource;
@@ -296,23 +265,3 @@ typedef NS_ENUM(NSInteger, CharonMPSReduceOperation) {
 }
 
 @end
-
-// The eight concrete classes. Each differs from the base only in the axis and the operation, which is
-// exactly what MPSImageReduce.h's eight per-class comments describe, and each declares
-// -initWithDevice: as its designated initializer (:64 and its seven siblings).
-#define CHARON_DEFINE_REDUCE(CLASS, COLUMN, OPERATION)                                          \
-    @implementation CLASS                                                                      \
-    - (instancetype)initWithDevice:(id<MTLDevice>)device                                      \
-    {                                                                                          \
-        return [self charon_initWithDevice:device byColumn:(COLUMN) operation:(OPERATION)];     \
-    }                                                                                          \
-    @end
-
-CHARON_DEFINE_REDUCE(MPSImageReduceRowMin, NO, CharonMPSReduceMin)
-CHARON_DEFINE_REDUCE(MPSImageReduceColumnMin, YES, CharonMPSReduceMin)
-CHARON_DEFINE_REDUCE(MPSImageReduceRowMax, NO, CharonMPSReduceMax)
-CHARON_DEFINE_REDUCE(MPSImageReduceColumnMax, YES, CharonMPSReduceMax)
-CHARON_DEFINE_REDUCE(MPSImageReduceRowMean, NO, CharonMPSReduceMean)
-CHARON_DEFINE_REDUCE(MPSImageReduceColumnMean, YES, CharonMPSReduceMean)
-CHARON_DEFINE_REDUCE(MPSImageReduceRowSum, NO, CharonMPSReduceSum)
-CHARON_DEFINE_REDUCE(MPSImageReduceColumnSum, YES, CharonMPSReduceSum)
