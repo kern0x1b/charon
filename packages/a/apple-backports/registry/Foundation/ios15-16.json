@@ -220,13 +220,12 @@
     },
     {
       "api": "NSMutableURLRequest.attribution",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "introduced": "15.0",
       "kind": "property",
+      "introduced": "15.0",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "status": "implemented",
+      "effect": "a fresh request answers Developer, the enumeration's zero; setting the other value reads back, and the value survives -copy and -mutableCopy, because it rides on the request under a key it already carries",
+      "source": "the host's own Foundation, measured name by name in tests/backports/host/netext-requests/run.sh: fresh=NO roundtrip=YES copy=carried mutablecopy=carried, dladdr on both the getter and the setter answering from /System/Library/Frameworks/CFNetwork.framework"
     },
     {
       "api": "NSPresentationIntent",

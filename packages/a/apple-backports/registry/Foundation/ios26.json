@@ -16,10 +16,9 @@
       "kind": "property",
       "introduced": "18.2",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 18",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "status": "implemented",
+      "effect": "a fresh request answers nil; setting a string reads that string back, and it survives -copy and -mutableCopy",
+      "source": "the host's own Foundation, measured in tests/backports/host/netext-requests/run.sh: fresh=(nil) roundtrip=read back copy=carried mutablecopy=carried, dladdr naming CFNetwork.framework for both selectors"
     },
     {
       "api": "-[NSBundle localizedStringForKey:value:table:localizations:]",
@@ -246,10 +245,9 @@
       "kind": "property",
       "introduced": "26.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSMutableURLRequest a property like it: it arrived in iOS 26",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 26.5, Mac Catalyst, Foundation"
+      "status": "implemented",
+      "effect": "a fresh request answers NO; setting YES reads back YES and the value survives -copy and -mutableCopy",
+      "source": "the host's own Foundation, measured in tests/backports/host/netext-requests/run.sh: fresh=NO roundtrip=YES copy=carried mutablecopy=carried, dladdr naming CFNetwork.framework for both selectors"
     },
     {
       "api": "-[NSPredicate allowEvaluationWithValidator:error:]",
