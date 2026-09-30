@@ -19,6 +19,19 @@ them is not evidence, and this page used to carry several.
 | what the host answers for the five value members, and what the port's objects carry | `tests/backports/host/sensorkit-value/run.sh` | the three HOST lines, `5 of 5 accessors`, 5 plants |
 | what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
 | one symbol's release of first appearance, over the held ladder | `tools/cache-index/first-rung.py` | one TSV line per name, or `NONE` |
+| what release the SDK declares a name arrived in | `coordination/corpus/sdk-26.2-surface.tsv`, the `api` and `introduced` columns | 530 SensorKit rows; every one of this family's 35 matches |
+
+**Every `introduced` in this family is checked against the registry's own source**, which is the
+`api`/`introduced` pair of `coordination/corpus/sdk-26.2-surface.tsv` — the same file the queue rows
+themselves are cut from. Filtered to `framework == SensorKit` it holds **530** rows, and **35 of 35** of
+the rows this delivery adjudicated match their own registry entry: 35 matched, 0 mismatched, 0 absent
+from the surface. A row's `introduced` means what that file says it means.
+
+**Placement did not move.** `minimums()` in `modules/apple/backports.lua` reads `entry.minimum` and never
+`entry.status`, so a row's placement is load-bearing whatever its status says. Across this series the
+registry diff adds exactly **one** `minimum` — `6.0`, on the new `SRSensorReaderDelegate` protocol row —
+and changes none, so no existing row of this family moved band. **The 4.3 rung has not been gated**: a
+placement defect there is invisible at 6.1.3 by construction, and the coordinator runs the gates.
 
 `tools/cache-index/first-rung.py` answers **presence, not version**, and that limit is load-bearing
 here: the ladder it walks (`dyld.held_ladder` in `modules/apple/dyld.lua`) has a hole above 12.0, so a
