@@ -127,9 +127,9 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "a class of the port's own, under a name no SDK header declares, and compiled with hidden visibility: so no such name is in the built library's symbol table, which is what the gate reads a name out of. The entry is here for the minimum it carries \u2014 6.0, the release the API it answers arrived \u2014 because the band machinery places an object that NAMES such a class by the minimum of the names it carries, and a category has no symbol of its own to be placed by",
-      "effect": "nothing is claimed to be built under this name, and nothing needs to be: the class is the port's own and the objects that name it are placed above 6.0, so no band below that links against it (facts/Metal/Compute.md, facts/Metal/Heaps.md, facts/Metal/Blits.md)",
+      "status": "ignored",
+      "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLSharedEvent12.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
+      "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalSharedEvent, because it is port machinery and not API. The class is defined in Metal/MTLSharedEvent12.m and the band's export list does not and should not contain it",
       "source": "SDK 16.4, Metal, MTLEvent.h, whose protocol arrived in 12.0"
     }
   ]
