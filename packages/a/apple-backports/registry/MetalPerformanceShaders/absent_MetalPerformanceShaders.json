@@ -2,46 +2,6 @@
   "framework": "MetalPerformanceShaders",
   "entries": [
     {
-      "api": "MPSImageAreaMax",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageAreaMin",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageDilate",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageErode",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSImageGaussianBlur",
       "kind": "class",
       "introduced": "9.0",

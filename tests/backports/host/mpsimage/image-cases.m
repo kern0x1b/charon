@@ -60,6 +60,20 @@
 // The class is declared in MPSImage.framework's MPSImageReduce.h, which the umbrella this file imports
 // does not carry, so the two are spelled out and the kernel is called through this protocol - the same
 // reason CharonImageMatrixEncode exists for the copy's encode.
+// MPSImageAreaMax/AreaMin take -initWithDevice:kernelHeight:kernelWidth: (MPSImageMorphology.h:42) and
+// MPSImageDilate/Erode take the same plus -values: (:129), so the two are spelled out rather than merged.
+@protocol CharonMorphologyAreaInit
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+                  kernelHeight:(NSUInteger)kernelHeight
+                   kernelWidth:(NSUInteger)kernelWidth;
+@end
+@protocol CharonMorphologyDilateInit
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+                  kernelHeight:(NSUInteger)kernelHeight
+                   kernelWidth:(NSUInteger)kernelWidth
+                       values:(const float *)values;
+@end
+
 @protocol CharonImageConvolutionEncode
 @property (readwrite, nonatomic) float bias;
 - (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
@@ -567,6 +581,62 @@ int main(int argc, const char **argv)
                 printf("\n");
                 CharonReferenceImageConvolution(convNames[i], input, rows, cols, kw, kh, each[i],
                                                 i == 0 ? 0.125 : 0.0, 0, 0, got, values);
+            }
+        }
+
+        // MPSImageMorphology, MPSImageMorphology.h:22, :72, :96 and :174 - four classes that are all the
+        // same walk with two choices in it. The window is 5x5 over a 4x3 image, so it runs off every edge
+        // on purpose: :69 and :93 say "The edgeMode property is assumed to always be
+        // MPSImageEdgeModeClamp for this filter", so an off-edge tap takes the nearest edge VALUE. A
+        // convolution case over the same image and window would use MPSImageEdgeModeZero and get a
+        // different answer, and having both is what makes the edge rule visible rather than asserted.
+        //
+        // The probe is asymmetric and not all ones, so a Dilate that ignored it, or used it as a
+        // multiplier rather than an add, cannot pass. The comparison is for EQUALITY: a maximum and a
+        // minimum select a value the source already holds, so there is no rounding to absorb.
+        {
+            static const char *morphNames[4] = {"area-max", "area-min", "dilate", "erode"};
+            static const char *morphRenamed[4] = {"CharonMPSImageAreaMax", "CharonMPSImageAreaMin",
+                                                   "CharonMPSImageDilate", "CharonMPSImageErode"};
+            Class morphClasses[4] = {[MPSImageAreaMax class], [MPSImageAreaMin class],
+                                     [MPSImageDilate class], [MPSImageErode class]};
+            NSUInteger mw = 5, mh = 5;
+            static float probe[25] = {0.0f,  0.5f, 0.0f, 0.5f, 0.0f,
+                                      0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+                                      0.0f,  0.5f, 0.0f, 0.5f, 0.0f,
+                                      0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+                                      0.0f,  0.5f, 0.0f, 0.5f, 0.0f};
+            for (int i = 0; i < 4; i++) {
+                if (!NSClassFromString([NSString stringWithUTF8String:morphRenamed[i]])) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: this port has no %s (looked for %s), so the case is absent"
+                           " and not merely wrong\n", morphNames[i], morphRenamed[i], morphRenamed[i]);
+                    printf("case %s 0\n", morphNames[i]);
+                    continue;
+                }
+                Class mc = morphClasses[i];
+                id kernel = (i < 2)
+                    ? [[mc alloc] initWithDevice:gDevice kernelHeight:mh kernelWidth:mw]
+                    : [[mc alloc] initWithDevice:gDevice kernelHeight:mh kernelWidth:mw values:probe];
+                if (!kernel) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: %s exists but would not instantiate\n", morphNames[i],
+                           morphRenamed[i]);
+                    printf("case %s 0\n", morphNames[i]);
+                    continue;
+                }
+                [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                 sourceImage:source
+                           destinationImage:left];
+                float got[12] = {0};
+                [[left texture] getBytes:got bytesPerRow:cols * sizeof(float)
+                           fromRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0];
+                printf("case %s %lu", morphNames[i], (unsigned long)values);
+                for (NSUInteger v = 0; v < values; v++)
+                    printf(" %.9g", (double)got[v]);
+                printf("\n");
+                CharonReferenceImageMorphology(morphNames[i], input, rows, cols, 1, mw, mh,
+                                              i < 2 ? NULL : probe, (i == 0 || i == 2), 0, 0, got, values);
             }
         }
     }

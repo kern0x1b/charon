@@ -306,6 +306,50 @@
       "effect": "MPSImageTent : MPSImageBox (:219), with the window kept and the weights replaced by one that falls off linearly from the centre and is normalised to sum to one, which is what makes it a blur rather than a gain.. Measured: the harness case 'tent' compares this kernel element by element against the plain C reference; the port run is COMPARED 283 MISMATCHES 0 and both planted builds are caught. ",
       "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
       "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageAreaMax",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMorphology.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageMorphology.h:17-18, :22, :42, :60, :69, :71-72, :93, :95-96, :116-119, :129, :132, :173-174. Compared for EQUALITY, with no tolerance at all: a maximum and a minimum SELECT a value the source already holds, so the answer is bit-for-bit one of the inputs and a tolerance could only hide a defect. That is the opposite of the convolution family, which accumulates in double and stores float32 and so carries one float32 ulp; both references state which they are. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the maximum pixel value in a rectangular region centred around each pixel (:17), each channel reduced in its own window (:18). The window must be odd so it has a centre, which :17's 'centered around each pixel' requires. THE EDGE IS CLAMPED: :69 says 'The edgeMode property is assumed to always be MPSImageEdgeModeClamp for this filter', so an off-edge tap takes the nearest edge VALUE - this is the one family that replicates the border, and a case with a 5x5 window over a 4x3 image is what makes the rule visible rather than assumed.. Measured: the harness case 'area-max' compares this kernel element by element against the plain C reference; the port run is COMPARED 331 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageAreaMin",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMorphology.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageMorphology.h:17-18, :22, :42, :60, :69, :71-72, :93, :95-96, :116-119, :129, :132, :173-174. Compared for EQUALITY, with no tolerance at all: a maximum and a minimum SELECT a value the source already holds, so the answer is bit-for-bit one of the inputs and a tolerance could only hide a defect. That is the opposite of the convolution family, which accumulates in double and stores float32 and so carries one float32 ulp; both references state which they are. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the minimum pixel value in the same rectangular region (:72, MPSImageAreaMin : MPSImageAreaMax), with the same clamped edge (:93) and the same odd-window rule.. Measured: the harness case 'area-min' compares this kernel element by element against the plain C reference; the port run is COMPARED 331 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageDilate",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMorphology.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageMorphology.h:17-18, :22, :42, :60, :69, :71-72, :93, :95-96, :116-119, :129, :132, :173-174. Compared for EQUALITY, with no tolerance at all: a maximum and a minimum SELECT a value the source already holds, so the answer is bit-for-bit one of the inputs and a tolerance could only hide a defect. That is the opposite of the convolution family, which accumulates in double and stores float32 and so carries one float32 ulp; both references state which they are. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the maximum pixel value in the region, plus the caller's probe: :129's -values is 'The set of values to use as the dilate probe' and :116 says 'Each dilate shape probe defines a 3D surface of values', so it is one height per tap added to the source. The window must be odd (:117-119).. Measured: the harness case 'dilate' compares this kernel element by element against the plain C reference; the port run is COMPARED 331 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageErode",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMorphology.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageMorphology.h:17-18, :22, :42, :60, :69, :71-72, :93, :95-96, :116-119, :129, :132, :173-174. Compared for EQUALITY, with no tolerance at all: a maximum and a minimum SELECT a value the source already holds, so the answer is bit-for-bit one of the inputs and a tolerance could only hide a defect. That is the opposite of the convolution family, which accumulates in double and stores float32 and so carries one float32 ulp; both references state which they are. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the minimum pixel value in the region with the same probe (:174, MPSImageErode : MPSImageDilate), which is what makes it a distinct answer from MPSImageAreaMin: same window, same clamped edge, but the probe shifts every candidate.. Measured: the harness case 'erode' compares this kernel element by element against the plain C reference; the port run is COMPARED 331 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     }
   ]
 }

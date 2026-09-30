@@ -401,4 +401,69 @@ static void CharonReferenceImageConvolution(const char *name, const float *src, 
     printf("\n");
 }
 
+
+// MPSImageMorphology, from MPSImageMorphology.h of the iPhoneOS 26.2 surface: MPSImageAreaMax (:22),
+// MPSImageAreaMin (:72), MPSImageDilate (:96) and MPSImageErode (:174), all ios(9.0).
+//
+// :17-18 MPSImageAreaMax "finds the maximum pixel value in a rectangular region centered around each pixel
+// in the source image. If there are multiple channels in the source image, each channel is processed in"
+// its own window, so the channel is a third loop and not a divide of the buffer. MPSImageAreaMin is the
+// minimum over the same window; MPSImageDilate is the maximum with the caller's probe (:129 "values The
+// set of values to use as the dilate probe", :116 "Each dilate shape probe defines a 3D surface of
+// values", so one height per tap, row-major); MPSImageErode is the minimum over the same probe.
+//
+// THE EDGE IS CLAMPED, and this is what makes the family unlike the convolution's. :69 and :93 both say
+// "The edgeMode property is assumed to always be MPSImageEdgeModeClamp for this filter." So a tap reaching
+// off the edge takes the nearest edge VALUE, not zero. The convolution reference multiplies an off-edge
+// sample by zero; this one clamps the index instead, and the case runs a window wider than the image
+// precisely so the two cannot both pass.
+//
+// COMPARED FOR EQUALITY, and that is the header's semantics rather than a convenience. A maximum and a
+// minimum SELECT a value the source already holds: nothing is added, nothing is multiplied, so the answer
+// is bit-for-bit one of the inputs and a tolerance could only hide a real defect. The convolution family's
+// reference carries one float32 ulp because that family accumulates and stores; this one carries none,
+// and the difference is stated here rather than left for a reader to infer from a missing tolerance.
+static void CharonReferenceImageMorphology(const char *name, const float *src, NSUInteger rows, NSUInteger cols,
+                                            NSUInteger channels, NSUInteger kernelWidth, NSUInteger kernelHeight,
+                                            const float *probe, int takeMax, NSUInteger originX, NSUInteger originY,
+                                            const float *out, NSUInteger values)
+{
+    printf("reference %s %lu", name, (unsigned long)values);
+    NSUInteger halfW = kernelWidth / 2, halfH = kernelHeight / 2;
+    for (NSUInteger r = 0; r < values; r++) {
+        NSUInteger y = originY + r / cols;
+        NSUInteger x = originX + r % cols;
+        for (NSUInteger channel = 0; channel < channels; channel++) {
+            double best = 0.0;
+            for (NSUInteger ky = 0; ky < kernelHeight; ky++) {
+                for (NSUInteger kx = 0; kx < kernelWidth; kx++) {
+                    long sy = (long)(y + ky) - (long)halfH;
+                    long sx = (long)(x + kx) - (long)halfW;
+                    // :69 and :93 - the edge is CLAMPED, not zero. An index past the edge takes the
+                    // nearest edge sample, which is MPSImageEdgeModeClamp and what the header says this
+                    // filter always assumes.
+                    if (sy < 0) sy = 0;
+                    if (sx < 0) sx = 0;
+                    if (sy >= (long)rows) sy = (long)rows - 1;
+                    if (sx >= (long)cols) sx = (long)cols - 1;
+                    double v = (double)src[((NSUInteger)sy * cols + (NSUInteger)sx) * channels + channel];
+                    if (probe) v += (double)probe[ky * kernelWidth + kx];
+                    if (kx == 0 && ky == 0) best = v;
+                    else if (takeMax ? v > best : v < best) best = v;
+                }
+            }
+            gCompared++;
+            double got = (double)out[r * channels + channel];
+            if (got != best) {
+                gMismatches++;
+                printf("\n  MISMATCH %s [%lu] channel %lu reference %.9g port %.9g, exact"
+                       " (a maximum and a minimum select a value the source already holds)\n",
+                       name, (unsigned long)r, (unsigned long)channel, best, got);
+            }
+            printf(" %.9g", best);
+        }
+    }
+    printf("\n");
+}
+
 #endif /* CHARON_MPS_REFERENCE_H */
