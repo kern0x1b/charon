@@ -64,6 +64,14 @@ int main(int argc, char **argv)
                 printf("%s.documentAttributes.%s=%s\n", name, [(NSString *)key UTF8String],
                        value ? [(NSString *)value UTF8String] : "(nil)");
             }
+            // the document's own answers, every one measured on the host without a window
+            printf("%s.isLocked=%d\n", name, (int)document.isLocked);
+            printf("%s.isEncrypted=%d\n", name, (int)document.isEncrypted);
+            printf("%s.allowsCopying=%d\n", name, (int)document.allowsCopying);
+            printf("%s.documentURL=%s\n", name,
+                   document.documentURL ? [document.documentURL lastPathComponent].UTF8String : "(nil)");
+            printf("%s.dataRepresentation.length=%lu\n", name,
+                   (unsigned long)document.dataRepresentation.length);
             // the page must not outlive the document: a page holds its own reference to the
             // CGPDFDocument, and a page still alive when the document deallocs means the page's dealloc
             // releases a document that is already gone
@@ -76,6 +84,19 @@ int main(int argc, char **argv)
                 printf("%s.page0.rotation=NOT-COMPARED-no-page\n", name);
             } else {
                 printf("%s.page0.rotation=%ld\n", name, (long)[first rotation]);
+                printf("%s.page0.label=%s\n", name, [first label] ? [first label].UTF8String : "(nil)");
+                printf("%s.page0.document=%s\n", name, [first document] ? "an-object" : "(nil)");
+                // the host's PDFPage has NO -pageIndex - its own method list carries a private
+                // -_documentIndex instead - so the port's index is compared against the index
+                // -pageAtIndex: was handed, which is the same number and is answered by both.
+                printf("%s.page0.pageIndex.supported=%d\n", name,
+                       (int)[first respondsToSelector:@selector(pageIndex)]);
+                printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
+                // -annotations hands back PDFAnnotation objects and the annotation model is NOT built
+                // yet - 62 rows of it are still owed - so the case asks whether the selector is there
+                // at all, which is the honest fact until the model exists.
+                printf("%s.page0.annotations.supported=%d\n", name,
+                       (int)[first respondsToSelector:@selector(annotations)]);
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++) {
                     CGRect box = [first boundsForBox:kinds[k].box];
                     printf("%s.page0.%s=%.4f,%.4f,%.4f,%.4f\n", name, kinds[k].name, box.origin.x,

@@ -187,6 +187,56 @@ so the run is probing two selectors the host lacks and leaving a fact it can ans
 comparison is the next slice, over all five box kinds `CGPDFBox` declares, with the rects compared
 numerically.
 
+## What PDFKit still owes from the 26.2 headers
+
+`tools/corpus/surface-diff-latest.py PDFKit --rows` against the 26.2 SDK: **456 declared rows across
+163 classes**; 7 answered by this tree, **449 owed**.  This is the shape of the rest of the family and
+it is written here so it survives this series.
+
+| class | owed | kinds | | class | owed | kinds |
+| --- | ---: | --- | --- | --- | ---: | --- |
+| PDFView | 69 | class, method, property | | PDFViewDelegate | 6 | method, protocol |
+| PDFAnnotation | 62 | class, method, property | | UICoordinateSpace | 6 | method, property, protocol |
+| PDFDocument | 45 | method, property | | PDFActionRemoteGoTo | 5 | class, method, property |
+| PDFPage | 26 | method, property | | PDFActionResetForm | 4 | class, method, property |
+| PDFSelection | 17 | class, method, property | | PDFPageOverlayViewProvider | 4 | method, protocol |
+| PDFOutline | 13 | class, method, property | | PDFActionGoTo, PDFActionNamed, PDFActionURL | 3 each | class, method, property |
+| PDFDocumentDelegate | 10 | method, protocol | | PDFAction | 2 | class, property |
+| PDFAppearanceCharacteristics | 9 | class, property | | PDFBorder, PDFDestination | 6 each | class, method, property |
+| PDFThumbnailView | 7 | class, property | | the rest | 139 classes | 1-4 rows each |
+
+The tail of 139 small classes is the `PDFAction*PrivateVars` and `PDFAnnotation*` internals, the
+highlighting-mode constants and the annotation-key constants.
+
+**The order the family is to be taken in, and why.**  PDFDocument and PDFPage first: this tree already
+implements both over the release's own `CGPDFDocument` and the harness already compares page count, the
+five boxes, rotation and the Info attributes, so those 71 rows are the largest block answered by
+EXTENDING A COMPARISON THAT EXISTS rather than building a new one.  PDFView (69) next, which is the one
+large class where the host answers much of it without a window - `-document`, `-pageCount`,
+`-currentPage`, `-scaleFactor`, `-goToPage:` - and the one where the family's own brief already says the
+answer is "state and Apple's answers without a window".  PDFAnnotation and PDFSelection/PDFOutline
+last, because they are models over the page dictionary where the appearance and line-style members
+will hit the same layout-heuristic wall that put `-string` in `inert` with a measured region.
+
+## The host's character count, measured, and why the port cannot match it yet
+
+-numberOfCharacters is NOT behind the wall that put -string in inert, and that is worth saying because I
+expected it to be.  Measured on two fixtures that separate the two things:
+
+    kern-150.pdf   numberOfCharacters=6   -string "al pha"    six characters, five drawn glyphs
+    kern-20.pdf    numberOfCharacters=5   -string "alpha"     five and five
+
+So the host counts the characters of the same text walk - the kerning separator included - and not a
+layout-derived glyph run.  The port cannot obtain it: the token walk that produces those characters
+needs CGPDFScannerScanString and CGPDFScannerGetString, and NEITHER 6.1.3 nor 4.3 exports them (both
+caches' export tables, read through dyld.load).  The measurement is therefore real and the port's answer
+is not obtainable, so the row is inert with the region named, and the run does not compare it.
+
+-dataRepresentation is the same shape of boundary for a different reason: the host REWRITES the document
+it hands back, so its byte count is not the file's.  Measured host 886 / 896 / 897 / 805 / 8784 / 10116
+against the port's 644 / 655 / 655 / 569 / 8775 / 10105 on the six fixtures - every pair two different
+documents, and a count of them is not a fact either side can agree on.
+
 ## The rows
 
 Three are `implemented`, and only those three: `PDFDocument`, `-pageCount`, `-pageAtIndex:` — the facts

@@ -118,7 +118,16 @@ compared = differences = skipped = 0
 # the SINGULAR accessor's presence is EXPECTED to differ: the port implements what the host lacks, and
 # that is why its row stays inert.  Named here, inside the loop, so it is neither compared nor counted as
 # a difference.
-EXPECTED_DIVERGENT = ("documentAttribute.supported",)
+EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported", "page0.annotations.supported")
+# and the ones this run cannot compare at all, with the reason it prints for each
+NOT_COMPARED = {
+    "dataRepresentation.length": ("the port's own bytes against the host's REWRITTEN document, and a "
+                                  "count of two different documents is not a fact either side can agree on"),
+    "page0.numberOfCharacters":   ("the token walk needs CGPDFScannerScanString and CGPDFScannerGetString, "
+                                  "which NEITHER 6.1.3 nor 4.3 exports (measured: absent from both caches' "
+                                  "export tables), so the host's character count is measured and the port's "
+                                  "is not obtainable"),
+}
 divergent = 0
 for key in sorted(set(host) | set(port)):
     if any(key.endswith(suffix) for suffix in EXPECTED_DIVERGENT):
@@ -127,6 +136,10 @@ for key in sorted(set(host) | set(port)):
         if hv is not None and pv is not None and hv != pv:
             print(f"  expected to differ  {key}  host={hv} port={pv}"
                   f"  (the port implements what the host lacks)")
+        continue
+    if any(key.endswith(suffix) for suffix in NOT_COMPARED):
+        skipped += 1
+        print(f"  not compared  {key}  host={host.get(key)}  port={port.get(key)}  -  {NOT_COMPARED[[s for s in NOT_COMPARED if key.endswith(s)][0]]}")
         continue
     hv, pv = host.get(key), port.get(key)
     if hv is None or pv is None:

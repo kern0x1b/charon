@@ -156,7 +156,7 @@
    "status": "implemented",
    "facts": "facts/PDFKit/Document11.md",
    "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
-   "effect": "the port's own way in over a page CGPDFDocumentGetPage handed over: it retains the page, retains the document beside it, and records the page's index.  NOT Apple's API - Apple's PDFPage has no such initializer - and it is here because the document's own -pageAtIndex: is the only thing that makes a page"
+   "effect": "the port's own way in, and it now takes the DOCUMENT OBJECT: nothing ever set the page's weak object reference, so -document answered nil on every page while the host answered an object on every fixture. The page then retains the CGPDFDocument behind that object for itself"
   },
   {
    "api": "-[PDFPage pageIndex]",
@@ -167,6 +167,105 @@
    "facts": "facts/PDFKit/Document11.md",
    "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
    "effect": "the page's index in the document that produced it, which is what -[PDFDocument pageAtIndex:] passed and what a caller reads back; the document is held weakly, so this survives the document and says the number the page was made with"
+  },
+  {
+   "api": "PDFPage.label",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the page's label as a ONE-BASED number as a string: measured \"1\" for the first page of every fixture, and the first page of a three-page document is also \"1\". The port's own index is zero-based, so the body adds one; the first version returned the index and the harness caught it",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 115 MISMATCHES 0"
+  },
+  {
+   "api": "PDFPage.document",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the document the page came from, held WEAK as PDFPage.h:70 declares, so a page that outlives its document answers nil for it. The port's own initializer now takes the DOCUMENT OBJECT rather than a CGPDFDocumentRef: nothing ever set the weak object reference, so -document answered nil on every page while the host answered an object on every fixture - the 'never handed it' case, not the 'freed' one, and the harness is what said so",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 115 MISMATCHES 0"
+  },
+  {
+   "api": "PDFPage.numberOfCharacters",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the number of characters the page's TEXT walk produces, a kerning separator included - measured 6 where the host's -string answers \"al pha\" over five drawn glyphs, and 5 where it answers \"alpha\". The port cannot obtain it: the token walk needs CGPDFScannerScanString and CGPDFScannerGetString, which NEITHER 6.1.3 nor 4.3 exports, so the host's count is measured and the port's is not. The run does not compare it and says so on every page",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the dyld export tables of both bands: CGPDFScannerCreate exported, CGPDFScannerScanString and CGPDFScannerGetString absent; and the host's own numbers, 6 and 5, on the kerned and unkerned fixtures"
+  },
+  {
+   "api": "PDFDocument.dataRepresentation",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "the document's own bytes. The host rewrites the document it returns - its own byte count differs from the file's - so the port's bytes and the host's are two different documents and a count of them is not a fact either side can agree on. The run does not compare it and says so per fixture",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "measured: host 886 / 896 / 897 / 805 / 8784 / 10116 against the port's 644 / 655 / 655 / 569 / 8775 / 10105 on the six fixtures, every pair a different document"
+  },
+  {
+   "api": "PDFDocument.isEncrypted",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "NO. The 26.2 CoreGraphics headers expose NO trailer accessor - grep for kCGPDFContextTrailer and for Encrypt across CGPDFDictionary.h and CGPDFContext.h returns nothing - and CGPDFDocument offers only -CGPDFDocumentGetInfo, so /Encrypt is unreachable from a CGPDFDocument and the port cannot read the key that would make a document encrypted. The host answers 0 on every fixture compared, so NO is the agreed answer over that region; the region NOT compared is a document that carries /Encrypt",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the header grep above, and the host's 0 on all six fixtures"
+  },
+  {
+   "api": "PDFDocument.isLocked",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "NO, for the reason -isEncrypted gives: there is no /Encrypt to read. A locked document is one the release will not let a page be read out of, and this reading answers it from the same missing key. The host answers 0 on every fixture compared; a document that carries /Encrypt is the region NOT compared",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the header grep above, and the host's 0 on all six fixtures"
+  },
+  {
+   "api": "PDFDocument.allowsCopying",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "YES, and always: the format's permissions are a key inside /Encrypt that no document without one has, so a document with no /Encrypt carries no permission to refuse. Measured: the host answers 1 on every fixture compared",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 115 MISMATCHES 0"
+  },
+  {
+   "api": "PDFDocument.documentURL",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the URL this document was opened with, and nil for one made from data - which is what the host answers for a document it opened from a file, and what a document from -initWithData: has to say",
+   "reason": "",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 115 MISMATCHES 0"
+  },
+  {
+   "api": "PDFPage.annotationCount",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not answered: -annotations hands back PDFAnnotation objects and that model is not built - 62 of its rows are still owed - so a count would be a count over nothing. Zero is the honest answer for a document no page's /Annots names, which is every fixture here",
+   "reason": "measured and recorded in the effect",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "measured: the host's own annotation count is 0 on every fixture, and the port's /Annots lookup is the same dictionary read"
   }
  ]
 }

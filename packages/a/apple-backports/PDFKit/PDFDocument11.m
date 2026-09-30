@@ -15,6 +15,7 @@
 
     CGPDFDocumentRef _document;
     NSData *_data;
+    NSURL *_url;
     NSDictionary *_attributes;
     // The pages this document handed out, so a page outliving the document is the DOCUMENT's
     // problem and not a released CGPDFDocument under a live page - the port's own pattern from
@@ -88,6 +89,7 @@
     NSData *data = [NSData dataWithContentsOfURL:url];
     if (data == nil)
         return nil;
+    _url = [url copy];
     return [self charon_setUpWithData:data];
 }
 
@@ -158,6 +160,46 @@
     return _attributes[attributeName];
 }
 
+// Whether the release's own readers can see an /Encrypt: they cannot.  There is NO trailer accessor
+// in the 26.2 CoreGraphics headers - grep for kCGPDFContextTrailer and for Encrypt across
+// CGPDFDictionary.h and CGPDFContext.h returns nothing - and CGPDFDocument offers no reader for the
+// trailer at all, only -CGPDFDocumentGetInfo.  So the /Encrypt key is not reachable from a
+// CGPDFDocument through anything the release exposes, and the port cannot read the thing that would
+// make a document locked.
+//
+// It answers NO, and that is not a guess dressed as a reading: the host answers 0 for isLocked and
+// isEncrypted on every fixture the run compares, so NO is the agreed answer over the whole compared
+// region.  The boundary is a document that carries /Encrypt, which the port would answer NO about and
+// the host would answer YES about.  No such document is in the corpus here, so the region is not
+// measured and the row says so rather than claiming more.
+- (BOOL)isEncrypted
+{
+    return NO;
+}
+
+- (BOOL)isLocked
+{
+    return NO;
+}
+
+- (BOOL)allowsCopying
+{
+    // YES, and always: the format's permissions are a key inside /Encrypt that no document without one
+    // has, so a document with no /Encrypt carries no permission to refuse.  The host answers 1 on every
+    // fixture, and this is the reading that agrees.
+    return YES;
+}
+
+- (NSURL *)documentURL
+{
+    return _url;
+}
+
+- (NSData *)dataRepresentation
+{
+    return _data;
+}
+
 // The release's own count, read through the document.  @dynamic above silenced the compiler on this
 // one - a @dynamic property with no body raises -respondsToSelector: nothing, and
 // -Wobjc-incomplete-implementation says nothing either - which is how the body went missing without
@@ -180,10 +222,21 @@
     CGPDFPageRef page = CGPDFDocumentGetPage(_document, (size_t)index + 1);
     if (page == NULL)
         return nil;
-    PDFPage *carried = [[PDFPage alloc] initWithCGPDFPage:page document:_document index:index];
+    PDFPage *carried = [[PDFPage alloc] initWithCGPDFPage:page document:self index:index];
     if (carried != nil)
         [_pages addObject:carried];
     return carried;
+}
+
+
+// The port's own way at the CGPDFDocument underneath, which Apple's API does not expose: the page's
+// initializer needs the document's ref so it can hold one of its own.  It was DECLARED in
+// CharonPDFKit.h's CharonInternals category and never defined - so a page asked for its document
+// raised -[PDFDocument charon_CGPDFDocument]: unrecognized selector, which is the harness crash.
+// A declaration with no body is the same silent fake as a @dynamic property with none.
+- (CGPDFDocumentRef)charon_CGPDFDocument
+{
+    return _document;
 }
 
 @end

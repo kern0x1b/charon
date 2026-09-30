@@ -45,6 +45,14 @@ int main(int argc, char **argv)
             }
             printf("%s.document=an-object\n", name);
             printf("%s.pageCount=%lu\n", name, (unsigned long)document.pageCount);
+            // the document's own answers, every one of which the host answers with NO WINDOW open
+            printf("%s.isLocked=%d\n", name, (int)document.isLocked);
+            printf("%s.isEncrypted=%d\n", name, (int)document.isEncrypted);
+            printf("%s.allowsCopying=%d\n", name, (int)document.allowsCopying);
+            printf("%s.documentURL=%s\n", name,
+                   document.documentURL ? [document.documentURL lastPathComponent].UTF8String : "(nil)");
+            printf("%s.dataRepresentation.length=%lu\n", name,
+                   (unsigned long)document.dataRepresentation.length);
             // the SINGULAR -documentAttribute: the host does not have it (respondsToSelector: 0), so it is
             // not a fact this run can compare and the row stays inert with that reason
             printf("%s.documentAttribute.supported=%d\n", name,
@@ -67,10 +75,24 @@ int main(int argc, char **argv)
             PDFPage *first = [document respondsToSelector:pageAt]
                                   ? ((id (*)(id, SEL, NSUInteger))objc_msgSend)(document, pageAt, (NSUInteger)0)
                                   : nil;
-            if (first != nil)
+            if (first != nil) {
                 printf("%s.page0.rotation=%ld\n", name, (long)first.rotation);
-            else
+                // the page's own answers, measured on the host with no window open either
+                printf("%s.page0.label=%s\n", name, first.label ? [first.label UTF8String] : "(nil)");
+                printf("%s.page0.document=%s\n", name, first.document ? "an-object" : "(nil)");
+                printf("%s.page0.pageIndex.supported=%d\n", name,
+                       (int)[first respondsToSelector:NSSelectorFromString(@"pageIndex")]);
+                printf("%s.page0.numberOfCharacters=%ld\n", name, (long)first.numberOfCharacters);
+                printf("%s.page0.annotations.supported=%d\n", name,
+                       (int)[first respondsToSelector:NSSelectorFromString(@"annotations")]);
+            } else {
                 printf("%s.page0.rotation=NOT-COMPARED-no-page\n", name);
+                printf("%s.page0.label=NOT-COMPARED-no-page\n", name);
+                printf("%s.page0.document=NOT-COMPARED-no-page\n", name);
+                printf("%s.page0.pageIndex=NOT-COMPARED-no-page\n", name);
+                printf("%s.page0.numberOfCharacters=NOT-COMPARED-no-page\n", name);
+                printf("%s.page0.annotations.count=NOT-COMPARED-no-page\n", name);
+            }
             if (first == nil || ![first respondsToSelector:@selector(boundsForBox:)]) {
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++)
                     printf("%s.page0.%s=NOT-COMPARED-no-such-method\n", name, kinds[k].name);

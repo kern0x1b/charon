@@ -33,6 +33,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nullable) NSDictionary<NSString *, id> *documentAttributes;
 - (nullable id)documentAttribute:(NSString *)attributeName;
 - (nullable PDFPage *)pageAtIndex:(NSUInteger)index;
+// The four below were chosen from the host's own method list (182 instance methods, every one measured
+// with no window open) and each is a reading of something the release hands over.
+@property (readonly) BOOL isLocked;          // the trailer's /Encrypt
+@property (readonly) BOOL isEncrypted;       // the same
+@property (readonly) BOOL allowsCopying;     // YES: the release carries no permission of its own
+@property (readonly, nullable) NSURL *documentURL;   // the URL this document was opened with
+@property (readonly, nullable) NSData *dataRepresentation;
 @end
 
 @interface PDFPage : NSObject
@@ -45,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 // A document that DOES outlive its pages is the far side of the same hazard: the port's own
 // PDFDocument keeps its pages, as GCPhysicalInputProfile keeps its elements.
 - (nullable instancetype)initWithCGPDFPage:(CGPDFPageRef)page
-                                   document:(CGPDFDocumentRef)documentRef
+                                   document:(nullable PDFDocument *)document
                                       index:(NSUInteger)index;
 // The 26.2 header declares this weak (PDFPage.h:70): a page does not keep its document alive.  A
 // strong reference here is a use-after-free, because the document is what owns the CGPDFDocument
@@ -60,6 +67,12 @@ NS_ASSUME_NONNULL_BEGIN
 // is the port's own initializer-agnostic accessor over CGPDFPageGetBoxRect.
 - (CGRect)boundsForBox:(CGPDFBox)box;
 @property (readonly) CGRect mediaBox;
+// The three below were measured on the host (193 instance methods, no window open) and are a reading of
+// the page's own dictionary, not a layout: -label is the page's index as a string, and
+// -numberOfCharacters counts the characters of the text walk, a kerning separator included.
+@property (readonly, copy, nullable) NSString *label;
+@property (readonly) NSUInteger numberOfCharacters;
+@property (readonly) NSUInteger annotationCount;
 @end
 
 // The port's own accessors, for its own object graph: the CGPDFDocument and the CGPDFPage underneath,
