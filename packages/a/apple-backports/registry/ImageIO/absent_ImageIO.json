@@ -724,240 +724,264 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageIndexRight",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageIsAlternateImage",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageIsLeftImage",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageIsRightImage",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImagesAlternate",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupIndex",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupType",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupTypeAlternate",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupTypeStereoPair",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroups",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyImageIndex",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageBaseline",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyGroupImageDisparityAdjustment",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyHEIFDictionary",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraExtrinsics_CoordinateSystemID",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraExtrinsics_Position",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraExtrinsics_Rotation",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraModelType_GenericPinhole",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraModelType_SimplifiedPinhole",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraModel_Intrinsics",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOCameraModel_ModelType",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOMetadata_CameraExtrinsicsKey",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kIIOMetadata_CameraModelKey",
       "kind": "constant",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: the trailing component is the right rule for most of the 15.0 band and wrong for four of it - kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroupTypeStereoPair is StereoPair, kCGImagePropertyGroupImagesAlternate is GroupImages, and kCGImagePropertyGroups is {Groups} - so a single rule fits neither the whole band nor the family",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT always this symbol's trailing component either: kCGImagePropertyGroupTypeAlternate is Alternate, kCGImagePropertyGroups is {Groups}, and kIIOMetadata_CameraExtrinsicsKey is CameraExtrinsics",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names150-160.md"
     },
     {
       "api": "kCGImagePropertyOpenEXRCompression",
