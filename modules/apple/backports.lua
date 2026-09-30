@@ -1451,7 +1451,11 @@ function surface(binaries, architecture)
     return found
 end
 
-local STATUSES = {implemented = true, inert = true, absent = true, ignored = true}
+-- The five answers. `owed` is the port's own debt: the release carries the name, the port could carry
+-- it, and nobody has written it yet. It is not `absent` (that says the release has nothing) and not
+-- `ignored` (that says we chose). Without it a port that has not done the work has to lie in one of the
+-- four, and 80 rows did exactly that before this word existed.
+local STATUSES = {implemented = true, inert = true, absent = true, ignored = true, owed = true}
 
 -- The accessor that reads or writes a property by the property's own name, as the other spelling of that one
 -- API: -[Class name] or +[Class name] for Class.name, and Class.name for either. The setter is deliberately not
@@ -1495,7 +1499,7 @@ function registry(root)
                                           ", and a " .. entry.kind .. " is named by its interface or its protocol, not by a member")
             end
             if not STATUSES[entry.status] then
-                table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the four answers")
+                table.insert(incomplete, entry.api .. " says " .. tostring(entry.status) .. ", which is not one of the five answers")
             elseif entry.status ~= "implemented" then
                 if not entry.effect then
                     table.insert(incomplete, entry.api .. " is " .. entry.status .. " without an effect")
@@ -1576,7 +1580,7 @@ spellings = function(api)
     return found
 end
 
-local ORDER = {ignored = 1, absent = 2, inert = 3}
+local ORDER = {owed = 0, ignored = 1, absent = 2, inert = 3}
 
 function advice(root, used)
     local listed = registry(root)
@@ -1868,7 +1872,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     end
     local answered = {}
     for name, entry in pairs(listed) do
-        if entry.status == "absent" then
+        if entry.status == "absent" or entry.status == "owed" then
             local present = entry.kind == "class" and found.classes[name] or false
             present = present or ((entry.kind == "constant" or entry.kind == "function") and found.symbols[name:gsub("%(%)$", "")]) or false
             for spelling in pairs(spellings(name)) do
@@ -1883,7 +1887,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
     if inventory then
         for name, entry in pairs(listed) do
             local natively = deployment and entry.introduced and dyld.compare_versions(deployment, entry.introduced) >= 0
-            if entry.status == "absent" and in_range(entry, deployment) and not natively and carried_by_release(entry, inventory) then
+            if (entry.status == "absent" or entry.status == "owed") and in_range(entry, deployment) and not natively and carried_by_release(entry, inventory) then
                 table.insert(held, name)
             elseif entry.status == "ignored" and in_range(entry, deployment) and carried_by_release(entry, inventory) == false then
                 table.insert(missing, name)
