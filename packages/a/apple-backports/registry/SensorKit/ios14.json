@@ -1515,10 +1515,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the delegate is the APPLICATION's own object, so nothing in this port adopts the protocol - which is why the port emitted no __OBJC_PROTOCOL_$_ for it and an application compiled against the SDK found none at run time. It is carried anyway: a delegate protocol nothing ships is one an application cannot conform to",
-      "effect": "the protocol exists at run time WITH ITS TEN @optional METHODS and none required, which is the thing a forward declaration does not give: measured, found with 10 optional and 0 required, against 0 optional for the same header forward-declared. So an application asking conformsToSelector: on it gets an honest answer for all ten. Four of the ten the reader sends and six nothing sends, each row saying which",
+      "reason": "the delegate is the APPLICATION's own object, so nothing in this port adopts the protocol and the port emitted no __OBJC_PROTOCOL_$_ for it - an application compiled against the SDK found no such protocol on the device. It is carried anyway: a delegate protocol nothing ships is one an application cannot conform to",
+      "effect": "the protocol exists at run time WITH ITS TEN @optional METHODS and none required, which is what a forward declaration does NOT give: measured, found with 10 optional and 0 required against 0 optional when forwarded. Four of the ten the reader sends and six nothing sends, each row saying which",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration (:21 to :86); the port declares the ten members in CharonSensorKitProtocols.h rather than importing the SDK, because with <SensorKit/SensorKit.h> in scope clang reports \"duplicate protocol definition of 'SRSensorReaderDelegate' is ignored [-Wduplicate-protocol]\" and would emit APPLE'S metadata; the count is measured by tests/backports/host/sensorkit-reader, which compiles the same generated file the build compiles"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration (:21-:86); the port declares the ten members in CharonSensorKitProtocols.h rather than importing the SDK, because with <SensorKit/SensorKit.h> in scope clang ignores the port's definition (-Wduplicate-protocol) and emits Apple's; the count is measured by tests/backports/host/sensorkit-reader"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didChangeAuthorizationStatus:]",
