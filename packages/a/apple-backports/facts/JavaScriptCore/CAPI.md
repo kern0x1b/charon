@@ -113,6 +113,20 @@ first against the host's own JavaScriptCore, which is the oracle, then against t
 the host's C API. **Both sides answer 177 of 177**, and the blocks-and-structs matrix is 351 lines
 identical on the two.
 
+**What has verified the twelve, and what has not.** The host's engine is the oracle for every one of them
+and every expectation in that file passes on both sides, so what each row answers is measured. What is
+**not** measured on these twelve is the release: the Objective-C API beside them has the same 177 checks
+run against the 6.1.3 engine on an iPad 2 (151 of 151 at the time, `facts/JavaScriptCore/JSContext.md`),
+and these twelve have not been on a device. The reason is a build, not a doubt: the twelve are new
+symbols, so a 6.1.3 binary that calls them needs a `libJavaScriptCoreBackports.dylib` built from this
+tree, and a band's own tree is exactly what must not install that package into the shared store - the
+store's path is keyed by name and version alone, so every band that requires the package from its own
+worktree queues on one lock and one of them overwrites the directory the next is about to read
+(`coordination/api-worker-brief.md`, measured 2026-09-27 23:20 with nine processes on that lock). So the
+run belongs to whoever gates the merged tree, where the package is built once for everybody. Until it
+happens, the honest reading of this section is: the twelve answer the host's answers, and the release's
+own engine has not yet been asked.
+
 | row | what it answers | what it is built on |
 | --- | --- | --- |
 | `JSValueIsArray()` | whether a value is an array by class | `charon_js_is_array`, the helper `-isArray` already answers through |
