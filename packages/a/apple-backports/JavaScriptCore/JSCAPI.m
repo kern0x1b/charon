@@ -125,8 +125,10 @@ bool JSObjectDeletePropertyForKey(JSContextRef context, JSObjectRef object, JSVa
  * what the inspector lists a context under, and whether it may attach to it at all. This port
  * carries no Web Inspector - there is no protocol here that could be refused or attached - so
  * nothing on it reads either. They are carried, they answer what this port can answer - nothing, and a
- * NULL or a NO - and the three of them that take a value say so in the log the first time an
- * application reaches it, which is what a row marked inert is for. None of the four is bridged to
+ * NULL or a NO - and the three that are reached to set or to report something say so in the log the
+ * first time an application calls them, which is what a row marked inert is for: SetName, CopyName and
+ * SetInspectable. IsInspectable is the fourth and the only one that says nothing, because a question
+ * that reads a flag nothing on this port sets is not a thing to report. None of the four is bridged to
  * -[JSContext name] and -[JSContext setInspectable:], which keep
  * their own value in the wrapper: that registry holds wrappers weakly, by design, so a store a C
  * client could reach would have to outlive the wrapper and die with the context, and the only such

@@ -14,9 +14,18 @@ that this function would report, and can the port report it without inventing an
 The distinction is the whole family. Twenty-six rows read "absent" is the right answer for most of a
 framework that a release does not carry at all. It is the wrong answer for a framework the release
 carries in full and whose later API is mostly a matter of asking the engine a question the engine can
-answer. Twelve of the twenty-six are such a question, and they are carried. Thirteen name a capability
-the release's engine has no value for, and they stay absent with the capability named. One cannot be
-answered in either direction and says so.
+answer. Twelve of the twenty-six are such a question; thirteen name a capability the release's engine has
+no value for, and stay absent with the capability named; one cannot be answered in either direction and
+says so.
+
+Where each group is decided, so that this page can be read against the tree at any revision and found to
+match it: the thirteen are in `registry/JavaScriptCore/absent_JavaScriptCore.json`, the twelve in
+`registry/JavaScriptCore/capi.json` - eight `implemented`, four `inert`. **This page was first written by
+the commit that decided the thirteen, `34399e57b`, and at that revision every one of the twenty-six rows
+read `absent`**: the other twelve did not exist yet. The commit that carried them is `9f82434f9`, and the
+sentence this paragraph used to hold - that the twelve "are carried" - was written one commit too early,
+which is the way this page goes wrong: a claim about work that is not in the range reads as measured. The
+number each group has is the number its registry file holds, and the two files are the whole of it.
 
 ## The engine the release carries, and what it can be asked
 
@@ -26,9 +35,9 @@ iOS 7.0, the one framework of this package's 21 whose path differs across the co
 reason `modules/apple/backports.lua`'s `framework_install_path` exists. The image is the 2012 engine.
 It is not a stub and it is not inert: `facts/JavaScriptCore/JSContext.md` carries the same checks.m
 answering 151 of 151 on an iPad 2 running 6.1.3, over that engine, including a script that throws
-(`checks.m:378` - `Promise` misuse throws a TypeError on the port's engine too, because the port's
-Promise is a script the 2012 engine runs), and a `JSContext` whose `exceptionHandler` receives the
-thrown value and whose `exception` is then set.
+(`tests/backports/host/jscontext/checks.m:378` - `Promise` misuse throws a TypeError on the port's
+engine too, because the port's Promise is a script the 2012 engine runs), and a `JSContext` whose
+`exceptionHandler` receives the thrown value and whose `exception` is then set.
 
 So the port's `JSContext` row answers *there is a JavaScriptCore here* truthfully, and the family below
 is built on that answer rather than beside it.
@@ -160,10 +169,25 @@ Two of the four cannot be compared with a host at all: `JSGlobalContextSetInspec
 does not carry them and no oracle for them exists on this machine. Their contract is the header's own
 round trip - a flag read back what was set - and neither the fact nor the effect claims more than that.
 
-## The API of exactly one release
+## Which release each object is, and which release each name was published in
 
-Every one of the twenty-six rows is `minimum: 6.0`, and the objects are one release each:
-`JSCAPI.m` exports eight symbols the release has none of and `JSValue.m` the ninth beside the promise it
-returns, so neither file is claimed from a band that already carries its exports. The four `ForKey` rows
-are four names of one release (iOS 13.0) and the thirteen typed-array rows thirteen names of another
-(10.0), and a protocol conformance is not a split - nothing here conforms to a protocol.
+**`JSCAPI.m` is one release: iOS 6.1.3, by construction.** Every entry point it defines is absent from
+6.1.3 - that is the whole reason the file exists - so no band this package builds can supply any of them
+from the release, and the object is 6.1.3-band surface by that fact rather than by its name. The file
+carries no release suffix for the same reason `UIKit26_*` needs none: each of those is one object per
+release because each *replaces* a class a later release has, and here every symbol is new to the band.
+
+Its eleven functions are nevertheless the API of four Apple releases, and the `introduced` field of each
+row records where Apple published that name: `JSGlobalContextSetName` and `CopyName` at 8.0, `JSValueIsArray`
+and `JSValueIsDate` at 9.0, the four `ForKey` rows and `JSValueIsSymbol` at 13.0, and the two
+`JSGlobalContext…Inspectable` at 16.4. Those four numbers are a fact about Apple's headers, not a claim
+about which band the object belongs to, and nothing in the release-split check reads them. The twelfth
+symbol, `JSObjectMakeDeferredPromise` (13.0), is defined in `JSValue.m` rather than beside its eleven
+because it returns the promise that file builds; moving it out would mean calling across files into a
+function whose own exports a band's release already has, which is the trap `charon/AGENTS.md` names.
+
+Every one of the twenty-six rows is `minimum: 6.0`, and the two objects are one release each: `JSCAPI.m`
+exports eight symbols the release has none of and `JSValue.m` the ninth beside the promise it returns, so
+neither file is claimed from a band that already carries its exports. The four `ForKey` rows are four names
+of one release (iOS 13.0) and the thirteen typed-array rows thirteen names of another (10.0), and a protocol
+conformance is not a split - nothing here conforms to a protocol.
