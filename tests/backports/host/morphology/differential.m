@@ -367,15 +367,36 @@ int main(int argc, char **argv)
             expectEqual(ourPronounBack.subjectForm, @"she", @"archive.pronoun.subjectForm");
         }
         // the seven attribute constants, and the five class names
-        for (NSString *key in @[@"constant.NSMorphologyAttributeName", @"constant.NSInflectionRuleAttributeName",
-                                @"constant.NSInflectionAlternativeAttributeName", @"constant.NSInflectionConceptsKey",
-                                @"constant.NSInflectionAgreementConceptAttributeName",
-                                @"constant.NSInflectionAgreementArgumentAttributeName",
-                                @"constant.NSInflectionReferentConceptAttributeName"]) {
-            const char *name = [key substringFromIndex:@"constant.".length].UTF8String;
-            void *symbol = dlsym(RTLD_DEFAULT, name);
-            NSString *ours = symbol ? *(__unsafe_unretained NSString **)symbol : nil;
-            expectEqual(ours, expected[key], key);
+        // The attribute constants, read from the PORT's own definition: the port object is in this
+        // link, so an extern reference binds to the port's copy and not to the system's, which is what
+        // `dlsym(RTLD_DEFAULT, …)` could not tell - it found the system's symbol whether or not the
+        // port defines one, and a golden line for a name the port does not define is the host
+        // answering. dladdr on the pointer says which image the value came from.
+        {
+            extern NSAttributedStringKey const NSMorphologyAttributeName;
+            extern NSAttributedStringKey const NSInflectionRuleAttributeName;
+            extern NSAttributedStringKey const NSInflectionAlternativeAttributeName;
+            extern NSAttributedStringKey const NSInflectionAgreementConceptAttributeName;
+            extern NSAttributedStringKey const NSInflectionAgreementArgumentAttributeName;
+            extern NSAttributedStringKey const NSInflectionReferentConceptAttributeName;
+            extern NSString *const NSInflectionConceptsKey;
+            struct { NSString *key; NSString *ours; } pairs[] = {
+                { @"constant.NSMorphologyAttributeName", NSMorphologyAttributeName },
+                { @"constant.NSInflectionRuleAttributeName", NSInflectionRuleAttributeName },
+                { @"constant.NSInflectionAlternativeAttributeName", NSInflectionAlternativeAttributeName },
+                { @"constant.NSInflectionAgreementConceptAttributeName", NSInflectionAgreementConceptAttributeName },
+                { @"constant.NSInflectionAgreementArgumentAttributeName", NSInflectionAgreementArgumentAttributeName },
+                { @"constant.NSInflectionReferentConceptAttributeName", NSInflectionReferentConceptAttributeName },
+                { @"constant.NSInflectionConceptsKey", NSInflectionConceptsKey },
+            };
+            for (unsigned i = 0; i < sizeof pairs / sizeof *pairs; i++) {
+                expectEqual(pairs[i].ours, expected[pairs[i].key], pairs[i].key);
+                Dl_info where;
+                memset(&where, 0, sizeof where);
+                const char *image = dladdr((__bridge const void *)pairs[i].ours, &where) && where.dli_fname
+                                    ? strrchr(where.dli_fname, '/') + 1 : "(unresolved)";
+                printf("%s.image\t%s\n", pairs[i].key.UTF8String, image);
+            }
         }
         for (NSString *key in @[@"class.NSMorphology", @"class.NSMorphologyCustomPronoun", @"class.NSMorphologyPronoun",
                                 @"class.NSInflectionRule", @"class.NSInflectionRuleExplicit"]) {

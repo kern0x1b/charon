@@ -201,12 +201,13 @@
     },
     {
       "api": "NSMorphologyAttributeName",
-      "effect": "the port answers the host's own value, NSMorphology",
+      "effect": "the symbol is exported by the system's own Foundation with its own value, so code that refers to it loads; the port does not define it and adds nothing to it",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
-      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSMorphologyAttributeName",
-      "status": "implemented"
+      "source": "SDK 26.2 headers, where it is declared; nm on the port's compiled Foundation objects finds no _NSMorphologyAttributeName among them, while the six other inflection names the port does carry are there",
+      "status": "inert",
+      "reason": "the port does not define this symbol: the 26.2 header declares it and the system's own Foundation exports it, so code that refers to it loads, and nothing in this package adds to it - nm on the compiled Foundation objects finds no _NSMorphologyAttributeName among them, while the six inflection names the port does carry are there"
     },
     {
       "api": "NSMorphologyCustomPronoun",
