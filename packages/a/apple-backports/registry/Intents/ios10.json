@@ -3889,7 +3889,7 @@
       "introduced": "10.0",
       "status": "absent",
       "reason": "the SDK obsoletes the selector in the release that introduced it: only INRideDriver_Deprecated.h declares it, in the (Deprecated) category, as API_DEPRECATED(\"Use the designated initializer instead\", ios(10.0, 10.0)), and the replacement that message names, initWithPhoneNumber:, is API_AVAILABLE(ios(10.2)), so at 10.0 the only initialiser the header still permits is the obsoleted one - which is why the port carries the two the header does not obsolete there, initWithPhoneNumber: and initWithPersonHandle:...rating:phoneNumber:, and not these",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "effect": "the class is there and the port carries no such selector: -[INRideDriver respondsToSelector:] answers no for the composed spelling, because the port's INRideDriver defines no initWithHandle: at all - INPerson's own initWithHandle: selectors are of other arities - and the SDK withdrew the selector in the release that introduced it, so there is nothing for the port to write",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -3898,7 +3898,7 @@
       "introduced": "10.0",
       "status": "absent",
       "reason": "the SDK obsoletes the selector in the release that introduced it: only INRideDriver_Deprecated.h declares it, in the (Deprecated) category, as API_DEPRECATED(\"Use the designated initializer instead\", ios(10.0, 10.0)), and the replacement that message names, initWithPhoneNumber:, is API_AVAILABLE(ios(10.2)), so at 10.0 the only initialiser the header still permits is the obsoleted one - which is why the port carries the two the header does not obsolete there, initWithPhoneNumber: and initWithPersonHandle:...rating:phoneNumber:, and not these",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "effect": "the class is there and the port carries no such selector: -[INRideDriver respondsToSelector:] answers no for the composed spelling, because the port's INRideDriver defines no initWithHandle: at all - INPerson's own initWithHandle: selectors are of other arities - and the SDK withdrew the selector in the release that introduced it, so there is nothing for the port to write",
       "facts": "facts/Intents/Intents.md"
     },
     {
