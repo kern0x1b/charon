@@ -173,11 +173,16 @@ SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release c
 # reads class_getMethodImplementation instead.  A row whose source does not name it is claiming a
 # behaviour on the header's authority, and the header says the opposite.
 INIT_SOURCE = SOURCE + (
-    "; and for the -init the header marks unavailable, the host's own answer: "
-    "class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, "
-    "and [[Cls alloc] init] through that IMP returns an object, with no exception and "
-    "respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes "
-    "through the IMP because the header forbids naming the selector at compile time")
+    "; and for the -init this header marks unavailable, the host's own answer, measured on eight of "
+    "them by hand: INMessage, INPerson, INBillDetails, INBalanceAmount, INCurrencyAmount, INCallRecord, "
+    "INCar and INFile - class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every one and "
+    "[[Cls alloc] init] through that IMP returns an object, with no exception and "
+    "respondsToSelector:init 1, every property present and nil. The IMP is how it was read, and is "
+    "how the emitted body reaches the superclass, because the marker is what forbids naming the "
+    "selector at compile time. The per-class harness that would keep all 110 of these honest on every "
+    "run is OWED, and is not in the tree: these eight are the measurement, and the other hundred and "
+    "two are the same rule applied to the same header, which is a claim and not a measurement until "
+    "that harness runs")
 
 
 def reason_for(causes, vocabulary, api, fallback):

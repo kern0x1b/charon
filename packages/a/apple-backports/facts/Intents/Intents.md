@@ -349,6 +349,65 @@ names they derive. It has **not** been run on the device or in the emulator: the
 work rather than that they are the behaviour the header describes. Until that run, every entry
 of this framework is **device-unverified**.
 
+## The 110 `-[X init]`, what the header says and what the port answers
+
+110 rows, one bare `-init` per class, and the reason they are `implemented` is not the header: the
+header **denies** the method on every one of them, and a row that cited it would be citing the wrong
+authority. These are the classes whose own SDK marks
+
+    - (instancetype)init NS_UNAVAILABLE;
+
+which is a compile-time marker. It says a caller must not *name* the selector. It does not say the
+system has no answer, and the system has one — which is the thing that had to be measured before the
+rows could move, and it is in the `source` of every one of them.
+
+**What the host was measured to answer.** Eight classes, by hand, through the IMP and not by a call —
+a compile-time call is unavailable and cannot be, which is the same constraint the emitted body is
+built around:
+
+    class_getMethodImplementation(Cls, @selector(init))  is non-NULL   on all eight
+    [[Cls alloc] init] through that IMP                    an object    on all eight
+                                                             no exception
+    respondsToSelector:init                                 1           on all eight
+    every declared property                                present and nil
+
+    INMessage  INPerson  INBillDetails  INBalanceAmount
+    INCurrencyAmount  INCallRecord  INCar  INFile
+
+**What the port now answers.** The same, by construction: the class defines `-init` even though the
+header marks it unavailable — which compiles, because defining an unavailable method is allowed — and
+forwards to the superclass's own `-init` through `class_getMethodImplementation(parent, selector)`,
+never by name. The generator's rule is in `tools/intents/gen-intents.py`, in `own_init_blocked_here`:
+`own_init_unavailable` walks the whole chain, which is the right question for an initialiser *with*
+arguments, because such an initialiser stores them here and then has to reach a superclass `-init`; a
+bare `-init` stores nothing, so the question is narrower — the selector it forwards to is the nearest
+implementation in the chain, and only the one it would actually reach matters.
+
+**Why `absent` was wrong and `implemented` is right.** Before this, all 110 were `absent` with the
+reason *"the header marks the class's -init unavailable, so a port cannot call it"*. That reason was
+true of a compile-time call and false of the class: leaving the method undefined sends a caller that
+asks for it to a NULL IMP, which is worse than answering with an object whose properties are nil. The
+marker forbids *naming* the selector at compile time, and that is the only thing it forbids.
+
+## What is NOT proven here, and is owed
+
+- **The per-class harness is owed and is not in the tree.** The eight classes above are the
+  measurement. The other hundred and two are the same rule applied to the same header, and that is a
+  *claim* until a harness runs them. `tests/backports/host/intents/` holds the constants suite
+  (`constants.m` and its `run.sh`) and nothing for these: the harness has to compare the port's
+  `-init` with the system's class by class, and the port's classes and the framework's share a name,
+  so a lookup in one process returns the framework's object and the check compares the framework with
+  itself. The tree already has the tool for the fix — `tests/backports/host/prefix_selectors.py`, which
+  `mpsmatrix/run.sh` uses to rename the port's classes so its implementations are reached under names
+  of their own — and the port's Intents sources additionally need `CharonIntents262.h` renamed with
+  them, because that header re-declares the classes the port's own SDK lacks and the host's has, and
+  without the rename the host build fails with *duplicate interface definition*. The rename list is
+  generated from the port's own object symbols, so every name in it is a class the port really defines.
+- **Nothing here runs on a device or under `xmake emulate`.** Every answer above is the macOS host's
+  own Intents, and the port's objects are armv7 iOS 6.1.3. That the `-init` survives into a linked
+  6.1.3 binary is the link step's job.
+- **`gates: coordinator`.** Not run by the author.
+
 ## A subclass that keeps its superclass's read-only value in its own ivar
 
 The seventeen `intents-1a` rows — eight reservation classes' `-initWithItemReference:…` in both
