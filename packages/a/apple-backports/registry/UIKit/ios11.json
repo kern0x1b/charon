@@ -328,9 +328,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the alignment has to be understood by UIControl itself while it lays its content out, and this release knows only left and right",
-   "effect": "the constant is not declared; mapping leading onto left would be quietly wrong wherever the writing direction is right to left, which this release does have, so nothing is mapped",
-   "source": "SDK 16.4, UIControl.h"
+   "reason": "leading means the side the writing direction puts first, and this release has no writing direction to put a side first: neither the 6.1.3 nor the 4.3 cache carries -semanticContentAttribute or -effectiveUserInterfaceLayoutDirection on UIView or UIControl, which the SDK declares from iOS 9. So there is no side for the word to name, and mapping it onto Left would be quietly wrong in the right-to-left languages this release does run",
+   "effect": "the constant is not declared, so an application that names it does not compile against the port, which is the honest answer: the release's UIControl lays out by -contentHorizontalAlignment, which it does have, and by the two values it understands",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIControl is in both, its own selector table carries -contentHorizontalAlignment and -setContentHorizontalAlignment: and no -effectiveContentHorizontalAlignment, and neither cache's UIView nor UIControl carries -semanticContentAttribute or -effectiveUserInterfaceLayoutDirection, which the SDK declares from iOS 9. The value is therefore read from nothing on either release. Against the SDK: UIControl.h:55-56 declares the case, API_AVAILABLE(ios(11.0))"
   },
   {
    "api": "UIControlContentHorizontalAlignmentTrailing",
@@ -338,9 +338,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the same: the control lays out by left and right, and trailing is not either of them",
-   "effect": "the constant is not declared; mapping trailing onto right would be quietly wrong in a right to left layout",
-   "source": "SDK 16.4, UIControl.h"
+   "reason": "the other side of the pair above, and the same absence of a writing direction to put a side second. Mapping it onto Right would be quietly wrong wherever the writing direction is right to left, which this release does have",
+   "effect": "the constant is not declared, so an application that names it does not compile against the port",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIControl is in both, its own selector table carries -contentHorizontalAlignment and -setContentHorizontalAlignment: and no -effectiveContentHorizontalAlignment, and neither cache's UIView nor UIControl carries -semanticContentAttribute or -effectiveUserInterfaceLayoutDirection, which the SDK declares from iOS 9. The value is therefore read from nothing on either release. Against the SDK: UIControl.h:55-56 declares the case, API_AVAILABLE(ios(11.0))"
   },
   {
    "api": "UIBarItem.largeContentSizeImage",
@@ -348,9 +348,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the image is shown only where an accessibility content size category is in force, and this release has no such category",
+   "reason": "the image is drawn only where an accessibility content size category is in force, and this release has no place that draws one: the bar item of this release has no such drawing, and the port does not stand in for a bar's layout. Carrying it as a stored value would be an image an application sets that nothing ever draws",
    "effect": "the property is not declared, so respondsToSelector: answers honestly; there is nothing that would draw the image",
-   "source": "SDK 16.4, UIBarItem.h"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIBarItem is in both and its own selector table carries no such member. The image is drawn by a bar's layout at an accessibility content size category, and no bar of this release draws one"
   },
   {
    "api": "UIBarItem.largeContentSizeImageInsets",
@@ -358,9 +358,9 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the insets belong to an image this release never draws",
+   "reason": "the insets belong to an image this release never draws, which is the same absence the image half above records",
    "effect": "the property is not declared, so respondsToSelector: answers honestly",
-   "source": "SDK 16.4, UIBarItem.h"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIBarItem is in both and its own selector table carries no such member. The image is drawn by a bar's layout at an accessibility content size category, and no bar of this release draws one"
   },
   {
    "api": "-[UITableView performBatchUpdates:completion:]",
