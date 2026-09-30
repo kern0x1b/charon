@@ -1,6 +1,8 @@
 -- A class-prefix census of the held armv7/arm64 caches, with a control in the same run.
 --
--- Usage: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua <name-prefix> [release...]
+-- Usage:
+--   CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua <name-prefix> [release...]
+--   CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua --selectors <name>...
 --
 -- `objc-inventory.lua` dumps every class and protocol of one cache. This answers the narrower
 -- question a registry row's `source` usually has to settle - "does the release carry any name like
@@ -16,16 +18,53 @@
 -- CONTROL FAILED, not as an absence: it is the reader that is wrong, and a row may not be written
 -- from it.
 --
+-- `--selectors` asks the OTHER question, through the other reader: `objc.known_selectors` reads the
+-- selector table, which is a different part of the image from the class and protocol metadata
+-- `objc.inventory` reads. It is kept here because the two together are what settles a member row,
+-- and because the second reader does not merely confirm the first - a selector belongs to no named
+-- class, so a name it reports can be registered by something else entirely. Each release prints its
+-- selector count and three controls (`-isEqual:`, `-description`, `-initWithFrame:`, which every
+-- release has, and one name none has) beside the answers.
+--
 -- Releases default to the two the package deploys on (6.1.3 and 4.3, both armv7) plus 11.0
 -- (arm64), the first held rung that carries CoreNFC: with the three, the facts page's own claim is
 -- reproducible by pasting the command and nothing else. Name releases to read others; the
 -- architecture is the one `dyld.held_ladder` picks for that release, so 16.0 and 18.0 are read as
 -- arm64e and 11.0 and 12.0 as arm64 - a split that is silent otherwise.
+local SELECTOR_CONTROLS = {"-isEqual:", "-description", "-initWithFrame:"}
+local SELECTOR_NEGATIVE = "-charonNoSuchSelectorAnywhere:"
+
 function main(prefix, ...)
-    assert(prefix, "usage: cache-census.lua <name-prefix> [release...]")
     local objc = import("apple.objc", {rootdir = path.join(os.getenv("CHARON_ROOT"), "modules"), anonymous = true})
     local dyld = import("apple.dyld", {rootdir = path.join(os.getenv("CHARON_ROOT"), "modules"), anonymous = true})
     local root = dyld.root()
+
+    if prefix == "--selectors" then
+        local asked = {...}
+        assert(#asked > 0, "usage: cache-census.lua --selectors <name>...")
+        for _, pair in ipairs({{"4.3", "armv7"}, {"6.1.3", "armv7"}, {"11.0", "arm64"}}) do
+            local release, arch = pair[1], pair[2]
+            local cache = path.join(root, release, "dyld_shared_cache_" .. arch)
+            local known = objc.known_selectors(cache)
+            local total = 0
+            for _ in pairs(known) do
+                total = total + 1
+            end
+            print(string.format("== %s  %s", release, cache))
+            print(string.format("   selectors the cache registers: %d", total))
+            for _, name in ipairs(SELECTOR_CONTROLS) do
+                print(string.format("   control  %-52s %s", name, known[name] and "known" or "ABSENT (wrong)"))
+            end
+            print(string.format("   control  %-52s %s", SELECTOR_NEGATIVE,
+                                known[SELECTOR_NEGATIVE] and "known (wrong)" or "unknown, as it must be"))
+            for _, name in ipairs(asked) do
+                print(string.format("   ask      %-52s %s", name, known[name] and "known" or "absent"))
+            end
+        end
+        return
+    end
+
+    assert(prefix, "usage: cache-census.lua <name-prefix> [release...] | --selectors <name>...")
 
     local wanted = {...}
     if #wanted == 0 then

@@ -57,6 +57,78 @@ answers the same question for one cache at a time and is the tool behind it.
 
 Every count in the table is a line of the command above.
 
+**The second reader, and what it corrects.** A class-prefix census reads class
+and protocol metadata, so the natural question is whether a *different* reader
+agrees. `tools/corpus/cache-census.lua --selectors` asks through the other one -
+`modules/apple/objc.lua`'s `known_selectors`, which reads the selector table, a
+different part of the image:
+
+```
+CHARON_ROOT="$PWD" xmake l tools/corpus/cache-census.lua --selectors \
+  -readingAvailable -beginSession -invalidateSession -isReady -alertMessage \
+  -sessionQueue -initWithDelegate:queue:invalidateAfterFirstRead: -ndefMessagePayload
+```
+
+Its output, in full, each release preceded by its selector count and four
+controls - three every release registers and one none does:
+
+```
+== 4.3  $HOME/.charon/dyld/4.3/dyld_shared_cache_armv7
+   selectors the cache registers: 70062
+   control  -isEqual:                     known
+   control  -description                  known
+   control  -initWithFrame:               known
+   control  -charonNoSuchSelectorAnywhere:  unknown, as it must be
+   ask      -readingAvailable             absent
+   ask      -beginSession                 absent
+   ask      -invalidateSession            known
+   ask      -isReady                      known
+   ask      -alertMessage                 absent
+   ask      -sessionQueue                 absent
+   ask      -initWithDelegate:queue:invalidateAfterFirstRead:  absent
+   ask      -ndefMessagePayload           absent
+== 6.1.3  $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+   selectors the cache registers: 113981
+   control  -isEqual:                     known
+   control  -description                  known
+   control  -initWithFrame:               known
+   control  -charonNoSuchSelectorAnywhere:  unknown, as it must be
+   ask      -readingAvailable             absent
+   ask      -beginSession                 absent
+   ask      -invalidateSession            absent
+   ask      -isReady                      known
+   ask      -alertMessage                 absent
+   ask      -sessionQueue                 absent
+   ask      -initWithDelegate:queue:invalidateAfterFirstRead:  absent
+   ask      -ndefMessagePayload           absent
+== 11.0  $HOME/.charon/dyld/11.0/dyld_shared_cache_arm64
+   selectors the cache registers: 487244
+   control  -isEqual:                     known
+   control  -description                  known
+   control  -initWithFrame:               known
+   control  -charonNoSuchSelectorAnywhere:  unknown, as it must be
+   ask      -readingAvailable             known
+   ask      -beginSession                 known
+   ask      -invalidateSession            known
+   ask      -isReady                      known
+   ask      -alertMessage                 known
+   ask      -sessionQueue                 known
+   ask      -initWithDelegate:queue:invalidateAfterFirstRead:  known
+   ask      -ndefMessagePayload           absent
+```
+
+**This reader cannot decide these rows, and the reason is the point.**
+`-invalidateSession` is registered in 4.3 and `-isReady` in both deployment
+releases, where CoreNFC is not: they belong to other classes, and a selector
+carries no owner. A bare selector match is therefore not evidence that a
+release carries a name, and `-invalidateSession` answering "known" at 4.3 says
+nothing about `NFCReaderSession.invalidateSession`. The class-scoped census is
+what decides, because the row is about a member of a named class; the two
+readers agreeing on `-readingAvailable` and on the initializer is a second
+reader confirming it where a selector *is* specific, and this one says so where
+it is not rather than being quoted. `-ndefMessagePayload` is absent from all
+three, 11.0 included, and is first held at 16.0.
+
 12.0's arm64 cache carries no CoreNFC either, which is that cache's own state
 and not this port's; `tools/cache-index/first-rung.py` reads the same rungs and
 the same answer (`NFCReaderSession` at 11.0, 16.0, 18.0 and at no other held

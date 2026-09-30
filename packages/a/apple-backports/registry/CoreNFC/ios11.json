@@ -30,7 +30,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "facts": "facts/CoreNFC/NFCReaderSession.md",
-      "source": "the host's CoreNFC through Mac Catalyst, where the string is NFCError; CoreNFC is in no cache this package holds"
+      "source": "the host's CoreNFC through Mac Catalyst, where the string is NFCError; the value was read there, and the release caches were not the instrument that decided it (tools/corpus/cache-census.lua NFC shows CoreNFC present from 11.0 on, so a claim that this package holds no cache of it would be false - facts/CoreNFC/NFCReaderSession.md)"
     },
     {
       "api": "NFCReaderSession.delegate",
