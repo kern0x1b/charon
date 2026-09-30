@@ -1,6 +1,10 @@
 # The three scenes: a CarPlay head unit, named, and nothing else
 
-**These thirteen rows are a hardware absence and the hardware is a car's head unit.** A CarPlay scene
+**These thirteen rows are `absent`, and the claim is about the release: nothing in it answers these
+names.** `apple.objc.inventory` over the armv7 dyld shared cache of 6.1.3 finds no CarPlay class of
+any name, so no `CP*` name is answered by anything on either fleet device. The head unit is the
+*reason* the port does not carry what the release lacks, and it is named in each row, because a claim
+with nothing behind it is not a row. A CarPlay scene
 is not a view, a window or a controller an application makes: at iOS 16.0 it is a `UIScene`, the
 system's own class for a connection, and the only initialiser any of the three carries is
 `-initWithSession:connectionOptions:`, which UIKit calls when a session connects. There is no head

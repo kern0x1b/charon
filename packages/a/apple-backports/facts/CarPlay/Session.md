@@ -12,7 +12,9 @@ fact about a device, and checkable by reading the header.
 
 Ten rows in all, and none of them is a "measurement" row: five of the ten are the same fact (the
 header says no) and seven of the ten are the same fact (there is no head unit), overlapping on the
-configuration's own `init` and `new`.
+configuration's own `init` and `new`. All ten are `absent`, whose claim is about the release: the 6.1.3
+armv7 cache carries no CarPlay class of any name, so nothing in it answers any of these names. The head
+unit and the header are the reasons the port does not carry what the release lacks.
 
 ## The forbidden ones, with the line each rests on
 
