@@ -56,6 +56,26 @@
                destinationImage:(MPSImage *)destinationImage;
 @end
 
+// MPSImageReduce's read window and its encode, from MPSImageReduce.h:42 and the unary encode at :29.
+// The class is declared in MPSImage.framework's MPSImageReduce.h, which the umbrella this file imports
+// does not carry, so the two are spelled out and the kernel is called through this protocol - the same
+// reason CharonImageMatrixEncode exists for the copy's encode.
+@protocol CharonImageReduceEncode
+@property (readwrite, nonatomic) MTLRegion clipRectSource;
+- (instancetype)initWithDevice:(id<MTLDevice>)device;
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                   sourceImage:(MPSImage *)sourceImage
+             destinationImage:(MPSImage *)destinationImage;
+@end
+
+// The nine classes MPSImageReduce.h:29-184 declares need no local declaration: clang reports a duplicate
+// interface if they are written out here, so the SDK's own declarations are what this file compiles
+// against. What DOES have to be local is the two selectors below, because they are declared in
+// MPSImage.framework's MPSImageReduce.h rather than in the umbrella - the same reason
+// CharonImageMatrixEncode exists for the copy's encode. Declaring them through a protocol is also what
+// lets the harness's generated rename header reach the port's classes: a string literal is not
+// rewritten, so NSClassFromString here would reach the RELEASE's MPSImageReduce instead of this port's,
+// and the first version of this case did exactly that and crashed inside the release's own encoder.
 static id<MTLDevice> gDevice = nil;
 
 // One case: a source image of the given values, a destination, and the kernel's answer written into it
@@ -338,6 +358,94 @@ int main(int argc, const char **argv)
                                                          got, rowElements);
                     }
                 }
+            }
+        }
+        // MPSImageReduce, MPSImageReduce.h:53-176's eight concrete classes. A Row class returns one value
+        // per row of the source and a Column class one per column - that count is the header's own
+        // wording - so a Row destination is 1 wide by `rows` tall and a Column one `cols` wide by 1 tall.
+        // The header never states the destination's width and height, and this host cannot measure it: its
+        // AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies
+        // encoding. So the shape here is the one the class names imply, it is not claimed to be the
+        // release's measured one, and every row of this family carries that AGX reason.
+        //
+        // The read window is clipRectSource, which :31-42 says REPLACES the unary offset and is
+        // INTERSECTED with the image, so the case uses the default (:36, MPSRectNoClip, the whole texture)
+        // and the reference clamps the same way. offset is deliberately never set here: for this filter
+        // the header says it is ignored, so setting it would test nothing.
+        //
+        // The classes are named as CLASSES and not as strings, which is the whole point: the harness
+        // renames the port's classes with a generated header and a string literal is not rewritten by it,
+        // so NSClassFromString here would silently reach the RELEASE's MPSImageReduce rather than this
+        // port's. That is not hypothetical - it is what the first version of this case did, and it
+        // crashed in the release's own encoder.
+        {
+            static const char *classNames[8] = {"MPSImageReduceRowMin", "MPSImageReduceColumnMin",
+                                                "MPSImageReduceRowMax", "MPSImageReduceColumnMax",
+                                                "MPSImageReduceRowMean", "MPSImageReduceColumnMean",
+                                                "MPSImageReduceRowSum", "MPSImageReduceColumnSum"};
+            static const char *reduceNames[8] = {"reduce-row-min", "reduce-column-min",
+                                                 "reduce-row-max", "reduce-column-max",
+                                                 "reduce-row-mean", "reduce-column-mean",
+                                                 "reduce-row-sum", "reduce-column-sum"};
+            static const char *renamed[8] = {"CharonMPSImageReduceRowMin", "CharonMPSImageReduceColumnMin",
+                                             "CharonMPSImageReduceRowMax", "CharonMPSImageReduceColumnMax",
+                                             "CharonMPSImageReduceRowMean", "CharonMPSImageReduceColumnMean",
+                                             "CharonMPSImageReduceRowSum", "CharonMPSImageReduceColumnSum"};
+            Class reduceClasses[8] = {[MPSImageReduceRowMin class], [MPSImageReduceColumnMin class],
+                                      [MPSImageReduceRowMax class], [MPSImageReduceColumnMax class],
+                                      [MPSImageReduceRowMean class], [MPSImageReduceColumnMean class],
+                                      [MPSImageReduceRowSum class], [MPSImageReduceColumnSum class]};
+            static const CharonRefReduce kinds[8] = {CharonRefReduceMin, CharonRefReduceMin,
+                                                      CharonRefReduceMax, CharonRefReduceMax,
+                                                      CharonRefReduceMean, CharonRefReduceMean,
+                                                      CharonRefReduceSum, CharonRefReduceSum};
+            for (int i = 0; i < 8; i++) {
+                int byColumn = (i % 2) == 1;
+                NSUInteger dstCols = byColumn ? cols : 1;
+                NSUInteger dstRows = byColumn ? 1 : rows;
+                NSUInteger want = byColumn ? cols : rows;
+                // Presence is tested by the RENAMED name. The port's classes are Charon-prefixed in this
+                // build and the release's are not, so this asks the only question that matters - does
+                // THIS PORT have the kernel - without touching the release's, which is what calling the
+                // unrenamed name would do.
+                //
+                // An absent kernel is a MISMATCH, not a case that reports nothing: a case line with no
+                // values would leave the reference nothing to compare, gCompared would not move, and the
+                // harness would report success over zero elements. That is the defect this whole harness
+                // has been about, so a missing family fails here loudly instead.
+                if (!NSClassFromString([NSString stringWithUTF8String:renamed[i]])) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: this port has no %s (looked for %s), so the case is absent"
+                           " and not merely wrong\n", reduceNames[i], classNames[i], renamed[i]);
+                    printf("case %s 0\n", reduceNames[i]);
+                    continue;
+                }
+                MPSImageDescriptor *rd =
+                    [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                                                    width:dstCols height:dstRows
+                                                          featureChannels:1];
+                MPSImage *out = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:rd];
+                id<CharonImageReduceEncode> kernel = [[reduceClasses[i] alloc] initWithDevice:gDevice];
+                if (!kernel) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: %s exists but would not instantiate\n", reduceNames[i],
+                           classNames[i]);
+                    printf("case %s 0\n", reduceNames[i]);
+                    continue;
+                }
+                kernel.clipRectSource = MPSRectNoClip;              // the default, stated by :36
+                [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                  sourceImage:source
+                            destinationImage:out];
+                float got[4] = {0};
+                [[out texture] getBytes:got bytesPerRow:dstCols * sizeof(float)
+                           fromRegion:MTLRegionMake2D(0, 0, dstCols, dstRows) mipmapLevel:0];
+                printf("case %s %lu", reduceNames[i], (unsigned long)want);
+                for (NSUInteger v = 0; v < want; v++)
+                    printf(" %.9g", (double)got[v]);
+                printf("\n");
+                CharonReferenceImageReduce(reduceNames[i], input, rows, cols, 0, 0, byColumn,
+                                           kinds[i], got, want);
             }
         }
     }

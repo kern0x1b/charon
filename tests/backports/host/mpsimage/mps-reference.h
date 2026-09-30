@@ -245,4 +245,95 @@ static void CharonReferenceImageCopyToMatrix(const char *name, const float *src,
     printf("\n");
 }
 
+// MPSImageReduce, from MPSImageReduce.h of the iPhoneOS 26.2 surface: four reductions over a row or a
+// column - min, max, mean, sum. Nine rows owe this family: MPSImageReduceUnary abstract, and RowMin,
+// ColumnMin, RowMax, ColumnMax, RowMean, ColumnMean, RowSum, ColumnSum.
+//
+// What the header says, at :53, :74, :91, :108, :125, :142, :159 and :176: the Row classes return "the
+// mininmum value for each row of an image" (the release's own spelling), "the maximum value for each
+// row", "the mean value for each row", "the sum for each row"; the Column classes say the same for each
+// column. So a row reduction over a rows x cols image answers `rows` values and a column reduction
+// answers `cols`. That much is the header's wording and it is what fixes the count.
+//
+// The read window is MPSImageReduce.h:31-42's clipRectSource: "The source rectangle to use when reading
+// data ... If the clipRectSource does not lie completely within the source image, the intersection of
+// the image bounds and clipRectSource will be used. The clipRectSource replaces the MPSUnaryImageKernel
+// offset parameter for this filter. The latter is ignored. Default: MPSRectNoClip, use the entire source
+// texture." So `offset` does not enter this reduction at all - unlike every other unary kernel in this
+// package - and clipRectSource is INTERSECTED with the image rather than applied on its own. That is
+// why the indices below are clamped to the image and not used raw: the reference models the
+// intersection rather than assuming a caller passes a rectangle that fits.
+//
+// `clipRect` is a different thing and is NOT the read window. MPSImageReduce.h:38-40: "The clipRect
+// specified in MPSUnaryImageKernel is used to control the origin in the destination texture where the
+// min, max values are written. The clipRect.width must be >=2. The clipRect.height must be >= 1." That is
+// where the write lands, and the two bounds are a precondition the kernel refuses, not a result.
+//
+// What the header does NOT say is the destination's shape. Each class fixes how many values there are
+// and not their width or height. It cannot be measured here - this host's AGX family lacks
+// computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding - so the case builds
+// the one-by-rows and cols-by-one destinations the class names imply and says so, rather than claiming
+// it measured the release. Every row of this family carries that AGX reason.
+//
+// min, max and sum are compared for EQUALITY: they select or add values the source already holds, so a
+// copy that moved a bit is a copy that moved a bit. mean divides, and dividing cannot be exact in
+// binary, so it is compared with the same bound the rest of this file uses - one whole float32 ulp,
+// CharonOneUlp - and that bound is stated rather than left implicit. A mean sums in double and divides
+// once, so one float32 ulp is the whole of its error and not a slackened check.
+typedef enum {
+    CharonRefReduceMin,
+    CharonRefReduceMax,
+    CharonRefReduceMean,
+    CharonRefReduceSum,
+} CharonRefReduce;
+
+static void CharonReferenceImageReduce(const char *name, const float *src, NSUInteger rows, NSUInteger cols,
+                                        NSUInteger srcX, NSUInteger srcY, int byColumn,
+                                        CharonRefReduce which, const float *out, NSUInteger values)
+{
+    printf("reference %s %lu", name, (unsigned long)values);
+    NSUInteger runs = byColumn ? cols : rows;
+    NSUInteger span = byColumn ? rows : cols;
+    for (NSUInteger r = 0; r < runs; r++) {
+        double total = 0.0;
+        // Seeded from the first element OF THIS RUN, not from src[0]. The first version seeded from
+        // src[0] and therefore reported the minimum of the WHOLE image for every row after the first -
+        // the differential caught it, naming rows 1 and 2 of reduce-row-min as -1.5 when the values were
+        // 0.5 and -0.75, which is how a reference bug is distinguishable from a kernel bug: the kernel's
+        // numbers were the right ones.
+        double smallest = 0.0, largest = 0.0;
+        for (NSUInteger s = 0; s < span; s++) {
+            NSUInteger y = byColumn ? srcY + s : srcY + r;
+            NSUInteger x = byColumn ? srcX + r : srcX + s;
+            if (y >= rows) y = rows - 1;      // clipRectSource is intersected with the image, :33-34
+            if (x >= cols) x = cols - 1;
+            float v = src[y * cols + x];
+            if (s == 0 || (double)v < smallest) smallest = (double)v;
+            if (s == 0 || (double)v > largest) largest = (double)v;
+            total += (double)v;
+        }
+        double want;
+        if (which == CharonRefReduceMin) want = smallest;
+        else if (which == CharonRefReduceMax) want = largest;
+        else if (which == CharonRefReduceSum) want = total;
+        else want = total / (double)span;
+        gCompared++;
+        double got = (double)out[r];
+        // min and max SELECT a value the source already holds, so they are exact. mean and sum ADD, and
+        // the sum is stored back as a float32, so both are within one float32 ulp of the double total -
+        // the same bound the arithmetic comparator in this file uses. Claiming a sum was exact was the
+        // second thing the differential caught: reduce-row-sum row 2 read 2.8499999 against a reference of
+        // 2.85, which is one rounding of the store and not a wrong answer.
+        double bound = (which == CharonRefReduceMin || which == CharonRefReduceMax) ? 0.0 : CharonOneUlp(want);
+        if (fabs(got - want) > bound) {
+            gMismatches++;
+            printf("\n  MISMATCH %s %s %lu reference %.9g port %.9g%s\n", name,
+                   byColumn ? "column" : "row", (unsigned long)r, want, got,
+                   bound == 0.0 ? ", exact" : ", one float32 ulp is the bound");
+        }
+        printf(" %.9g", want);
+    }
+    printf("\n");
+}
+
 #endif /* CHARON_MPS_REFERENCE_H */
