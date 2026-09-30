@@ -34,6 +34,8 @@ The options that need iCloud, the progress handler, the version (there is one ve
 change nothing here. Live photos are absent. `PHCachingImageManager` starts and stops caching as a hint and keeps no cache; the images it gives
 are those of the manager.
 
-Source: the header of iOS 16.4; the host's Photos for the constants
-(`PHImageManagerMaximumSize` is -1 by -1 and each key is a string equal to its name) and the defaults of the options; an iPad 2
-running 6.1.3.
+Source: the header of iOS 16.4; `tools/corpus/cache-value.lua` over the arm64e cache of 16.0 for the
+constants, read out of the device's own `Photos.framework`: `PHImageManagerMaximumSize` is -1 by -1 and
+each of the five keys is a string equal to its own name (the same run, and the same tool, that read the
+eight keys of the families this port does not carry -- `facts/Photos/Constants.md`); the defaults of the
+options; an iPad 2 running 6.1.3.
