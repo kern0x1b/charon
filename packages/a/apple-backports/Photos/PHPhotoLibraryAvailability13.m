@@ -16,6 +16,17 @@
 // (3311) for a denied process and PHPhotosErrorAccessRestricted (3310) for a restricted one, both in
 // the domain the header declares them in, PHPhotosErrorDomain.
 
+// What the build still prints, and it is inherent to this file's shape: TWO
+// -Wobjc-protocol-method-implementation, one for each registration method. PHPhotoLibrary's own
+// interface in the SDK header declares both members, and a later release's members live in their own
+// object, which is this category -- so clang sees a category implementing a method the primary class
+// declares. The class implements neither: `nm` of the built PHPhotoLibrary.o carries no
+// registerAvailabilityObserver: and no unregisterAvailabilityObserver: (measured 2026-10-01), and
+// @dynamic on PHPhotoLibrary keeps it from claiming the property's getter, which auto-synthesis would
+// otherwise put there ahead of the category's. The same diagnostic is ignored the same way in
+// MPSImageThreshold13.m and MTLHeap13.m, for the same reason.
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
+
 @interface PHPhotoLibrary (CharonAvailability)
 - (void)charon_availabilityRefreshed;
 @end
