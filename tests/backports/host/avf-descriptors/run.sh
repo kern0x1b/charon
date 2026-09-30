@@ -25,20 +25,21 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
-# What the code actually does, and what the comment above it used to claim instead: both sides emit
-# the SAME 49 rows, because the probe asks both builds the same questions. Two of those 49 have no
-# host oracle - the 12.0 initializer, which this host's criteria factory cannot build - and the join
-# holds them against the port's own unmutated baseline rather than against the host. So the two
-# numbers are equal, and the earlier comment here ("they DIFFER on purpose", "the port's table is
-# two rows longer", "asserting one number for both would be asserting a falsehood") described a
-# difference in LENGTH that this harness does not model: the port-only rows are the same rows, not
-# extra ones. The comment contradicted the two lines under it, and a reader who took it at its word
-# would have deleted one of the two variables.
+# THE ROW COUNT IS NOT TYPED HERE. It used to be, twice, and the two literals did not agree with the
+# comment above them: the comment said both sides emit the SAME 49 rows, the assertions said 63, and
+# the worktree had by then moved to 71. One export carried all three numbers, and the reviewer's first
+# finding was this file contradicting itself. Typing 71 would have made it contradict itself again the
+# next time a row was added, so the number is now DERIVED from the run: the probe ends every run with
+# "rows: N", and the expectation is what that probe says it emitted on that side.
 #
-# They are kept as two variables because they are the two SIDES of the same claim - a table that
-# silently lost rows on one side would otherwise not be noticed - and both are 49.
-expected_host=${AVF_DESC_ROWS_HOST:-63}
-expected_port=${AVF_DESC_ROWS_PORT:-63}
+# The two sides stay SEPARATE numbers because they are the two SIDES of one claim - a table that
+# silently lost rows on one side would not otherwise be noticed - and the probe asks both builds the
+# same questions, so they are expected to match without that being assumed. Some rows have no host
+# oracle - the 12.0 initializer, which this host's criteria factory cannot build - and the join holds
+# those against the port's own unmutated baseline rather than against the host.
+#
+# If the probe does not report its own count there is nothing to check against, and this says so and
+# stops. It does not fall back to a number, because a fallback is how 49, 63 and 71 got here.
 sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9 AVAudioFile8 AVAudioFile8Members"
 control=${CONTROL:-0}
 break=${BREAK:-0}
@@ -168,12 +169,19 @@ else
 fi
 
 # 3. neither table may be smaller than the claim
+rows_host=$(sed -n 's/^rows: \([0-9][0-9]*\) .*/\1/p' "$build/host.table" | tail -1)
+rows_port=$(sed -n 's/^rows: \([0-9][0-9]*\) .*/\1/p' "$build/port.table" | tail -1)
+if [ -z "$rows_host" ] || [ -z "$rows_port" ]; then
+    echo "FAIL: the probe did not report how many rows it emitted, so the row count cannot be checked"
+    echo "      against the run's own output. Refusing to guess it from a literal."
+    exit 1
+fi
 for side in host port; do
     rows=$(grep -c ' = ' "$build/$side.table" || true)
-    if [ "$side" = host ]; then want=$expected_host; else want=$expected_port; fi
+    if [ "$side" = host ]; then want=$rows_host; else want=$rows_port; fi
     if [ "$rows" -ne "$want" ]; then
-        echo "FAIL: the $side table has $rows rows and this probe emits $want on that side, so the diff"
-        echo "      below would compare something smaller than the claim"
+        echo "FAIL: the $side table has $rows rows but the probe reported emitting $want on that side,"
+        echo "      so the diff below would compare something smaller than the claim"
         exit 1
     fi
     # the ~ rows are the port's own values, with no host oracle - they are held against the
