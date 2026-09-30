@@ -210,3 +210,44 @@ which is two answers. Every one of the object's thirty rows now names 6.0, the v
 gave, and never above 10: armv7's last deployment is 10, and a minimum above it would take the object
 out of every band that can link it. A minimum at or below the deployment bounds nothing, which is why
 6.0 is the answer that both satisfies the rule and keeps the object in every band.
+
+### introduced is Apple's surface, placement is measured
+
+A row's `introduced` is a transcription of what Apple's own header says a client can expect the API
+from, and `check_registry`'s `carried(entry, deployment)` reads it. Where an object goes is measured:
+the held dyld caches and the SDK header, and nothing in the placement path reads the row. The two are
+different facts and putting one in the other's field is wrong in both directions, so the measured
+releases live here and not in the registry.
+
+Read per class out of the 26.2 headers - the annotation that governs each `@interface`, which for the
+two discover operations is an `API_DEPRECATED` whose first `ios` is the arrival and whose second is the
+deprecation - all thirteen read **`ios(10.0)`**:
+
+    CKAcceptSharesOperation              API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKDiscoverUserIdentitiesOperation    API_DEPRECATED(..., ios(10.0, 17.0), ...)
+    CKDiscoverAllUserIdentitiesOperation API_DEPRECATED(..., ios(10.0, 17.0), ...) + API_UNAVAILABLE(tvos)
+    CKFetchShareMetadataOperation        API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKFetchShareParticipantsOperation    API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKQuerySubscription                  API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(6.0))
+    CKRecordZoneSubscription             API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(6.0))
+    CKDatabaseSubscription               API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(6.0))
+    CKDatabaseNotification               API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKUserIdentityLookupInfo             API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKUserIdentity                       API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKShareParticipant                   API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+    CKShareMetadata                      API_AVAILABLE(macos(10.12), ios(10.0), tvos(10.0), watchos(3.0))
+
+Apple's annotation and the measurement disagree for three of them, and both readings are kept:
+
+| class | Apple says | first held rung exporting it | placement |
+| --- | --- | --- | --- |
+| `CKAcceptSharesOperation` | ios(10.0) | 8.3 | `CKOperations83.m` |
+| `CKUserIdentity` | ios(10.0) | 8.3 | `CKValues83.m` |
+| `CKShareParticipant` | ios(10.0) | 8.0 | `CKValues8.m` |
+
+A rung is the first release the **cache** exports the symbol from, so it bounds the arrival from above
+and is not a claim about when Apple shipped the class; `release-split`'s own note reads a skipped rung
+the same way. The split follows the measurement, because an object is placed by the symbols it
+carries, and the row records the surface, because a client asks the row. The ten classes the gate
+grouped as 10.0.1 are `ios(10.0)` by Apple's annotation and 10.0.1 by the ladder, which is the same
+bound one rung tighter.
