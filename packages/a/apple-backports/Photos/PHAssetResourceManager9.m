@@ -1,4 +1,12 @@
 #import "CharonPhotos.h"
+
+// -[NSURL fileSystemRepresentation] is of iOS 7.0 (NSURL.h:118, API_AVAILABLE(macos(10.9), ios(7.0),
+// watchos(2.0), tvos(9.0))) and this port builds for 4.3 and 6.1.3, so calling it raises
+// "unrecognized selector sent to instance" on the device -- measured on an iPad 2 running 6.1.3 on
+// 2026-10-01, where a creation request's move and a resource write both reached it. NSString's
+// -fileSystemRepresentation has no such floor, and -[NSURL path] is of iOS 2, so the path comes
+// through it. The index cannot settle this one by name: fileSystemRepresentation reads first-rung
+// 3.0, which is some other class's selector of that name in a 32-bit cache.
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -152,7 +160,7 @@ static const NSUInteger CharonResourceChunkLength = 1024 * 1024;
         };
         NSString *name = [NSString stringWithFormat:@".%@.%@", fileURL.lastPathComponent, [NSUUID UUID].UUIDString];
         NSURL *partURL = [fileURL.URLByDeletingLastPathComponent URLByAppendingPathComponent:name];
-        const char *part = partURL.fileSystemRepresentation;
+        const char *part = partURL.path.fileSystemRepresentation;
         int fd = open(part, O_WRONLY | O_CREAT | O_EXCL, 0644);
         NSError *error = fd < 0 ? failure(fileURL) : nil;
         __block NSError *writeError = nil;
@@ -174,7 +182,7 @@ static const NSUInteger CharonResourceChunkLength = 1024 * 1024;
             error = failure(fileURL);
             wrote = NO;
         }
-        if (wrote && rename(part, fileURL.fileSystemRepresentation) != 0) {
+        if (wrote && rename(part, fileURL.path.fileSystemRepresentation) != 0) {
             error = failure(fileURL);
             wrote = NO;
         }

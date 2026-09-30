@@ -176,13 +176,50 @@ by 6.1.3, so it runs on any device: the release's own enumeration fails with `AL
 control is `tests/backports/device/photos/control.m`, which asserts the opposite of that check on the same
 call in the same process and must fail; a run that does not see it fail is told its figures are not evidence.
 
-**The 22 checks above and the 33 were not re-measured on 2026-09-30, and this commit does not restate them.**
-Both need the iPad 2: `photoschanges8` and `photosdata9` are applications that add assets to the library on
-every run, and the runner refuses them on any other device, because the photo library of a device that is not
-the iPad 2 is the owner's. The iPad 2 was not attached on 2026-09-30, so the runner printed the refusal and
-ran nothing else. What the two figures say about the port is unchanged and what is missing is a device, not a
-test: the next run of that script on the iPad 2 prints both, and the page's own text above is what they are
-compared against.
+**The two applications were not run on 2026-09-30**, because the iPad 2 was not attached: they add assets
+to the library on every run, and the runner refuses them on any other device, since the photo library of a
+device that is not the iPad 2 is the owner's. What was missing there was a device, not a test.
+
+## The run of 2026-10-01, on the iPad 2
+
+The iPad 2 was attached, and the five programs ran through the same runner, in one command:
+
+    $ CHARON_DEVICE_HOLDER=photos-1 sh tests/backports/device/photos/run.sh \
+          --device ipad2 --control photosalbums8 photosavailability13 photoschanges8 photosdata9
+    photosalbums8: 3 checks, 0 failed
+    photosavailability13: 11 checks, 0 failed
+    photoschanges8: 22 checks, 0 failed
+    photosdata9: 32 checks, 0 failed
+    control: 1 checks, 1 failed
+    photos device: 5 ran, 0 refused, every check that ran passed
+
+`photoschanges8` gives the **22 checks, 0 failures** this page already claimed for 2026-09-23, from this
+tree's sources, which is the corroboration that run was missing. `photosdata9` gives **32**, where the text
+above says 34 measured on 2026-09-24 and 33 after one check was dropped. **That gap of one is not
+explained here and is not rounded away**: the report on the device holds 32 `ok` lines and the figure line
+says 32, the test's source is the same one main has (29 `CHECK` sites, two of which are inside functions the
+program enters twice), and a reader comparing the two dates should read the reports rather than this page's
+arithmetic. What the port answered is unchanged: 0 failures in every program.
+
+## What that run found in the port
+
+`photosdata9` died ten checks in with an uncaught exception on its first run of the day:
+
+    FAIL uncaught NSInvalidArgumentException: -[NSURL fileSystemRepresentation]: unrecognized selector
+         sent to instance 0x1cdbe0a0
+
+`-[NSURL fileSystemRepresentation]` is a property of **iOS 7.0** -- `NSURL.h:118`, `API_AVAILABLE(macos(10.9),
+ios(7.0), watchos(2.0), tvos(9.0))` -- and this port builds for 4.3 and 6.1.3, so six call sites in the
+asset-resource code raised on the device: four in `PHAssetCreationRequest9.m` (a moved resource's own path, the
+folder it must be removable from, the file a creation request stages a video's data in, and the moved file
+itself) and two in `PHAssetResourceManager9.m` (the part file a chunked read writes, and the rename onto the
+asked-for file). The seventh call was in the test itself, `photosdata9.m:263`, hard-linking a video. They go
+through `-[NSURL path]`, which is of iOS 2, and from there `NSString`'s `-fileSystemRepresentation`, which has
+no floor at all. With that, all 32 checks pass.
+
+The index cannot settle this one, and the header explains why: `fileSystemRepresentation` reads first-rung
+**3.0**, which is some other class's selector of that name in a 32-bit cache -- a name the ladder saw, an
+attribution it does not carry. The header's own availability is the oracle for what a class declares.
 
 The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
 `writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the

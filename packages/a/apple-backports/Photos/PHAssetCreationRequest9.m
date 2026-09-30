@@ -1,5 +1,13 @@
 #import "CharonPhotos.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+
+// -[NSURL fileSystemRepresentation] is of iOS 7.0 (NSURL.h:118, API_AVAILABLE(macos(10.9), ios(7.0),
+// watchos(2.0), tvos(9.0))) and this port builds for 4.3 and 6.1.3, so calling it raises
+// "unrecognized selector sent to instance" on the device -- measured on an iPad 2 running 6.1.3 on
+// 2026-10-01, where a creation request's move and a resource write both reached it. NSString's
+// -fileSystemRepresentation has no such floor, and -[NSURL path] is of iOS 2, so the path comes
+// through it. The index cannot settle this one by name: fileSystemRepresentation reads first-rung
+// 3.0, which is some other class's selector of that name in a 32-bit cache.
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -124,7 +132,7 @@ static CharonPhotosTransaction *charon_transaction(void)
     // moved; neither can one whose folder does not let it be removed. Both fail here, before anything is written.
     if (_moveFile && _resourceFileURL) {
         struct stat status;
-        const char *path = _resourceFileURL.fileSystemRepresentation;
+        const char *path = _resourceFileURL.path.fileSystemRepresentation;
         NSString *refusal = nil;
         if (lstat(path, &status) != 0) {
             if (error)
@@ -133,7 +141,7 @@ static CharonPhotosTransaction *charon_transaction(void)
         }
         if (status.st_nlink > 1)
             refusal = @"a file with more than one hard link cannot be moved into the photo library";
-        else if (access(_resourceFileURL.URLByDeletingLastPathComponent.fileSystemRepresentation, W_OK) != 0)
+        else if (access(_resourceFileURL.URLByDeletingLastPathComponent.path.fileSystemRepresentation, W_OK) != 0)
             refusal = @"the file's folder does not let it be removed, so it cannot be moved into the photo library";
         if (refusal) {
             if (error)
@@ -150,7 +158,7 @@ static CharonPhotosTransaction *charon_transaction(void)
 {
     if (!_moveFile || !_resourceFileURL)
         return YES;
-    if (unlink(_resourceFileURL.fileSystemRepresentation) == 0)
+    if (unlink(_resourceFileURL.path.fileSystemRepresentation) == 0)
         return YES;
     if (error)
         *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey: _resourceFileURL}];
@@ -180,7 +188,7 @@ static CharonPhotosTransaction *charon_transaction(void)
         [CharonPhotosStore bindPlaceholderIdentifier:_token toIdentifier:identifier];
     // A write that failed keeps its own error, the cause; after one that succeeded, a staged file that cannot be removed
     // fails the change with the file system's error, as a moved file does.
-    if (staged && unlink(staged.fileSystemRepresentation) != 0 && identifier) {
+    if (staged && unlink(staged.path.fileSystemRepresentation) != 0 && identifier) {
         if (error)
             *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:@{NSURLErrorKey: staged}];
         return NO;

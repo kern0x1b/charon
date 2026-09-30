@@ -260,7 +260,11 @@ static void check_move(void)
 
     NSURL *linked = blue_video(15, 640, 480, NO);
     NSURL *second = [linked URLByAppendingPathExtension:@"link.mov"];
-    CHECK(link(linked.fileSystemRepresentation, second.fileSystemRepresentation) == 0, "a second hard link to a video is made");
+    // Through -path, not straight: -[NSURL fileSystemRepresentation] is of iOS 7.0 (NSURL.h:118) and
+    // this test runs on 6.1.3, where it raises -- which is what it did on an iPad 2 running 6.1.3 on
+    // 2026-10-01, ten checks into the run and with no figure written. The same call in
+    // PHAssetCreationRequest9.m and PHHAssetResourceManager9.m is fixed the same way in the port.
+    CHECK(link(linked.path.fileSystemRepresentation, second.path.fileSystemRepresentation) == 0, "a second hard link to a video is made");
     NSUInteger before = saved_photos_count();
     error = add_video(linked, YES, NULL);
     printf("move of a hard-linked file: %s\n", error.description.UTF8String ?: "no error");
