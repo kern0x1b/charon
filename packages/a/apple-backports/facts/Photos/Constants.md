@@ -72,7 +72,41 @@ The 15.0 row reads 16.0 because the held set has no rung between `12.0` and `16.
 above 12.0 are `16.0` and `18.0` -- so the oldest held release that carries the name is one above the
 release that introduced it. That is the tool's own rule and not a disagreement with the header.
 
-## Why the rows stay `absent`
+## The classes of the same families, and what the release says about them
+
+The keys above are not the only absent rows of their families, and the reason is the same one, so it is
+written once here and each row carries the part of it that is about that row.
+
+**A live photo, and everything shaped like one** -- `PHLivePhoto` (9.1), `PHLivePhotoRequestOptions`
+(9.1), `PHLivePhotoEditingContext` (10), `PHLivePhotoFrame` (10). A live photo is a still image and a video
+carrying Apple's paired-media metadata. The release's own photo library has no such thing, and three
+measurements say so rather than a header's silence: the word `live` is in no header of its
+`AssetsLibrary.framework` (`grep -rin live` over the 16.4 headers, no match); `ALAssetsLibrary` can add a
+photo and can add a video, and nothing in it pairs the two, which is the same limit the port's own
+`+[PHAssetCreationRequest addResourceWithType:fileURL:options:]` is written against (a resource type other
+than photo or video fails the change with a reason -- `facts/Photos/Changes.md`); and the first held rung
+that carries `PHLivePhoto` at all is **9.1**, so no release these bands are built for has anything that
+would recognise a pair this port invented. A `PHLivePhoto` the port handed out would be two files Apple's
+own software does not read as one object, which is the fabricated answer the tree forbids -- so the rows
+stay absent and the effect says so.
+
+**A collection list, and the change request on one** -- `PHCollectionListChangeRequest` (8). The release's
+albums are one flat level. The only way it makes an album is
+`-[ALAssetsLibrary addAssetsGroupAlbumWithName:resultBlock:failureBlock:]` (`ALAssetsLibrary.h:105`, measured
+by first-rung at **5.0**), which takes no parent, and `grep -rn parent` over the 16.4
+`AssetsLibrary.framework` headers finds one hit: a comment about parental controls. There is no list to put
+a collection in and no album to put one inside, so this release's "collection list" is the list of the
+albums themselves -- and `+creationRequestForCollectionListWithTitle:` has nothing to create,
+`+deleteCollectionLists:` has nothing to delete, and every child-collection member has no child to act on.
+
+One spelling worth recording, because it nearly became a claim: `addAssetsGroupWithName:parentGroup:resultBlock:failureBlock:`
+is not an `ALAssetsLibrary` selector at all. The index read `NONE` for it, the 16.4 header does not declare
+it, and what the release does have is the flat `addAssetsGroupAlbumWithName:` above. The index's `NONE` is
+corroboration and not proof -- it read `NONE` for `groupsForAssetGroupType:`, which the 16.4 header also
+does not declare -- so the row rests on the header and on the measured first rung of the selector the
+release does have.
+
+## Why the keys stay `absent`
 
 An `absent` row's claim is about the **release**, not about the port: what iOS 6 does not have is in
 each row's `reason`, and each of the three families is named there in the release's own terms -- no

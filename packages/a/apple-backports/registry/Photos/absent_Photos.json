@@ -7,9 +7,9 @@
       "introduced": "8",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "a change request on a list of collections, of iOS 8; the claim is about the release, and the release's albums are one flat level: the only way it makes an album is -[ALAssetsLibrary addAssetsGroupAlbumWithName:resultBlock:failureBlock:] (ALAssetsLibrary.h:105, measured at first-rung 5.0), it takes no parent, and the word \"parent\" appears in no declaration of its AssetsLibrary.framework headers but a comment about parental controls. There is no list to put a collection in and no album to put one inside, so a collection list of this release is a list of the albums themselves and every member of this class -- creating one, deleting a list, adding a child collection -- has nothing to act on",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. A class whose every member would refuse with PHPhotosErrorChangeNotSupported is a name with no behaviour behind it, which is the shape the tree forbids; the port's own change requests for what this release CAN change are the asset and the album ones, in PHAssetChangeRequest and PHAssetCollectionChangeRequest, and they are implemented",
+      "source": "the header of iOS 16.4 for the declarations and for the release's own AssetsLibrary.h:105; tools/cache-index/first-rung.py for the first held rung of each name and of the release's album selector; grep over the 16.4 AssetsLibrary headers for the words the reason turns on; facts/Photos/Changes.md for what the port's library can and cannot make on this release"
     },
     {
       "api": "PHContentEditingInputCancelledKey",
@@ -57,9 +57,9 @@
       "introduced": "9.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "a live photo, of iOS 9.1; the claim is about the release: a live photo is a still image and a video carrying Apple's paired-media metadata, and the release's library has neither: the word \"live\" is in no header of its AssetsLibrary.framework, ALAssetsLibrary can add a photo and a video and has nothing that pairs them, and the first held rung that carries PHLivePhoto at all is 9.1, so no release this port builds for has anything that would recognise a pair this port made up",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. The port will not make one: a PHLivePhoto it handed out would be a pair of files Apple's own software does not read as one object, which is the fabricated answer the tree forbids",
+      "source": "the header of iOS 16.4 for the declarations and for the release's own AssetsLibrary.h:105; tools/cache-index/first-rung.py for the first held rung of each name and of the release's album selector; grep over the 16.4 AssetsLibrary headers for the words the reason turns on; facts/Photos/Changes.md for what the port's library can and cannot make on this release"
     },
     {
       "api": "PHLivePhotoInfoCancelledKey",
@@ -97,9 +97,9 @@
       "introduced": "9.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "the options of a live photo request, of iOS 9.1; the claim is about the release, and the request is the one above: a live photo is a still image and a video carrying Apple's paired-media metadata, and the release's library has neither: the word \"live\" is in no header of its AssetsLibrary.framework, ALAssetsLibrary can add a photo and a video and has nothing that pairs them, and the first held rung that carries PHLivePhoto at all is 9.1, so no release this port builds for has anything that would recognise a pair this port made up",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "source": "the header of iOS 16.4 for the declarations and for the release's own AssetsLibrary.h:105; tools/cache-index/first-rung.py for the first held rung of each name and of the release's album selector; grep over the 16.4 AssetsLibrary headers for the words the reason turns on; facts/Photos/Changes.md for what the port's library can and cannot make on this release"
     },
     {
       "api": "PHLivePhotoEditingContext",
@@ -107,9 +107,9 @@
       "introduced": "10",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "the editing context of a live photo, of iOS 10; the claim is about the release, and its input is a live photo: a live photo is a still image and a video carrying Apple's paired-media metadata, and the release's library has neither: the word \"live\" is in no header of its AssetsLibrary.framework, ALAssetsLibrary can add a photo and a video and has nothing that pairs them, and the first held rung that carries PHLivePhoto at all is 9.1, so no release this port builds for has anything that would recognise a pair this port made up",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. Its designated initialiser takes a PHContentEditingInput of a live photo, which is the class above",
+      "source": "the header of iOS 16.4 for the declarations and for the release's own AssetsLibrary.h:105; tools/cache-index/first-rung.py for the first held rung of each name and of the release's album selector; grep over the 16.4 AssetsLibrary headers for the words the reason turns on; facts/Photos/Changes.md for what the port's library can and cannot make on this release"
     },
     {
       "api": "PHLivePhotoFrame",
@@ -117,9 +117,9 @@
       "introduced": "10",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 10, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Photos"
+      "reason": "a frame of a live photo, of iOS 10; the claim is about the release, and the protocol's only member set is handed to a frame processor that runs over a live photo: a live photo is a still image and a video carrying Apple's paired-media metadata, and the release's library has neither: the word \"live\" is in no header of its AssetsLibrary.framework, ALAssetsLibrary can add a photo and a video and has nothing that pairs them, and the first held rung that carries PHLivePhoto at all is 9.1, so no release this port builds for has anything that would recognise a pair this port made up",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. Nothing conforms to it, and the port sends nothing through one",
+      "source": "the header of iOS 16.4 for the declarations and for the release's own AssetsLibrary.h:105; tools/cache-index/first-rung.py for the first held rung of each name and of the release's album selector; grep over the 16.4 AssetsLibrary headers for the words the reason turns on; facts/Photos/Changes.md for what the port's library can and cannot make on this release"
     },
     {
       "api": "PHLivePhotoShouldRenderAtPlaybackTime",
