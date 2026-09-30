@@ -36,6 +36,14 @@ typedef NSNumber *MPMediaEntityPersistentID;
 // The 9.0 command event's two types, and the base the port carries it over, so the check can compile
 // the port's own source for a class the release does not have.
 typedef NSUInteger MPChangeLanguageOptionSetting;
+// The 8.0 repeat and shuffle events' types, spelled with the cases MPRemoteControlTypes.h gives them:
+// MPRepeatTypeOff/One/All and MPShuffleTypeOff/Items/Collections, neither of which has an "unknown"
+// case, so a stand-in that added one would let the port's own source compile against a type the SDK does
+// not declare and the check would measure that instead of the port.
+typedef NSInteger MPRepeatType;
+enum { MPRepeatTypeOff = 0, MPRepeatTypeOne = 1, MPRepeatTypeAll = 2 };
+typedef NSInteger MPShuffleType;
+enum { MPShuffleTypeOff = 0, MPShuffleTypeItems = 1, MPShuffleTypeCollections = 2 };
 @interface MPNowPlayingInfoLanguageOption : NSObject
 @property (nonatomic, readonly) BOOL isAutomaticLegibleLanguageOption;
 @end

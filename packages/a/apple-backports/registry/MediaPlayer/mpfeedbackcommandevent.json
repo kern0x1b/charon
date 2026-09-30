@@ -1,0 +1,27 @@
+{
+ "framework": "MediaPlayer",
+ "entries": [
+  {
+   "api": "MPFeedbackCommandEvent",
+   "kind": "class",
+   "introduced": "7.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the release carries no command event class at all: read with tools/mach32_methods.py from the 6.1.3 armv7 cache, none of its 236 classes in the MediaPlayer image at 0x31fe3000 has a name holding CommandEvent and none of its 41 categories adds one, with a nonsense selector absent as the control; and all 236 were read and none declares this member's selector. That is a per-class answer, which is what decides a member: the release's whole-cache selector list (selectors_armv7.txt, 113981 distinct names) has a line for repeatType, shuffleType and isNegative because other frameworks declare those names, which is the trap facts/MediaPlayer/MPMediaItem.md:105 records for albumTrackNumber. A class the release does not have is new code and cannot shadow anything, so there is nothing native for it to be. This class is the public ancestor of four events the port already carries, so the chain a caller walks was missing a link Apple's own chain has",
+   "effect": "NSClassFromString answers the class and a port-built feedback event is an instance of it, so a caller who asks isKindOfClass: for it gets YES where it used to get NO on every event this port builds",
+   "facts": "facts/MediaPlayer/CommandEvents.md",
+   "source": "SDK 26.2, MPRemoteCommandEvent.h, MP_API(ios(7.1))"
+  },
+  {
+   "api": "MPFeedbackCommandEvent.isNegative",
+   "kind": "property",
+   "introduced": "7.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "source": "SDK 26.2, MPRemoteCommandEvent.h, MP_API(ios(7.1))",
+   "reason": "the release carries no command event class at all: read with tools/mach32_methods.py from the 6.1.3 armv7 cache, none of its 236 classes in the MediaPlayer image at 0x31fe3000 has a name holding CommandEvent and none of its 41 categories adds one, with a nonsense selector absent as the control; and all 236 were read and none declares this member's selector. That is a per-class answer, which is what decides a member: the release's whole-cache selector list (selectors_armv7.txt, 113981 distinct names) has a line for repeatType, shuffleType and isNegative because other frameworks declare those names, which is the trap facts/MediaPlayer/MPMediaItem.md:105 records for albumTrackNumber. A class the release does not have is new code and cannot shadow anything, so there is nothing native for it to be. The header writes getter = isNegative, so -isNegative is the selector and negative is not a selector on any platform; the port declares the accessor the header names and the row is named for it, as MPMediaItem.isCompilation is",
+   "effect": "NO is what a port-built event that set nothing answers, and it is the declared zero of BOOL; the accessor is readwrite in the port so the event can carry the feedback it is an event about, where the header has it readonly",
+   "facts": "facts/MediaPlayer/CommandEvents.md"
+  }
+ ]
+}
