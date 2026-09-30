@@ -2110,7 +2110,7 @@
       "status": "absent",
       "reason": "same @dynamic-but-unimplemented property as alwaysAvailable, for the same reason - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIButton.preferredMenuElementOrder",
@@ -2120,7 +2120,7 @@
       "status": "absent",
       "reason": "orders the elements of the menu a showsMenuAsPrimaryAction button presents; the port's own UIMenu/UIContextMenuInteraction backport (UIButton+Actions14.m) never reads an ordering preference - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarSelection",
@@ -2130,7 +2130,7 @@
       "status": "absent",
       "reason": "the base of a calendar view's selection behaviours; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarSelectionMultiDate",
@@ -2140,7 +2140,7 @@
       "status": "absent",
       "reason": "lets a calendar view select several dates; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarSelectionMultiDateDelegate",
@@ -2150,7 +2150,7 @@
       "status": "absent",
       "reason": "the delegate of a calendar view's multiple-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarSelectionSingleDate",
@@ -2160,7 +2160,7 @@
       "status": "absent",
       "reason": "lets a calendar view select one date; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarSelectionSingleDateDelegate",
@@ -2170,7 +2170,7 @@
       "status": "absent",
       "reason": "the delegate of a calendar view's single-date selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarView",
@@ -2180,7 +2180,7 @@
       "status": "absent",
       "reason": "a month calendar with decorations and selection; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarViewDecoration",
@@ -2190,7 +2190,7 @@
       "status": "absent",
       "reason": "a mark drawn under a date of a calendar view; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICalendarViewDelegate",
@@ -2200,7 +2200,7 @@
       "status": "absent",
       "reason": "the delegate asked for a calendar view's decorations; the release has no month calendar view, only UIDatePicker's wheels, and building a calendar grid with decorations and selection is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory) and the 16.0 cache carries no such name either, so the SDK's 16.0 is uncorroborated by the cache of that release"
+      "source": "SDK 16.4, UIKit; first-rung reads 18.0, so the 16.0 cache declares no such protocol and the SDK's own 16.0 is uncorroborated by the cache of that release; no release below 16.0 declares it either, and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICellAccessoryPopUpMenu",
@@ -2210,7 +2210,7 @@
       "status": "absent",
       "reason": "a list cell accessory that shows a menu of choices; the port lays out the other accessories itself (facts/UIKit/UICellAccessory.md) and shows a UIMenu as an action sheet (facts/UIKit/UIContextMenuInteraction.md), so the two could make this one - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UICollectionView.selfSizingInvalidation",
@@ -2220,7 +2220,7 @@
       "status": "absent",
       "reason": "lets a cell that changes its content resize itself in place; the port measures self-sizing cells on the steps of its layouts (packages/a/apple-backports/README.md, compositional layout), so a cell's invalidation could start a new measure - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIContextMenuConfiguration.badgeCount",
@@ -2230,7 +2230,7 @@
       "status": "absent",
       "reason": "the count shown on the stack of previews when several items are dragged into one menu; the port shows a context menu as an action sheet with no preview (facts/UIKit/UIContextMenuInteraction.md), so there is no stack to badge",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIContextMenuConfiguration.preferredMenuElementOrder",
