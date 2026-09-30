@@ -17,8 +17,8 @@ import os
 import re
 import sys
 
-# The sweep's file, found beside the repository rather than written down: a home path in a tracked file is
-# refused by the commit hook, and rightly - the tool moves with the machine.
+# The sweep's file, found beside the repository rather than written down: a home path in a tracked file
+# is refused by the commit hook, and rightly - the tool moves with the machine.
 SWEEP = os.environ.get("SWEEP_TSV") or os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
         os.path.dirname(os.path.abspath(__file__))))),
