@@ -208,7 +208,13 @@ method is not there rather than finding it in the corpus and wondering:
   macos(15.0), visionos(2.0))` on each of those three typedefs and on the class `HKStateOfMind` itself,
   and `first-rung.py` puts the first held rung carrying any of the four selectors at 18.0. A row whose
   `introduced` field says 8.0 while its own reason says the method is not 8.0's is a row that cannot be
-  read — the field and the sentence have to agree, and the field is the one a reader trusts.
+  read — the field and the sentence have to agree, and the field is the one a reader trusts. Each of the
+  four rows says so in its `source` too: `sdk-26.2-surface.tsv`, the registry's own source, reads these
+  four with `via=class-floor` and 8.0 **because the header annotates neither the method nor the
+  category**, so what that file holds for them is a derived default and not the SDK's declaration. Where
+  the surface file reads `via=own`, as it does for
+  `-[HKWorkoutSessionDelegate workoutSession:didGenerateEvent:]`, it is the SDK's declaration and the row
+  follows it.
 
 **A word about the effect of an `-init` row, because it is the same word in every library's copy of
 this page.** `respondsToSelector:` does **not** answer NO for the `-init` of one of these classes: it
@@ -497,18 +503,21 @@ running total, and the series' own sum - which is what the read has to preserve.
 
 ## The one workout-session delegate member, and the two annotations it sits between
 
-`-[HKWorkoutSessionDelegate workoutSession:didGenerateEvent:]` is the only row of this framework that is
-of a release this port carries no object of, and it was filed in the 10.0 group. Both numbers are in
-the headers and they disagree, so both are written down:
+`-[HKWorkoutSessionDelegate workoutSession:didGenerateEvent:]` is the only row of this framework whose
+release this port carries no object of, and it was filed in the 10.0 group on a date of 17.0. Both
+numbers are in the headers, they are different questions, and the row now answers each with the one
+that owns it:
 
 - the **member** carries `API_AVAILABLE(ios(10.0), watchos(3.0))` — `HKWorkoutSession.h:325` of iOS 26.2
-  and `HKWorkoutSession.h:266` of iOS 16.4 — so the row's old reason, that the header leaves the member
-  unannotated and the corpus gave it the version of the class it sits in, was wrong about the header.
-  10.0 is the annotation Apple's own header carries, and watchOS 3.0 is what shipped beside iOS 10.
+  and `HKWorkoutSession.h:266` of iOS 16.4 — and `coordination/corpus/sdk-26.2-surface.tsv`, the
+  registry's own source, reads the member with `via=own` and 10.0. So `introduced` says **10.0**: that is
+  the version of the member, and the row's old reason, that the header leaves the member unannotated and
+  the corpus gave it the version of the class it sits in, was wrong about the header.
 - the **protocol** carries `API_AVAILABLE(ios(17.0), watchos(2.0))` above `@protocol
   HKWorkoutSessionDelegate` in iOS 26.2, and the iOS 16.4 header this library is compiled against writes
   `API_AVAILABLE(watchos(2.0)) API_UNAVAILABLE(ios)` above the same protocol. So on iOS the protocol
-  arrived at 17.0, and in the SDK this port builds against it is not iOS API at all.
+  arrived at 17.0, and in the SDK this port builds against it is not iOS API at all. That is the
+  release a caller could first conform at, and it belongs in the reason rather than in the version.
 - nothing hands a session over on iOS before that either: `-[HKHealthStore startWorkoutSession:]` is
   `API_UNAVAILABLE(ios)` in both SDKs. The class itself is made on iOS 17 by
   `-initWithHealthStore:configuration:error:`, which is the one initialiser of `HKWorkoutSession` the
@@ -517,14 +526,13 @@ the headers and they disagree, so both are written down:
   present and not the method being iOS API — the same distinction the four workout-session methods of
   `HKHealthStore` above turn on.
 
-The row keeps `introduced: 17.0`, because that is the first iOS release on which a caller could conform
-to the protocol and be sent this, and it keeps `absent` for a measured reason rather than a wait: this
-port has no 17.0 group and no object of that release, so nothing in the library conforms to
-`HKWorkoutSessionDelegate` and nothing can hand a delegate the session the method is called with.
-Carrying the protocol with one optional member and nothing that ever sends it would be a declaration
-wearing an implementation's clothes, and the tree has a name for the claim that would hide it —
-`owed`, which is not a landing state. What a 17.0 group would have to bring with the member is written
-down above: the class, the four other delegate callbacks, the state machine of `-prepare`,
+The row keeps `absent` for a measured reason rather than a wait: this port has no group of 17.0 and no
+object of that release, so nothing in the library conforms to `HKWorkoutSessionDelegate` and nothing can
+hand a delegate the session the method is called with. Carrying the protocol with one optional member
+and nothing that ever sends it would be a declaration wearing an implementation's clothes, and the tree
+has a name for the claim that would hide it — `owed`, which is not a landing state. What a 17.0 group
+would have to bring with the member is written down above: the class, the four other delegate callbacks,
+the state machine of `-prepare`,
 `-startActivityWithDate:`, `-stopActivityWithDate:`, `-pause`, `-resume` and `-end`, and a source of
 workout events to deliver, which on this release there is none of.
 
