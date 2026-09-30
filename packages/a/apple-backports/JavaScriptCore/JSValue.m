@@ -951,19 +951,26 @@ static JSValueRef NamedProperty(JSContextRef ctx, JSObjectRef object, const char
 }
 
 /*
- * As the release with promises does it: the promise exists before the executor runs, the executor
- * is called as a callback whose this is the promise and whose arguments are its resolving
- * functions, and an exception it sets on the context rejects the promise instead of reaching the
- * exception handler.
+ * The promise and the two functions that settle it, which +valueWithNewPromiseInContext:fromExecutor:
+ * below runs its callback against and JSObjectMakeDeferredPromise hands back: the context's own
+ * constructor, an executor that captures the resolving functions, and the promise. NULL when the
+ * constructor could not be made or the capture came back empty, with *outException left where the
+ * caller reads it - nothing is reported here, because the two callers report it their own way.
+ *
+ * A call that has entered (charon_js_enter, which is what a job queue waits for before it may run)
+ * leaves it entered when it hands a promise back, and the caller leaves it once it is done with it:
+ * a job queued by a caller's own callback may not run while that callback's script is still on the
+ * stack. Both failure paths below leave it themselves, so a caller that gets NULL must not.
  */
-+ (JSValue *)valueWithNewPromiseInContext:(JSContext *)context fromExecutor:(void (^)(JSValue *resolve, JSValue *reject))callback
+static JSObjectRef DeferredPromise(JSContext *context, JSObjectRef *outResolve, JSObjectRef *outReject, JSValueRef *outException)
 {
     JSGlobalContextRef ctx = context.JSGlobalContextRef;
     charon_js_enter();
     JSObjectRef constructor = PromiseConstructor(context);
     if (!constructor) {
         charon_js_leave();
-        return [JSValue valueWithUndefinedInContext:context];
+        *outException = NULL;
+        return NULL;
     }
     CharonPromiseCapture capture = {NULL, NULL};
     JSObjectRef executor = JSObjectMake(ctx, CaptureClass(), &capture);
@@ -971,23 +978,46 @@ static JSValueRef NamedProperty(JSContextRef ctx, JSObjectRef object, const char
     JSValueRef exception = NULL;
     JSObjectRef promise = JSObjectCallAsConstructor(ctx, constructor, 1, &argument, &exception);
     JSObjectSetPrivate(executor, NULL);
+    *outResolve = NULL;
+    *outReject = NULL;
     if (exception || !promise || !capture.resolve || !capture.reject) {
-        JSValue *thrown = exception ? [JSValue charon_valueWithJSValueRef:exception context:context] : nil;
         charon_js_leave();
+        *outException = exception;
+        return NULL;
+    }
+    *outResolve = capture.resolve;
+    *outReject = capture.reject;
+    *outException = NULL;
+    return promise;
+}
+
+/*
+ * As the release with promises does it: the promise exists before the executor runs, the executor
+ * is called as a callback whose this is the promise and whose arguments are its resolving
+ * functions, and an exception it sets on the context rejects the promise instead of reaching the
+ * exception handler.
+ */
++ (JSValue *)valueWithNewPromiseInContext:(JSContext *)context fromExecutor:(void (^)(JSValue *resolve, JSValue *reject))callback
+{
+    JSObjectRef resolve = NULL, reject = NULL;
+    JSValueRef exception = NULL;
+    JSObjectRef promise = DeferredPromise(context, &resolve, &reject, &exception);
+    if (!promise) {
+        JSValue *thrown = exception ? [JSValue charon_valueWithJSValueRef:exception context:context] : nil;
         [context charon_noteException:thrown.JSValueRef];
         return [JSValue valueWithUndefinedInContext:context];
     }
     JSValue *result = [JSValue charon_valueWithJSValueRef:promise context:context];
-    JSValue *resolve = [JSValue charon_valueWithJSValueRef:capture.resolve context:context];
-    JSValue *reject = [JSValue charon_valueWithJSValueRef:capture.reject context:context];
     if (callback) {
+        JSValue *resolveFunction = [JSValue charon_valueWithJSValueRef:resolve context:context];
+        JSValue *rejectFunction = [JSValue charon_valueWithJSValueRef:reject context:context];
         /* The frame holds its arguments unretained; this local keeps them for the call. */
-        NSArray<JSValue *> *arguments = @[resolve, reject];
+        NSArray<JSValue *> *arguments = @[resolveFunction, rejectFunction];
         charon_js_push_callback(context, result, nil, arguments);
-        callback(resolve, reject);
+        callback(resolveFunction, rejectFunction);
         JSValue *thrown = charon_js_pop_callback();
         if (thrown)
-            [reject callWithArguments:@[thrown]];
+            [rejectFunction callWithArguments:@[thrown]];
     }
     charon_js_leave();
     return result;
@@ -1034,6 +1064,41 @@ static JSValueRef NamedProperty(JSContextRef ctx, JSObjectRef object, const char
 - (BOOL)isSymbol
 {
     return NO;
+}
+
+/*
+ * JSObjectMakeDeferredPromise (JSObjectRef.cpp:279) is this same promise: one made in `context`, with
+ * the two functions that settle it handed back for the caller to call later. The 2012 engine has no
+ * promise of its own - JSC::Promise is 0 among the JSC:: symbols the 6.1.3 cache carries - so this is
+ * the port's own ES5 promise, the one +[JSValue valueWithNewPromiseInContext:fromExecutor:] builds and
+ * the one DeferredPromise above makes: nothing here is built twice. The difference from a release
+ * with a native promise is the one that row already records - its reactions run from the job queue in
+ * JSInternal.m when the outermost call into script returns, and on the next run loop turn for a
+ * caller no call is inside, where a native promise drains the microtask queue at the end of the call
+ * that queued the job. NULL and an exception in *exception when the promise could not be made, which
+ * is what the function's own contract says.
+ */
+JSObjectRef JSObjectMakeDeferredPromise(JSContextRef context, JSObjectRef *resolve, JSObjectRef *reject, JSValueRef *exception)
+{
+    if (resolve)
+        *resolve = NULL;
+    if (reject)
+        *reject = NULL;
+    if (exception)
+        *exception = NULL;
+    JSValueRef thrown = NULL;
+    if (!context)
+        return NULL;
+    JSObjectRef promise = DeferredPromise([JSContext charon_wrapperForGlobalContext:context create:YES], resolve, reject, &thrown);
+    if (!promise) {
+        if (exception)
+            *exception = thrown;
+        return NULL;
+    }
+    if (exception)
+        *exception = NULL;
+    charon_js_leave();
+    return promise;
 }
 
 @end

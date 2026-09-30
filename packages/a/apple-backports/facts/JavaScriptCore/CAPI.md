@@ -85,25 +85,85 @@ The same sentence is what `facts/JavaScriptCore/JSContext.md` already carries fo
 `+[JSValue valueWithNewSymbolFromDescription:inContext:]`: the context is told a TypeError and the answer
 is undefined, rather than a string or an object standing in for a symbol, because a string standing in
 for a symbol is a different value that claims to be the same one.
+## The eight the release's engine can answer, carried
 
-## The other thirteen, and what each of them is
+`registry/JavaScriptCore/capi.json` holds the twelve rows this section is about; the eight that answer
+something are built in `JavaScriptCore/JSCAPI.m` and the one that returns a promise is built with the
+promise it returns, in `JavaScript.m`'s own file (`JSValue.m`, `DeferredPromise`). Each is asked
+directly by `tests/backports/host/jscontext/checks.m`, which is a differential: the same file runs
+first against the host's own JavaScriptCore, which is the oracle, then against the backport linked over
+the host's C API. **Both sides answer 177 of 177**, and the blocks-and-structs matrix is 351 lines
+identical on the two.
 
-The thirteen decided in this commit are decided by a value the release's engine cannot hold. The other
-thirteen of the twenty-six are not, and the table is what each of them is in the source that defines it,
-against the primitive the release's own export table does carry. They are carried by the next commit of
-this series, with the code, and this file is rewritten there to say what each one answers.
-
-| row | what the function is | the primitive the release carries |
+| row | what it answers | what it is built on |
 | --- | --- | --- |
-| `JSValueIsArray()` | `toJS(globalObject, value).inherits<JSArray>()` (JSValueRef.cpp:205) | the engine's own `Array.isArray`, which is the same test, and `charon_js_is_array` already asks it of the virtual machine's own context for `-isArray` |
-| `JSValueIsDate()` | `inherits<DateInstance>()` (JSValueRef.cpp:217) | `Object.prototype.toString`'s `[[Class]]`, already asked by `charon_js_is_date` for `-isDate` |
-| `JSValueIsSymbol()` | `toJS(value).isSymbol()` (JSValueRef.cpp:175) | nothing: no value of this engine is a symbol, so the answer for every value it holds is false |
-| `JSObjectGetPropertyForKey()`, `JSObjectSetPropertyForKey()`, `JSObjectHasPropertyForKey()`, `JSObjectDeletePropertyForKey()` | `toJS(globalObject, key).toPropertyKey(globalObject)`, then the same `get`, `put`, `hasProperty` and `deleteProperty` (JSObjectRef.cpp:394-490) | `JSObjectGetProperty`, `JSObjectSetProperty`, `JSObjectHasProperty` and `JSObjectDeleteProperty`, all exported since 3.0 |
-| `JSGlobalContextSetName()`, `JSGlobalContextCopyName()` | `globalObject->setName(name->string())` and `name()` (JSContextRef.cpp:223-250) | the name `-[JSContext setName:]` already keeps |
-| `JSGlobalContextSetInspectable()`, `JSGlobalContextIsInspectable()` | `globalObject->setInspectable(bool)` and `inspectable()` (JSContextRef.cpp:255-282) | the flag `-[JSContext setInspectable:]` already stores |
-| `JSObjectMakeDeferredPromise()` | a promise and its resolving functions (JSObjectRef.cpp:279) | the promise `+[JSValue valueWithNewPromiseInContext:fromExecutor:]` already builds for that context - the same object, not a second one |
+| `JSValueIsArray()` | whether a value is an array by class | `charon_js_is_array`, the helper `-isArray` already answers through |
+| `JSValueIsDate()` | whether a value is a Date by class | `charon_js_is_date`, likewise |
+| `JSValueIsSymbol()` | false, for every value of an engine with no symbols | the measurement above |
+| `JSObjectGetPropertyForKey()` | reads the property a value key names | `JSValueToStringCopy` for the key, the release's own `JSObjectGetProperty` for the read |
+| `JSObjectSetPropertyForKey()` | writes it | the release's own `JSObjectSetProperty` |
+| `JSObjectHasPropertyForKey()` | whether it is there | the release's own `JSObjectHasProperty` |
+| `JSObjectDeletePropertyForKey()` | removes it, and answers true for a property that is not there (ES5 8.12.9) | the release's own `JSObjectDeleteProperty` |
+| `JSObjectMakeDeferredPromise()` | a promise and the two functions that settle it | the port's own ES5 promise, the same one `+[JSValue valueWithNewPromiseInContext:fromExecutor:]` hands out |
 
-Two of these cannot be compared with a host at all, and the fact is stated here rather than discovered
-later: `JSGlobalContextSetInspectable` and `JSGlobalContextIsInspectable` are `API_AVAILABLE(macos(NA))`
-in the SDK, so macOS's own JavaScriptCore does not carry them and no oracle for them exists on this
-machine.
+ToPropertyKey, which the four `ForKey` rows are named for, is ToString for every value this engine can
+hold: a string key is itself, a number key is its own string (so it indexes an array), a boolean key is
+`"true"`, and an object key runs its own `toString` and can throw - in which case the exception is the
+answer, the call answers NULL or false, and nothing is read, written or deleted. A key of the *symbol*
+type is the one answer ToPropertyKey gives that ToString does not, and it cannot arise.
+
+### What the two engines answer differently, and what is only measured
+
+- **The attributes of a set are kept by neither engine.** `JSObjectSetPropertyForKey` with
+  `kJSPropertyAttributeReadOnly` leaves the property writable on the host's engine and on this one: the
+  release's engine keeps no attribute on an object it lays out itself, which `JSValue.m` already names
+  from the iPad 2, and the host's own does not either, measured in the same run. So the row promises no
+  attribute rather than promising one that arrives.
+- **A reaction runs on the next run loop turn here and as the call returns there.** A promise the C API
+  resolves runs its reaction on the next run loop turn of the port, because the port's job queue has no
+  leave of its own to run at when a C client makes the call itself - the same sentence
+  `+[JSValue valueWithNewPromiseInContext:fromExecutor:]` carries. The host drains its microtask queue as
+  the outermost call into script returns.
+- **A rejection through the C API leaves its reaction unrun, on both engines.** Measured in the same run
+  and asserted on neither: a promise, a `then`, a `reject` answered with a value and no exception, and
+  the reason still unread after a script entry and a run loop turn - the host's own engine exactly as
+  the backport does. The port's own promise does carry a rejection to a reaction when one is made from
+  Objective-C (`checks.m`'s `CheckPromises`, which passes on both sides); this is the arrangement
+  neither engine runs, and asserting the host's answer would be asserting a measurement.
+- **The exception out-parameter the SDK's signature of three of the four property functions carries** is
+  passed straight through, so a getter or setter that throws leaves it where the caller reads it. Every
+  other call of these four in this package already passes the SDK's arity with NULL there -
+  `JSValue.m`'s `NamedProperty`, every property read of `JSExportBridge.m` - and answers correctly on a
+  6.1.3 device (`facts/JavaScriptCore/JSContext.md`, 151 of 151 on an iPad 2), so a release whose own
+  function takes no such argument is reading none of it.
+
+## The four that are carried inert
+
+`JSGlobalContextSetName`, `JSGlobalContextCopyName`, `JSGlobalContextSetInspectable` and
+`JSGlobalContextIsInspectable` are a Web Inspector's two fields for a context: the name it lists the
+context under, and whether it may attach. This port carries no Web Inspector - no protocol here that
+could be attached - so nothing on it reads either. They are carried rather than absent because the
+answer this port can give is the answer a release with no inspector gives, and a client that weak-links
+the symbol is answered instead of left to call through NULL; each says so once in the log the first time
+an application reaches it, which is what an inert row is.
+
+They are **not bridged** to `-[JSContext setName:]` and `-[JSContext setInspectable:]`, which keep their
+own value in the wrapper, and that is stated rather than left to be found. The wrapper registry holds
+its values weakly by design, so a store a C client could reach would have to outlive the wrapper and die
+with the context; the only such store the release has is a `JSWeakObjectMap`, and it holds JavaScript
+values rather than a name. The two APIs were measured not to agree on the host either: Apple's
+`JSGlobalContextSetName` writes the global object's own `name()` (JSContextRef.cpp:241), which is the
+inspector's field, and not the wrapper's.
+
+Two of the four cannot be compared with a host at all: `JSGlobalContextSetInspectable` and
+`JSGlobalContextIsInspectable` are `API_AVAILABLE(macos(NA))` in the SDK, so macOS's own JavaScriptCore
+does not carry them and no oracle for them exists on this machine. Their contract is the header's own
+round trip - a flag read back what was set - and neither the fact nor the effect claims more than that.
+
+## The API of exactly one release
+
+Every one of the twenty-six rows is `minimum: 6.0`, and the objects are one release each:
+`JSCAPI.m` exports eight symbols the release has none of and `JSValue.m` the ninth beside the promise it
+returns, so neither file is claimed from a band that already carries its exports. The four `ForKey` rows
+are four names of one release (iOS 13.0) and the thirteen typed-array rows thirteen names of another
+(10.0), and a protocol conformance is not a split - nothing here conforms to a protocol.

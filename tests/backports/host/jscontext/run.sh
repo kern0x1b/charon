@@ -20,7 +20,7 @@ for name in JSContext JSValue JSManagedValue JSVirtualMachine; do
     renames="$renames -D$name=CharonHost$name"
 done
 objects=""
-for source in JSInternal JSVirtualMachine JSContext JSValue JSManagedValue JSExportBridge; do
+for source in JSInternal JSVirtualMachine JSContext JSValue JSManagedValue JSExportBridge JSCAPI; do
     xcrun clang -fobjc-arc -w $renames -I"$port" -c "$port/$source.m" -o "$out/$source.o"
     objects="$objects $out/$source.o"
 done

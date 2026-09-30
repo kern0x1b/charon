@@ -2,46 +2,6 @@
   "framework": "JavaScriptCore",
   "entries": [
     {
-      "api": "JSGlobalContextCopyName()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSGlobalContextSetName()",
-      "kind": "function",
-      "introduced": "8.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSValueIsArray()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSValueIsDate()",
-      "kind": "function",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 9, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
       "api": "JSObjectGetArrayBufferByteLength()",
       "kind": "function",
       "introduced": "10.0",
@@ -172,94 +132,14 @@
       "source": "SDK 16.4 JSTypedArray.h for the contract and the ios(10.0) of each; tools/cache-index/first-rung.py on the 50 held rungs for presence; the 6.1.3 armv7 cache's own symbol table for the engine; coordination/corpus/caches/6.0.tsv for what that engine does export"
     },
     {
-      "api": "JSObjectDeletePropertyForKey()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSObjectGetPropertyForKey()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSObjectHasPropertyForKey()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSObjectMakeDeferredPromise()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSObjectSetPropertyForKey()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSValueIsSymbol()",
-      "kind": "function",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
       "api": "JSValueMakeSymbol()",
       "kind": "function",
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSGlobalContextIsInspectable()",
-      "kind": "function",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
-    },
-    {
-      "api": "JSGlobalContextSetInspectable()",
-      "kind": "function",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, JavaScriptCore"
+      "reason": "a symbol is a value of the engine, not a function this port could wrap, and the release's engine has none: JSC::Symbol is 0 among the 300 JSC:: symbols the 6.1.3 cache's own symbol table carries, and no held release before 16.0 exports the function (tools/cache-index/first-rung.py answers 16.0 for _JSValueMakeSymbol, the oldest held rung carrying it). Its sibling JSValueIsSymbol() is carried and answers false, which is how a client finds out before it calls this one; facts/JavaScriptCore/CAPI.md",
+      "effect": "the function is not there: a weak reference to it is NULL. Nothing on this release is a symbol, so there is no value to make and a string or an object standing in for one would be a different value claiming to be the same",
+      "source": "SDK 16.4 JSValueRef.h for the contract; tools/cache-index/first-rung.py on the 50 held rungs for presence; the 6.1.3 armv7 cache's own symbol table for the engine"
     }
   ]
 }
