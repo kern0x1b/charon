@@ -153,6 +153,32 @@ Each entry: wrong pattern → right pattern → the mechanical reason.
   `Foundation/NSBundle+ReceiptURL.m` does. Reason: `+load` runs before `attach.c`'s constructor
   attaches `__DATA,__charon_catlist`, and the registry check counts only selectors categories add.
 
+- **`git format-patch --no-walk` takes SHAs, not a range.** Wrong:
+  `git format-patch --no-walk 716270c33..HEAD`, which makes git treat the whole `A..B` string as one
+  literal revision: it writes a 0-byte file, and `git am` then fails with "Patch format detection
+  failed" — measured on 2026-09-30, twice, by two different workers. Right: pass the SHAs as
+  separate arguments (`git format-patch --no-walk <sha1> <sha2> …`), or let the range walk itself
+  (`git format-patch 716270c33..HEAD -o <dir>`), or `-1 HEAD~1..HEAD` for one commit. Check the
+  byte size of every patch you wrote: a headerless or 0-byte file is this mistake, not a tool bug.
+
+- **A shared registry file is edited by rows, never rewritten.** Wrong: an export whose diff on
+  `packages/a/apple-backports/registry/**` touches hundreds of lines because the file was
+  re-indented — 711 insertions against 708 deletions, 51/51, and 5488 of "differing" lines that
+  differ only in one leading space, all measured on 2026-09-30 in three different families. Right:
+  take the base revision of the file verbatim and re-apply only the row values that change, so the
+  diff is those rows and nothing else. Reason: a shared file a patch rewrites merges today only
+  while nobody else has opened it, so the series is one commit away from a conflict it did not
+  cause, and the noise hides the real edit from every reader and from the review.
+
+- **A seam the port owns still needs a registry row.** Wrong: adding a helper the test reads
+  through a library class — `-[UIPasteboard charonRecordOptions:]` — and calling it "not API, it
+  carries no release", which is what a reviewer's verdict said. Right: register it, in the shape the
+  tree already uses for exactly this: `registry/MetalPerformanceShadersGraph/graph.json` carries 13
+  `charon_` rows, all `implemented`, each saying no SDK header declares the name. Reason: the
+  registry check asks what is built and found no entry, and it is right — the 6.1.3 gate failed on
+  that line. The alternative, moving the seam onto C functions, means teaching the check about an
+  exception, which is the same weakening in another shape.
+
 - **A C function shared between backport files.** Wrong: calling from one file a C function defined
   in a file that implements a class or exports an API symbol. Right: define it in a file that exports
   no API symbol of its own, as `packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m`
