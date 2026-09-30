@@ -73,3 +73,26 @@ The measurements that are easy to get wrong, all from the host:
     CKRecord and CKRecordZone do not override isEqual: - two records of one type are different, a
     copy is a different object carrying the same fields, and +[CKRecordZone defaultRecordZone] is one
     shared object. CKRecordID, CKRecordZoneID and CKReference compare by value.
+
+## The two names the sweep lists that nothing in the pile ever carried
+
+`CKFetchWebAuthTokenOperation` and `CKShareRequestAccessOperation` are on the sweep's list of 72
+CloudKit API names main lacks, and they are the two this series does not carry. They are **owed, and
+deliberately absent from the registry rather than filed as `absent`**, because the owner's rule is that
+`absent` is only for hardware the device physically lacks and these are two more operations that need an
+iCloud account to reach the network.
+
+What is true about them here, measured rather than assumed: no commit in the bundle from which this
+series was rebuilt declares either class or implements it.
+
+    $ for n in CKFetchWebAuthTokenOperation CKShareRequestAccessOperation; do
+        git log --format=%H --all -- packages/a/apple-backports/CloudKit | while read s; do
+          git grep -l "@implementation $n" $s -- packages/a/apple-backports/CloudKit && break; done
+      done
+      no @implementation in any reachable commit   (both names)
+
+So there is nothing to replay: the header does not declare them, no source defines them, and a row that
+said `implemented` would be a claim about code that is not in the tree - the defect the gate refused the
+value half for and the reviewer refused it for. They are this series' first two **owed** CloudKit names,
+and carrying them is the same work as the engine's: a configuration over the transport, a local state, and
+the transport's own refusal in `CKErrorDomain` for the one request each would make.
