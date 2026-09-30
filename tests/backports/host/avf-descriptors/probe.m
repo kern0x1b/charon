@@ -224,6 +224,13 @@ int main(void)
             // through the members - also ~, because the host's own factory is unavailable here.
             Class criteriaClass = lookup("AVPlayerMediaSelectionCriteria");
             SEL factory = NSSelectorFromString(@"preferredMediaSelectionCriteriaWithPreferredLanguages:preferredMediaCharacteristics:");
+            // The HOST's capability, asked of the unprefixed name: in the host build lookup() returns that
+            // class, in the port build it returns the port's renamed one, and the port's answers this
+            // factory while the host's may not. Deciding the marker from the per-build lookup would let the
+            // PORT write it, and a row the join then skips before comparing is a row where a mutation of
+            // the port is invisible -- which is the hole this was written to close.
+            Class hostCriteria = NSClassFromString(@"AVPlayerMediaSelectionCriteria");
+            BOOL hostCanBuild = hostCriteria && classMethodAnswers(hostCriteria, factory);
             if (criteriaClass && classMethodAnswers(criteriaClass, factory)) {
                 id made = ((id (*)(id, SEL, id, id))objc_msgSend)(criteriaClass, factory,
                                                                     (@[@"en"]), (@[@"public.audio"]));
@@ -234,16 +241,23 @@ int main(void)
                         answersSelector(made, out)
                             ? ((id (*)(id, SEL))objc_msgSend)(made, out) : nil);
                 }
-            } else {
-                // This host has no criteria factory, so the scenario these two rows name DID NOT HAPPEN
-                // here. The stored baseline holds what a host WITH the factory answered, and comparing
-                // this against that is a statement about two different hosts, not about the port: it
-                // reads as a difference while the port is doing nothing wrong. So the row says the
-                // scenario was inapplicable and is marked, not baselined away -- if a host regains the
-                // factory the row goes back to reading the real oracle, and the marker is then a lie the
-                // probe will not tell.
+            } else if (!hostCanBuild) {
+                // The marker is the HOST's to write, and only when the HOST's own class really lacks the
+                // factory -- measured above, on the unprefixed name, which is always the framework's. The
+                // port's class answers this factory: it is the 12.0 initializer this port carries, so on
+                // the port side the row is the port's OWN answer and is compared with the port's baseline
+                // like any other. Writing the marker for the port would throw that comparison away.
+                //
+                // The scenario these rows name did not happen on this host, and the stored baseline holds
+                // what a host WITH the factory answered, so comparing the two is a statement about two
+                // hosts rather than about the port. The row says so and is marked, not baselined away.
                 row("~VALUES criteria preferredLanguages after the factory", NOT_ON_THIS_HOST);
                 row("~VALUES criteria preferredMediaCharacteristics after the factory", NOT_ON_THIS_HOST);
+            } else {
+                // Measured the other way round and a real difference, not an inapplicable scenario: the
+                // host CAN build this and the port cannot. That is the port's answer and it is named.
+                row("~VALUES criteria preferredLanguages after the factory", @"(the port has no such factory)");
+                row("~VALUES criteria preferredMediaCharacteristics after the factory", @"(the port has no such factory)");
             }
         }
 

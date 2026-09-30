@@ -69,6 +69,22 @@ if before not in text:
     raise SystemExit("the control did not apply, so this run proves nothing")
 open(path, 'w').write(text.replace(before, '- (AVAsset *)this is not C at all'))
 PERTURB
+    elif [ "$mutant" = criteria ]; then
+        # Aimed at a MARKER row, because the hole this fixes was there: the criteria factory is the one
+        # scenario the host cannot run here, so its rows carry the marker, and a join that skipped them
+        # before comparing hid the port. The plant is in the port's own getter for what it STORES, so the
+        # row's value moves and nothing else does.
+        python3 - "$build/src/AVPlayerMediaSelectionCriteria7.m" <<'PERTURB'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+before = 'return objc_getAssociatedObject(self, "charon.avf.criteria.preferredLanguages") ?: @[];'
+after = 'return [self.charon_preferredLanguages count] ? @[@"PLANTED"] : @[];'
+if text.count(before) != 1:
+    raise SystemExit("the mutant target is not unique (%d matches), so this run proves nothing" % text.count(before))
+open(path, "w").write(text.replace(before, after))
+print("# the mutation applied: the port's own stored languages, and the row the marker sits on")
+PERTURB
     else
         # The mutation is on the ISO the port STORES, not on the number the probe passes: 400 lives in
         # the probe's call site and the source never sees it, so a mutation aimed there would change
@@ -250,9 +266,19 @@ for k in set(host) | set(port):
     # so it is held against the port's own unmutated baseline. So is any row either side answers
     # NO_ORACLE for - the class exists and the framework is the oracle, but this instance is a
     # forwarding object, so there is nothing here to read. A ~ row must NEVER read the host side.
-    if NOT_ON_THIS_HOST in ((hv or "") + (pv or "")):
+    # Tested on the HOST side ALONE, and the branch still compares the port. The marker is the host's:
+    # it says the scenario could not happen here, which makes the host-vs-port claim unavailable and
+    # nothing else. A `continue` before the pv == bv test is what made a mutation of the port's own value
+    # on such a row invisible, and the comment on the allowed branch below already says why that is
+    # wrong -- an exemption is about WHAT may differ, not about whether the port's answer is watched.
+    if NOT_ON_THIS_HOST in (hv or ""):
         inapplicable += 1
-        say("INAPPLICABLE %-64s the scenario this row names did not happen on this host\n" % k)
+        say("INAPPLICABLE %-64s the scenario did not happen on this host; the port's value is still"
+            " compared with its baseline\n" % k)
+        if bv is not None and pv == bv:
+            continue
+        say("PORT-ONLY  %-70s port=[%s] baseline=[%s] host=[%s]\n" % (k, pv, bv, hv))
+        differs += 1
         continue
     if k.startswith("~") or NO_ORACLE in ((hv or "") + (pv or "")):
         portonly += 1
