@@ -728,7 +728,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:14, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"SignalSaturation\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
@@ -739,7 +739,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:15, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"UnreliableNoise\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageBackgroundSystem",
@@ -750,7 +750,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:242, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"BackgroundSystem\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageDeepBreathing",
@@ -761,7 +761,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:223, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"DeepBreathing\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
@@ -772,7 +772,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:232, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"ForegroundBloodOxygen\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
@@ -783,7 +783,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRPhotoplethysmogramSample.h:213, so no header this package builds against spells a value, and its value is the SUFFIX of its own name and not the name, which is exactly why it could not be carried before. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"ForegroundHeartRate\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorAccelerometer",
@@ -804,7 +804,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:345, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.hearing.acousticSettings\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit260.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit260.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorAmbientLightSensor",
@@ -825,7 +825,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:230, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.ambientPressure\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit154.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit154.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorDeviceUsageReport",
@@ -846,7 +846,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:320, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.ECG\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorFaceMetrics",
@@ -857,7 +857,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:295, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.faceMetrics\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorHeartRate",
@@ -868,7 +868,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:276, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.heart.rate\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorKeyboardMetrics",
@@ -889,7 +889,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:246, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.mediaEvents\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(16.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit164.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(16.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit164.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorMessagesUsageReport",
@@ -910,7 +910,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:307, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.odometer\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorOnWristState",
@@ -951,7 +951,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:332, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.PPG\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorRotationRate",
@@ -972,7 +972,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:194, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.speechMetrics.siri\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit150.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit150.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorSleepSessions",
@@ -983,7 +983,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:357, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.sleep.sessions\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit260.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit260.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorTelephonySpeechMetrics",
@@ -994,7 +994,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:213, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.speechMetrics.telephony\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit150.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit150.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorVisits",
@@ -1015,7 +1015,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:265, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.wristTemperature\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value, measured by tests/backports/host/sensorkit-names; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
     },
     {
       "api": "SRAbsoluteTimeFromCFAbsoluteTime()",
@@ -1296,10 +1296,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a category on NSString at SRSensors+SRDeletionRecord.h:15. The row was absent because \"the port adds no category to a Foundation class\", which this folder contradicts - NSDate+SensorKit14.m is one - and because it would have to read a record's sensor, which it does not: it is a string-to-string mapping the host's own framework answers",
-      "effect": "the receiver with \".tombstones\" appended, or NIL when it already ends in it - measured over 58 inputs, where \"\" answers \".tombstones\" and \"hello\" answers \"hello.tombstones\". The nil is why the header declares the return nullable: a record's own name would name a sensor that collects nothing. Not a device measurement; no device has been asked and the guest run is owed.",
+      "reason": "a category on NSString at SRSensors+SRDeletionRecord.h:15. It was absent because \"the port adds no category to a Foundation class\", which this folder contradicts - NSDate+SensorKit14.m is one - and because it would have to read a record's sensor, which it does not: it is a string-to-string mapping the host's own framework answers",
+      "effect": "the receiver with \".tombstones\" appended, or NIL when it already ends in it - measured over 58 inputs, where \"\" answers \".tombstones\". The nil is why the header declares the return nullable: a record's own name would name a sensor that collects nothing",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensors+SRDeletionRecord.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for every answer; the witness is tests/backports/host/sensorkit-tombstones"
+      "source": "SRSensors+SRDeletionRecord.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for every answer"
     },
     {
       "api": "-[SRAcousticSettings init]",
@@ -1396,9 +1396,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts) at SRKeyboardMetrics.h:306. The port classifies nothing: the count comes out of the same store every property of this class reads, under a key of the selector and the category, because a count per category is ten numbers",
-      "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where emojiCountForSentimentCategory: answers 0. A count that was archived reads back as that count. Not a device measurement; no device has been asked and the guest run is owed.",
+      "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where emojiCountForSentimentCategory: answers 0. An archived count reads back as itself",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten-case enumeration at :283-:292; the host's SensorKit.framework for the answer; the witness is tests/backports/host/sensorkit-value"
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer"
     },
     {
       "api": "-[SRKeyboardMetrics wordCountForSentimentCategory:]",
@@ -1407,9 +1407,9 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts) at SRKeyboardMetrics.h:303. The port classifies nothing: the count comes out of the same store every property of this class reads, under a key of the selector and the category, because a count per category is ten numbers",
-      "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where wordCountForSentimentCategory: answers 0. A count that was archived reads back as that count. Not a device measurement; no device has been asked and the guest run is owed.",
+      "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where wordCountForSentimentCategory: answers 0. An archived count reads back as itself",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten-case enumeration at :283-:292; the host's SensorKit.framework for the answer; the witness is tests/backports/host/sensorkit-value"
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer"
     },
     {
       "api": "-[SRPhotoplethysmogramAccelerometerSample init]",
@@ -1483,8 +1483,8 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "absent is a claim about the RELEASE, and the release carries no SensorKit surface at all: binary_inventory at modules/apple/objc.lua:395 over the armv7 6.1.3 cache finds no SR* class and no SR* symbol, so nothing the release has answers this name. The header adds an independent reason, and it is a reason rather than the definition: SRSensorReader.h:53 marks it NS_UNAVAILABLE, so it is not API a caller writes and -initWithSensor: is the way in",
-      "effect": "not carried, so respondsToSelector: answers NO and an unchecked call raises rather than quietly producing a reader with no sensor in it. It stays absent rather than becoming an implementation that raises because +[SRSensorReader new] is already implemented in this file and +new calls -init. The host's own answer is on record - NSInternalInconsistencyException, \"Use initWithSensor:\" - measured by tests/backports/host/sensorkit-value/host-answers.m",
+      "reason": "absent is a claim about the RELEASE, and the release carries no SensorKit at all: binary_inventory at modules/apple/objc.lua:395 over the armv7 6.1.3 cache finds no SR* class and no SR* symbol, so nothing the release has answers this name. Independently, SRSensorReader.h:53 marks it NS_UNAVAILABLE, so it is not API a caller writes",
+      "effect": "not carried, so respondsToSelector: answers NO and an unchecked call raises rather than quietly producing a reader with no sensor in it. It stays absent rather than becoming an implementation that raises because +[SRSensorReader new] is already implemented here and +new calls -init. The host's own answer is on record - NSInternalInconsistencyException, \"Use initWithSensor:\"",
       "source": "modules/apple/objc.lua for the release's inventory; SRSensorReader.h of SDK 26.2 for the declaration; the host's SensorKit.framework for what -init raises, read by tests/backports/host/sensorkit-value"
     },
     {
@@ -1515,10 +1515,10 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the delegate is the APPLICATION's own object, so nothing in this port adopts the protocol - which is why the port emitted no __OBJC_PROTOCOL_$_ for it and an application compiled against the SDK found none at run time. It is carried anyway: a delegate protocol nothing ships is one an application cannot conform to. CharonSensorKitProtocols.h names it and the generated SensorKitBackportsProtocols14.0.m makes clang emit the metadata",
-      "effect": "the protocol exists at run time with its ten @optional methods and none required, which is what SRSensorReader.h:21-:86 declares. Four of the ten the reader sends and six nothing sends, each row saying which",
+      "reason": "the delegate is the APPLICATION's own object, so nothing in this port adopts the protocol - which is why the port emitted no __OBJC_PROTOCOL_$_ for it and an application compiled against the SDK found none at run time. It is carried anyway: a delegate protocol nothing ships is one an application cannot conform to",
+      "effect": "the protocol exists at run time with its ten @optional methods and none required, as SRSensorReader.h:21-:86 declares. Four of the ten the reader sends and six nothing sends, each row saying which",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the 16.4 SDK declares the same protocol with a body, so the port forward-declares it and the umbrella import supplies that body rather than transcribing a header the build already has; the emitted metadata was measured with nm -gU on the object compiled for armv7-apple-ios6.1.3"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the 16.4 SDK declares the same protocol with a body, so the port forward-declares it and the umbrella import supplies that body rather than transcribing a header the build already has. The emitted __OBJC_PROTOCOL_$_ was measured with nm -gU on the object compiled for armv7-apple-ios6.1.3"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didChangeAuthorizationStatus:]",
@@ -1529,7 +1529,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:59. NOTHING SENDS IT, because -authorizationStatus answers denied and never changes",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didCompleteFetch:]",
@@ -1540,7 +1540,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:47. NOTHING SENDS IT, because no fetch in this port ever finishes",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:didFetchDevices:]",
@@ -1551,7 +1551,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:83. NOTHING SENDS IT, because the port will not fabricate a device list",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchDevicesDidFailWithError:]",
@@ -1562,7 +1562,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:84. THE READER SENDS IT, from --fetchDevices, because the port will not invent a device list",
       "effect": "reached: messaged with SensorKit's own SRErrorDomain and SRErrorDataInaccessible, and guarded by respondsToSelector: on the delegate, so a conformer that does not implement it is never messaged. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send; the witness is tests/backports/host/sensorkit-reader, which reads the send sites and the armv7 object"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send, which reads the send sites and the armv7 object"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchingRequest:didFetchResult:]",
@@ -1573,7 +1573,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:40. NOTHING SENDS IT, because it hands over a result and -fetch: has none",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:fetchingRequest:failedWithError:]",
@@ -1584,7 +1584,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:52. THE READER SENDS IT, from --fetch:, because no store, no readings, no payload",
       "effect": "reached: messaged with SensorKit's own SRErrorDomain and SRErrorDataInaccessible, and guarded by respondsToSelector: on the delegate, so a conformer that does not implement it is never messaged. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send; the witness is tests/backports/host/sensorkit-reader, which reads the send sites and the armv7 object"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send, which reads the send sites and the armv7 object"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:startRecordingFailedWithError:]",
@@ -1595,7 +1595,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:70. THE READER SENDS IT, from --startRecording, because there is no store to record into",
       "effect": "reached: messaged with SensorKit's own SRErrorDomain and SRErrorDataInaccessible, and guarded by respondsToSelector: on the delegate, so a conformer that does not implement it is never messaged. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send; the witness is tests/backports/host/sensorkit-reader, which reads the send sites and the armv7 object"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send, which reads the send sites and the armv7 object"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReader:stopRecordingFailedWithError:]",
@@ -1606,7 +1606,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:81. THE READER SENDS IT, from --stopRecording, because nothing is recording, so the stop did not happen",
       "effect": "reached: messaged with SensorKit's own SRErrorDomain and SRErrorDataInaccessible, and guarded by respondsToSelector: on the delegate, so a conformer that does not implement it is never messaged. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send; the witness is tests/backports/host/sensorkit-reader, which reads the send sites and the armv7 object"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the send, which reads the send sites and the armv7 object"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReaderDidStopRecording:]",
@@ -1617,7 +1617,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:76. NOTHING SENDS IT, because -stopRecording answers with the failure callback instead",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSensorReaderDelegate sensorReaderWillStartRecording:]",
@@ -1628,7 +1628,7 @@
       "reason": "an @optional member of SRSensorReaderDelegate at SRSensorReader.h:65. NOTHING SENDS IT, because no recording ever begins",
       "effect": "carried as the promise it is and never messaged: it is @optional, so a conformer may leave it out and the compiler accepts that. The port fabricates no result, no device list and no status change to make a callback fire. Measured by tests/backports/host/sensorkit-reader",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send; the witness is tests/backports/host/sensorkit-reader"
+      "source": "SRSensorReader.h of SDK 26.2 for the declaration; the port's own SRSensorReader.m for the absence of a send"
     },
     {
       "api": "-[SRSleepSession init]",
@@ -2375,7 +2375,7 @@
       "reason": "ARFaceAnchor * at SRFaceMetrics.h:72, and ARKit is not a framework this package carries. The HARDWARE is named too: a face reading needs the TrueDepth camera, and neither fleet device has a sensor of that kind. Declared as id, so the archiver keeps the field",
       "effect": "nil when nothing is archived under \"faceAnchor\", which is all a reading with no camera behind it can be. NO ORACLE, and the row says so: the host declares -faceAnchor and does not implement it, so sending it raises. Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the absence of a host implementation is measured by tests/backports/host/sensorkit-value/host-answers.m, the port's side by tests/backports/host/sensorkit-value"
+      "source": "SRFaceMetrics.h of SDK 26.2 for the declaration; the absence of a host implementation is, the port's side by"
     },
     {
       "api": "SRFaceMetrics.partialFaceExpressions",
@@ -3958,7 +3958,7 @@
       "reason": "SNClassificationResult * at SRSpeechMetrics.h:152, and SoundAnalysis is not a framework this package carries. Declared as id for the reason speechRecognition is: the archiver walks the DECLARED property list",
       "effect": "nil when nothing is archived under \"soundClassification\", which is what the HOST's own SensorKit answers for a metrics object with no session. Whatever was archived reads back as it was. Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for the answer; the witness is tests/backports/host/sensorkit-value"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for the answer"
     },
     {
       "api": "SRSpeechMetrics.speechExpression",
@@ -3980,7 +3980,7 @@
       "reason": "SFSpeechRecognitionResult * at SRSpeechMetrics.h:151, and Speech is not a framework this package carries. Declared as id anyway: the archiver walks the DECLARED property list, so an undeclared property cannot be read back and an archived reading loses this field",
       "effect": "nil when nothing is archived under \"speechRecognition\", which is what the HOST's own SensorKit answers for a metrics object with no session. Whatever was archived reads back as it was. Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for the answer; the witness is tests/backports/host/sensorkit-value"
+      "source": "SRSpeechMetrics.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for the answer"
     },
     {
       "api": "SRSpeechMetrics.timeSinceAudioStart",
