@@ -133,9 +133,25 @@ if [ -n "$out" ]; then
     printf '%s\n' "$out" | sed 's/^/    /' >&2
     exit 1
 fi
-n=$(cd "$REPO" && git log --format='%b' "$base..$tip" | grep -c '^Self-review:' || true)
-if [ "$n" -ne 1 ]; then
-    echo "FAIL: the series carries $n Self-review line(s); it is exactly one, in the tip" >&2
+# ABSENT AND MISPLACED MUST NOT READ THE SAME. A reviewer who left the line in the WRONG commit used
+# to be told the series has none at all, with no mention that one was found in the wrong place - and
+# the fix for that is to say which happened, because the two need different work.
+total=$(cd "$REPO" && git log --format='%b' "$base..$tip" | grep -c '^Self-review:' || true)
+tipsha=$(cd "$REPO" && git rev-parse "$tip")
+intip=$(cd "$REPO" && git log --format='%b' -1 "$tip" | grep -c '^Self-review:' || true)
+if [ "$total" -ne 1 ]; then
+    if [ "$total" -eq 0 ]; then
+        echo "FAIL: the series carries NO Self-review line. It needs exactly one, at the START of the" >&2
+        echo "  TIP's body, and the tip is $tipsha" >&2
+    else
+        echo "FAIL: the series carries $total Self-review lines, and it carries exactly one." >&2
+        echo "  They are MISPLACED, not absent - one per commit, and only the tip's may have one:" >&2
+        ( cd "$REPO" && git log --format='%h %s' "$base..$tip" ) | sed 's/^/    /' >&2
+    fi
+    exit 1
+fi
+if [ "$intip" -ne 1 ]; then
+    echo "FAIL: the one Self-review line is not in the tip's body (tip $tipsha), so it is MISPLACED" >&2
     exit 1
 fi
 echo "  the series carries exactly one Self-review line, at the start of the tip's body, and no subject"

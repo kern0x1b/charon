@@ -69,7 +69,7 @@ def enumerators(text):
     return out
 
 
-def class_prefixes(registry_path):
+def class_prefixes(registry_path, wide=False):
     """The three-letter prefixes the CLASS and PROTOCOL rows of THIS registry use.
 
     DERIVED FROM THE ROWS, which is what "a framework initialism" means in practice, and it names no
@@ -84,6 +84,11 @@ def class_prefixes(registry_path):
     except (OSError, ValueError):
         return set()
     rows = doc if isinstance(doc, list) else doc.get("entries", [])
+    if wide:
+        # the SAME derivation, a wider source: every api in the registry, not only its classes. A
+        # method row's api is a selector, so this is the registry's own vocabulary and nothing else.
+        return {r.get("api", "")[:3] for r in rows
+                if len(r.get("api", "")) >= 3 and r.get("api", "")[:1].isalpha()}
     return {r.get("api", "")[:3] for r in rows
             if r.get("kind") in ("class", "protocol") and len(r.get("api", "")) >= 3}
 
@@ -403,12 +408,42 @@ def allow_list():
 
 
 def registries():
-    for d in sorted(os.listdir(REGISTRIES)):
-        full = os.path.join(REGISTRIES, d)
+    """EVERY registry file, and THE TOP LEVEL COUNTS.
+
+    This walked the registry directory and descended only into subdirectories, so a .json sitting
+    directly in registry/ was never yielded: AVFoundation.json, CoreData.json, Foundation.json,
+    UIKit.json and UserNotifications.json were invisible to every kind of row, not only to the
+    constant-row filter. The review measured 427 reachable files and NONE of those five among them,
+    and found it by planting into AVFoundation.json and being told the tree was clean. A check that
+    cannot see a file cannot object to what is written in it.
+    """
+    for entry in sorted(os.listdir(REGISTRIES)):
+        full = os.path.join(REGISTRIES, entry)
         if os.path.isdir(full):
-            for f in sorted(os.listdir(full)):
-                if f.endswith(".json"):
-                    yield os.path.join(full, f)
+            for base, _dirs, files in os.walk(full):
+                for f in sorted(files):
+                    if f.endswith(".json"):
+                        yield os.path.join(base, f)
+        elif entry.endswith(".json"):
+            yield full
+
+
+def constant_row_scanned(registry_path):
+    """Can this registry's constant rows be scanned, and on WHAT?
+
+    A registry with class or protocol rows derives its prefixes from those. One with NEITHER - which is
+    a real shape in this tree - used to derive an EMPTY set, and "not in an empty set" is true of every
+    name, so the filter skipped every constant row in it and the registry reported itself clean. Four
+    registries and 203 rows went unchecked that way, and the review found it by planting into
+    AVFoundation.json and being told the tree was fine.
+
+    So a registry that cannot derive a prefix from class rows derives one from ITS OWN API NAMES
+    instead - the same derivation, a wider source - and SAYS SO. That is not a fallback that accepts
+    everything: it is narrower than the type-noun test and it is reported, so the shape stays visible
+    rather than silent."""
+    if class_prefixes(registry_path):
+        return "class rows"
+    return "its own api names" if class_prefixes(registry_path, wide=True) else None
 
 
 def candidates_in_prose():
@@ -441,13 +476,19 @@ def candidates_in_prose():
     return found
 
 
-def scan(planted=None):
+def scan(planted=None, unscanned=None, unscannable=None, wide_scans=None):
     """Every candidate, and the ones nothing declares.
 
     Two passes: collect the candidates, then answer every lookup at once - one merge-join over the
     sorted SDK index, and a membership test against the small in-repo set."""
     all_candidates = candidates_in_prose()
     examined = len(all_candidates)
+    if unscanned is None:
+        unscanned = {}
+    if unscannable is None:
+        unscannable = set()
+    if wide_scans is None:
+        wide_scans = {}
     index = sdk_index()
     live = package_names()
     allow = allow_list()
@@ -462,7 +503,15 @@ def scan(planted=None):
         # read at all. An earlier version of this filter tried to be derived from the registry's
         # api names instead, and that accepted nearly every value: a three-letter prefix is shared
         # by almost anything CamelCase in the same file, and the real tree went red.
-        if kind == "constant" and not (name[:3] in class_prefixes(_p) and names_a_type(name)):
+        if kind == "constant":
+            source = constant_row_scanned(_p)
+            if wide_scans is None:
+                wide_scans = {}
+            if source is None:
+                unscannable.add(os.path.relpath(_p, ROOT))
+                continue
+            if source != "class rows":
+                wide_scans.setdefault(source, set()).add(os.path.relpath(_p, ROOT))
             continue
         if not class_shaped(name):
             continue
@@ -474,7 +523,15 @@ def scan(planted=None):
     for api, name, path, kind in all_candidates:
         if name == api or name in declared or name in live or name in allow:
             continue
-        if kind == "constant" and not (name[:3] in class_prefixes(path) and names_a_type(name)):
+        if kind == "constant":
+            source = constant_row_scanned(path)
+            if wide_scans is None:
+                wide_scans = {}
+            if source is None:
+                unscannable.add(os.path.relpath(path, ROOT))
+                continue
+            if source != "class rows":
+                wide_scans.setdefault(source, set()).add(os.path.relpath(path, ROOT))
             continue
         if not class_shaped(name):
             continue
@@ -610,7 +667,22 @@ def main():
         print("check-class-names: SELF_TEST %s" % ("FAILED" if rc else "OK"))
         return rc
 
-    examined, hits = scan()
+    state = {}
+    examined, hits = scan(unscanned=state, unscannable=state.setdefault("unscannable", set()),
+                          wide_scans=state.setdefault("wide", {}))
+    for source, names in sorted(state.get("wide", {}).items()):
+        print("  note: %d registries with constant rows and NO class rows derive their prefixes from "
+              "%s instead, and that is reported rather than silent:" % (len(names), source))
+        for name in sorted(names)[:4]:
+            print("    %s" % name)
+        if len(names) > 4:
+            print("    ... and %d more" % (len(names) - 4))
+    if state.get("unscannable"):
+        print("FAIL: these registries hold constant rows and cannot be scanned at all, so nothing in "
+              "them was checked:", file=sys.stderr)
+        for name in sorted(state["unscannable"]):
+            print("    %s" % name, file=sys.stderr)
+        return 1
     print("  examined %d class-shaped name(s) in the class and protocol rows' prose" % examined)
     if examined == 0:
         print("FAIL: the scan examined nothing, so it cannot have found anything")
