@@ -111,11 +111,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "NOT the host's text, and the boundary is measured: the host inserts ONE space for a TJ kerning negative past a threshold bracketed to (-100,-150] at 12pt and never more, inserts a NEWLINE for downward movement past a threshold bracketed to (-2,-14], inserts a SPACE for horizontal movement, and leaves consecutive shows with nothing between them. The port does not reproduce that: the thresholds are bracketed and not located, the font-size dependence is unresolved, and three operator cases read nil. facts/PDFKit/Document11.md carries the twenty-two case table and the brackets; the extraction is owed, not claimed",
-   "reason": "the host HAS -[PDFPage string] and it is read by tools/host-string.m in this series, but its answer is a layout heuristic with two bracketed thresholds and three unread operator cases, so a row may not say the port matches it",
+   "status": "implemented",
+   "effect": "the page's TEXT, read by a token walk over the page's own content stream: the string operands of Tj, TJ, ' and \" in the order the stream draws them, with a NUMBER in a TJ array treated as a kerning adjustment and NOT as a character.  Measured equal to the host on all thirteen fixtures, including the per-page answers 'page 1', 'page 2' and 'page 3' of a three-page document, and nil with 0 for a page that draws no text.  The walk is BOUNDED by the number of show operators in the stream's own bytes, because CGPDFScannerScan re-delivers the last operand forever and an unbounded walk never returns",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the dyld export tables of both bands: CGPDFScannerCreate exported, CGPDFScannerScanString and CGPDFScannerGetString not exported; the host's PDFPage string was not compared by this run",
+   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 727 MISMATCHES 0, with -string and -numberOfCharacters COMPARED on every fixture rather than skipped.  Half the fixtures are written by tools/make-text-fixture.m, a conforming writer through the release's own CGPDFContext, so the walk is measured on files a conforming writer produced and not only on the hand-written control",
    "ledger": "missing"
   },
   {
@@ -195,11 +194,10 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "the number of characters the page's TEXT walk produces, a kerning separator included - measured 6 where the host's -string answers \"al pha\" over five drawn glyphs, and 5 where it answers \"alpha\". The port cannot obtain it: the token walk needs CGPDFScannerScanString and CGPDFScannerGetString, which NEITHER 6.1.3 nor 4.3 exports, so the host's count is measured and the port's is not. The run does not compare it and says so on every page",
-   "reason": "measured and recorded in the effect",
+   "status": "implemented",
+   "effect": "the LENGTH of that same walk - 6 for 'page 1', 0 for a page that draws no text - measured equal to the host on all thirteen fixtures.  It is the length of -string and not a glyph run, and the kerning separator a TJ array implies is not a character",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the dyld export tables of both bands: CGPDFScannerCreate exported, CGPDFScannerScanString and CGPDFScannerGetString absent; and the host's own numbers, 6 and 5, on the kerned and unkerned fixtures"
+   "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 727 MISMATCHES 0, with -string and -numberOfCharacters COMPARED on every fixture rather than skipped.  Half the fixtures are written by tools/make-text-fixture.m, a conforming writer through the release's own CGPDFContext, so the walk is measured on files a conforming writer produced and not only on the hand-written control"
   },
   {
    "api": "PDFDocument.dataRepresentation",

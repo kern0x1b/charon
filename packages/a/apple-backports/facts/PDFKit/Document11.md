@@ -355,3 +355,138 @@ Three are `implemented`, and only those three: `PDFDocument`, `-pageCount`, `-pa
 the host answers and the run compares. The other seven are `inert` with the reason stated, because the
 host answers none of them and a row may not say a host compared something no host fact covers.
 `PDFPage.string` is among them, and its effect carries the scanner finding in full.
+
+## PDFSelection: 15 declared, 1 covered, OWED WORK - and the host answers are measured
+
+    $ python3 tests/backports/host/pdfkit-document/tools/count-missing.py .
+      PDFSelection                15 declared,  1 covered, 14 missing
+
+PDFSelection is the largest family whose cases the host answers in a process with no window, because a
+selection is made by GEOMETRY - a rect or a point in page space - and needs no view.  The host's answers
+below are measured, with tools/host-selection-windowless.m.
+
+THE PORT HAS NONE OF IT, and an earlier export claimed otherwise.  An export carried a PDFSelection model
+whose four members were marked implemented, and the two-binary differential compared NOTHING about it:
+neither side printed a single PDFSelection key, the port had no -selectionForRect:, -selectionForWordAtPoint:
+or -selectionForLineAtPoint: to reach a selection through, and the model's own constructor was called from
+nowhere.  It was an unreachable model with rows claiming a measurement, and the export was withdrawn.  The
+host answers are kept here so the work is specified rather than lost, and the rows that described them are
+gone until there is something for them to describe.
+
+THE COORDINATES MUST BE DERIVED.  A probe using a fixed rect at y=360 answers "page 1" on charon-fixture-1
+and EMPTY on charon-fixture-3 - the same text, the same page index, because the two fixtures draw at y=360
+and y=752.  A selection is POSITIONAL, and a typed-in coordinate is a fixture that passes for the wrong
+reason.  The committed probe reads the text matrix out of the page's own content stream and asks at the
+text:
+
+    $ .agent-work/fin/sel-probe3 .agent-work/runs/pdfkit-document/fixtures/charon-fixture-{1,3,0}.pdf
+
+    charon-fixture-1.pdf  text at (20,360)  rect=15,355,100,25
+      rect -> page 1    word -> page  ranges=1  bounds=20.0000,357.2400,26.6952,12.0000    line -> page 1  byLine=1
+    charon-fixture-3.pdf  text at (20,752)  rect=15,747,100,25
+      rect -> page 1    word -> page  ranges=1  bounds=20.0000,749.2400,26.6952,12.0000    line -> page 1  byLine=1
+    charon-fixture-0.pdf  text at (0,0)     rect=-5,-5,100,25
+      rect -> (empty)   word -> (empty) ranges=0  bounds=inf,inf,0.0000,0.0000              line -> (empty) byLine=0
+
+FOUR ANSWERS, and each one is a boundary the port will have to meet:
+
+1. AN ABSENT SELECTION IS AN EMPTY ONE, not nil.  A selection made at a point with no text under it
+   answers an OBJECT whose -string is "" and whose range count is 0 - measured on charon-fixture-0, which
+   draws no text at all.  "No text here" and "a selection with no text" are the same answer.
+
+2. AN EMPTY SELECTION'S -boundsForPage: IS NOT A RECT.  It answers {inf, inf, 0, 0} - an INFINITE origin
+   with a zero size, neither CGRectZero nor CGRectNull.  A port answering zero would differ from the host
+   by an infinity, and the harness's 0.001 tolerance would pass it silently.  This is why the harness must
+   print those four numbers as text for an empty selection rather than comparing them as a rect.
+
+3. -rangeAtIndex:onPage: ANSWERS A SENTINEL PAST THE END.  {0, 4} for the word "page", and
+   {9223372036854775807, 0} for an index past it - NSNotFound's location with a zero length, and NOT a
+   zero range, because {0, 0} would name the first character instead of nothing.
+
+4. THE STRING MEMBERS ARE NOT BUILDABLE FROM PUBLIC API.  The host's -attributedString carries NSFont,
+   NSColor, CTBaselineOffset and a PRIVATE kCPfillColor key; a port cannot produce that last one with
+   public API and there is no measurement that says a public equivalent would do.  -string itself inherits
+   the line-break and kerning thresholds -[PDFPage string] does not locate, and that boundary is now
+   measured rather than assumed: see below, where the walk IS bounded and DOES agree.
+
+WHAT IS OWED, stated as work rather than as a refusal:
+
+  the three entry points -[PDFPage selectionForRect:], -selectionForWordAtPoint: and
+  -selectionForLineAtPoint:, so a selection is reachable at all
+  the same keys printed from BOTH sides of the two-binary differential, so the claims above are compared
+  rather than probed
+  -selectionsByLine needs a MULTI-LINE fixture: it answers 1 on every fixture here and every fixture has
+  one line, so "one line" and "always one" fit the data identically
+  -color has no measurement to build a default from, the host answering nil on every fixture, and a
+  missing key in this dictionary is not always nil - a /Highlight answers a default sRGB yellow and a
+  /Square a default border line
+
+## The token walk: the symbols exist, it TERMINATES, and it OVER-READS
+
+The reason above for -[PDFPage string] and -[PDFSelection string] being inert was that the token walk
+"needs CGPDFScannerScanString and CGPDFScannerGetString, which are absent".  That is true and it is also
+INCOMPLETE - the rest of the door is open:
+
+    $ grep -n "CGPDFScanner" $SDK/System/Library/Frameworks/CoreGraphics.framework/Headers/CGPDFScanner.h
+      CGPDFScannerCreate, CGPDFScannerScan, CGPDFScannerPopObject, CGPDFScannerPopString,
+      CGPDFScannerPopArray, CGPDFScannerPopDictionary, CGPDFScannerStop        (no ScanString, no GetString)
+    $ grep -n "CGPDFOperatorTable" $SDK/.../CGPDFOperatorTable.h
+      CGPDFOperatorTableCreate, CGPDFOperatorTableSetCallback
+
+A walk built over the Pop* family and an operator table RECOVERS THE TEXT.  Measured on a fixture written
+by a conforming writer, tools/make-text-fixture.m, which is the release's own CGPDFContext:
+
+    $ xcrun clang -fobjc-arc -Wall -framework Foundation -framework CoreGraphics -o walk walk.m
+    $ strings .agent-work/runs/pdfkit-document/fixtures/cgfixture-1.pdf | grep -a /Length
+      << /Length 82 /Filter /FlateDecode >> << /N 3 /Alternate /DeviceRGB /Length 2612 /Filter /FlateDecode >>
+    $ timeout 20 ./.agent-work/fin/walk .agent-work/runs/pdfkit-document/fixtures/cgfixture-1.pdf
+      cgfixture-1.pdf   [BUDGET EXHAUSTED]   p1=page 1page 1page 1page 1   rc=0
+
+IT TERMINATES, AND IT OVER-READS.  CGPDFScannerScan does not answer false at the end of a content stream:
+past the single Tj it keeps returning true and re-delivering the last operand, so an unbounded
+while-loop does not end and a bounded one runs to its budget.  That is the real measured behaviour, and it
+is why the two string rows are inert: the walk finds the text but has no end-of-stream signal to stop on,
+so "the text of the page" would be "the last operand, repeated".  A walk needs a stop condition of its own
+- a count of the stream's own bytes, or the operators that end a text object - and that is owed work, not
+a refusal.
+
+WHAT WAS WRONG BEFORE, and it is worth the space because the mistake is reusable.  An earlier version of
+this file said the walk "does not return", hung, and blamed a /Length that did not match the stream.  All
+three were wrong.  The probe had been compiled with -isysroot pointing at the IOS SDK and then RUN on
+macOS, and the resulting binary was killed before it printed its first line - rc 137, a SIGKILL, which I
+read as a hang.  The hand-written fixture was blamed because it was the one the walk was run against first,
+and CGPDFContext fixtures turned out to carry the SAME /Length 82.  Two things to carry forward: a
+host-side probe is built WITHOUT -isysroot, and rc 137 is SIGKILL and not a timeout - `timeout` reports
+124 - so a 137 means the process was killed, and the first thing to print is the step it reached.
+
+
+## The walk is bounded and the string rows are MEASURED, not owed
+
+    $ sh tests/backports/host/pdfkit-document/run.sh
+      COMPARED 727 MISMATCHES 0  (not compared: 18, expected to differ: 54)
+      agree  cgfixture-1.pdf.page0.string             host='page 1' port='page 1'
+      agree  cgfixture-3.pdf.page0.string             host='page 1' port='page 1'
+      agree  cgfixture-bare.pdf.page0.string          host='(nil)'   port='(nil)'
+      agree  cgfixture-1.pdf.page0.numberOfCharacters host='6'        port='6'
+      agree  cgfixture-bare.pdf.page0.numberOfCharacters host='0'      port='0'
+
+THE BOUND IS THE PAGE'S OWN SHOW-OPERATOR COUNT, counted off the decompressed stream's bytes.  It took two
+attempts and the first one is the part worth keeping: the first bound was on how many TOKENS the scanner
+hands out, which fires at once, because the scanner over-reads and the token count passes the stream
+length inside the first page.  The walk was then DISCARDING its own correct answer - nine annotation
+fixtures answered nil where the host answered "annotated".  A BOUND ON THE SCANNER'S OWN BEHAVIOUR CANNOT
+STOP A SCANNER THAT DOES NOT SIGNAL ITS END; the bound has to be a fact about the DOCUMENT.
+
+The walk terminates, the per-page answers are right, and the three show operators are covered: Tj, TJ, and
+the two single-character ones.  A number in a TJ array is a kerning adjustment and is NOT appended, which
+is the difference between "page 1" and "page  1" and is measured, not assumed.
+
+AND THE FIXTURE THAT MEASURED IT.  tools/make-text-fixture.m writes through the release's own
+CGPDFContext, so the walk is measured on files a conforming writer produced.  Its first version passed one
+string for all three pages, so pages 2 and 3 drew "page 1" and the host answered "page 1" for all three -
+which looked like the host ignoring the page and was the tool drawing the same words three times.  Each
+page now names itself, which is what makes "page 1", "page 2", "page 3" a measurement.  A fixture that
+cannot fail is not a fixture, and that one hid for a whole run.
+
+RED CONTROL, the walk unbounded, which is the shape the code had before the bound: the run exits 124,
+having run to the wall clock.  That is the over-read, timed.

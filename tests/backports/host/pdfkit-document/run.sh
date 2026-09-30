@@ -31,6 +31,15 @@ python3 "$here/make-box-pdfs.py" "$build/fixtures" > /dev/null
 # CGPDFContext: an annotation's dictionary has to be in the file by the time it is read, and these are
 # measured by both sides through the same /Annots array the port walks.
 python3 "$here/tools/make-annotation-fixtures.py" "$build/fixtures" > /dev/null
+# the CONFORMING-WRITER text fixtures, built here and not committed: they are a by-product of a tool, and
+# a committed PDF would be a second source of truth for what the tool writes.  They are here for the text
+# rows specifically - the hand-written fixtures are the control, and both kinds are walked, because a
+# string answer measured only on files this port wrote itself would prove nothing about a file a
+# conforming writer produced.
+xcrun clang -fobjc-arc -Wall "$here/make-text-fixture.m" -framework Foundation -framework CoreGraphics \
+    -o "$build/make-text-fixture" 2> "$build/make-text-fixture.log" || {
+    echo "BUILD the conforming text fixture writer did not compile:"; head -6 "$build/make-text-fixture.log" | sed 's/^/    /'; exit 1; }
+"$build/make-text-fixture" "$build/fixtures" > /dev/null
 
 
 # The fixture must carry text, checked by reading the stream back through CGPDFStreamCopyData, which
@@ -96,7 +105,11 @@ compared_expected=0
 skipped_expected=0
 
 # the facts both sides can answer, compared key by key
-python3 - "$build/host.txt" "$build/port.txt" "$compared_expected" "$skipped_expected" <<'PYEOF'
+# THE COMPARISON, as a function so the red control below runs the same verdict code rather than a
+# second copy of it that could disagree with this one. $1 is the mutation mode: empty for the plain
+# comparison, "auto" to plant a key the two sides currently agree on, or a key's own name.
+compare() {
+python3 - "$build/host.txt" "$build/port.txt" "$compared_expected" "$skipped_expected" "$1" <<'PYEOF'
 import sys
 EXPECTED_COMPARED = int(sys.argv[3])     # the compared facts both sides must produce
 EXPECTED_SKIPPED = int(sys.argv[4])      # the ones the host cannot answer, which must be named
@@ -119,6 +132,77 @@ def read(path, side):
     return keys
 
 host, port = read(sys.argv[1], "host"), read(sys.argv[2], "port")
+
+# ---- the red control -------------------------------------------------------------------
+#
+# A comparison that reads "0 mismatches" is only evidence if it WOULD have read one had the port
+# been wrong, and the only way to know that is to make it wrong on purpose and see. So:
+#
+#   --mutation <key>   plant one value for that key, in a SCRATCH COPY of the port's answers
+#   --mutation auto    plant the first key the two sides currently AGREE on
+#   --mutation plant   the flag with no key named, which must fail rather than pass quietly
+#
+# The key is chosen from the data rather than named by hand: a key is eligible only if it is present
+# on both sides with the same value, so "it agrees" is the run's own finding and not my assertion.
+# The mutation is written to a scratch file and the port map is re-read from it, so the port's own
+# answers on disk are never touched and the same verdict code below does all the comparing.
+MUTATION = sys.argv[5] if len(sys.argv) > 5 else ""
+
+if MUTATION:
+    if MUTATION == "plant" or not MUTATION:
+        print("MUTATION has no key to plant: --mutation was given a flag and no key, and a control"
+              " that plants nothing must fail rather than report a clean run")
+        sys.exit(1)
+    agreeing = sorted(k for k in host if k in port and host[k] == port[k]
+                      and not any(k.endswith(s) for s in
+                                  ("documentAttribute.supported", "page0.pageIndex.supported")))
+    if MUTATION == "auto":
+        if not agreeing:
+            print("MUTATION has no key to plant: the two sides agree on nothing, so there is no"
+                  " agreeing key to change and the control cannot run")
+            sys.exit(1)
+        key = agreeing[0]
+    else:
+        key = MUTATION
+        if key not in host or key not in port:
+            print(f"MUTATION was asked for {key!r} and the two sides do not both print it:"
+                  f" host={'yes' if key in host else 'no'} port={'yes' if key in port else 'no'}")
+            sys.exit(1)
+        if host[key] != port[key]:
+            print(f"MUTATION was asked for {key!r}, which the two sides do NOT agree on"
+                  f" (host={host[key]!r} port={port[key]!r}), so mutating it would prove nothing"
+                  " about the comparison seeing a difference it should have seen")
+            sys.exit(1)
+    import os
+    import tempfile
+    scratch = os.path.join(tempfile.mkdtemp(prefix="pdfkit-mutation-"), "port.txt")
+    parts = host[key].split(",")
+    if len(parts) == 4:
+        try:                                  # a rect: move it a whole unit, far outside the 0.001
+            numbers = [float(x) for x in parts]
+        except ValueError:
+            numbers = None
+        if numbers:
+            numbers[0] = numbers[0] + 1.0
+            planted = ",".join(f"{x:g}" for x in numbers)
+        else:
+            planted = host[key] + "-PLANTED"
+    else:
+        planted = host[key] + "-PLANTED"
+    with open(sys.argv[2]) as original, open(scratch, "w") as copy:
+        for line in original:
+            if line.startswith("port.") and line.partition("=")[0][len("port."):].strip() == key:
+                copy.write(f"port.{key}={planted}\n")
+            else:
+                copy.write(line)
+    port = read(scratch, "port")
+    print(f"MUTATION planted on {key!r}, a key the two sides agreed on"
+          f" (host={host[key]!r} port={read(sys.argv[2], 'port')[key]!r}),"
+          f" now port={port[key]!r} in a scratch copy at {scratch}")
+    if port[key] == host[key]:
+        print(f"MUTATION failed: {key!r} was planted and still agrees, so the comparison is blind")
+        sys.exit(1)
+
 compared = differences = skipped = 0
 # the SINGULAR accessor's presence is EXPECTED to differ: the port implements what the host lacks, and
 # that is why its row stays inert.  Named here, inside the loop, so it is neither compared nor counted as
@@ -129,10 +213,7 @@ EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported"
 NOT_COMPARED = {
     "dataRepresentation.length": ("the port's own bytes against the host's REWRITTEN document, and a "
                                   "count of two different documents is not a fact either side can agree on"),
-    "page0.numberOfCharacters":   ("the token walk needs CGPDFScannerScanString and CGPDFScannerGetString, "
-                                  "which NEITHER 6.1.3 nor 4.3 exports (measured: absent from both caches' "
-                                  "export tables), so the host's character count is measured and the port's "
-                                  "is not obtainable"),
+
 }
 divergent = 0
 for key in sorted(set(host) | set(port)):
@@ -184,4 +265,30 @@ if unaccounted != 0:
     sys.exit(1)
 sys.exit(1 if differences else 0)
 sys.exit(1 if differences else 0)
+
 PYEOF
+}
+
+# the plain comparison: the run's own verdict, and a mismatch here fails the run
+compare "" || { echo "the port and the host disagree on something; see above"; exit 1; }
+
+# THE RED CONTROL, and it is part of the sequence rather than something a reader can run later: the
+# port's answers are mutated on ONE key in a SCRATCH COPY, and the run requires that this makes the
+# comparison go red. A comparison that still reports no mismatch after a value it agreed on has
+# changed is blind, and a differential that cannot say so is not evidence of anything.
+control_log="$build/mutation.log"
+if compare auto > "$control_log" 2>&1; then
+    echo "RED CONTROL FAILED: the comparison was run against a mutated port and still reported no"
+    echo "  mismatch, so it would pass a port that is wrong. Its output:"
+    sed 's/^/    /' "$control_log"
+    exit 1
+fi
+grep -q "^MUTATION planted on " "$control_log" || {
+    echo "RED CONTROL FAILED: the mutated run went non-zero without saying which key it planted,"
+    echo "  so the failure is not the control's. Its output:"
+    sed 's/^/    /' "$control_log"
+    exit 1
+}
+echo "RED CONTROL ok: the comparison goes red on a mutated port, and names the key:"
+grep "^MUTATION planted on " "$control_log" | sed 's/^/    /'
+grep "^  DIFFER " "$control_log" | sed 's/^/    /' | head -4

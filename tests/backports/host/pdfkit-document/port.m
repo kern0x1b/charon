@@ -121,6 +121,7 @@ int main(int argc, char **argv)
                 printf("%s.page0.pageIndex.supported=%d\n", name,
                        (int)[first respondsToSelector:@selector(pageIndex)]);
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
+                printf("%s.page0.string=%s\n", name, [first string] ? [first string].UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *an = first.annotations[a];
