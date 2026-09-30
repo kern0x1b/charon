@@ -109,9 +109,11 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "maximum": "12.0",
-      "status": "absent",
-      "reason": "the saved activities are the system's own Handoff store, and 6.1.3 has no entry point that lists or clears it; the port keeps no store of its own, so there is nothing it could delete without reporting a success it has not earned",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "status": "implemented",
+      "facts": "facts/Foundation/NSUserActivity.md",
+      "reason": "the saved activities are the system's own Handoff store, and 6.1.3 has no entry point that lists or clears it; the port keeps no store of its own, so there is nothing it could delete without reporting a success it has not earned - so the handler is called and the log says there was no store",
+      "effect": "nothing is deleted and the handler is called: the log says on every call that there is no store, so a caller can tell that answer from one that found nothing to do (Foundation/NSUserActivity.m:243)",
+      "source": "SDK 16.4, NSUserActivity.h:109, for the signature; Foundation/NSUserActivity.m:243 for the answer"
     },
     {
       "api": "+[NSXPCInterface XPCTypeForSelector:argumentIndex:ofReply:]",
@@ -322,8 +324,10 @@
       "minimum": "6.0",
       "maximum": "8.0",
       "status": "absent",
-      "reason": "a continuation stream comes from -becomeCurrentWithInputStream:outputStream:, which the release's NSUserActivity does not have",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "reason": "a member of the NSUserActivityDelegate protocol, declared by the SDK the port's programs are compiled against (NSUserActivity.h:133), that an application's own delegate adopts. The caller is a continuation - the system's daemon handing this device an activity another device sent - and the releases this package carries have none: no continueUserActivity: to call from, no second device",
+      "effect": "the method is not there: respondsToSelector: answers honestly. Nothing in the package even names it - tools/called-sites.py finds 0 message sends, 0 C calls and 0 other mentions in the package's 1878 sources - and the port declares neither the protocol nor a caller for it, so an application that adopts NSUserActivityDelegate implements the selector for itself",
+      "facts": "facts/Foundation/NSUserActivity.md",
+      "source": "SDK 16.4, NSUserActivity.h:133, for the declaration; tools/called-sites.py for the absence of any call site, which is the claim this rests on"
     },
     {
       "api": "-[NSUserActivityDelegate userActivityWasContinued:]",
@@ -332,8 +336,10 @@
       "minimum": "6.0",
       "maximum": "8.0",
       "status": "absent",
-      "reason": "a continued activity is the Handoff daemon handing the application an activity, and 6.1.3 has no -continueUserActivity: to be called from, so the delegate method has no caller",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "reason": "a member of the NSUserActivityDelegate protocol, declared by the SDK the port's programs are compiled against (NSUserActivity.h:129), that an application's own delegate adopts. The caller is the system's continuation, and the releases this package carries have none",
+      "effect": "the method is not there: respondsToSelector: answers honestly. Nothing in the package names it (tools/called-sites.py: 0 sends, 0 C calls, 0 mentions in 1878 sources), and the port declares neither the protocol nor a caller, so an application that adopts the protocol implements the selector for itself",
+      "facts": "facts/Foundation/NSUserActivity.md",
+      "source": "SDK 16.4, NSUserActivity.h:129, for the declaration; tools/called-sites.py for the absence of any call site, which is the claim this rests on"
     },
     {
       "api": "-[NSXPCConnection scheduleSendBarrierBlock:]",

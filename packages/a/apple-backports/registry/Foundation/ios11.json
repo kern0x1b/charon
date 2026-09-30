@@ -69,14 +69,15 @@
       "source": "SDK 16.4, NSUserActivity.h"
     },
     {
-      "api": "-[NSUserActivity deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:]",
+      "api": "+[NSUserActivity deleteSavedUserActivitiesWithPersistentIdentifiers:completionHandler:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "there is nothing to delete: iOS 6 keeps no store of saved activities",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, NSUserActivity.h"
+      "status": "implemented",
+      "facts": "facts/Foundation/NSUserActivity.md",
+      "reason": "the method deletes the saved activities carrying those identifiers and then calls the handler; this package keeps no saved activities, and its own class row says so, so there is nothing to delete and the handler is called as the contract asks",
+      "effect": "nothing is deleted and the handler is called: the log says on every call that there is no store, so a caller can tell that answer from one that found nothing to do (Foundation/NSUserActivity.m:253)",
+      "source": "SDK 16.4, NSUserActivity.h:108, for the signature and the handler; the store the method would delete from is the system's, and the releases this package carries have no such service, which is what facts/Foundation/NSUserActivity.md records"
     },
     {
       "api": "-[NSFileManager getFileProviderServicesForItemAtURL:completionHandler:]",
