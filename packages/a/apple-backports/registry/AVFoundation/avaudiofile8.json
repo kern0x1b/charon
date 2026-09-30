@@ -1,0 +1,16 @@
+{
+  "framework": "AVFAudio",
+  "entries": [
+    {
+      "api": "AVAudioFile",
+      "kind": "class",
+      "introduced": "8.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the first HELD RUNG that exports _OBJC_CLASS_$_AVAudioFile and its metaclass is 8.0 - 4.3, 6.1.3, 7.0, 7.1, 7.1.1 and 7.1.2 do not - so the release has no such class on the bands the port's floor spans and the port defines it under Apple's own name, in an object of its own. The members arrived at or after that rung and are a separate CATEGORY, because a class symbol is dropped from 8.0 up where the release's own class answers, and a category defines no symbol and is never dropped",
+      "effect": "the class resolves, an instance is constructible, and the members are answered by the instance: -url, -length, -framePosition, -isOpen, -processingFormat, -fileFormat, both reads, -close and -writeFromBuffer:error:. The URL-backed values are computed by the port from the bytes at that URL, and what cannot be decoded is answered with the host's own measured error domain and codes",
+      "facts": "facts/AVFoundation/AVAudioFile.md",
+      "source": "whether a held release already carries it: a direct dump of the exports of every held cache - 4.3, 6.1.3, 7.0, 7.1, 7.1.1, 7.1.2 and 8.0 armv7, 8.1.3, 8.2 and 8.4.1 armv7s, 9.3.6 armv7, 10.0.1, 11.0 and 12.0 arm64, 16.0 arm64e - searched for that class's own symbols, with _NSFileSize planted as a control in every one of them; and the behaviour: the differential in tests/backports/host/avf-descriptors, host against port, with a mutant, a control and two plants"
+    }
+  ]
+}

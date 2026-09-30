@@ -139,8 +139,17 @@ fi
 # The baseline is the port's own UNMUTATED table, written beside the build directory (which is wiped
 # on every run) and read by the join for the port-only rows. A mutant with no baseline beside it is a
 # failure: it would be judging a mutation against nothing.
-if [ "$mutant" = 0 ] || [ "$control" != 0 ]; then
+# (4) The baseline is written ONLY on an explicit flag. A plain run used to rewrite the very table it
+# then compares against, so every port-only row matched ITSELF and no mutation of one could ever be
+# seen - which is why the reviewer's plant on an AVAudioFile value row stayed green. The baseline is
+# what a mutant is judged against, so writing it during an ordinary run makes the directionality
+# assertion vacuous.
+if [ "${AVF_WRITE_BASELINE:-0}" != 0 ]; then
+    mkdir -p "$baseline_dir"
     cp "$build/port.table" "$baseline_dir/port.baseline"
+    echo "baseline written under AVF_WRITE_BASELINE=1"
+elif [ "$mutant" = 0 ] || [ "$control" != 0 ]; then
+    :   # a plain run compares against the baseline and leaves it alone
 else
     [ -f "$baseline_dir/port.baseline" ] || {
         echo "FAIL: the mutant was asked for with no baseline beside it. Run this script once with no"
