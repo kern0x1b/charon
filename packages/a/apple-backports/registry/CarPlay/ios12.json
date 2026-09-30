@@ -1473,7 +1473,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the header's own initialiser, with both of its nullable arguments honoured as nullable: nil variants and no image are answered as nil, not as an invented value",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "-[CPVoiceControlTemplate activateVoiceControlStateWithIdentifier:]",
@@ -1484,7 +1484,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "switches the active state on every call, with no interval in the object: twelve activations in a tight loop all take effect on Apple's own object, so the header's rate limit is about what a car then shows and none is invented here. A car would show the result and there is none",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "-[CPVoiceControlTemplate initWithVoiceControlStates:]",
@@ -1495,7 +1495,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the header's own initialiser: five states at most are kept, of which the first is the one the template begins on",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPActionSheetTemplate",
@@ -3321,7 +3321,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "a value the program declares and the template draws: its own identifier, title variants, image and repeats, and it survives a secure coding round trip with all four",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlState.identifier",
@@ -3332,7 +3332,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the identifier the initialiser was given, nil when it was given nil",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlState.image",
@@ -3343,7 +3343,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the image it was given, redrawn at most 150 by 150 points -- the header's own maximum, which Apple's object enforces and so does this one -- and nil when it was given none",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlState.repeats",
@@ -3354,7 +3354,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "as given: an animated image repeats for as long as the state is active and runs once when it is NO, on a cycle inside the header's own 0.3 and 5.0 seconds",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlState.titleVariants",
@@ -3365,7 +3365,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the array it was given, copied; nil in, nil out, which is what Apple's own object answers and what a defaulted empty array would not",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlTemplate",
@@ -3376,7 +3376,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "a screen the program pushes: it holds the states it was given, begins on the first, and draws the active one in the release's own UI, with one plate per state whose touch is the program's own switch",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlTemplate.activeStateIdentifier",
@@ -3387,7 +3387,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the first state's identifier, nil when the template has no states, and after an activation the identifier that was activated, including one no state carries, which is what Apple's own object does",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPVoiceControlTemplate.voiceControlStates",
@@ -3398,7 +3398,7 @@
       "reason": "a measurement, not a hardware absence: both classes are the program's own -- the 26.2 header says \"Your app may initialize the voice control template with one or more states, and you may call activateVoiceControlState: to switch between states you've defined\" -- and every answer below was read off Apple's own object with no head unit attached before the port's was written, so what a car would add is a screen to show the result on and nothing else",
       "effect": "the first five of the states it was given -- the header's maximum, measured 5 of 6 on Apple's own object -- with nil in and nil out and an empty array kept as an empty array",
       "facts": "facts/CarPlay/VoiceControl.md",
-      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets"
+      "source": "Apple's own CarPlay on this machine with no head unit attached, read by tests/backports/host/carplay/headunit-probe.m and compared label by label against the port's own objects by tests/backports/host/carplay/run.sh, and CPVoiceControlTemplate.h in the SDK 26.2 this port targets, and the port's own implementation in packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m"
     },
     {
       "api": "CPWindow",
