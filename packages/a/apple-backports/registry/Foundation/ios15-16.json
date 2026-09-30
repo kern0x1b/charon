@@ -135,7 +135,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "15.0",
       "kind": "constant",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
       "source": "SDK 16.4, Foundation",
       "status": "absent"
@@ -154,7 +154,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "15.0",
       "kind": "constant",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "reason": "the class is in the library and compiles, but the differential does not measure it: a constant class the differential does not name. Owed: a case that does.",
       "source": "SDK 16.4, Foundation",
       "status": "absent"
@@ -213,7 +213,7 @@
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "introduced": "15.0",
       "kind": "class",
-      "minimum": "16.0",
+      "minimum": "6.0",
       "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately)",
       "status": "implemented"
     },
