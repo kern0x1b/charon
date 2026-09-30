@@ -192,7 +192,7 @@ def ingest(app, appdir):
 # Coordinator regenerates the shared export after each merge; CHARON_REGISTRY_TSV lets a run read a
 # different one (e.g. regenerated straight from origin/main) WITHOUT touching the shared file.
 REGISTRY_TSV = os.environ.get("CHARON_REGISTRY_TSV", "/private/tmp/charon-registry-export/carried-registry.tsv")
-_STATUS_RANK = {"implemented": 0, "inert": 1, "ignored": 2, "absent": 3}
+_STATUS_RANK = {"implemented": 0, "inert": 1, "ignored": 2, "owed": 3, "absent": 4}
 # Frameworks unreachable on our A5 hardware (iPhone 4S / iPad 2): Metal needs
 # A7+, so MTLCreateSystemDefaultDevice() returns nil and apps fall back to GLES;
 # backporting the descriptor cluster would be silently wrong. Mark, don't rank.
@@ -267,7 +267,7 @@ def carried_status(reg, kind, name, framework):
     return "gap?"   # gap? = undecided/not listed => treat as gap
 
 CAT_ORDER = {"FRAMEWORK": 0, "SYSCALL": 1, "SYSLIB": 2, "RUNTIME": 3}
-GAP_STATUS = {"gap?", "absent"}   # not carried today => real priority
+GAP_STATUS = {"gap?", "owed", "absent"}   # not carried today => real priority; owed is ours to do
 
 # The registry records what the port decided, not what it exports: an `ignored` row can name a
 # symbol no backport defines (NSLocalizedFailureErrorKey was one), and dyld stops an application

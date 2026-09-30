@@ -15,7 +15,7 @@ guard -> unrecognized-selector crash on iOS 6 (CRASH-ON-USE); a lower minos mean
 app must guard it -> soft. Selectors with no public SDK declaration drop out (app-private).
 
 Registry status follows surface-diff's own rule: an exact row, a property's method-form
-rows, else the owner class (absent/ignored decide all members; implemented/inert covers
+rows, else the owner class (absent/ignored/owed decide all members; implemented/inert covers
 members that arrived no later than the class row), else undecided.
 
 CAVEATS to repeat wherever this is quoted:
@@ -123,7 +123,9 @@ def route(fw, band_):
     if fw in FRAMEWORKS_SESSION: return "frameworks"
     late = {"7": "7-10", "8-10": "7-10/10", "11-12": "11-12", "13-14": "13-14", "15-16": "13-14+", "17+": "later"}
     return late.get(band_, "?")
-RANK = {"implemented": 0, "inert": 1, "ignored": 2, "absent": 3, "undecided": 4}
+# owed (2026-09-30) is the port's own debt: the release has the name and nobody has written it,
+# so it ranks with absent as a real gap and below ignored, which is a decision rather than debt.
+RANK = {"implemented": 0, "inert": 1, "ignored": 2, "owed": 3, "absent": 4, "undecided": 5}
 GAP = ("absent", "undecided", "ignored", "gap?")
 
 def ver(text):
@@ -250,7 +252,7 @@ def main():
                 idx[sel].append((ver(v) or class_version(owner), api, owner, sdk.get(owner, ["?"])[0], fw, "property"))
 
     # Status of ONE (owner, member) candidate, by surface-diff's coverage rule: an exact row, a
-    # property's method-form rows, else the owner class (absent/ignored decide every member; an
+    # property's method-form rows, else the owner class (absent/ignored/owed decide every member; an
     # IMPLEMENTED class covers members that arrived no later than its class row; inert does not).
     # A selector name is not class-bound, so a selector can have several owners whose statuses
     # disagree. Best-case across owners hides real gaps (UIView.bottomAnchor implemented would hide
@@ -314,7 +316,7 @@ def main():
             # may only CARRY a member, never condemn one.
             if reg_kinds.get(owner) == "protocol" and ost in ("absent", "ignored"):
                 ost = None
-            if ost in ("absent", "ignored", "implemented", "inert"):
+            if ost in ("absent", "ignored", "implemented", "inert", "owed"):
                 st = ost if ost in ("absent", "ignored") else ost + "(class)"
         if st is None and reg_kinds.get(owner) == "protocol":
             sel = _member_sel(api, _mk)
