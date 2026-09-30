@@ -76,15 +76,30 @@ the object's own, so an object placed at 16.0 is carried on 6.1.3, 4.3 and 12.0 
 no export in that interface file at all and come out `none`, and are placed by the registry and the
 header instead - which is why the two are named here and the 15.0 classes are not.
 
-**Not transcribed yet, and the next groups of this framework are them**: `AXMathExpression.h` (fifteen
-classes, 39 rows) and `AXSettings.h` (five functions and five notification constants, 7 rows).
+**`AXMathExpression.h` is transcribed, and the fifteen classes it declares are carried.**
+`Accessibility/CharonAXMathExpression.h` holds the declarations and
+`Accessibility/CharonAXMathExpression.m` the 39 rows. **The earlier note in this file, and the one in
+`xmake.lua`'s `accessibility` description, said these classes are "an expression parser" and were not
+carried because "an ivar per property would answer a parse that never happened". Both were wrong, and
+the header is what says so**: `AXMathExpression.h` declares no method that takes a string, and no member
+of any of the fifteen classes is anything but a value an initialiser was given - a leaf holds a string, a
+container holds the expressions it was given. The tree an application builds is the tree an assistive
+technology would be handed; turning it into speech or Braille is the system's half, and this release
+has no assistive technology, so the container is the whole of the work. The registry rows said the same
+thing and are now `implemented`.
 
-`AXAudiograph.h` and `AXBrailleMap.h` are in 16.4 already and are byte-identical to 26.2's copies
-(`shasum -a 256` of each pair agrees), so the chart group needs no Charon header at all.
-`AXCustomContent.h` is in 16.4 too but is not the same file: 26.2's copy adds six lines inside
-`AXCustomContentProvider` - a block-returning typedef, an `@optional` marker and the block property -
-so that one member needs a Charon header of its own, as a protocol **category** and not as a second
-declaration of the protocol.
+**`AXCustomContent.h` is in 16.4 and needs no Charon header**, so the class is declared by the SDK the
+package compiles against - `Accessibility/CharonAXCustomContent.m` is code only. The one member of
+`AXCustomContentProvider` that 16.4's copy lacks, `accessibilityCustomContentBlock` of 17.0 (26.2's copy
+adds six lines inside the protocol: a block-returning typedef, an `@optional` marker and the property),
+is a different matter and is the one row of the two this group did not take. A protocol **category** in a
+Charon header would be the way to add it without a second declaration of the protocol, and the port does
+not carry one: the member is unreachable on this release whatever the header says, because nothing on
+this release implements it - `NSProtocolFromString(@"AXCustomContentProvider")` answers nil here and
+answers nil on the host's own framework too, where the protocol is declared in a header and never
+registered. A declaration of a member no object on this release could answer is a name with nothing
+behind it, and the registry's own `implemented` check would refuse it. Both protocol rows are
+therefore `absent`, and the reason each carries says which of the two walls it is.
 
 This matters mechanically and not only for the compiler. A name no release exports and no implemented
 registry row places is *unplaced*, and `modules/apple/backports.lua`'s `misplaced()` then refuses the
@@ -129,6 +144,93 @@ on this release, so `+supportedLocales` is an **empty set**, the two other sets 
 invented: a translation of nothing is the input with **no cells**, and the location map is empty
 because no cell was produced. Both directions answer that way, the second without guessing print text
 out of dot patterns. A table an *application* builds is real and is kept, coded and copied.
+
+## The two groups that had no object behind them: AXCustomContent of 14.0, AXMathExpression of 18.2
+
+45 of the 47 rows of these two groups are now `implemented` and 2 stay `absent`. The two groups were
+`absent` for a stated reason, and **the stated reason for the 39 AXMathExpression rows was wrong**: it
+said the classes "are a parser and an evaluator for the mathematics grammar ... and an ivar per property
+would answer a parse that never happened". `AXMathExpression.h` declares no parser. It declares fifteen
+containers, each of which has an initialiser that takes a value and properties that read that value
+back, and there is not one method in the file that takes a string. An ivar per property **is** the class.
+The registry rows, and `xmake.lua`'s `accessibility` description, repeated the claim; both are corrected
+above.
+
+Every rule below was measured against the host's own `Accessibility.framework` (macOS 27.0, whose SDK's
+`AXMathExpression.h` is byte-identical to iPhoneOS 26.2's apart from two copyright lines, so the header
+under test is the one the corpus was built from) by `tests/backports/host/accessibilitymath/run.sh`,
+which builds the same cases against the system's classes and against the port's - compiled under names
+the system does not use, so neither can answer for the other - and compares the two outputs line by
+line:
+
+```
+=== the two answers: 137 cases a side (135 behaviour, 2 declaration), 7 declared to differ
+cases read: 137 a side; declared differences: 7; undeclared or moved: 0
+identical on all 135 behaviour cases except the 7 declared above: the system and the port answer the same
+declaration cases: 2, which check a header and not the port's code; compared above, 2 of 2 the same
+```
+
+`tests/backports/host/accessibilitymath/mutants.sh` is what says the case can fail: thirteen mutants, one
+per rule, each changing one line of the port's own source in a copy of it, and **13 killed by the
+comparison, 0 did not die in the required way, 0 survived.** Four of the thirteen were wrong on the first
+attempt, and each was wrong in a way worth recording because a surviving mutant is a check that
+examines nothing:
+
+* copying an immutable `NSArray` hands back **the same** array, so "answers the very array it was given"
+  is invisible unless the caller gave a mutable one. The case was strengthened
+  (`mx.fenced.mutable.is.same.array` and the caller-appends case), not the mutant weakened.
+* a copy of a content whose importance was never raised cannot be seen to have dropped it. The case was
+  strengthened (`cc.copy.of.urgent.importance`).
+* a fifth argument added to a four-specifier format is **ignored** by `stringWithFormat`, so the first
+  spelling of M13 changed nothing at all and the case passed with the rule broken.
+* and the case file found a real defect the mutants never would have: `-description` written with `%@`
+  on `self` **calls itself**, and the case that reads it died on a segfault. The class and the address
+  are now spelled out the way `NSObject` spells them, and the port's `AXCustomContent` prints what the
+  host's does - `<AXCustomContent: 0x...>: label: Orientation, value: Portrait`, with **no importance in
+  it**, because the host's description does not print one either (both measured).
+
+**The three numbers in this group, and where each came from.** None of them was chosen:
+
+| number | what it is | where it comes from |
+| --- | --- | --- |
+| `AXCustomContentImportanceDefault` = 0, `AXCustomContentImportanceHigh` = 1 | the two cases of the enumeration | the header, `AXCustomContent.h` of 16.4: it is an `NS_ENUM` and `Default` is its first case. Confirmed on the host: a fresh content answers 0 and one set to `High` answers 1 |
+| the four `AXCustomContent` properties are four spellings of two values | the storage model | measured on the host: `customContentWithLabel:value:` gives an `attributedLabel` whose `.string` is the string passed in, and `customContentWithAttributedLabel:attributedValue:` gives a `label` that **is** `attributedLabel.string` (identity, not equality) |
+| 18.2, and `visionos(2.2)` left off | what places the object | the `API_AVAILABLE` on each `@interface` in `CharonAXMathExpression.h`, which is what `introduced_version()` reads. The `visionos` argument is in Apple's copy of every one of those lines and is dropped because the SDK of 16.4 has no such platform and writing it does not compile (measured: 16 `expected ','` errors) |
+
+**The seven declared differences, and why the port does not follow the host on them.**
+`AXMathExpressionRow.expressions` and `AXMathExpressionTable.expressions` answer **nil** on the host,
+whatever array the initialiser was given - nil for one element, for three, for a mixed array, and nil
+again for an empty array, six cases, nil in every one. The three other classes declaring the same member
+- `AXMathExpressionFenced`, `AXMathExpressionTableRow`, `AXMathExpressionTableCell` - answer the very
+array they were given. The port answers the array for all five, because the header declares the property
+`nonnull` and the initialiser takes it: the value is the caller's own, and a port that reproduced the
+drop would break every caller that compiled against the header on a release where the caller can get
+nothing better. The seventh case is the same difference seen from further down a whole tree. This is the
+only place in the two groups where the port does not follow the host.
+
+**The one property whose header disagrees with itself.** `AXMathExpressionSubSuperscript`'s initialiser
+takes `baseExpression` as an **array** and its property is declared a **single** `AXMathExpression *`; the
+two cannot both be right. The host answers the array, unflattened and identity-preserved (measured:
+`__NSArrayI` holding the two elements the initialiser was given, and the very array it was given). The
+port does the same, and `CharonAXMathExpression.m` says why in a comment at the cast: the initialiser is
+the only source of the value and the property the only way to read it back, so answering one of the
+elements would throw away what the caller put in, and nothing in the header says which element that would
+be. The declaration is transcribed as Apple writes it and **not** corrected - a backport that fixed the
+type would stop being the thing an application compiles against - and a caller that wants one expression
+takes `firstObject` itself. `denimonatorExpression` is Apple's own misspelling, in the initialiser and in
+the property, and it is the name the corpus row and every caller use, so it is the name the port carries.
+
+**The two rows that stay `absent`, and what the protocol is on this release.**
+`AXCustomContentProvider.accessibilityCustomContent` and `.accessibilityCustomContentBlock` are members
+of a **protocol**, and the protocol has no object behind it here or on the host:
+`NSProtocolFromString(@"AXCustomContentProvider")` answers **nil** in a process with nothing of this
+library in it, and nil in the host's own framework, where the protocol is declared in a header and never
+registered. An application that adopts the protocol is one of the port's own classes and implements the
+accessor itself, which is where the value lives. The second of the two is a further step: 16.4's
+`AXCustomContentProvider` does not declare it at all, so the port cannot name it either. `implemented`
+would be refused by the registry's own check, which asks what is built and finds nothing under a protocol
+name, and a protocol category declaring a member no object on this release could answer would be a name
+with nothing behind it.
 
 ## The chart and data classes of 15.0
 
@@ -639,13 +741,15 @@ asserted nothing about them, and a mutation that broke two behaviours at once so
 
 ## What the registry holds, and the rows it does not
 
-**119 entries** are written. Of the 114 the Accessibility framework started with, 39 rows became
-`implemented` over the chart and braille-map groups and two became `inert` (`AXLiveAudioGraph` and its three class
-methods, which the registry now names one by one), two rows were **removed** rather than left `absent`,
-and five rows were added that the registry had no answer for at all: the two protocols of 15.0 and the
-three class methods of the graph. Fifty-five entries are `implemented`, four `inert` and 58 `absent`.
+**127 entries** are written, which is the file's own count read with `json.load` and not the number any
+earlier version of this paragraph gave. Of them **120 are `implemented`, 5 `inert` and 2 `absent`**, and
+the two `absent` rows are the two members of the `AXCustomContentProvider` protocol named above - the
+only two this framework answers `absent` now, and both for the same measured reason. By kind: 30
+classes, 75 properties, 10 functions, 5 constants, 3 protocols, 4 methods.
 
-The two rows that were removed, and the one rule that took them out:
+The count moved 45 rows on 2026-09-30, in the group above. What the earlier groups did, and what the two
+rows that were removed rather than left `absent` were, still stands and is not restated here with a
+number that has since moved:
 
 * **`AXNumericDataAxisDescriptor.range`** and **`AttributeScopes.accessibility`** are both Swift-only
   spellings. Neither exports a symbol, so neither can be an `implemented` row, and an `absent` row

@@ -145,9 +145,11 @@
       "kind": "class",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the two expressions the initialiser was given; the misspelled denimonator is Apple's own spelling in the initialiser and in the property, and it is the name the corpus row and every caller use, so it is the name this carries"
     },
     {
       "api": "AXMathExpressionIdentifier",
@@ -165,9 +167,11 @@
       "kind": "class",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the expression the initialiser was given, and nil for one a caller passed nil in defiance of the header's promise"
     },
     {
       "api": "AXMathExpressionNumber",
@@ -218,9 +222,11 @@
       "kind": "class",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the three arrays the initialiser was given, each identity preserved and each nil only for one a caller passed nil. The base is the one member whose header disagrees with itself, and its own property's answer is written out below"
     },
     {
       "api": "AXMathExpressionTable",
@@ -707,18 +713,22 @@
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the two expressions the initialiser was given; the misspelled denimonator is Apple's own spelling in the initialiser and in the property, and it is the name the corpus row and every caller use, so it is the name this carries"
     },
     {
       "api": "AXMathExpressionFraction.numeratorExpression",
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the two expressions the initialiser was given; the misspelled denimonator is Apple's own spelling in the initialiser and in the property, and it is the name the corpus row and every caller use, so it is the name this carries"
     },
     {
       "api": "AXMathExpressionIdentifier.content",
@@ -736,27 +746,33 @@
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the expression the initialiser was given, and nil for one a caller passed nil in defiance of the header's promise"
     },
     {
       "api": "AXMathExpressionMultiscript.postscriptExpressions",
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the very array the initialiser was given, identity preserved, and nil for one a caller passed nil; an empty array stays an empty array, which is what the host answers"
     },
     {
       "api": "AXMathExpressionMultiscript.prescriptExpressions",
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the very array the initialiser was given, identity preserved, and nil for one a caller passed nil; an empty array stays an empty array, which is what the host answers"
     },
     {
       "api": "AXMathExpressionNumber.content",
@@ -818,27 +834,33 @@
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the very array the initialiser was given, unflattened and identity preserved, which is what the host answers - the header's own initialiser takes an array here and its own property is declared a single AXMathExpression, and the two cannot both be right. The port keeps the array because the initialiser is the only source of the value and the property the only way to read it back, and answering one of the elements would throw away what the caller put in with nothing in the header to say which element. The declaration is transcribed as Apple writes it and not corrected; a caller wanting one expression takes firstObject. Measured, and declared in tests/backports/host/accessibilitymath/expected-differences.tsv"
     },
     {
       "api": "AXMathExpressionSubSuperscript.subscriptExpressions",
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the very array the initialiser was given, identity preserved, and nil for one a caller passed nil; an empty array stays an empty array, which is what the host answers"
     },
     {
       "api": "AXMathExpressionSubSuperscript.superscriptExpressions",
       "kind": "property",
       "introduced": "18.2",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "the AXMathExpression classes are a parser and an evaluator for the mathematics grammar - numbers, identifiers, operators, fractions, superscripts and subscripts, tables, under and over, multiscript, fenced expressions - and an ivar per property would answer a parse that never happened, so this delivery does not implement that grammar and says so",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 26.2, transcribed where 16.4 has none into Accessibility/CharonAXMathExpression.h",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXMathExpression.m, and declared by CharonAXMathExpression.h where the port's own SDK has no header for it: an initialiser stores what it was given and a property answers it, which is the whole of every class in this header",
+      "effect": "the very array the initialiser was given, identity preserved, and nil for one a caller passed nil; an empty array stays an empty array, which is what the host answers"
     },
     {
       "api": "AXMathExpressionTable.expressions",

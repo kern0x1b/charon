@@ -206,3 +206,119 @@ CHARON_AX_MATH_EXPRESSIONS_ONLY(AXMathExpressionTable)
 
 @end
 
+
+#pragma mark - AXMathExpressionSubSuperscript
+
+@implementation AXMathExpressionSubSuperscript {
+    // The base is an array, because that is what the initialiser takes. The property above it is
+    // declared a single expression and this answers the array; the header's own comment says which
+    // and why, and the host does the same.
+    NSArray<AXMathExpression *> *_baseExpression;
+    NSArray<AXMathExpression *> *_subscriptExpressions;
+    NSArray<AXMathExpression *> *_superscriptExpressions;
+}
+
+- (instancetype)initWithBaseExpression:(NSArray<AXMathExpression *> *)baseExpression
+                 subscriptExpressions:(NSArray<AXMathExpression *> *)subscriptExpressions
+                 superscriptExpressions:(NSArray<AXMathExpression *> *)superscriptExpressions
+{
+    self = [super init];
+    if (self) {
+        _baseExpression = baseExpression;
+        _subscriptExpressions = subscriptExpressions;
+        _superscriptExpressions = superscriptExpressions;
+    }
+    return self;
+}
+
+// The header declares this a single `AXMathExpression *` and the answer is the array the initialiser
+// was given, which is what the host answers. The cast is the honest spelling of that: the declaration
+// above is Apple's and is transcribed as written, the value here is measured, and the one place they
+// disagree is the one this port cannot satisfy both ways. A caller that reads this property as the
+// single expression the header declares gets an array, exactly as it would on the host, and
+// `firstObject` is the caller's own way to the one it meant. See this file's header comment and
+// facts/Accessibility/Accessibility.md.
+- (AXMathExpression *)baseExpression
+{
+    return (AXMathExpression *)_baseExpression;
+}
+
+- (NSArray<AXMathExpression *> *)subscriptExpressions
+{
+    return _subscriptExpressions;
+}
+
+- (NSArray<AXMathExpression *> *)superscriptExpressions
+{
+    return _superscriptExpressions;
+}
+
+@end
+
+#pragma mark - AXMathExpressionFraction
+
+@implementation AXMathExpressionFraction {
+    AXMathExpression *_numeratorExpression;
+    AXMathExpression *_denimonatorExpression;
+}
+
+- (instancetype)initWithNumeratorExpression:(AXMathExpression *)numeratorExpression
+                          denimonatorExpression:(AXMathExpression *)denimonatorExpression
+{
+    self = [super init];
+    if (self) {
+        _numeratorExpression = numeratorExpression;
+        _denimonatorExpression = denimonatorExpression;
+    }
+    return self;
+}
+
+- (AXMathExpression *)numeratorExpression
+{
+    return _numeratorExpression;
+}
+
+- (AXMathExpression *)denimonatorExpression
+{
+    return _denimonatorExpression;
+}
+
+@end
+
+#pragma mark - AXMathExpressionMultiscript
+
+@implementation AXMathExpressionMultiscript {
+    AXMathExpression *_baseExpression;
+    NSArray<AXMathExpressionSubSuperscript *> *_prescriptExpressions;
+    NSArray<AXMathExpressionSubSuperscript *> *_postscriptExpressions;
+}
+
+- (instancetype)initWithBaseExpression:(AXMathExpression *)baseExpression
+                 prescriptExpressions:(NSArray<AXMathExpressionSubSuperscript *> *)prescriptExpressions
+                 postscriptExpressions:(NSArray<AXMathExpressionSubSuperscript *> *)postscriptExpressions
+{
+    self = [super init];
+    if (self) {
+        _baseExpression = baseExpression;
+        _prescriptExpressions = prescriptExpressions;
+        _postscriptExpressions = postscriptExpressions;
+    }
+    return self;
+}
+
+- (AXMathExpression *)baseExpression
+{
+    return _baseExpression;
+}
+
+- (NSArray<AXMathExpressionSubSuperscript *> *)prescriptExpressions
+{
+    return _prescriptExpressions;
+}
+
+- (NSArray<AXMathExpressionSubSuperscript *> *)postscriptExpressions
+{
+    return _postscriptExpressions;
+}
+
+@end
