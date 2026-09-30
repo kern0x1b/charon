@@ -2240,7 +2240,7 @@
       "status": "absent",
       "reason": "asks the system to put the most used elements nearest the finger or keep the given order; the port shows a context menu as an action sheet (facts/UIKit/UIContextMenuInteraction.md) that always lists the elements in the given order, so the value could be kept and the order would stay fixed - not built for lack of demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIContextMenuConfiguration.secondaryItemIdentifiers",
@@ -2250,7 +2250,7 @@
       "status": "absent",
       "reason": "names the other selected items a menu on several items acts on; the port sends the single-item menu message only and the release has no two-finger selection (facts/UIKit/UIListContextMenus.md), so no menu is made for several items",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIDocumentProperties",
@@ -2260,7 +2260,7 @@
       "status": "absent",
       "reason": "what the title menu of a document's navigation bar shows about it - its metadata, drag item and share action; the release's navigation bar has no title menu, so there is nothing to show it in - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIEditMenuConfiguration",
@@ -2270,7 +2270,7 @@
       "status": "absent",
       "reason": "where and with what an edit menu interaction shows its menu; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIEditMenuInteraction",
@@ -2280,7 +2280,7 @@
       "status": "absent",
       "reason": "shows an edit menu of UIMenu elements at a point of a view; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIEditMenuInteractionAnimating",
@@ -2290,7 +2290,7 @@
       "status": "absent",
       "reason": "the animator an edit menu interaction hands its delegate as the menu shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIEditMenuInteractionDelegate",
@@ -2300,7 +2300,7 @@
       "status": "absent",
       "reason": "asked by an edit menu interaction for its menu and told when it shows and hides; the release's text views show their edit menu through UIMenuController, which takes UIMenuItems of a title and an action (facts/UIKit/UIMenuController.md); an edit menu interaction could be built over it by turning a UIMenu into such items, which is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIFindInteraction",
@@ -2310,7 +2310,7 @@
       "status": "absent",
       "reason": "shows the find bar over a view that can be searched; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIFindInteractionDelegate",
@@ -2320,7 +2320,7 @@
       "status": "absent",
       "reason": "asked by a find interaction for the session to search with; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIFindSession",
@@ -2330,7 +2330,7 @@
       "status": "absent",
       "reason": "one search of a find interaction, its results and the highlight of the current one; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder, a class's own rung being class-scoped), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIMenu.preferredElementSize",
@@ -2340,7 +2340,7 @@
       "status": "absent",
       "reason": "asks for the elements of a menu as small, medium or large tiles; the port shows a menu as an action sheet (facts/UIKit/UIContextMenuInteraction.md), one row per element, so the value could be kept and the rows would stay rows - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIMenuDocument",
@@ -2450,7 +2450,7 @@
       "status": "absent",
       "reason": "part of the iOS 16 item-group toolbar (leadingItemGroups/trailingItemGroups and UIBarButtonItemGroup composing the bar); that system is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UINavigationItem.backAction",
@@ -2460,7 +2460,7 @@
       "status": "absent",
       "reason": "a UIAction replacing the default back-button pop; the port's back button still runs on the old target-action pair (UIViewController's own pop), and nothing reads this property - no demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UINavigationItem.centerItemGroups",
