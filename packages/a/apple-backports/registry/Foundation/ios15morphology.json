@@ -51,14 +51,13 @@
     },
     {
       "api": "-[NSInflectionRuleExplicit initWithMorphology:]",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the initialiser builds a rule that keeps the morphology it was given, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.explicitRule.morphology",
+      "status": "implemented"
     },
     {
       "api": "-[NSMorphology customPronounForLanguage:]",
@@ -80,14 +79,13 @@
     },
     {
       "api": "-[NSMorphologyPronoun initWithPronoun:morphology:dependentMorphology:]",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the designated initialiser builds an object whose three properties read back what went in, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.pronoun",
+      "status": "implemented"
     },
     {
       "api": "-[NSMorphologyPronoun init]",
@@ -120,14 +118,13 @@
     },
     {
       "api": "NSInflectionRuleExplicit.morphology",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the rule keeps the morphology it was constructed with, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.explicitRule.morphology",
+      "status": "implemented"
     },
     {
       "api": "NSMorphology.definiteness",
@@ -214,14 +211,13 @@
     },
     {
       "api": "NSMorphology.userMorphology",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "+userMorphology answers the host's own object, and both read the same setting from it",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the cases class.userMorphology and class.userMorphology.unspecified",
+      "status": "implemented"
     },
     {
       "api": "NSMorphologyCustomPronoun.objectForm",
@@ -270,36 +266,33 @@
     },
     {
       "api": "NSMorphologyPronoun.dependentMorphology",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "an object built without one keeps nil, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.dependentMorphology",
+      "status": "implemented"
     },
     {
       "api": "NSMorphologyPronoun.morphology",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the object keeps the morphology it was constructed with, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.morphology",
+      "status": "implemented"
     },
     {
       "api": "NSMorphologyPronoun.pronoun",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the object keeps the string it was constructed with, as the host's does",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "17.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constructed.pronoun",
+      "status": "implemented"
     }
   ],
   "framework": "Foundation"

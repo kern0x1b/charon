@@ -4,7 +4,6 @@ fresh.number	0
 fresh.case	0
 fresh.determination	0
 fresh.person	0
-fresh.pronounType	0
 fresh.definiteness	0
 fresh.unspecified	1
 userMorphology.unspecified	1
@@ -231,3 +230,5 @@ class.NSMorphologyCustomPronoun	1
 class.NSMorphologyPronoun	1
 class.NSInflectionRule	1
 class.NSInflectionRuleExplicit	1
+class.userMorphology.value	an object
+constructed.pronoun.value	they

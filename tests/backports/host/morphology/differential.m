@@ -383,6 +383,51 @@ int main(int argc, char **argv)
             expect(NSClassFromString(name) != Nil, key, @"the class is there");
             expectEqual(expected[key], @"1", [key stringByAppendingString:@".golden"]);
         }
+        // The members that were held absent because no case reached them. Each is the port's renamed
+        // class beside the host's, one value compared, one golden line.
+        //
+        // +userMorphology is a class property, so it is read on the class; NSMorphologyPronoun's -init is
+        // NS_UNAVAILABLE in the port's own header, so its three properties are read on an object built
+        // through the designated initialiser, which is the construct-and-read case for that member too.
+        {
+            NSMorphology *ours = [[charonHostNSMorphology class] userMorphology];
+            NSMorphology *theirs = [NSMorphology userMorphology];
+            expect((ours == nil) == (theirs == nil), @"class.userMorphology",
+                   [NSString stringWithFormat:@"ours %@ host %@", ours, theirs]);
+            expectEqual(expected[@"class.userMorphology.value"], ours ? @"an object" : @"(nil)",
+                        @"class.userMorphology.value");
+            expect(ours == nil || ours.isUnspecified == theirs.isUnspecified,
+                   @"class.userMorphology.unspecified", @"the two read the same setting");
+        }
+        {
+            charonHostNSMorphology *morphology = [[charonHostNSMorphology alloc] init];
+            [morphology setValue:@(2) forKey:@"grammaticalCase"];
+            NSMorphology *hostMorphology = [[NSMorphology alloc] init];
+            [hostMorphology setValue:@(2) forKey:@"grammaticalCase"];
+
+            charonHostNSMorphologyPronoun *ours = [[charonHostNSMorphologyPronoun alloc]
+                    initWithPronoun:@"they" morphology:morphology dependentMorphology:nil];
+            NSMorphologyPronoun *theirs = [[NSMorphologyPronoun alloc]
+                    initWithPronoun:@"they" morphology:hostMorphology dependentMorphology:nil];
+            expect([[ours pronoun] isEqual:[theirs pronoun]], @"constructed.pronoun",
+                   [NSString stringWithFormat:@"ours %@ host %@", [ours pronoun], [theirs pronoun]]);
+            expectEqual(expected[@"constructed.pronoun.value"], [ours pronoun] ?: @"(nil)",
+                        @"constructed.pronoun.value");
+            expect([ours morphology].grammaticalCase == [theirs morphology].grammaticalCase,
+                   @"constructed.morphology", @"the two keep the morphology they were given");
+            expect([ours dependentMorphology] == nil && [theirs dependentMorphology] == nil,
+                   @"constructed.dependentMorphology", @"neither keeps a dependent one");
+            expect([ours copy] != nil, @"constructed.pronoun.copy", @"-copy answers an object");
+
+            charonHostNSInflectionRuleExplicit *rule = [[charonHostNSInflectionRuleExplicit alloc]
+                    initWithMorphology:morphology];
+            NSInflectionRuleExplicit *hostRule = [[NSInflectionRuleExplicit alloc]
+                    initWithMorphology:hostMorphology];
+            expect(rule.morphology.grammaticalCase == hostRule.morphology.grammaticalCase,
+                   @"constructed.explicitRule.morphology",
+                   [NSString stringWithFormat:@"ours %ld host %ld", (long)rule.morphology.grammaticalCase,
+                    (long)hostRule.morphology.grammaticalCase]);
+        }
         printf("checks=%d failures=%d\n", checks, failures);
     }
     return failures == 0 ? 0 : 1;
