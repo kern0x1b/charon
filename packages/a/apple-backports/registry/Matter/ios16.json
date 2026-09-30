@@ -10,7 +10,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAccessControl initWithDevice:endpointID:queue:]",
@@ -483,7 +483,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAccountLogin initWithDevice:endpointID:queue:]",
@@ -714,7 +714,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterActions initWithDevice:endpointID:queue:]",
@@ -1132,7 +1132,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterActivatedCarbonFilterMonitoring initWithDevice:endpointID:queue:]",
@@ -1561,7 +1561,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAdministratorCommissioning initWithDevice:endpointID:queue:]",
@@ -1891,7 +1891,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAirQuality initWithDevice:endpointID:queue:]",
@@ -2111,7 +2111,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAppleDeviceInformation initWithDevice:endpointID:queue:]",
@@ -2364,7 +2364,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAppleLockCluster initWithDevice:endpointID:queue:]",
@@ -2606,7 +2606,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterApplicationBasic initWithDevice:endpointID:queue:]",
@@ -3057,7 +3057,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterApplicationLauncher initWithDevice:endpointID:queue:]",
@@ -3398,7 +3398,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterAudioOutput initWithDevice:endpointID:queue:]",
@@ -3673,7 +3673,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBallastConfiguration initWithDevice:endpointID:queue:]",
@@ -4542,7 +4542,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "MTRBaseClusterBasicInformation",
@@ -4553,7 +4553,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBasicInformation initWithDevice:endpointID:queue:]",
@@ -5598,7 +5598,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBinding initWithDevice:endpointID:queue:]",
@@ -5840,7 +5840,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBooleanState initWithDevice:endpointID:queue:]",
@@ -6060,7 +6060,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBooleanStateConfiguration initWithDevice:endpointID:queue:]",
@@ -6555,7 +6555,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "MTRBaseClusterBridgedDeviceBasicInformation",
@@ -6566,7 +6566,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterBridgedDeviceBasicInformation initWithDevice:endpointID:queue:]",
@@ -7380,7 +7380,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCameraAVSettingsUserLevelManagement initWithDevice:endpointID:queue:]",
@@ -7996,7 +7996,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCameraAVStreamManagement initWithDevice:endpointID:queue:]",
@@ -10042,7 +10042,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCarbonDioxideConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -10592,7 +10592,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCarbonMonoxideConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -11142,7 +11142,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterChannel initWithDevice:endpointID:queue:]",
@@ -11505,7 +11505,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterChime initWithDevice:endpointID:queue:]",
@@ -11857,7 +11857,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterClosureControl initWithDevice:endpointID:queue:]",
@@ -12308,7 +12308,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterClosureDimension initWithDevice:endpointID:queue:]",
@@ -12924,7 +12924,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterColorControl initWithDevice:endpointID:queue:]",
@@ -13609,6 +13609,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeWhitePointXWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeWhitePointXWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeWhitePointXWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13621,6 +13643,28 @@
     },
     {
       "api": "-[MTRBaseClusterColorControl readAttributeWhitePointYWithCompletion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeWhitePointYWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeWhitePointYWithValue:params:completion:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -13653,6 +13697,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRXWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRXWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeColorPointRXWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13665,6 +13731,28 @@
     },
     {
       "api": "-[MTRBaseClusterColorControl readAttributeColorPointRYWithCompletion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRYWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRYWithValue:params:completion:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -13697,6 +13785,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRIntensityWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointRIntensityWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeColorPointRIntensityWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13709,6 +13819,28 @@
     },
     {
       "api": "-[MTRBaseClusterColorControl readAttributeColorPointGXWithCompletion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGXWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGXWithValue:params:completion:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -13741,6 +13873,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGYWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGYWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeColorPointGYWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13753,6 +13907,28 @@
     },
     {
       "api": "-[MTRBaseClusterColorControl readAttributeColorPointGIntensityWithCompletion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGIntensityWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointGIntensityWithValue:params:completion:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -13785,6 +13961,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBXWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBXWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeColorPointBXWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13807,6 +14005,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBYWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBYWithValue:params:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRBaseClusterColorControl subscribeAttributeColorPointBYWithParams:subscriptionEstablished:reportHandler:]",
       "kind": "method",
       "introduced": "16.4",
@@ -13819,6 +14039,28 @@
     },
     {
       "api": "-[MTRBaseClusterColorControl readAttributeColorPointBIntensityWithCompletion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBIntensityWithValue:completion:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRBaseClusterColorControl writeAttributeColorPointBIntensityWithValue:params:completion:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -15080,7 +15322,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCommissionerControl initWithDevice:endpointID:queue:]",
@@ -15322,7 +15564,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCommodityMetering initWithDevice:endpointID:queue:]",
@@ -15641,7 +15883,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCommodityPrice initWithDevice:endpointID:queue:]",
@@ -15982,7 +16224,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterCommodityTariff initWithDevice:endpointID:queue:]",
@@ -16818,7 +17060,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterContentAppObserver initWithDevice:endpointID:queue:]",
@@ -17016,7 +17258,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterContentControl initWithDevice:endpointID:queue:]",
@@ -17643,7 +17885,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterContentLauncher initWithDevice:endpointID:queue:]",
@@ -17940,7 +18182,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDescriptor initWithDevice:endpointID:queue:]",
@@ -18325,7 +18567,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDeviceEnergyManagement initWithDevice:endpointID:queue:]",
@@ -18897,7 +19139,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDeviceEnergyManagementMode initWithDevice:endpointID:queue:]",
@@ -19161,7 +19403,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDiagnosticLogs initWithDevice:endpointID:queue:]",
@@ -19359,7 +19601,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDishwasherAlarm initWithDevice:endpointID:queue:]",
@@ -19700,7 +19942,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDishwasherMode initWithDevice:endpointID:queue:]",
@@ -19964,7 +20206,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterDoorLock initWithDevice:endpointID:queue:]",
@@ -22670,7 +22912,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterEcosystemInformation initWithDevice:endpointID:queue:]",
@@ -22923,7 +23165,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterElectricalEnergyMeasurement initWithDevice:endpointID:queue:]",
@@ -23308,7 +23550,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterElectricalGridConditions initWithDevice:endpointID:queue:]",
@@ -23616,7 +23858,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterElectricalPowerMeasurement initWithDevice:endpointID:queue:]",
@@ -24430,7 +24672,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterEnergyEVSE initWithDevice:endpointID:queue:]",
@@ -25563,7 +25805,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterEnergyEVSEMode initWithDevice:endpointID:queue:]",
@@ -25827,7 +26069,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterEnergyPreference initWithDevice:endpointID:queue:]",
@@ -26223,7 +26465,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterEthernetNetworkDiagnostics initWithDevice:endpointID:queue:]",
@@ -26729,7 +26971,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterFanControl initWithDevice:endpointID:queue:]",
@@ -27477,7 +27719,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterFixedLabel initWithDevice:endpointID:queue:]",
@@ -27697,7 +27939,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterFlowMeasurement initWithDevice:endpointID:queue:]",
@@ -28016,7 +28258,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterFormaldehydeConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -28566,7 +28808,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterGeneralCommissioning initWithDevice:endpointID:queue:]",
@@ -29259,7 +29501,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterGeneralDiagnostics initWithDevice:endpointID:queue:]",
@@ -29787,7 +30029,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterGroupKeyManagement initWithDevice:endpointID:queue:]",
@@ -30183,7 +30425,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterGroupcast initWithDevice:endpointID:queue:]",
@@ -30491,7 +30733,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterGroups initWithDevice:endpointID:queue:]",
@@ -30788,7 +31030,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterHEPAFilterMonitoring initWithDevice:endpointID:queue:]",
@@ -31217,7 +31459,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterICDManagement initWithDevice:endpointID:queue:]",
@@ -31767,7 +32009,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterIdentify initWithDevice:endpointID:queue:]",
@@ -32064,7 +32306,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterIlluminanceMeasurement initWithDevice:endpointID:queue:]",
@@ -32416,7 +32658,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterJointFabricAdministrator initWithDevice:endpointID:queue:]",
@@ -32735,7 +32977,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterJointFabricDatastore initWithDevice:endpointID:queue:]",
@@ -33604,7 +33846,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterKeypadInput initWithDevice:endpointID:queue:]",
@@ -33802,7 +34044,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLaundryDryerControls initWithDevice:endpointID:queue:]",
@@ -34077,7 +34319,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLaundryWasherControls initWithDevice:endpointID:queue:]",
@@ -34440,7 +34682,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLaundryWasherMode initWithDevice:endpointID:queue:]",
@@ -34704,7 +34946,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLevelControl initWithDevice:endpointID:queue:]",
@@ -35606,7 +35848,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLocalizationConfiguration initWithDevice:endpointID:queue:]",
@@ -35881,7 +36123,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterLowPower initWithDevice:endpointID:queue:]",
@@ -36090,7 +36332,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMediaInput initWithDevice:endpointID:queue:]",
@@ -36409,7 +36651,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMediaPlayback initWithDevice:endpointID:queue:]",
@@ -37212,7 +37454,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMessages initWithDevice:endpointID:queue:]",
@@ -37487,7 +37729,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMeterIdentification initWithDevice:endpointID:queue:]",
@@ -37839,7 +38081,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMicrowaveOvenControl initWithDevice:endpointID:queue:]",
@@ -38356,7 +38598,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterMicrowaveOvenMode initWithDevice:endpointID:queue:]",
@@ -38609,7 +38851,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterModeSelect initWithDevice:endpointID:queue:]",
@@ -39049,7 +39291,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterNetworkCommissioning initWithDevice:endpointID:queue:]",
@@ -39709,7 +39951,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterNitrogenDioxideConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -40259,7 +40501,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOTASoftwareUpdateProvider initWithDevice:endpointID:queue:]",
@@ -40479,7 +40721,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOTASoftwareUpdateRequestor initWithDevice:endpointID:queue:]",
@@ -40831,7 +41073,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOccupancySensing initWithDevice:endpointID:queue:]",
@@ -41700,7 +41942,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOnOff initWithDevice:endpointID:queue:]",
@@ -42228,7 +42470,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOperationalCredentials initWithDevice:endpointID:queue:]",
@@ -42734,7 +42976,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOperationalState initWithDevice:endpointID:queue:]",
@@ -43207,7 +43449,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOvenCavityOperationalState initWithDevice:endpointID:queue:]",
@@ -43636,7 +43878,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOvenMode initWithDevice:endpointID:queue:]",
@@ -43900,7 +44142,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterOzoneConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -44450,7 +44692,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPM10ConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -45000,7 +45242,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPM1ConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -45550,7 +45792,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPM25ConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -46100,7 +46342,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPowerSource initWithDevice:endpointID:queue:]",
@@ -47343,7 +47585,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPowerSourceConfiguration initWithDevice:endpointID:queue:]",
@@ -47563,7 +47805,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPowerTopology initWithDevice:endpointID:queue:]",
@@ -47871,7 +48113,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPressureMeasurement initWithDevice:endpointID:queue:]",
@@ -48355,7 +48597,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPulseWidthModulation initWithDevice:endpointID:queue:]",
@@ -48542,7 +48784,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPumpConfigurationAndControl initWithDevice:endpointID:queue:]",
@@ -49576,7 +49818,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterPushAVStreamTransport initWithDevice:endpointID:queue:]",
@@ -49895,7 +50137,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRVCCleanMode initWithDevice:endpointID:queue:]",
@@ -50159,7 +50401,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRVCOperationalState initWithDevice:endpointID:queue:]",
@@ -50610,7 +50852,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRVCRunMode initWithDevice:endpointID:queue:]",
@@ -50874,7 +51116,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRadonConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -51424,7 +51666,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRefrigeratorAlarm initWithDevice:endpointID:queue:]",
@@ -51710,7 +51952,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRefrigeratorAndTemperatureControlledCabinetMode initWithDevice:endpointID:queue:]",
@@ -51974,7 +52216,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterRelativeHumidityMeasurement initWithDevice:endpointID:queue:]",
@@ -52293,7 +52535,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterSampleMEI initWithDevice:endpointID:queue:]",
@@ -52568,7 +52810,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterScenesManagement initWithDevice:endpointID:queue:]",
@@ -52909,7 +53151,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterServiceArea initWithDevice:endpointID:queue:]",
@@ -53316,7 +53558,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterSmokeCOAlarm initWithDevice:endpointID:queue:]",
@@ -53976,7 +54218,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterSoftwareDiagnostics initWithDevice:endpointID:queue:]",
@@ -54317,7 +54559,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterSoilMeasurement initWithDevice:endpointID:queue:]",
@@ -54570,7 +54812,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterSwitch initWithDevice:endpointID:queue:]",
@@ -54856,7 +55098,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTLSCertificateManagement initWithDevice:endpointID:queue:]",
@@ -55274,7 +55516,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTLSClientManagement initWithDevice:endpointID:queue:]",
@@ -55560,7 +55802,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTargetNavigator initWithDevice:endpointID:queue:]",
@@ -55824,7 +56066,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTemperatureControl initWithDevice:endpointID:queue:]",
@@ -56231,7 +56473,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTemperatureMeasurement initWithDevice:endpointID:queue:]",
@@ -56550,7 +56792,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTestCluster initWithDevice:endpoint:queue:]",
@@ -75503,7 +75745,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterThermostat initWithDevice:endpointID:queue:]",
@@ -78550,7 +78792,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterThermostatUserInterfaceConfiguration initWithDevice:endpointID:queue:]",
@@ -78902,7 +79144,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterThreadBorderRouterManagement initWithDevice:endpointID:queue:]",
@@ -79353,7 +79595,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterThreadNetworkDiagnostics initWithDevice:endpointID:queue:]",
@@ -81707,7 +81949,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterThreadNetworkDirectory initWithDevice:endpointID:queue:]",
@@ -82048,7 +82290,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTimeFormatLocalization initWithDevice:endpointID:queue:]",
@@ -82378,7 +82620,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTimeSynchronization initWithDevice:endpointID:queue:]",
@@ -83049,7 +83291,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTimer initWithDevice:endpointID:queue:]",
@@ -83390,7 +83632,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterTotalVolatileOrganicCompoundsConcentrationMeasurement initWithDevice:endpointID:queue:]",
@@ -83940,7 +84182,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterUnitLocalization initWithDevice:endpointID:queue:]",
@@ -84215,7 +84457,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterUnitTesting initWithDevice:endpointID:queue:]",
@@ -89748,7 +89990,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterUserLabel initWithDevice:endpointID:queue:]",
@@ -89990,7 +90232,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterValveConfigurationAndControl initWithDevice:endpointID:queue:]",
@@ -90628,7 +90870,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWakeOnLAN initWithDevice:endpointID:queue:]",
@@ -90881,7 +91123,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWaterHeaterManagement initWithDevice:endpointID:queue:]",
@@ -91299,7 +91541,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWaterHeaterMode initWithDevice:endpointID:queue:]",
@@ -91563,7 +91805,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWebRTCTransportProvider initWithDevice:endpointID:queue:]",
@@ -91838,7 +92080,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWebRTCTransportRequestor initWithDevice:endpointID:queue:]",
@@ -92102,7 +92344,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWiFiNetworkDiagnostics initWithDevice:endpointID:queue:]",
@@ -92740,7 +92982,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWiFiNetworkManagement initWithDevice:endpointID:queue:]",
@@ -93015,7 +93257,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterWindowCovering initWithDevice:endpointID:queue:]",
@@ -94060,7 +94302,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRBaseClusters.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "a cluster class the release has no framework for at all: iOS 6.1.3 has no Matter.framework, so nothing can be shadowed and the class is carried whole, generated from the SDK's own declarations rather than written by hand",
-      "effect": "every member the header declares for this class has a body in the emitted object, and the differential over the class reports its member set identical to the system framework's"
+      "effect": "every member the class's own @interface declares has a body in the emitted object, and the generator's own two-way check holds over the file: every selector the header declares is in the object, every selector the object defines is in the contract, and each direction has a planted control. The initializer keeps the device, the endpoint and the queue the caller gave it in three ivars of its own"
     },
     {
       "api": "-[MTRBaseClusterZoneManagement initWithDevice:endpointID:queue:]",
@@ -94555,7 +94797,7 @@
       "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRCluster.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
       "facts": "facts/Matter/Matter.md",
       "reason": "the base class every cluster of this family sits on: the SDK this library compiles against (16.4) declares MTRCluster and not MTRGenericBaseCluster, so the port declares and implements it, and a cluster object whose superclass nothing defines does not link",
-      "effect": "the cluster's own state - the endpoint, the device and the queue the caller gave it - kept in the class's own storage; the SDK declares the class with no member of its own, so it adds none"
+      "effect": "no member and no state of its own: the SDK declares MTRGenericBaseCluster with an empty @interface, and each cluster class above it keeps its own device, endpoint and queue in its own storage"
     }
   ]
 }

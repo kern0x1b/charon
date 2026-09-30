@@ -11,10 +11,15 @@ What is generated:
 
   * one object file per cluster family asked for, and the family is the unit because a
     release measurement decides the band and one object carries the API of one release.
-  * a CATEGORY on the cluster, not a second declaration of it. The cluster is declared by
-    the SDK the port compiles against - iPhoneOS 16.4 ships Matter.framework, and
-    MTRBaseClusterIdentify is in its MTRBaseClusters.h - and the release has no such
-    class, so the port adds the members and not the class.
+  * the object IS the class, in both of the shapes the library's SDK leaves. iPhoneOS 16.4 ships
+    Matter.framework, and it declares the clusters of its own release - MTRBaseClusterIdentify is
+    in its MTRBaseClusters.h - but not the ones that arrived later, so a cluster 16.4 declares is
+    implemented against the SDK's own @interface, and a cluster 16.4 does not declare gets its
+    @interface, with its members, its storage and its @synthesize, written into
+    CharonMatterTypes.h. There is no category anywhere in the family: a category on a class the
+    device does not have is never loaded, and the release has none of them.
+  * every member of that class's own @interface, including the members a later SDK dropped - see
+    cluster_declarations() for which those are and why the port owes them a body.
   * for every attribute the header declares: the read, the write, and the subscribe, with
     the value's own type as the header gives it.
   * for every command the header declares: the method, its params class and its
@@ -287,16 +292,62 @@ PORT_ONLY = []
 PORT_OWNED_CLASS = []
 
 
-def contract_of(block):
-    """The selectors the header declares for a cluster, in every shape it declares them.
+def own_interface_block(block):
+    """The block's OWN @interface: from its @interface line to its first @end, and no category after it.
 
-    Re-parses the block's own declarations with parse(), and shares no scope with the emit loop,
-    so it cannot be broken by what the emit does or not do. The result is written beside the generated
-    file and is what the differential holds the port to: a selector the port has that this does not list
-    is one the generator invented, and a selector this lists that the port no longer has is one it dropped.
+    A category's methods are optional for the class that declares them - that is what a category is -
+    so the members in this part are the ones a class must define and the ones in the categories beside
+    it are the ones it may.
+    """
+    own = []
+    for line in block:
+        own.append(line)
+        if line.strip() == "@end":
+            break
+    return own
+
+
+def cluster_declarations(cluster, block):
+    """Every declaration the port owes a body for: this SDK's own, plus what the library's SDK declares.
+
+    The port compiles against iPhoneOS 16.4, and where 16.4 declares the class, 16.4's OWN @interface is
+    that class's declaration - so every member in it is a member the port's object has to define, and a
+    member a later SDK dropped is one the port still owes: SDK 26.2 makes the ColorPoint attributes of
+    ColorControl read-only and no longer declares a write for them, while 16.4 declares both write
+    shapes. Generating from 26.2 alone left the class the port implements with 21 declared members and no
+    body, which is -Wincomplete-implementation on every one and a doesNotRecognizeSelector for a client
+    built against this port's own SDK.
+
+    Only the class's own @interface is read from the library's SDK, not its categories: a deprecated
+    category member is not one the class must define, and 26.2's blocks are the contract for everything
+    else. Where the library's SDK does not declare the class, this SDK's block is the whole of it.
+    """
+    own = list(declarations(block))
+    if not DECLARED_LINES_16:
+        return own
+    other, _ = cluster_block(DECLARED_LINES_16, cluster)
+    if other is None:
+        return own
+    seen = set(selector_of(signature(text)) for _, text in own)
+    for first, text in declarations(own_interface_block(other)):
+        name = selector_of(signature(text))
+        if not name or name not in seen:
+            if name:
+                seen.add(name)
+            own.append((first, text))
+    return own
+
+
+def contract_of(items):
+    """The selectors the port owes a body for, in every shape they are declared.
+
+    Re-parses the declarations with parse(), and shares no scope with the emit loop, so it cannot be
+    broken by what the emit does or not do. The result is written beside the generated file and is what
+    the differential holds the port to: a selector the port has that this does not list is one the
+    generator invented, and a selector this lists that the port no longer has is one it dropped.
     """
     names = []
-    for first, text in declarations(block):
+    for first, text in items:
         # Only INSTANCE declarations. A `+` declaration is a class method and lives on the METACLASS,
         # so it can never appear in the class's own instance method list - and the contract is compared
         # against exactly that list. Listing the seven cached reads and `init` and `new` made the check
@@ -447,8 +498,8 @@ def implemented_class(path):
     return found[0] if len(found) == 1 else None
 
 
-def facts(block):
-    """What the header says a cluster has: its attributes, its commands, and the release it arrived in.
+def facts(items):
+    """What a cluster's declarations say it has: its attributes, its commands, and the release it arrived in.
 
     Only the instance members that read, write, subscribe or invoke are read. The class-method
     cache reads are counted and left out, and the caller is told how many: a release with no
@@ -461,7 +512,7 @@ def facts(block):
     cache = collections.OrderedDict()
     seen = set()
     version = None
-    for first, text in declarations(block):
+    for first, text in items:
         # Every pattern here is matched with `match`, so the JOINED declaration is what they need: the
         # first line is where the joined text starts, and a selector the header wrote on its second
         # line is in the text even though it is not in the first.
@@ -977,6 +1028,20 @@ def emit_params(path, name, info, version):
 # that generated it, because that machine has the 26.2 SDK. Pointer uses need only a forward declaration.
 MATTER_TYPE = re.compile(r"\bMTR[A-Za-z0-9_]+\b")
 DECLARED_16 = set()
+# The library's SDK's own cluster headers, read once, for the members its @interface declares and the
+# newer one dropped - see cluster_declarations().
+DECLARED_LINES_16 = []
+
+
+def cluster_headers(sdk):
+    """The cluster headers of an SDK, as one list of lines, or nothing when it has none."""
+    lines = []
+    for header in HEADERS:
+        path = os.path.join(sdk, header)
+        if os.path.exists(path):
+            with open(path) as handle:
+                lines.extend(handle.read().splitlines())
+    return lines
 
 
 def load_declared(sdk16):
@@ -1012,6 +1077,8 @@ SHARED_TYPES = (
     ("MTRCluster", "NSObject", ("endpointID",)),
     ("MTRGenericBaseCluster", "MTRCluster", ()),
 )
+
+
 
 TYPES_HEADER = """//
 //  CharonMatterTypes.h
@@ -1069,7 +1136,7 @@ TYPES_OBJECT = """//
 """
 
 
-def cluster_interface(cluster, block, supers):
+def cluster_interface(cluster, items, supers):
     """The @interface of a cluster class the target's SDK does not declare, for CharonMatterTypes.h.
 
     It carries the class's own members, every one the object below implements, because an @interface with
@@ -1078,7 +1145,7 @@ def cluster_interface(cluster, block, supers):
     """
     if not DECLARED_16 or cluster in DECLARED_16:
         return None
-    attributes, commands, version, cache_reads, initialisers, cache = facts(block)
+    attributes, commands, version, cache_reads, initialisers, cache = facts(items)
     lines = ["@interface %s : %s" % (cluster, supers or "NSObject")]
     # The dictionary is keyed by the attribute's name, which is the name itself.
     for name in sorted(attributes):
@@ -1197,6 +1264,21 @@ def strip_region_nullability(text):
     return text.replace(" _Nullable", "").replace(" _Nonnull", "")
 
 
+def stored_value(slot, name, kind):
+    """The assignment that puts one initializer argument into the ivar that holds it.
+
+    The header's own declaration decides: an object pointer is stored as it is, and so is a dispatch
+    queue, which is an object on every target this port builds for (OS_OBJECT_USE_OBJC is 1 from iOS 6
+    on) even though the typedef carries no star. A C value is boxed, because the storage holds an
+    NSNumber: TestCluster's deprecated initWithDevice:endpoint:queue: takes a uint16_t endpoint, and
+    without the box that assignment is `implicit conversion of 'uint16_t' to 'NSNumber *' is disallowed
+    with ARC`. A shape this does not fit is a shape the run reports rather than one it drops.
+    """
+    if kind.endswith("*") or kind.startswith("dispatch_"):
+        return "%s = %s;" % (slot, name)
+    return "%s = @(%s);" % (slot, name)
+
+
 def emit(path, cluster, supers, attributes, commands, version, cache_reads, cache, initialisers):
     """The family as one object, and the object IS the class: the release has no such class.
 
@@ -1245,10 +1327,26 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
                 "    return [NSError errorWithDomain:NSCocoaErrorDomain code:4096 userInfo:nil];\n}\n\n")
     for entry in initialisers:
         body.append(as_comment(shape_line(entry["signature"])))
-        # MTRBaseCluster's -init is unavailable, so the initialiser does not chain to it: the object
-        # is already allocated and its three storage slots are already nil.
-        body.append("%s\n{\n"
-                    "    return self;\n}\n\n" % shape_line(entry["signature"]))
+        # The three arguments go into the three ivars the class extension above declares: an initializer
+        # that returns self and keeps nothing is a class whose own state nothing can name. It does NOT
+        # chain to the superclass initializer, because it cannot: MTRCluster declares -init NS_UNAVAILABLE
+        # against the SDK this library builds with, so `self = [super init]` is `error: 'init' is
+        # unavailable` (measured, and neither a category nor a class extension redeclaring -init lifts the
+        # attribute), and an initializer that leaves the chain out is what -Wobjc-designated-initializers
+        # reports on the 60 objects whose @interface is that SDK's own. facts/Matter/Matter.md carries the
+        # measurement; the port does not silence the diagnostic with a pragma.
+        typed = [(name, kind) for _, name, kind in parse(entry["signature"])[1] if name]
+        if not typed:
+            OFFENDERS.append((cluster, "initWithDevice", "initialiser", entry["signature"]))
+            continue
+        slots = ("_charon_device", "_charon_endpoint", "_charon_queue")
+        if len(typed) != len(slots):
+            OFFENDERS.append((cluster, "initWithDevice", "initialiser", entry["signature"]))
+            continue
+        stored = "".join("    %s\n" % stored_value(slot, name, kind)
+                         for slot, (name, kind) in zip(slots, typed))
+        body.append("%s\n{\n%s    return self;\n}\n\n"
+                    % (shape_line(entry["signature"]), stored))
     for name, info in attributes.items():
         value = info["value"]
         body.append("// %s, a %s.\n" % (name, value))
@@ -1440,6 +1538,10 @@ def check_header_stands_alone(path, sdk16):
     """
     if not sdk16 or not os.path.exists(path):
         return 0
+    # ABSOLUTE, because the compile runs in the header's own directory and a relative --out hands the
+    # compiler a path that does not exist there: the check then reports a header that stands alone as one
+    # that does not, and fails every run that writes into the package tree rather than a scratch one.
+    path = os.path.abspath(path)
     outcome = subprocess.call(
         ["xcrun", "clang", "-target", "arm64-apple-ios13.0", "-isysroot", sdk16, "-fobjc-arc", "-Wall",
          "-fsyntax-only", "-x", "objective-c",
@@ -1494,6 +1596,8 @@ def main():
     if arguments.self_test:
         return 0 if self_test() else 1
     DECLARED_16.update(load_declared(arguments.sdk16))
+    global DECLARED_LINES_16
+    DECLARED_LINES_16 = cluster_headers(arguments.sdk16)
     lines = []
     for header in HEADERS:
         path = os.path.join(arguments.sdk, header)
@@ -1553,7 +1657,10 @@ def main():
         if block is None:
             print("no such cluster in the SDK's Matter headers: %s" % cluster)
             continue
-        attributes, commands, version, cache_reads, initialisers, cache = facts(block)
+        # What the port owes a body for: this SDK's declarations, plus the members the library's SDK's
+        # own @interface declares for the class and this one dropped.
+        items = cluster_declarations(cluster, block)
+        attributes, commands, version, cache_reads, initialisers, cache = facts(items)
         # The CLASS name, verbatim. Stripping a prefix put OTA and Ota, and WakeOnLAN and WakeOnLan, on
         # the same file name, and a volume that folds case would fold them anyway - so a collision on the
         # name as written is detected here and the second one is suffixed, and both are printed.
@@ -1569,11 +1676,11 @@ def main():
             written -= 1
             continue
         NAMED[stem.lower()] = cluster
-        declared_here = cluster_interface(cluster, block, supers)
+        declared_here = cluster_interface(cluster, items, supers)
         if declared_here:
             CLUSTER_INTERFACES.append(declared_here)
         emit(path, cluster, supers, attributes, commands, version, cache_reads, cache, initialisers)
-        declared = contract_of(block)
+        declared = contract_of(items)
         # The contract is a TEST FIXTURE: it is what the differential holds the port to, and it is not
         # source. Written beside the object it landed in packages/a/apple-backports/Matter/, where it
         # would be swept into the package's sources digest and installed as payload.

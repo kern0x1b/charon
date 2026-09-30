@@ -23,7 +23,7 @@ methods the header declares answer as Apple documents: no value, and an error.
 
     tools/matter-generate.py            run exit 0; invariant 0 in BOTH directions; 143 of 143 objects compile
                                         against SDK 16.4; every object names the class it implements, 143 of 143
-    tools/matter-registry.py            8596 rows (143 class, 8453 method) over 143 objects; every class an
+    tools/matter-registry.py            8618 rows (143 class, 8475 method) over 143 objects; every class an
                                         emitted object defines has a row: 143 of 143
     CharonMatterMTRGenericBaseCluster.m, armv7-apple-ios4.3
                                         fails: MTRDeviceControllerStartupParams.h:240 `property with 'retain
@@ -33,7 +33,8 @@ methods the header declares answer as Apple documents: no value, and an error.
     the 143 objects, the package's own flags
                                         armv7-apple-ios6.0, iPhoneOS16.4.sdk, -fobjc-arc -Os -Wall
                                         -Werror=objc-missing-property-synthesis, xargs -P 2, one log per
-                                        object: 143 of 143 compiled, 0 errors
+                                        object: 143 of 143 compiled, 0 errors, and the only warning left is
+                                        -Wobjc-designated-initializers on 60 objects - see below
     the same 143 objects for armv7-apple-ios4.3
                                         0 of 143 compile, and the same diagnostic is in all 143 logs
     tests/backports/host/matter/plants.sh
@@ -46,6 +47,23 @@ in the generated file - 1,162 members over 83 clusters when the invariant was fi
 selector the file defines is in the contract - it named 700 on `MTRBaseClusterTestCluster` alone, and an
 invented instance method injected into one emitted object is caught and named, so the reverse direction is
 not vacuous.
+
+**The one warning the library's own flags report is the designated initializer, and it cannot be satisfied.**
+60 of the 143 objects are the clusters SDK 16.4 declares, so their `@interface` is the SDK's own and it marks
+`-initWithDevice:endpointID:queue:` `NS_DESIGNATED_INITIALIZER`; clang then asks the initializer to chain to a
+designated initializer of the superclass, and the superclass `MTRCluster` declares `-init NS_UNAVAILABLE`, so
+
+    self = [super init];        error: 'init' is unavailable
+
+is the measurement, not an assumption, and it is the same whether the call is written plainly or through a
+category or a class extension that redeclares `-init` (both probed; the attribute stays). The port does not
+chain, does not suppress the diagnostic with a pragma, and does not redeclare the superclass initializer, so
+the warning stands on those 60 objects: it is reported here rather than silenced, and the initializer does the
+work that matters - it writes the device, the endpoint and the queue it was given into the three ivars the
+class declares (`@(endpoint)` when the header's deprecated `initWithDevice:endpoint:queue:` hands it a
+`uint16_t`). This repository's own convention for the same diagnostic is a per-file
+`#pragma clang diagnostic ignored "-Wobjc-designated-initializers"`, which about twenty backport files carry;
+adding it here is the coordinator's call, not this series'.
 
 **The differential does not build here, and the reason is the port's own types header.** `CharonMatterTypes.h`
 declares every cluster class SDK 16.4 lacks, because the library compiles against 16.4 and an object that
@@ -69,11 +87,23 @@ differential can turn off.
   classes the runtime registers, `MTRBaseClusterOTASoftwareUpdateProvider`, `MTRBaseClusterOTASoftwareUpdateRequestor`
   and `MTRBaseClusterWakeOnLAN`. The runtime spellings are carried; on a case-insensitive volume the two file
   names are one inode, which is why the generator treats a case-only collision as an error.
-- **`initWithDevice:endpointID:queue:`** is reported `shape-differs` by the differential on the clusters it
-  checks. The emitted object carries the header's own declaration verbatim; deciding which side's shape is
-  wrong needs the system class's signature read out of the binary.
+- **`initWithDevice:endpointID:queue:`** was reported `shape-differs` by an earlier differential run, on the
+  clusters that run compared. The emitted object carries the header's own declaration verbatim and nothing
+  re-measures it now, because the check does not build on this host (see "What is measured"); deciding which
+  side's shape is wrong needs the system class's signature read out of the binary.
+- **The comparison against the system framework is OWED.** `tests/backports/host/matterdifferential/run.sh`
+  reports `DOES NOT BUILD on this host: 142 clusters not built, 0 checked` for the reason given above, so no
+  member set has been compared with the system framework's. Every `effect` in `registry/Matter/ios16.json`
+  therefore claims only the generator's own two-way check, which is what the run measures.
+- **Attribute state is per cluster CLASS, not per cluster instance.** `+charon_port_values` is one
+  `static NSMutableDictionary` per class, indexed by attribute name alone, so two cluster objects of the same
+  class over two endpoints share every value written through either. What IS per instance is the identity the
+  initializer was given: `_charon_device`, `_charon_endpoint` and `_charon_queue`, which the object's own
+  initializer writes and no member reads back, because no member here reaches a fabric. Per-instance storage
+  keyed by (device, endpoint) is what a real node needs, and it is owed with the rest of the fabric-free
+  behaviour.
 
-The first two groups are OWED, not ABSENT: no row anywhere claims the port does not carry them, and no object
+The first three groups are OWED, not ABSENT: no row anywhere claims the port does not carry them, and no object
 is emitted for an excluded name.
 
 ## The registry rows
@@ -93,11 +123,13 @@ below the floor its neighbours have, which is how four objects reached armv7-app
 16.4, 17.0, 17.4, 17.6 and 18.4 are all in the file. A member with no annotation takes its class's, and a class
 no member dates takes the annotation on the line above its `@interface` - which is how `MTRGenericBaseCluster`
 is dated 17.4, the release `MTRCluster.h` states for it, and the only statement the SDK makes about it since
-it declares no member at all. **3057 of the 8453 method rows and 32 of the 143 class rows take a release the
-header does not state for them** - the clusters SDK 26.2 annotates `MTR_PROVISIONALLY_AVAILABLE`, which expands
-to an export or to `NS_UNAVAILABLE` and names no iOS release - and every one of those rows is listed in
-`registry/Matter/ios16.json.unannotated`, a bare class name for a class row and the row's own spelling for a
-method row, so the assumption is countable rather than hidden.
+it declares no member at all. **2903 of the 8618 rows take the 16.0 fallback, which the header states nowhere
+- 32 class rows and 2871 method rows - and a further 208 method rows carry no annotation of their own and take
+their class's release, which the header does state.** The clusters that fall back are the ones SDK 26.2
+annotates `MTR_PROVISIONALLY_AVAILABLE`: it expands to an export or to `NS_UNAVAILABLE` and names no iOS
+release, so there is nothing to read and the tool says so rather than inventing a number per row.
+`registry/Matter/ios16.json.unannotated` lists every declaration the header leaves undated - 3111 of them, a
+superset of the 2903 that take the fallback - so both sets are countable from one file and neither is hidden.
 
 **Every row says `minimum` 6.0, and that is measured.** SDK 16.4's `MTRDeviceControllerStartupParams.h`
 declares

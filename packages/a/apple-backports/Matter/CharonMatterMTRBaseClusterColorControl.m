@@ -63,6 +63,9 @@
                               endpointID:(NSNumber *)endpointID
                                    queue:(dispatch_queue_t)queue
 {
+    _charon_device = device;
+    _charon_endpoint = endpointID;
+    _charon_queue = queue;
     return self;
 }
 
@@ -672,6 +675,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeWhitePointXWithValue:(NSNumber * _Nonnull)value
+                                completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeWhitePointXWithValue:(NSNumber * _Nonnull)value
+                                    params:(MTRWriteParams * _Nullable)params
+                                completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"WhitePointX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeWhitePointXWithParams:(MTRSubscribeParams *)params
                         subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                   reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -690,6 +714,27 @@
     }
     id written = [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"];
     completion(written, nil);
+}
+
+- (void)writeAttributeWhitePointYWithValue:(NSNumber * _Nonnull)value
+                                completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeWhitePointYWithValue:(NSNumber * _Nonnull)value
+                                    params:(MTRWriteParams * _Nullable)params
+                                completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"WhitePointY"] = value;
+    if (completion) {
+        completion(nil);
+    }
 }
 
 - (void)subscribeAttributeWhitePointYWithParams:(MTRSubscribeParams *)params
@@ -712,6 +757,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeColorPointRXWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointRXWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeColorPointRXWithParams:(MTRSubscribeParams *)params
                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -730,6 +796,27 @@
     }
     id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"];
     completion(written, nil);
+}
+
+- (void)writeAttributeColorPointRYWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointRYWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRY"] = value;
+    if (completion) {
+        completion(nil);
+    }
 }
 
 - (void)subscribeAttributeColorPointRYWithParams:(MTRSubscribeParams *)params
@@ -752,6 +839,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeColorPointRIntensityWithValue:(NSNumber * _Nullable)value
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointRIntensityWithValue:(NSNumber * _Nullable)value
+                                             params:(MTRWriteParams * _Nullable)params
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointRIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeColorPointRIntensityWithParams:(MTRSubscribeParams *)params
                                  subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                            reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -770,6 +878,27 @@
     }
     id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"];
     completion(written, nil);
+}
+
+- (void)writeAttributeColorPointGXWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointGXWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGX"] = value;
+    if (completion) {
+        completion(nil);
+    }
 }
 
 - (void)subscribeAttributeColorPointGXWithParams:(MTRSubscribeParams *)params
@@ -792,6 +921,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeColorPointGYWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointGYWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeColorPointGYWithParams:(MTRSubscribeParams *)params
                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -810,6 +960,27 @@
     }
     id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"];
     completion(written, nil);
+}
+
+- (void)writeAttributeColorPointGIntensityWithValue:(NSNumber * _Nullable)value
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointGIntensityWithValue:(NSNumber * _Nullable)value
+                                             params:(MTRWriteParams * _Nullable)params
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointGIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
 }
 
 - (void)subscribeAttributeColorPointGIntensityWithParams:(MTRSubscribeParams *)params
@@ -832,6 +1003,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeColorPointBXWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointBXWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBX"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeColorPointBXWithParams:(MTRSubscribeParams *)params
                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -852,6 +1044,27 @@
     completion(written, nil);
 }
 
+- (void)writeAttributeColorPointBYWithValue:(NSNumber * _Nonnull)value
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointBYWithValue:(NSNumber * _Nonnull)value
+                                     params:(MTRWriteParams * _Nullable)params
+                                 completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBY"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
 - (void)subscribeAttributeColorPointBYWithParams:(MTRSubscribeParams *)params
                          subscriptionEstablished:(MTRSubscriptionEstablishedHandler _Nullable)subscriptionEstablished
                                    reportHandler:(void (^)(NSNumber * _Nullable value, NSError * _Nullable error))reportHandler
@@ -870,6 +1083,27 @@
     }
     id written = [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"];
     completion(written, nil);
+}
+
+- (void)writeAttributeColorPointBIntensityWithValue:(NSNumber * _Nullable)value
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
+}
+
+- (void)writeAttributeColorPointBIntensityWithValue:(NSNumber * _Nullable)value
+                                             params:(MTRWriteParams * _Nullable)params
+                                         completion:(MTRStatusCompletion)completion
+    API_AVAILABLE(ios(16.4), macos(13.3), watchos(9.4), tvos(16.4))
+{
+    [MTRBaseClusterColorControl charon_port_values][@"ColorPointBIntensity"] = value;
+    if (completion) {
+        completion(nil);
+    }
 }
 
 - (void)subscribeAttributeColorPointBIntensityWithParams:(MTRSubscribeParams *)params

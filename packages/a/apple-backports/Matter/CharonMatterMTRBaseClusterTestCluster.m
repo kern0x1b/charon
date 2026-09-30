@@ -63,6 +63,9 @@
                                endpoint:(uint16_t)endpoint
                                   queue:(dispatch_queue_t)queue MTR_DEPRECATED("Please use initWithDevice:endpointID:queue:", ios(16.1, 16.4), macos(13.0, 13.3), watchos(9.1, 9.4), tvos(16.1, 16.4))
 {
+    _charon_device = device;
+    _charon_endpoint = @(endpoint);
+    _charon_queue = queue;
     return self;
 }
 

@@ -65,7 +65,6 @@ package("apple-backports")
     add_configs("opengles", {description = "Build libOpenGLESBackports.dylib, for an application that names the functions OpenGL ES 3.0 added; the release's driver is ES 2.0, so they answer through its extensions where it has one and with an error where it has none.", default = false, type = "boolean"})
     add_configs("videotoolbox", {description = "Build libVideoToolboxBackports.dylib beside libFoundationBackports.dylib, for a port that asks the frame processor for a video frame, its configuration and its parameters - the seventeen classes iOS 26 added and no release this package covers has, since VideoToolbox itself arrived with iOS 3. The release's own VideoToolbox answers the C API; this is the Objective-C surface on top of it, and it brings libFoundationBackports with it, which is where its value objects keep their properties.", default = false, type = "boolean"})
 
-
     add_configs("matter", {description = "Build libMatterClusterBackports.dylib, for a port that names the Matter cluster classes of iOS 14 and later: the 143 cluster objects the generator writes from the SDK's own Matter headers, each cluster's attributes, commands and events over the release's own storage. The library is named MatterClusterBackports and not MatterBackports so its install name cannot collide with the connectedhomeip dylib of that name, and the registry rows live in registry/Matter/ because the objects are built here rather than in a package of their own.", default = false, type = "boolean"})
     add_configs("mapkit", {description = "Build libMapKitBackports.dylib, for an application that draws overlays with MapKit's own renderers, frames a map with a camera, or takes a map snapshot. iOS 6 has the MKMapView and the whole of the MKOverlayView drawing path but none of the iOS 7 renderer tree, so the renderers here are the release's own overlay view with the iOS 7 API on it, the camera and the snapshotter are built on the release's own map view and projection, and the tile overlays fetch for real over NSURLConnection.", default = false, type = "boolean"})
 
@@ -240,7 +239,7 @@ package("apple-backports")
                                      (package:config("intents") or package:config("intentsui")) and {"IntentsBackports"} or {},
                                      package:config("intentsui") and {"IntentsUIBackports"} or {},
                                      package:config("mapkit") and {"MapKitBackports"} or {},
-                                       package:config("matter") and {"MatterClusterBackports"} or {},
+                                     package:config("matter") and {"MatterClusterBackports"} or {},
                                      package:config("passkit") and {"PassKitBackports"} or {},
                                      package:config("carplay") and {"CarPlayBackports"} or {},
                                      package:config("videotoolbox") and {"VideoToolboxBackports"} or {},

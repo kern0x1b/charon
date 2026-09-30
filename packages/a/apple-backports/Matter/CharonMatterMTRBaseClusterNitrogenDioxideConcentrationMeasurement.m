@@ -80,6 +80,9 @@
                               endpointID:(NSNumber *)endpointID
                                    queue:(dispatch_queue_t)queue
 {
+    _charon_device = device;
+    _charon_endpoint = endpointID;
+    _charon_queue = queue;
     return self;
 }
 
