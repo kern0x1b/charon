@@ -1484,7 +1484,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "absent is a claim about the RELEASE, and the release carries no SensorKit at all: binary_inventory at modules/apple/objc.lua:395 over the armv7 6.1.3 cache finds no SR* class and no SR* symbol, so nothing the release has answers this name. Independently, SRSensorReader.h:53 marks it NS_UNAVAILABLE, so it is not API a caller writes",
-      "effect": "not carried, so respondsToSelector: answers NO and an unchecked call raises rather than quietly producing a reader with no sensor in it. It stays absent rather than becoming an implementation that raises because +[SRSensorReader new] is already implemented here and +new calls -init. The host's own answer is on record - NSInternalInconsistencyException, \"Use initWithSensor:\"",
+      "effect": "not carried, and the port implements no -init, so the class inherits NSObject's and a call produces a reader with NO SENSOR IN IT and raises nothing. That is precisely what SRSensorReader.h:53 forbids by marking it NS_UNAVAILABLE. It stays absent rather than becoming an implementation that raises because +[SRSensorReader new] is already implemented in this file and +new calls -init, so a raising -init would change what that row answers. The host's own answer is on record and is Apple's own text - NSInternalInconsistencyException, \"Use initWithSensor:\" - read by tests/backports/host/sensorkit-value",
       "source": "modules/apple/objc.lua for the release's inventory; SRSensorReader.h of SDK 26.2 for the declaration; the host's SensorKit.framework for what -init raises, read by tests/backports/host/sensorkit-value"
     },
     {
