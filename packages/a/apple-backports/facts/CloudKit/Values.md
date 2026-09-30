@@ -251,3 +251,33 @@ the same way. The split follows the measurement, because an object is placed by 
 carries, and the row records the surface, because a client asks the row. The ten classes the gate
 grouped as 10.0.1 are `ios(10.0)` by Apple's annotation and 10.0.1 by the ladder, which is the same
 bound one rung tighter.
+
+### One object, one minimum, and why the check groups by the file and not by `source`
+
+The gate's 4.3 rule is that an object is carried from one release on, and its minimum is read from the
+entries the symbols it carries answer to, so within one object those entries all name the same minimum
+or none of them names one. Two CloudKit objects broke it, and a check I wrote to find them first read
+them clean, twice, for one reason:
+
+| class | defined in | its row's `source` said | minimum |
+| --- | --- | --- | --- |
+| `CKSyncEngine` | `CKSyncEngine.m` | `CKSyncEngine.m` | none |
+| `CKSyncEngineConfiguration` | `CKSyncEngine.m` | `CKSyncEngine17.m` | 6.0 |
+| `CKSyncEngineStateSerialization` | `CKSyncEngineState17.m` | `CKSyncEngineState17.m` | none |
+| the six scopes, options and contexts, `CKSyncEngineState` | `CKSyncEngineState17.m` | `CKSyncEngine17.m` | 6.0 |
+
+**Eight rows named a file that does not define them.** The event group in `CKSyncEngineState17.m` was
+filed under `CKSyncEngine17.m`, and `CKSyncEngineConfiguration` was filed under `CKSyncEngine17.m`
+while `CKSyncEngine.m` defines it. So grouping by the row's `source` put `CKSyncEngine.m` down as one
+object with one row, `CKSyncEngineState17.m` down as an object with no rows at all, and read clean -
+and the earlier minimums fix landed on the rows filed under `CKSyncEngine17.m`, which happened to
+include the seven that really belong to `CKSyncEngineState17.m`, so the numbers came out right while
+the field underneath them was wrong. `source` is a transcription; placement is what the file that
+defines the class says. All eight now name the file that defines them, and every row of all three
+objects carries 6.0.
+
+`tests/addon/registry_test.lua` now carries the rule itself (`one_minimum_per_object`), grouped by the
+file that defines a class, with a class two files implement asked of both objects. The rule was
+already tested above it, on synthetic objects; what it could not do was run over the repository's own,
+which is where a registry that disagrees with itself is found. Run before this fix it reported six
+objects, the two here and four that are not ours.

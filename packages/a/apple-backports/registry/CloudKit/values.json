@@ -777,7 +777,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "a scope says which zones a fetch is about, as some of them or as all but some of them, and never both; -containsZoneID: answers the scope itself, and a nil zone is in none of them",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -788,7 +788,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "a scope of a send is also a scope of records, and a record scope says which records whatever zone they are in; a zone save or a zone delete is about a zone and not about a record, so a record scope does not contain it",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -799,7 +799,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the scope, the group the fetch belongs to, and the zones to ask about first; a new one has a group and no prioritised zones",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -810,7 +810,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the scope and the group the send belongs to; a new one has a group",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -821,7 +821,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "one of the two reasons a sync began and the options it began with; both initialisers refuse, which is the header's own marking, because a context a caller made would be a context the engine never ran",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -832,7 +832,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "as the fetch context, and for a send",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -843,7 +843,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "the changes the engine has not sent, the database changes it has not acted on, and the zones whose server changes it has not fetched; all three are copies, so the only way in is the four add and remove methods and the only way out is the same four. Measured: the host traps on +new and -init, so a caller who writes them loses the process; this port refuses, naming the two ways a state is had",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
@@ -855,6 +855,7 @@
     "reason": "the class of this package carries the surface, and the whole group is the bookkeeping CKSyncEngine adds over the operations below it",
     "effect": "a state as the bytes a caller persists, so that a process killed mid-sync resumes where it was; it is the state's own archive and is itself archivable",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngineState17.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -865,6 +866,7 @@
     "reason": "the sync engine, carried as an object of this package: it needs a container and an account to reach the network, and it does not need them to exist and to answer its properties, so the local half - the state, the options and the four walks - is here and every walk answers the transport's own refusal",
     "effect": "the configuration's three properties as given, the engine's state, and its four walks answering the transport's own refusal in Apple's CKErrorDomain, which is what any other request answers on a release with no iCloud account",
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine.m",
+    "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -874,7 +876,7 @@
     "status": "implemented",
     "reason": "the class of this package carries the surface, and it is a value the engine or the delegate filled in",
     "effect": "the database the engine walks, the state it resumes from, the delegate it answers, and whether it syncs on its own; a new one does not sync on its own, because an application that has not said when it wants a sync is not asked for one",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine.m",
     "minimum": "6.0",
     "facts": "facts/CloudKit/Values.md"
   },

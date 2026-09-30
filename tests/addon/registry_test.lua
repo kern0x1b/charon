@@ -752,6 +752,7 @@ function failures(opt)
     wiring(backports, root, found)
     range_step(backports, fixtures.scratch(), found)
     spelling(backports, found)
+    one_minimum_per_object(backports, root, listed, found)
     unreadable(backports, found)
     named_twice(backports, found)
     type_rows(backports, found)
@@ -981,6 +982,69 @@ function recipe_lists(recipe)
 end
 
 function wiring(backports, root, found)
+
+-- An object is carried from one release on, and its minimum is read from the entries the symbols it
+-- carries answer to, so every one of those entries names the same minimum or none of them names one:
+-- a set holding both none and a value, or two values, is what minimums() refuses. The rule above is
+-- exercised on synthetic objects; this is the same rule over the repository's own objects, which is
+-- where a registry that disagrees with itself is found.
+--
+-- Objects are the files, so the grouping is by the file that DEFINES a class and never by the row's
+-- `source` field: that field is a transcription, it can be wrong, and one is - CKSyncEngineConfiguration
+-- names CKSyncEngine17.m and is defined in CKSyncEngine.m - which is how a check keyed on it reads
+-- clean over an object the gate refuses. A class two files implement is carried by both objects, so
+-- both are asked.
+function one_minimum_per_object(backports, root, listed, found)
+    local defines, files = {}, {}
+    for _, file in ipairs(os.files(path.join(root, "*/*.m"))) do
+        table.insert(files, file)
+        -- comments go first: a sentence beginning "// @implementation" is not a definition
+        local text = io.readfile(file):gsub("//[^\n]*", "")
+        for cls in text:gmatch("@implementation%s+(%w+)") do
+            local places = defines[cls]
+            if not places then
+                places = {}
+                defines[cls] = places
+            end
+            if not table.contains(places, file) then
+                table.insert(places, file)
+            end
+        end
+    end
+    local objects, order = {}, {}
+    for api, entry in pairs(listed) do
+        for _, file in ipairs(defines[api] or {}) do
+            local by = objects[file]
+            if not by then
+                by = {minimums = {}, names = {}}
+                objects[file] = by
+                table.insert(order, file)
+            end
+            local minimum = entry.minimum or "none"
+            by.minimums[minimum] = true
+            table.insert(by.names, api .. " (" .. minimum .. ")")
+        end
+    end
+    for _, file in ipairs(order) do
+        local by = objects[file]
+        local all, values = {}, 0
+        for minimum in pairs(by.minimums) do
+            table.insert(all, minimum)
+            if minimum ~= "none" then
+                values = values + 1
+            end
+        end
+        table.sort(all)
+        if values > 1 or (values > 0 and by.minimums["none"]) then
+            table.sort(by.names)
+            table.insert(found, string.format(
+                "%s is one object and its rows name the minimums %s, and an object is carried from one"
+                .. " release on, so it is one minimum or none: %s",
+                path.filename(file), table.concat(all, " and "), table.concat(by.names, ", ")))
+        end
+    end
+end
+
     local recipe = io.readfile(path.join(root, "xmake.lua"))
     if not recipe then
         table.insert(found, "the package has no xmake.lua, so no config of it can be read")
