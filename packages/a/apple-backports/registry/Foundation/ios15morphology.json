@@ -40,14 +40,14 @@
     },
     {
       "api": "-[NSInflectionRule init]",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks -init NS_UNAVAILABLE on this abstract base (\"This class is abstract. Use +automaticRule, or instantiate a subclass instead\"), and at run time the system answers it with a plain instance rather than refusing it - measured",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the header marks -init unavailable on the abstract base, and the differential calls no initialiser of its own. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "reason": "the class is abstract and the compiler refuses the call, so no caller reaches it; the port's own +automaticRule makes its instance through the runtime instead of through an initialiser, and the differential has no case that calls one, so there is nothing measured here to point at",
+      "source": "the host's own Foundation, measured by sh tests/backports/host/attributed15/run.sh in the case release.inflectionRule.init, where -[NSInflectionRule init] answers an instance of NSInflectionRule; the port's own class is facts/Foundation/NSMorphology.md",
+      "status": "inert"
     },
     {
       "api": "-[NSInflectionRuleExplicit initWithMorphology:]",
@@ -200,14 +200,13 @@
     },
     {
       "api": "NSMorphology.unspecified",
-      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
+      "effect": "a fresh morphology answers YES and the three settings this release carries decide it: grammaticalGender, partOfSpeech or number at 1 or 2 answers NO and the five 17.0 settings are not read - the port's own class is beside the host's in one process and the two agree, and the golden file records the host's answer",
       "facts": "facts/Foundation/NSMorphology.md",
       "introduced": "15.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
-      "source": "the implementation is in the library; the row is held absent until the differential measures it",
-      "status": "absent"
+      "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case fresh.unspecified and the eight settings' .unspecified cases, and on the port's own side by CharonMorphology.m's -isUnspecified",
+      "status": "implemented"
     },
     {
       "api": "NSMorphology.userMorphology",

@@ -1,0 +1,428 @@
+// The iOS 15.0 attributed-string object against the system's own, in one process.
+//
+// Every case asks the system first and the port second, and the two answers are compared. The port's
+// selectors carry a charonHost_ prefix (prefix_selectors.py) and its Markdown class is renamed with a
+// CharonHost prefix (uikit2/renames.sh), so the two never meet: a comparison that quietly compared the
+// port with itself would have to answer identically for the wrong reason, and the failure line names
+// which side did not answer.
+//
+// What is compared is what the API fixes: the text, the runs and their boundaries, and the value of every
+// attribute that is a number, a string, a URL or an intent's own shape. A font or a colour is the same
+// object on both sides and is printed as its own description. An intent is printed as its kind number and
+// its chain and never as a pointer, because a pointer is an address and two images never share one.
+//
+// The Markdown cases compare the parser and not the intent class: the intents it builds are the system's
+// own NSPresentationIntent objects, since the port's class for those is another object's and is measured
+// by tests/backports/host/presentationintent. What is compared here is which factory the parser called,
+// in what order, with which identity, and which text each run carries.
+#import <Foundation/Foundation.h>
+#import <dlfcn.h>
+#import <objc/runtime.h>
+#import <objc/message.h>
+#import "check.h"
+#import "ported.h"
+
+void host_attach_prefixed(const char *prefix);
+
+/* A delegate of the port's own, so the accessor is handed a real id<NSURLSessionTaskDelegate> and the
+   case compiles without a cast. The protocol has no required member, so an empty implementation is
+   the whole of it. */
+@interface ProbeDelegate : NSObject <NSURLSessionTaskDelegate>
+@end
+@implementation ProbeDelegate
+@end
+
+static NSAttributedString *plain(NSString *text);
+
+/* The value of one attribute, printed so that two images can be compared: a number as itself, a string
+   quoted, a URL as its own text, an intent as its kind and its chain, and anything else as its own
+   description - which for a font and a colour is the same object on both sides. */
+static NSString *printed(id value)
+{
+    if (!value)
+        return @"(nil)";
+    if ([value isKindOfClass:[NSNumber class]])
+        return [value stringValue];
+    if ([value isKindOfClass:[NSURL class]])
+        return [(NSURL *)value absoluteString];
+    if ([value isKindOfClass:[NSString class]])
+        return [NSString stringWithFormat:@"\"%@\"", value];
+    if ([NSStringFromClass([value class]) hasPrefix:@"NSPresentationIntent"]) {
+        NSMutableString *chain = [NSMutableString string];
+        id intent = value;
+        while (intent && [NSStringFromClass([intent class]) hasPrefix:@"NSPresentationIntent"]) {
+            [chain appendFormat:@"%@", [intent valueForKey:@"intentKind"]];
+            if ([intent valueForKey:@"identity"])
+                [chain appendFormat:@"/%@", [intent valueForKey:@"identity"]];
+            if ([[intent valueForKey:@"ordinal"] integerValue])
+                [chain appendFormat:@" ord%@", [intent valueForKey:@"ordinal"]];
+            if ([intent valueForKey:@"indentationLevel"])
+                [chain appendFormat:@" ind%@", [intent valueForKey:@"indentationLevel"]];
+            if ([intent valueForKey:@"column"])
+                [chain appendFormat:@" col%@", [intent valueForKey:@"column"]];
+            if ([intent valueForKey:@"row"])
+                [chain appendFormat:@" row%@", [intent valueForKey:@"row"]];
+            if ([intent valueForKey:@"columnCount"])
+                [chain appendFormat:@" cols%@/%@", [intent valueForKey:@"columnCount"],
+                                   [[intent valueForKey:@"columnAlignments"] componentsJoinedByString:@"."]];
+            if ([intent valueForKey:@"headerLevel"])
+                [chain appendFormat:@" h%@", [intent valueForKey:@"headerLevel"]];
+            if ([intent valueForKey:@"languageHint"])
+                [chain appendFormat:@" hint\"%@\"", [intent valueForKey:@"languageHint"]];
+            intent = [intent valueForKey:@"parentIntent"];
+            if (intent)
+                [chain appendString:@"<"];
+        }
+        return chain;
+    }
+    return [value description];
+}
+
+/* The one attribute the port's object cannot carry, and why: NSListItemDelimiterAttributeName is a 16.0
+   name and the SDK this port builds against (iPhoneOS16.5) does not declare it, so a list item's run
+   carries its intent and not the delimiter. It is dropped from the comparison and printed instead, with
+   the value the system used, so the difference is on every run and not folded into a pass. */
+static NSString *const CharonListItemDelimiter = @"NSListItemDelimiter";
+
+/* The whole answer as one string: every run, its text and its attributes in name order. */
+static NSString *shape(NSAttributedString *string)
+{
+    if (!string)
+        return @"(nil)";
+    NSMutableString *out = [NSMutableString string];
+    __block NSUInteger run = 0;
+    NSString *text = [string string];
+    [string enumerateAttributesInRange:NSMakeRange(0, string.length) options:0
+                            usingBlock:^(NSDictionary *attributes, NSRange range, BOOL *stop) {
+        [out appendFormat:@"%lu[%lu,%lu)\"%@\"", (unsigned long)run++, (unsigned long)range.location,
+                           (unsigned long)range.length, [text substringWithRange:range]];
+        for (NSString *key in [[attributes allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+            if ([key isEqualToString:CharonListItemDelimiter])
+                continue;
+            [out appendFormat:@" %@=%@", key, printed(attributes[key])];
+        }
+        [out appendString:@"\n"];
+    }];
+    return out;
+}
+
+static NSAttributedString *plain(NSString *text)
+{
+    return [[NSAttributedString alloc] initWithString:text];
+}
+
+/* The two attributes the merge cases need are the port's own, not a colour and a font: a Catalyst build
+   declares neither, and which key it is has no bearing on which side wins. Both sides are handed the
+   same two objects, so the comparison is about the merge and not about the value. */
+static NSString *const CharonFormatKey = @"CharonTestFormatAttribute";
+static NSString *const CharonArgumentKey = @"CharonTestArgumentAttribute";
+
+static NSAttributedString *coloured(NSString *text, NSRange range)
+{
+    NSMutableAttributedString *string = [plain(text) mutableCopy];
+    [string addAttribute:CharonFormatKey value:@"format" range:range];
+    return string;
+}
+
+static NSAttributedString *marked(NSString *text)
+{
+    NSMutableAttributedString *string = [plain(text) mutableCopy];
+    [string addAttribute:CharonArgumentKey value:@"argument" range:NSMakeRange(0, text.length)];
+    return string;
+}
+
+/* What the one attribute that is not carried held, printed beside the comparison that leaves it out. */
+static void note_delimiters(NSString *name, NSAttributedString *string)
+{
+    NSMutableArray *found = [NSMutableArray array];
+    [string enumerateAttribute:CharonListItemDelimiter
+                       inRange:NSMakeRange(0, string.length)
+                       options:0
+                    usingBlock:^(id value, NSRange range, BOOL *stop) {
+        if (value)
+            [found addObject:[NSString stringWithFormat:@"%@ at %lu", printed(value), (unsigned long)range.location]];
+    }];
+    printf("note %s: the system carries %s on %lu run(s) - %s - and the port's SDK does not declare "
+           "the name, so the comparison leaves it out\n",
+           name.UTF8String, CharonListItemDelimiter.UTF8String, (unsigned long)found.count,
+           found.count ? [found componentsJoinedByString:@", "].UTF8String : "none");
+}
+
+static void compare(NSString *name, NSString *system, NSString *port)
+{
+    charon_check([system isEqualToString:port], name.UTF8String,
+                 [NSString stringWithFormat:@"system %@\n           port   %@", system, port]);
+}
+
+int main(void)
+{
+    @autoreleasepool {
+        host_attach_prefixed("");
+
+        printf("== 1. the four attribute names: the port's own value beside the system's own\n");
+        {
+            struct { const char *name; id ours; } pairs[] = {
+                { "NSAlternateDescriptionAttributeName", NSAlternateDescriptionAttributeName },
+                { "NSImageURLAttributeName", NSImageURLAttributeName },
+                { "NSInlinePresentationIntentAttributeName", NSInlinePresentationIntentAttributeName },
+                { "NSLanguageIdentifierAttributeName", NSLanguageIdentifierAttributeName },
+            };
+            /* the system's own through a second handle on the image: a dlsym on the default search order
+               finds the port's definition, which is the one this file is linked against, and would answer
+               with the value under test */
+            /* three of the four live in the image that declares them for the platform and the fourth is
+               Foundation's, so both images are asked and the first that has the name answers */
+            void *handles[2] = {
+                dlopen("/System/Library/Frameworks/AppKit.framework/AppKit", RTLD_LAZY | RTLD_LOCAL),
+                dlopen("/System/Library/Frameworks/Foundation.framework/Foundation", RTLD_LAZY | RTLD_LOCAL),
+            };
+            for (unsigned i = 0; i < sizeof pairs / sizeof *pairs; i++) {
+                char symbol[128];
+                id theirs = nil;
+                snprintf(symbol, sizeof symbol, "_%s", pairs[i].name);
+                for (unsigned image = 0; image < 2 && !theirs; image++) {
+                    void *address = handles[image] ? dlsym(handles[image], symbol) : NULL;
+                    if (address)
+                        theirs = *(__unsafe_unretained id *)address;
+                }
+                Dl_info where;
+                memset(&where, 0, sizeof where);
+                const char *image = dladdr((__bridge const void *)pairs[i].ours, &where) && where.dli_fname
+                                        ? strrchr(where.dli_fname, '/') + 1 : "(unresolved)";
+                printf("   %-38s the port's value comes from %s\n", pairs[i].name, image);
+                if (theirs)
+                    compare([NSString stringWithFormat:@"constant.%s", pairs[i].name], printed(theirs), printed(pairs[i].ours));
+                else
+                    printf("   %-38s no symbol on either host image: its value is measured by "
+                           "bundle.missingKey, which prints the attribute name the system itself used\n", pairs[i].name);
+            }
+        }
+
+        printf("== 2. the format: five members, the system's answer beside the port's\n");
+        {
+            compare(@"format.classMethod",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%@ has %d apples"), @"Ann", 3]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%@ has %d apples"), @"Ann", 3]));
+            compare(@"format.classMethod.options1",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%@ has %d apples") options:1, @"Ann", 3]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%@ has %d apples") options:1, @"Ann", 3]));
+            compare(@"format.classMethod.options2",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"%@=%d") options:2, @"x", 7]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"%@=%d") options:2, @"x", 7]));
+            /* the format's own attributes, merged with the argument's, then with the merge refused */
+            NSAttributedString *two = coloured(@"pre %@ mid %@ post", NSMakeRange(4, 3));
+            for (NSUInteger options = 0; options < 4; options++) {
+                NSString *name = [NSString stringWithFormat:@"format.options%lu", (unsigned long)options];
+                compare(name,
+                        shape([[NSAttributedString alloc] initWithFormat:two options:options locale:nil, marked(@"ARG"), @"plain"]),
+                        shape([plain(@"x") initCharonHostWithFormat:two options:options locale:nil, marked(@"ARG"), @"plain"]));
+            }
+            /* the two families differ in the locale they format numbers with, and that is the case */
+            NSAttributedString *numbers = plain(@"%d and %.2f");
+            for (NSString *identifier in @[ @"de_DE", @"fr_FR" ]) {
+                NSLocale *locale = [NSLocale localeWithLocaleIdentifier:identifier];
+                compare([NSString stringWithFormat:@"format.canonical.%@", identifier],
+                        shape([[NSAttributedString alloc] initWithFormat:numbers options:0 locale:locale, 1234, 1234.5]),
+                        shape([plain(@"x") initCharonHostWithFormat:numbers options:0 locale:locale, 1234, 1234.5]));
+            }
+            compare(@"format.canonical.nilLocale",
+                    shape([[NSAttributedString alloc] initWithFormat:numbers options:0 locale:nil, 1234, 1234.5]),
+                    shape([plain(@"x") initCharonHostWithFormat:numbers options:0 locale:nil, 1234, 1234.5]));
+            compare(@"format.currentLocale",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:numbers, 1234, 1234.5]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:numbers, 1234, 1234.5]));
+            /* a '%' that opens no conversion is consumed, and the shapes of the arguments */
+            /* A format whose conversion has no argument behind it reads past the end of the list on both
+               sides - "50% off" answers "505ff" on one run and "500ff" on the next, from a slot nobody
+               passed - so it is not a case with an answer and is not compared here. */
+            const char *literals[] = { "100%% %@ %q", "a % b", "trailing %", "%", "%%" };
+            for (unsigned i = 0; i < sizeof literals / sizeof *literals; i++) {
+                NSAttributedString *caseFormat = plain(@(literals[i]));
+                compare([NSString stringWithFormat:@"format.literal.%u", i],
+                        shape([NSAttributedString localizedAttributedStringWithFormat:caseFormat]),
+                        shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:caseFormat, (id)nil]));
+            }
+            compare(@"format.argument.nil",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"x%@y"), nil]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"x%@y"), (id)nil]));
+            compare(@"format.argument.number",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"x%@y"), @42]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"x%@y"), @42]));
+            compare(@"format.argument.array",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"x%@y"), @[ @"a", @"b" ]]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"x%@y"), @[ @"a", @"b" ]]));
+            compare(@"format.widths",
+                    shape([NSAttributedString localizedAttributedStringWithFormat:plain(@"[%6.2f] %ld %c"), 3.14159, 42L, (int)65]),
+                    shape([NSAttributedString charonHost_localizedAttributedStringWithFormat:plain(@"[%6.2f] %ld %c"), 3.14159, 42L, (int)65]));
+            /* -appendLocalizedFormat: adds to what is there */
+            NSMutableAttributedString *systemAppend = [plain(@"Start: ") mutableCopy];
+            [systemAppend appendLocalizedFormat:plain(@"%@/%d"), @"Ann", 3];
+            NSMutableAttributedString *portAppend = [plain(@"Start: ") mutableCopy];
+            [portAppend charonHost_appendLocalizedFormat:plain(@"%@/%d"), @"Ann", 3];
+            compare(@"format.append", shape(systemAppend), shape(portAppend));
+        }
+
+        printf("== 3. the bundle lookup\n");
+        {
+            NSString *key = @"NOSUCHKEY-ATTRIBUTED15";
+            NSAttributedString *system = [[NSBundle mainBundle] localizedAttributedStringForKey:key value:@"fallback" table:nil];
+            NSAttributedString *port = [[NSBundle mainBundle] charonHost_localizedAttributedStringForKey:key
+                                                                                                  value:@"fallback"
+                                                                                                  table:nil];
+            compare(@"bundle.missingKey", shape(system), shape(port));
+        }
+
+        printf("== 4. the inflection pass, with a run that carries a rule\n");
+        {
+            NSMorphology *plural = [[NSMorphology alloc] init];
+            plural.number = 3;
+            plural.grammaticalGender = 2;
+            NSInflectionRuleExplicit *explicit = [[NSInflectionRuleExplicit alloc] initWithMorphology:plural];
+            struct { const char *name; id rule; NSRange range; } cases[] = {
+                { "inflect.explicitRule", explicit, NSMakeRange(4, 4) },
+                { "inflect.automaticRule", [NSInflectionRule automaticRule], NSMakeRange(4, 4) },
+                { "inflect.whole", [NSInflectionRule automaticRule], NSMakeRange(0, 21) },
+                { "inflect.number", [NSInflectionRule automaticRule], NSMakeRange(0, 6) },
+            };
+            for (unsigned i = 0; i < sizeof cases / sizeof *cases; i++) {
+                NSMutableAttributedString *system = [plain(i == 3 ? @"1 house" : @"the house and the dog") mutableCopy];
+                NSMutableAttributedString *port = [plain(i == 3 ? @"1 house" : @"the house and the dog") mutableCopy];
+                NSRange range = i == 3 ? NSMakeRange(0, 6) : cases[i].range;
+                [system addAttribute:NSInflectionRuleAttributeName value:cases[i].rule range:range];
+                [port addAttribute:NSInflectionRuleAttributeName value:cases[i].rule range:range];
+                compare([NSString stringWithFormat:@"%s", cases[i].name],
+                        shape([system attributedStringByInflectingString]),
+                        shape([port charonHost_attributedStringByInflectingString]));
+            }
+            /* a string with no rule at all comes back as it stood, with its attributes */
+            NSMutableAttributedString *untagged = [coloured(@"the house", NSMakeRange(4, 5)) mutableCopy];
+            compare(@"inflect.untagged",
+                    shape([untagged attributedStringByInflectingString]),
+                    shape([untagged charonHost_attributedStringByInflectingString]));
+        }
+
+        printf("== 5. the Markdown parser\n");
+        {
+            NSArray *documents = @[
+                @"# Title\n\nSome *emph* and **strong** and `code` and a [link](https://example.com).\n\n- one\n- two\n",
+                @"> quote\n\n```\ncode\n```\n\npara with [rel](sub/page.html) and ![img](a.png) and ~~del~~\n\n| a | b |\n| - | - |\n| 1 | 2 |\n\n---\n",
+                @"one\ntwo\n\n1. first\n2. second\n\nend\n",
+            ];
+            Class portOptions = NSClassFromString(@"CharonHostNSAttributedStringMarkdownParsingOptions");
+            charon_check(portOptions != Nil, "markdown.optionsClass",
+                         @"the port's class is in the process, under a name of its own");
+            NSAttributedStringMarkdownParsingOptions *systemOptions = [[NSAttributedStringMarkdownParsingOptions alloc] init];
+            id portOptionsObject = [[portOptions alloc] init];
+            compare(@"markdown.options.defaults",
+                    [NSString stringWithFormat:@"extended=%d syntax=%ld policy=%ld language=%@ sourcepos=%d",
+                                     (int)systemOptions.allowsExtendedAttributes, (long)systemOptions.interpretedSyntax,
+                                     (long)systemOptions.failurePolicy, systemOptions.languageCode ?: @"(nil)",
+                                     (int)systemOptions.appliesSourcePositionAttributes],
+                    [NSString stringWithFormat:@"extended=%d syntax=%ld policy=%ld language=%@ sourcepos=%d",
+                                     (int)[portOptionsObject allowsExtendedAttributes],
+                                     (long)[portOptionsObject interpretedSyntax], (long)[portOptionsObject failurePolicy],
+                                     [portOptionsObject languageCode] ?: @"(nil)",
+                                     (int)[portOptionsObject appliesSourcePositionAttributes]]);
+            charon_check([[portOptionsObject copy] class] == portOptions,
+                         "markdown.options.copy", @"the port's -copy answers one of the port's own class");
+            NSURL *base = [NSURL URLWithString:@"https://base.example/dir/"];
+            for (unsigned i = 0; i < documents.count; i++) {
+                NSString *markdown = documents[i];
+                NSError *systemError = nil, *portError = nil;
+                note_delimiters([NSString stringWithFormat:@"markdown.document.%u", i],
+                                [[NSAttributedString alloc] initWithMarkdownString:markdown options:nil
+                                                                            baseURL:base error:NULL]);
+                compare([NSString stringWithFormat:@"markdown.document.%u", i],
+                        shape([[NSAttributedString alloc] initWithMarkdownString:markdown options:nil baseURL:base error:&systemError]),
+                        shape([plain(@"x") initCharonHostWithMarkdownString:markdown options:nil baseURL:base error:&portError]));
+            }
+            /* -initWithMarkdown: over the same bytes, the file the release reads, and bytes it refuses */
+            NSData *bytes = [documents[0] dataUsingEncoding:NSUTF8StringEncoding];
+            NSError *systemDataError = nil, *portDataError = nil;
+            note_delimiters(@"markdown.data", [[NSAttributedString alloc] initWithMarkdown:bytes options:nil baseURL:nil error:NULL]);
+            compare(@"markdown.data",
+                    shape([[NSAttributedString alloc] initWithMarkdown:bytes options:nil baseURL:nil error:&systemDataError]),
+                    shape([plain(@"x") initCharonHostWithMarkdown:bytes options:nil baseURL:nil error:&portDataError]));
+            NSString *path = [NSTemporaryDirectory() stringByAppendingPathComponent:@"attributed15.md"];
+            [documents[1] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
+            NSError *systemFileError = nil, *portFileError = nil;
+            compare(@"markdown.file",
+                    shape([[NSAttributedString alloc] initWithContentsOfMarkdownFileAtURL:[NSURL fileURLWithPath:path]
+                                                                                   options:nil baseURL:nil error:&systemFileError]),
+                    shape([plain(@"x") initCharonHostWithContentsOfMarkdownFileAtURL:[NSURL fileURLWithPath:path]
+                                                                             options:nil baseURL:nil error:&portFileError]));
+            uint8_t rubbish[] = { 0xff, 0xfe, 0xfd };
+            NSData *notText = [NSData dataWithBytes:rubbish length:sizeof rubbish];
+            NSError *systemBad = nil, *portBad = nil;
+            compare(@"markdown.notText",
+                    shape([[NSAttributedString alloc] initWithMarkdown:notText options:nil baseURL:nil error:&systemBad]),
+                    shape([plain(@"x") initCharonHostWithMarkdown:notText options:nil baseURL:nil error:&portBad]));
+            /* the language the options name, on both sides */
+            NSAttributedStringMarkdownParsingOptions *french = [[NSAttributedStringMarkdownParsingOptions alloc] init];
+            french.languageCode = @"fr";
+            id portFrench = [[portOptions alloc] init];
+            [portFrench setValue:@"fr" forKey:@"languageCode"];
+            compare(@"markdown.languageCode",
+                    shape([[NSAttributedString alloc] initWithMarkdownString:@"bonjour *ici*" options:french baseURL:nil error:NULL]),
+                    shape([plain(@"x") initCharonHostWithMarkdownString:@"bonjour *ici*" options:portFrench baseURL:nil error:NULL]));
+        }
+
+        printf("== 6. the per-task delegate's accessors\n");
+        {
+            NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+            NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
+            NSURLSessionTask *task = [session dataTaskWithURL:[NSURL URLWithString:@"https://example.com/"]];
+            charon_check(task.delegate == nil, "task.freshDelegate", @"a fresh task has no delegate of its own");
+            ProbeDelegate *set = [[ProbeDelegate alloc] init];
+            id portRead = [task charonHost_delegate];
+            charon_check(portRead == nil, "task.freshDelegate.port", @"and the port's answers nil beside it");
+            [task charonHost_setDelegate:set];
+            id oursRead = [task charonHost_delegate];
+            charon_check(oursRead == set, "task.setAndReadBack", @"the port reads back the object it was given");
+            task.delegate = set;
+            charon_check(task.delegate == set, "task.systemReadBack", @"and the system's own does the same");
+        }
+
+        printf("== 7. what the RELEASE answers for the members of an abstract class\n");
+        {
+            /* The three rows the port declines to carry are refused because the class is abstract and the
+               SDK marks the initialisers NS_UNAVAILABLE, and what the RELEASE does with them is the other
+               half of that claim: it answers every one of them, and the answer is an object with no state
+               in it. Measured here, on the system's own class, so the claim in the registry is a command
+               a reader can run and not a sentence. */
+            Class intent = NSClassFromString(@"NSPresentationIntent");
+            charon_check(intent != Nil && [intent respondsToSelector:@selector(new)],
+                         "release.presentationIntent.new",
+                         @"the class is there and +new is one of its selectors");
+            id fresh = ((id (*)(id, SEL))objc_msgSend)(intent, @selector(new));
+            printf("   +new answers %s, an instance of %s, intentKind %s, identity %s\n",
+                   [[fresh description] UTF8String], class_getName([fresh class]),
+                   [[fresh valueForKey:@"intentKind"] stringValue].UTF8String,
+                   [[fresh valueForKey:@"identity"] stringValue].UTF8String);
+            charon_check([fresh isKindOfClass:intent] && [[fresh valueForKey:@"intentKind"] integerValue] == 0,
+                         "release.presentationIntent.new.answer",
+                         @"it answers an instance of the class whose kind is the enumeration's zero");
+            id started = ((id (*)(id, SEL))objc_msgSend)([intent alloc], @selector(init));
+            printf("   -init answers an instance of %s, intentKind %s, identity %s\n",
+                   class_getName([started class]), [[started valueForKey:@"intentKind"] stringValue].UTF8String,
+                   [[started valueForKey:@"identity"] stringValue].UTF8String);
+            charon_check([started isKindOfClass:intent] && [[started valueForKey:@"intentKind"] integerValue] == 0,
+                         "release.presentationIntent.init.answer",
+                         @"-init answers the same shape, and neither initialiser is refused at run time");
+            printf("note  the identity is not initialised: it reads 0 on this run and a pointer-shaped "
+                   "number -6510171893482810916 - on another, both measured, which is what a row of an "
+                   "abstract class's NS_UNAVAILABLE initialiser is: the release answers, and nothing can be "
+                   "held to the answer\n");
+            Class rule = NSClassFromString(@"NSInflectionRule");
+            id answered = ((id (*)(id, SEL))objc_msgSend)((id)rule, @selector(alloc));
+            answered = ((id (*)(id, SEL))objc_msgSend)(answered, @selector(init));
+            printf("   -[NSInflectionRule init] answers an instance of %s\n", class_getName([answered class]));
+            charon_check(answered != nil && [answered isKindOfClass:rule],
+                         "release.inflectionRule.init",
+                         @"the release answers it with an instance of the abstract class and not a refusal");
+        }
+
+        printf("checks=%d failures=%d\n", charon_checks, charon_failures);
+    }
+    return charon_failures == 0 ? 0 : 1;
+}

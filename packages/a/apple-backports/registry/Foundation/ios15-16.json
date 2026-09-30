@@ -32,13 +32,14 @@
     },
     {
       "api": "-[NSAttributedString initWithContentsOfMarkdownFileAtURL:options:baseURL:error:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the file is read as UTF-8 and parsed exactly as the string is, and a file that cannot be read or decoded is refused with nil and the reader's own error",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case markdown.file",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithFormat:options:locale:]",
@@ -62,23 +63,25 @@
     },
     {
       "api": "-[NSAttributedString initWithMarkdown:options:baseURL:error:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the bytes are decoded as UTF-8 and the document is parsed into the tree of intents the release builds: a header, a paragraph, a code block, a thematic break whose text is the two-em dash, a block quote, a list with an item per entry, a table with its header row and cells, numbered from 1 in document order, with NSInlinePresentationIntent on the inline spans and NSLinkAttributeName or NSImageURLAttributeName on a link or an image; bytes that are not text are refused with nil and an NSError under NSCocoaErrorDomain",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases markdown.data and markdown.notText",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithMarkdownString:options:baseURL:error:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the document is parsed into the same tree of intents, every run carries the intent of the block it is in, a soft break is one separator space carrying NSInlinePresentationIntentSoftBreak, and the language the options name is applied to the ranges that carry none",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.document.0, .1 and .2 and in markdown.languageCode",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSBundle localizedAttributedStringForKey:value:table:]",
@@ -112,13 +115,14 @@
     },
     {
       "api": "NSAttributedStringMarkdownParsingOptions",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "effect": "the class is there: the port's own is beside the system's in one process under a name of its own, its five properties read the release's defaults, and -copy answers a distinct object of the port's own class",
       "introduced": "15.0",
       "kind": "class",
       "minimum": "6.0",
       "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the three cases markdown.optionsClass, markdown.options.defaults and markdown.options.copy",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSImageURLAttributeName",
@@ -156,7 +160,6 @@
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
-      "reason": "the class is in the library and compiles, but the differential does not measure it: a constant class the differential does not name. Owed: a case that does.",
       "source": "the host's own Foundation, measured by tests/backports/host/morphology/run.sh in the case constant.NSInflectionRuleAttributeName (the value is read with dlsym from each side and compared)",
       "status": "implemented",
       "facts": "facts/Foundation/Morphology.md"
@@ -454,31 +457,34 @@
     },
     {
       "api": "+[NSPresentationIntent new]",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks +new and -init NS_UNAVAILABLE on this class, and at run time the system answers them with an object whose kind and identity are uninitialised memory - measured, +new and -init both answer a Paragraph with identity -6510171893482810916, a pointer-shaped number that is not the same twice",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, so the compiler refuses the call",
-      "status": "absent"
+      "reason": "nothing in the port sends it and nothing could answer with it: the class is abstract, the SDK refuses the call at compile time, and the release's own answer is uninitialised state, so a caller that reaches it has an object with no kind and no identity rather than a wrong one. The class's twelve factories and eleven properties are carried and measured by tests/backports/host/presentationintent",
+      "status": "inert",
+      "source": "the host's own NSPresentationIntent, measured by sh tests/backports/host/attributed15/run.sh in the cases release.presentationIntent.new.answer and release.presentationIntent.init.answer, and written down in facts/Foundation/AttributedStrings15.md; the port's class is facts/Foundation/NSPresentationIntent.md"
     },
     {
       "api": "-[NSPresentationIntent init]",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the selector is there, from NSObject, and the port sends it nowhere: the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, and at run time the system answers with an object whose kind and identity are uninitialised memory - measured, identity -6510171893482810916, a pointer-shaped number that is not the same twice",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "the SDK's own header marks -init and +new NS_UNAVAILABLE on this class, so the compiler refuses the call",
-      "status": "absent"
+      "reason": "nothing in the port sends it and nothing could answer with it: the class is abstract, the SDK refuses the call at compile time, and the release's own answer is uninitialised state. Inside the port a factory allocates the instance and runs the superclass's -init, which is what -init would have run",
+      "status": "inert",
+      "source": "the host's own NSPresentationIntent, measured by sh tests/backports/host/attributed15/run.sh in the cases release.presentationIntent.new.answer and release.presentationIntent.init.answer, and written down in facts/Foundation/AttributedStrings15.md; the port's class is facts/Foundation/NSPresentationIntent.md"
     },
     {
       "api": "NSURLSessionTask.delegate",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the accessors are the port's own: a fresh task has no delegate of its own although its session has one, a delegate set on the task reads back, and charon_task_delegate() in NSURLSession.m is the one place that decides, so all eleven task-scoped guards and eighteen sends read the task's delegate in place of the session's",
       "introduced": "15.0",
       "kind": "property",
       "minimum": "6.0",
       "reason": "neither iOS 6 nor the backports give NSURLSessionTask a property like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "sh tests/backports/host/attributed15/run.sh in the four cases task.freshDelegate, task.freshDelegate.port, task.setAndReadBack and task.systemReadBack; the routing itself cannot be measured here, because the port's NSURLSession is a class the host also defines and that file cannot be linked beside the host's - tests/backports/device/ios1516.m is where it runs, and this band did not run it",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSString initWithValidatedFormat:validFormatSpecifiers:arguments:error:]",
