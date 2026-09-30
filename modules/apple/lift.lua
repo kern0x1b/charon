@@ -1174,7 +1174,14 @@ local function matches(entry, node)
         return owner_of(node) == member.owner and member_matches(member, node)
     end
     -- typedef enum { ... } clockid_t: the enumeration has no name of its own, and clang dumps it under the typedef's
-    if entry.kind == "type" then
+    --
+    -- `enum` and `struct` are here beside `type` because they are the same kind of API - a declaration the
+    -- consumer inlines, with no object behind it and no symbol a build could point at - and they are what the
+    -- registry already calls them (42 enum rows and 197 struct rows beside the 13 type rows are `implemented`).
+    -- Requiring a row of this shape to match a VarDecl or a function, as the branch below does, is what left
+    -- Core ML's MLMultiArrayDataType with no honest row it could be given: there is nothing to define, so no
+    -- row could be lowered, and the band owes it for a day over that.
+    if entry.kind == "type" or entry.kind == "enum" or entry.kind == "struct" then
         return (node.kind == "TypedefDecl" or node.kind == "EnumDecl" or node.kind == "RecordDecl")
                and (node.name or node._qualified) == api
     end
@@ -2007,8 +2014,15 @@ local function computed(opt)
         end
         return false
     end
+    -- What "carried" answers, which is not the same question as "implemented": `implemented` is "the port's own
+    -- object provides this at runtime", and it is the only one that has anything to rewrite. `inert` is the
+    -- registry's word for "the port carries it and there is nothing of its own to define" - an inline in one of
+    -- the package's own headers, an initializer of NSObject on a class the port does carry, a header-only
+    -- enumeration - and a row that says it is carried, not a gap. Reading only `implemented` made every use of
+    -- one a blocking finding, and a blocking use stops the lowering of the type that names it.
+    local CARRIED = {implemented = true, inert = true}
     local function carried(api)
-        return (listed[api] or {}).status == "implemented"
+        return CARRIED[(listed[api] or {}).status] or false
     end
     -- per member: the declarations a use of its owner reaches, those of protocols still to be asked about, and where else
     local pending, questions = {}, {}
@@ -2501,11 +2515,11 @@ local function computed(opt)
                                     table.join2(spellings, {string.format("-[%s %s]", class, property),
                                                             string.format("-[%s set%s%s:]", class, property:sub(1, 1):upper(), property:sub(2))})
                                 end
-                                local implemented, told = true, false
+                                local answered, told = true, false
                                 for _, spelling in ipairs(spellings) do
                                     if listed[spelling] then
                                         told = true
-                                        implemented = implemented and listed[spelling].status == "implemented"
+                                        answered = answered and carried(spelling)
                                         if listed[spelling].minimum and later(listed[spelling].minimum, target) then
                                             target = listed[spelling].minimum
                                         end
@@ -2513,9 +2527,9 @@ local function computed(opt)
                                 end
                                 if not told then
                                     local whole = owner and listed[owner]
-                                    implemented = whole and whole.kind == "class" and whole.status == "implemented" or false
+                                    answered = whole and whole.kind == "class" and carried(owner) or false
                                 end
-                                if not implemented then
+                                if not answered then
                                     table.insert(blocking, api)
                                 end
                             end
