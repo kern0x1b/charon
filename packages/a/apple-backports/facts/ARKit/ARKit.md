@@ -27,6 +27,62 @@ device: the iPhone 4S has an A5 and a camera and a gyroscope, and a world-tracki
 visual-inertial odometry problem that this hardware can be asked to solve. Where a configuration
 needs a *sensor* that is not there, it answers NO, as Apple documents for a device without it.
 
+### Both rungs, and the counts behind every absent row
+
+The thirteen `absent` rows of `registry/ARKit/ios11.json` were read against **both** armv7 caches
+of the port's two releases — 6.1.3 (244 881 694 bytes) and 4.3 (153 152 518 bytes) — with
+`modules/apple/objc.lua`'s `inventory`, which walks each cache's own `__objc_classlist`,
+`__objc_catlist` and `__objc_protolist` rather than scanning strings:
+
+| | 6.1.3 | 4.3 |
+| --- | --- | --- |
+| classes and protocols walked | 11378 and 1171 | 7187 and 564 |
+| names beginning `AR` | **0** and **0** | **0** and **0** |
+| names containing `Depth`, `TrueDepth`, `LiDAR`, `SceneDepth`, `Tracked`, `DepthData` | **0** of 12549 | **0** of 7751 |
+| selectors in the union of classes, protocols and categories | 113 981 | 70 062 |
+| `AVCaptureDevice` (positive control) | 100 instance, 5 class | 66 instance, 5 class |
+| `CMMotionManager` (positive control) | 74 instance, 4 class | 64 instance, 1 class |
+| a nonsense name (negative control) | absent | absent |
+
+**A correction the walk forces, and it is the reason this section exists.** The absent rows used to
+carry the source "no depth and no face class of any kind". That is false of 6.1.3 and the walk says
+so: 137 of its 12 549 class and protocol names contain `Face`. They are FaceTime internals, a
+Facebook view, a pass template, and **2D face detection**, which iOS 6 genuinely has — `CIDetector`
+(3 instance and 1 class methods), `CIFaceCoreDetector` (14 instance), `AVMetadataFaceObject`
+(10 instance, 2 class), `PLCameraFaceDetectionView` (3 instance), with `-featuresInImage:options:`
+and `-boundingBox` in its 113 981 selectors. What the walk finds missing is the half these rows turn
+on: **0** names contain `Face` together with `Vertex`, `Triangle` or `Mesh`, and the 18 names that
+contain `Mesh` are geometry interpolation (`CAMeshInterpolator`, `CAMeshTransform`,
+`CAMutableMeshTransform`), a vector-graphics tessellator (`VGLDualTexturedMesh` and the rest of
+`VGL*`) and a map annotation (`VKMeshAnnotationMarker`) — no scene mesh, no anchor, no vertex
+buffer. A bounding box is where a face is in a picture, not how deep it is. On 4.3 the face API is
+nearly gone too: 6 names contain `Face`, one of them a detector, and `CIDetector` and
+`CIFaceCoreDetector` are absent outright.
+
+`ARSKView` and `ARSKViewDelegate` are the two rows that are **not** a sensor answer, and they are
+measured as a dependency instead: `SKView`, `SKScene`, `SKNode`, `SKSpriteNode`, `SKCameraNode` and
+the `SKViewDelegate` protocol are absent, 0 entries each, from both caches, and
+`tools/cache-index/first-rung.py` reads 7.0 for both `SKView` and `_OBJC_CLASS_$_SKView` (the
+nonsense control reads `NONE`). SpriteKit has no folder, no row and no implementation in this tree,
+so the view is missing on every release the port carries, not only on 6.1.3.
+
+### What the hardware claim rests on, and what it does not
+
+The sensor rows turn on one hardware fact: a device with no depth sensor cannot produce a face
+mesh, a scene mesh, a depth photograph or a scanned object. **The tree's own record of the fleet's
+silicon is one measured line and it is the graphics half**: `facts/Metal/PixelFormats.md` records
+the renderer string of the fleet's iPad 2 at 6.1.3, `OpenGL ES 2.0 IMGSGX543-73.16.1`, read on the
+device by `tests/backports/device/gl-extensions.m` on 2026-09-24. The SoC name is not measured
+anywhere in this tree. `A5` appears in five places — `facts/ARKit/ARKit.md`,
+`facts/DeviceCheck/DCAppAttestService.md`, `facts/Metal/MTLCreateSystemDefaultDevice.md`,
+`facts/Metal/RenderPath.md` and the `registry/Metal/ios8*.json` rows — and every one of them is
+asserting the model-to-silicon mapping rather than reading it off a device. That is worth
+recording as what it is: **no `absent` row here rests on the `A5` label.** What each of these rows
+rests on is the walk above (the release has no depth API at all, on either rung) together with the
+port's own two `+isSupported` answers, which are code and can be read. Establishing the silicon
+properly is a device measurement nobody has taken yet, and it is owed to the five places that
+assert it.
+
 ## What `+isSupported` answers, and why
 
 Read from `ARConfiguration.m`, and each answer is the hardware's own:
