@@ -178,6 +178,25 @@ count above: it is the number that says whether the index is a superset of what 
 **The negative control is what makes the positive one mean anything**: a name in no release must
 answer `NONE`, or a tool that answered a rung for everything would pass the first line alone.
 
+## Licence and provenance: nothing is borrowed
+
+Written for this repository; **no third-party code, no vendored source, no copied algorithm.** The
+things it uses are all already in the tree or in the base system, and each is named where it is used:
+
+| used | from | why |
+| --- | --- | --- |
+| `dyld.open_cache`, `dyld.load`, `dyld.held_ladder` ordering | `modules/apple/dyld.lua`, this repository | the cache format, the export trie, the ladder |
+| `macho.read`, `macho.images`, `macho.image` | `modules/apple/macho.lua`, this repository | Mach-O load commands, segments, sections, symbol tables |
+| `gzip` / `zlib` (GzipFile, `decompressobj`) | CPython standard library | the compressed index |
+| `bisect` | CPython standard library | the search |
+| `nm -gU`, `otool -ov` | cctools, base system | measurements quoted above, never in the tool's own path |
+
+`names.lua` is the only file that reads a cache, and it does so by calling the two modules above: it
+parses no Mach-O and no shared-cache structure of its own. Its two loops -- over `.sections` and over
+a symbol table -- are the loops `macho.lua`'s `text_literals()` and `dyld.lua`'s `cached_library()`
+already make, widened and pointed at a different address space; the reasons they cannot simply be
+called are in the file's own header.
+
 The measurements in this file come from the machine this was written on: `strings`, `nm` and
 `stat` are base system tools, and the numbers are reproducible with the commands shown.
 
