@@ -548,160 +548,176 @@
       "kind": "constant",
       "introduced": "13.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyExifSourceExposureTimesOfCompositeImage",
       "kind": "constant",
       "introduced": "13.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyExifSourceImageNumberOfCompositeImage",
       "kind": "constant",
       "introduced": "13.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyTGACompression",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyTGADictionary",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPCanvasPixelHeight",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPCanvasPixelWidth",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPDelayTime",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPDictionary",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPFrameInfoArray",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPLoopCount",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyWebPUnclampedDelayTime",
       "kind": "constant",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeHDRGainMap",
       "kind": "constant",
       "introduced": "14.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationGlassesMatte",
       "kind": "constant",
       "introduced": "14.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImageAuxiliaryDataTypeSemanticSegmentationSkyMatte",
       "kind": "constant",
       "introduced": "14.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImageDestinationPreserveGainMap",
       "kind": "constant",
       "introduced": "14.1",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyGroupImageIndexLeft",
@@ -948,20 +964,22 @@
       "kind": "constant",
       "introduced": "16.3",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 16, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     },
     {
       "api": "kCGImagePropertyPNGPixelsAspectRatio",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 26, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the release does not carry it at all, and the value was READ rather than derived: in this slice kCGImagePropertyWebPFrameInfoArray is FrameInfo and not FrameInfoArray, kCGImagePropertyWebPDictionary is {WebP}, and all four 14.1 names are their own full symbol names - the same family holds both shapes, so no convention picks the right one",
+      "effect": "the string Apple's own ImageIO holds, which the port carries because a release this old exports no such name. It is plain data - a caller looks a metadata key up with it - so the port answers it itself. It is NOT this symbol's name: across the family's 64 absent names the value equals the symbol's own name in 7 and its trailing component in 7, so 50 match neither",
+      "source": "the host's own ImageIO, read with dlsym and printed as text and as bytes by tests/backports/host/imageio-names, which links the port's own object into a pure C reader so the value compared is the port's; the same harness samples 40 of the 328 already-implemented ImageIO constants with seed 20260929 and they match 40 of 40",
+      "facts": "facts/ImageIO/Names131-260.md"
     }
   ]
 }

@@ -12,9 +12,18 @@ root=$(cd "$here/../../../.." && pwd)
 port=$root/packages/a/apple-backports/Graphics
 build=${BUILD:-$root/.agent-work/runs/imageio-names}
 mkdir -p "$build"
-obj=${PORT_OBJ:-$build/ImageIONames130.o}
+obj=${PORT_OBJ:-$build/slice.o}
 
-files=$(ls "$port"/ImageIONames130.m)
+# THE OBJECT LIST IS A FILE, not a name in this script, so a slice EXTENDS the harness instead of forking
+# it: ImageIONames130.m stays covered, and each slice lists its own bands beside it.
+objects=$here/objects.txt
+[ -f "$objects" ] || { echo "FAIL  no objects.txt beside run.sh"; exit 1; }
+files=""
+while read -r f <&3 || [ -n "$f" ]; do
+  [ -f "$port/$f" ] || { echo "FAIL  objects.txt names $f and there is no $port/$f"; exit 1; }
+  files="$files $port/$f"
+done 3< "$objects"
+files=${files# }   # the accumulator starts with a space and a leading one becomes a pathname
 grep -h '^extern CFStringRef const ' $files | sed 's/^extern CFStringRef const //; s/;$//' > "$build/names.txt"
 n=$(wc -l < "$build/names.txt" | tr -d ' ')
 d=$(grep -h '^CFStringRef const ' $files | wc -l | tr -d ' ')
@@ -23,8 +32,17 @@ echo "  constants: $n"
 
 xcrun clang -w "$here/probe.c" -framework CoreFoundation -framework ImageIO -o "$build/probe" 2>"$build/probe.log" || {
   echo "BUILD  probe"; head -3 "$build/probe.log" | sed 's/^/    /'; exit 1; }
-xcrun clang -w -I"$root/packages/a/apple-backports" -c "$files" -o "$obj" 2>"$build/port.log" || {
-  echo "BUILD  the port object"; head -3 "$build/port.log" | sed 's/^/    /'; exit 1; }
+# one object per source file: clang refuses a single -o for several inputs, so they are compiled apart and
+# the reader is linked with all of them, which is also what the port itself does
+rm -rf "$build/slice-obj"; mkdir -p "$build/slice-obj"
+objs=""
+for f in $files; do
+  o="$build/slice-obj/$(basename "$f" .m).o"
+  xcrun clang -w -I"$root/packages/a/apple-backports" -c "$f" -o "$o" 2>"$build/port.log" || {
+    echo "BUILD  $f"; head -3 "$build/port.log" | sed 's/^/    /'; exit 1; }
+  objs="$objs $o"
+done
+objs=${objs# }
 
 value_of() {  # $1 = program, $2 = symbol: the value it READS, empty if it did not read one
   "$1" "$2" 2>/dev/null | sed -n 's/^  VALUE //p'
@@ -32,7 +50,8 @@ value_of() {  # $1 = program, $2 = symbol: the value it READS, empty if it did n
 
 # compare the port's read values against the host's, for every name
 compare() {  # $1 = label, $2 = the port object to link, $3 = expect (agree|differ)
-  xcrun clang -w "$here/portread.c" "$2" -framework CoreFoundation -o "$build/pr" 2>"$build/pr.log" || {
+  # shellcheck disable=SC2086  # $2 is a LIST of objects and must word-split
+  xcrun clang -w "$here/portread.c" $2 -framework CoreFoundation -o "$build/pr" 2>"$build/pr.log" || {
     echo "BUILD  $1: portread did not link"; head -3 "$build/pr.log" | sed 's/^/    /'; exit 1; }
   agree=0; differ=0
   : > "$build/differs.txt"
@@ -49,7 +68,8 @@ compare() {  # $1 = label, $2 = the port object to link, $3 = expect (agree|diff
 }
 
 # THE GREEN RUN: the port's own object, linked and read
-compare "GREEN (port vs host)" "$obj" agree
+# shellcheck disable=SC2086  # $objs is a LIST of objects and must word-split
+compare "GREEN (port vs host)" "$objs" agree
 echo "  GREEN: all $n of the port's values read through the port's own object equal Apple's"
 
 # THE CONTROL on the planted name: the host reader must report a name it does not have
@@ -60,16 +80,23 @@ echo "  CONTROL: the planted name is reported missing by the host reader"
 # THE TWO PLANTS THE REVIEWER USED, kept as permanent checks: the comparison must notice a wrong value
 # whether ALL of them are wrong or ONE is. A comparison that only notices the total cannot see a single
 # bad constant, and the previous harness noticed neither.
+# the plants work on EVERY file of the slice, not one, so a slice of several bands is planted whole
 pdir=$build/plants
-rm -rf "$pdir"; mkdir -p "$pdir"
-cp "$files" "$pdir/all.m"; cp "$files" "$pdir/one.m"
-sed -i '' 's%CFSTR("\([^"]*\)")%CFSTR("charon-plant-all")%g' "$pdir/all.m"
-first=$(sed -n 's/^extern CFStringRef const \([A-Za-z0-9_]*\);/\1/p' "$files" | head -1)
-sed -i '' "s%^CFStringRef const $first = CFSTR(\"[^\"]*\");%CFStringRef const $first = CFSTR(\"charon-plant-one\");%" "$pdir/one.m"
-xcrun clang -w -I"$root/packages/a/apple-backports" -c "$pdir/all.m" -o "$pdir/all.o" 2>/dev/null
-xcrun clang -w -I"$root/packages/a/apple-backports" -c "$pdir/one.m" -o "$pdir/one.o" 2>/dev/null
-compare "PLANT all 22 wrong" "$pdir/all.o" differ
-compare "PLANT one wrong ($first)" "$pdir/one.o" differ
+rm -rf "$pdir"; mkdir -p "$pdir/all" "$pdir/one"
+for f in $files; do b=$(basename "$f"); cp "$f" "$pdir/all/$b"; cp "$f" "$pdir/one/$b"; done
+sed -i '' 's%CFSTR("\([^"]*\)")%CFSTR("charon-plant-all")%g' "$pdir"/all/*.m
+first=$(cat "$build/names.txt" | head -1)
+sed -i '' "s%^CFStringRef const $first = CFSTR(\"[^\"]*\");%CFStringRef const $first = CFSTR(\"charon-plant-one\");%" "$pdir"/one/*.m
+plant_objs() {  # $1 = dir: compile every planted source apart and return the object list
+  local o=""
+  for f in "$1"/*.m; do
+    xcrun clang -w -I"$root/packages/a/apple-backports" -c "$f" -o "$f.o" 2>/dev/null || { echo "BUILD  plant $f"; exit 1; }
+    o="$o $f.o"
+  done
+  printf '%s' "${o# }"
+}
+compare "PLANT all $(echo $n) wrong" "$(plant_objs "$pdir/all")" differ
+compare "PLANT one wrong ($first)" "$(plant_objs "$pdir/one")" differ
 echo "  PLANTS: the comparison goes red on all-wrong and on one-wrong"
 
 sh "$here/merged-sample.sh" || { echo "FAIL  the merged-row control failed"; exit 1; }
@@ -78,14 +105,29 @@ sh "$here/merged-sample.sh" || { echo "FAIL  the merged-row control failed"; exi
 i=0; ran=0; red=0
 while read -r name <&3; do
   i=$((i+1))
-  rm -rf "$build/m$i"; mkdir -p "$build/m$i"
-  f="$build/m$i/$(basename "$files")"
-  sed "s%^CFStringRef const $name = CFSTR(\"[^\"]*\");%CFStringRef const $name = CFSTR(\"charon-mutant-$i\");%" "$files" > "$f"
-  c=$(diff "$files" "$f" | grep -c '^>' || true)
-  [ "$c" -eq 1 ] || { echo "FAIL  mutant $i: the copy differs in $c lines, not 1"; exit 1; }
-  xcrun clang -w -I"$root/packages/a/apple-backports" -c "$f" -o "$build/m$i/m.o" 2>"$build/m$i/c.log" || {
-    echo "BUILD  mutant $i did not compile"; head -3 "$build/m$i/c.log" | sed 's/^/    /'; exit 1; }
-  xcrun clang -w "$here/portread.c" "$build/m$i/m.o" -framework CoreFoundation -o "$build/m$i/pr" 2>"$build/m$i/l.log" || {
+  rm -rf "$build/m$i"; mkdir -p "$build/m$i/src"
+  # every file of the slice is copied, and the ONE holding this constant is the one that is changed, so a
+  # mutant still LINKS against the other bands' objects - the defect that made an earlier mutation produce
+  # a copy identical to the original
+  for f in $files; do cp "$f" "$build/m$i/src/$(basename "$f")"; done
+  before=$(cat "$build/m$i"/src/*.m | grep -c '^CFStringRef const ')
+  # sed with a glob but no -i PRINTS the files and edits nothing: the first run of this loop found zero
+  # mutant markers for exactly that reason, after the copy had already succeeded.
+  for f in "$build/m$i"/src/*.m; do
+    sed "s%^CFStringRef const $name = CFSTR(\"[^\"]*\");%CFStringRef const $name = CFSTR(\"charon-mutant-$i\");%" "$f" > "$f.tmp" && mv "$f.tmp" "$f"
+  done
+  c=$(cat "$build/m$i"/src/*.m | grep -c '^CFStringRef const ')
+  [ "$c" -eq "$before" ] || { echo "FAIL  mutant $i: a definition was lost"; exit 1; }
+  hit=$(cat "$build/m$i"/src/*.m | grep -c "charon-mutant-$i" || true)
+  [ "$hit" -eq 1 ] || { echo "FAIL  mutant $i: the copy carries $hit mutant markers, not 1"; exit 1; }
+  mobjs=""
+  for f in "$build/m$i"/src/*.m; do
+    xcrun clang -w -I"$root/packages/a/apple-backports" -c "$f" -o "${f%.m}.o" 2>"$build/m$i/c.log" || {
+      echo "BUILD  mutant $i did not compile $f"; head -3 "$build/m$i/c.log" | sed 's/^/    /'; exit 1; }
+    mobjs="$mobjs ${f%.m}.o"
+  done
+  mobjs=${mobjs# }
+  xcrun clang -w "$here/portread.c" $mobjs -framework CoreFoundation -o "$build/m$i/pr" 2>"$build/m$i/l.log" || {
     echo "BUILD  mutant $i did not link"; head -3 "$build/m$i/l.log" | sed 's/^/    /'; exit 1; }
   ran=$((ran+1))
   if [ "$(value_of "$build/m$i/pr" "$name")" = "$(value_of "$build/probe" "$name")" ]; then
