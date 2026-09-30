@@ -202,10 +202,48 @@ done
 [ -n "${CHARON_DEVICE_HOLDER:-}" ] || { echo "run.sh: export CHARON_DEVICE_HOLDER=<band> and claim the device first (xmake device ${device_name:+-d $device_name} --minutes=30 claim)" >&2; exit 1; }
 device_flag=""
 [ -n "$device_name" ] && device_flag="-d $device_name"
+# The transport follows -d, and so must every push and fetch: copy.lua picks its env file from
+# CHARON_DEVICE (modules/device.lua:46, `name or os.getenv(CHOSEN)`), which without this line was unset
+# and every file went to device.env -- so `--device ipad2` copied the programs to the 4S and then ran
+# them on the iPad. Found by running on the iPad for the first time; the 4S is the default device, which
+# is why the same run worked there.
+[ -n "$device_name" ] && export CHARON_DEVICE=$device_name
 xmake device $device_flag list 2>&1 | sed 's/^/  /'
 
 remote_dir=/private/var/backports
 run_device() { xmake device $device_flag -s 300 run "$1"; }
+
+# The launcher, if the device has not got one. The iPad 2 has no sblaunch -- tests/backports/README.md
+# says so in as many words -- and charon-sblaunch is the tree's own way to start an application on
+# either device, held at /usr/libexec and copied to a device from packages/e/emulator-guest, which is
+# the package that builds it.
+#
+# It is FOUND, not built here, and the reason is measured: the same source compiled with this script's
+# own clang line produces a binary that dies with SIGILL the moment SpringBoard is asked to run it --
+# `Illegal instruction: 4`, exit 132, on the iPad 2 on 2026-10-01 -- while the copy out of the shared
+# store exits 0. packages/e/emulator-guest builds it through @addon/charon/daemon, and installing that
+# addon is not this script's business; PHOTOS_SBLAUNCH names a copy when the store has none.
+sblaunch=/usr/libexec/charon-sblaunch
+ensure_sblaunch() {
+    if run_device "test -x $sblaunch"; then
+        return 0
+    fi
+    launcher=${PHOTOS_SBLAUNCH:-$(ls -t "$HOME"/.xmake/packages/e/emulator-guest/latest/*/usr/libexec/charon-sblaunch 2>/dev/null | head -1)}
+    if [ ! -f "$launcher" ]; then
+        echo "run.sh: charon-sblaunch is not in the shared store and PHOTOS_SBLAUNCH does not name one;" >&2
+        echo "  it is built by packages/e/emulator-guest, whose install holds it at usr/libexec/charon-sblaunch" >&2
+        exit 1
+    fi
+    run_device "mkdir -p /usr/libexec"
+    copy "$launcher" "$sblaunch"
+    run_device "chmod 755 $sblaunch"
+    echo "charon-sblaunch: copied to $sblaunch from $(basename "$(dirname "$(dirname "$(dirname "$(dirname "$launcher")")")")")"
+}
+
+# A push or a fetch that fails stops the run. It did not: a copy went to the wrong device, the run
+# carried on, and the program's own chmod failure was what finally printed -- which is the shape of a
+# swallowed failure the tree keeps paying for. CHARON_DEVICE is what copy.lua reads, and the export
+# above it is what makes the push follow -d.
 copy() { CHARON_ROOT=$root xmake l "$here/copy.lua" "$1" "$2" >/dev/null; }
 fetch() { CHARON_ROOT=$root xmake l "$here/copy.lua" "$1" "$2" --fetch >/dev/null; }
 
@@ -263,24 +301,53 @@ for name in $built; do
             fi
             ran=$((ran + 1))
             executable=$(echo "$name" | sed 's/photoschanges8/photoschanges/; s/photosdata9/photosdata/')
-            copy "$out/$executable.app" "/Applications/$executable.app"
-            run_device "uicache -p /Applications/$executable.app; sblaunch local.charon.backports.${executable}"
-            echo "$name: launched; the report is $remote_dir/$name.log when it writes $remote_dir/$name.done"
+            # The report name is the program's own, and it is NOT this script's name for it:
+            # photoschanges8.m writes photoschanges.log and photoschanges.done, photosdata9.m writes
+            # photosdata.log and photosdata.done, while the runner was waiting for photoschanges8.done.
+            # So a program that ran and passed was reported as NO REPORT. Measured on the iPad 2 on
+            # 2026-10-01: 22 checks and 0 failures in /private/var/backports/photoschanges.log, and
+            # "NO REPORT" here. The stem is the bundle executable's, which is what those two names are.
+            stem=${executable}
+            # The last run's report and its .done marker go first, or this run reports the last one's
+            # figures: the marker is there before the program has been launched, the wait below would
+            # return at once, and the log fetched would be September's -- which is what the iPad held,
+            # from the iPad runs of 2026-09-23 and 2026-09-24.
+            run_device "rm -f $remote_dir/$stem.log $remote_dir/$stem.done"
+            # The bundle is a directory and the transport copies files, one at a time: `scp: local
+            # "photoschanges.app" is not a regular file` is what the first iPad run said. The bundle is
+            # made on the device out of the two files, which is also what a hand-built test bundle is.
+            run_device "rm -rf /Applications/$executable.app; mkdir -p /Applications/$executable.app"
+            copy "$out/$executable.app/$executable" "/Applications/$executable.app/$executable"
+            copy "$out/$executable.app/Info.plist" "/Applications/$executable.app/Info.plist"
+            # uicache is a per-user cache and answers "incorrect user" from root: it is run as mobile,
+            # which is what tests/backports/README.md says to do. And the iPad 2 has no sblaunch --
+            # the launcher's own line -- so this is packages/e/emulator-guest/src/charon-sblaunch, built
+            # and signed here with its entitlements and copied to /usr/libexec. Both facts came from
+            # the first iPad run: "cannot open cache file. incorrect user?" and "sblaunch: command not
+            # found".
+            ensure_sblaunch
+            run_device "su mobile -c 'uicache -p /Applications/$executable.app'"
+            # One argument, no --wait: the copy in the shared store predates that option and answers
+            # "usage: charon-sblaunch <bundle identifier>" with exit 2 (measured on the iPad 2 on
+            # 2026-10-01), and the wait below -- for the .done marker the program itself writes -- is
+            # what waits for the application anyway.
+            run_device "/usr/libexec/charon-sblaunch local.charon.backports.${executable}"
+            echo "$name: launched; the report is $remote_dir/$stem.log when it writes $remote_dir/$stem.done"
             # The applications write their report to a file, not to the launch's stdout, because a
             # process SpringBoard started has no terminal to print to. Wait for the .done marker the
             # program writes itself, bounded, and fetch the log it left.
             waited=0
             while [ "$waited" -lt 60 ]; do
-                if run_device "[ -f $remote_dir/$name.done ] && echo done" 2>/dev/null | grep -q done; then
+                if run_device "test -f $remote_dir/$stem.done"; then
                     break
                 fi
                 waited=$((waited + 1))
                 sleep 2
             done
             if [ "$waited" -ge 60 ]; then
-                echo "$name: the program did not write $remote_dir/$name.done within 120s; the log it did write follows"
+                echo "$name: the program did not write $remote_dir/$stem.done within 120s; the log it did write follows"
             fi
-            fetch "$remote_dir/$name.log" "$out/$name-$device_name.report"
+            fetch "$remote_dir/$stem.log" "$out/$name-$device_name.report"
             report "$name" "$out/$name-$device_name.report"
             ;;
     esac
