@@ -89,7 +89,7 @@
     {
       "api": "AVPlayerViewControllerDelegate",
       "kind": "protocol",
-      "introduced": "8.0",
+      "introduced": "9.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the delegate of the backports' AVPlayerViewController, which the application adopts",
