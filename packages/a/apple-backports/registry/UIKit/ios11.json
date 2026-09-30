@@ -658,9 +658,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the flag changes how the table lays its cells' content views out, which belongs to UIKit's own layout",
-   "effect": "the property is not there; a cell's content view fills the cell as this release lays it out",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the flag changes how the table insets each cell's content view, which is the release's own table laying its cells out. The port carries the safe area itself (UIView.safeAreaInsets is an implemented row of this file) and carries the cell configuration and the automatic dimension, but it does not stand in for the release's cell layout. The safe area it would fold in is carried, and UITableView.insetsContentViewsToSafeArea's own measure is that the release's UITableView has no such member to begin with",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly; a cell's content view fills the cell as this release lays it out",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UITableView is in the cache and its own selector table carries no such member"
   },
   {
    "api": "UITableView.dragInteractionEnabled",
@@ -813,9 +813,9 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the protocol says a text control can be dragged, and the port uses it exactly that way: CharonTextDragDrop11.h types its adaptor over UIView<UITextDraggable, UITextDroppable> and UITextView+TextDragDrop11.m reads and writes the four properties through it. It stays absent as a protocol because the port only ever uses it as a type qualifier, and no object adopts it, so it is in no __objc_protolist and NSProtocolFromString answers nil for it. This is the measured difference from its two siblings in the same file, UITextDragRequest and UITextDropRequest, which the port DOES adopt and which are therefore implemented rows of this file: an adoption puts a protocol in the list the runtime reads at load time and a qualifier does not",
+   "effect": "the name is not there as a protocol object, while the properties an application writes through a control that conforms to it do reach the port: UITextView.textDragDelegate, .textDragInteraction, .isTextDragActive and .textDragOptions are implemented rows of dragdrop.json",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all",
    "minimum": "6.0"
   },
   {
@@ -823,9 +823,9 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the receiving half of the pair above, and the same arrangement: the port uses it as a type qualifier over the text control its drop adaptor drives, and no object adopts it. Measured the same way as UITextDraggable, and for the same reason",
+   "effect": "the name is not there as a protocol object; the drop properties an application writes through a conforming control do reach the port, and are implemented rows of dragdrop.json",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all",
    "minimum": "6.0"
   },
   {
@@ -833,9 +833,9 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the delegate a text drag hands its requests to. The port asks it: UITextView+TextDragDrop11.m reads the delegate off the control and CharonTextDragAdaptor forwards each request to it. The protocol itself is absent because the port uses it only as the type of that read and nothing adopts it, so no protocol object is emitted for it. The contrast with UITextDragRequest, which the same file's objects DO adopt and which is an implemented row of this file, is what separates the two",
+   "effect": "the name is not there as a protocol object, and an application that conforms to it gets no protocol to conform to, while the delegate it sets on the control is reached and asked",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all",
    "minimum": "6.0"
   },
   {
@@ -843,9 +843,9 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the drop half of the pair above, asked by CharonTextDropAdaptor and read off the control by the same file, and absent as a protocol object for the same reason: used as a type, adopted by nothing. Its sibling UITextDropRequest is adopted and therefore implemented, which is the measured difference",
+   "effect": "the name is not there as a protocol object, and the delegate an application sets on the control is still reached and asked",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all",
    "minimum": "6.0"
   },
   {
@@ -873,9 +873,9 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the proposal is what a text drop delegate is handed to accept or reject, and the release has no text drop to make one for. CharonTextDropRequest.m holds one as a property and the request object passes it straight through, so the port carries the path and not the object. Not carried by the port either, and the honest next piece of that family is this class: it is small, its initializer is the header's own, and everything that would hand it to a delegate is already in place",
+   "effect": "the class is not there, so a delegate is handed a request whose proposal is nil rather than one that can be judged, and an application that asks for the class outright gets nil from NSClassFromString",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all",
    "minimum": "6.0"
   },
   {
@@ -894,27 +894,27 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the protocol says a responder keeps a paste configuration, and the text input of this release keeps none: the release's own edit menu pastes through -paste: on the responder, with no configuration in between. Not carried by the port either",
+   "effect": "the protocol is not there",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UITextPasteDelegate",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the delegate a text paste is performed through, and nothing in this release asks one: the paste menu of this era calls -paste: on the responder and nothing else. Not carried by the port either",
+   "effect": "the protocol is not there",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UITextPasteItem",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "text dragging, dropping and pasting hang off the same drag session, and the text input of this release knows nothing of them",
-   "effect": "the name is not there; a text view keeps the selection, the magnifier and the paste menu this release draws",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the item a text paste delegate is offered, and the offer is made by the same machinery that does not exist here. Not carried by the port either",
+   "effect": "the protocol is not there",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UISpringLoadedInteractionBehavior",
@@ -957,36 +957,36 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. The port carries no focus engine either: nothing in the tree names it, so the class is the release's absence and the port's. UIAccessibility+Focus.m carries the focus notifications and the focused-element queries that a focus engine would post, and nothing posts them",
+   "effect": "the name is not there: this release has no focused item to ask about, and NSClassFromString answers nil",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UIFocusDebugger",
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+   "reason": "a class that dumps the focus engine's state, and there is no focus engine here to dump. Not carried by the port either",
    "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UIFocusDebuggerOutput",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "where the focus debugger would write, and there is no focus debugger to write anything. Not carried by the port either",
+   "effect": "the name is not there",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIFocusAnimationContext",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
+   "reason": "the protocol describes the item focus is moving to and from, and there is no focus item here to move between: the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. Not carried by the port either, and the coordinator for an implemented protocol row is an object that adopts it",
    "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIFocusMovementHint",
@@ -1020,9 +1020,9 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the document browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run",
+   "reason": "the action is what a document browser's toolbar button is, and the browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run. The port does carry a document browser -- UIDocumentBrowserViewController.m and its types header -- but a browser over an application's own container, which has no provider and so no actions to offer. The port's own browser names the type where it needs one, in CharonDocumentBrowserTypes.h, so nothing is missing from the port's build; what is missing is a Files daemon to make an action mean anything",
    "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UIAccessibilityContainerDataTable",
@@ -1372,9 +1372,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the reference says whether a separator's inset starts at the cell's edge or at its layout margins, and the table draws its separators itself",
-   "effect": "the property is not there: separators keep the inset this release draws them with",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the reference says whether a separator's inset is taken from the automatic adjustment or from the cell's own layout margins, and the separator is drawn by the release's table view on this release. The port carries -separatorInset and -separatorInsetReference's own neighbourhood (UITableView.separatorInset and UITableViewCell.separatorInset are implemented rows of scrollviews.json, and UITableView+Separators7.m draws them), but it draws them the way the release does, so there is no moment at which this flag would change anything the port controls. Not carried as a stored value: a flag read by nothing would be a field believed and consulted for nothing",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly; separators keep the inset this release draws them with",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UITableView is in the cache and its own selector table carries no such member"
   },
   {
    "api": "-[UITableViewCell dragStateDidChange:]",
@@ -1409,18 +1409,18 @@
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the coordinator class IS carried, ios7-10demand.json, and -addCoordinatedAnimations:completion: is an implemented row of the same class; this member is the focusing half of the same coordination, and there is nothing to focus, so there is no animation of the focus to add to a transaction. What it would coordinate is the focus engine, and the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. The coordinator's own members are carried and reachable, which is what an application that asks for the class itself still gets",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIFocusAnimationCoordinator is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "-[UIFocusAnimationCoordinator addCoordinatedUnfocusingAnimations:completion:]",
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the unfocusing half of the pair above, on a coordinator that is carried, and there is nothing to unfocus from: the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. The coordinator's own members are carried and reachable",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIFocusAnimationCoordinator is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UIFocusEnvironment.parentFocusEnvironment",
@@ -1463,36 +1463,36 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the member belongs to a keyboard extension, and this release has no extensions",
-   "effect": "the member is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "this release has no extensions: there is no extension host, so no keyboard extension is ever loaded and nothing here ever instantiates the class an input view controller is, so nothing asks a controller whether the keyboard it hosts has full access. Answering NO would be a statement about a network permission nobody here grants; answering YES would be one about a permission nobody here asks for. Not carried by the port either",
+   "effect": "the member is not there, and neither is the class: UIInputViewController is itself absent, ios8presentation.json, for the same reason",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIInputViewController is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UIInputViewController.needsInputModeSwitchKey",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the member belongs to a keyboard extension, and this release has no extensions",
-   "effect": "the member is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "this release has no extensions: there is no extension host, so no keyboard extension is ever loaded and nothing here ever instantiates the class an input view controller is, so nothing asks whether the globe key should be shown. The release's own input switcher is UIKeyboardMenuView, which it draws itself. Not carried by the port either",
+   "effect": "the member is not there, and neither is the class",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIInputViewController is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UITextDocumentProxy.selectedText",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the member belongs to a keyboard extension, and this release has no extensions",
-   "effect": "the member is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "UITextDocumentProxy is a protocol for the document context a keyboard extension is handed, and it is in neither cache: the release's text input side is UITextInput and its own traits, and the extension side of it arrived with extensions. selectedText reads 3.0 on the ladder for the same reason documentIdentifier does: another class's member of that name, not this row's owner. Not carried by the port either",
+   "effect": "the member is not there, and so is the protocol that declares it",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UITextDocumentProxy is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UITextDocumentProxy.documentIdentifier",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the member belongs to a keyboard extension, and this release has no extensions",
-   "effect": "the member is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "UITextDocumentProxy is a protocol for the document context a keyboard extension is handed, and it is in neither cache: the release's text input side is UITextInput and its own traits, and the extension side of it arrived with extensions. The name itself first appears at 3.0 on the ladder, which is the header's own point measured again: some other class owns a documentIdentifier, and this row's owner is not that one. Not carried by the port either",
+   "effect": "the member is not there, and so is the protocol that declares it",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UITextDocumentProxy is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "UINavigationBar.largeTitleTextAttributes",
@@ -1510,9 +1510,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "which edge the primary column sits at is decided by the split view controller's own layout",
-   "effect": "the property is not there: the primary column stays where this release puts it",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the edge says which side the primary column sits at, and the decision belongs to the split view controller's own layout as it presents on this release: the release lays its columns out itself and the port adds appearance and background to it, UISplitViewController+Background13.m among others, rather than standing in for that layout. The port does carry other members of the same class, eight of them, including the minimum and preferred column widths; this is the one whose value is decided by the release's own layout",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly; the primary column stays where this release puts it",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UISplitViewController is in the cache and its own selector table carries no such member"
   },
   {
    "api": "-[UIViewController viewLayoutMarginsDidChange]",
