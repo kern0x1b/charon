@@ -188,6 +188,9 @@ def build_one(release, arch, source, force=False):
             # The cache has not moved, so the names are measured; only the order is out of date.
             count = resorted(release, arch, source)
             return count, 0.0
+    # The key of this rung's cache: its mtime and size, the two things an index written from it
+    # depends on. Taken here, once, for the header below.
+    mtime, size = key_of(source)
     started = time.time()
     names = subprocess.run(
         ["xmake", "l", "tools/cache-index/names.lua", source, arch],
@@ -232,18 +235,34 @@ BLOCK = 65536
 
 
 
-def merge(rungs):
+def merge(full_ladder):
     """Every name -> the FIRST held rung that carries it, written as blocked gzip members.
 
     The ladder's own order decides it, and a name a later rung has and an earlier one does not is
     answered by the earlier one: the port supports every rung, so the first is the release that must
     carry the API. A name only a later rung has is answered by that later rung, which is the case a
-    release-split.lua run exists to catch."""
+    release-split.lua run exists to catch.
+
+    `full_ladder` is ALWAYS the whole held ladder, and never the `--only` subset, because a merged
+    table over a subset is not a first-rung answer at all -- it is a first-rung answer over the rungs
+    that happened to be on disk, with no way to tell from the file. Measured: `build.py --only 4.3`
+    overwrote the table with 4.3's 317456 names, and the tool then answered _NSFileSize 3.0 (it is
+    3.0's own, so that one survived) and UITextViewDidChangeSelectionNotification NONE, which no held
+    release lacks. Both wrong, neither flagged, and a lookup cannot see that the file is a subset.
+
+    So a missing rung is a refusal with the rung named, not a silent skip. The ladder's keys are the
+    names, and a name keyed to the wrong rung is worse than no answer, because a caller cannot tell it
+    apart from a real one."""
     first = {}
-    for release, _, _ in rungs:
+    missing = [release for release, _, _ in full_ladder
+               if not os.path.isfile(index_file(release))]
+    if missing:
+        raise SystemExit("build.py: refusing to merge, %d of %d rung(s) have no index: %s\n"
+                         "  build them first (build.py without --only), or the merged table would be a"
+                         " first-rung answer over a subset and every name in it would be keyed to the"
+                         " wrong rung." % (len(missing), len(full_ladder), ", ".join(missing)))
+    for release, _, _ in full_ladder:
         path = index_file(release)
-        if not os.path.isfile(path):
-            continue
         with gzip.open(path, "rt", encoding="utf-8", errors="surrogateescape") as handle:
             handle.readline()
             for line in handle:
@@ -303,15 +322,18 @@ def main():
     args = parser.parse_args()
 
     root = os.path.join(os.getenv("CHARON_HOME") or os.path.join(os.getenv("HOME"), ".charon"), "dyld")
-    rungs = ladder(root)
+    every = ladder(root)
+    rungs = every
     if args.only:
         wanted = set(args.only)
-        rungs = [rung for rung in rungs if rung[0] in wanted]
+        rungs = [rung for rung in every if rung[0] in wanted]
         missing = wanted - {rung[0] for rung in rungs}
         if missing:
             sys.exit("build.py: no held release named %s" % ", ".join(sorted(missing)))
-    if not rungs:
+    if not every:
         sys.exit("build.py: %s holds no release this port has a cache of" % root)
+    if not rungs:
+        sys.exit("build.py: no held release named %s" % ", ".join(sorted(set(args.only))))
 
     # One process at a time, at the back of the queue, and the child with us: a build started from a
     # loaded session must not take the machine with it.
@@ -337,7 +359,7 @@ def main():
           % (built, skipped, seconds, time.time() - started))
     if args.no_merge:
         return
-    count, size, blocks = merge(rungs)
+    count, size, blocks = merge(every)
     print("build.py: first-rung.tsv.gz holds %d names in %d block(s), %.1f MB"
           % (count, blocks, size / 1048576))
 
