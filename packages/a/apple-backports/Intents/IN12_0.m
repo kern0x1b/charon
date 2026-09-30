@@ -889,6 +889,14 @@
     return shared;
 }
 
+- (NSArray *)charon_relevantShortcuts
+{
+    // What setRelevantShortcuts:completionHandler: was last given, in the order it was
+    // given, or an empty array before anything was. Where a port reads back what it
+    // offered: on a release with Siri the system is the reader instead.
+    return _relevantShortcuts ?: [NSArray array];
+}
+
 @end
 
 @interface INShortcut ()
@@ -1037,6 +1045,22 @@
     return shared;
 }
 
+- (INUpcomingMediaPredictionMode)charon_predictionModeForType:(INMediaItemType)type
+{
+    // What setPredictionMode:forType: recorded for that media item type, and the enumeration
+    // own zero case - Default - for a type nothing was set for, which is what a dictionary
+    // with no entry for it answers.
+    NSNumber *mode = [_predictionModes objectForKey:[NSNumber numberWithInteger:(NSInteger)type]];
+    return mode ? (INUpcomingMediaPredictionMode)[mode integerValue] : INUpcomingMediaPredictionModeDefault;
+}
+
+- (NSOrderedSet *)charon_suggestedMediaIntents
+{
+    // What setSuggestedMediaIntents: was last given, in the order it was given, or an empty
+    // ordered set before anything was.
+    return _suggestedMediaIntents ?: [NSOrderedSet orderedSet];
+}
+
 @end
 
 @interface INVoiceShortcut ()
@@ -1150,6 +1174,13 @@
         shared = [[INVoiceShortcutCenter alloc] init];
     });
     return shared;
+}
+
+- (NSArray *)charon_shortcutSuggestions
+{
+    // What setShortcutSuggestions: was last given, in the order it was given, or an empty
+    // array before anything was.
+    return _shortcutSuggestions ?: [NSArray array];
 }
 
 @end

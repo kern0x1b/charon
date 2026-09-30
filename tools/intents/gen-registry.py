@@ -145,6 +145,29 @@ GENERATED_EFFECT = (
     "and this entry is written from what that generator emitted, read back out of the emitted text"
 )
 
+# The readers a class whose store the headers ask to be written carries, named the way INVocabulary's
+# row names charon_vocabularyStringsOfType:. A setter whose value nothing can read back is a field
+# that only grows, so each of these states a reader next to the setter that fills it.
+STORE_EFFECT = {
+    "INRelevantShortcutStore":
+        "defaultStore is one instance for the process, which is what the header's own note asks "
+        "for; setRelevantShortcuts:completionHandler: replaces the whole set rather than adding to "
+        "it, as the header's note says, keeps it in the class's own state and answers the handler "
+        "with no error; charon_relevantShortcuts reads the set back, which is where a port reads "
+        "what it offered, because on a release with Siri the system is the reader",
+    "INUpcomingMediaManager":
+        "sharedManager is one instance for the process; setSuggestedMediaIntents: keeps the intents "
+        "it is given in the order they were given; setPredictionMode:forType: keeps one mode per "
+        "media item type and removes the entry for the enumeration own zero case; "
+        "charon_suggestedMediaIntents and charon_predictionModeForType: read both back",
+    "INVoiceShortcutCenter":
+        "sharedCenter is one instance for the process; setShortcutSuggestions: keeps the suggestions "
+        "it is given in the order they were given; getAllVoiceShortcutsWithCompletion: answers an "
+        "empty array and no error, and getVoiceShortcutWithIdentifier:completion: nil and no error, "
+        "because this release runs no assistant daemon and has no Shortcuts app, so no shortcut was "
+        "ever added to Siri; charon_shortcutSuggestions reads the suggestions back",
+}
+
 LATER_GROUP = "a class of a group of this delivery that is not in this one"
 
 
@@ -596,7 +619,7 @@ def main():
                     entry["effect"] = HAND_WRITTEN_EFFECT[api]
                 else:
                     entry["reason"] = GENERATED_REASON
-                    entry["effect"] = GENERATED_EFFECT
+                    entry["effect"] = STORE_EFFECT.get(api, GENERATED_EFFECT)
                 entries.append(entry)
                 continue
             missing["another group"] += 1

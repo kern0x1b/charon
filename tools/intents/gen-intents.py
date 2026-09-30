@@ -641,24 +641,64 @@ EXTRA_IVARS = {
     "INVoiceShortcutCenter": [
         "    NSArray * _shortcutSuggestions;  // setShortcutSuggestions:",
     ],
-    # INFile's four properties are readonly and its only two constructors are the class methods
-    # written below, so the generator has no initialiser to hang them on and synthesises nothing:
-    # the field is what the two factories fill, and both are declared on the class itself.
-    "INFile": [
-        "    NSData * _data;  // data",
-        "    NSString * _filename;  // filename",
-        "    NSString * _typeIdentifier;  // typeIdentifier",
-        "    NSURL * _fileURL;  // fileURL",
-    ],
-    # INSendMessageAttachment's one property is readonly and its only constructor is the class
-    # method written below, for the same reason as INFile's four.
-    "INSendMessageAttachment": [
-        "    INFile * _audioMessageFile;  // audioMessageFile",
-    ],
+    # INFile and INSendMessageAttachment are NOT here: their properties are readonly but they are
+    # still the class's own, so the generator synthesises the ivar and the accessor for each, and a
+    # second declaration of the same field is "duplicate member" at compile time. Their two
+    # factories only fill what is already there. Listing them cost a red gate: IN16_0.m:1584-1588
+    # and :3978, six errors, all of them this.
     # The header's two charging-power methods are a read/write pair keyed by connector type, so
     # the field is a dictionary and neither is a property the header declares.
     "INCar": [
         "    NSMutableDictionary * _maximumPowerByConnectorType;  // maximumPowerForChargingConnectorType:",
+    ],
+}
+
+
+# Charon's OWN readers for the stores the headers ask to be written. They are not in
+# EXTRA_METHODS because EXTRA_METHODS is consulted while walking the header's OWN declared
+# methods, and a reader no header declares is never visited there: the four of these were
+# written to EXTRA_METHODS and silently emitted nowhere. They are emitted from here instead,
+# after the declared members, and only for a class this file generates.
+CHARON_READERS = {
+    # A reader for each store the headers ask to be written. A setter whose value nothing can read
+    # back is a field that only grows, and a port that offered a shortcut has no way to see that it
+    # did - which is the state this delivery is meant to keep. The name is Charon's own, so it
+    # collides with nothing Apple has and it is hidden at the link, and each class row's `effect`
+    # names it the way INVocabulary's names charon_vocabularyStringsOfType:.
+    ("INRelevantShortcutStore", "charon_relevantShortcuts"): [
+        "- (NSArray *)charon_relevantShortcuts",
+        "{",
+        "    // What setRelevantShortcuts:completionHandler: was last given, in the order it was",
+        "    // given, or an empty array before anything was. Where a port reads back what it",
+        "    // offered: on a release with Siri the system is the reader instead.",
+        "    return _relevantShortcuts ?: [NSArray array];",
+        "}",
+    ],
+    ("INUpcomingMediaManager", "charon_suggestedMediaIntents"): [
+        "- (NSOrderedSet *)charon_suggestedMediaIntents",
+        "{",
+        "    // What setSuggestedMediaIntents: was last given, in the order it was given, or an empty",
+        "    // ordered set before anything was.",
+        "    return _suggestedMediaIntents ?: [NSOrderedSet orderedSet];",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "charon_shortcutSuggestions"): [
+        "- (NSArray *)charon_shortcutSuggestions",
+        "{",
+        "    // What setShortcutSuggestions: was last given, in the order it was given, or an empty",
+        "    // array before anything was.",
+        "    return _shortcutSuggestions ?: [NSArray array];",
+        "}",
+    ],
+    ("INUpcomingMediaManager", "charon_predictionModeForType:"): [
+        "- (INUpcomingMediaPredictionMode)charon_predictionModeForType:(INMediaItemType)type",
+        "{",
+        "    // What setPredictionMode:forType: recorded for that media item type, and the enumeration",
+        "    // own zero case - Default - for a type nothing was set for, which is what a dictionary",
+        "    // with no entry for it answers.",
+        "    NSNumber *mode = [_predictionModes objectForKey:[NSNumber numberWithInteger:(NSInteger)type]];",
+        "    return mode ? (INUpcomingMediaPredictionMode)[mode integerValue] : INUpcomingMediaPredictionModeDefault;",
+        "}",
     ],
 }
 
@@ -1394,7 +1434,12 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         # methods return NSMeasurement<NSUnitPower *>, which is Foundation's and is carried by the
         # Foundation package, but it is not in this framework's own class list, so both were
         # dropped as foreign_class and their rows fell back to the group's blanket reason.
-        hand_written = (interface.name, selector) in EXTRA_METHODS
+        # An initialiser the loop above ALREADY emitted from this table must not be emitted again:
+        # EXTRA_METHODS holds both initialisers and plain methods, and a member in it that is an
+        # initialiser was written by the loop above. Without this, -[INObjectCollection
+        # initWithItems:] appears twice in IN16_0.m and the 6.1.3 gate stops on it.
+        hand_written = (interface.name, selector) in EXTRA_METHODS \
+            and not (selector.startswith("init") and ":" in selector)
         withheld = deferred_type(returns_of(method), intents, carried, forward)
         if withheld and not hand_written and method.get("instance") is not False \
                 and not has_attr(method, "UnavailableAttr") \
@@ -1447,6 +1492,16 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                 "    %s *copy = [[[self class] allocWithZone:zone] init];" % interface.name,
                 "    charon_intents_copy(copy, self);", "    return copy;", "}"]
         out.append("")
+    # Charon's own readers for this class's stores, inside the @implementation and after everything
+    # the header declares. They are internal at the link (a name starting with charon_ is what
+    # modules/apple/backports.lua's internal_symbol() calls internal), so they carry no API symbol,
+    # and each class row's `effect` names one - the way INVocabulary's row names
+    # charon_vocabularyStringsOfType:. They go HERE and not after the @end: emitted after it, clang
+    # reads a method declaration with no @implementation in scope and stops the build with
+    # "missing context for method declaration", which is what the first attempt did.
+    for (owner, _reader), lines in sorted(CHARON_READERS.items()):
+        if owner == interface.name:
+            out += lines + [""]
     out += ["@end", ""]
     # A property the SDK declares in a category of the class is answered by accessors in a
     # category of Charon's own: clang will not synthesise such a property in the class's own

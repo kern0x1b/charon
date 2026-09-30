@@ -1577,10 +1577,6 @@
 
 @interface INFile ()
 {
-    NSData * _data;  // data
-    NSString * _filename;  // filename
-    NSString * _typeIdentifier;  // typeIdentifier
-    NSURL * _fileURL;  // fileURL
     NSData *   _data;  // data
     NSURL *    _fileURL;  // fileURL
     NSString * _filename;  // filename
@@ -2974,22 +2970,6 @@
     return self;
 }
 
-- (instancetype)initWithItems:(NSArray *)items
-{
-    // The header's own two properties say what a collection of items is: allItems is the
-    // items, and sections is them under one section with no title. Collation is not
-    // indexed, because the items arrive in the order they were given and nothing here
-    // sorts them.
-    INObjectSection *section =
-        [[INObjectSection alloc] initWithTitle:nil items:items ?: [NSArray array]];
-    if ((self = [super init])) {
-        _sections = @[section];
-        _allItems = [items copy] ?: [NSArray array];
-        _usesIndexedCollation = NO;
-    }
-    return self;
-}
-
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -3974,7 +3954,6 @@
 
 @interface INSendMessageAttachment ()
 {
-    INFile * _audioMessageFile;  // audioMessageFile
     INFile * _audioMessageFile;  // audioMessageFile
 }
 @end
