@@ -182,6 +182,68 @@ static void structure(const char *name, const char *const *members, unsigned cou
     }
 }
 
+
+// ---------------------------------------------------------------------------------------------
+// The 13.0 band, the composition and movie-track subsystem - the slice the host can reach in
+// memory.  The capture chain is left for its own slices: those rows need a camera this host has no
+// way to drive, and asking the host about them here would produce NOT_ON_THIS_HOST for every one of
+// them at once, which measures the host's camera and not the port.
+//
+// Every name below is one of the queue's 13.0 rows, so the run adjudicates the band and not a
+// sample of it, and rowIndex below carries the count the harness derives its expectation from.
+static void band13Media(void)
+{
+    static const char *const movieTrackMembers[] = {
+        "asset", "naturalSize", "preferredTransform", "hasMediaCharacteristic:",
+    };
+    static const char *const compositionTrackMembers[] = {
+        "formatDescriptionReplacements", "segmentForTrackTime:",
+    };
+    static const char *const mutableCompositionTrackMembers[] = {
+        "enabled", "formatDescriptionReplacements", "naturalSize", "preferredTransform",
+    };
+    static const char *const movieMembers[] = {
+        "naturalSize", "preferredTransform", "canContainMovieFragments",
+    };
+    static const char *const mutableMovieMembers[] = {
+        "naturalSize", "preferredTransform", "canContainMovieFragments",
+    };
+    static const char *const fragmentedMembers[] = {
+        "naturalSize", "preferredTransform", "movieFragmentIndex",
+    };
+    static const char *const replacementMembers[] = {
+        "currentFormatDescription", "replacingFormatDescriptions",
+    };
+    // The classes of this slice with no 13.0 row of their own: asked for PRESENT, SUPERCLASS and
+    // ALLOC-INIT only, which is what a class row asks and no more.
+    static const char *const noMemberClasses[] = {
+        "AVMediaDataStorage", "AVFragmentedMovieMinder", "AVMovie", "AVMutableMovie",
+    };
+
+    structure("AVMovieTrack", movieTrackMembers, 4);
+    structure("AVMutableMovieTrack", movieTrackMembers, 4);
+    structure("AVCompositionTrack", compositionTrackMembers, 2);
+    structure("AVMutableCompositionTrack", mutableCompositionTrackMembers, 4);
+    structure("AVFragmentedMovie", fragmentedMembers, 3);
+    structure("AVFragmentedMovieTrack", fragmentedMembers, 3);
+    structure("AVCompositionTrackFormatDescriptionReplacement", replacementMembers, 2);
+    structure("AVMediaDataStorage", noMemberClasses, 0);
+    structure("AVFragmentedMovieMinder", noMemberClasses, 0);
+    structure("AVMovie", movieMembers, 3);
+    structure("AVMutableMovie", mutableMovieMembers, 3);
+
+    // The one 13.0 METHOD in this slice, asked as a selector rather than as a member: it is a
+    // method on AVMutableCompositionTrack and the header declares it, so the host answers whether it
+    // responds and what it returns for a track that carries no format description.
+    {
+        Class c = lookup("AVMutableCompositionTrack");
+        id made = instance("AVMutableCompositionTrack");
+        SEL replace = sel_registerName("replaceFormatDescription:withFormatDescription:");
+        row("AVMutableCompositionTrack METHOD replaceFormatDescription:withFormatDescription:",
+            answersSelector(made, replace) ? @"responds" : @"does not respond");
+    }
+}
+
 int main(void)
 {
     @autoreleasepool {
@@ -349,6 +411,7 @@ int main(void)
                         : NO_ORACLE);
             }
         }
+        band13Media();
         printf("rows: %d plants: %d\n", rowIndex, plants);
     }
     return 0;
