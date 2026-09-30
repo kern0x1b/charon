@@ -323,7 +323,8 @@ one that does not is not messaged at all, never messaged wrongly.
 Every one of the six is `@optional`, so a conformer may leave it out and the compiler accepts that. A
 conformer that implements one is never called, which is the SDK's own behaviour on a device that collects
 nothing — **the port does not fabricate a result, a device list or a status change to make a callback
-fire**.
+fire**, and that is the line every one of those six rows rests on. Each row's `reason` carries its own
+mechanism and each one's `source` names the harness that measured the absence.
 
 **Those six are `inert`, and `implemented` was wrong for them.** `registry/README.md` defines `inert` as
 *declared, does nothing, and says so once in the log the first time it is used* — which is exactly a
