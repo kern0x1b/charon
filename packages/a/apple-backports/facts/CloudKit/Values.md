@@ -145,3 +145,35 @@ class row would be the same mistake pointed the other way. After the fix, the sa
 The checklist counts a sweep name as carried only through a class row of its own, which is why it now
 also reads `a definition here with no row: ['CKRecordID']` where it read nothing at all: the member row
 had been standing in for the class row that was not there.
+
+## Corrections to the record
+
+**`eed61c206`'s statement that the light guard "reports 4 failures, all in `registry_test` on
+FileProvider entries … which the same guard reports on `main` without any of this work" is withdrawn.**
+It is an artefact of how the guard was invoked, not a property of the tree.
+
+`coordination/run_light_tests.lua` takes the checkout it is to read as an argument, and
+`review-mechanical.sh` passes its own fresh worktree:
+
+    lg=$(xmake l "$HOME/Git/projects/ios/coordination/run_light_tests.lua" "$wt" 2>&1 | ...)
+
+Run without that argument, from the repository root, the guard resolves a different set of registry
+files and reports four `registry_test` complaints that have nothing to do with CloudKit -
+`pathRelativeToDocumentStorage`, `identifier` and `displayName` "a property not spelled
+`-[Class selector:]`", and `NSFileProviderDomain` "named by both FileProvider/ios11.json and
+FileProvider/ios11.json" (the two files are `ios110.json` and `ios160.json` in the tree the guard
+reads when it is given a checkout). Both measurements are real; only the second one is the guard the
+gate runs:
+
+    xmake l coordination/run_light_tests.lua <checkout>     10 suites OK, 0 FAIL, exit 0
+    xmake l coordination/run_light_tests.lua                 4 failures,           exit 1
+
+Measured on `main` at `a66cdcde5` with the checkout argument, which is what the reviewer ran: **10/10,
+0 FAIL**. The four FileProvider failures were reproduced on `main` and on this branch alike, which is
+what made them look pre-existing rather than like an invocation artefact - they were pre-existing *for
+that invocation*, and that invocation is not the gate's.
+
+The claim as written in `eed61c206` is withdrawn rather than amended: the commit stays, and this
+section is the correction. Its other measurements are unaffected - the checklist, the mirror, the
+`registry_test` exit and the eleven CloudKit compiles were each run directly against the checkout and
+are not touched by this.
