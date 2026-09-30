@@ -19,10 +19,12 @@ import sys
 
 # The sweep's file, found beside the repository rather than written down: a home path in a tracked file
 # is refused by the commit hook, and rightly - the tool moves with the machine.
+# this file is <repo>/tools/corpus/cloudkit-checklist.py, and the sweep's file is under the workspace
+# beside the repository - three levels up is the repository's parent, which is the workspace.
+_WORKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))))
 SWEEP = os.environ.get("SWEEP_TSV") or os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))),
-    "charon", ".agent-work", "runs", "sweep", "3d90-api-by-framework.tsv")
+    _WORKSPACE, "charon", ".agent-work", "runs", "sweep", "3d90-api-by-framework.tsv")
 REG = "packages/a/apple-backports/registry/CloudKit"
 SRC = "packages/a/apple-backports/CloudKit"
 
