@@ -1,0 +1,625 @@
+{
+  "entries": [
+  {
+    "api": "CKRecordID",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a name alone lands in the default zone of the current owner; the equality, the hash and the archive round trip follow the name and the zone",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKRecordID new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must call -[CKRecordID initWithRecordName:] or -[CKRecordID initWithRecordName:zoneID:]\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZoneID",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the equality, the hash, the copy and the description are the name and the owner",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKServerChangeToken",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the token is the service's own and is kept and handed back byte for byte; there is no other content, so only the service makes one this port hands out",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKServerChangeToken new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises CKException with the reason \"You can't call init on CKServerChangeToken\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZone",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a zone made of a name and nothing else has no capabilities, and +defaultRecordZone is the default zone of the current owner",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKAsset",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the file URL is kept and read back; the bytes are the transport's and are a later delivery",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKAsset new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must call -[CKAsset initWithFileURL:] or -[CKAsset initWithData:]\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKReference",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a reference made of a record carries that record's identifier and the action it was given; a parent reference set from a record or from an identifier is the delete-self action CloudKit uses for a parent",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKReference new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must call -[CKReference initWithRecordID:] or -[CKReference initWithRecord:] or -[CKReference initWithAsset:]\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecord",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a record made of a type lands in the default zone of the current user under a fresh name; its fields are kept, copied, compared and archived as given; a field set back to nil is not a change to send, so -changedKeys is empty after it and -allKeys no longer names it; two records of the same name in the same zone are the same record whoever wrote them, so -isEqual: compares the identity and the change tag and not the values",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKRecord new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must call -[CKRecord initWithRecordType:]\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQuery",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the record type and the predicate are kept as given and the description is the predicate's own description; a change to the predicate or to the sort descriptors is a new query",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKQuery new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must call -[CKQuery initWithRecordType:predicate:sortDescriptors:]\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQueryCursor",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the cursor is the service's own token and is kept and handed back byte for byte",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKQueryCursor new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises CKException with the reason \"You can't call init on CKQueryCursor\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKLocationSortDescriptor",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the relative location is kept beside the key and the ascending flag, and the copy carries both",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKSubscription",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a subscription is a name and a type; a new one of the base class answers the record-zone type, which is what a saved subscription with nothing more said about it is",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKSubscription new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must instantiate one of the CKSubscription subclasses\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKNotificationInfo",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "what it is given is what it keeps, copies, compares and archives; a field never set and one set to nil are the same thing",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKNotificationID",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "an identifier is the name CloudKit gives a notification and the object it was sent to; the SDK class declares neither, so both are the port's own state, and an identifier with no name is the one a notification that has not been delivered yet carries",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKNotification",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a notification is only ever made by the service and read by an application: the factory builds one from a remote notification payload, and the container, the subscription, the alert fields, the badge, the sound and the category are read out of it",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKNotification new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"CKNotification is not meant for direct instantiation\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQueryNotification",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the reason a query notification is for is the creation, which is what a query subscription of this kind first fires on",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZoneNotification",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the zone the change was in is read from the payload",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQuerySubscription",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the record type, the predicate and the options are kept; a subscription made without an identifier is given one",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZoneSubscription",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the zone is kept; a subscription made without one is the default zone of the current owner",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKDatabaseSubscription",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a database subscription is the database's, and its type is the database notification",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKDatabaseNotification",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the subscription it belongs to is read from the payload",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKUserIdentity",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the record identifier, the contact identifiers, whether there is an iCloud account and the lookup information are kept and read back as given",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKUserIdentityLookupInfo",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "an email address, a phone number or a record identifier, one of the three, and each of the three array factories builds one per element",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareParticipant",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the identity, the permission, the role, the type, the acceptance status and the participant identifier are kept and read back as given",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareMetadata",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "the record the share is of, the URL it is shared under, the owner, the participant type, the permission, the status and the role are kept and read back as given",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKShareMetadata new]",
+    "kind": "method",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"Do not instantiate CKShare.Metadata, obtain them from CKFetchShareMetadataOperation or platform-specific scene / app delegate callbacks.\", which are the host's own words",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKOperationConfiguration",
+    "kind": "class",
+    "introduced": "11.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a new configuration is not long-lived, allows cellular access, and carries the timeouts a URL request of this release carries; it is copied with all six of its members",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKOperationGroup",
+    "kind": "class",
+    "introduced": "11.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a group without an identifier is given one, and it has a default configuration",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKAllowedSharingOptions",
+    "kind": "class",
+    "introduced": "16.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and every member of it is answered from the value the caller gave it",
+    "effect": "a share that has not been told is a share that invites nobody: no permission options, no access options, no access requests and no inviting others; +standardOptions is the read-only pair CloudKit documents",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKAccountChangedNotification",
+    "kind": "constant",
+    "introduced": "9.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKCurrentUserDefaultName",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKErrorDomain",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKErrorRetryAfterKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKErrorUserDidResetEncryptedDataKey",
+    "kind": "constant",
+    "introduced": "15.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKOwnerDefaultName",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKPartialErrorsByItemIDKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQueryOperationMaximumResults",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the number the host's own constant holds, which is 0: a limit is a property of a container's configuration, and CloudKit's own client is handed the service's limit when it asks for none",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordChangedErrorAncestorRecordKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordChangedErrorClientRecordKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordChangedErrorServerRecordKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordCreationDateKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordCreatorUserRecordIDKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordLastModifiedUserRecordIDKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordModificationDateKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordNameZoneWideShare",
+    "kind": "constant",
+    "introduced": "15.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordParentKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordRecordIDKey",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordShareKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordTypeShare",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordTypeUserRecord",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZoneDefaultName",
+    "kind": "constant",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareThumbnailImageDataKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareTitleKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKShareTypeKey",
+    "kind": "constant",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the value CloudKit's own framework hands out, read out of the running framework",
+    "effect": "the string the host's own constant holds, read back",
+    "source": "the host's own CloudKit, read out of the running framework with a plain macOS tool; the numbers it answers are in facts/CloudKit/Values.md and are what the differential of tests/backports/host/cloudkit holds this package to",
+    "facts": "facts/CloudKit/Values.md"
+  }
+  ],
+  "framework": "CloudKit"
+}

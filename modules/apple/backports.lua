@@ -13,6 +13,7 @@ LIBRARIES = {
     -- release from iOS 5.0 on and by none before it, so the class floor is 5.0; the imports are weak, so a
     -- release whose libicucore lacks them binds NULL and the class answers nil rather than faulting.
     {name = "FoundationBackports", folder = "Foundation", frameworks = {"Foundation", "CoreFoundation", "SystemConfiguration"}, libraries = {"icucore"}},
+    {name = "CloudKitBackports", folder = "CloudKit", frameworks = {"Foundation", "CoreLocation", "CoreGraphics"}, libraries = {"FoundationBackports"}, archives = {"micro-ecc"}}
     {name = "AppTrackingTransparencyBackports", folder = "AppTrackingTransparency", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
     {name = "AdServicesBackports", folder = "AdServices", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
     {name = "AppClipBackports", folder = "AppClip", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
