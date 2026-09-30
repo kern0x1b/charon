@@ -37,9 +37,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "MPSImageIntegral.h:31 annotates the class ios(9.0), and MPSImageIntegral.h:19-20 states the rectangle exactly: sumRect.origin = MPSUnaryImageKernel.offset, sumRect.size = dest_position - MPSUnaryImageKernel.clipRect.origin. The value at a destination position is therefore the sum of the source over that rectangle, which is a prefix sum this port computes on the CPU. The class declares no member of its own - MPSImageIntegral.h:33-35 is @end straight after the @interface - so the initializer is MPSUnaryImageKernel's and the encode is the object's, on MPSImage9.m. Measured 2026-09-30 on this host by tests/backports/host/mpsimage9/run.sh: 9 cases over 1x1, 3x2 and 5x5 images, 96 elements COMPARED 0 MISMATCHES, and both planted builds are caught (96/96 and 9/9). Every value is this port's own answer against a plain C reference written from the wording above, in the same process: host MPS cannot be the oracle here, this host's AGX family lacking computeCommandEncoderWithDispatchType: and the release's own kernel dying on encode. No number on this row measures Apple's code",
+      "effect": "the sum of the source over the rectangle from the offset to the destination position, per channel, inclusive of the destination position itself - MPSImageIntegral.h:19-20 states the size as a difference of two POSITIONS rather than a count, so a rectangle that size holds one more sample per axis than its length. Computed in double through the walking layer (MPSImageWalk13.m) and stored at the destination's own element width. The kernel's offset is honoured as {0,0,0}, the header's default at MPSImageKernel.h:131-138; a caller who set a non-zero offset is answered against the origin and that path is owed",
+      "facts": "facts/MetalPerformanceShaders/Image9.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -47,9 +48,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "implemented",
+      "reason": "MPSImageIntegral.h:52 annotates the class ios(9.0) and :38 states it sums the SQUARED pixels over the same rectangle :40-41 gives. That is the same arithmetic as MPSImageIntegral over the squares of the samples and it is the only difference between the two classes. The class declares no member of its own (:54-56 is @end after the @interface), so the object carries the encode on MPSImage9.m. Measured 2026-09-30 on this host by tests/backports/host/mpsimage9/run.sh: 9 cases over 1x1, 3x2 and 5x5 images, 96 elements COMPARED 0 MISMATCHES, both planted builds caught (96/96 and 9/9), against a plain C reference from the wording above rather than from this port, because host MPS cannot be the oracle on this host",
+      "effect": "the sum of the SQUARES of the source over the rectangle from the offset to the destination position, per channel, inclusive of the destination position - MPSImageIntegral.h:40-41. Computed in double through the walking layer and stored at the destination's own element width. A non-zero MPSUnaryImageKernel offset is answered against the origin and that path is owed, as on MPSImageIntegral",
+      "facts": "facts/MetalPerformanceShaders/Image9.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -57,9 +59,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "not a missing measurement but a placement the band machinery forbids. MPSImageResampling.h:122 annotates MPSImageLanczosScale ios(9.0) while :29 annotates ITS OWN BASE, MPSImageScale, ios(11.0) - a later base under an earlier class, which is the release's own hierarchy and not a mistake in this reading. Carrying LanczosScale in a 9.0 object would put a class that arrived at 11.0 into a 9.0 file, which is the mixed-release object the rules forbid, and MPSImageScale is itself an absent row of this family at 11.0, so the base cannot simply be written either. The filter is computable on the CPU - :110-121 names the Lanczos resampling algorithm, and a NULL scaleTransform means the source fits the destination exactly - so what is missing is the 11.0 base and with it a legal placement",
+      "effect": "nothing: MPSImageLanczosScale is not carried, so NSClassFromString answers nil and no resampling is answered. A caller that links the class name gets a crash on a compile time reference rather than a resample that is not the filter's. The resampling is owed with the 11.0 surface and this row names the release that unblocks it",
+      "facts": "facts/MetalPerformanceShaders/Image9.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -67,9 +70,10 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "status": "owed",
+      "reason": "the class is computable and is NOT carried because two of its own members are not answerable. MPSImageMedian.h:67 declares +maxKernelDiameter and :71 declares +minKernelDiameter, and NO header in either the 16.4 or the 26.2 SDK states a value for either: grep for axKernelDiameter across both SDKs' MetalPerformanceShaders returns those two declarations and nothing else. The median itself is exact - :18-20, a kernelDiameter x kernelDiameter window per channel, and :36-38 the diameter must be odd, so there is one middle element and no interpolation to invent - and the object was written and compiles at armv7 with 0 errors and 0 source warnings; what is missing is a source for those two values that is not this port's guess. Carrying the class with two invented numbers is a symbol that loads and lies, so the whole class is owed until the values have a source",
+      "effect": "nothing: MPSImageMedian is not carried, so NSClassFromString answers nil and there is no window, no median and no diameter. A caller that links the class name gets a crash on a compile time reference rather than a wrong number, which is the intended failure and is recorded in facts/MetalPerformanceShaders/Image9.md",
+      "facts": "facts/MetalPerformanceShaders/Image9.md",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
@@ -77,9 +81,11 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "ios(9.0), :291, with a readonly colorTransform and -initWithDevice:linearGrayColorTransform: (:314): a gradient magnitude followed by a non-maximum suppression, which is not a weighted sum."
+      "status": "implemented",
+      "reason": "MPSImageConvolution.h:290 annotates the class ios(9.0), :281-288 states that it implements the Sobel filter and gives the luminance it runs on (Luminance = v[0]*x + v[1]*y + v[2]*z), :301-302 gives the default transform BT.601/JPEG {0.299f, 0.587f, 0.114f}, and :350-352 states the operator for the filters this same header uses: G = sqrt(Sx^2 + Sy^2), G_ang = arctan(Sy/Sx). The 3x3 pair is the standard operator those two lines name, and the object's four declared members - initWithDevice:, the designated initWithDevice:linearGrayColorTransform:, initWithCoder:device: (inherited from MPSUnaryImageKernel9.m) and colorTransform - are all answered. Measured 2026-09-30 on this host by tests/backports/host/mpsimage9/run.sh: 9 cases over 1x1, 3x2 and 5x5 images, 96 elements COMPARED 0 MISMATCHES, both planted builds caught (96/96 and 9/9), against a plain C reference from the wording above rather than from this port, because host MPS cannot be the oracle on this host",
+      "effect": "the gradient magnitude of the 3x3 Sobel pair, sqrt(Sx^2 + Sy^2) per MPSImageConvolution.h:351, per channel when the source and destination channel counts match and on the transform's luminance when they differ, which is the header's own rule at :283-288. NOT the non-maximum suppression: :353-360 lists that as step 3 of MPSImageCANNY's five steps and this class's own @discussion does not claim it, so this row claims only the magnitude. Outside the clip rectangle the neighbourhood reads 0, the header's edgeModeZero default at MPSImageKernel.h:151-162",
+      "facts": "facts/MetalPerformanceShaders/Image9.md",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNCrossChannelNormalization",
