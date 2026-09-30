@@ -167,3 +167,77 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
                                   title:(NSString *)title __attribute__((objc_method_family(init)));
 - (void)charon_setActivationKey:(NSString *)activationKey menuItem:(UIMenuElement *)menuItem;
 @end
+
+// WKWebExtensionContext: what an extension, once it is LOADED, can do and be asked about.
+//
+// The class and its constants are carried. Its members are NOT, and the reason is measured rather
+// than assumed: a context only exists once an extension is loaded in a web view, and the host cannot
+// be asked for one here. `-[WKWebExtensionController loadExtensionContext:error:]` does not create a
+// context -- it CONSUMES one, and the host raises on it when handed anything else:
+//
+//   *** Terminating app due to uncaught exception 'NSInternalInconsistencyException',
+//   reason: 'Invalid parameter not satisfying: [extensionContext isKindOfClass:WKWebExtensionContext.class]'
+//   3   WebKit   -[WKWebExtensionController loadExtensionContext:error:]
+//
+// and the path that does create one, -[WKWebExtensionController extensionContextForExtension:],
+// answers nil on this host for an extension built from a resource:
+//
+//   extensionContextForExtension = 0x0
+//
+// So every member below is declared and left unimplemented, and its row says what Apple answers
+// without a web view. Nothing in this family is marked implemented on the strength of a measurement
+// this port did not take.
+extern NSString *const WKWebExtensionContextErrorDomain;
+extern NSString *const WKWebExtensionContextPermissionsWereGrantedNotification;          /* "...PermissionsWereGranted" */
+extern NSString *const WKWebExtensionContextPermissionMatchPatternsWereGrantedNotification;
+extern NSString *const WKWebExtensionContextGrantedPermissionsWereRemovedNotification;
+extern NSString *const WKWebExtensionContextDeniedPermissionsWereRemovedNotification;
+extern NSString *const WKWebExtensionContextPermissionMatchPatternsWereDeniedNotification;
+extern NSString *const WKWebExtensionContextDeniedPermissionMatchPatternsWereRemovedNotification;
+extern NSString *const WKWebExtensionContextErrorsDidUpdateNotification;                 /* "...ErrorsDidUpdate" */
+extern NSString *const WKWebExtensionContextNotificationUserInfoKeyPermissions;          /* "permissions" */
+extern NSString *const WKWebExtensionContextNotificationUserInfoKeyMatchPatterns;      /* "matchPatterns" */
+
+typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
+    WKWebExtensionContextPermissionStatusUnknown = 0,
+    WKWebExtensionContextPermissionStatusGrantedExplicitly,
+    WKWebExtensionContextPermissionStatusGrantedImplicitly,
+    WKWebExtensionContextPermissionStatusDeniedExplicitly,
+    WKWebExtensionContextPermissionStatusDeniedImplicitly,
+    WKWebExtensionContextPermissionStatusRequestedExplicitly,
+    WKWebExtensionContextPermissionStatusRequestedImplicitly,
+} API_AVAILABLE(ios(18.4));
+
+@interface WKWebExtensionContext : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, readonly, weak) WKWebExtensionController *webExtensionController;
+@property (nonatomic, readonly, weak) WKWebExtension *webExtension;
+@property (nonatomic, readonly, copy) NSUUID *uniqueIdentifier;
+@property (nonatomic, readonly) BOOL loaded;
+@property (nonatomic, readonly) BOOL inspectable;
+@property (nonatomic, readonly, copy) NSURL *baseURL;
+@property (nonatomic, readonly, nullable, copy) NSURL *optionsPageURL;
+@property (nonatomic, readonly, nullable, copy) NSURL *overrideNewTabPageURL;
+@property (nonatomic, readonly, copy) NSArray<NSError *> *errors;
+@property (nonatomic, readonly, copy) NSArray<NSString *> *unsupportedAPIs;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionPermission> *grantedPermissions;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionPermission> *deniedPermissions;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionPermission> *currentPermissions;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionMatchPattern *> *grantedPermissionMatchPatterns;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionMatchPattern *> *deniedPermissionMatchPatterns;
+@property (nonatomic, readonly, copy) NSSet<WKWebExtensionMatchPattern *> *currentPermissionMatchPatterns;
+@property (nonatomic, readonly) BOOL hasAccessToAllHosts;
+@property (nonatomic, readonly) BOOL hasAccessToAllURLs;
+@property (nonatomic, readonly) BOOL hasAccessToPrivateData;
+@property (nonatomic, readonly) BOOL hasRequestedOptionalAccessToAllHosts;
+@property (nonatomic, readonly) BOOL hasContentModificationRules;
+@property (nonatomic, readonly) BOOL hasInjectedContent;
+@property (nonatomic, readonly, nullable) WKWebViewConfiguration *webViewConfiguration;
+@property (nonatomic, readonly) NSArray<WKWebExtensionTab *> *openTabs;
+@property (nonatomic, readonly) NSArray<WKWebExtensionWindow *> *openWindows;
+@property (nonatomic, readonly, nullable) WKWebExtensionWindow *focusedWindow;
+@property (nonatomic, readonly) NSArray<WKWebExtensionCommand *> *commands;
+@property (nonatomic, readonly, nullable) WKWebExtensionAction *actionForTab:(WKWebExtensionTab *)tab;
+@property (nonatomic, readonly, nullable) NSString *inspectionName;
+@end
