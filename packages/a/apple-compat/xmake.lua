@@ -53,6 +53,20 @@ package("apple-compat")
         if #objects > 0 then
             os.vrunv("xcrun", table.join({"libtool", "-static", "-o", path.join(package:installdir("lib"), "libapple-compat.a")}, objects))
         end
+        -- The same declarations as one module, so that Swift reaches a shim: a forced include reaches the C file being
+        -- compiled and not the Swift one, and a declaration has to be in a module to be seen at all. The modulemap names
+        -- the headers it has, which are the ones this release needed -- the module is written from what was installed,
+        -- so a shim a newer release does not need is not in it, and no caller can reach one it does not have.
+        local module = path.join(package:installdir("include"), "CharonCompat")
+        os.mkdir(module)
+        local lines = {"// Written by charon@apple-compat: the shims this release needs, as one module a Swift file can import."}
+        for _, symbol in ipairs(package:data("provided")) do
+            if os.isfile(path.join(package:installdir("include"), "charon", symbol .. ".h")) then
+                table.insert(lines, "#include <charon/" .. symbol .. ".h>")
+            end
+        end
+        io.writefile(path.join(module, "shims.h"), table.concat(lines, "\n") .. "\n")
+        io.writefile(path.join(module, "module.modulemap"), "module CharonCompat {\n    header \"shims.h\"\n    export *\n}\n")
         local process_wide = package:data("process_wide")
         if #process_wide > 0 then
             local folder = path.join(package:installdir("share"), "apple-compat", "process-wide")
