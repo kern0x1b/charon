@@ -61,6 +61,56 @@ python3 "$here/objc_selectors.py" "$build/SRSensorReader.o"
 # The change is anchored to a line the clean run printed, so a plant that stops applying is refused
 # rather than silently passing - the "MUTATION DID NOT APPLY" line below is that refusal.
 survived=0
+
+# The protocol's OWN metadata, from the same generated translation unit the build compiles from an
+# implemented protocol row. This is a separate question from the reader's sends: the sends say what the
+# reader does, this says what an application finds when it asks the runtime about the protocol itself.
+# The generated file is reproduced here rather than guessed, so the header this step compiles is the
+# header the build compiles.
+echo "--- the metadata the port emits for the protocol, counted"
+# The plant's header: the protocol forwarded rather than declared, which is what this header did before
+# and what made it emit a protocol with no methods in it at all. The @optional marker goes with the ten
+# members, or the forward declaration would not parse.
+mkdir -p "$build/mutant-protocols"
+sed -e 's/^@protocol SRSensorReaderDelegate <NSObject>$/@protocol SRSensorReaderDelegate;/' \
+    -e '/^@optional$/,/^@end$/d' \
+    "$appledir/SensorKit/CharonSensorKitProtocols.h" > "$build/mutant-protocols/CharonSensorKitProtocols.h"
+if grep -q '^@optional$' "$build/mutant-protocols/CharonSensorKitProtocols.h"; then
+    echo "MUTATION DID NOT APPLY: the mutant header still declares the ten members"
+    survived=$((survived + 1))
+fi
+generated() {
+    mkdir -p "$1"
+    cp "$2" "$1/CharonSensorKitProtocols.h"
+    {
+        echo '// SensorKitBackportsProtocols14.0.m - written by modules/apple/backports.lua, not by hand.'
+        echo '#import "CharonSensorKitProtocols.h"'
+        echo
+        echo 'void charon_SensorKitBackports_protocols(void) __attribute__((used));'
+        echo 'void charon_SensorKitBackports_protocols(void)'
+        echo '{'
+        echo '    (void)@protocol(SRSensorReaderDelegate);'
+        echo '}'
+    } > "$1/SensorKitBackportsProtocols14.0.m"
+    xcrun clang -fobjc-arc -w -I"$1" -c "$1/SensorKitBackportsProtocols14.0.m" -o "$1/protocols.o"
+    xcrun clang -fobjc-arc -w -I"$appledir/SensorKit" "$here/protocol-count.m" "$1/protocols.o" \
+        -framework Foundation -o "$1/protocol-count"
+}
+generated "$build/protocols" "$appledir/SensorKit/CharonSensorKitProtocols.h"
+"$build/protocols/protocol-count" > "$build/protocol.out"
+cat "$build/protocol.out"
+python3 "$here/check_protocol.py" "$build/protocol.out"
+
+echo "--- and its plant: the protocol forwarded instead of declared, which is what the header used to do"
+generated "$build/protocols-mutant" "$build/mutant-protocols/CharonSensorKitProtocols.h"
+"$build/protocols-mutant/protocol-count" > "$build/protocol-mutant.out"
+if python3 "$here/check_protocol.py" "$build/protocol-mutant.out" > "$build/protocol-mutant-cmp.out" 2>&1; then
+    echo "MUTANT SURVIVED: the protocol counted the same with its ten members deleted"
+    survived=$((survived + 1))
+else
+    echo "  caught: $(grep -m 1 '^FAIL' "$build/protocol-mutant-cmp.out" | cut -c1-110)"
+    echo "  caught: $(grep -m 1 '^sensorkit-protocol:' "$build/protocol-mutant-cmp.out")"
+fi
 plant() {
     label=$1; from=$2; to=$3
     rm -rf "$build/mutant"; mkdir -p "$build/mutant"
@@ -136,4 +186,4 @@ else
 fi
 
 if [ "$survived" -ne 0 ]; then echo "$survived plants survived; this check proves nothing"; exit 1; fi
-echo "sensorkit-reader: OK - 10 protocol methods, 4 sent and 4 in the object, 5 plants noticed"
+echo "sensorkit-reader: OK - 10 protocol methods declared and 4 sent, 6 plants noticed"

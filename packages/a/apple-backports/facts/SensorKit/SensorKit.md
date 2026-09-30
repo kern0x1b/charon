@@ -20,7 +20,7 @@ them is not evidence, and this page used to carry several.
 | --- | --- | --- |
 | the 57 string constants, the port's against the host's own SensorKit | `tests/backports/host/sensorkit-names/run.sh` | `sensorkit-names: 57 names compared, 0 differing`, then three plants and the empty control |
 | the four time functions, both sides in one binary | `tests/backports/host/sensorkit/run.sh` | the three relations, and the port's side `1, 1, 1` |
-| which of the delegate's ten the reader sends, in the source and in the armv7 object | `tests/backports/host/sensorkit-reader/run.sh` | `4 of 10 protocol methods sent`, `4 of 10 protocol selectors in the object`, 5 plants |
+| which of the delegate's ten the reader sends, what the emitted protocol holds, and both read out of the armv7 object | `tests/backports/host/sensorkit-reader/run.sh` | `4 of 10 protocol methods sent`, `4 of 10 protocol selectors in the object`, `present, 10 optional, 0 required`, 6 plants |
 | the deletion-record sensor name, the port's category against the host's | `tests/backports/host/sensorkit-tombstones/run.sh` | `58 inputs compared, 0 differing`, three mutations, the empty control |
 | what the host answers for the five value members, and what the port's objects carry | `tests/backports/host/sensorkit-value/run.sh` | the three HOST lines, `5 of 5 accessors`, 5 plants |
 | what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
@@ -325,18 +325,41 @@ conformer that implements one is never called, which is the SDK's own behaviour 
 nothing — **the port does not fabricate a result, a device list or a status change to make a callback
 fire**, and that is the line every one of those six rows rests on.
 
-**The protocol itself is now carried**, which it was not before: the delegate is the application's own
-object, so nothing in the port adopts `SRSensorReaderDelegate`, and a port that emits a protocol's
-metadata only where a class adopts it therefore emitted none — so an application compiled against the
-SDK found no such protocol at run time and could not conform to one it declared.
-`CharonSensorKitProtocols.h` names it and the object `modules/apple/backports.lua` generates from the
-registry row, `SensorKitBackportsProtocols14.0.m`, makes clang emit
-`__OBJC_PROTOCOL_$_SRSensorReaderDelegate`. Measured by compiling that generated object for
-`armv7-apple-ios6.1.3` against the 16.4 SDK and reading the symbol out of it with `nm -gU`. The header
-forward-declares the protocol and lets the umbrella import supply the body, because the 16.4 SDK already
-declares it with one — the same shape `CharonMetalProtocols.h` uses — and a forward declaration on its
-own is not a protocol: `@protocol X;` emits nothing, and `protocol_getMethodDescriptionCount` on it
-would answer 0 for all ten.
+**The protocol itself is now carried, and it is the header that had to be real.** The delegate is the
+application's own object, so nothing in the port adopts `SRSensorReaderDelegate` — which is why the port
+emitted no `__OBJC_PROTOCOL_$_` for it at all, and an application compiled against the SDK found no such
+protocol on the device. `CharonSensorKitProtocols.h` declares it and the object
+`modules/apple/backports.lua` generates from the registry row, `SensorKitBackportsProtocols14.0.m`, makes
+clang emit the metadata.
+
+**Three things about that were measured, and two of them were wrong first.**
+
+- **A forward declaration emits the protocol and leaves it EMPTY.** Measured by taking
+  `@protocol(SRSensorReaderDelegate)` into a `Protocol *` and counting method descriptions: with the
+  header forward-declared the protocol is found and carries **0** optional methods; with the ten members
+  declared it is found with **10** optional and **0** required. An application asking
+  `[objc_getProtocol("SRSensorReaderDelegate") conformsToSelector:@selector(sensorReaderWillStartRecording:)]`
+  got a NO for a method its own class implements — and each of the ten member rows would have been a
+  promise with nothing behind it. The port's first version of this header forward-declared, and its own
+  comment claimed the opposite. `tests/backports/host/sensorkit-reader` now counts the emitted metadata
+  from the same generated file the build compiles, and its plant forwards the protocol to turn the count
+  to zero:
+  `sensorkit-protocol: present, 10 optional, 0 required, 0 failures` and, for the plant,
+  `present, 0 optional, 0 required, 1 failures`.
+- **The probe has to USE what it measures.** The first version put `(void)@protocol(X)` in a `static`
+  function `main` never called; the linker dead-stripped it and the probe printed `protocol ABSENT` for
+  **both** shapes — a confident wrong answer about a port that emits the protocol perfectly well. This is
+  the third time in this family a runtime answer was read off something that was not there (the
+  `objc_getClass` "0 of 10" in slice 1, and `class_getInstanceMethod` finding an instance method where a
+  class method lived). A probe must hold the thing it measures.
+- **The header must NOT import `<SensorKit/SensorKit.h>`.** Measured on the generated object's own compile
+  for `armv7-apple-ios6.1.3` against the 16.4 SDK: with the umbrella in scope clang reports
+  `duplicate protocol definition of 'SRSensorReaderDelegate' is ignored [-Wduplicate-protocol]` and uses
+  **Apple's** declaration, so the metadata emitted would carry references into a framework this release
+  does not have. The header therefore declares four `@class` lines and one untyped
+  `typedef NSInteger SRAuthorizationStatus` — the same shape `CharonSensorKit.h` uses for its fifteen
+  enumerations — and compiles with no diagnostic and **no undefined reference into SensorKit**, read back
+  with `nm -u`.
 
 **What is still not claimed.** That a device reaches a subscriber. The call test on the emulator has not
 been run; what is proven here is that the armv7 object carries the four selectors, the source sends

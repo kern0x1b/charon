@@ -1,21 +1,74 @@
 // CharonSensorKitProtocols.h — the SensorKit protocols the generated protocol sources name.
 //
-// Written in the shape tools/transcribe-protocols.py writes, and for the same reason: SensorKit's own
-// reader hands its delegate messages, so an application compiled against SDK 26.2 declares
-// `id<SRSensorReaderDelegate>` and conforms to a protocol that does not exist at run time on a release
-// this port serves. Nothing in the port adopts it, so the port emits no __OBJC_PROTOCOL_$_ for it on
-// its own — which backports.lua's protocol_sources answers by writing one object per release that
-// names the protocol, and clang then emits the metadata.
+// WHY THE PORT DECLARES THIS PROTOCOL'S BODY RATHER THAN FORWARD-DECLARING IT. Measured on this
+// machine, and the earlier version of this file got it wrong:
 //
-// WHY A FORWARD DECLARATION AND NO BODY HERE. The 16.4 SDK this package compiles against already
-// declares this protocol with a body, at SRSensorReader.h:21, so transcribing it here would be copying
-// a header to state a fact the build's own SDK already states. The umbrella import below supplies that
-// body, exactly as CharonMetalProtocols.h does for the Metal protocols the 16.4 SDK already defines.
-// A forward declaration on its own emits nothing: @protocol X; is not a protocol, and
-// protocol_getMethodDescriptionCount on it would answer 0 for all ten methods this protocol carries.
+//   forward declaration only   ->  the protocol IS emitted, and carries 0 method descriptions
+//   a declared body (below)    ->  the protocol is emitted with 10 optional and 0 required
+//
+// Both were measured by compiling a probe that takes @protocol(SRSensorReaderDelegate) into a Protocol *
+// and counts method descriptions, so the numbers here are the probe's and not this file's reading of
+// itself. A forward declaration would leave an application that asks
+// `[objc_getProtocol("SRSensorReaderDelegate") conformsToSelector:@selector(sensorReaderWillStartRecording:)]`
+// a NO, for a method its own class implements — and each of the ten member rows would then be a promise
+// with nothing behind it.
+//
+// A measurement that had to be got wrong first, and it is worth recording because it is the second time
+// in this family a runtime answer was read without the reference being used: the first version of that
+// probe put `(void)@protocol(X)` in a `static` function nothing calls, the linker dead-stripped it, and
+// the probe printed "protocol ABSENT" for BOTH shapes. The protocol object was there the whole time. A
+// probe must use what it is measuring, or it measures the linker.
+//
+// WHY THERE IS NO <SensorKit/SensorKit.h> IMPORT HERE, and it cost a build to find out. With the
+// umbrella imported, clang reports
+//
+//   duplicate protocol definition of 'SRSensorReaderDelegate' is ignored [-Wduplicate-protocol]
+//
+// and uses APPLE'S declaration rather than the one below — measured on the generated object's own
+// compile for armv7-apple-ios6.1.3. The metadata emitted would then be Apple's, carrying references into
+// a framework this release does not have. So this header declares what it needs and nothing else: four
+// @class lines and one untyped typedef, which is the same shape CharonSensorKit.h uses for the fifteen
+// enumerations the build's SDK does not name.
+//
+// WHAT IS WRITTEN AND WHAT IS NOT. The ten declarations, their base class, their @optional-ness and their
+// types are facts the contract needs and are spelled as SDK 26.2 spells them at SRSensorReader.h:21 to
+// :86. No header text is copied: no comment, no documentation, no prose. The @class lines declare names
+// without defining types, and the typedef is NSInteger because SRAuthorizationStatus is an NS_ENUM over
+// NSInteger — so the method description's type encoding is the encoding Apple's is, which is what a
+// conforming class compiled against the SDK has to agree with.
 
-#import <SensorKit/SensorKit.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
-@protocol SRSensorReaderDelegate;
+@class SRSensorReader;
+@class SRFetchRequest;
+@class SRFetchResult;
+@class SRDevice;
+
+// SRAuthorizationStatus is declared by the SDK this header deliberately does not import, so the one
+// member naming it gets the same untyped typedef CharonSensorKit.h gives its fifteen. The ENUMERATORS are
+// Apple's and are not copied: a value of this enumeration is produced by the system changing a sensor's
+// authorization, and no system here does that.
+typedef NSInteger SRAuthorizationStatus;
+
+@protocol SRSensorReaderDelegate <NSObject>
+
+@optional
+- (BOOL)sensorReader:(SRSensorReader *)reader
+     fetchingRequest:(SRFetchRequest *)fetchRequest
+      didFetchResult:(SRFetchResult *)result;
+- (void)sensorReader:(SRSensorReader *)reader
+    didCompleteFetch:(SRFetchRequest *)fetchRequest;
+- (void)sensorReader:(SRSensorReader *)reader
+     fetchingRequest:(SRFetchRequest *)fetchRequest
+     failedWithError:(NSError *)error;
+- (void)sensorReader:(SRSensorReader *)reader
+    didChangeAuthorizationStatus:(SRAuthorizationStatus)authorizationStatus;
+- (void)sensorReaderWillStartRecording:(SRSensorReader *)reader;
+- (void)sensorReader:(SRSensorReader *)reader startRecordingFailedWithError:(NSError *)error;
+- (void)sensorReaderDidStopRecording:(SRSensorReader *)reader;
+- (void)sensorReader:(SRSensorReader *)reader stopRecordingFailedWithError:(NSError *)error;
+- (void)sensorReader:(SRSensorReader *)reader didFetchDevices:(NSArray<SRDevice *> *)devices;
+- (void)sensorReader:(SRSensorReader *)reader fetchDevicesDidFailWithError:(NSError *)error;
+
+@end
