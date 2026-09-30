@@ -70,6 +70,53 @@ holds ingest output that changes on every scan run:
 copy; unset, every script here defaults to the coordination worktree, so a normal invocation needs
 no environment setup at all.
 
+## The two cache ladders disagree with the dyld index on 511 318 and 2 308 659 rows
+
+`caches/<release>.tsv` and `caches/sel/<release>.strings` are `strings(1)` products, and a rung was
+"the first of these files, oldest first, that contains the name". `tools/cache-index/` reads the same
+50 held caches once and answers the same question against a release rather than against a file. Every
+row of both ladders was recomputed through the index and compared. Measured 2026-09-30, load 23, the
+scripts in `charon/.agent-work/worktrees/cache-index-1/.agent-work/runs/recompute/`:
+
+| | `caches/<stem>.tsv` (symbol ladder, 6 files) | `caches/sel/<stem>.strings` (selector ladder, 3 files) |
+| --- | ---: | ---: |
+| rows the old scan gave a rung to | 3 179 542 | 9 518 012 |
+| identical in the index | 2 667 477 | 427 332 |
+| **moved — the row's rung changes** | **511 318 (16.08 %)** | **2 308 659 (84.38 % of the lines that are names)** |
+| … the index says an earlier release | 510 685 | 2 233 020 |
+| … the index says a later release | 633 | 75 639 |
+| not a name the index holds at all | 747 | 6 782 021 (69.3 %) |
+
+**509 842 of the symbol ladder's 511 318 moves are to a release older than 6.0, which that ladder has
+no file for at all** — so this is not granularity. The cause is one sentence: `strings(1)` does not
+read a Mach-O symbol table, so a name that lives only in one was invisible to the old scan and was
+dated to a later release than the one that has it. On the `Foundation` of iPhone OS 3.0 alone,
+`strings -a` misses 2060 of the file's 2061 `nm -gU` names (99.95 %). The other 1476 moves are between
+two of the six rungs the old ladder has: its granularity is six releases against the index's fifty.
+
+**510 685 rows move EARLIER, which is the direction that costs work**: a backport band sizing itself on
+this data builds later than it has to.
+
+`caches/sel/<release>.strings` is also not what `caches/README.md` says it is. That file calls it
+"every `__objc_methname` string in each release's shared cache"; the content is `strings -a` over the
+**whole cache file**. A random 150 000-line sample of `sel/12.0.strings` classifies as 35.1 % a name
+the index holds, 42.0 % printable and name-shaped but in no held rung, 10.7 % under 4 bytes, 7.4 % a
+C++ mangled fragment, 3.4 % an ObjC metadata symbol, 1.1 % carrying a control byte, 0.3 % a path.
+`crash-demand.py` reads these to give an unversioned selector an upper-bound `introduced` release, so
+it is currently dating selectors from whatever printable bytes a scan found. The 6 782 021 non-name
+lines should be dropped from the ladder rather than recomputed; recomputing through the index is what
+drops them, because the index holds only names.
+
+**Nothing here has been regenerated.** The two ladders are the corpus's own data and rewriting them is
+a decision with its own blast radius (`crash-demand.py` and `aggregate.py` both read them), so the
+table above is the measurement, not a change. Regenerating either through the index is
+`python3 tools/cache-index/build.py` followed by a re-run of whatever writes the ladder.
+
+**Not affected, and checked rather than assumed:** all six `caches/<stem>.tsv` are pure ASCII — 0 lines
+with a byte ≥ 0x80 in any of them — so `aggregate.py`'s key is not corrupted by decoding; it is the
+*attribution* that moves, not the key. And no file under `coordination/` carries a `rung` column, so
+the 304 per-framework TSVs in `coordination/corpus/ledger/` and the demand tables are untouched.
+
 ## Reproducing each generated file
 
 Baseline order (also what `regen.sh <batch-label>` runs, minus the registry-export bookkeeping):
