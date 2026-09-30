@@ -173,9 +173,6 @@ build() {
     echo "built $name for iOS $release ($(ls "$objects" | wc -l | tr -d ' ') objects)"
 }
 
-declare -A bundles 2>/dev/null || true
-case_ok() { case " $programs " in *" $1 "*) return 0 ;; *) return 1 ;; esac }
-
 built=""
 for name in $programs; do
     case $name in
