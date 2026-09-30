@@ -83,7 +83,11 @@ def defined():
         if not name.endswith((".m", ".h")):
             continue
         text = re.sub(r"//[^\n]*", "", open(os.path.join(SRC, name), encoding="utf-8", errors="replace").read())
-        for cls in re.findall(r"@implementation\s+(\w+)", text) + re.findall(r"@interface\s+(\w+)", text):
+        # @implementation, and NOT @interface: a declaration is not a definition, which is the mirror's
+        # rule and the gate's - `built, but no entry in registry/` and its mirror, `a row with no
+        # definition`, are both about code that is actually there. Counting an @interface let
+        # CKSyncEnginePendingZoneDelete pass as carried twice, and the two checks then disagreed.
+        for cls in re.findall(r"@implementation\s+(\w+)", text):
             out.setdefault(cls, name)
     return out
 
