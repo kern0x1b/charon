@@ -8,8 +8,15 @@ because a class has too many members for a hand transcription to be right and th
 ## What is carried
 
 142 of the framework's 145 `MTRBaseCluster` classes are emitted by `tools/matter-generate.py` from the
-declarations in `MTRBaseClusters.h`, plus the class they all sit on, `MTRGenericBaseCluster`, which SDK 16.4
-does not declare: 143 objects, and each one IS the class it implements. The other three are listed in
+declarations in `MTRBaseClusters.h`, plus the two classes they all sit on: `MTRGenericBaseCluster`, which SDK
+16.4 does not declare, and `MTRCluster`, which it does. 144 objects, and each one IS the class it
+implements. **Both bases are carried, not just the one the SDK lacks**: a declaration says a class exists at
+compile time, and the object is what makes it exist at runtime, and the release this family is carried into
+has no `Matter.framework` at all. Every one of the 142 cluster objects names `_OBJC_CLASS_$_MTRCluster` -
+measured over all 144 objects: of every symbol they leave open, those two (`MTRCluster`'s class and
+metaclass) are the only Matter ones - so without that object the library does not link:
+`Undefined symbols for architecture armv7`. 16.4's `MTRCluster.h` declares `-init` and `+new`
+`NS_UNAVAILABLE` and no member, so that is what its object carries: the class and nothing else. The other three are listed in
 `tests/backports/host/matter/excluded.txt` with a reason each. Every member a cluster declares - a read, a
 write, a subscribe, a command in every shape the header gives it, a cached read, the initialiser - has a body
 that answers without reaching a fabric: the value the caller set, or no value and the error the release
@@ -21,21 +28,36 @@ methods the header declares answer as Apple documents: no value, and an error.
 
 ## What is measured
 
-    tools/matter-generate.py            run exit 0; invariant 0 in BOTH directions; 143 of 143 objects compile
-                                        against SDK 16.4; every object names the class it implements, 143 of 143
-    tools/matter-registry.py            8618 rows (143 class, 8475 method) over 143 objects; every class an
-                                        emitted object defines has a row: 143 of 143
+    tools/matter-generate.py            run exit 0; invariant 0 in BOTH directions; 144 of 144 objects compile
+                                        against SDK 16.4; every object names the class it implements, 144 of 144
+    tools/matter-registry.py            8619 rows (144 class, 8475 method) over 144 objects; every class an
+                                        emitted object defines has a row: 144 of 144
+    coordination/build-gate.lua 6.1.3   exit 0; `build: 6.1.3 compiled 3890 of 1969 objects in 27.9s,
+                                        measured their releases in 35.2s, linked 69 libraries in 4.9s,
+                                        checked in 4.7s`, and no -Wincompatible-sysroot in the log
+    coordination/build-gate.lua 4.3     exit 0; `build: 4.3 compiled 3890 of 1969 objects in 25.3s,
+                                        measured their releases in 34.7s, linked 69 libraries in 3.9s,
+                                        checked in 4.1s` - the same note as 6.1.3: the band links
+                                        MatterClusterBackports without Matter, which the release has not
     CharonMatterMTRGenericBaseCluster.m, armv7-apple-ios4.3
                                         fails: MTRDeviceControllerStartupParams.h:240 `property with 'retain
                                         (or strong)' attribute must be of object type`. The smallest of the
-                                        143 objects, which imports Matter.h and declares nothing of its own,
+                                        144 objects, which imports Matter.h and declares nothing of its own,
                                         is enough to see it: the error is in a header all of them import
-    the 143 objects, the package's own flags
+    the 144 objects, the package's own flags
                                         armv7-apple-ios6.0, iPhoneOS16.4.sdk, -fobjc-arc -Os -Wall
                                         -Werror=objc-missing-property-synthesis, xargs -P 2, one log per
-                                        object: 143 of 143 compiled, 0 errors, 0 warnings
-    the same 143 objects for armv7-apple-ios4.3
-                                        0 of 143 compile, and the same diagnostic is in all 143 logs
+                                        object: 144 of 144 compiled, 0 errors, 0 warnings from the port's
+                                        code. One flag pair is named rather than counted: the repository's
+                                        own host compiles add -Wno-incompatible-sysroot
+                                        (tests/macho_test.py and every gate call), and with it the 144 logs
+                                        are empty. Without it the only diagnostic clang can add is its own
+                                        `using sysroot for 'iOS 16.4' but targeting 'thumbv7-apple-ios6.1.3'
+                                        [-Wincompatible-sysroot]`, which is the SDK against the deployment
+                                        target and not a line of the port's - so it is named here instead
+                                        of being rounded into "0 warnings"
+    the same 144 objects for armv7-apple-ios4.3
+                                        0 of 144 compile, and the same diagnostic is in all 144 logs
     tests/backports/host/matter/plants.sh
                                         plants run 4, failures 0: control 0, drop 1, rename 1, extra 1
     tests/backports/host/matterdifferential/run.sh
@@ -48,7 +70,7 @@ invented instance method injected into one emitted object is caught and named, s
 not vacuous.
 
 **The designated-initializer diagnostic cannot be satisfied, and the 60 objects that raise it silence it
-where the repository silences it.** 60 of the 143 objects are the clusters SDK 16.4 declares AND marks
+where the repository silences it.** 60 of the 144 objects are the clusters SDK 16.4 declares AND marks
 `-initWithDevice:endpointID:queue:` `NS_DESIGNATED_INITIALIZER` on: clang then asks the initializer to chain
 to a designated initializer of the superclass, and the superclass `MTRCluster` declares
 `-init NS_UNAVAILABLE` (MTRCluster.h:40 in 16.4, :42 in 26.2), so
@@ -102,6 +124,15 @@ differential can turn off.
   reports `DOES NOT BUILD on this host: 142 clusters not built, 0 checked` for the reason given above, so no
   member set has been compared with the system framework's. Every `effect` in `registry/Matter/ios16.json`
   therefore claims only the generator's own two-way check, which is what the run measures.
+- **`MTRCluster`'s 17.4 `endpointID` is not carried.** SDK 26.2's `MTRCluster.h` gives the class one member the
+  library's own SDK does not declare: `@property (nonatomic, readonly) NSNumber *endpointID
+  NS_REFINED_FOR_SWIFT MTR_AVAILABLE(ios(17.4), macos(14.4), watchos(10.4), tvos(17.4))`. 16.4 declares the class
+  with `-init` and `+new` `NS_UNAVAILABLE` and no member, so `CharonMatterMTRCluster.m` is the class and nothing
+  else, and a client that asks a port cluster for its endpoint gets no responder. No row claims the member -
+  `MTRCluster`'s row says `no member and no state of its own` and names the omission - and the member is owed
+  with the `*Params` family below: `SHARED_TYPES` already names `endpointID` for `MTRCluster`, so emitting it is a
+  small follow-up behind the same `minimum` machinery, not a design question. The endpoint a caller does have is
+  the one its own initializer was given, in `_charon_endpoint`.
 - **Attribute state is per cluster CLASS, not per cluster instance.** `+charon_port_values` is one
   `static NSMutableDictionary` per class, indexed by attribute name alone, so two cluster objects of the same
   class over two endpoints share every value written through either. What IS per instance is the identity the
@@ -116,8 +147,8 @@ is emitted for an excluded name.
 ## The registry rows
 
 `registry/Matter/ios16.json` is written by `tools/matter-registry.py` from the emitted objects, in the
-registry's own layout: one row per class the objects define and one per method they define, which is 143 class
-rows and 8453 method rows. The classes are read out of the objects, not out of a list of cluster names, so an
+registry's own layout: one row per class the objects define and one per method they define, which is 144 class
+rows and 8475 method rows. The classes are read out of the objects, not out of a list of cluster names, so an
 object the run wrote and the gate builds cannot be without a row - which is what four of them were for a whole
 series: `MTRBaseClusterContentControl`, `MTRBaseClusterGroupcast` and `MTRBaseClusterTimer` were passed to the
 writer with `--skip` on a claim that they do not build, which stopped being true when the params family was
@@ -129,8 +160,8 @@ below the floor its neighbours have, which is how four objects reached armv7-app
 `introduced` is read from the header's own availability annotation, per member where the member carries one:
 16.4, 17.0, 17.4, 17.6 and 18.4 are all in the file. A member with no annotation takes its class's, and a class
 no member dates takes the annotation on the line above its `@interface` - which is how `MTRGenericBaseCluster`
-is dated 17.4, the release `MTRCluster.h` states for it, and the only statement the SDK makes about it since
-it declares no member at all. **2903 of the 8618 rows take the 16.0 fallback, which the header states nowhere
+is dated 17.4 and `MTRCluster` 16.1, the releases `MTRCluster.h` states for them, and the only statements the
+SDK makes about either since they declare no member at all. **2903 of the 8619 rows take the 16.0 fallback, which the header states nowhere
 - 32 class rows and 2871 method rows - and a further 208 method rows carry no annotation of their own and take
 their class's release, which the header does state.** The clusters that fall back are the ones SDK 26.2
 annotates `MTR_PROVISIONALLY_AVAILABLE`: it expands to an export or to `NS_UNAVAILABLE` and names no iOS
@@ -146,7 +177,7 @@ declares
 
 `dispatch_queue_t` is a C pointer below iOS 6 and an Objective-C object from 6 on, so that line is
 `property with 'retain (or strong)' attribute must be of object type` for `armv7-apple-ios4.3` and clean for
-`armv7-apple-ios6.0`. `Matter.h` imports that header and every one of the 143 objects imports `Matter.h`, so
+`armv7-apple-ios6.0`. `Matter.h` imports that header and every one of the 144 objects imports `Matter.h`, so
 the whole family is carried from 6.0 on: `modules/apple/backports.lua`'s `floors()` reads `minimum` off the
 rows and compiles an object only from the release its rows name, and `band()` puts it in the `left` list for
 every release below it.

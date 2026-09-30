@@ -1110,7 +1110,13 @@ local function link(opt, library, attach, objects, releases, outputdir, checked)
     end
     local output = path.join(outputdir, "lib" .. library.name .. ".dylib")
     os.mkdir(outputdir)
-    local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc", "-dynamiclib",
+    -- -Wno-incompatible-sysroot: clang's own notice that the sysroot is a newer SDK than the deployment
+    -- target, which is every link this file does - the port compiles a current SDK for releases from 2.0 on -
+    -- and the gate reads a diagnostic at this step as a failure. The same flag with the same reason is in
+    -- packages/m/matter/xmake.lua:69 and packages/s/swift-runtime/xmake.lua:899, so this is the house
+    -- spelling and not a new one.
+    local arguments = {"-target", opt.triple, "-isysroot", opt.sdkdir, "-fuse-ld=" .. opt.ld, "-fobjc-arc",
+                       "-dynamiclib", "-Wno-incompatible-sysroot",
                        "-install_name", path.join(INSTALL_FOLDER, path.filename(output)),
                        "-Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist", "-o", output, attach}
     table.join2(arguments, kept)
@@ -2328,7 +2334,31 @@ local function measured_names(opt, source, object)
                     table.insert(includes, flag)
                 end
             end
-            local dump = os.iorunv(clang(opt, table.join(includes, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}), true))
+            -- The dump PARSES the source, and a source whose rows carry it from a later release than
+            -- this band's does not parse for this band: SDK 16.4's Matter.h declares a strong
+            -- dispatch_queue_t, which is no object before iOS 6, so parsing a Matter source for 4.3 is
+            -- `property with 'retain (or strong)' attribute must be of object type` and the run dies on
+            -- the parse rather than on anything it was asked to check. It is therefore parsed at the release
+            -- its own rows place it at, which is the compile floors() already made of it and the reason
+            -- protocol_sources() gives for the same headers and the same property (its comment names
+            -- ARKit's ARSession.h).
+            --
+            -- The dump itself DOES depend on the deployment target - Accelerate's CharonLAObject is 0 lines
+            -- of AST at 4.3 and 22 at 6.0, which is this tree's own OS_OBJECT_DECL case from
+            -- CharonLinearAlgebra.h:4-8, that macro reading __IPHONE_OS_VERSION_MIN_REQUIRED - and that is
+            -- why the answer is the same at both: what introduced_version() reads is an AVAILABILITY
+            -- ANNOTATION, a property of the header's text, and no declaration in this tree or in the 16.4
+            -- SDK's Matter headers is gated on __IPHONE_OS_VERSION_MIN_REQUIRED, whose only appearances here
+            -- are prose. Where the old parse succeeded it read the same header and got the same value; where
+            -- it failed it produced no value at all, so this can add a date and cannot move one. The release
+            -- an object is PLACED in comes from its registry minimum either way - this number reaches only
+            -- arrived() and later_than(), the keep-versus-reexport decision.
+            local minimum = opt.minimums and opt.minimums[object]
+            local at = opt
+            if minimum and minimum ~= "" and opt.deployment and dyld.compare_versions(minimum, opt.deployment) > 0 then
+                at = table.join(opt, {deployment = minimum, triple = opt.architecture .. "-apple-ios" .. minimum})
+            end
+            local dump = os.iorunv(clang(at, table.join(includes, {"-fsyntax-only", "-w", "-Xclang", "-ast-dump", "-Xclang", "-ast-dump-filter", "-Xclang", name, source}), true))
             earliest[name] = introduced_version(dump, name) or false
         end
     end

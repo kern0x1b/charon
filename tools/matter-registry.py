@@ -67,7 +67,7 @@ EFFECT_BASE = ("no member and no state of its own: the SDK declares MTRGenericBa
 REASON_SDK_BASE = ("the class below every cluster of this family, which the SDK this library compiles"
                     " against (16.4) DECLARES and the port IMPLEMENTS: the release this family is carried"
                     " into has no Matter.framework at all, so a declaration is a compile-time fact and nothing"
-                    " else would define the class - 122 of the 144 objects name _OBJC_CLASS_$_MTRCluster, and"
+                    " else would define the class - 61 of the 144 objects name _OBJC_CLASS_$_MTRCluster, and"
                     " without it the library does not link. Its header in 16.4 declares -init and +new"
                     " NS_UNAVAILABLE and no member, so that is what its object carries: the class and nothing"
                     " else")

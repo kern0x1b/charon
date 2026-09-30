@@ -94789,6 +94789,17 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "MTRCluster",
+      "kind": "class",
+      "introduced": "16.1",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRCluster.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "the class below every cluster of this family, which the SDK this library compiles against (16.4) DECLARES and the port IMPLEMENTS: the release this family is carried into has no Matter.framework at all, so a declaration is a compile-time fact and nothing else would define the class - 61 of the 144 objects name _OBJC_CLASS_$_MTRCluster, and without it the library does not link. Its header in 16.4 declares -init and +new NS_UNAVAILABLE and no member, so that is what its object carries: the class and nothing else",
+      "effect": "no member and no state of its own: 16.4's MTRCluster.h declares none, and the one member 26.2 adds to the class - endpointID, at 17.4 - is not carried, is owed with the *Params family, and is named in facts/Matter/Matter.md. Each cluster class above keeps its own device, endpoint and queue in its own storage"
+    },
+    {
       "api": "MTRGenericBaseCluster",
       "kind": "class",
       "introduced": "17.4",
