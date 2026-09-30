@@ -1848,9 +1848,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSCNNUpsampling.h:204 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSCNNUpsamplingGradient is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSCNNUpsamplingNearestGradient cannot be defined until MPSCNNUpsamplingGradient is. The release's own cache agrees the shape is real - MPSCNNUpsamplingNearestGradient is in MPSCNNUpsampling.h with superclass MPSCNNUpsamplingGradient - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSCNNUpsamplingNearestGradient is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSCNNUpsamplingGradient is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSCNNUpsampling.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSCNNUpsamplingGradient"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNUpsamplingNearestGradientNode",
@@ -1858,9 +1858,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2816 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNGradientFilterNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSCNNUpsamplingNearestGradientNode cannot be defined until MPSNNGradientFilterNode is. The release's own cache agrees the shape is real - MPSCNNUpsamplingNearestGradientNode is in MPSNNGraphNodes.h with superclass MPSNNGradientFilterNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSCNNUpsamplingNearestGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNGradientFilterNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNGradientFilterNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNYOLOLossNode",
@@ -1928,9 +1928,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2269 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNArithmeticGradientNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNAdditionGradientNode cannot be defined until MPSNNArithmeticGradientNode is. The release's own cache agrees the shape is real - MPSNNAdditionGradientNode is in MPSNNGraphNodes.h with superclass MPSNNArithmeticGradientNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNAdditionGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNArithmeticGradientNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNArithmeticGradientNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNArithmeticGradientNode",
@@ -1938,9 +1938,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2217 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNGradientFilterNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNArithmeticGradientNode cannot be defined until MPSNNGradientFilterNode is. The release's own cache agrees the shape is real - MPSNNArithmeticGradientNode is in MPSNNGraphNodes.h with superclass MPSNNGradientFilterNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNArithmeticGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNGradientFilterNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNGradientFilterNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNArithmeticGradientStateNode",
@@ -1978,9 +1978,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2505 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNGradientFilterNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNConcatenationGradientNode cannot be defined until MPSNNGradientFilterNode is. The release's own cache agrees the shape is real - MPSNNConcatenationGradientNode is in MPSNNGraphNodes.h with superclass MPSNNGradientFilterNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNConcatenationGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNGradientFilterNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNGradientFilterNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNGradientFilterNode",
@@ -2028,9 +2028,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2285 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNArithmeticGradientNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNMultiplicationGradientNode cannot be defined until MPSNNArithmeticGradientNode is. The release's own cache agrees the shape is real - MPSNNMultiplicationGradientNode is in MPSNNGraphNodes.h with superclass MPSNNArithmeticGradientNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNMultiplicationGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNArithmeticGradientNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNArithmeticGradientNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNNeuronDescriptor",
@@ -2102,9 +2102,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNReduce.h:502 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNReduceBinary is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNReduceFeatureChannelsAndWeightsMean cannot be defined until MPSNNReduceBinary is. The release's own cache agrees the shape is real - MPSNNReduceFeatureChannelsAndWeightsMean is in MPSNNReduce.h with superclass MPSNNReduceBinary - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNReduceFeatureChannelsAndWeightsMean is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNReduceBinary is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNReduce.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNReduceBinary"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNReduceFeatureChannelsAndWeightsSum",
@@ -2112,9 +2112,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNReduce.h:523 carries MPS_CLASS_AVAILABLE_STARTING(macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNReduceBinary is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNReduceFeatureChannelsAndWeightsSum cannot be defined until MPSNNReduceBinary is. The release's own cache agrees the shape is real - MPSNNReduceFeatureChannelsAndWeightsSum is in MPSNNReduce.h with superclass MPSNNReduceBinary - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNReduceFeatureChannelsAndWeightsSum is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNReduceBinary is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNReduce.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNReduceBinary"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSNNReduceFeatureChannelsMax",
@@ -2241,9 +2241,9 @@
       "introduced": "11.3",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSNNGraphNodes.h:2277 carries MPS_CLASS_AVAILABLE_STARTING( macos(10.13.4), ios(11.3), macCatalyst(13.0), tvos(11.3)), whose ios() clause reads ios(11.3). The class is a walk the CPU could do - the port's MPSCNNPooling10.m and MPSCNNConvolution10.m already walk an MPSImage inside their encode rather than through a command encoder - so nothing here is a missing capability. What blocks it is PLACEMENT: its superclass MPSNNArithmeticGradientNode is another row of this same 11.3 slice, and the port's one-object-one-release rule (tools/release-split.lua) means an object may not be carried from two releases, so MPSNNSubtractionGradientNode cannot be defined until MPSNNArithmeticGradientNode is. The release's own cache agrees the shape is real - MPSNNSubtractionGradientNode is in MPSNNGraphNodes.h with superclass MPSNNArithmeticGradientNode - so the row is absent because the port has not built its base yet, not because the API is not there",
-      "effect": "nothing: MPSNNSubtractionGradientNode is not carried, so NSClassFromString answers nil and a compile time reference crashes rather than answering wrongly. Its superclass MPSNNArithmeticGradientNode is in the same state and is named here so the blocker is visible from this row",
-      "source": "the class-scoped selector list, superclass and image read from the 16.0 arm64e dyld shared cache with tools/corpus/objc-inventory.lua; the header of MPSNNGraphNodes.h in the SDK of iOS 16.4; and the port's own registry, which carries MPSNNArithmeticGradientNode"
+      "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
       "api": "MPSCNNYOLOLossDescriptor",
