@@ -239,10 +239,12 @@
       "api": "UIBarAppearance.overrideUserInterfaceStyle",
       "kind": "property",
       "introduced": "27.0",
-      "status": "absent",
-      "reason": "the release has no dark appearance for a bar to be forced into or out of",
-      "effect": "the property is not there, so an application that checks for it first does not use it",
-      "source": "the public SDK headers of iOS 26 and 27"
+      "status": "owed",
+      "reason": "owed: coordination/api-queue.md names this row. A 27.0 name cannot appear in a 26.2 surface by construction, so what this needs is a NEWER SURFACE that declares it",
+      "effect": "NOT carried: the queue dates this 27.0 but the SDK 26.2 surface does not declare it, so there is no declaration here to read the signature from, and carrying a member on a remembered signature would be a guess with a symbol on it",
+      "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+      "minimum": "6.0",
+      "facts": "facts/UIKit/UIContentUnavailable26.md"
     }
   ]
 }

@@ -246,1240 +246,1241 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the factory is exported and builds through the release's own constructor, so it returns a real bar button item; it is NOT a fixed-width spacer, because a 6.1.3 bar has no such item",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIBarButtonItemGroup groupWithFixedSpace]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItemGroup a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the factory is exported and builds through the release's own constructor, so it returns a real bar button item; it is NOT a fixed-width spacer, because a 6.1.3 bar has no such item",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIColor colorWithRed:green:blue:alpha:exposure:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIColor colorWithRed:green:blue:alpha:linearExposure:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIDeferredMenuElement elementUsingFocusWithIdentifier:shouldCacheItems:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIDeferredMenuElement a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIImageSymbolConfiguration configurationWithColorRenderingMode:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIImageSymbolConfiguration configurationWithVariableValueMode:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageSymbolConfiguration a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithHDRHeadroomUsageLimit:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithResolvesNaturalAlignmentWithBaseWritingDirection:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithTabAccessoryEnvironment:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIColor colorByApplyingContentHeadroom:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIColor initWithRed:green:blue:alpha:exposure:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIColor initWithRed:green:blue:alpha:linearExposure:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:afterActionForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:afterCommandForAction:propertyList:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:afterMenuForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:atEndOfMenuForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:atStartOfMenuForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:beforeActionForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:beforeCommandForAction:propertyList:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder insertElements:beforeMenuForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder removeActionForIdentifier:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder removeCommandForAction:propertyList:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder replaceActionForIdentifier:withElements:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder replaceCommandForAction:propertyList:withElements:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIMenuBuilder replaceMenuForIdentifier:withElements:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIMenuBuilder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponder providerForDeferredMenuElement:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponder a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions alignCenter:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions alignJustified:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions alignLeft:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions alignRight:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions newFromPasteboard:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions performClose:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIResponderStandardEditActions toggleInspector:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UISearchBarDelegate searchBar:shouldChangeTextInRanges:replacementText:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UISearchBarDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UISplitViewController isShowingColumn:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UISplitViewControllerDelegate splitViewController:didHideColumn:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UISplitViewControllerDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UISplitViewControllerDelegate splitViewController:didShowColumn:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UISplitViewControllerDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UITabBarController setBottomAccessory:animated:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UITextFieldDelegate textField:editMenuForCharactersInRanges:suggestedActions:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UITextFieldDelegate textField:shouldChangeCharactersInRanges:replacementString:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UITextViewDelegate textView:editMenuForTextInRanges:suggestedActions:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UITextViewDelegate textView:shouldChangeTextInRanges:replacementText:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIView setNeedsUpdateProperties]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIView a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIView updatePropertiesIfNeeded]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIView a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIView updateProperties]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIView a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIViewController setNeedsUpdateOfPrefersInterfaceOrientationLocked]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIViewController setNeedsUpdateProperties]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIViewController updatePropertiesIfNeeded]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIViewController updateProperties]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIWindowSceneDelegate preferredWindowingControlStyleForScene:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UIWindowSceneDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "-[UIWindowSceneDelegate windowScene:didUpdateEffectiveGeometry:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UIWindowSceneDelegate that sends anything like it: the message arrived in iOS 26",
-   "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "NSTextList.includesTextListMarkers",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSTextList a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBackgroundExtensionView",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIBackgroundExtensionView resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBarButtonItem.badge",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBarButtonItem.hidesSharedBackground",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBarButtonItem.identifier",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBarButtonItem.sharesBackground",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIBarButtonItemBadge",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIBarButtonItemBadge resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColor.linearExposure",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColor.standardDynamicRangeColor",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColor a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColorPickerViewController.maximumLinearExposure",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColorPickerViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColorPickerViewController.supportsEyedropper",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColorPickerViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColorWell.maximumLinearExposure",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColorWell a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIColorWell.supportsEyedropper",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColorWell a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIContextMenuSystem",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIContextMenuSystem resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UICornerConfiguration",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UICornerConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UICornerRadius",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UICornerRadius resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIDeferredMenuElement.identifier",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIDeferredMenuElement a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIDeferredMenuElementProvider",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIDeferredMenuElementProvider resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIGlassContainerEffect",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIGlassContainerEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIGlassEffect",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIGlassEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIMainMenuSystem",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIMainMenuSystem resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIMainMenuSystemConfiguration",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIMainMenuSystemConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIMenuSystemFindElementGroupConfiguration",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIMenuSystemFindElementGroupConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationBarAppearance.largeSubtitleTextAttributes",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationBarAppearance a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationBarAppearance.subtitleTextAttributes",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationBarAppearance a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationController.interactiveContentPopGestureRecognizer",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.attributedSubtitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.attributedTitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.largeAttributedSubtitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.largeSubtitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.largeSubtitleView",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.largeTitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.searchBarPlacementAllowsExternalIntegration",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.searchBarPlacementAllowsToolbarIntegration",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.searchBarPlacementBarButtonItem",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.subtitle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UINavigationItem.subtitleView",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINavigationItem a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScene.destructionConditions",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScene a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISceneDestructionCondition",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UISceneDestructionCondition resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISceneWindowingControlStyle",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UISceneWindowingControlStyle resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollEdgeEffect",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollEdgeEffectStyle",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeEffectStyle resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollEdgeElementContainerInteraction",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeElementContainerInteraction resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollView.bottomEdgeEffect",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollView.leftEdgeEffect",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollView.rightEdgeEffect",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIScrollView.topEdgeEffect",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISlider.sliderStyle",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISlider.trackConfiguration",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISlider a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISliderTick",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UISliderTick resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISliderTrackConfiguration",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UISliderTrackConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.maximumInspectorColumnWidth",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.minimumInspectorColumnWidth",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.minimumSecondaryColumnWidth",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.preferredInspectorColumnWidth",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.preferredInspectorColumnWidthFraction",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.preferredSecondaryColumnWidth",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISplitViewController.preferredSecondaryColumnWidthFraction",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISplitViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UISymbolContentTransition",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UISymbolContentTransition resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITabAccessory",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UITabAccessory resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITabBarController.bottomAccessory",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITabBarController.contentLayoutGuide",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITabBarController.tabBarMinimizeBehavior",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITabBarController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITextInputTraits.allowsNumberPadPopover",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITextView.selectedRanges",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIViewController.childViewControllerForInterfaceOrientationLock",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIViewController.prefersInterfaceOrientationLocked",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIViewLayoutRegion",
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 26, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the class is declared and exported, so an application that links strongly against UIViewLayoutRegion resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIViewPropertyAnimator.flushUpdates",
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIViewPropertyAnimator a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the selector is exported and the body is the honest nothing: the 16.4 SDK's UIViewPropertyAnimator declares no flush and no updateEverything, so there is nothing to forward to",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "+[UIColorEffect effectWithColor:]",
    "kind": "method",
    "introduced": "26.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIColorEffect a method like it: it arrived in iOS 26",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UIPresentationController.backgroundEffect",
    "kind": "property",
    "introduced": "26.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIPresentationController a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "carried",
+   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
    "api": "UITextInput.unobscuredContentRect",
    "kind": "property",
    "introduced": "26.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a property like it: it arrived in iOS 26",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "owed",
+   "reason": "owed: coordination/api-queue.md names this row. A 26.4 name cannot appear in a 26.2 surface by construction, so what this needs is a NEWER SURFACE that declares it",
+   "effect": "NOT carried: the queue dates this 26.4 but the SDK 26.2 surface does not declare it, so there is no declaration here to read the signature from, and carrying a member on a remembered signature would be a guess with a symbol on it",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UIContentUnavailable26.md"
   }
  ]
 }
