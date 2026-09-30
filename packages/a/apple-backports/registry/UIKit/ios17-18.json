@@ -2873,6 +2873,26 @@
       "effect": "NO, which is what the host answers in every state measured - fresh, immediately after an animated -setContentOffset:animated:YES, 120ms and 1s later, and mid-zoom - so the getter reports that no animation is in flight, and there is no setter because the host has none and UIScrollView.h declares the property readonly",
       "source": "UIKit/UIScrollView+ContentAlignment17.m, which defines -isZoomAnimating; the property name is not a selector and the getter is what is implemented - measured by compiling [s scrollAnimating] against the host SDK, which fails with \"no visible @interface for 'UIScrollView' declares the selector 'scrollAnimating'\", while [s isZoomAnimating] compiles, and UIScrollView.h:221,262 declare the property (nonatomic, readonly, getter=isZoomAnimating). The host answers NO in every state measured, including immediately after an animated -setContentOffset:",
       "facts": "facts/UIKit/UIKit17Absence.md"
+    },
+    {
+      "api": "NSObject.accessibilityTextInputResponder",
+      "kind": "property",
+      "introduced": "18.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release's own UIKit does not declare it: a probe of the iPhoneOS 16.4 headers this library compiles against finds accessibilityTextInputResponder in 0 of the UIKit headers, and no backport adds it -- the only file in packages/a/apple-backports that mentions the name is registry/UIKit/ios26.json, which records what the 26.2 SDK declares and implements nothing. The probe's control is in the same tree and does find what is there: accessibilityLabel in 4 headers and accessibilityTraits in 3",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "a probe of the iPhoneOS 16.4 UIKit headers, recorded in facts/UIKit/UIAccessibilityTextInput.md"
+    },
+    {
+      "api": "NSObject.accessibilityTextInputResponderBlock",
+      "kind": "property",
+      "introduced": "18.1",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the release's own UIKit does not declare it: a probe of the iPhoneOS 16.4 headers this library compiles against finds accessibilityTextInputResponderBlock in 0 of the UIKit headers, and no backport adds it -- the only file in packages/a/apple-backports that mentions the name is registry/UIKit/ios26.json, which records what the 26.2 SDK declares and implements nothing. The probe's control is in the same tree and does find what is there: accessibilityLabel in 4 headers and accessibilityTraits in 3",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "a probe of the iPhoneOS 16.4 UIKit headers, recorded in facts/UIKit/UIAccessibilityTextInput.md"
     }
   ]
 }
