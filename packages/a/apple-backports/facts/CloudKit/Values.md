@@ -1,77 +1,75 @@
 
-## The operations of 9.2, 12.0 and 26
 
-| operation | endpoint | note |
-| --- | --- | --- |
-| `CKFetchWebAuthTokenOperation` (9.2) | `users/login` | the path a client *handed* a web authentication token uses, rather than signing one of its own |
-| `CKFetchRecordZoneChangesOperation` (12.0) | `changes` | one request for several zones, one half per zone |
-| `CKFetchDatabaseChangesOperation` (11.0) | `changes` | which zones moved, before any zone is fetched |
-| `CKShareRequestAccessOperation` (26.0) | `shares/requestAccess` | asking to be let into a share |
+### The rest of the sync engine surface
 
-`CKFetchRecordZoneChangesConfiguration` and `CKFetchRecordZoneChangesOptions` are **the same three
-members under two names** — the token the last fetch ended at, how many to ask for, and which fields —
-and one reader builds the per-zone half out of either. A caller of the iOS 10 shape and a caller of
-the iOS 12 one are therefore answered the same way, which is what the header's keeping both is for.
+`CKSyncEngine17.m` over the same header. The engine, its configuration, the twelve events, the three
+pending changes, the batch, the two classes of what the service refused and the two of what it
+reports gone. **The whole header is 32 classes and 78 properties, and none of them is an R4 case** —
+they are all in the 26.2 surface the corpus measures.
 
-`CKFetchDatabaseChangesOperation` was listed by the corpus at 11.0 and is implemented in the 12.0
-file because it arrived with the other changes operations and the band machinery puts an object in
-the band of the release the majority of its API came in; the registry entry names 11.0 and this
-paragraph says so rather than leaving the two to disagree.
+- **The engine's four requests are the operations this package already carries** — a fetch of the
+  database is `CKFetchDatabaseChangesOperation`, a fetch of a zone is
+  `CKFetchRecordZoneChangesOperation`, a send is `CKModifyRecordsOperation` — so what the engine adds
+  is the state and the order, not a request of its own.
+- **Both of the engine's initialisers refuse**, and the refusal is worth its own line: the host
+  *traps*. `+[CKSyncEngine new]` and `-[CKSyncEngine init]` on the host raise
+  `Fatal error: Use of unimplemented initializer 'init()' for class 'CloudKit.__CKSyncEngine'`, because
+  the class behind the public one is private and its `-init` is not implemented. A trap takes the
+  process down; this port raises `NSInvalidArgumentException` naming the initializer that is allowed.
+- **A refusal from the service is handed over with the thing it was about.** A failed record save
+  carries the record, a failed zone save the zone, and the failed deletes are dictionaries keyed by
+  what was refused. A caller has to decide what to do about a record it did not save, and it cannot
+  find that record again by itself.
+- **A fetched deletion carries what an identifier does not.** A record deletion carries the record
+  type as well as the identifier, and a zone deletion carries which of the three reasons it gives —
+  deleted, purged, or the user reset their encrypted data. Those are different problems for a caller
+  and the port does not fold them together.
+- **A batch asks the delegate's provider for a record through the port's own selector**
+  (`-charon_recordForRecordID:`), because the 26.2 headers type the provider as `id` and declare no
+  selector for it. A record the delegate has not read is not sent: a port that sent a record it had
+  invented would be overwriting one it never saw.
 
-### The iOS 26 surface, and what is not carried
+## The record value half, and the one place it does not match the host
 
-`CKShareRequestAccessOperation` is in the 16.4 headers' absence, so it is **declared in
-`CKOperations26.m` beside its own implementation** and not in a header: the build compiles with
-`-Werror=objc-missing-property-synthesis`, and that check fires on a class whose properties are
-declared in a header whose implementation is in another file. Its three properties are the iOS 26.2
-headers' own, transcribed.
+`CKRecordZoneID`, `CKRecordID`, `CKServerChangeToken`, `CKReference`, `CKAsset`, `CKRecordZone` and
+`CKRecord` are in `CloudKit/CKRecords8.m`, with the parent and share of iOS 10.0 in
+`CloudKit/CKRecords10.m` and the two record decoders in `CloudKit/CharonCKRecords.m`. They were
+missing from the tree while the registry carried all seven as `implemented` - 82 rows, 75 classes - and
+the release-split refused before the link ever ran, so nothing had found it.
 
-**Named for the next delivery, and not carried here:**
+Every refusal, default and equality is the host's own, read out of the running iOS CloudKit by
+`tests/backports/host/cloudkit/records-cases.h` and held to the same questions by
+`tests/backports/host/cloudkit/records-port.m`; `compare.py` reads the two records and names every
+difference. 137 answers, 136 of them identical.
 
-- `CKShareAccessRequester` and `CKShareBlockedIdentity` — values the service fills in, declared when
-  they are carried, which is with `CKShare`.
-- The five iOS 26 members of `CKShare` itself: `allowsAccessRequests`, `allowsParticipantsToInviteOthers`,
-  `requesters`, `blockedIdentities`, and `-blockRequesters:`, `-unblockIdentities:`, `-denyRequesters:`.
-  They are members of a class this family does not carry, and a port that answered them on a class it
-  does not implement would be answering *for* CloudKit.
+**The one difference, and why it is not matched.** The host's `CKRecordZoneID` is *interned*: a zone ID
+decoded out of an archive is the same object as the one encoded, and `compare.py` records `identical`
+where this port records `equal`. The two zone IDs are equal by value here and are not the same object.
+Matching it means a process-wide table of every zone ID ever made, held for the life of the process,
+and the host's retention rules for that table are not something this port can measure. A port that
+interns would hold every zone name a caller ever built; one that does not holds only what the caller
+still references. The values agree, which is what the equality contract is, and the identity is left
+to the caller.
 
-`CharonCKIOS26.h` forward-declares all of them so the names are in the tree for the lift's sets to
-be measured against.
+Two more answers are compared by shape rather than by value, and neither is a difference: a record
+given no name of its own is given a UUID on both sides, and an archive's byte length is not compared
+because a port ships its own archive keys - what is compared is the round trip, which decodes to an
+equal object for all five classes that are archived.
 
-## The sync engine: the state group
+The measurements that are easy to get wrong, all from the host:
 
-`CharonCKSyncEngine26.h` and `CKSyncEngineState17.m`. The surface is thirty-two classes; this is the
-first group of them, and the header is a transcription of the iOS 26.2 declarations, which is what
-lets the declarations live in a header at all: the build's `-Werror=objc-missing-property-synthesis`
-fires on *implicit* synthesis, so **every `@implementation` in this family carries an explicit
-`@synthesize` for each of its properties**. That was the whole of the blocker, and it is mechanical.
+    +[CKRecordID new]                 NSInvalidArgumentException: You must call -[CKRecordID initWithRecordName:] or -[CKRecordID initWithRecordName:zoneID:]
+    -[CKRecordID initWithRecordName:nil]  CKException: recordName can not be nil
+    +[CKServerChangeToken new]         CKException: You can't call init on CKServerChangeToken
+    -[CKAsset initWithFileURL:nil]     NSInvalidArgumentException: Null fileURL
+    -[CKAsset copy]                    NSInvalidArgumentException: -[CKAsset copyWithZone:]: unrecognized selector
+    a parent in another zone           NSInternalInconsistencyException: Parent record must be in the same zone as the current record
+    set a field key of ""              NSInvalidArgumentException: recordKey can not be empty
 
-**Every class and property in that header is a rule R4 case** — the lift's sets are re-measured for
-all of them in this push.
+    the field key grammar, over all 95 printable ASCII characters:
+      accepted as the whole key  ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz        (53)
+      accepted after the first  $0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz (64)
 
-In this group: the two scopes, the two options, the two contexts, the state and its serialization.
-Four things worth writing down:
-
-- **A scope is one of two things, never both.** Either some zones, or all but some zones, and
-  `-containsZoneID:` answers that scope rather than a stored set. A scope of records says which records
-  whatever zone they are in, and a zone save or a zone delete is about a zone and not about a record —
-  so a record scope does not contain it. There is no fourth case.
-- **The state's three collections are copies.** A caller reads them and a caller adds to them through
-  the four add and remove methods; the only way out is the same four. A caller that could add to the
-  state behind the engine's back would be a change the engine never sends.
-- **`+[CKSyncEngineState new]` traps on the host**, measured: `Fatal error: Use of unimplemented
-  initializer 'init()' for class 'CloudKit.__CKSyncEngine'`, behind its private class. A trap takes
-  the process down. This port refuses with the words that name the two ways a state is had.
-- **The two contexts' members are the port's own.** Both initialisers refuse, which is the header's
-  marking, so the engine makes one and fills it in and the delegate reads it; the properties are
-  therefore writable here while the initialisers still refuse. A context a caller could write would
-  be a context the engine never ran.
-
-### Not carried yet, and named
-
-`CKSyncEngine` itself — the four request methods are the walk and are the next group — and with it
-`CKSyncEngineConfiguration`, the twelve events, the three pending changes, the batch, the
-`CKSyncEngineFailedRecordSave` family and the two fetched-deletion classes. `CKSyncEngine` is
-registered **`absent`** with its reason, so nothing is claimed for it: `NSClassFromString` answers nil
-and a compile-time reference does not link.
-
+    CKRecord and CKRecordZone do not override isEqual: - two records of one type are different, a
+    copy is a different object carrying the same fields, and +[CKRecordZone defaultRecordZone] is one
+    shared object. CKRecordID, CKRecordZoneID and CKReference compare by value.

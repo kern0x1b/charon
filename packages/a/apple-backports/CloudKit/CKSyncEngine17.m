@@ -62,7 +62,6 @@
     return nil;
 }
 @end
-
 @implementation CKSyncEnginePendingDatabaseChange
 @synthesize zoneID = _zoneID;
 @synthesize type = _type;
@@ -93,89 +92,6 @@
     return nil;
 }
 @end
-
-@implementation CKSyncEngineFetchChangesScope
-@synthesize zoneIDs = _zoneIDs;
-@synthesize excludedZoneIDs = _excludedZoneIDs;
-@end
-
-@implementation CKSyncEngineSendChangesScope
-@synthesize zoneIDs = _zoneIDs;
-@synthesize excludedZoneIDs = _excludedZoneIDs;
-@synthesize recordIDs = _recordIDs;
-@end
-
-@implementation CKSyncEngineFetchChangesOptions
-@synthesize scope = _scope;
-@synthesize operationGroup = _operationGroup;
-@synthesize prioritizedZoneIDs = _prioritizedZoneIDs;
-@end
-
-@implementation CKSyncEngineSendChangesOptions
-@synthesize scope = _scope;
-@synthesize operationGroup = _operationGroup;
-@end
-
-@implementation CKSyncEngineFetchChangesContext
-@synthesize reason = _reason;
-@synthesize options = _options;
-@end
-
-@implementation CKSyncEngineSendChangesContext
-@synthesize reason = _reason;
-@synthesize options = _options;
-@end
-
-@implementation CKSyncEngineState
-@synthesize pendingRecordZoneChanges = _pendingRecordZoneChanges;
-@synthesize pendingDatabaseChanges = _pendingDatabaseChanges;
-@synthesize hasPendingUntrackedChanges = _hasPendingUntrackedChanges;
-@synthesize zoneIDsWithUnfetchedServerChanges = _zoneIDsWithUnfetchedServerChanges;
-@end
-
-@implementation CKSyncEngine
-@synthesize database = _database;
-@synthesize state = _state;
-@end
-
-@implementation CKSyncEngineConfiguration
-@synthesize database = _database;
-@synthesize stateSerialization = _stateSerialization;
-@synthesize delegate = _delegate;
-@synthesize automaticallySync = _automaticallySync;
-@synthesize subscriptionID = _subscriptionID;
-- (instancetype)initWithDatabase:(CKDatabase *)database
-              stateSerialization:(CKSyncEngineStateSerialization *)stateSerialization
-                        delegate:(id)delegate
-{
-    self = [super init];
-    if (self) {
-        _database = database;
-        _stateSerialization = stateSerialization;
-        _delegate = delegate;
-        // The engine does not sync on its own unless it is told to. An application that has not said
-        // when it wants a sync is not asked for one, and a client that synced by itself would send
-        // requests at a moment the application did not choose.
-        _automaticallySync = NO;
-    }
-    return self;
-}
-
-+ (instancetype)new
-{
-    [NSException raise:NSInvalidArgumentException
-                format:@"You must call -[CKSyncEngineConfiguration initWithDatabase:stateSerialization:delegate:]", nil];
-    return nil;
-}
-
-- (instancetype)init
-{
-    [NSException raise:NSInvalidArgumentException
-                format:@"You must call -[CKSyncEngineConfiguration initWithDatabase:stateSerialization:delegate:]", nil];
-    return nil;
-}
-@end
-
 @implementation CKSyncEnginePendingZoneSave
 @synthesize zone = _zone;
 - (instancetype)initWithZone:(CKRecordZone *)zone
@@ -189,7 +105,15 @@
     return self;
 }
 @end
+@implementation CKSyncEnginePendingZoneDelete
 
+- (instancetype)initWithZoneID:(CKRecordZoneID *)zoneID
+{
+    self = [super initWithZoneID:zoneID];
+    return self;
+}
+
+@end
 @implementation CKSyncEngineRecordZoneChangeBatch
 @synthesize recordsToSave = _recordsToSave;
 @synthesize recordIDsToDelete = _recordIDsToDelete;
@@ -220,7 +144,7 @@
         _recordsToSave = records;
         _recordIDsToDelete = deletions;
     }
-    return nil;
+    return self;
 }
 
 - (instancetype)initWithRecordsToSave:(NSArray<CKRecord *> *)recordsToSave
@@ -244,7 +168,6 @@
     return nil;
 }
 @end
-
 @implementation CKSyncEngineEvent
 @synthesize type = _type;
 @synthesize stateUpdateEvent = _stateUpdateEvent;
@@ -263,79 +186,63 @@
 // builds are handed to the delegate through -handleEvent: and a delegate that is handed one with a
 // member that is nil is being told a moment of the walk that has nothing further in it.
 @end
-
 @implementation CKSyncEngineStateUpdateEvent
 @synthesize stateSerialization = _stateSerialization;
 @end
-
 @implementation CKSyncEngineAccountChangeEvent
 @synthesize changeType = _changeType;
 @synthesize currentUser = _currentUser;
 @synthesize previousUser = _previousUser;
 @end
-
 @implementation CKSyncEngineWillFetchChangesEvent
 @synthesize context = _context;
 @end
-
 @implementation CKSyncEngineDidFetchChangesEvent
 @synthesize context = _context;
 @end
-
 @implementation CKSyncEngineWillFetchRecordZoneChangesEvent
 @synthesize zoneID = _zoneID;
 @end
-
 @implementation CKSyncEngineFetchedRecordZoneChangesEvent
 @synthesize zoneID = _zoneID;
 @synthesize error = _error;
 @end
-
 @implementation CKSyncEngineDidFetchRecordZoneChangesEvent
 @synthesize zoneID = _zoneID;
 @synthesize error = _error;
 @end
-
 @implementation CKSyncEngineWillSendChangesEvent
 @synthesize context = _context;
 @end
-
 @implementation CKSyncEngineDidSendChangesEvent
 @synthesize context = _context;
 @end
-
 @implementation CKSyncEngineFetchedDatabaseChangesEvent
 @synthesize deletions = _deletions;
 @synthesize zoneDeletions = _zoneDeletions;
 @end
-
 @implementation CKSyncEngineFetchedRecordDeletion
 @synthesize recordID = _recordID;
 @synthesize recordType = _recordType;
 @end
-
 @implementation CKSyncEngineFetchedZoneDeletion
 @synthesize zoneID = _zoneID;
 @synthesize reason = _reason;
 @end
-
 @implementation CKSyncEngineFailedRecordSave
 @synthesize record = _record;
 @synthesize error = _error;
 @end
-
 @implementation CKSyncEngineFailedZoneSave
 @synthesize recordZone = _recordZone;
 @synthesize error = _error;
 @end
-
 @implementation CKSyncEngineSentDatabaseChangesEvent
 @synthesize savedZones = _savedZones;
 @synthesize failedZoneSaves = _failedZoneSaves;
 @synthesize deletedZoneIDs = _deletedZoneIDs;
 @synthesize failedZoneDeletes = _failedZoneDeletes;
 @end
-
 @implementation CKSyncEngineSentRecordZoneChangesEvent
 @synthesize savedRecords = _savedRecords;
 @synthesize failedRecordSaves = _failedRecordSaves;

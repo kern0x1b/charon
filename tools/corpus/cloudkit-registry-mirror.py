@@ -38,7 +38,8 @@ without_row = sorted(c for c in impl
                      if not c.startswith("Charon")
                      and c not in apis and ("+[%s new]" % c) not in apis)
 without_code = sorted(r["api"] for r in rows
-                      if base(r["api"]) not in impl and base(r["api"]) not in externs)
+                     if r.get("status") == "implemented"
+                     and base(r["api"]) not in impl and base(r["api"]) not in externs)
 print("implementations in the %d sources: %d" % (len(files), len(impl)))
 print("rows in values.json: %d" % len(rows))
 print("implemented with no row: %d %s" % (len(without_row), without_row))
