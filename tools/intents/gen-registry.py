@@ -167,6 +167,18 @@ HELD_PROTOCOLS = ("INIntentSetImageKeyPath", "_INIntentSetImageKeyPath")
 SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the "
           "release each object file is carried from (tools/intents/measure-intents.lua)")
 
+# The -init a class whose header marks it NS_UNAVAILABLE still answers, and the header is NOT what
+# says so - the host's own IMP and the object it hands back are.  Measured, and a compile-time call is
+# not what was made and could not be: the marker forbids naming the selector, so the measurement
+# reads class_getMethodImplementation instead.  A row whose source does not name it is claiming a
+# behaviour on the header's authority, and the header says the opposite.
+INIT_SOURCE = SOURCE + (
+    "; and for the -init the header marks unavailable, the host's own answer: "
+    "class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, "
+    "and [[Cls alloc] init] through that IMP returns an object, with no exception and "
+    "respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes "
+    "through the IMP because the header forbids naming the selector at compile time")
+
 
 def reason_for(causes, vocabulary, api, fallback):
     """The reason for a member, from the cause the generator recorded for it.
@@ -402,9 +414,15 @@ def main():
                     missing["not answered"] += 1
                     continue
                 if api in report["methods"]:
+                    # A bare -[owner init] the generator ANSWERED is a class whose header marks
+                    # -init unavailable: it emits that method for such a class and no other, forwarding
+                    # through the superclass's IMP.  Every other method of the same class keeps the
+                    # header's own source, which is what that method was decided on.
+                    marked_init = api == "-[%s init]" % owner
                     entries.append(implemented(api, "method", intro, owner, options.facts,
                                                where="%s's own @implementation answers it"
-                                                     % owner if owner in hand_written else None))
+                                                     % owner if owner in hand_written else None,
+                                               source=INIT_SOURCE if marked_init else None))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
                     # The fourth of the four lookups, and the busiest branch in the file: it
@@ -484,12 +502,12 @@ def main():
     return 0
 
 
-def implemented(api, kind, introduced, owner, facts, where=None):
+def implemented(api, kind, introduced, owner, facts, where=None, source=None):
     return {"api": api, "kind": kind, "introduced": introduced, "minimum": "6.0",
             "status": "implemented", "facts": facts,
             "reason": ("a member of %s, which %s" % (owner, where or
                        "the class's own generated implementation answers")),
-            "source": SOURCE}
+            "source": source or SOURCE}
 
 
 def absent(api, kind, introduced, reason, facts):

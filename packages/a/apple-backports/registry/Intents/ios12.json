@@ -273,7 +273,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INDefaultCardTemplate, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INLocationRelevanceProvider initWithRegion:]",
@@ -313,7 +313,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INMediaItem, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INMessageLinkMetadata initWithSiteName:summary:title:openGraphType:linkURL:]",
@@ -373,7 +373,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INObject, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INPlayMediaIntent initWithMediaItems:mediaContainer:playShuffled:playbackRepeatMode:resumePlayback:]",
@@ -413,7 +413,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INPlayMediaIntentResponse, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INRelevanceProvider init]",
@@ -423,7 +423,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INRelevanceProvider, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INRelevantShortcut initWithShortcut:]",
@@ -443,7 +443,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INRelevantShortcutStore, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INRelevantShortcutStore setRelevantShortcuts:completionHandler:]",
@@ -482,7 +482,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INShortcut, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INUpcomingMediaManager setPredictionMode:forType:]",
@@ -510,7 +510,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INVoiceShortcut, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:]",
@@ -538,7 +538,7 @@
       "status": "implemented",
       "facts": "facts/Intents/Intents.md",
       "reason": "a member of INVoiceShortcutCenter, which the class's own generated implementation answers",
-      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua); and for the -init the header marks unavailable, the host's own answer: class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every class this row is for, and [[Cls alloc] init] through that IMP returns an object, with no exception and respondsToSelector:init 1 - measured in tests/backports/host/intents/classes.m, which goes through the IMP because the header forbids naming the selector at compile time"
     },
     {
       "api": "-[INVoiceShortcutCenter setShortcutSuggestions:]",
