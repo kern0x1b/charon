@@ -2,40 +2,14 @@
 
 #import "CharonMorphology.h"
 
-/* The six attribute-name constants the corpus counts beside the classes, measured out of the host's own
-   image and not from the header's names. */
+/* NSMorphologyCustomPronoun and the two attribute names beside it. Split from the file that held all
+   seven, because the release ladder dates this group to 16.0 and the other four to 18.0: one object
+   file may only carry the names of one release, or the gate finds a single object defining symbols of
+   two. The three C helpers that used to sit here moved to CharonMorphology.m, the file that already
+   calls one of them - a shared C function in an object a band leaves out is an undefined symbol in the
+   bands that keep its caller. */
 NSAttributedStringKey const NSInflectionRuleAttributeName = @"NSInflect";
 NSAttributedStringKey const NSInflectionAlternativeAttributeName = @"NSInflectionAlternative";
-NSString *const NSInflectionConceptsKey = @"NSContextInflectionConcepts";
-NSAttributedStringKey const NSInflectionAgreementConceptAttributeName = @"NSInflectionAgreementConcept";
-NSAttributedStringKey const NSInflectionAgreementArgumentAttributeName = @"NSInflectionAgreementArgument";
-NSAttributedStringKey const NSInflectionReferentConceptAttributeName = @"NSInflectionReferentConcept";
-
-/* The three languages the custom pronoun pair supports, measured, and the five keys each of them
-   requires in the order the refusal names them. Both are asked from two files - this one and
-   NSMorphology.m - so they are here and declared in CharonMorphology.h. */
-static NSArray *CharonCustomPronounLanguages(void)
-{
-    static NSArray *languages;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{ languages = @[@"en", @"en_US", @"en_GB"]; });
-    return languages;
-}
-
-NSArray<NSString *> *CharonCustomPronounRequiredKeys(void)
-{
-    static NSArray *keys;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        keys = @[@"subjectForm", @"objectForm", @"possessiveForm", @"possessiveAdjectiveForm", @"reflexiveForm"];
-    });
-    return keys;
-}
-
-BOOL CharonCustomPronounSupportedLanguage(NSString *language)
-{
-    return language != nil && [CharonCustomPronounLanguages() containsObject:language];
-}
 
 @implementation NSMorphologyCustomPronoun
 {

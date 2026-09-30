@@ -46,6 +46,32 @@ static CharonGrammatical17 *charon_grammatical17(NSMorphology *morphology, BOOL 
 }
 
 
+/* The three custom-pronoun helpers, moved here from NSMorphologyCustomPronoun.m. They are C functions
+   called from this file and from the class's own object; a shared C function that lives in an object a
+   band leaves out is an undefined symbol in every band that keeps this one. */
+static NSArray *CharonCustomPronounLanguages(void)
+{
+    static NSArray *languages;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{ languages = @[@"en", @"en_US", @"en_GB"]; });
+    return languages;
+}
+
+NSArray<NSString *> *CharonCustomPronounRequiredKeys(void)
+{
+    static NSArray *keys;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        keys = @[@"subjectForm", @"objectForm", @"possessiveForm", @"possessiveAdjectiveForm", @"reflexiveForm"];
+    });
+    return keys;
+}
+
+BOOL CharonCustomPronounSupportedLanguage(NSString *language)
+{
+    return language != nil && [CharonCustomPronounLanguages() containsObject:language];
+}
+
 @implementation NSMorphology (CharonGrammatical17)
 
 - (NSGrammaticalCase)grammaticalCase { return charon_grammatical17(self, NO)->case_; }

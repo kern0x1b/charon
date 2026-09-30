@@ -31,7 +31,7 @@ echo "link   $BUILD/differential"
 # shellcheck disable=SC2086
 xcrun clang $flags $RENAME -I "$FOUNDATION" -o "$BUILD/differential" \
     "$here/differential.m" \
-    "$FOUNDATION/CharonMorphology.m" "$FOUNDATION/NSMorphologyCustomPronoun.m" \
+    "$FOUNDATION/CharonMorphology.m" "$FOUNDATION/NSMorphologyCustomPronoun16.m" "$FOUNDATION/NSMorphologyInflectionConcepts18.m" \
     "$FOUNDATION/NSMorphologyPronoun.m" "$FOUNDATION/NSInflectionRule.m" "$FOUNDATION/NSInflectionRuleExplicit.m" \
     -framework Foundation
 [ -x "$BUILD/differential" ] || { echo "no binary at $BUILD/differential" >&2; exit 1; }
@@ -40,7 +40,7 @@ echo "bytes $(wc -c < "$BUILD/differential" | tr -d ' ')"
 # Which image answered, before the verdict is read: dladdr on both sides' IMPs, so a
 # comparison that quietly compared the port with itself cannot pass unnoticed.
 xcrun clang $flags $RENAME -I "$FOUNDATION" -o "$BUILD/provenance" "$here/provenance.m" \
-    "$FOUNDATION/CharonMorphology.m" "$FOUNDATION/NSMorphologyCustomPronoun.m" \
+    "$FOUNDATION/CharonMorphology.m" "$FOUNDATION/NSMorphologyCustomPronoun16.m" "$FOUNDATION/NSMorphologyInflectionConcepts18.m" \
     "$FOUNDATION/NSMorphologyPronoun.m" "$FOUNDATION/NSInflectionRule.m" \
     "$FOUNDATION/NSInflectionRuleExplicit.m" -framework Foundation
 "$BUILD/provenance"

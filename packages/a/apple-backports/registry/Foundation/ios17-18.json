@@ -115,7 +115,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "17.0",
       "kind": "constant",
-      "minimum": "6.0",
+      "minimum": "18.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
       "source": "SDK 26, Mac Catalyst, Foundation",
       "status": "absent"
@@ -125,7 +125,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "17.0",
       "kind": "constant",
-      "minimum": "6.0",
+      "minimum": "18.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
       "source": "SDK 26, Mac Catalyst, Foundation",
       "status": "absent"
@@ -135,7 +135,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "17.0",
       "kind": "constant",
-      "minimum": "6.0",
+      "minimum": "18.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
       "source": "SDK 26, Mac Catalyst, Foundation",
       "status": "absent"
@@ -145,7 +145,7 @@
       "effect": "the symbol is not there: a weak reference to it is NULL",
       "introduced": "17.0",
       "kind": "constant",
-      "minimum": "6.0",
+      "minimum": "18.0",
       "reason": "the constant arrived in iOS 17, and nothing in iOS 6 has what it names",
       "source": "SDK 26, Mac Catalyst, Foundation",
       "status": "absent"
