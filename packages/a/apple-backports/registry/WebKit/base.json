@@ -564,6 +564,28 @@
     "source": "the host's own WebKit under Mac Catalyst; the iOS 18.4 web-extension API, read off the host while building the classes of this series (the probes are the band's own and are not yet in the tree -- facts/WebKit/WebExtension.md holds the answers they gave)"
   },
   {
+    "api": "WKWebExtension",
+    "kind": "class",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "carried and callable: an extension is a MANIFEST, not a thing a machine has or lacks. The host hands one out for a registered extension, -identifier and -displayName answer what the manifest says, and every member below has a measured answer for a fresh one.",
+    "effect": "a caller gets a real object of this class, and its members answer as below",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst; the iOS 18.4 web-extension API, read off the host while building the classes of this series (the probes are the band's own and are not yet in the tree -- facts/WebKit/WebExtension.md holds the answers they gave)"
+  },
+  {
+    "api": "WKWebExtensionMatchPattern",
+    "kind": "class",
+    "introduced": "18.4",
+    "minimum": "6.0",
+    "status": "implemented",
+    "reason": "carried and callable: a pattern is a RULE, not a thing a machine has or lacks. The host matches with it, -matchesURL: answers what the rule says, and an invalid scheme raises NSError in the domain named beside this class.",
+    "effect": "a caller gets a real object of this class, and its members answer as below",
+    "facts": "facts/WebKit/WebExtension.md",
+    "source": "the host's own WebKit under Mac Catalyst; the iOS 18.4 web-extension API, read off the host while building the classes of this series (the probes are the band's own and are not yet in the tree -- facts/WebKit/WebExtension.md holds the answers they gave)"
+  },
+  {
     "api": "WKWebExtensionContext.baseURL",
     "kind": "property",
     "introduced": "18.4",
