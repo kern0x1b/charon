@@ -17,3 +17,30 @@ the corner the same subview answers 40 and 50. Setting the margins explicitly do
 `-layoutMarginsDidChange` is sent to the view when the margins it answers change: once when they are set
 to a new value, not at all when they are set to the value they already have, and once when
 `preservesSuperviewLayoutMargins` changes what they come to.
+
+## The same moment seen from the controller (iOS 11)
+
+`-[UIViewController viewLayoutMarginsDidChange]` is delivered from the same place the view's own message
+is, in `UIView+LayoutMargins.m`'s `charon_margins_changed`, right after the view is told and before its
+subviews are walked. The order is the release's own: `facts/UIKit/UIViewSafeArea.md` records that iOS 11
+tells the view first and the controller second, from `-_safeAreaInsetsDidChangeFromOldInsets:` at
+`0x18a27d178`. The controller is found by walking `nextResponder`, which is the walk
+`UIView+SafeArea.m`'s `charon_view_controller` already makes for the safe area, so there is one way to ask
+the question rather than two.
+
+The member is declared by its own file, `UIKit/UIViewController+LayoutMarginsDidChange11.m`, and not by
+the one that delivers it. `UIView+LayoutMargins.m` carries the 8.0 property and is kept in every band from
+6.0, so the member it delivers has to belong to the release that introduced it — which is what
+`tools/release-split.lua` reads, and why the delivery asks `respondsToSelector:` first rather than
+assuming: in a band below 11.0 the controller answers NO, the message is not sent, and a send that assumed
+would raise instead of doing nothing.
+
+The method's body is empty, and that is the whole of the release's behaviour for a message it has no work
+of its own to do. An application overrides it and is called.
+
+**What this does not claim.** It is delivered at the moment the port's own margins change, which is the
+moment it produces them. The value `-layoutMargins` answers is also computed from `-safeAreaInsets` when
+`insetsLayoutMarginsFromSafeArea` is on, so a change of the insets that margins fold in reaches the next
+read without a message; that is the same limit `-[UIView layoutMarginsDidChange]`, which this sits beside,
+already carries and which the tree shipped first. A row that claimed more than that would be a partial
+callback dressed as a whole one.

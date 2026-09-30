@@ -90,10 +90,10 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the same moment of change, reached through the view's callback, which the port cannot deliver",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly; an override is never called",
+   "reason": "the moment the insets change is UIKit's own, and the port computes -safeAreaInsets on every read rather than storing it, so there is no moment of change for it to come from; facts/UIKit/UIViewSafeArea.md states this and packages/a/apple-backports/README.md rules the family out by name",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called. tests/backports/device/safearea-tweak.m asserts this one at line 62",
    "facts": "facts/UIKit/UIViewSafeArea.md",
-   "source": "UIKit of iOS 11.0 arm64, reached as _safeAreaInsetsDidChangeForView from 0x18a27d178"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches reads viewSafeAreaInsetsDidChange in neither release's UIViewController, and the class-scoped selector table of the owner carries no such member: the release does not have it; UIView+SafeArea.m computes the insets by walking the superview chain on every read and stores nothing"
   },
   {
    "api": "UIView.safeAreaLayoutGuide",
@@ -168,10 +168,10 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "called from the moment the adjusted inset changes, which the port cannot see without replacing UIKit's layout",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly; an override is never called",
+   "reason": "the moment the adjusted inset changes is produced by UIKit's own layout, and reaching it means standing in for -layoutSubviews across every scroll view of the process; the port computes the value on every read instead, which is why -adjustedContentInset is carried and this is not",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called. packages/a/apple-backports/README.md rules this family out by name, and tests/backports/device/safearea-tweak.m asserts this one at line 111",
    "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
-   "source": "UIKit of iOS 11.0 arm64, -[UIScrollView _notifyAdjustedContentInsetDidChange] at 0x18a29e574"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches reads adjustedContentInsetDidChange in neither release's UIScrollView, and the class-scoped selector table of the owner carries no such member: the release does not have it; UIScrollView+AdjustedContentInset.m answers -adjustedContentInset by computing it from -contentInset and -safeAreaInsets on every read, storing no value and so having no moment of change to report"
   },
   {
    "api": "-[UIScrollViewDelegate scrollViewDidChangeAdjustedContentInset:]",
@@ -179,10 +179,10 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the delegate is told from the same moment of change, which the port never reaches",
-   "effect": "the selector is never sent, so a delegate that implements it is simply not called",
+   "reason": "the delegate is told from the same moment of change as the view's own callback, which the port never reaches for the same reason",
+   "effect": "the selector is never sent, so a delegate that implements it is simply not called. Nothing here claims the view's callback either: tests/backports/device/safearea-tweak.m asserts -[UIScrollView adjustedContentInsetDidChange] is not declared, so a delegate's method has no moment to be called from",
    "facts": "facts/UIKit/UIScrollViewAdjustedContentInset.md",
-   "source": "UIKit of iOS 11.0 arm64, reached from -[UIScrollView _notifyAdjustedContentInsetDidChange] at 0x18a29e574"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches reads scrollViewDidChangeAdjustedContentInset: in neither release's UIScrollView, and the class-scoped selector table of the owner carries no such member: the release does not have it; the protocol UIScrollViewDelegate is in both releases and carries no such member in either"
   },
   {
    "api": "UIViewController.systemMinimumLayoutMargins",
@@ -1518,10 +1518,11 @@
    "api": "-[UIViewController viewLayoutMarginsDidChange]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the callback comes from the moment the layout margins change, and reaching that moment means standing in for UIKit's layout",
-   "effect": "the method is not there, as with the safe area callbacks of the same release",
-   "source": "UIKit of iOS 11.0 arm64"
+   "status": "implemented",
+   "effect": "the same moment as the view's own -layoutMarginsDidChange, seen from the controller the view belongs to: the view is told first and the controller second, which is the release's own order, and the controller is found by walking nextResponder. An application overrides it and is called. It is delivered at the moment the port's own margins change, which is the moment it produces them; a change of the insets that -layoutMargins folds in reaches the next read without a message, the same limit the view's own callback beside it already carries",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches reads viewLayoutMarginsDidChange in neither release's UIViewController, and the class-scoped selector table of the owner carries no such member: the release does not have it. The delivery is UIView+LayoutMargins.m's charon_margins_changed, the moment the port stores new margins, and the member is declared by UIKit/UIViewController+LayoutMarginsDidChange11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0 and exporting nothing of its own",
+   "facts": "facts/UIKit/UIViewLayoutMargins.md",
+   "minimum": "6.0"
   },
   {
    "api": "UIViewController.childViewControllerForScreenEdgesDeferringSystemGestures",
