@@ -56,10 +56,11 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the top-level tags of a container, in the order they were set",
+      "effect": "an array of tags, empty when the container holds none, and NULL for anything that is not a container of this library",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataCreateFromXMPData()",
@@ -76,20 +77,22 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "iOS 6 has no metadata container at all; an empty mutable one is made here, over CoreFoundation, holding the tags and the prefixes registered on it",
+      "effect": "an empty mutable CGImageMetadataRef, which every other function of this surface takes",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataCreateMutableCopy()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "a deep copy of a container, so a caller can change an immutable one; the tags are copied and the values they hold are shared, as a copy of a tag is",
+      "effect": "a different container holding equal tags, and NULL for anything that is not a container of this library, which includes the metadata object the release's own CGImageSourceCopyMetadataAtIndex answers",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataCreateXMPData()",
@@ -166,80 +169,88 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the name of a tag, the string the caller gave TagCreate",
+      "effect": "the tag's name, or NULL for a tag that is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCopyNamespace()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the namespace of a tag, the string the caller gave TagCreate",
+      "effect": "the tag's namespace, or NULL for a tag that is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCopyPrefix()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the prefix of a tag; a NULL prefix given to TagCreate is resolved to the public prefix of the namespace before the tag is made, so the answer is never NULL for a tag that has one",
+      "effect": "the tag's prefix, or NULL for a tag that is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCopyQualifiers()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the supplemental properties of a tag; none of the tags this slice makes carries one yet, because a qualifier only exists on a string-valued alternate-text element",
+      "effect": "an array of qualifier tags, or NULL when the tag has none and when the tag is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCopyValue()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the value of a tag; a bare string inside an array or a structure is resolved into a tag of its own, an array element named by its position, which is what the host's value holds",
+      "effect": "the tag's value as the caller may read it, or NULL for a tag that is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCreate()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "iOS 6 exports no tag of any kind; a tag is made here, out of CoreFoundation containers, with the type read off the CFType of the value when the caller declares kCGImageMetadataTypeDefault",
+      "effect": "a CGImageMetadataTagRef holding the namespace, the prefix, the name, the type and the value, and NULL where the header says NULL: a namespace with no prefix of its own and no public prefix to take, a type outside the enum, or a value of a type no XMP type serializes",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagGetType()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the type a tag was made with, and the type read off its value when the caller asked for kCGImageMetadataTypeDefault",
+      "effect": "the CGImageMetadataType of the tag, and kCGImageMetadataTypeInvalid for a tag that is not one of these",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagGetTypeID()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the type identifier of the tag this library makes, so a caller can tell a tag from anything else with CFGetTypeID",
+      "effect": "a CFTypeID that is not 0 and is the identity of every tag this library answers",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (33 cases, 1 declared difference); the header of iOS 16.4 for the contract and of iOS 26.2 for the same; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageSourceRemoveCacheAtIndex()",
