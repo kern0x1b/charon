@@ -143,3 +143,44 @@ Added after the value half; the wire shapes are in `WebServices.md`.
   record a container has, under `_defaultOwner` in the default zone, so a caller that asks for the
   identifier of the user it is in gets it without one; a container with no user yet is answered the
   same way, because the service creates it on first use.
+
+## The operations
+
+`CKOperations8.m`, over the transport. The endpoints and the wire shapes are in `WebServices.md`.
+
+Three promises, because they are what a caller writes code against:
+
+- **The per-item blocks are called on the transport's queue, in the order the service answered, and
+  the operation's own completion is called last and exactly once.** A batch that failed in part is
+  `CKErrorPartialFailure` with the per-item errors under `CKPartialErrorsByItemIDKey`, which is where
+  the header puts them. The service answers such a batch with 200 and the failures beside it, so an
+  operation that only looked at the status would tell a caller everything worked.
+- **A query whose predicate the service has no form for never leaves the process.** The completion is
+  answered `CKErrorInvalidArguments` — the code `CKErrorCode` names for a malformed predicate — and no
+  per-item block is called at all.
+- **A fetch of records answers a dictionary keyed by the identifier**, and a record that was asked
+  for and not found arrives in the per-item failures as `CKErrorUnknownItem` rather than as the fetch
+  itself failing. That is the distinction the header draws: the fetch did not fail, one item was not
+  there.
+
+Two things worth writing down because a plausible answer would have been wrong:
+
+- **A modify with nothing in it is not a request.** The service would answer 200 with an empty list,
+  and a caller's per-item blocks would be called for work nobody asked for, so the operation ends
+  with an empty success instead.
+- **A create or an update is decided by the service's change tag, never by this port.** A record that
+  has never been saved is a create; one that has a tag the service issued is an update. Inventing one
+  would overwrite a record that was not read.
+
+**The initializers of the operation classes are refused with the port's own words, not a measured
+one.** Every operation class except `CKDatabaseSubscription` marks its `-init` as the designated
+initializer, so the port's `-init` is that one and `+new` reaches it. `+[CKOperation new]` and
+`-[CKOperation init]` raise `NSInvalidArgumentException` with "You must instantiate one of the
+CKOperation subclasses" — the same shape the host answers for a `CKSubscription`, which *was*
+measured, and the words for the operations themselves were not probed. That is a written-down
+divergence and not a measurement, and it is the one place in this family where the port is not held
+to the host's own answer.
+
+**The end of an operation goes through the port's own `-charon_finish`.** This release's
+`NSOperation` declares no `-finish` of its own, so the scheduler is what releases a caller waiting on
+an operation, and the flag that says an operation has ended is the port's own.

@@ -13,6 +13,13 @@
 #import <Foundation/Foundation.h>
 #import <CloudKit/CloudKit.h>
 
+@interface CKServerChangeToken (CharonCKBuilding)
+// The token of a server change token, and the change token of one: the service carries these as the
+// continuation marker of a changes answer, and the SDK's class declares no way to get at either.
++ (instancetype)tokenWithData:(NSData *)data;
+- (NSData *)data;
+@end
+
 @interface CKQueryCursor (CharonCKBuilding)
 // The cursor is the service's own token and nothing else, and the SDK's class declares no way to be
 // built from one, so this is the initialiser the transport uses to hand the service's answer back to

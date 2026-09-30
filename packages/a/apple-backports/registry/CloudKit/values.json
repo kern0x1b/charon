@@ -629,6 +629,146 @@
     "effect": "raises NSInternalInconsistencyException with the reason \"Use +[CKContainer privateCloudDatabase] or +[CKContainer publicCloudDatabase] instead of creating your own\", which are the host's own words",
     "source": "packages/a/apple-backports/CloudKit/CKContainerDatabase8.m",
     "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKSubscription new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"You must instantiate one of the CKSubscription subclasses\", which are the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKSubscription8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKNotification new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInvalidArgumentException with the reason \"CKNotification is not meant for direct instantiation\", which are the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKNotifications8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "an operation is an NSOperation of the scheduler this package carries and its -main is where the request goes; the container comes from the database it was added to or from its configuration, and the two timeouts and the cellular flag are the ones a configuration of iOS 11 also holds. Measured: the base class refuses to be instantiated at all, and every concrete subclass answers",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKDatabaseOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "the database it is added to names the container every request goes under, and a configuration with a container is used when there is no database",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKModifyRecordsOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "records/modify, with create or update decided by the service change tag the record carries; the per-item blocks are called in the order the service answered and the completion is called last with the per-item failures under CKPartialErrorsByItemIDKey as CKErrorPartialFailure; a modify with nothing in it is not a request and answers an empty success",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKModifyRecordZonesOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "zones/modify, with the same per-item and partial-failure rule; the completion answers the zones saved, the identifiers deleted and the error",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKModifySubscriptionsOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "subscriptions/modify, with the same rule; a query subscription whose predicate the service has no form for is refused with CKErrorInvalidArguments rather than saved as one that would never fire",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordsOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "records/lookup, or the current user record when no identifiers were given, which is the record the credentials are signed in as; the completion answers a dictionary keyed by the identifier, and a record that was asked for and not found arrives in the per-item failures as CKErrorUnknownItem rather than as the fetch failing",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordZonesOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "zones/list with no identifiers and zones/lookup with them; the completion answers a dictionary keyed by the zone",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchSubscriptionsOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "subscriptions/list with no identifiers and subscriptions/lookup with them; the completion answers a dictionary keyed by the identifier",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKQueryOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "records/query; a predicate the service has no form for never leaves the process and the completion is answered CKErrorInvalidArguments; the continuation marker of the answer comes back as the next cursor",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordChangesOperation",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "records/changes under the zone it names, from the token the last fetch ended at; the server change token, the client change token and moreComing are all the service's own answers and are handed back as it sent them",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKOperation new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInternalInconsistencyException with the reason \"You must use a concrete subclass of CKOperation\", which are the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "-[CKOperation init]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInternalInconsistencyException with the reason \"You must use a concrete subclass of CKOperation\", the same as +new",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations8.m",
+    "facts": "facts/CloudKit/Values.md"
   }
   ],
   "framework": "CloudKit"

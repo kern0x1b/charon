@@ -23,14 +23,15 @@
 // the fact that it was made by one. A database is only ever made by a container, and the service's
 // path is under a container, so the container is the port's own state here.
 @interface CKDatabase ()
+// The container a database belongs to. Neither the header's CKDatabase nor its CKContainer names
+// the other, and the service's path is under a container, so this is the port's own state and the
+// one thing the transport and the operations both read to find out where a request goes.
 @property (nonatomic, strong) CKContainer *ck_container;
-@property (nonatomic, strong) NSURL *recordsQueryURL;
 @end
 
 @implementation CKDatabase
 
 @synthesize ck_container = _ck_container;
-@synthesize recordsQueryURL = _recordsQueryURL;
 
 - (instancetype)initWithContainer:(CKContainer *)container scope:(CKDatabaseScope)scope
 {
@@ -131,6 +132,17 @@
     return [[CharonCKTransport shared] environmentForContainer:self];
 }
 
+- (CKRecordID *)currentUserRecordID
+{
+    NSString *name = [[CharonCKCredentials shared] userRecordIDForContainer:self.containerIdentifier];
+    if (!name.length) {
+        name = CKOwnerDefaultName;
+    }
+    return [[CKRecordID alloc] initWithRecordName:name
+                                          zoneID:[[CKRecordZoneID alloc] initWithZoneName:CKRecordZoneDefaultName
+                                                                                    ownerName:CKOwnerDefaultName]];
+}
+
 #pragma mark The account
 
 - (void)accountStatusWithCompletionHandler:(void (^)(CKAccountStatus accountStatus, NSError *error))completionHandler
@@ -188,6 +200,10 @@
 @end
 
 #pragma mark - CKDatabase
+
+@interface CKDatabase (CharonCKPrivate)
+- (nullable CKContainer *)ck_container;
+@end
 
 @implementation CKDatabase (CharonCKRequests)
 

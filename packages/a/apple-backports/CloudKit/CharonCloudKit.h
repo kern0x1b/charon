@@ -116,6 +116,10 @@ extern NSDictionary *CharonCKSubscriptionDocument(CKSubscription *subscription);
 extern CKRecordZone *_Nullable CharonCKZoneWithDocument(NSDictionary *document);
 extern CKSubscription *_Nullable CharonCKSubscriptionWithDocument(NSDictionary *document);
 extern NSDictionary *CharonCKFieldsSnapshot(CKRecord *record);
+// The token of a server change token and the change token of a token, which the service carries as
+// the continuation marker of a changes answer.
+extern NSData *_Nullable CharonCKSystemFieldsSnapshotToken(CKServerChangeToken *_Nullable token);
+extern CKServerChangeToken *_Nullable CharonCKServerTokenFromData(NSData *data);
 // The system's fields of a record, which a caller cannot write and a save must not send.
 extern NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record);
 
@@ -127,7 +131,25 @@ extern NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record);
 // its own and a caller that adds one to a database does not inherit a queue's state.
 @interface CharonCKOPScheduler : NSObject
 + (void)add:(NSOperation *)operation;
+// The end of one: the operation is taken out of the queue and the operation's own -finish is what
+// the caller waiting on it is released by, which is why this release's NSOperation needs no -finish
+// of its own for the port to end one.
++ (void)complete:(NSOperation *)operation;
 + (void)cancelAll;
+@end
+
+// The container a database belongs to. Neither the header's CKDatabase nor its CKContainer names
+// the other and the service's path is under a container, so this is the port's own state and the one
+// thing the transport and the operations both read to find out where a request goes.
+@interface CKDatabase (CharonCKPrivate)
+- (nullable CKContainer *)ck_container;
+@end
+
+@interface CKContainer (CharonCKPrivate)
+// The record of the user the credentials are signed in as: the only user record a container has,
+// under the current owner in the default zone, and the one the header's own
+// -fetchCurrentUserRecordOperation fetches.
+- (nullable CKRecordID *)currentUserRecordID;
 @end
 
 // MARK: - The paths

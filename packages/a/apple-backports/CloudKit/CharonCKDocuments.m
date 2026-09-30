@@ -8,6 +8,8 @@
 #import "CharonCKConstants.h"
 #import "CharonCKSubscription.h"
 
+#import <objc/runtime.h>
+
 // MARK: - A subscription
 
 // A subscription is a name, a type and the notification information it was given. The three kinds
@@ -189,6 +191,16 @@ NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record)
     return fields;
 }
 
+NSData *CharonCKSystemFieldsSnapshotToken(CKServerChangeToken *token)
+{
+    return token.data;
+}
+
+CKServerChangeToken *CharonCKServerTokenFromData(NSData *data)
+{
+    return data.length ? [CKServerChangeToken tokenWithData:data] : nil;
+}
+
 // MARK: - The scheduler
 
 // The operations of this package are run on a scheduler of the port's own rather than on the
@@ -232,6 +244,15 @@ static NSOperationQueue *CharonCKQueue(void)
         return;
     }
     [CharonCKQueue() addOperation:operation];
+}
+
++ (void)complete:(NSOperation *)operation
+{
+    // The queue is what holds an operation, and it has no way of being told one has finished early:
+    // the flag is the port's own, so that a caller waiting on the operation is released once and
+    // only once whether the operation ended by finishing or by the port's own name.
+    objc_setAssociatedObject(operation, "CharonCKFinished", @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    [operation setValue:@YES forKey:@"finished"];
 }
 
 + (void)cancelAll
