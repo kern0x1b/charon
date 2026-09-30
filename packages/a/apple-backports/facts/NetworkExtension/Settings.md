@@ -30,9 +30,29 @@ compared=13 failed=0
 
 `dladdr` on the `servers` selector's implementation pointer names the answering image in each binary,
 which is the proof the comparison rests on: `NetworkExtension` on the host side, `port` on the port
-side. The host's class does **not** carry `dnsProtocol`, `domainName` or `allowFailover`, so those three
-are checked against the 26.2 header's own declarations and `run.sh` fails if the header does not have
-them — a different oracle, named as such rather than dressed up as a host comparison.
+side. The host's class does **not** carry `dnsProtocol`, `domainName` or `allowFailover`.
+
+**Three of the nine values are therefore checked by the header and the port alone**, and the harness
+says so on every line it prints: the declaration against the 26.2 header, and the behaviour against
+eight port-only assertions — each property's declared default, the setter round trip and the keyed-archive
+round trip — read through the typed getter, so a getter that answers the wrong value fails rather than
+passing:
+
+```
+ok  portOnly.dnsProtocol.default   YES       (port-only: the host has no such name)
+ok  portOnly.dnsProtocol.afterSet  YES       (port-only: the host has no such name)
+ok  portOnly.domainName.isNil      YES       (port-only: the host has no such name)
+ok  portOnly.domainName.afterSet   a string  (port-only: the host has no such name)
+ok  portOnly.allowFailover.default YES       (port-only: the host has no such name)
+ok  portOnly.allowFailover.afterSet YES      (port-only: the host has no such name)
+ok  portOnly.coding.domainName     a string  (port-only: the host has no such name)
+ok  portOnly.coding.allowFailover  YES       (port-only: the host has no such name)
+compared=21 failed=0
+```
+
+The six names the host does carry are compared against Apple's own answers as before. The three above
+are the ones whose oracle is this paragraph and those assertions, and the three rows' `source` fields
+name it where a reader of the registry looks.
 
 ## What the differential found
 

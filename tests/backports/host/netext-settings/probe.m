@@ -28,6 +28,16 @@ static void emit(const char *name, const char *value)
     printf("%s\t%s\n", name, value ? value : "(nil)");
 }
 
+/* an id, as the two words a reader wants: present or not, or the string it holds */
+static void emit_id(const char *name, id value)
+{
+    if (!value) {
+        emit(name, "(nil)");
+        return;
+    }
+    emit(name, [value isKindOfClass:[NSString class]] ? "a string" : "an object");
+}
+
 static void emit_bool(const char *name, BOOL value)
 {
     emit(name, value ? "YES" : "NO");
@@ -65,6 +75,33 @@ int main(void)
         id back = archived ? [NSKeyedUnarchiver unarchivedObjectOfClass:cls fromData:archived error:&error] : nil;
         emit_bool("roundTrip.isKindOfClass", [back isKindOfClass:cls] ? YES : NO);
         emit("roundTrip.servers", [back valueForKey:@"servers"] ? "an array" : "(nil)");
+
+#ifndef HOST_SIDE
+        /* The three names Apple's class does not carry (dnsProtocol, domainName, allowFailover) have no
+           host oracle, so they are checked on the port side alone: the header's declared default, the
+           setter round trip, and the keyed-archive round trip. These lines are the whole oracle, and
+           the facts page says so where a reader looks. */
+        {
+            NEDNSSettings *built = [[cls alloc] init];
+            /* read through the typed getter, not through KVC: a KVC read of an integer property is
+               an NSNumber that is never nil, so `== nil` would read NO with an inverted getter too */
+            emit_bool("portOnly.dnsProtocol.default", built.dnsProtocol == (NEDNSProtocol)0);
+            [built setDnsProtocol:NEDNSProtocolTLS];
+            emit_bool("portOnly.dnsProtocol.afterSet", built.dnsProtocol == NEDNSProtocolTLS);
+            emit_bool("portOnly.domainName.default", built.domainName == nil);
+            emit_bool("portOnly.domainName.isNil", built.domainName == nil);
+            [built setValue:@"example.com" forKey:@"domainName"];
+            emit_id("portOnly.domainName.afterSet", [built valueForKey:@"domainName"]);
+            emit_bool("portOnly.allowFailover.default", built.allowFailover == NO);
+            [built setAllowFailover:YES];
+            emit_bool("portOnly.allowFailover.afterSet", built.allowFailover);
+            NSError *codingError = nil;
+            NSData *coded = [NSKeyedArchiver archivedDataWithRootObject:built requiringSecureCoding:YES error:&codingError];
+            id decoded = coded ? [NSKeyedUnarchiver unarchivedObjectOfClass:cls fromData:coded error:&codingError] : nil;
+            emit_id("portOnly.coding.domainName", [decoded valueForKey:@"domainName"]);
+            emit_bool("portOnly.coding.allowFailover", [(NEDNSSettings *)decoded allowFailover]);
+        }
+#endif
 
 #ifdef HOST_SIDE
         /* the three names Apple's class does not carry, so they are not compared; what is compared is

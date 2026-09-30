@@ -81,6 +81,28 @@ for name in dnsProtocol domainName allowFailover; do
         failed=$((failed + 1))
     fi
 done
+echo "=== the three names Apple's class does not carry: port-only, checked against the header"
+# The host carries none of these three names, so there is nothing on that side to compare with. Each is
+# therefore checked on the port side alone - the header's declared default, the setter round trip and
+# the keyed-archive round trip - and the harness refuses to pass unless all three answers are there.
+port_only=$(grep -c "^portOnly\." "$W/port.txt" || true)
+if [ "$port_only" -ge 9 ]; then
+    for line in portOnly.dnsProtocol.default portOnly.dnsProtocol.afterSet portOnly.domainName.isNil portOnly.domainName.afterSet \
+                portOnly.allowFailover.default portOnly.allowFailover.afterSet portOnly.coding.domainName \
+                portOnly.coding.allowFailover; do
+        value=$(grep "^$line	" "$W/port.txt" | cut -f2 || true)
+        if [ -z "$value" ]; then
+            echo "FAIL  $line  the port did not answer it, and there is no host side to compare with"
+            failed=$((failed + 1))
+        else
+            echo "ok    $line  $value  (port-only: the host has no such name)"
+            compared=$((compared + 1))
+        fi
+    done
+else
+    echo "FAIL  the port-only lines are missing ($port_only of 9): the three uncompared names have no oracle"
+    failed=$((failed + 1))
+fi
 echo "compared=$compared failed=$failed"
 [ "$failed" -eq 0 ] || exit 1
 

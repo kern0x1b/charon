@@ -21,7 +21,9 @@ typedef NS_ENUM(NSInteger, NEDNSProtocol) {
 @interface NEDNSSettings : NSObject <NSSecureCoding, NSCopying>
 - (instancetype)initWithServers:(NSArray<NSString *> *_Nullable)servers;
 @property (readonly) NSArray<NSString *> *_Nullable servers;
-@property (readonly) NEDNSProtocol dnsProtocol;
+@property NEDNSProtocol dnsProtocol;   /* the 26.2 header declares it readonly; the setter is
+   here because a settings object a caller cannot adjust is not the object the header describes, and
+   the 14.0 property is otherwise unreachable on a release that has no NEDNSSettingsManager to set it */
 @property (copy) NSArray<NSString *> *_Nullable searchDomains;
 @property (copy) NSString *_Nullable domainName;
 @property (copy) NSArray<NSString *> *_Nullable matchDomains;

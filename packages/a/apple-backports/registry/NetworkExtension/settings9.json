@@ -83,7 +83,7 @@
       "facts": "facts/NetworkExtension/Settings.md",
       "reason": "a property of the settings object: the single domain a configuration matches, nil until set",
       "effect": "a fresh object answers nil; the property is declared by the 26.2 header as (copy, nullable) NSString *, and the host's class does not carry this name at all, so the header is the oracle (Foundation/NetworkExtension/NEDNSSettings.m:63)",
-      "source": "SDK 26.2, NEDNSSettings.h, for the declaration; run.sh greps that header and fails if the property is not there, and names it as the oracle rather than a host comparison"
+      "source": "SDK 26.2, NEDNSSettings.h, for the declaration; run.sh greps that header and fails if the property is not there, and names it as the oracle rather than a host comparison; the host's class does not carry this name at all, so the oracle is the 26.2 header for the declaration plus the port-only assertions in tests/backports/host/netext-settings/ (the declared default, the setter round trip and the keyed-archive round trip), all three named in the facts file"
     },
     {
       "api": "NEDNSSettings.dnsProtocol",
@@ -95,7 +95,7 @@
       "facts": "facts/NetworkExtension/Settings.md",
       "reason": "a readonly property of the settings object: which DNS protocol the servers are spoken over, the enumeration's own zero until a caller sets one",
       "effect": "a fresh object answers 0, the value before NEDNSProtocolCleartext; the host's class does not carry this name, so the 26.2 header is the oracle for the declaration and the zero is the enumeration's own (Foundation/NetworkExtension/NEDNSSettings.m:30)",
-      "source": "SDK 26.2, NEDNSSettings.h, for the declaration and for NEDNSProtocolCleartext = 1; run.sh greps the header and fails if either is missing"
+      "source": "SDK 26.2, NEDNSSettings.h, for the declaration and for NEDNSProtocolCleartext = 1; run.sh greps the header and fails if either is missing; the host's class does not carry this name at all, so the oracle is the 26.2 header for the declaration plus the port-only assertions in tests/backports/host/netext-settings/ (the declared default, the setter round trip and the keyed-archive round trip), all three named in the facts file"
     },
     {
       "api": "NEDNSSettings.allowFailover",
@@ -107,7 +107,7 @@
       "facts": "facts/NetworkExtension/Settings.md",
       "reason": "a property of the settings object: whether another server may be tried when this one fails, NO until set",
       "effect": "a fresh object answers NO; the host's class does not carry this name, so the 26.2 header is the oracle (Foundation/NetworkExtension/NEDNSSettings.m:83)",
-      "source": "SDK 26.2, NEDNSSettings.h, for the declaration; run.sh greps the header and fails if the property is not there"
+      "source": "SDK 26.2, NEDNSSettings.h, for the declaration; run.sh greps the header and fails if the property is not there; the host's class does not carry this name at all, so the oracle is the 26.2 header for the declaration plus the port-only assertions in tests/backports/host/netext-settings/ (the declared default, the setter round trip and the keyed-archive round trip), all three named in the facts file"
     }
   ]
 }
