@@ -78,14 +78,36 @@ no environment setup at all.
 row of both ladders was recomputed through the index and compared. Measured 2026-09-30, load 23, the
 scripts in `charon/.agent-work/worktrees/cache-index-1/.agent-work/runs/recompute/`:
 
-| | `caches/<stem>.tsv` (symbol ladder, 6 files) | `caches/sel/<stem>.strings` (selector ladder, 3 files) |
+**Both columns partition.** Every row the old scan placed is in exactly one bucket, and the
+buckets sum to the placed total, so the percentages can be read off the table without a second
+number to reconcile.
+
+`caches/<stem>.tsv` — symbol ladder, 6 files:
+
+| bucket | rows | % of 3 179 542 placed |
 | --- | ---: | ---: |
-| rows the old scan gave a rung to | 3 179 542 | 9 518 012 |
-| identical in the index | 2 667 477 | 427 332 |
-| **moved — the row's rung changes** | **511 318 (16.08 %)** | **2 308 659 (84.38 % of the lines that are names)** |
-| … the index says an earlier release | 510 685 | 2 233 020 |
-| … the index says a later release | 633 | 75 639 |
-| not a name the index holds at all | 747 | 6 782 021 (69.3 %) |
+| identical in the index | 2 667 477 | 83.90 % |
+| **moved — the row's rung changes** | **511 318** | **16.08 %** |
+| … of those, the index says an earlier release | 510 685 | |
+| … of those, the index says a later release | 633 | |
+| placed, but the index holds no such name | 747 | 0.02 % |
+| **total placed** | **3 179 542** | **100 %** |
+
+`caches/sel/<stem>.strings` — selector ladder, 3 files:
+
+| bucket | rows | % of 9 518 012 placed |
+| --- | ---: | ---: |
+| identical in the index | 427 332 | 4.49 % |
+| **moved — the row's rung changes** | **2 308 659** | **24.26 %** |
+| … of those, the index says an earlier release | 2 233 020 | |
+| … of those, the index says a later release | 75 639 | |
+| placed, but the index holds no such name | 6 782 021 | 71.25 % |
+| **total placed** | **9 518 012** | **100 %** |
+
+The "moved" percentage is quoted twice, against two denominators, and both are real:
+**24.26 %** of every line the old ladder placed, and **84.38 %** of the 2 735 991 lines the index
+does hold a name for (2 735 991 = 9 518 012 − 6 782 021, and 427 332 + 2 233 020 + 75 639 = 2 735 991,
+so that bucket is the complement of the one above it).
 
 **509 842 of the symbol ladder's 511 318 moves are to a release older than 6.0, which that ladder has
 no file for at all** — so this is not granularity. The cause is one sentence: `strings(1)` does not
