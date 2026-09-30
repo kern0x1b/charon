@@ -6,14 +6,16 @@
 // linked into this same binary under their own names, so both answers are in one process and the
 // comparison is between the port and the system, never against a recorded expectation.
 //
-// One name, kCVPixelBufferOpenGLESTextureCacheCompatibilityKey, is API_UNAVAILABLE(macosx) and the
-// host does not export it. Its value was read instead from the armv7 shared cache of iOS 9.0, the
-// oldest held release that carries it, with tools/cfconst.py; EXPECTED_OPENGLES_KEY below is that
-// text, and the port's copy is still compared against it, so a port that spelled it differently is
-// caught rather than skipped.
+// One name, kCVPixelBufferOpenGLESTextureCacheCompatibilityKey, the header of iOS 16.4 marks
+// API_UNAVAILABLE(macosx), so it could not be assumed that the host has it. It does: the run of
+// 2026-09-30 reports host_does_not_export=0, and the host's own 20 bytes are the ones the iOS 9.0
+// armv7 cache carries, which is the second, independent source for that value. So the host is the
+// comparison for all twenty and EXPECTED_OPENGLES_KEY below is the fallback for a host that does
+// not export it, holding the iOS 9.0 text either way. The line prints which of the two it compared
+// against, so a run that fell back says so instead of looking identical to one that did not.
 //
 // Every name is printed whatever the answer, so a name the host does not export is a visible line
-// and not a missing one: `printed` counts the names asked about, never the ones that matched.
+// and not a missing one: `asked` counts the names asked about, never the ones that matched.
 #import <CoreVideo/CoreVideo.h>
 #import <CoreFoundation/CoreFoundation.h>
 #include <dlfcn.h>
@@ -81,18 +83,20 @@ int main(void)
         if (!hostValue) host_absent++;
 
         const char *against = host;
+        const char *source = "the host";
         int agrees;
         if (hostValue) {
             agrees = strcmp(host, port) == 0;
         } else {
-            // no host symbol: the row is held to the value the iOS 9.0 cache carries
+            // No host symbol: the row is held to the value the iOS 9.0 armv7 cache carries, which is
+            // the other of the two independent sources for it, and the line says which one it used.
             against = EXPECTED_OPENGLES_KEY;
+            source = "the iOS 9.0 cache";
             agrees = strcmp(EXPECTED_OPENGLES_KEY, port) == 0;
         }
         if (agrees) same++; else different++;
-        printf("%-4s %-52s against=%-33s expected=%-33s port=%s\n",
-               agrees ? "ok" : "BAD", api, against,
-               hostValue ? host : "(iOS 9.0 cache)", port);
+        printf("%-4s %-52s compared_against=%-17s %-33s port=%s\n",
+               agrees ? "ok" : "BAD", api, source, against, port);
     }
     printf("constants: asked=%d same=%d different=%d host_does_not_export=%d port_null=%d\n",
            kRowCount, same, different, host_absent, port_null);

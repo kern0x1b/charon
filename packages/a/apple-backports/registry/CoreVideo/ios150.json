@@ -41,7 +41,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the function arrived in iOS 15 and asks about hardware these releases do not have",
-      "effect": "false for every pixel format, and that is the device answering: the header scopes the question to the lossless- and lossy-compressed formats and says to call this to check availability on the current device, and the hardware those formats need arrived long after these releases. Over the thirty formats the host was asked about it answers false for all thirty too",
+      "effect": "false for every pixel format, and that is the device answering: the header scopes the question to the lossless- and lossy-compressed formats and says to call this to check availability on the current device, and the hardware those formats need arrived long after these releases. Measured against the host, which is where this differs and is said rather than hidden: over the thirty formats asked about the host answers false for all thirty and agrees on all thirty, but over the host's whole registry of 294 registered formats it calls 110 available and this answers false for all 294, because every one of those 110 is a compressed FourCC for hardware these releases do not have",
       "facts": "facts/CoreVideo/CompressedFormats.md",
       "source": "the header of iOS 16.4 for the scope and the question; the host through tests/backports/host/corevideo, whose 294 registered formats are reported in facts/CoreVideo/CompressedFormats.md together with the two rules measured and rejected"
     },

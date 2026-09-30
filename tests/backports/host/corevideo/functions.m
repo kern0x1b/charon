@@ -40,15 +40,19 @@ static void cstr(CFStringRef s, char *out, size_t n)
 }
 
 // The keys of a dictionary, comma-joined, so two answers to the same question are comparable as text.
+// A dictionary with more keys than the buffer holds would be silently truncated here, and two
+// truncated answers compare equal, so the cap says so instead of hiding it.
+enum { kMaxKeys = 64 };
 static void keys_of(CFDictionaryRef d, char *out, size_t n)
 {
     if (!d) { snprintf(out, n, "(null)"); return; }
     CFIndex count = CFDictionaryGetCount(d);
-    const void *keys[64], *values[64];
+    if (count > kMaxKeys) { snprintf(out, n, "(more than %d keys, not compared)", kMaxKeys); return; }
+    const void *keys[kMaxKeys], *values[kMaxKeys];
     CFDictionaryGetKeysAndValues(d, keys, values);
     char one[128];
     out[0] = '\0';
-    for (CFIndex i = 0; i < count && i < 64; i++) {
+    for (CFIndex i = 0; i < count; i++) {
         cstr((CFStringRef)keys[i], one, sizeof(one));
         strlcat(out, i ? "," : "", n);
         strlcat(out, one, n);
