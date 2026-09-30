@@ -767,36 +767,36 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the configuration tells the system which types a responder accepts, and this release's paste menu and drop target ask nobody",
-   "effect": "the class is not there, so a responder is never told it may paste something it cannot be handed",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the configuration tells the system which types a responder accepts before it is offered anything to paste, and this release's paste menu and drop target ask nobody: a paste happens through -paste: on the responder or through UIPasteboard, both driven by the release's own machinery. Not carried by the port either",
+   "effect": "the class is not there, so a responder is never told it may paste something it cannot be handed, and NSClassFromString answers nil",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
   },
   {
    "api": "UIPasteConfigurationSupporting",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "nothing in this release reads a paste configuration off a responder",
+   "reason": "the protocol says a responder keeps a paste configuration, and nothing in this release reads one off a responder: the responder is asked to paste or not, and the configuration has no place to be read. Not carried by the port either",
    "effect": "the protocol is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIDataSourceTranslating",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the translation between a data source's indexes and a view's exists for drag and drop, which this release cannot run",
+   "reason": "the protocol translates a data source's indexes into a view's, for a drag and a drop between them. The release has no drag and no drop between two data sources, so nothing asks either side to translate. Not carried by the port either, for the same reason",
    "effect": "the protocol is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "UIItemProviderPresentationSizeProviding",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the size is asked for while a drag preview is built",
-   "effect": "the protocol is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the protocol is how the object being dragged is asked for the size its preview should be, and the release asks nothing: it has no drag and no preview builder to ask. The port's drag builds the preview from the item's own view. Not carried by the port either: an implemented protocol row needs an object that adopts it",
+   "effect": "the protocol is not there, so nothing conforms to it and no delegate is ever handed to ask",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
   },
   {
    "api": "-[UICollectionViewCell dragStateDidChange:]",
@@ -1154,27 +1154,27 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "dragging is begun and carried by a system service this release does not run",
-   "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "teamData is the payload two applications of the same team exchange when a drag is offered between them, which needs a drag that leaves the application. There is none: the release has no service, and the port's drag is in-process by its own header. Not carried as a stored value either: a dictionary the drag never reads would be a field believed and consulted for nothing",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly, and an application that asks for it before dragging keeps its own path",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "NSItemProvider.preferredPresentationSize",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the size is read while a drag preview is built",
-   "effect": "the property is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the size is read while a drag preview is built, by the session that carries the drag, and the release has no such session. The port does carry one, in-process only, UIDragInteraction.m's own header says so, and its drag builds the preview from the item's own view rather than from a size the provider suggests, so a size set here would be read by nothing. preferredPresentationStyle and teamData are absent for the same shape of reason and name each other",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. An application that sets it gets a preview of its view, which is what the drag was always going to make",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "NSItemProvider.preferredPresentationStyle",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the style is read while a drag preview is built",
-   "effect": "the property is not there",
-   "source": "UIKit of iOS 11.0 arm64"
+   "reason": "the style is read while a drag preview is built, by the session that carries the drag, and there is none: the release has none and the port's own builds the preview from the item's view. preferredPresentationSize is absent for the same reason",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
   },
   {
    "api": "-[UIAccessibilityCustomAction initWithAttributedName:target:selector:]",
@@ -1595,9 +1595,9 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the pasteboard of this release carries data and types, not item providers, and the provider machinery is the drag world's",
-   "effect": "the property is not there; an application reads and writes the pasteboard by type as this release does",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the property reads the board back as providers, and the board holds bytes under type identifiers. Wrapping each item in a provider would be a value the port invented rather than read, and the providers it invented would answer for data the release already holds under its own names. NSItemProvider is carried, so -[UIPasteboard setObjects:] answers for the same data in the shape this release has",
+   "effect": "the property is not there; an application reads and writes this pasteboard by type as this release does",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIPasteboard is in the cache and its own selector table carries no such member",
    "minimum": "6.0"
   },
   {
@@ -1605,9 +1605,9 @@
    "kind": "method",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the same: there are no item providers on this pasteboard",
-   "effect": "the method is not there",
-   "source": "UIKit of iOS 11.0 arm64",
+   "reason": "the items a pasteboard is given as item providers cannot be stored as item providers, because the release's own pasteboard holds bytes under type identifiers and -setValue:forPasteboardType: is the only thing it stores through. The port's -setObjects: and -setObjects:localOnly:expirationDate: compose exactly that release primitive over the release's own type lists, which facts/UIKit/UIPasteboardIOS10.md records; there is no provider-shaped primitive here to compose. NSItemProvider itself is carried, in Foundation, so the class the array would hold exists; what does not exist is anywhere on this release to put one",
+   "effect": "the method is not there. An application that would set providers on this release sets objects instead, which the port answers",
+   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIPasteboard is in the cache and its own selector table carries no such member",
    "minimum": "6.0"
   },
   {
