@@ -287,6 +287,25 @@ delegate, what is refused and with which words follow the system's (and `SFAuthe
 run on an iPad 2 by `device/safariviewcontroller.m`; the cookies and passwords of Safari, Reader and the content blockers
 are not shared, as `facts/SafariServices/SFSafariViewController.md` sets out.
 
+### JavaScriptCore's typed arrays, a value the release's engine does not have
+
+Thirteen rows of JavaScriptCore's C API are **absent** here, and the reason is a value rather than a
+release: `JSObjectMakeTypedArray` and its ten siblings, `JSObjectGetTypedArray*`,
+`JSObjectGetArrayBuffer*` and `JSValueGetTypedArrayType` all report on, or make, an ES6 typed array, and
+iOS 6's engine has none. Measured, not assumed: the release's C API exports no typed-array entry point
+at all until 10.0.1 (`tools/cache-index/first-rung.py` over the 50 held rungs, for all thirteen), and the
+6.1.3 armv7 cache's own symbol table carries 300 `JSC::` symbols - `JSC::JSArray` and `JSC::JSString`
+among them, which is the control that says the search can see a JSC class - and none for
+`JSC::JSArrayBuffer` or `JSC::JSTypedArray`.
+
+Nine of the thirteen are getters, and Apple's own answer for a value that is not a typed array is a zero,
+a null or `kJSTypedArrayTypeNone`, so a port that returned those unconditionally would link, would not
+crash, and would be indistinguishable from correct to every client that never holds a typed array. It
+would be a lie to the one client that does: a typed array made by a polyfill or carried in from a newer
+context would be reported as 0 bytes by a function that has not looked. So the effect is a weak
+reference that is NULL, and `facts/JavaScriptCore/CAPI.md` has the measurements and the rest of the
+twenty-six C API rows the corpus listed as absent.
+
 ## iOS 13 and 14
 
 ### Relative dates, in English
