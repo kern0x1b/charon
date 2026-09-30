@@ -51,7 +51,12 @@ from functools import cmp_to_key
 # The architectures dyld.held_ladder prefers, in its order. See the docstring.
 PREFERRED = ("armv7", "armv7s", "arm64", "arm64e")
 
-HEADER = "# charon-cache-index 1 release={release} arch={arch} source={source} mtime={mtime} size={size} names={names}\n"
+# `format` is the file's PROMISE, and the order is part of it: format 1 sorted by code point, format 2
+# sorts by BYTE. A file that says 1 is not stale, it is in the old order, and is re-sorted in place
+# (below) rather than re-read from 24.6 GB of cache. That is why the field is in the header and not
+# only in this file: the reader can see it without reading a name.
+HEADER = ("# charon-cache-index 2 format=2 order=byte release={release} arch={arch} source={source} "
+          "mtime={mtime} size={size} names={names}\n")
 
 
 def index_dir():
@@ -123,18 +128,26 @@ def index_file(release):
     return os.path.join(index_dir(), release + ".names.gz")
 
 
-def is_current(release, arch, source):
-    """Whether the index on disk was read from this source at this mtime and size."""
-    path = index_file(release)
-    if not os.path.isfile(path):
-        return False
+def read_header(path):
     try:
         with gzip.open(path, "rt", encoding="utf-8", errors="surrogateescape") as handle:
             first = handle.readline()
     except OSError as error:
-        print("build.py: %s will be rebuilt, it does not read: %s" % (path, error))
+        print("build.py: %s does not read, so it will be rebuilt: %s" % (path, error))
+        return None
+    return dict(part.split("=", 1) for part in first.split() if "=" in part)
+
+
+def is_current(release, arch, source):
+    """Whether the index on disk was read from this source at this mtime and size AND is in the order
+    the current format promises. A file of the right set in the old order is not current, and
+    resorted() fixes it without reading a cache."""
+    path = index_file(release)
+    if not os.path.isfile(path):
         return False
-    fields = dict(part.split("=", 1) for part in first.split() if "=" in part)
+    fields = read_header(path)
+    if not fields or fields.get("format") != "2":
+        return False
     if fields.get("arch") != arch:
         return False
     mtime, size = key_of(source)
@@ -142,11 +155,39 @@ def is_current(release, arch, source):
             and fields.get("source", "").endswith(os.path.basename(source)))
 
 
+def resorted(release, arch, source):
+    """Put an index that holds the right names in the current order, without reading a cache.
+
+    The names are already measured -- that is what the mtime and size in the header say -- so only the
+    ORDER is wrong, and re-reading 24.6 GB to fix a sort would be absurd. This rewrites the file
+    byte-sorted and stamps the current format on it. It is not a rebuild and it does not claim to be
+    one: the same names, in the order the format promises."""
+    path = index_file(release)
+    fields = read_header(path) or {}
+    with gzip.open(path, "rb") as handle:
+        handle.readline()
+        names = {line.rstrip(b"\n") for line in handle if line.strip()}
+    mtime, size = key_of(source)
+    partial = path + ".partial"
+    with gzip.open(partial, "wb", compresslevel=6) as out:
+        out.write(HEADER.format(release=release, arch=arch, source=fields.get("source", source),
+                                mtime=mtime, size=size, names=len(names)).encode("utf-8"))
+        for name in sorted(names):
+            out.write(name + b"\n")
+    os.replace(partial, path)
+    return len(names)
+
+
 def build_one(release, arch, source, force=False):
     """Read one rung once and write its index. Returns (names, seconds) or None when it was current."""
     if not force and is_current(release, arch, source):
         return None
-    mtime, size = key_of(source)
+    if not force and os.path.isfile(index_file(release)):
+        fields = read_header(index_file(release)) or {}
+        if fields.get("mtime") == str(key_of(source)[0]) and fields.get("size") == str(key_of(source)[1]):
+            # The cache has not moved, so the names are measured; only the order is out of date.
+            count = resorted(release, arch, source)
+            return count, 0.0
     started = time.time()
     names = subprocess.run(
         ["xmake", "l", "tools/cache-index/names.lua", source, arch],
@@ -157,9 +198,19 @@ def build_one(release, arch, source, force=False):
     # \x85 U+2028 and U+2029, and U+2028 is a legal character inside a C string that UTF-8 encodes,
     # so splitlines() tears one name into two entries and both are wrong. Measured on the armv7 cache
     # of 6.1.3: names.lua counts 568968 names and splitlines() wrote 568966.
-    # names.lua already sorted and deduplicated them; sorting again is cheap next to the read and
-    # makes the index correct even if that ever changes.
-    lines = sorted(set(text.split("\n")) - {""})
+    #
+    # Sorted BY BYTES, which is the point of the line. sorted() on str sorts by code point, and for a
+    # name that is not valid UTF-8 that is not the order of its bytes: b" \xc2\xa7" (valid UTF-8, one
+    # character) sorted AFTER b" \xa0" (a lone raw byte, a surrogate once decoded), which is the
+    # reverse of the order those bytes are in. The file then claimed to be "sorted" in an order only
+    # this reader agreed with: 26573 of its names carry a non-ASCII character and 5311 a byte that is
+    # not valid UTF-8 at all, and LC_ALL=C sort -c, a C bsearch or a grep pipeline would have read the
+    # whole file as unsorted. Bytes have one order and the index is bytes.
+    #
+    # names.lua already sorted and deduplicated them (by byte, in Lua); sorting again is cheap next
+    # to the read and makes the index correct even if that ever changes.
+    lines = sorted({line for line in text.split("\n") if line},
+                   key=lambda line: line.encode("utf-8", "surrogateescape"))
     os.makedirs(index_dir(), exist_ok=True)
     path = index_file(release)
     partial = path + ".partial"
@@ -208,7 +259,12 @@ def merge(rungs):
     # the next byte. That byte is the offset the index records.
     with open(partial, "wb") as raw:
         out = None
-        for name in sorted(first):
+        # BYTES again, for the same reason as the per-release file, and it matters MORE here: this is
+        # the table the lookup binary searches, so a code-point order under a byte search misplaces
+        # exactly the names that are not valid UTF-8. Sorting the per-release files by byte and leaving
+        # this one by code point gave 3855 of the 9256371 names unanswerable -- measured, and the
+        # difference between the two orders is one comparison per name that is not valid UTF-8.
+        for name in sorted(first, key=lambda n: n.encode("utf-8", "surrogateescape")):
             if not batch:
                 first_name = name
                 # The offset is taken BEFORE the member is written. raw.tell() after closing one is

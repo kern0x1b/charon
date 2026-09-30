@@ -76,10 +76,12 @@ class Merged:
         if not os.path.isfile(index):
             sys.exit("first-rung.py: %s is not there, so %s cannot be read in blocks. Rebuild both: "
                      "python3 tools/cache-index/build.py" % (index, path))
+        # BINARY, for the same reason: a block's first name is bytes, and decoding it to compare it
+        # against a decoded query is how the two orders came to disagree.
         self.offsets, self.firsts = [], []
-        with open(index, "rt", encoding="utf-8", errors="surrogateescape") as handle:
+        with open(index, "rb") as handle:
             for line in handle:
-                offset, _, first = line.rstrip("\n").partition("\t")
+                offset, _, first = line.rstrip(b"\n").partition(b"\t")
                 if first:
                     self.offsets.append(int(offset))
                     self.firsts.append(first)
@@ -106,15 +108,27 @@ class Merged:
                         break
                     pieces.append(engine.decompress(chunk))
                     done = engine.eof
+            # NAMES ARE BYTES, all the way through. A C string section holds arbitrary bytes: of the
+            # 9256371 names, 26573 carry a non-ASCII character and 5311 a byte that is not valid UTF-8
+            # at all. Decoding them made the ORDER depend on the decoder: " \xc2\xa7" (valid
+            # UTF-8, one character) sorted AFTER " \xa0" (a lone raw byte, a surrogate on decode),
+            # which is the reverse of the order their bytes have. The file was then sorted in
+            # code-point order while calling itself sorted, and any consumer that compared bytes --
+            # LC_ALL=C sort -c, a C bsearch, a grep pipeline -- would have seen an unsorted file.
+            # Bytes have one order, and it is the one the file is written in.
             names, rungs = [], []
-            for line in b"".join(pieces).decode("utf-8", "surrogateescape").split("\n"):
+            for line in b"".join(pieces).split(b"\n"):
                 # rpartition, not partition: a NAME can contain a tab (a C string with one in it does),
                 # and a rung never can, so the separator is the LAST tab. partition split 2 of the 500
                 # sampled names at a tab inside the name and answered NONE for names the table holds.
-                name, _, rung = line.rpartition("\t")
+                name, _, rung = line.rpartition(b"\t")
                 if name:
+                    # The NAME stays bytes; the RUNG is a release string, ASCII by construction (it
+                    # is a directory name under ~/.charon/dyld), so it is decoded here and the tool's
+                    # answers stay str. That keeps get()'s return type what the output path and the
+                    # self-test expect, and only the part that can hold arbitrary bytes stays bytes.
                     names.append(name)
-                    rungs.append(rung)
+                    rungs.append(rung.decode("ascii", "surrogateescape"))
             self._cache_offset = self.offsets[index]
             self._cache_names, self._cache_rungs = names, rungs
         return self._cache_names, self._cache_rungs
@@ -149,20 +163,32 @@ class Merged:
         return out
 
 
+def as_bytes(name):
+    """The BYTES a name was written as.
+
+    sys.argv and sys.stdin are decoded with the locale's encoding and surrogateescape, so
+    os.fsencode() puts the original bytes back. That is the whole bridge: the index is bytes, and
+    this is where a name typed or piped by a human becomes the bytes to search for. Without it a
+    lookup under a non-UTF-8 locale would compare the locale's decoding of the query against the
+    index's UTF-8 decoding of the same name and find nothing."""
+    return os.fsencode(name)
+
+
 def collect(args):
-    names = list(args.name)
+    names = [as_bytes(name) for name in args.name]
     if args.stdin or not names:
         if sys.stdin.isatty() and not args.stdin:
             sys.exit("first-rung.py: give names as arguments, or on stdin")
-        for line in sys.stdin:
+        # sys.stdin.buffer, not sys.stdin: a name is bytes and the decoder must not get a turn.
+        for raw in sys.stdin.buffer:
             # The line verbatim, less its newline. NOT .strip(): a C string section holds names with
             # a leading or trailing space -- measured, " offset %d]" and "goldDict: " are both in the
             # table and both in this table's 9.2 million names -- and stripping one asks a different
             # question and answers NONE for a name that is there. A line that is empty, or that starts
             # a comment, is still skipped, so a list file reads directly: indent it and you are asking
             # about a name with a leading space, which is what you typed.
-            name = line.rstrip("\n").rstrip("\r")
-            if name and not name.startswith("#"):
+            name = raw.rstrip(b"\n").rstrip(b"\r")
+            if name and not name.startswith(b"#"):
                 names.append(name)
     return names
 
@@ -187,7 +213,7 @@ def self_test():
     # the tool runs. dict.get(name) with no default answers None, and a control comparing that to the
     # string "NONE" fails for a reason that has nothing to do with the name.
     def lookup(name):
-        return have.get(name, "NONE")
+        return have.get(as_bytes(name), "NONE")
     failures = []
 
     # EVERY check goes through table.get(), which is the code the tool answers with. An earlier
@@ -196,7 +222,7 @@ def self_test():
     # member out, and nothing in the control could see it. A control that does not run the tool's own
     # lookup is not a control.
     def check(label, name, expected):
-        got = table.get(name)
+        got = table.get(as_bytes(name))
         mark = "ok  " if got == expected else "FAIL"
         if got != expected:
             failures.append(label)
@@ -220,7 +246,7 @@ def self_test():
     # The bare and mangled spellings of one class must agree, because names.lua emits both from the
     # same class name and a lookup that answered one and not the other would send someone to the
     # wrong place to check.
-    both = [name for name in ("NSFileManager", "_OBJC_CLASS_$_NSFileManager") if name in have]
+    both = [name for name in ("NSFileManager", "_OBJC_CLASS_$_NSFileManager") if as_bytes(name) in have]
     check("both spellings present", "NSFileManager" if len(both) == 2 else "NSFileManager (one spelling only)",
           lookup("NSFileManager"))
     if len(both) != 2:
@@ -229,9 +255,10 @@ def self_test():
     # is not there.
     rungs_held = {rung[0] for rung in build.ladder(
         os.path.join(os.getenv("CHARON_HOME") or os.path.join(os.getenv("HOME"), ".charon"), "dyld"))}
-    strays = {rung for rung in have.values() if rung not in rungs_held}
+    strays = {rung for rung in have.values() if rung not in rungs_held}  # rungs are str, not bytes
     if strays:
-        print("FAIL the table names rungs the ladder does not hold: %s" % ", ".join(sorted(strays)))
+        print("FAIL the table names rungs the ladder does not hold: %s"
+              % ", ".join(sorted(rung.decode("ascii") for rung in strays)))
         failures.append("stray rungs")
     else:
         print("ok   every rung in the table is held (%d rungs)" % len(rungs_held))
@@ -280,12 +307,19 @@ def main():
         # for the whole run: read per name it would be a decompression per (name, rung) pair, which is
         # the same shape of cost this tool exists to remove.
         started = time.time()
-        held = {release: _names_of(release) for release, _, _ in _ladder()}
+        order = _ladder_order()
+        held = {release: _names_of(release) for release in order}
         print("first-rung.py: read %d per-release index(es) in %.2fs" % (len(held), time.time() - started),
               file=sys.stderr)
-        for name in args.rungs:
-            found = [release for release in _ladder_order() if name in held.get(release, ())]
-            print("%s\t%s" % (name, ",".join(found) if found else "NONE"))
+        # `order` is built ONCE, above. It was called inside this loop, which re-read the ladder
+        # directory once per name, and the function it called was _ladder_order while this line said
+        # _ladder -- so every --rungs run died with a NameError before it printed anything.
+        out = sys.stdout.buffer
+        for raw in args.rungs:
+            name = as_bytes(raw)
+            found = [release for release in order if name in held.get(release, ())]
+            out.write(name + b"\t" + (",".join(found) if found else "NONE").encode("ascii") + b"\n")
+        out.flush()
         return
 
     table = Merged(os.path.join(index_dir(), MERGED))
@@ -299,8 +333,13 @@ def main():
     # for twice is answered from the sorted list rather than looked up twice.
     order = sorted(set(wanted))
     answered = {name: table.get(name) for name in order}
+    # stdout.buffer, so the name goes out as the bytes it came in as. print() would hand it to the
+    # stream's decoder first, and on a terminal that renders a lone byte as U+FFFD, which is a
+    # different name from the one that was asked about.
+    out = sys.stdout.buffer
     for name in wanted:
-        print("%s\t%s" % (name, answered[name]))
+        out.write(name + b"\t" + answered[name].encode("ascii") + b"\n")
+    out.flush()
     if args.timing:
         print("first-rung.py: %d name(s) in %.3fs" % (len(wanted), time.time() - started),
               file=sys.stderr)
@@ -313,10 +352,14 @@ def _ladder_order():
 
 
 def _names_of(release):
+    """A rung's names as BYTES, the same thing build.py wrote. Binary, so a name with a high byte is
+    the bytes the index holds and not a decoding of them. The header line is skipped, and a line that
+    is only whitespace is not a name (292 of them in the cache of 6.1.3, every one of which
+    `strings -a` reports as part of a longer run)."""
     path = os.path.join(index_dir(), release + ".names.gz")
-    with gzip.open(path, "rt", encoding="utf-8", errors="surrogateescape") as handle:
+    with gzip.open(path, "rb") as handle:
         handle.readline()
-        return {line.rstrip("\n") for line in handle if line.strip()}
+        return {line.rstrip(b"\n") for line in handle if line.strip()}
 
 
 if __name__ == "__main__":
