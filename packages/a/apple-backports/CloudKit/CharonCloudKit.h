@@ -185,6 +185,7 @@ extern CKShareMetadata *_Nullable CharonCKShareMetadataWithDocument(NSDictionary
 extern NSString *CharonCKDatabaseRoot(CKDatabase *database);
 extern NSString *CharonCKZonePath(CKRecordZoneID *zoneID);
 extern NSDictionary *CharonCKRecordIDDocument(CKRecordID *recordID);
+extern CKRecordZoneID *_Nullable CharonCKZoneIDFromDocument(NSDictionary *_Nullable json);
 extern NSDictionary *CharonCKZoneIDDocument(CKRecordZoneID *zoneID);
 extern CKRecordID *_Nullable CharonCKRecordIDFromDocument(NSDictionary *_Nullable json);
 
