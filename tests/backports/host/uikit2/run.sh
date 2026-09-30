@@ -19,6 +19,11 @@ if [ -n "${CHARON_DATA_ASSET_CATALOG:-}" ] && [ -f "$CHARON_DATA_ASSET_CATALOG" 
     assetutil --info "$CHARON_DATA_ASSET_CATALOG" > "${TMPDIR:-/tmp}/charon-dataassets.json"
 fi
 
+# UIKIT2_ONLY narrows the run to the named groups, space-separated.  Empty - the default - runs all of
+# them, so an ordinary invocation is unaffected.  It is for the per-group controls: the suite is over ten
+# minutes, and a control that waits for every other group before it reaches its own never runs at all.
+only=${UIKIT2_ONLY:-}
+
 . "$here/renames.sh"
 prefixer="$here/../prefix_selectors.py"
 
@@ -106,6 +111,9 @@ prefixed_build() {
 prefixed_group() {
     # $1: group name, $2: sources, $3: test source
     name=$1
+    if [ -n "$only" ]; then
+        case " $only " in *" $name "*) : ;; *) return 0 ;; esac
+    fi
     prefixed_build "$name" "$2" || return 0
     test=$3
     xcrun clang $target -fobjc-arc -Wall -I"$harness" "$here/$test" "$harness/check.m" $built $frameworks -o "$build/$name-test"
@@ -139,6 +147,9 @@ group() {
     # prefix_selectors.py derives the carried selectors from the objects, so nothing is lost by not passing one,
     # and every group line in this file - main's own included - passes three arguments.
     name=$1
+    if [ -n "$only" ]; then
+        case " $only " in *" $name "*) : ;; *) return 0 ;; esac
+    fi
     files=$2
     test=$3
     objects=""
@@ -163,6 +174,9 @@ group() {
 windowed() {
     # $1: group name, $2: sources, $3: test source; the test runs in an application with a window, against the system
     name=$1
+    if [ -n "$only" ]; then
+        case " $only " in *" $name "*) : ;; *) return 0 ;; esac
+    fi
     files=$2
     test=$3
     objects=""
@@ -496,6 +510,8 @@ done
 control "--no-plant" 2
 control "no such key" 2
 
+
+group contentunavailable "UIContentUnavailableProperties.m" contentunavailable_test.m
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"

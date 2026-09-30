@@ -896,10 +896,10 @@
    "kind": "class",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIContentUnavailable17.md",
+   "effect": "the port's own copy of the class, and the case in tests/backports/host/uikit2/contentunavailable_test.m reads every property of both copies against the system's",
+   "source": "the host's own UIKit under Mac Catalyst, read by the same case"
   },
   {
    "api": "UIContentUnavailableConfiguration",
@@ -907,7 +907,7 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class's button and secondaryButton are UIButtonConfiguration, which this library does not carry, and the view is built over this one",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 26, Mac Catalyst, UIKit"
   },
@@ -916,30 +916,30 @@
    "kind": "class",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIContentUnavailable17.md",
+   "effect": "the port's own copy of the class, and the case in tests/backports/host/uikit2/contentunavailable_test.m reads every property of both copies against the system's",
+   "source": "the host's own UIKit under Mac Catalyst, read by the same case"
   },
   {
    "api": "UIContentUnavailableImageProperties",
    "kind": "class",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIContentUnavailable17.md",
+   "effect": "the port's own copy of the class, and the case in tests/backports/host/uikit2/contentunavailable_test.m reads every property of both copies against the system's",
+   "source": "the host's own UIKit under Mac Catalyst, read by the same case"
   },
   {
    "api": "UIContentUnavailableTextProperties",
    "kind": "class",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "facts": "facts/UIKit/UIContentUnavailable17.md",
+   "effect": "the port's own copy of the class, and the case in tests/backports/host/uikit2/contentunavailable_test.m reads every property of both copies against the system's",
+   "source": "the host's own UIKit under Mac Catalyst, read by the same case"
   },
   {
    "api": "UIContentUnavailableView",
@@ -947,7 +947,7 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "it is built over UIContentUnavailableConfiguration, whose button properties are UIButtonConfiguration, which this library does not carry",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 26, Mac Catalyst, UIKit"
   },
