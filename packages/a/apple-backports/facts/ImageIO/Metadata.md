@@ -164,3 +164,14 @@ memory the release was already keeping. That is the registry README's own case f
 scheduler it does not run". It is built, and it logs one line the first time it is called, which
 `tests/backports/host/imageio-metadata/run.sh` counts in the port's own stderr and which a planted change
 to that line empties, so the claim is checked rather than asserted.
+
+### One limitation, stated because a caller can trip over it
+
+`CGImageMetadataTagGetTypeID` answers `CFDictionaryGetTypeID`. iOS 6's SDK ships no `CFRuntime.h` and no
+`CFTypeRegisterStruct`, so a new CF type cannot be registered the way one is on a newer release, and the tag
+this library makes is a dictionary carrying a marker. Every entry point here therefore checks the marker as
+well as the type id, and refuses an object without it - which is why the three `PORTONLY foreign-*` records
+answer NULL. The consequence for a caller is that the type id alone does not tell a tag from a dictionary
+of its own: `CFGetTypeID` on an `NSDictionary` the caller made answers the same number. This is a
+limitation of the release's public CF surface, not a shortcut in the check, and it is written here so that a
+caller deciding between `CGImageMetadataTagGetTypeID` and the marker knows what the number is worth.
