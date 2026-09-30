@@ -63,38 +63,15 @@ static void recordRelations(CertificateRecorder record, NSString *who)
 //   2. a date and the clock agree - the SRAbsoluteTime a date names is the instant the date names;
 //   3. and two dates made from two readings are never in the wrong order.
 //
-// WHICH SELECTORS, and why it differs by side: the port's three are called Charon... in
-// NSDate+SensorKit14.m, because one binary carries the port's build and the host's own and neither may
-// shadow the other - the same reason rename.py renames the four time functions. The host's own build has
-// all three, which the suite measured by asking the class object: an earlier probe of mine said it had
-// not, having used class_getInstanceMethod, which finds an INSTANCE method and so never sees the class
-// one. The present relations are asked of both builds and both must answer.
-static SEL CharonSelWithDate(void)
-{
-#ifdef CHARON_SENSORKIT_PORT
-    return @selector(charon_dateWithSRAbsoluteTime:);
-#else
-    return @selector(dateWithSRAbsoluteTime:);
-#endif
-}
+// THE THREE SELECTORS ARE SPELLED THE SDK'S WAY ON BOTH SIDES, and rename.py renames them for the
+// PORT'S half only - the same mechanism the four time functions use, and for the same reason: one binary
+// carries this category and the host's own SensorKit, and neither may shadow the other. So the case file
+// names one set and each build answers with its own, and a `#ifdef` is not needed anywhere.
+static SEL CharonSelWithDate(void) { return @selector(dateWithSRAbsoluteTime:); }
 
-static SEL CharonSelInitWithDate(void)
-{
-#ifdef CHARON_SENSORKIT_PORT
-    return @selector(charon_initWithSRAbsoluteTime:);
-#else
-    return @selector(initWithSRAbsoluteTime:);
-#endif
-}
+static SEL CharonSelInitWithDate(void) { return @selector(initWithSRAbsoluteTime:); }
 
-static SEL CharonSelAbsolute(void)
-{
-#ifdef CHARON_SENSORKIT_PORT
-    return @selector(charon_srAbsoluteTime);
-#else
-    return @selector(srAbsoluteTime);
-#endif
-}
+static SEL CharonSelAbsolute(void) { return @selector(srAbsoluteTime); }
 
 static id CharonSendAbsolute(id date)
 {
