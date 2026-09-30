@@ -232,9 +232,24 @@ static id charon_session_delegate(NSURLSession *session)
     }
 }
 
-static BOOL charon_delegate_responds(NSURLSession *session, SEL selector)
+/* A task's own delegate answers the task-scoped messages in place of the session's, which is what
+   -[NSURLSessionTask setDelegate:] is for (iOS 15.0), and the session's answers the rest. One place
+   decides, so the -respondsToSelector: that guards a send and the send itself cannot disagree about
+   who was asked: a caller that sets one and implements nothing on the session hears nothing at all,
+   which is what the system's own does. */
+static id charon_task_delegate(NSURLSession *session, NSURLSessionTask *task)
 {
-    return [charon_session_delegate(session) respondsToSelector:selector];
+    if (task) {
+        id<NSURLSessionTaskDelegate> own = [task delegate];
+        if (own)
+            return own;
+    }
+    return charon_session_delegate(session);
+}
+
+static BOOL charon_delegate_responds(NSURLSession *session, NSURLSessionTask *task, SEL selector)
+{
+    return [charon_task_delegate(session, task) respondsToSelector:selector];
 }
 
 static void charon_session_pump(NSURLSession *session)
@@ -709,7 +724,7 @@ static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
             task->_state = NSURLSessionTaskStateCompleted;
             task->_error = error;
         }
-        id metricsDelegate = charon_session_delegate(session);
+        id metricsDelegate = charon_task_delegate(session, task);
         if ([metricsDelegate respondsToSelector:@selector(URLSession:task:didFinishCollectingMetrics:)])
             [metricsDelegate URLSession:session task:task didFinishCollectingMetrics:metrics];
         if (dataHandler) {
@@ -718,7 +733,7 @@ static void charon_task_complete_event(NSURLSessionTask *task, NSError *error)
             if (!handlerCalled)
                 downloadHandler(nil, nil, error);
         } else {
-            id delegate = charon_session_delegate(session);
+            id delegate = charon_task_delegate(session, task);
             if ([delegate respondsToSelector:@selector(URLSession:task:didCompleteWithError:)])
                 [delegate URLSession:session task:task didCompleteWithError:error];
         }
@@ -781,12 +796,12 @@ static void charon_download_finished(NSURLSessionTask *task)
     NSURLResponse *response = task->_response;
     CharonDownloadHandler handler = task->_downloadHandler;
     task->_handlerCalled = handler != nil;
-    BOOL notifies = !handler && charon_delegate_responds(session, @selector(URLSession:downloadTask:didFinishDownloadingToURL:));
+    BOOL notifies = !handler && charon_delegate_responds(session, task, @selector(URLSession:downloadTask:didFinishDownloadingToURL:));
     charon_session_deliver(session, ^{
         if (handler) {
             handler(location, response, nil);
         } else if (notifies) {
-            id delegate = charon_session_delegate(session);
+            id delegate = charon_task_delegate(session, task);
             [delegate URLSession:session downloadTask:(NSURLSessionDownloadTask *)task didFinishDownloadingToURL:location];
         }
         [[NSFileManager defaultManager] removeItemAtURL:location error:NULL];
@@ -809,10 +824,10 @@ static void charon_data_finished(NSURLSessionTask *task)
     NSCachedURLResponse *proposal = task->_proposedCache;
     task->_proposedCache = nil;
     NSURLRequest *key = task->_currentRequest;
-    if (proposal && cache && !task->_dataHandler && charon_delegate_responds(session, @selector(URLSession:dataTask:willCacheResponse:completionHandler:))) {
+    if (proposal && cache && !task->_dataHandler && charon_delegate_responds(session, task, @selector(URLSession:dataTask:willCacheResponse:completionHandler:))) {
         charon_task_await(task);
         charon_session_deliver(session, ^{
-            id delegate = charon_session_delegate(session);
+            id delegate = charon_task_delegate(session, task);
             [delegate URLSession:session dataTask:(NSURLSessionDataTask *)task willCacheResponse:proposal completionHandler:^(NSCachedURLResponse *chosen) {
                 charon_perform(^{
                     if (!charon_task_resolve(task))
@@ -886,9 +901,9 @@ static void charon_task_become_download(NSURLSessionTask *task)
         charon_task_finish(download, charon_task_error(download, NSURLErrorCannotCreateFile, @"cannot create file", nil));
         return;
     }
-    if (charon_delegate_responds(session, @selector(URLSession:dataTask:didBecomeDownloadTask:))) {
+    if (charon_delegate_responds(session, task, @selector(URLSession:dataTask:didBecomeDownloadTask:))) {
         charon_session_deliver(session, ^{
-            id delegate = charon_session_delegate(session);
+            id delegate = charon_task_delegate(session, task);
             [delegate URLSession:session dataTask:(NSURLSessionDataTask *)task didBecomeDownloadTask:download];
             @synchronized (task) {
                 task->_state = NSURLSessionTaskStateCompleted;
@@ -929,9 +944,9 @@ static void charon_download_response(NSURLSessionTask *task, NSURLResponse *resp
             task->_countOfBytesReceived = offset;
             task->_countOfBytesExpectedToReceive = total;
         }
-        if (!task->_downloadHandler && charon_delegate_responds(session, @selector(URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:))) {
+        if (!task->_downloadHandler && charon_delegate_responds(session, task, @selector(URLSession:downloadTask:didResumeAtOffset:expectedTotalBytes:))) {
             charon_session_deliver(session, ^{
-                id delegate = charon_session_delegate(session);
+                id delegate = charon_task_delegate(session, task);
                 [delegate URLSession:session downloadTask:(NSURLSessionDownloadTask *)task didResumeAtOffset:offset expectedTotalBytes:total];
             });
         }
@@ -964,11 +979,11 @@ static void charon_task_response(NSURLSessionTask *task, NSURLResponse *response
         charon_download_response(task, response);
         return;
     }
-    if (task->_dataHandler || !charon_delegate_responds(session, @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)))
+    if (task->_dataHandler || !charon_delegate_responds(session, task, @selector(URLSession:dataTask:didReceiveResponse:completionHandler:)))
         return;
     charon_task_await(task);
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         [delegate URLSession:session dataTask:(NSURLSessionDataTask *)task didReceiveResponse:response completionHandler:^(NSURLSessionResponseDisposition disposition) {
             charon_perform(^{
                 if (!charon_task_resolve(task))
@@ -1002,12 +1017,12 @@ static void charon_task_data(NSURLSessionTask *task, NSData *data)
             charon_task_finish(task, charon_task_error(task, NSURLErrorCannotWriteToFile, @"cannot write to file", nil));
             return;
         }
-        if (!task->_downloadHandler && charon_delegate_responds(session, @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:))) {
+        if (!task->_downloadHandler && charon_delegate_responds(session, task, @selector(URLSession:downloadTask:didWriteData:totalBytesWritten:totalBytesExpectedToWrite:))) {
             int64_t written = data.length;
             charon_session_deliver(session, ^{
                 if (task.state == NSURLSessionTaskStateCanceling)
                     return;
-                id delegate = charon_session_delegate(session);
+                id delegate = charon_task_delegate(session, task);
                 [delegate URLSession:session downloadTask:(NSURLSessionDownloadTask *)task didWriteData:written totalBytesWritten:received totalBytesExpectedToWrite:expected];
             });
         }
@@ -1019,12 +1034,12 @@ static void charon_task_data(NSURLSessionTask *task, NSData *data)
         [task->_receivedData appendData:data];
         return;
     }
-    if (charon_delegate_responds(session, @selector(URLSession:dataTask:didReceiveData:))) {
+    if (charon_delegate_responds(session, task, @selector(URLSession:dataTask:didReceiveData:))) {
         NSData *chunk = [data copy];
         charon_session_deliver(session, ^{
             if (task.state == NSURLSessionTaskStateCanceling)
                 return;
-            id delegate = charon_session_delegate(session);
+            id delegate = charon_task_delegate(session, task);
             [delegate URLSession:session dataTask:(NSURLSessionDataTask *)task didReceiveData:chunk];
         });
     }
@@ -1052,10 +1067,10 @@ static void charon_task_sent(NSURLSessionTask *task, int64_t written, int64_t to
             task->_countOfBytesExpectedToSend = expectedByConnection;
         expected = task->_countOfBytesExpectedToSend;
     }
-    if (!charon_delegate_responds(session, @selector(URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:)))
+    if (!charon_delegate_responds(session, task, @selector(URLSession:task:didSendBodyData:totalBytesSent:totalBytesExpectedToSend:)))
         return;
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         [delegate URLSession:session task:task didSendBodyData:written totalBytesSent:total totalBytesExpectedToSend:expected];
     });
 }
@@ -1080,13 +1095,13 @@ static NSURLRequest *charon_redirect_request(NSURLRequest *current, NSURL *url, 
 static void charon_task_request_body_stream(NSURLSessionTask *task, void (^then)(void))
 {
     NSURLSession *session = task->_session;
-    if (!charon_delegate_responds(session, @selector(URLSession:task:needNewBodyStream:))) {
+    if (!charon_delegate_responds(session, task, @selector(URLSession:task:needNewBodyStream:))) {
         charon_task_finish(task, charon_task_error(task, NSURLErrorRequestBodyStreamExhausted, @"request body stream exhausted", nil));
         return;
     }
     charon_task_await(task);
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         [delegate URLSession:session task:task needNewBodyStream:^(NSInputStream *stream) {
             charon_perform(^{
                 if (!charon_task_resolve(task))
@@ -1132,13 +1147,13 @@ static void charon_task_redirect(NSURLSessionTask *task, NSURLRequest *next, NSU
         charon_task_finish(task, charon_task_error(task, NSURLErrorHTTPTooManyRedirects, @"too many HTTP redirects", response.URL));
         return;
     }
-    if (!charon_delegate_responds(session, @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:))) {
+    if (!charon_delegate_responds(session, task, @selector(URLSession:task:willPerformHTTPRedirection:newRequest:completionHandler:))) {
         charon_task_follow(task, next);
         return;
     }
     charon_task_await(task);
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         [delegate URLSession:session task:task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:next completionHandler:^(NSURLRequest *chosen) {
             charon_perform(^{
                 if (!charon_task_resolve(task))
@@ -1194,7 +1209,7 @@ static void charon_challenge_default(NSURLSessionTask *task, NSURLAuthentication
 static void charon_task_challenge(NSURLSessionTask *task, NSURLAuthenticationChallenge *challenge)
 {
     NSURLSession *session = task->_session;
-    id delegate = charon_session_delegate(session);
+    id delegate = charon_task_delegate(session, task);
     BOOL taskLevel = [delegate respondsToSelector:@selector(URLSession:task:didReceiveChallenge:completionHandler:)];
     BOOL sessionLevel = [delegate respondsToSelector:@selector(URLSession:didReceiveChallenge:completionHandler:)] && charon_is_session_challenge(challenge);
     if (!taskLevel && !sessionLevel) {
@@ -1231,7 +1246,7 @@ static void charon_task_challenge(NSURLSessionTask *task, NSURLAuthenticationCha
         });
     };
     charon_session_deliver(session, ^{
-        id current = charon_session_delegate(session);
+        id current = charon_task_delegate(session, task);
         if (sessionLevel)
             [current URLSession:session didReceiveChallenge:challenge completionHandler:decided];
         else
@@ -1429,7 +1444,7 @@ static void charon_task_notify_waiting(NSURLSessionTask *task)
     task->_connectivityNotified = YES;
     NSURLSession *session = task->_session;
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         if ([delegate respondsToSelector:@selector(URLSession:taskIsWaitingForConnectivity:)])
             [delegate URLSession:session taskIsWaitingForConnectivity:task];
     });
@@ -1473,7 +1488,7 @@ static void charon_task_await_delegate_begin(NSURLSessionTask *task, void (^proc
     NSURLSession *session = task->_session;
     NSURLRequest *request = task->_currentRequest;
     charon_session_deliver(session, ^{
-        id delegate = charon_session_delegate(session);
+        id delegate = charon_task_delegate(session, task);
         if (![delegate respondsToSelector:@selector(URLSession:task:willBeginDelayedRequest:completionHandler:)]) {
             charon_perform(proceed);
             return;
@@ -1641,7 +1656,7 @@ static void charon_task_start(NSURLSessionTask *task)
         return nil;
     NSURLSession *session = task->_session;
     NSURLCache *cache = session->_configuration.URLCache;
-    BOOL asks = !task->_dataHandler && charon_delegate_responds(session, @selector(URLSession:dataTask:willCacheResponse:completionHandler:));
+    BOOL asks = !task->_dataHandler && charon_delegate_responds(session, task, @selector(URLSession:dataTask:willCacheResponse:completionHandler:));
     if (!asks && cache == [NSURLCache sharedURLCache])
         return cachedResponse;
     if (cache)
@@ -1659,7 +1674,7 @@ static void charon_task_start(NSURLSessionTask *task)
     if (task->_body == CharonTaskBodyFile)
         return [NSInputStream inputStreamWithURL:task->_bodyFile];
     NSURLSession *session = task->_session;
-    id delegate = charon_session_delegate(session);
+    id delegate = charon_task_delegate(session, task);
     NSInputStream *stream = nil;
     if ([delegate respondsToSelector:@selector(URLSession:task:needNewBodyStream:)]) {
         CharonURLSessionStreamReply *reply = [[CharonURLSessionStreamReply alloc] init];
