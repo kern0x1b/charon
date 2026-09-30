@@ -28,6 +28,54 @@
 - (NSData *)serverChangeToken;
 @end
 
+// The members of a share's metadata that arrived after the 16.4 header this package builds
+// against: the URL the share is under, the record of the hierarchy's root, and the owner and the
+// status and role of the participant. The SDK's own `share` property is a CKShare of iOS 15, so the
+// ivar is named apart from it and never read as that.
+// A user identity, a participant and a lookup are values the service fills in and the port keeps:
+// there is no initializer of any of the three that a caller may use, so what the service sent is the
+// only thing that can build one.
+@interface CKUserIdentity (CharonCKBuilding)
+@property (nonatomic, copy, nullable) CKRecordID *userRecordID;
+@property (nonatomic, assign) BOOL hasiCloudAccount;
+@property (nonatomic, copy, nullable) CKUserIdentityLookupInfo *lookupInfo;
+@property (nonatomic, copy, nullable) NSArray<NSString *> *contactIdentifiers;
+@end
+
+@interface CKShareParticipant (CharonCKBuilding)
+@property (nonatomic, copy, nullable) CKUserIdentity *userIdentity;
+@property (nonatomic, copy, nullable) NSString *participantID;
+@end
+
+// A user identity and a participant are values the service fills in and the SDK marks unbuildable
+// by a caller, and a share's metadata is one too - so all three are made here, and the one
+// initializer declared is the port's own. This is the fourth port-declared initialiser the
+// coordinator has to re-measure the lift's sets for, after
+// -[CKSubscription initWithSubscriptionID:], -[CKNotificationID initWithNotificationName:object:]
+// and -[CKShareParticipant initWithType:].
+@interface CKUserIdentity (CharonCKBuilding)
+- (instancetype)charon_identity;
+@end
+
+@interface CKShareMetadata (CharonCKBuilding)
+- (instancetype)initWithRootRecordID:(CKRecordID *)rootRecordID
+                  containerIdentifier:(nullable NSString *)containerIdentifier
+                             shareURL:(NSURL *)shareURL
+                      participantType:(CKShareParticipantType)participantType
+                           permission:(CKShareParticipantPermission)permission;
+
+
+@property (nonatomic, copy, nullable) NSURL *shareURL;
+@property (nonatomic, copy, nullable) CKRecordID *hierarchicalRootRecordID;
+@property (nonatomic, copy, nullable) CKUserIdentity *ownerIdentity;
+@property (nonatomic, assign) CKShareParticipantAcceptanceStatus participantStatus;
+@property (nonatomic, assign) CKShareParticipantRole participantRole;
+@end
+
+// A CKUserIdentity, a CKShareParticipant and a CKLookupInfo are values the service fills in, so
+// their state is the port's own and is declared here rather than synthesized: the SDK declares the
+// properties readonly and no initializer of any of the three that a caller may use.
+
 @interface CKSubscription (CharonCKBuilding)
 - (instancetype)initWithSubscriptionID:(CKSubscriptionID)subscriptionID;
 @end

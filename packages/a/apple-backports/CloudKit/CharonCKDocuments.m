@@ -261,3 +261,81 @@ static NSOperationQueue *CharonCKQueue(void)
 }
 
 @end
+
+// MARK: - The sharing documents
+//
+// The service's own answers for a user identity, a lookup, a participant and a share's metadata.
+// These are the only way any of the four is built: a share's metadata in particular is never
+// instantiated by an application, and a user identity is only ever the service's answer to a lookup.
+
+CKUserIdentity *CharonCKUserIdentityWithDocument(NSDictionary *document)
+{
+    if (![document isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    // Measured: the host answers +[CKUserIdentity new] with a user identity, but the SDK marks both
+    // +new and -init unavailable, so the value the service sent is made through the port's own.
+    CKUserIdentity *identity = [[CKUserIdentity alloc] charon_identity];
+    CKRecordID *recordID = CharonCKRecordIDFromDocument(document[@"userRecordID"]);
+    if (recordID) {
+        identity.userRecordID = recordID;
+    }
+    identity.hasiCloudAccount = [document[@"hasiCloudAccount"] boolValue];
+    if ([document[@"lookupInfo"] isKindOfClass:[NSDictionary class]]) {
+        identity.lookupInfo = CharonCKLookupInfoWithDocument(document[@"lookupInfo"]);
+    }
+    if ([document[@"contactIdentifiers"] isKindOfClass:[NSArray class]]) {
+        identity.contactIdentifiers = document[@"contactIdentifiers"];
+    }
+    return identity;
+}
+
+CKUserIdentityLookupInfo *CharonCKLookupInfoWithDocument(NSDictionary *document)
+{
+    if (![document isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    if ([document[@"email"] isKindOfClass:[NSString class]]) {
+        return [[CKUserIdentityLookupInfo alloc] initWithEmailAddress:document[@"email"]];
+    }
+    if ([document[@"phoneNumber"] isKindOfClass:[NSString class]]) {
+        return [[CKUserIdentityLookupInfo alloc] initWithPhoneNumber:document[@"phoneNumber"]];
+    }
+    CKRecordID *recordID = CharonCKRecordIDFromDocument(document[@"userRecordID"]);
+    return recordID ? [[CKUserIdentityLookupInfo alloc] initWithUserRecordID:recordID] : nil;
+}
+
+CKShareParticipant *CharonCKShareParticipantWithDocument(NSDictionary *document)
+{
+    if (![document isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    CKShareParticipant *participant = [[CKShareParticipant alloc] initWithType:CKShareParticipantTypeOwner];
+    participant.userIdentity = CharonCKUserIdentityWithDocument(document[@"userIdentity"]);
+    if ([document[@"participantID"] isKindOfClass:[NSString class]]) {
+        participant.participantID = document[@"participantID"];
+    }
+    return participant;
+}
+
+CKShareMetadata *CharonCKShareMetadataWithDocument(NSDictionary *document, CKContainer *container)
+{
+    if (![document isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    }
+    NSString *url = [document[@"shareURL"] isKindOfClass:[NSString class]] ? document[@"shareURL"] : nil;
+    CKRecordID *root = CharonCKRecordIDFromDocument(document[@"rootRecordID"]);
+    if (!url || !root) {
+        return nil;
+    }
+    CKShareMetadata *metadata = [[CKShareMetadata alloc] initWithRootRecordID:root
+                                                         containerIdentifier:container.containerIdentifier
+                                                                    shareURL:[NSURL URLWithString:url]
+                                                             participantType:CKShareParticipantTypeOwner
+                                                                  permission:CKShareParticipantPermissionReadWrite];
+    metadata.ownerIdentity = CharonCKUserIdentityWithDocument(document[@"ownerIdentity"]);
+    if ([document[@"hierarchicalRootRecordID"] isKindOfClass:[NSDictionary class]]) {
+        metadata.hierarchicalRootRecordID = CharonCKRecordIDFromDocument(document[@"hierarchicalRootRecordID"]);
+    }
+    return metadata;
+}

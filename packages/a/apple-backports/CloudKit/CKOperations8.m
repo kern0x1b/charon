@@ -25,7 +25,7 @@
 // The end of an operation, and the name the port uses for it: this release keeps NSOperation's own
 // -finish private, so an operation of this package ends through a name of its own and the queue is
 // released by the one below.
-@interface CKOperation (CharonCKRunning)
+@interface CKOperation (CharonCKShared)
 - (void)charon_finish;
 @end
 

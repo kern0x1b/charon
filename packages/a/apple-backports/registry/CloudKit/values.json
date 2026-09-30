@@ -1082,6 +1082,56 @@
     "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
     "facts": "facts/CloudKit/Values.md",
     "minimum": "6.0"
+  },
+  {
+    "api": "CKDiscoverUserIdentitiesOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "users/discover with the email, the phone number or the record identifier of each lookup; an identity the service refused arrives as that item's own error and the operation's is CKErrorPartialFailure with the failures under CKPartialErrorsByItemIDKey; nothing to look up is CKErrorInvalidArguments and no request is made",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKDiscoverAllUserIdentitiesOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "users/lookup with nothing in it, which is how the service answers for every identity a container knows; each is handed to the per-identity block in the order the service gave them",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchShareMetadataOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "shares/metadata with the share URLs, and the root record when -shouldFetchRootRecord says so; a share URL the service could not resolve arrives as that item's own error, and a share's metadata is never instantiated by an application, so this is the only way one is made",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchShareParticipantsOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "users/lookup with the lookups; the participant of a refused lookup arrives as that item's own error, and the deprecated block of iOS 10 is called as well as the iOS 15 one a caller of either has",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKAcceptSharesOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes",
+    "effect": "shares/accept with the URLs of the metadata it was given; a share the service refused to accept arrives as that item's own error, and the accepted share is the one the metadata named",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
   }
   ],
   "framework": "CloudKit"

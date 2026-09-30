@@ -304,6 +304,11 @@
 
 @implementation CKUserIdentity
 
+- (instancetype)charon_identity
+{
+    return [super init];
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<CKUserIdentity: %p; userRecordID=%@, hasiCloudAccount=%d, lookupInfo=%@, contactIdentifiers=%@>",
@@ -338,25 +343,8 @@
 
 #pragma mark - CKShareMetadata
 
-// The members of a share's metadata that arrived after the 16.4 header this package builds against:
-// the URL the share is under, the record of the hierarchy's root, and the owner and the status and
-// role of the participant. The SDK declares `share` as a CKShare, which is iOS 15, so the ivar here
-// is named apart from it and never read as that.
-@interface CKShareMetadata ()
-@property (nonatomic, copy, nullable) NSURL *shareURL;
-@property (nonatomic, copy, nullable) CKRecordID *hierarchicalRootRecordID;
-@property (nonatomic, copy, nullable) CKUserIdentity *ownerIdentity;
-@property (nonatomic, assign) CKShareParticipantAcceptanceStatus participantStatus;
-@property (nonatomic, assign) CKShareParticipantRole participantRole;
-@end
-
 @implementation CKShareMetadata
 
-@synthesize shareURL = _shareURL;
-@synthesize hierarchicalRootRecordID = _hierarchicalRootRecordID;
-@synthesize ownerIdentity = _ownerIdentity;
-@synthesize participantStatus = _participantStatus;
-@synthesize participantRole = _participantRole;
 
 + (instancetype)new
 {

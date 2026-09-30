@@ -123,6 +123,13 @@ extern CKServerChangeToken *_Nullable CharonCKServerTokenFromData(NSData *data);
 // The system's fields of a record, which a caller cannot write and a save must not send.
 extern NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record);
 
+// The sharing values as the service sends them and as the objects above them are made of. A share's
+// metadata is never instantiated by an application, so these are the only way one is built here.
+extern CKUserIdentity *_Nullable CharonCKUserIdentityWithDocument(NSDictionary *document);
+extern CKUserIdentityLookupInfo *_Nullable CharonCKLookupInfoWithDocument(NSDictionary *document);
+extern CKShareParticipant *_Nullable CharonCKShareParticipantWithDocument(NSDictionary *document);
+extern CKShareMetadata *_Nullable CharonCKShareMetadataWithDocument(NSDictionary *document, CKContainer *_Nullable container);
+
 // MARK: - The operations
 //
 // An operation is an NSOperation of the scheduler this package carries, and CKDatabaseOperation adds
@@ -151,6 +158,27 @@ extern NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record);
 // -fetchCurrentUserRecordOperation fetches.
 - (nullable CKRecordID *)currentUserRecordID;
 @end
+
+// What every operation of this package needs and none of them should decide for itself. The base
+// class's own -init refuses, as measured, so this is the set-up a subclass calls; and these are the
+// one request, the one end and the partial-failure rule the whole family shares.
+@interface CKOperation (CharonCKShared)
+- (void)charon_setUp;
+- (void)charon_finish;
+// The per-item failures of a partial answer, and the CKError that carries them under
+// CKPartialErrorsByItemIDKey.
+- (nullable NSError *)partialFailureWithItems:(NSDictionary *)items;
+// One request over the transport, and the operation ends when the answer is in.
+- (void)runMethod:(NSString *)method path:(NSString *)path body:(nullable NSDictionary *)body
+      completion:(void (^)(id _Nullable body, NSError *_Nullable error))completion;
+@end
+
+// The sharing values as the service sends them and as the objects above them are made of. A share's
+// metadata is never instantiated by an application, so these are the only way one is built here.
+extern CKUserIdentity *_Nullable CharonCKUserIdentityWithDocument(NSDictionary *document);
+extern CKUserIdentityLookupInfo *_Nullable CharonCKLookupInfoWithDocument(NSDictionary *document);
+extern CKShareParticipant *_Nullable CharonCKShareParticipantWithDocument(NSDictionary *document);
+extern CKShareMetadata *_Nullable CharonCKShareMetadataWithDocument(NSDictionary *document, CKContainer *_Nullable container);
 
 // MARK: - The paths
 
