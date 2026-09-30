@@ -277,13 +277,19 @@ for the route classes, which is the placement this file describes.
 
 The SDK headers are the authority on what an API is, and a release image is the authority on the value
 a constant holds. `tools/cfconst/declarations.py Class.member…` says what the iOS 26.2 headers declare
-and with which `API_AVAILABLE`, and it is what settled every one of these:
+and with which `API_AVAILABLE` — **and it answers `NOT DECLARED` for a member the header does declare,
+when the header writes the declaration inside the class's own `@interface` block.** Its search is for
+`[-+] (type) Class member`, which matches a redeclaration that names the class and nothing else, so
+`declarations.py HKObject.init` prints `NOT DECLARED` while `HKObject.h:50` of 26.2 reads
+`- (instancetype)init NS_UNAVAILABLE;`. Read the header for a member of that shape; the tool is the
+quick answer for the members it does match, and a `NOT DECLARED` from it is a question, not a finding.
+Every row in the table below was settled by reading the header itself:
 
 | member | the header says |
 | --- | --- |
 | the eight `-init` of `HKObject`, `HKObjectType`, `HKQuantity`, `HKSource`, `HKStatistics`, `HKStatisticsCollection`, `HKCategorySample`, `HKWorkoutEvent` | `- (instancetype)init NS_UNAVAILABLE;` in each of their headers, so a caller cannot call it and the release declares none of its own |
 | `-startWorkoutSession:`, `-endWorkoutSession:`, `-pauseWorkoutSession:`, `-resumeWorkoutSession:` | each carries `API_UNAVAILABLE(ios, …)`; they are the watchOS surface of the class |
-| `+predicateForStatesOfMindWithAssociation:` and its three siblings | declared in the 26.2 header inside `@interface HKQuery (HKStateOfMind)`, with **no** `API_AVAILABLE` on the method or the category, so the row took the class's version - the corpus's `via=class-floor`. The type of each argument, `HKStateOfMindAssociation` and its two siblings, is of iOS 18, and the HealthKit image of the armv7 shared cache holds no such selector, in 8.0, 8.2, 9.0 or 9.3. So they are 18.0's, and they are `absent` here with the group that has them named |
+| `+predicateForStatesOfMindWithAssociation:` and its three siblings | declared in the 26.2 header inside `@interface HKQuery (HKStateOfMind)`, with **no** `API_AVAILABLE` on the method or the category, so the row took the class's version - the corpus's `via=class-floor`. The type of each argument, `HKStateOfMindAssociation` and its two siblings, is `API_AVAILABLE(ios(18.0), …)` in `HKStateOfMind.h`, and `first-rung.py` puts the first held rung carrying the selector at 18.0. So they are 18.0's, their rows say 18.0, and they are `absent` here because this port carries no group of that release |
 | `+workoutWithActivityType:startDate:endDate:duration:totalEnergyBurned:totalDistance:metadata:` | declared, as `@method` and as the definition; the six-argument form beside it is one argument short and **no header declares it**, so it is gone |
 | `-[HKStatisticsCollectionQuery initWithQuantityType:quantitySamplePredicate:options:anchorDate:intervalComponents:]` | declared with exactly those five arguments; the seven-argument form with `initialResultsHandler:` is in **no** header and in none of the three images, so it is gone and the handler comes through the `initialResultsHandler` property, which is declared |
 | `-[HKStatisticsCollection statistics]`, `-sources` | declared in the 16.4 header inside `@interface HKStatisticsCollection`, and the 8.0 image's list of that class does not hold them: the header is the authority on the method, so both are carried, and the image's disagreement is this row's business |
@@ -488,6 +494,39 @@ at all - but it no longer decides **which** class the object comes back as. A mu
 stored kind therefore tests nothing here: the cumulative sample's kind was mutated from 5 to 1 and the
 round trip did not notice. The mutants for the cumulative classes are on the fact each class adds - the
 running total, and the series' own sum - which is what the read has to preserve.
+
+## The one workout-session delegate member, and the two annotations it sits between
+
+`-[HKWorkoutSessionDelegate workoutSession:didGenerateEvent:]` is the only row of this framework that is
+of a release this port carries no object of, and it was filed in the 10.0 group. Both numbers are in
+the headers and they disagree, so both are written down:
+
+- the **member** carries `API_AVAILABLE(ios(10.0), watchos(3.0))` — `HKWorkoutSession.h:325` of iOS 26.2
+  and `HKWorkoutSession.h:266` of iOS 16.4 — so the row's old reason, that the header leaves the member
+  unannotated and the corpus gave it the version of the class it sits in, was wrong about the header.
+  10.0 is the annotation Apple's own header carries, and watchOS 3.0 is what shipped beside iOS 10.
+- the **protocol** carries `API_AVAILABLE(ios(17.0), watchos(2.0))` above `@protocol
+  HKWorkoutSessionDelegate` in iOS 26.2, and the iOS 16.4 header this library is compiled against writes
+  `API_AVAILABLE(watchos(2.0)) API_UNAVAILABLE(ios)` above the same protocol. So on iOS the protocol
+  arrived at 17.0, and in the SDK this port builds against it is not iOS API at all.
+- nothing hands a session over on iOS before that either: `-[HKHealthStore startWorkoutSession:]` is
+  `API_UNAVAILABLE(ios)` in both SDKs. The class itself is made on iOS 17 by
+  `-initWithHealthStore:configuration:error:`, which is the one initialiser of `HKWorkoutSession` the
+  header does not close off to iOS.
+- the selector **string** is in the image of 10.0.1 (`first-rung.py`), which is the string being
+  present and not the method being iOS API — the same distinction the four workout-session methods of
+  `HKHealthStore` above turn on.
+
+The row keeps `introduced: 17.0`, because that is the first iOS release on which a caller could conform
+to the protocol and be sent this, and it keeps `absent` for a measured reason rather than a wait: this
+port has no 17.0 group and no object of that release, so nothing in the library conforms to
+`HKWorkoutSessionDelegate` and nothing can hand a delegate the session the method is called with.
+Carrying the protocol with one optional member and nothing that ever sends it would be a declaration
+wearing an implementation's clothes, and the tree has a name for the claim that would hide it —
+`owed`, which is not a landing state. What a 17.0 group would have to bring with the member is written
+down above: the class, the four other delegate callbacks, the state machine of `-prepare`,
+`-startActivityWithDate:`, `-stopActivityWithDate:`, `-pause`, `-resume` and `-end`, and a source of
+workout events to deliver, which on this release there is none of.
 
 ## The device run
 
