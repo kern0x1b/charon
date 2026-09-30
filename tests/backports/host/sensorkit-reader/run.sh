@@ -46,7 +46,8 @@ armv7() {
     fi
     "$cc" -target armv7-apple-ios6.1.3 -isysroot "$sdk" \
         -I "$appledir" -I "$appledir/SensorKit" -fobjc-arc \
-        -c "$1" -o "$2" 2>/dev/null
+        -c "$1" -o "$2" > "$build/cc.log" 2>&1 \
+        || { echo "COMPILE FAILED for $1:"; cat "$build/cc.log"; return 1; }
 }
 
 echo "--- the clean run: every one of the ten, named from the source"

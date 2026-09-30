@@ -34,9 +34,14 @@ if [ -z "$cc" ] || [ -z "$sdk" ]; then
     echo "     check did not run, and it is half of what the facts pages take from here."
     exit 1
 fi
+# The compiler's own diagnostics go to a file rather than to /dev/null: a compile that fails has to say
+# why, and the caller only reports "did not build", which is not a diagnosis. An earlier version of this
+# sent stderr to /dev/null and a mutant that failed to compile would have been reported as a harness
+# problem rather than as a mutation that stopped applying.
 armv7() {
     "$cc" -target armv7-apple-ios6.1.3 -isysroot "$sdk" \
-        -I "$appledir" -I "$appledir/SensorKit" -fobjc-arc -c "$1" -o "$2" 2>/dev/null
+        -I "$appledir" -I "$appledir/SensorKit" -fobjc-arc -c "$1" -o "$2" \
+        > "$build/cc.log" 2>&1 || { echo "COMPILE FAILED for $1:"; cat "$build/cc.log"; return 1; }
 }
 
 src170=$appledir/SensorKit/SensorKit170.m
@@ -57,8 +62,12 @@ survived=0
 plant() {
     label=$1; which=$2; from=$3; to=$4
     rm -rf "$build/mutant"; mkdir -p "$build/mutant/SensorKit"
-    cp "$appledir/SensorKit/CharonSensorKit.h" "$appledir/CharonValueStore.h" "$appledir/CharonValueStore.m" \
-       "$build/mutant/" 2>/dev/null || true
+    # CharonValueStore.h beside the mutated file, so its quoted #import resolves inside the mutant rather
+    # than back to the port's own tree. No "|| true" here: a copy that does not happen is a plant that
+    # would be measuring the unmutated header, and the earlier version of this line had
+    # CharonValueStore.m in it, which does not exist, so the failure was invisible by construction.
+    cp "$appledir/CharonValueStore.h" "$build/mutant/CharonValueStore.h"
+    cp "$appledir/SensorKit/CharonSensorKit.h" "$build/mutant/CharonSensorKit.h"
     cp "$src170" "$src150" "$build/mutant/SensorKit/"
     target=$build/mutant/SensorKit/$which
     if ! python3 - "$target" "$from" "$to" <<'PY'
