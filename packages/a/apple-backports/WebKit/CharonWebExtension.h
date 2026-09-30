@@ -7,6 +7,15 @@
 #import <UIKit/UIKit.h>
 #import <WebKit/WebKit.h>
 
+// The host's own WebKit is newer than the 16.4 SDK this package builds against and already declares
+// everything between here and the matching #endif, so a host comparison compiles with
+// -DCHARON_HOST_DIFFERENTIAL and takes the HOST's declarations instead of ours, with the class names
+// prefixed by renames.sh so the port's classes and Apple's live side by side in one process. This is the
+// guard MetricKit's CharonMetricKit.h and VideoToolbox's CharonVideoToolbox.h use for exactly this
+// reason. The Charon* categories below are the port's own and are declared either way: the port
+// implements them, so a host build needs them to compile, and the differential calls them.
+#ifndef CHARON_HOST_DIFFERENTIAL
+
 typedef NSString *WKWebExtensionPermission NS_STRING_ENUM NS_SWIFT_NAME(WebExtension.Permission);
 
 // The error domain and the codes the 26.2 SDK's NS_ERROR_ENUM numbers from 1 in this order.
@@ -102,6 +111,8 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
 // answers for its members, but the spelling is charon_-prefixed all the same: a class the SDK does not
 // declare has no header to be transcribed from, and a port-owned initialiser on a class that a later
 // SDK WILL carry must never collide with Apple's.
+#endif  // CHARON_HOST_DIFFERENTIAL
+
 @interface WKWebExtension (CharonInit)
 - (instancetype)charon_initWithManifest:(NSDictionary<NSString *, id> *)manifest
                            resourcePath:(NSString *)resourcePath
@@ -114,6 +125,8 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
 // are their own families and this one only holds weak references to them.
 @class WKWebExtensionContext;
 @class WKWebExtensionController;
+#ifndef CHARON_HOST_DIFFERENTIAL
+
 @protocol WKWebExtensionWindow;
 @protocol WKWebExtensionTab;
 @class WKWebView;
@@ -150,6 +163,8 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
 
 // The port's own initialisers and setters, charon_-prefixed so they can never collide with a selector
 // a later SDK grows, and in the init family because they assign to self.
+#endif  // CHARON_HOST_DIFFERENTIAL
+
 @interface WKWebExtensionAction (CharonAction)
 - (instancetype)charon_initWithContext:(WKWebExtensionContext *)context __attribute__((objc_method_family(init)));
 - (void)charon_setLabel:(NSString *)label
@@ -200,14 +215,22 @@ extern NSString *const WKWebExtensionContextErrorsDidUpdateNotification;        
 extern NSString *const WKWebExtensionContextNotificationUserInfoKeyPermissions;          /* "permissions" */
 extern NSString *const WKWebExtensionContextNotificationUserInfoKeyMatchPatterns;      /* "matchPatterns" */
 
+// The seven cases with the 26.2 SDK's OWN numbers and its own order, not an enumeration of our own.
+// An app compiles against the SDK's header, so it passes -3 for DeniedExplicitly into a port method
+// that answers Granted/Denied/Requested, and reads an answer back as the SDK's number. Numbering the
+// cases ourselves makes the two sides disagree about what a value means, and that disagreement is
+// silent until run time. The numbers are the SDK's, measured by audit-enums.py against
+// WKWebExtensionContext.h:85; see facts/WebKit/WebExtension.md.
+#ifndef CHARON_HOST_DIFFERENTIAL
+
 typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
+    WKWebExtensionContextPermissionStatusDeniedExplicitly = -3,
+    WKWebExtensionContextPermissionStatusDeniedImplicitly = -2,
+    WKWebExtensionContextPermissionStatusRequestedImplicitly = -1,
     WKWebExtensionContextPermissionStatusUnknown = 0,
-    WKWebExtensionContextPermissionStatusGrantedExplicitly,
-    WKWebExtensionContextPermissionStatusGrantedImplicitly,
-    WKWebExtensionContextPermissionStatusDeniedExplicitly,
-    WKWebExtensionContextPermissionStatusDeniedImplicitly,
-    WKWebExtensionContextPermissionStatusRequestedExplicitly,
-    WKWebExtensionContextPermissionStatusRequestedImplicitly,
+    WKWebExtensionContextPermissionStatusRequestedExplicitly = 1,
+    WKWebExtensionContextPermissionStatusGrantedImplicitly = 2,
+    WKWebExtensionContextPermissionStatusGrantedExplicitly = 3,
 } API_AVAILABLE(ios(18.4));
 
 @interface WKWebExtensionContext : NSObject
@@ -247,6 +270,8 @@ typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
 
 // The port's own initialiser, charon_-prefixed and in the init family, and the build step the class
 // method calls once it has an extension.
+#endif  // CHARON_HOST_DIFFERENTIAL
+
 @interface WKWebExtensionContext (CharonContext)
 - (instancetype)charon_initWithExtension:(WKWebExtension *)extension __attribute__((objc_method_family(init)));
 - (void)charon_buildFromManifest;

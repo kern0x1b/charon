@@ -112,3 +112,66 @@ Three of those are worth stating separately, because they are not what the names
 `WKWebExtensionContextPermissionStatusUnknown` — the zero of the enum the 26.2 SDK declares — is what
 a caller reads when nothing has been decided, and it is the value the port carries with no permission
 granted or denied.
+
+## The seven permission statuses are ENUMERATORS, and an enumerator has no symbol
+
+`WKWebExtensionContextPermissionStatusUnknown`, `…GrantedExplicitly`, `…GrantedImplicitly`,
+`…DeniedExplicitly`, `…DeniedImplicitly`, `…RequestedExplicitly` and `…RequestedImplicitly` are the
+seven cases of the `NS_ENUM` the 26.2 SDK declares at `WKWebExtensionContext.h:85`, where the SDK
+numbers them -3, -2, -1, 0, 1, 2, 3. The same header mentions them in prose as "@constant", which is
+how a reader can mistake them for symbols; grepping the header for `extern` or `const` finds none,
+because there is no declaration to find. An enumerator is a compile-time integer, so it is not a
+symbol, nothing defines it, and `nm -g` over this library's objects cannot show it.
+
+This port therefore carries the seven values the way the release does: as the `NS_ENUM` in
+`CharonWebExtension.h:203`, where a caller writing `WKWebExtensionContextPermissionStatusGrantedExplicitly`
+gets the value. That is why they have no row. Seven rows once said `status: implemented` for them,
+which the 6.1.3 gate rightly refused -- `implemented` is a promise that something of that name is
+built, and an enumerator is the one name in this library that cannot be. The corpus agrees: no other
+enum's cases carry a row, and `inert` is not the word for it either, since `inert` describes a symbol
+that exists and answers nothing (a user-info key, a notification name that is never posted), not a
+name that has no symbol at all.
+
+Measured, not asserted: `constant-symbols.sh` compiles the 13 WebKit sources with the gate's own flags
+(`-target armv7-apple-ios6.1.3 -isysroot <16.4 SDK> -fobjc-arc -Os -Werror=objc-missing-property-synthesis`),
+takes the strong global symbols with `nm -g` (257 of them), and checks every implemented constant row
+against that list with a fabricated name as a red control. Before this delta: 32 rows, 7 without a
+symbol, and the 7 are exactly these. After it: 25 rows, 0 without.
+
+## An enumerator's NUMBER is part of the API, and the port's must be the SDK's
+
+An app compiles against the SDK's `WKWebExtensionContext.h`, so the numbers it writes into a port
+method are the SDK's, and the numbers it reads back out of a port answer are read as the SDK's. The
+port had its own: it enumerated the seven cases from zero in the order Unknown, Granted, Denied,
+Requested, while the SDK numbers them -3, -2, -1, 0, 1, 2, 3 in the order Denied, Requested, Unknown,
+Granted. A caller passing `WKWebExtensionContextPermissionStatusDeniedExplicitly` compiled against the
+SDK passed -3, and the port read -3 as RequestedImplicitly. Nothing in the port's own `.m` reads or
+writes these values -- `-currentPermissions`, `-grantedPermissions` and `-deniedPermissions` answer the
+empty set and the port never constructs a status -- so nothing failed at build time and the defect was
+only ever visible to a caller.
+
+`audit-enums.py` checks every `NS_ENUM`/`NS_OPTIONS`/`NS_ERROR_ENUM` the family declares, name by name
+and value by value, with implicit increments followed, against the same macro in the 26.2 headers. Two
+things it had to be taught, both because a laxer match would have made it agree with anything: the SDK
+spells an error enum `NS_ERROR_ENUM(domain, Name)` rather than `NS_ENUM(Type, Name)`, and closes a
+declaration with `} NS_SWIFT_NAME(...) API_AVAILABLE(...);`. The red control is an enum with the right
+name and one value wrong by construction; it must read MISMATCH, or every "agrees" below is worthless.
+
+Measured, at `CharonWebExtension.h:203` against `WKWebExtensionContext.h:85`:
+
+| case | SDK 26.2 | port, before | port, now |
+| --- | ---: | ---: | ---: |
+| `…PermissionStatusDeniedExplicitly` | -3 | 3 | -3 |
+| `…PermissionStatusDeniedImplicitly` | -2 | 4 | -2 |
+| `…PermissionStatusRequestedImplicitly` | -1 | 6 | -1 |
+| `…PermissionStatusUnknown` | 0 | 0 | 0 |
+| `…PermissionStatusRequestedExplicitly` | 1 | 5 | 1 |
+| `…PermissionStatusGrantedImplicitly` | 2 | 2 | 2 |
+| `…PermissionStatusGrantedExplicitly` | 3 | 1 | 3 |
+
+Two of the seven agreed by coincidence, `Unknown` at 0 and `GrantedImplicitly` at 2, which is why an
+eyeball pass would have called the enum half right. The audit also read the other four enums the family
+declares and they agree exactly, case for case: `WKWebExtensionError` (9), `WKWebExtensionMatchPatternError`
+(4), `WKWebExtensionMatchPatternOptions` (1) and `WKWebExtensionDataRecordError` (1). The 26.2 headers
+declare 3 more the port does not carry at all -- `WKWebExtensionContextError`, `WKWebExtensionMessagePortError`, `WKWebExtensionTabChangedProperties` -- which is
+owed work, not a numbering defect.
