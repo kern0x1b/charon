@@ -1299,7 +1299,7 @@
       "reason": "a category on NSString at SRSensors+SRDeletionRecord.h:15. It was absent because \"the port adds no category to a Foundation class\", which this folder contradicts - NSDate+SensorKit14.m is one - and because it would have to read a record's sensor, which it does not: it is a string-to-string mapping the host's own framework answers",
       "effect": "the receiver with \".tombstones\" appended, or NIL when it already ends in it - measured over 58 inputs, where \"\" answers \".tombstones\". The nil is why the header declares the return nullable: a record's own name would name a sensor that collects nothing",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRSensors+SRDeletionRecord.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for every answer"
+      "source": "SRSensors+SRDeletionRecord.h of SDK 26.2 for the declaration and its nullable; the host's SensorKit.framework for every answer; measured by tests/backports/host/sensorkit-tombstones"
     },
     {
       "api": "-[SRAcousticSettings init]",
@@ -1398,7 +1398,7 @@
       "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts) at SRKeyboardMetrics.h:306. The port classifies nothing: the count comes out of the same store every property of this class reads, under a key of the selector and the category, because a count per category is ten numbers",
       "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where emojiCountForSentimentCategory: answers 0. An archived count reads back as itself",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer"
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer; measured by tests/backports/host/sensorkit-value"
     },
     {
       "api": "-[SRKeyboardMetrics wordCountForSentimentCategory:]",
@@ -1409,7 +1409,7 @@
       "reason": "a method of the SDK's own category SRKeyboardMetrics (SentimentCounts) at SRKeyboardMetrics.h:303. The port classifies nothing: the count comes out of the same store every property of this class reads, under a key of the selector and the category, because a count per category is ten numbers",
       "effect": "0 when nothing is stored under that key, which is the HOST's own answer too - measured over all ten SRKeyboardMetricsSentimentCategory cases, where wordCountForSentimentCategory: answers 0. An archived count reads back as itself",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer"
+      "source": "SRKeyboardMetrics.h of SDK 26.2 for the declaration and its ten cases at :283-:292; the host's SensorKit.framework for the answer; measured by tests/backports/host/sensorkit-value"
     },
     {
       "api": "-[SRPhotoplethysmogramAccelerometerSample init]",
