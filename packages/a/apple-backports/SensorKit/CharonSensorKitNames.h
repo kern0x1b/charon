@@ -64,32 +64,56 @@ NSString * const SRSensorMediaEvents = (NSString *)CFSTR("com.apple.SensorKit.me
 
 #endif
 
-// MARK: - iOS 17.0 - SRSensors.h:265, :276, :295 and :307
+// MARK: - iOS 16.0 by the held ladder - SRSensors.h:276 and :307
+//
+// THE FILE IS NAMED FOR THE LADDER'S ANSWER, NOT THE HEADER'S. SRSensors.h declares both of these
+// API_AVAILABLE(ios(17.0)), and the registry says introduced 17.0, and sdk-26.2-surface.tsv agrees -
+// but modules/apple/backports.lua's check_releases asks dyld.first_releases which HELD release first
+// exports the symbol, and that is 16.0 for these two. Measured over SensorKit160.o:
+//
+//   iOS 16.0  _SRSensorHeartRate _SRSensorOdometer
+//
+// An object carries the API of one release as the LADDER measures it, so these live in a file named for
+// 16.0. The header's own date stays what it says; nothing here claims the name arrived in 16.0.
+#ifdef CHARON_SENSORKIT_NAMES_16_0
 
-#ifdef CHARON_SENSORKIT_NAMES_17_0
-
-NSString * const SRSensorWristTemperature = (NSString *)CFSTR("com.apple.SensorKit.wristTemperature");
 NSString * const SRSensorHeartRate = (NSString *)CFSTR("com.apple.SensorKit.heart.rate");
-NSString * const SRSensorFaceMetrics = (NSString *)CFSTR("com.apple.SensorKit.faceMetrics");
 NSString * const SRSensorOdometer = (NSString *)CFSTR("com.apple.SensorKit.odometer");
 
 #endif
 
-// MARK: - iOS 17.4 - SRSensors.h:320 and :332, SRPhotoplethysmogramSample.h:14, :15, :213, :223, :232 and :242
+// MARK: - iOS 17.4 - SRPhotoplethysmogramSample.h:14, :15, :213, :223, :232 and :242
 
 // The six photoplethysmogram values are the case the "#define NAME @\"NAME\"" rule gets wrong, and
 // the harness is why they are carried at all: their value is the SUFFIX of the constant's own name,
 // not the name, so a guess here would have produced six strings the system would not recognise.
 #ifdef CHARON_SENSORKIT_NAMES_17_4
 
-NSString * const SRSensorElectrocardiogram = (NSString *)CFSTR("com.apple.SensorKit.ECG");
-NSString * const SRSensorPhotoplethysmogram = (NSString *)CFSTR("com.apple.SensorKit.PPG");
 NSString * const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation = (NSString *)CFSTR("SignalSaturation");
 NSString * const SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise = (NSString *)CFSTR("UnreliableNoise");
 NSString * const SRPhotoplethysmogramSampleUsageForegroundHeartRate = (NSString *)CFSTR("ForegroundHeartRate");
 NSString * const SRPhotoplethysmogramSampleUsageDeepBreathing = (NSString *)CFSTR("DeepBreathing");
 NSString * const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen = (NSString *)CFSTR("ForegroundBloodOxygen");
 NSString * const SRPhotoplethysmogramSampleUsageBackgroundSystem = (NSString *)CFSTR("BackgroundSystem");
+
+#endif
+
+// MARK: - iOS 18.0 by the held ladder - SRSensors.h:295, :265, :320 and :332
+//
+// Four more the LADDER places at 18.0 while SRSensors.h declares them API_AVAILABLE(ios(17.0)) or
+// ios(17.4). Measured over SensorKit180.o:
+//
+//   iOS 18.0  _SRSensorFaceMetrics _SRSensorWristTemperature
+//             _SRSensorElectrocardiogram _SRSensorPhotoplethysmogram
+//
+// Four of them therefore share one file named for 18.0, where the two at 16.0 above cannot share it
+// with them: one object, one release.
+#ifdef CHARON_SENSORKIT_NAMES_18_0
+
+NSString * const SRSensorFaceMetrics = (NSString *)CFSTR("com.apple.SensorKit.faceMetrics");
+NSString * const SRSensorWristTemperature = (NSString *)CFSTR("com.apple.SensorKit.wristTemperature");
+NSString * const SRSensorElectrocardiogram = (NSString *)CFSTR("com.apple.SensorKit.ECG");
+NSString * const SRSensorPhotoplethysmogram = (NSString *)CFSTR("com.apple.SensorKit.PPG");
 
 #endif
 

@@ -98,11 +98,8 @@ CHARON_VALUE_PROPERTY(NSEnumerator *, temperatures)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
-// The four string constants of iOS 17.0,
-// declared at SRSensors.h:265, :276, :295 and :307,
-// named from CharonSensorKitNames.h rather than written here: an object carries the API of
-// one release alone, while the values are one list that the host comparison in
-// tests/backports/host/sensorkit-names walks whole.
-
-#define CHARON_SENSORKIT_NAMES_17_0
-#import "CharonSensorKitNames.h"
+// The string constants of iOS 17.0 are NOT here, and where they went is the point. SRSensors.h declares
+// all four API_AVAILABLE(ios(17.0)), and check_releases does not agree for two of them: it places
+// SRSensorHeartRate and SRSensorOdometer at 16.0 and SRSensorFaceMetrics and SRSensorWristTemperature at
+// 18.0, so an object carrying this file's classes alongside them held three releases at once. They are in
+// SensorKit160.m and SensorKit180.m now, and the measurements behind them are unchanged.

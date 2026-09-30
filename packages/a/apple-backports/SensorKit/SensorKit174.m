@@ -91,11 +91,10 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, temperature)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 
-// The eight string constants of iOS 17.4,
-// declared at SRSensors.h:320 and :332, and SRPhotoplethysmogramSample.h:14, :15, :213, :223, :232 and :242,
-// named from CharonSensorKitNames.h rather than written here: an object carries the API of
-// one release alone, while the values are one list that the host comparison in
-// tests/backports/host/sensorkit-names walks whole.
+// The SIX photoplethysmogram strings of iOS 17.4 stay, and the two SENSOR identifiers that shared this
+// guard do not: check_releases places SRSensorElectrocardiogram and SRSensorPhotoplethysmogram at 18.0
+// while this file is the 17.4 object, so they are in SensorKit180.m with the two that arrived beside
+// them. Eight constants were here; six remain.
 
 #define CHARON_SENSORKIT_NAMES_17_4
 #import "CharonSensorKitNames.h"

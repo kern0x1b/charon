@@ -846,7 +846,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:320, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.ECG\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit180.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorFaceMetrics",
@@ -857,7 +857,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:295, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.faceMetrics\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit180.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorHeartRate",
@@ -868,7 +868,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:276, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.heart.rate\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit160.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorKeyboardMetrics",
@@ -910,7 +910,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:307, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.odometer\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit160.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorOnWristState",
@@ -951,7 +951,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:332, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.PPG\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit174.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit180.m imports under the guard for its own release"
     },
     {
       "api": "SRSensorRotationRate",
@@ -1015,7 +1015,7 @@
       "reason": "a const object-pointer VARIABLE of an NSString typedef, declared at SRSensors.h:265, so no header this package builds against spells a value. The value is the host's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names",
       "effect": "the string \"com.apple.SensorKit.wristTemperature\". Not a device measurement; no device has been asked and the guest run is owed.",
       "facts": "facts/SensorKit/SensorKit.md",
-      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit170.m imports under the guard for its own release"
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)); the host's SensorKit.framework for the value; the value itself is defined once in CharonSensorKitNames.h, which SensorKit180.m imports under the guard for its own release"
     },
     {
       "api": "SRAbsoluteTimeFromCFAbsoluteTime()",

@@ -37,8 +37,8 @@ An object carries the API of exactly one release and `tools/release-split.lua` r
 symbols first appear in two, so the eighteen later names cannot live in `SensorKitNames14.m`. Their
 **values**, however, are one list, and the harness has to walk that list from a single host-compilable
 source — so they are defined once, in `CharonSensorKitNames.h`, behind one guard per release. Each of
-the six release objects defines its own guard and imports the header; the harness's `names-extra.m`
-defines all six and imports it. **One definition of each string in the tree, read seven ways**, rather
+the seven release objects defines its own guard and imports the header; the harness's `names-extra.m`
+defines all seven and imports it. **One definition of each string in the tree, read eight ways**, rather
 than a copy per object that could drift from what the harness proves.
 
 ## The four value shapes, and a rule written from the name would get three of them wrong

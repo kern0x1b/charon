@@ -56,66 +56,143 @@ extern CFStringRef SRSensorVisits;
 extern CFStringRef SRSensorSiriSpeechMetrics;
 extern CFStringRef SRSensorTelephonySpeechMetrics;
 extern CFStringRef SRSensorAmbientPressure;
-extern CFStringRef SRSensorMediaEvents;
-extern CFStringRef SRSensorWristTemperature;
 extern CFStringRef SRSensorHeartRate;
-extern CFStringRef SRSensorFaceMetrics;
 extern CFStringRef SRSensorOdometer;
-extern CFStringRef SRSensorElectrocardiogram;
-extern CFStringRef SRSensorPhotoplethysmogram;
+extern CFStringRef SRSensorMediaEvents;
 extern CFStringRef SRPhotoplethysmogramOpticalSampleConditionSignalSaturation;
 extern CFStringRef SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise;
 extern CFStringRef SRPhotoplethysmogramSampleUsageForegroundHeartRate;
 extern CFStringRef SRPhotoplethysmogramSampleUsageDeepBreathing;
 extern CFStringRef SRPhotoplethysmogramSampleUsageForegroundBloodOxygen;
 extern CFStringRef SRPhotoplethysmogramSampleUsageBackgroundSystem;
+extern CFStringRef SRSensorFaceMetrics;
+extern CFStringRef SRSensorWristTemperature;
+extern CFStringRef SRSensorElectrocardiogram;
+extern CFStringRef SRSensorPhotoplethysmogram;
 extern CFStringRef SRSensorAcousticSettings;
 extern CFStringRef SRSensorSleepSessions;
 
 int main(void)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
+
     CFStringRef all[] = {
-        SRDeviceUsageCategoryBooks, SRDeviceUsageCategoryBusiness, SRDeviceUsageCategoryCatalogs, SRDeviceUsageCategoryDeveloperTools, SRDeviceUsageCategoryEducation, SRDeviceUsageCategoryEntertainment, SRDeviceUsageCategoryFinance, SRDeviceUsageCategoryFoodAndDrink, SRDeviceUsageCategoryGames, SRDeviceUsageCategoryGraphicsAndDesign, SRDeviceUsageCategoryHealthAndFitness, SRDeviceUsageCategoryKids, SRDeviceUsageCategoryLifestyle, SRDeviceUsageCategoryMedical, SRDeviceUsageCategoryMiscellaneous, SRDeviceUsageCategoryMusic, SRDeviceUsageCategoryNavigation, SRDeviceUsageCategoryNews, SRDeviceUsageCategoryNewsstand, SRDeviceUsageCategoryPhotoAndVideo, SRDeviceUsageCategoryProductivity, SRDeviceUsageCategoryReference, SRDeviceUsageCategoryShopping, SRDeviceUsageCategorySocialNetworking, SRDeviceUsageCategorySports, SRDeviceUsageCategoryStickers, SRDeviceUsageCategoryTravel, SRDeviceUsageCategoryUtilities, SRDeviceUsageCategoryWeather, SRSensorAccelerometer, SRSensorAmbientLightSensor, SRSensorDeviceUsageReport, SRSensorKeyboardMetrics, SRSensorMessagesUsageReport, SRSensorOnWristState, SRSensorPedometerData, SRSensorPhoneUsageReport, SRSensorRotationRate, SRSensorVisits,
-    SRSensorSiriSpeechMetrics,
-    SRSensorTelephonySpeechMetrics,
-    SRSensorAmbientPressure,
-    SRSensorMediaEvents,
-    SRSensorWristTemperature,
-    SRSensorHeartRate,
-    SRSensorFaceMetrics,
-    SRSensorOdometer,
-    SRSensorElectrocardiogram,
-    SRSensorPhotoplethysmogram,
-    SRPhotoplethysmogramOpticalSampleConditionSignalSaturation,
-    SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise,
-    SRPhotoplethysmogramSampleUsageForegroundHeartRate,
-    SRPhotoplethysmogramSampleUsageDeepBreathing,
-    SRPhotoplethysmogramSampleUsageForegroundBloodOxygen,
-    SRPhotoplethysmogramSampleUsageBackgroundSystem,
-    SRSensorAcousticSettings,
-    SRSensorSleepSessions
+        SRDeviceUsageCategoryBooks,
+        SRDeviceUsageCategoryBusiness,
+        SRDeviceUsageCategoryCatalogs,
+        SRDeviceUsageCategoryDeveloperTools,
+        SRDeviceUsageCategoryEducation,
+        SRDeviceUsageCategoryEntertainment,
+        SRDeviceUsageCategoryFinance,
+        SRDeviceUsageCategoryFoodAndDrink,
+        SRDeviceUsageCategoryGames,
+        SRDeviceUsageCategoryGraphicsAndDesign,
+        SRDeviceUsageCategoryHealthAndFitness,
+        SRDeviceUsageCategoryKids,
+        SRDeviceUsageCategoryLifestyle,
+        SRDeviceUsageCategoryMedical,
+        SRDeviceUsageCategoryMiscellaneous,
+        SRDeviceUsageCategoryMusic,
+        SRDeviceUsageCategoryNavigation,
+        SRDeviceUsageCategoryNews,
+        SRDeviceUsageCategoryNewsstand,
+        SRDeviceUsageCategoryPhotoAndVideo,
+        SRDeviceUsageCategoryProductivity,
+        SRDeviceUsageCategoryReference,
+        SRDeviceUsageCategoryShopping,
+        SRDeviceUsageCategorySocialNetworking,
+        SRDeviceUsageCategorySports,
+        SRDeviceUsageCategoryStickers,
+        SRDeviceUsageCategoryTravel,
+        SRDeviceUsageCategoryUtilities,
+        SRDeviceUsageCategoryWeather,
+        SRSensorAccelerometer,
+        SRSensorAmbientLightSensor,
+        SRSensorDeviceUsageReport,
+        SRSensorKeyboardMetrics,
+        SRSensorMessagesUsageReport,
+        SRSensorOnWristState,
+        SRSensorPedometerData,
+        SRSensorPhoneUsageReport,
+        SRSensorRotationRate,
+        SRSensorVisits,
+        SRSensorSiriSpeechMetrics,
+        SRSensorTelephonySpeechMetrics,
+        SRSensorAmbientPressure,
+        SRSensorHeartRate,
+        SRSensorOdometer,
+        SRSensorMediaEvents,
+        SRPhotoplethysmogramOpticalSampleConditionSignalSaturation,
+        SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise,
+        SRPhotoplethysmogramSampleUsageForegroundHeartRate,
+        SRPhotoplethysmogramSampleUsageDeepBreathing,
+        SRPhotoplethysmogramSampleUsageForegroundBloodOxygen,
+        SRPhotoplethysmogramSampleUsageBackgroundSystem,
+        SRSensorFaceMetrics,
+        SRSensorWristTemperature,
+        SRSensorElectrocardiogram,
+        SRSensorPhotoplethysmogram,
+        SRSensorAcousticSettings,
+        SRSensorSleepSessions
     };
     const char *label[] = {
-        "SRDeviceUsageCategoryBooks", "SRDeviceUsageCategoryBusiness", "SRDeviceUsageCategoryCatalogs", "SRDeviceUsageCategoryDeveloperTools", "SRDeviceUsageCategoryEducation", "SRDeviceUsageCategoryEntertainment", "SRDeviceUsageCategoryFinance", "SRDeviceUsageCategoryFoodAndDrink", "SRDeviceUsageCategoryGames", "SRDeviceUsageCategoryGraphicsAndDesign", "SRDeviceUsageCategoryHealthAndFitness", "SRDeviceUsageCategoryKids", "SRDeviceUsageCategoryLifestyle", "SRDeviceUsageCategoryMedical", "SRDeviceUsageCategoryMiscellaneous", "SRDeviceUsageCategoryMusic", "SRDeviceUsageCategoryNavigation", "SRDeviceUsageCategoryNews", "SRDeviceUsageCategoryNewsstand", "SRDeviceUsageCategoryPhotoAndVideo", "SRDeviceUsageCategoryProductivity", "SRDeviceUsageCategoryReference", "SRDeviceUsageCategoryShopping", "SRDeviceUsageCategorySocialNetworking", "SRDeviceUsageCategorySports", "SRDeviceUsageCategoryStickers", "SRDeviceUsageCategoryTravel", "SRDeviceUsageCategoryUtilities", "SRDeviceUsageCategoryWeather", "SRSensorAccelerometer", "SRSensorAmbientLightSensor", "SRSensorDeviceUsageReport", "SRSensorKeyboardMetrics", "SRSensorMessagesUsageReport", "SRSensorOnWristState", "SRSensorPedometerData", "SRSensorPhoneUsageReport", "SRSensorRotationRate", "SRSensorVisits",
-    "SRSensorSiriSpeechMetrics",
-    "SRSensorTelephonySpeechMetrics",
-    "SRSensorAmbientPressure",
-    "SRSensorMediaEvents",
-    "SRSensorWristTemperature",
-    "SRSensorHeartRate",
-    "SRSensorFaceMetrics",
-    "SRSensorOdometer",
-    "SRSensorElectrocardiogram",
-    "SRSensorPhotoplethysmogram",
-    "SRPhotoplethysmogramOpticalSampleConditionSignalSaturation",
-    "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
-    "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
-    "SRPhotoplethysmogramSampleUsageDeepBreathing",
-    "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
-    "SRPhotoplethysmogramSampleUsageBackgroundSystem",
-    "SRSensorAcousticSettings",
-    "SRSensorSleepSessions"
+        "SRDeviceUsageCategoryBooks",
+        "SRDeviceUsageCategoryBusiness",
+        "SRDeviceUsageCategoryCatalogs",
+        "SRDeviceUsageCategoryDeveloperTools",
+        "SRDeviceUsageCategoryEducation",
+        "SRDeviceUsageCategoryEntertainment",
+        "SRDeviceUsageCategoryFinance",
+        "SRDeviceUsageCategoryFoodAndDrink",
+        "SRDeviceUsageCategoryGames",
+        "SRDeviceUsageCategoryGraphicsAndDesign",
+        "SRDeviceUsageCategoryHealthAndFitness",
+        "SRDeviceUsageCategoryKids",
+        "SRDeviceUsageCategoryLifestyle",
+        "SRDeviceUsageCategoryMedical",
+        "SRDeviceUsageCategoryMiscellaneous",
+        "SRDeviceUsageCategoryMusic",
+        "SRDeviceUsageCategoryNavigation",
+        "SRDeviceUsageCategoryNews",
+        "SRDeviceUsageCategoryNewsstand",
+        "SRDeviceUsageCategoryPhotoAndVideo",
+        "SRDeviceUsageCategoryProductivity",
+        "SRDeviceUsageCategoryReference",
+        "SRDeviceUsageCategoryShopping",
+        "SRDeviceUsageCategorySocialNetworking",
+        "SRDeviceUsageCategorySports",
+        "SRDeviceUsageCategoryStickers",
+        "SRDeviceUsageCategoryTravel",
+        "SRDeviceUsageCategoryUtilities",
+        "SRDeviceUsageCategoryWeather",
+        "SRSensorAccelerometer",
+        "SRSensorAmbientLightSensor",
+        "SRSensorDeviceUsageReport",
+        "SRSensorKeyboardMetrics",
+        "SRSensorMessagesUsageReport",
+        "SRSensorOnWristState",
+        "SRSensorPedometerData",
+        "SRSensorPhoneUsageReport",
+        "SRSensorRotationRate",
+        "SRSensorVisits",
+        "SRSensorSiriSpeechMetrics",
+        "SRSensorTelephonySpeechMetrics",
+        "SRSensorAmbientPressure",
+        "SRSensorHeartRate",
+        "SRSensorOdometer",
+        "SRSensorMediaEvents",
+        "SRPhotoplethysmogramOpticalSampleConditionSignalSaturation",
+        "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
+        "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
+        "SRPhotoplethysmogramSampleUsageDeepBreathing",
+        "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
+        "SRPhotoplethysmogramSampleUsageBackgroundSystem",
+        "SRSensorFaceMetrics",
+        "SRSensorWristTemperature",
+        "SRSensorElectrocardiogram",
+        "SRSensorPhotoplethysmogram",
+        "SRSensorAcousticSettings",
+        "SRSensorSleepSessions"
     };
     for (size_t i = 0; i < sizeof all / sizeof all[0]; i++) {
         char b[256] = {0};

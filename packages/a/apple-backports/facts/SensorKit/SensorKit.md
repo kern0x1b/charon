@@ -131,14 +131,41 @@ first would leave the second unwatched.
 The **57** is `names.txt`, and the count is not the interesting part. The interesting part is the
 eighteen that were `absent` before this change and are `implemented` now, in six objects:
 
-| release | the object | the constants | what the host's framework holds |
-| --- | --- | --- | --- |
-| 15.0 | `SensorKit150.m` | `SRSensorSiriSpeechMetrics`, `SRSensorTelephonySpeechMetrics` | `com.apple.SensorKit.speechMetrics.siri`, `…telephony` |
-| 15.4 | `SensorKit154.m` | `SRSensorAmbientPressure` | `com.apple.SensorKit.ambientPressure` |
-| 16.4 | `SensorKit164.m` | `SRSensorMediaEvents` | `com.apple.SensorKit.mediaEvents` |
-| 17.0 | `SensorKit170.m` | `SRSensorWristTemperature`, `SRSensorHeartRate`, `SRSensorFaceMetrics`, `SRSensorOdometer` | `com.apple.SensorKit.wristTemperature`, `…heart.rate`, `…faceMetrics`, `…odometer` |
-| 17.4 | `SensorKit174.m` | `SRSensorElectrocardiogram`, `SRSensorPhotoplethysmogram`, and the six `SRPhotoplethysmogram…` | `com.apple.SensorKit.ECG`, `com.apple.SensorKit.PPG`, and `SignalSaturation`, `UnreliableNoise`, `ForegroundHeartRate`, `DeepBreathing`, `ForegroundBloodOxygen`, `BackgroundSystem` |
-| 26.0 | `SensorKit260.m` | `SRSensorAcousticSettings`, `SRSensorSleepSessions` | `com.apple.SensorKit.hearing.acousticSettings`, `com.apple.SensorKit.sleep.sessions` |
+**The object a constant lives in is named for the release the HELD LADDER gives it, which is not always
+the release the header declares** — and the 6.1.3 gate is what says so:
+
+```
+error: 2 objects hold API no single release introduced:
+  SensorKitBackports: SensorKit170.m defines SRSensorHeartRate SRSensorOdometer from iOS 16.0 and
+    SRAudioLevel … SRSpeechMetrics SRWristTemperature SRWristTemperatureSession from iOS 17.0 and
+    SRSensorFaceMetrics SRSensorWristTemperature from iOS 18.0; an object carries API the same
+    release must not hold
+```
+
+`modules/apple/backports.lua`'s `check_releases` asks `dyld.first_releases` which **held release first
+exports** each symbol. `SRSensors.h` declares all four of those `API_AVAILABLE(ios(17.0))`, and the
+registry says `introduced 17.0`, and `sdk-26.2-surface.tsv` agrees — and the ladder answers 16.0 for two
+of them and 18.0 for the other two. An object carries the API of one release *as the ladder measures it*,
+so the object is named for the measurement and **the header's own date stays what the header says**: no
+row's `introduced` moved, and no measurement moved. Re-measuring after the split, over the built armv7
+objects, every one of the fifteen reports a single release:
+
+| the object | the ladder's release | what it holds of the constants |
+| --- | --- | --- |
+| `SensorKit150.m` | 15.0 | `SRSensorSiriSpeechMetrics`, `SRSensorTelephonySpeechMetrics` |
+| `SensorKit154.m` | 15.4 | `SRSensorAmbientPressure` |
+| `SensorKit160.m` | **16.0** | `SRSensorHeartRate`, `SRSensorOdometer` — *both 17.0 in the header* |
+| `SensorKit164.m` | 16.4 | `SRSensorMediaEvents` |
+| `SensorKit170.m` | 17.0 | the 17.0 classes; no constants |
+| `SensorKit174.m` | 17.4 | the six `SRPhotoplethysmogram…` |
+| `SensorKit180.m` | **18.0** | `SRSensorFaceMetrics`, `SRSensorWristTemperature`, `SRSensorElectrocardiogram`, `SRSensorPhotoplethysmogram` — *17.0 and 17.4 in the header* |
+| `SensorKit260.m` | 26.0 | `SRSensorAcousticSettings`, `SRSensorSleepSessions` |
+
+What the host's framework holds for them: `com.apple.SensorKit.speechMetrics.siri`,
+`…speechMetrics.telephony`, `…ambientPressure`, `…heart.rate`, `…odometer`, `…mediaEvents`,
+`SignalSaturation`, `UnreliableNoise`, `ForegroundHeartRate`, `DeepBreathing`, `ForegroundBloodOxygen`,
+`BackgroundSystem`, `…faceMetrics`, `…wristTemperature`, `com.apple.SensorKit.ECG`,
+`com.apple.SensorKit.PPG`, `…hearing.acousticSettings`, `…sleep.sessions`.
 
 Two of these deserve their own sentence, because they are the cases a rule written from the shape of
 the name would have got wrong, and the harness is the only reason they are carried at all:
@@ -159,8 +186,8 @@ and every row says so in its own `effect`. This is the limit of this measurement
 one release, so the eighteen belong to six objects; their values, though, are one list, and the
 harness has to walk that whole list from a single host-compilable source. They are therefore defined
 once, in `CharonSensorKitNames.h`, behind one guard per release: each release object defines its own
-guard and imports the header, and the harness's `names-extra.m` defines all six and imports it. One
-definition of each string in the tree, read seven ways.
+guard and imports the header, and the harness's `names-extra.m` defines all seven and imports it. One
+definition of each string in the tree, read eight ways.
 
 ## The one method the host answered that no rule could have been derived from
 
