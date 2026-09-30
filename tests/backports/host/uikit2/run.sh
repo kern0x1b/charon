@@ -460,6 +460,41 @@ group foundation14urlcache "../Foundation/NSURLCache+DirectoryURL13.m" foundatio
 prefixed_group traits17 "UITraitCollection.m UITraitCollection+UserInterfaceStyle.m UITraitCollection+Appearance13.m UITraitCollection+Appearance14.m UITraitCollection+Traits10.m UITraitCollection+ForceTouch.m UITrait17.m UITraitList18.m UITrait26.m UITraitCollection+TraitStore.m UITraitCollection+Traits17.m UITraitOverrides17.m" traits17_test.m
 group textkit2 "NSTextRange15.m NSTextSelection15.m NSTextElement15.m NSTextElement16.m NSTextSelectionNavigation15.m" textkit2_test.m
 group content15 "NSTextContentManager15.m NSTextContentStorage15.m NSTextListElement16.m NSTextElement15.m NSTextElement16.m CharonTextLocation.m" content15_test.m
+group buttonconfig "UIButtonConfiguration.m" buttonconfig_test.m
+
+# The red control, IN the harness: a wrong default in the port has to make this comparison go RED and name the
+# key, and a control that plants nothing has to fail rather than report a clean run. The shape is the one
+# pdfkit-str2 (c62714b7b) and modelio-34 use. The six keys are the defaults this case exists for -- every one
+# of them a nil or a zero the port once got wrong -- and the last two are the refusals, which must exit 2
+# rather than exit 0: a mutation that plants nothing has not proven anything, and passing it quietly is the
+# failure this whole block is here to prevent.
+control() {  # $1: what to plant, $2: the exit status that must come back
+    # the status is read through an if, not by running the command and then reading $?: this script runs under
+    # `set -e`, and a planted run is SUPPOSED to exit non-zero, so a bare invocation would abort the harness
+    # before the control could report that it went red. group() above reads its status the same way.
+    if CHARON_MUTATION="$1" "$build/buttonconfig-test" > "$build/buttonconfig-mutated.log" 2>&1; then
+        got=0
+    else
+        got=$?
+    fi
+    if [ "$got" = "$2" ]; then
+        printf 'ok   buttonconfig control [%s]: exit=%s\n' "$1" "$got"
+        grep -E '^MUTATION|^FAIL' "$build/buttonconfig-mutated.log" | head -3 | sed 's/^/    /'
+    else
+        printf 'FAIL buttonconfig control [%s]: exit=%s, and it must be %s\n' "$1" "$got" "$2"
+        status=1
+    fi
+}
+for key in "a fresh configuration has no base foreground colour" \
+           "a fresh configuration has no base background colour" \
+           "a fresh configuration has no image" \
+           "a fresh configuration has no image colour transformer" \
+           "a fresh configuration has no preferred symbol configuration" \
+           "a fresh configuration has no title"; do
+    control "$key" 1
+done
+control "--no-plant" 2
+control "no such key" 2
 
 
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
