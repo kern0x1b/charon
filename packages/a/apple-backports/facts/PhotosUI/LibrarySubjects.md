@@ -30,10 +30,11 @@ over a subject that is absent would mean a `UIView` subclass whose one property 
 declared, because the type it holds does not exist in this port - and a row that says
 `implemented` for that is the silent fake the registry's own vocabulary has a word against.
 
-When the Photos family carries `PHLivePhoto`, this view is a small piece of work: the still
-image for the badge and for the paused state is the asset's own image, which the port's
-`PHImageManager` already asks for, and playback is a movie played over it, which
-`UIImagePickerController` of iOS 6 already plays.
+When the Photos family carries `PHLivePhoto`, this view is a small piece of work, and the port
+already has both halves of it: the still image for the badge and for the paused state is what
+`-[PHImageManager requestImageForAsset:targetSize:contentMode:options:]` answers
+(`PHImageManager8.m:189`), and the movie to play over it is what
+`-[PHImageManager requestPlayerItemForVideo:options:]` answers (`PHImageManager8.m:283`).
 
 ## PHContentEditingController
 
