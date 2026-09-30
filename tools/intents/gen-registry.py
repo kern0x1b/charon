@@ -236,12 +236,25 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--corpus", required=True)
-    parser.add_argument("--report", action="append", required=True)
+    parser.add_argument("--report", action="append", default=None)
     parser.add_argument("--out", required=True)
     parser.add_argument("--facts", required=True)
+    parser.add_argument("--merge-into", default=None,
+                        help="add or replace ONLY this tool's constant rows in an existing registry file, "
+                             "leaving every other row exactly as it is. A full regeneration needs the "
+                             "measurement reports this tool reads for the classes, and without them it would "
+                             "mark answered classes absent; the constants need no report, so they can be "
+                             "written on their own and cannot be lost by a later regeneration.")
+    parser.add_argument("--constants-facts", default="facts/Intents/Constants.md",
+                        help="the facts page a carried constant row points at")
+    parser.add_argument("--constants", default=None,
+                        help="the manifest tools/intents/emit-intents-constants.py wrote: the extern "
+                             "constants this package DEFINES and exports. Without it every "
+                             "constant is skipped as before, which is right for an enum case and "
+                             "wrong for these - see the branch below.")
     parser.add_argument("--release", required=True)
     parser.add_argument("--framework", default="Intents")
-    parser.add_argument("--classes", required=True, nargs="+",
+    parser.add_argument("--classes", default=None, nargs="+",
                         help="the class names this file carries, one per line, one file per group "
                              "that shares it (the two 10.x groups share ios10.json)")
     parser.add_argument("--hand-written", default="CharonIntents100.m",
@@ -251,11 +264,61 @@ def main():
                              "written by tools/intents/gen-causes.py")
     parser.add_argument("--no-protocols", action="store_true",
                         help="this group writes no protocol row: another group's file already has it")
-    parser.add_argument("--reason", required=True,
+    parser.add_argument("--reason", default=None,
                         help="why a member whose type is a class of a later group is absent")
     options = parser.parse_args()
 
     answered = {}
+    if options.merge_into and options.constants:
+        # --report, --classes and --reason are what a FULL regeneration reads, and this path reads none
+        # of them: a constant row is decided by the corpus row and the emitter's manifest, not by a
+        # measurement of a class. That is why they are optional rather than required.
+        manifest = json.load(open(options.constants, encoding="utf-8"))["constants"]
+        corpus = load_corpus(options.corpus, "Intents")
+        # A row goes in the bucket of the band that exports it, which is the same routing the driver
+        # uses for its groups: 18_0 writes ios18.json and everything earlier writes ios10.json. The
+        # file is a band bucket and not the row's introduced - main's own ios10.json already holds
+        # rows from 10.0 to 18.0 - so `introduced` stays the exact SDK availability either way.
+        later = [n for n in manifest if float(manifest[n]["introduced"]) >= 17.0]
+        target = options.merge_into
+        held = json.load(open(target, encoding="utf-8"))
+        entries = held["entries"] if isinstance(held, dict) else held
+        have = {e["api"]: i for i, e in enumerate(entries)}
+        added = replaced = 0
+        for row in corpus:
+            if row["kind"] != "constant":
+                continue
+            carried = manifest.get(row["api"])
+            if not carried:
+                continue
+            is_later = float(row["introduced"]) >= 17.0
+            if is_later != (target.endswith("ios18.json")):
+                continue
+            entry = {"api": row["api"], "kind": "constant", "introduced": row["introduced"],
+                     "minimum": "6.0", "status": "implemented",
+                     "facts": options.constants_facts,
+                     "source": "the value read out of the host's own Intents at runtime by dlsym, and the "
+                               "object's own rung: %s, which is the release it first appears in"
+                               % carried["rung"],
+                     "reason": "the header declares it an extern NSString *const and the release has no such "
+                               "symbol in the built libraries or the 6.1.3 cache, so the port has to export "
+                               "it; the SDK's own availability for it is %s" % carried["introduced"],
+                     "effect": "the symbol is there and its value is the system's own: a program that reads "
+                               "it gets the same string the host holds, and the object's release rung is "
+                               "%s, so a band gate sees the definition only in the bands that export it"
+                               % carried["rung"]}
+            if row["api"] in have:
+                entries[have[row["api"]]] = entry
+                replaced += 1
+            else:
+                entries.append(entry)
+                added += 1
+        with open(target, "w", encoding="utf-8") as handle:
+            json.dump(held, handle, indent=2, ensure_ascii=False)
+            handle.write("\n")
+        print("  %s: %d constant rows added, %d replaced" % (os.path.basename(target), added, replaced))
+        return 0
+
     vocabulary = json.load(open(options.causes)) if options.causes else {}
     causes = {}
     for path in options.report:
@@ -333,11 +396,38 @@ def main():
             owner = found.group(1) if found else None
         elif kind == "property":
             owner = api.split(".")[0]
-        if kind == "constant" or kind == "enum":
-            # A case of an enumeration and the type it belongs to are the header's own: the
-            # compiler writes them into the application and the package carries nothing of them,
-            # so registry/README.md gives them no entry. The lift brings the type down where
-            # every API that uses it is implemented.
+        if kind == "constant":
+            # An ENUM CASE is the header's own: the compiler writes it into the application and the
+            # package carries nothing of it, so registry/README.md gives it no entry, and the lift
+            # brings the type down where every API that uses it is implemented. That is still true.
+            #
+            # An EXTERN CONSTANT the package DEFINES is a different thing entirely, and skipping it
+            # was a real defect: 83 of them are compiled into packages/a/apple-backports/Intents/ and
+            # the 6.1.3 cache has no such symbol, so the port has to export each one - and a
+            # regeneration then dropped all 83 rows, and the gate that reads the link reported every
+            # one as "built, but no entry in registry/". The rows are not written by hand: the
+            # manifest is the emitter's own list of what it compiled, so the names that get a row and
+            # the names that got built are the same set by construction and cannot drift.
+            carried = (options.constants and json.load(open(options.constants,
+                                                             encoding="utf-8"))["constants"].get(api))
+            if not carried:
+                continue
+            entries.append({"api": api, "kind": "constant", "introduced": intro,
+                            "minimum": "6.0", "status": "implemented",
+                            "facts": options.constants_facts,
+                            "source": "the value read out of the host's own Intents at runtime by dlsym, and "
+                                      "the object's own rung: %s, which is the release it first appears in"
+                                      % carried["rung"],
+                            "reason": "the header declares it an extern NSString *const and the release has no "
+                                      "such symbol in the built libraries or the 6.1.3 cache, so the port has "
+                                      "to export it; the SDK's own availability for it is %s"
+                                      % carried["introduced"],
+                            "effect": "the symbol is there and its value is the system's own: a program that "
+                                      "reads it gets the same string the host holds, and the object's release "
+                                      "rung is %s, so a band gate sees the definition only in the bands that "
+                                      "export it" % carried["rung"]})
+            continue
+        if kind == "enum":
             continue
         if kind == "protocol":
             # A protocol is the framework's, not one group's: it is written once, in the file of

@@ -99,6 +99,31 @@ def main():
             handle.write("\n".join(body) + "\n")
         written.append((name, len(rows), ".".join(str(p) for p in rung)))
 
+    # The MANIFEST. gen-registry.py skips every kind == "constant", on the reasoning that an enum case
+    # and its type are the header's own and the compiler writes them into the application. That is true
+    # of an enum case and FALSE of these 83: the package DEFINES each one and the 6.1.3 cache has no such
+    # symbol, so the port has to export it and the registry has to say so. Without this file a
+    # regeneration drops the rows, and the gate that reads the link reports every one of them as
+    # "built, but no entry in registry/" - which is what it did.
+    #
+    # The manifest is this tool's own output rather than a hand-written list, so the names that get a
+    # row and the names that got compiled are the same set by construction and cannot drift.
+    manifest = {row["api"]: {"introduced": row["introduced"], "rung": ".".join(str(p) for p in rung_of(row["introduced"]))}
+                for row in wanted}
+    # outdir is packages/a/apple-backports/Intents, so the registry is ONE level up from it - and the
+    # directory is created rather than assumed, because a run into a fresh tree has no registry/Intents.
+    manifest_dir = os.path.normpath(os.path.join(outdir, "..", "registry", "Intents"))
+    os.makedirs(manifest_dir, exist_ok=True)
+    manifest_path = os.path.join(manifest_dir, "constants.json")
+    with open(manifest_path, "w", encoding="utf-8") as handle:
+        json.dump({"source": "tools/intents/emit-intents-constants.py",
+                   "note": "the extern Intents constants this package DEFINES and exports, with the "
+                           "release each first appears in; gen-registry.py reads this so a regeneration "
+                           "does not drop their rows",
+                   "constants": manifest}, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+    print("  manifest %s (%d names)" % (manifest_path, len(manifest)))
+
     for name, count, rung in written:
         print("  %-28s %2d constants (first exported in %s)" % (name, count, rung))
     print("  %d files, %d constants" % (len(written), sum(c for _, c, _ in written)))
