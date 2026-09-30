@@ -100,7 +100,14 @@ carrying a list of the library's assets in the picker, which is a row about
 against a transcription of the SDK's declarations and asks the resulting binary the same
 questions as one linked against the host's own framework, then compares the answers line for
 line; `--mutated` changes one of them and must fail, which is what shows the comparison can
-fail. `tests/backports/device/phpicker.m` calls every filter and every composition on a
-device, and asks the picker itself which media types a composed filter produced, since that is
-the only public way to ask. That test is compiled here and not run: the run is a device, and the
-coordinator's.
+fail. `tests/backports/device/phpickermodel.m` asks every filter, every composition and the four
+inputs above on a real device, as a command-line test built like a port image: 38 checks, 0
+failures on an iPad 2 running iOS 6.1.3 (2026-10-01), and the four the host does not answer are
+`ok` there. So the readings above are not contradicted by any platform the port runs on - the
+release answers all four.
+
+`tests/backports/device/phpicker.m` asks the picker itself which media types a composed filter
+produced, since that is the only public way to ask, and it is an application. It is compiled here
+and **not run**: this device has no `/private/var/tmp/sblaunch`, and a bundle SpringBoard will not
+start is a test that measures nothing. The presentation half is the coordinator's, or the
+emulator's.

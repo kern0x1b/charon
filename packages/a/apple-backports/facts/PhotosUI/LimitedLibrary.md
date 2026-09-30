@@ -50,7 +50,10 @@ device test calls both, which is the only place a view controller exists to pres
 
 ## Where it is proved
 
-`tests/backports/device/phpicker.m` checks that the class comes from `libPhotosBackports.dylib`,
-that it answers both selectors, that presenting one presents nothing, and that the other form
-calls its block once with no newly selected assets. That test is compiled here and not run: the
-run is a device, and the coordinator's.
+`tests/backports/device/phpickermodel.m` measures the behaviour on a real device: both selectors
+answered, presenting one raised nothing and presented nothing, and the other form called its block
+once with no newly selected assets. 38 checks, 0 failures on an iPad 2 running iOS 6.1.3
+(2026-10-01).
+
+`tests/backports/device/phpicker.m` checks the same two calls in an application, and is compiled
+here and not run: this device has no `/private/var/tmp/sblaunch`.

@@ -61,7 +61,11 @@ delegate call and not a state the picker keeps.
 
 ## Where it is proved
 
-`tests/backports/device/phpicker.m` calls all four on a device, and asks the picker itself what a
-composed filter shows - the release's picker is given the media types the filter names, and
-reading them back off the child is the only public way to ask. That test is compiled here and not
-run: the run is a device, and the coordinator's.
+`tests/backports/device/phpickermodel.m` calls all four on a real device, as a command-line test
+built like a port image: 38 checks, 0 failures on an iPad 2 running iOS 6.1.3 (2026-10-01). The
+defaults, the copy, the two selectors and the two calls that change nothing are all measured there.
+
+`tests/backports/device/phpicker.m` asks the picker itself what a composed filter shows - the
+release's picker is given the media types the filter names, and reading them back off the child is
+the only public way to ask. It is an application, and it is compiled here and not run: this device
+has no `/private/var/tmp/sblaunch`, and that part is the coordinator's or the emulator's.
