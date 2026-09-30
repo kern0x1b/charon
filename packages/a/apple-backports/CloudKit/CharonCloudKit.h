@@ -88,6 +88,11 @@ typedef void (^CharonCKCompletion)(id _Nullable body, NSError *_Nullable error);
 // A database is only ever made by a container, and neither names the other, so the transport is
 // told: the container a database belongs to and the environment it is reached in.
 - (NSString *)environmentForContainer:(CKContainer *)container;
+// The database root of the interface for one container and one database: `database/1/<container>/
+// <environment>/<scope>`, with 1 the development environment and 2 production.
+- (NSString *)databaseRootForContainer:(NSString *)containerIdentifier
+                              database:(CKDatabase *)database
+                           environment:(NSString *)environment;
 // A database is only ever made by a container, and neither names the other, so the transport is
 // told: the container a database belongs to and the environment it is reached in. This is a private
 // table and not a property of either object, which is why the database root is built here.
@@ -102,11 +107,35 @@ typedef void (^CharonCKCompletion)(id _Nullable body, NSError *_Nullable error);
 @property (nonatomic, strong, nullable) NSMapTable *environments;
 @end
 
+// MARK: - The documents
+//
+// A subscription and a record, and the JSON the service reads and writes for each. The record's
+// snapshot is the fields it holds as they go up: a save sends what is there now, not what was there
+// before, and the change token the service holds is what says which of the two a caller means.
+extern NSDictionary *CharonCKSubscriptionDocument(CKSubscription *subscription);
+extern CKRecordZone *_Nullable CharonCKZoneWithDocument(NSDictionary *document);
+extern CKSubscription *_Nullable CharonCKSubscriptionWithDocument(NSDictionary *document);
+extern NSDictionary *CharonCKFieldsSnapshot(CKRecord *record);
+// The system's fields of a record, which a caller cannot write and a save must not send.
+extern NSDictionary *CharonCKSystemFieldsSnapshot(CKRecord *record);
+
+// MARK: - The operations
+//
+// An operation is an NSOperation of the scheduler this package carries, and CKDatabaseOperation adds
+// the database to run it against. The scheduler is the port's own rather than the release's
+// NSOperationQueue, so that an operation's priority, its quality of service and its cancellation are
+// its own and a caller that adds one to a database does not inherit a queue's state.
+@interface CharonCKOPScheduler : NSObject
++ (void)add:(NSOperation *)operation;
++ (void)cancelAll;
+@end
+
 // MARK: - The paths
 
 extern NSString *CharonCKDatabaseRoot(CKDatabase *database);
 extern NSString *CharonCKZonePath(CKRecordZoneID *zoneID);
 extern NSDictionary *CharonCKRecordIDDocument(CKRecordID *recordID);
+extern NSDictionary *CharonCKZoneIDDocument(CKRecordZoneID *zoneID);
 extern CKRecordID *_Nullable CharonCKRecordIDFromDocument(NSDictionary *_Nullable json);
 
 // MARK: - The query

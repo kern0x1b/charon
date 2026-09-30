@@ -106,3 +106,40 @@ spoken to.
 | `CKShare`, `CKSyncEngine` and its events | nothing | they are the request, and the request is the transport |
 | `CKShareTransferRepresentation`, the `NSItemProvider` sharing support | nothing | carrying a share out of the process is the share sheet, which is an application |
 | `CKShare`'s own record fields of iOS 26 | nothing | `CKShare` is the save, and the save is the transport |
+
+## What the container and the database answer
+
+Added after the value half; the wire shapes are in `WebServices.md`.
+
+- **`CKContainer` is a name and three databases.** The identifier is read out of the Info.plist key
+  CloudKit's own tooling writes and kept as given. A database is made once per scope, because the
+  transport is told which container a database belongs to and a database with no container could not
+  make a request.
+- **`+[CKDatabase new]` and `-[CKDatabase init]` raise** `NSInternalInconsistencyException` with the
+  host's own words, measured: *"Use +[CKContainer privateCloudDatabase] or +[CKContainer publicCloudDatabase]
+  instead of creating your own"*.
+- **A query whose predicate the service has no form for never leaves the process.** The caller is
+  answered `CKErrorInvalidArguments` on the transport's own queue, which is the code `CKErrorCode`
+  names for a malformed predicate.
+- **A lookup that found nothing answers `CKErrorUnknownItem`**, and a missing zone
+  `CKErrorZoneNotFound`. The service answers 200 with an empty list for both, and a caller handed
+  `nil` with no error cannot tell that from a record whose value is nil.
+- **A save sends a create or an update, and the change tag decides which.** A record that has never
+  been saved is a `create`; one that has a change tag is an `update`, and the tag is what the service
+  issued. A port that invented one would overwrite a record it had not read. The system fields - the
+  change tag, the dates and the two user record identifiers - are kept out of the fields that go up,
+  because the service keeps those and a port that sent them back would be asking it to take its word
+  for its own state.
+- **The account status is `CKAccountStatusNoAccount`.** Whether the device has an iCloud account is
+  the release's own question and this release has no account service to ask, so a device that has none
+  answers that, and a process with no container answers it with `CKErrorBadContainer`. This is a
+  reading of the release's own state, not a guess: `facts/CloudKit/Errors.md` says what the port does
+  and does not claim here.
+- **The user discoverability permission is never granted.** A permission that has never been asked
+  for answers the header's own initial state; asking for one answers *could not complete* with
+  `CKErrorNotAuthenticated`, because asking needs the service and an account and this port has
+  neither, and a caller told the initial state instead would be told nothing had happened.
+- **The user record is answered without a request.** The record of the signed-in user is the only user
+  record a container has, under `_defaultOwner` in the default zone, so a caller that asks for the
+  identifier of the user it is in gets it without one; a container with no user yet is answered the
+  same way, because the service creates it on first use.

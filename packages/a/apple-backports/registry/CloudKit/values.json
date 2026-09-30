@@ -599,6 +599,36 @@
     "effect": "raises NSInvalidArgumentException with the reason \"Do not instantiate CKShare.Metadata, obtain them from CKFetchShareMetadataOperation or platform-specific scene / app delegate callbacks.\", which are the host's own words",
     "source": "packages/a/apple-backports/CloudKit/CKValues10.m",
     "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKContainer",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface; its databases are made once each and every request they make is one of the documented endpoints",
+    "effect": "the identifier is read out of the Info.plist key CloudKit's own tooling writes and kept; the three databases are made once per scope and a database is only ever reachable through the container that made it; +[CKDatabase new] and -[CKDatabase init] raise NSInternalInconsistencyException with the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKContainerDatabase8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKDatabase",
+    "kind": "class",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and each of its fourteen convenience methods is one request and one answer over the web services interface",
+    "effect": "each method is the endpoint facts/CloudKit/WebServices.md names; a query whose predicate the service has no form for never leaves the process and answers CKErrorInvalidArguments, which is the code the header names for a malformed predicate; a lookup that found nothing answers CKErrorUnknownItem rather than nil with no error, and a missing zone CKErrorZoneNotFound",
+    "source": "packages/a/apple-backports/CloudKit/CKContainerDatabase8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "+[CKDatabase new]",
+    "kind": "method",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "measured: the host's own CloudKit refuses this initializer, and refuses it this way",
+    "effect": "raises NSInternalInconsistencyException with the reason \"Use +[CKContainer privateCloudDatabase] or +[CKContainer publicCloudDatabase] instead of creating your own\", which are the host's own words",
+    "source": "packages/a/apple-backports/CloudKit/CKContainerDatabase8.m",
+    "facts": "facts/CloudKit/Values.md"
   }
   ],
   "framework": "CloudKit"

@@ -42,9 +42,13 @@ NSDictionary *CharonCKRecordIDDocument(CKRecordID *recordID)
 {
     NSMutableDictionary *document = [NSMutableDictionary dictionary];
     document[@"recordName"] = recordID.recordName;
-    document[@"zoneID"] = @{@"zoneName": recordID.zoneID.zoneName,
-                            @"ownerName": recordID.zoneID.ownerName};
+    document[@"zoneID"] = CharonCKZoneIDDocument(recordID.zoneID);
     return document;
+}
+
+NSDictionary *CharonCKZoneIDDocument(CKRecordZoneID *zoneID)
+{
+    return @{@"zoneName": zoneID.zoneName, @"ownerName": zoneID.ownerName};
 }
 
 CKRecordID *CharonCKRecordIDFromDocument(NSDictionary *json)
@@ -317,6 +321,16 @@ NSDictionary *CharonCKFieldsFromJSON(NSDictionary *json)
         }
     }
     return out;
+}
+
+CKRecordZone *CharonCKZoneWithDocument(NSDictionary *document)
+{
+    NSDictionary *zone = [document[@"zoneID"] isKindOfClass:[NSDictionary class]] ? document[@"zoneID"] : nil;
+    if (!zone || !zone[@"zoneName"]) {
+        return nil;
+    }
+    return [[CKRecordZone alloc] initWithZoneID:[[CKRecordZoneID alloc] initWithZoneName:zone[@"zoneName"]
+                                                                               ownerName:zone[@"ownerName"] ?: CKOwnerDefaultName]];
 }
 
 // MARK: - The query document
