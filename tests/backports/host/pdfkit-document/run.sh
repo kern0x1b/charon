@@ -27,6 +27,10 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation "$here/make-pdf.m
     echo "BUILD the fixture writer did not compile:"; head -6 "$build/make.log" | sed 's/^/    /'; exit 1; }
 python3 "$here/make-box-pdfs.py" "$build/fixtures" > /dev/null
 "$build/make-pdf" "$build/fixtures" > /dev/null
+# the annotation fixtures join the same directory, written by the release-aware writer rather than by
+# CGPDFContext: an annotation's dictionary has to be in the file by the time it is read, and these are
+# measured by both sides through the same /Annots array the port walks.
+python3 "$here/tools/make-annotation-fixtures.py" "$build/fixtures" > /dev/null
 
 
 # The fixture must carry text, checked by reading the stream back through CGPDFStreamCopyData, which
@@ -55,7 +59,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 # -Wall and NOT -w: -w switches the warning off, and -Werror does not switch a disabled warning
 # back on, so with -w the completeness check was decorative - it said nothing while a body was missing.
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
-    "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" \
+    "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
 
@@ -119,7 +123,7 @@ compared = differences = skipped = 0
 # the SINGULAR accessor's presence is EXPECTED to differ: the port implements what the host lacks, and
 # that is why its row stays inert.  Named here, inside the loop, so it is neither compared nor counted as
 # a difference.
-EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported", "page0.annotations.supported",
+EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported",
                      "view.window.supported")
 # and the ones this run cannot compare at all, with the reason it prints for each
 NOT_COMPARED = {

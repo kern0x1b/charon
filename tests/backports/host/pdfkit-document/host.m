@@ -111,8 +111,21 @@ int main(int argc, char **argv)
                 printf("%s.page0.pageIndex.supported=%d\n", name,
                        (int)[first respondsToSelector:NSSelectorFromString(@"pageIndex")]);
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)first.numberOfCharacters);
-                printf("%s.page0.annotations.supported=%d\n", name,
-                       (int)[first respondsToSelector:NSSelectorFromString(@"annotations")]);
+                printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *an = first.annotations[a];
+                    CGRect r = an.bounds;
+                    printf("%s.page0.annotation%u.type=%s\n", name, a,
+                           an.type ? an.type.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.bounds=%.4f,%.4f,%.4f,%.4f\n", name, a,
+                           r.origin.x, r.origin.y, r.size.width, r.size.height);
+                    printf("%s.page0.annotation%u.contents=%s\n", name, a,
+                           an.contents ? an.contents.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.userName=%s\n", name, a,
+                           an.userName ? an.userName.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.shouldPrint=%d\n", name, a, (int)an.shouldPrint);
+                    printf("%s.page0.annotation%u.page=%s\n", name, a, an.page ? "an-object" : "(nil)");
+                }
             } else {
                 printf("%s.page0.rotation=NOT-COMPARED-no-page\n", name);
                 printf("%s.page0.label=NOT-COMPARED-no-page\n", name);

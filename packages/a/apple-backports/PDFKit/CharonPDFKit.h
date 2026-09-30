@@ -92,6 +92,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, copy, nullable) NSString *label;
 @property (readonly) NSUInteger numberOfCharacters;
 @property (readonly) NSUInteger annotationCount;
+// -annotations is the array the count measures, in the page dictionary's own /Annots order.  The
+// model is seven members deep, not the whole family: the members with a subtype-dependent absent
+// answer (-color, -border), the measured-but-unidentified -shouldDisplay, and the write and draw
+// paths are not in it, and PDFAnnotation11.m says which is which.
+@property (readonly, copy) NSArray *annotations;
 @end
 
 // The port's own accessors, for its own object graph: the CGPDFDocument and the CGPDFPage underneath,
@@ -102,6 +107,47 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface PDFPage (CharonInternals)
 - (nullable CGPDFPageRef)charon_CGPDFPage;
+@end
+
+// PDFAnnotation, over the annotation dictionary CoreGraphics already parsed out of a page's /Annots.
+// Only the members measured on the host are declared, and each is a reading of that dictionary rather
+// than a substitute for it:
+//
+//   -type             the /Subtype NAME as a string - "Text", "Link", "Square" - NOT an integer.  The
+//                     property is NSString* const (PDFAnnotation.h:52); the five large negative numbers
+//                     recorded before this were NSTaggedPointerString values, which pack the characters
+//                     into the pointer and read as nonsense when cast to a long.
+//   -bounds           the /Rect, except for a /Text annotation, which is a fixed 24x24 square in the
+//                     rect's top-left corner at (minX, maxY-24).  Measured on a rect the rule was not
+//                     fitted to, and the 24 is a constant rather than derived - two rects of different
+//                     sizes both answer 24x24.  What the 24 IS was not measured and is not claimed.
+//   -contents, -userName  the /Contents and /T, nil when the key is absent.
+//   -modificationDate the /M in the one form measured, D:YYYYMMDDHHmmSS, read as UTC.
+//   -shouldPrint      /F's PRINT bit, measured on /F 0 (NO), 2 (NO) and 4 (YES).
+//   -page             the page the annotation was found on, weak.
+//
+// NOT declared, each for a named reason its row repeats: -color and -border, whose absent answers are
+// subtype-dependent (a /Highlight with no /C answers a default yellow; a /Square with no /Border
+// answers a default 1.0 line, while a /Link answers nil for both); -shouldDisplay, which answered YES
+// for every /F measured and is not the Hidden bit; -hasAppearanceStream and -highlighted, measured NO
+// with nothing in the fixtures to change them; -popup and -action, classes of their own; the
+// annotation-key API, which is its own family and whose setters are a write path; -drawWithBox:
+// (inContext:), which draws into a context this port does not have; and the initializers, which write.
+@interface PDFAnnotation : NSObject
+@property (nonatomic, copy, nullable) NSString *type;
+@property (nonatomic) CGRect bounds;
+@property (nonatomic, copy, nullable) NSString *contents;
+@property (nonatomic, copy, nullable) NSString *userName;
+@property (nonatomic, copy, nullable) NSDate *modificationDate;
+@property (nonatomic) BOOL shouldPrint;
+@property (nonatomic, weak, nullable) PDFPage *page;
+@end
+
+// The port's own constructor, over a dictionary already in the object graph.  Not Apple's
+// -initWithBounds:forType:withProperties:, which builds a new annotation and writes it into a document.
+@interface PDFAnnotation (CharonInternals)
+- (nullable instancetype)initWithCharonDictionary:(CGPDFDictionaryRef)annotation
+                                          onPage:(nullable PDFPage *)page;
 @end
 
 NS_ASSUME_NONNULL_END

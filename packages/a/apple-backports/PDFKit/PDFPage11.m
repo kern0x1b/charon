@@ -75,18 +75,37 @@
     return content ? content : @"";
 }
 
-// The annotation COUNT is not answered: -annotations hands back PDFAnnotation objects and that model is
-// not built - 62 of its rows are still owed - so the count would be a count over nothing.  Zero is the
-// honest answer for a document whose /Annots no page names, which is every fixture here.
-- (NSUInteger)annotationCount
+// The page's ANNOTATIONS, built over the page's own /Annots array: each element is a dictionary
+// CoreGraphics already parsed, and each becomes a PDFAnnotation over that dictionary.  The order is
+// the array's own, which is the order the host hands them back in.
+- (NSArray *)annotations
 {
-    CGPDFDictionaryRef dictionary = _page ? CGPDFPageGetDictionary(_page) : NULL;
+    if (_page == NULL)
+        return @[];
+    CGPDFDictionaryRef dictionary = CGPDFPageGetDictionary(_page);
     if (dictionary == NULL)
-        return 0;
+        return @[];
     CGPDFArrayRef annots = NULL;
     if (!CGPDFDictionaryGetArray(dictionary, "Annots", &annots) || annots == NULL)
-        return 0;
-    return (NSUInteger)CGPDFArrayGetCount(annots);
+        return @[];
+    size_t count = CGPDFArrayGetCount(annots);
+    NSMutableArray *answer = [NSMutableArray arrayWithCapacity:count];
+    for (size_t i = 0; i < count; i++) {
+        CGPDFDictionaryRef annotation = NULL;
+        if (!CGPDFArrayGetDictionary(annots, i, &annotation) || annotation == NULL)
+            continue;
+        PDFAnnotation *built = [[PDFAnnotation alloc] initWithCharonDictionary:annotation onPage:self];
+        if (built != nil)
+            [answer addObject:built];
+    }
+    return answer;
+}
+
+// The annotation COUNT is the length of that array: an array this release cannot answer, and a
+// document whose page names no /Annots, answer zero.
+- (NSUInteger)annotationCount
+{
+    return [self annotations].count;
 }
 
 - (instancetype)initWithCGPDFPage:(CGPDFPageRef)page document:(PDFDocument *)document index:(NSUInteger)index

@@ -83,8 +83,26 @@ HEADERS = os.path.join(SDK, "System/Library/Frameworks/PDFKit.framework/Headers"
 # A method line may wrap, and @property carries an optional custom setter: - (nonatomic, setter=enablePageShadows:)
 # BOOL pageShadowsEnabled must read as the property "pageShadowsEnabled", not as a type word.
 CLASS_BLOCK = re.compile(r"@interface\s+(\w+)[^\n]*\n(.*?)@end", re.S)
-DECL_METHOD = re.compile(r"^\s*[-+]\s*\([^)]*\)\s*([A-Za-z_]\w*)\s*(?::|;|$)", re.M)
-DECL_PROPERTY = re.compile(r"@property\s*(?:\([^)]*\))?[^;\n]*?\b([A-Za-z_]\w*)\s*;")
+# A METHOD has the same trailing-macro shape as a property, and for the same reason: the 26.2 header
+# writes "- (void)removeAllAppearanceStreams PDFKIT_DEPRECATED(10_5, 10_12, NA, NA);", so the token
+# next to the ';' is a ')' and a pattern that wanted a ':' or a ';' there matched nothing.  It is the
+# same root cause as the property pattern and it is the third place it bit - this row was the only one
+# still flagged after that one was fixed, and it is a member the header plainly declares.
+DECL_METHOD = re.compile(
+    r"^\s*[-+]\s*\([^)]*\)\s*([A-Za-z_]\w*)\s*(?::|(?:[A-Z][A-Z0-9_]*\([^)]*\)\s*)*;)", re.M)
+# A property's NAME is the last identifier before the ';', and it is NOT always adjacent to it: Apple's
+# headers end a declaration with an availability macro - "@property (nonatomic, copy, nullable)
+# NSDate *modificationDate PDFKIT_AVAILABLE(10_5, 11_0);" - so the token next to the ';' is a ')'.
+# A pattern that wanted a word there matched nothing at all, and the members that still passed were only
+# the ones the PORT's own header declares without a macro.  So the trailing macro is consumed and named
+# apart, and the name is the last identifier left.  It is the MACRO and not the '*': a property of a
+# scalar type with a macro fails identically, and one of a class type without one is found.
+DECL_PROPERTY = re.compile(
+    r"@property\s*(?:\([^)]*\))?[^;\n]*?"
+    r"(?P<name>[A-Za-z_]\w*)\s*"
+    r"(?:[A-Z][A-Z0-9_]*\([^)]*\)\s*)*;")
+# A class-typed property whose name is followed by the macro: the name is the one captured above.  A
+# declaration with NO macro captures the same way, because the macro group may match zero times.
 # NSObject's own -dealloc is not in PDFKit's headers, and every class inherits it.
 INHERITED = {"dealloc", "init", "copyWithZone:"}
 
@@ -162,17 +180,19 @@ def main():
                 if owner not in sdk_classes and owner not in own_classes:
                     problems.append((api, f"no @interface {owner} in the 26.2 headers"))
                 elif prop in sdk_properties and owner not in sdk_properties[prop] and \
-                        prop not in own_properties:
+                        owner not in own_properties.get(prop, set()):
                     problems.append((api, f"{owner}.{prop} is declared, but on "
                                             f"{sorted(sdk_properties[prop])} and not on {owner}"))
                 elif prop in INHERITED:
                     continue
-                elif (prop not in sdk_properties and prop not in own_properties
+                elif (prop not in sdk_properties
+                      and not (owner in own_properties.get(prop, set()))
                       and not (owner in sdk_methods.get(prop, set()))
                       and not (owner in own_methods.get(prop, set()))):
                     problems.append((api, f"{owner}.{prop} is declared by no @interface, "
                                             f"as a property or a method"))
-                elif owner not in sdk_properties.get(prop, set()) and prop in own_properties:
+                elif owner not in sdk_properties.get(prop, set()) and \
+                        owner in own_properties.get(prop, set()):
                     ours += 1
             else:
                 if api not in sdk_classes and api not in own_classes:

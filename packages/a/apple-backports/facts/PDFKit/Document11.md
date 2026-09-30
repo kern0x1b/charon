@@ -256,6 +256,73 @@ it hands back, so its byte count is not the file's.  Measured host 886 / 896 / 8
 against the port's 644 / 655 / 655 / 569 / 8775 / 10105 on the six fixtures - every pair two different
 documents, and a count of them is not a fact either side can agree on.
 
+## PDFAnnotation: the host answers over the page dictionary, and ONE of its answers is not understood
+
+`tools/make-annotation-fixtures.py` writes three fixtures with annotations, every xref offset and
+/Length measured, and `tools/host-annotation-windowless.m` asks the host about them.  All three OPEN and
+the host reports what they carry:
+
+    annot-text.pdf   opened pages=1 annotations=1
+        type=-7465777360276108450  subtype=/Text  contents="a note on the page"  userName="the annotator"
+        color=Device RGB colorspace 1 0 0 1   modificationDate=2026-09-30 00:00:00 +0000
+        border=solid lineWidth:1.0 hCorner:0.0 vCorner:0.0   flags=4   page=an-object
+    annot-free.pdf  opened pages=1 annotations=1
+        type=-7465777392304208034  subtype=/Link  contents=bare  userName=(nil)  color=(nil)
+        modificationDate=(nil)  border=(nil)  flags=4  page=an-object
+    annot-two.pdf   opened pages=1 annotations=2     (the two above, in order)
+
+So the COUNT, the SUBTYPE, /Contents, /T, /C, /M, /Border, /F and the page back-reference are all
+answered by the host, and the empty case answers nil for exactly the keys the fixture omits - which is
+the case worth having, because a member that reads an absent key must say nil and not zero.
+
+BOUNDS IS THE ICON FOR A NOTE AND THE RECT FOR EVERYTHING ELSE, and that is measured on a rect the
+rule was NOT fitted to:
+
+    $ python3 tests/backports/host/pdfkit-document/tools/make-annotation-fixtures.py .agent-work/fin/annotfix
+    $ .agent-work/fin/ha .agent-work/fin/annotfix/annot-text-holdout.pdf …/annot-link-wide.pdf …/annot-square.pdf …/annot-highlight.pdf
+
+    annot-text-holdout  /Text     /Rect [10 20 500 90]   bounds={{10, 66}, {24, 24}}
+        x = 10 = rect minX,  y = 66 = 90 - 24 = rect maxY - 24,  24x24
+    annot-link-wide     /Link     /Rect [0 0 600 700]    bounds={{0, 0}, {600, 700}}   the rect
+    annot-square        /Square   /Rect [40 40 240 140]  bounds={{40, 40}, {200, 100}} the rect
+    annot-highlight     /Highlight/Rect [0 0 200 30]     bounds={{0, 0}, {200, 30}}   the rect
+
+So a /Text annotation is shown as a 24x24 note icon anchored at (rect minX, rect maxY - 24), and
+every other subtype answers the rectangle it was written with.  Three subtypes agree on "not a note is
+the rect", and the icon rule holds on a rect it was derived from a DIFFERENT one.  This is a rule and
+not an accident, and it is a rule about /Text and not about annotations.
+
+TWO DEFAULTS THE HOST SUPPLIES, and both are answers rather than absences:
+
+    /Square with no /Border    answers a DEFAULT border: solid lineWidth 1.0
+    /Highlight with no /C      answers an sRGB YELLOW: 0.980392 0.803922 0.352941 1
+    /Link and /Highlight with no /Border answer NIL, and /Link with no /C answers nil
+
+So a missing key is not always nil, and a member that reads /Border or /C must say which of the three
+it is: the value written, the host's default, or nil.
+
+-type IS A STRING AND NOT AN INTEGER, and the first reading of it here was wrong.  The probe printed
+`(long)a.type` and got five large negative numbers, one per subtype, stable across the two fixtures
+that share a subtype - which is what a per-subtype constant looks like, and is why this file recorded
+them as "per-subtype TYPE constants ... comparable as opaque numbers".  They are not.  PDFAnnotation.h
+declares PDFAnnotationSubtype as NSString* const, and the host answers an NSTaggedPointerString, which
+packs the characters INTO the pointer, so reading it as a long printed a tagged value and not a type.
+Measured, after the type was asked for as an object:
+
+    $ clang -fobjc-arc -framework Foundation -framework AppKit -framework PDFKit \
+        -o .agent-work/fin/typeof .agent-work/fin/typeof.m
+    $ .agent-work/fin/typeof .agent-work/fin/annotfix/annot-{text,free,square,highlight,noprint}.pdf
+
+    annot-text.pdf       type-as-string=Text       class=NSTaggedPointerString
+    annot-free.pdf       type-as-string=Link       class=NSTaggedPointerString
+    annot-square.pdf     type-as-string=Square     class=NSTaggedPointerString
+    annot-highlight.pdf  type-as-string=Highlight  class=NSTaggedPointerString
+    annot-noprint.pdf    type-as-string=Square     class=NSTaggedPointerString
+
+So the answer is the dictionary's /Subtype name with no leading slash, and the stability across
+fixtures is interning - which is a property of the runtime, not a constant of the subtype.  A probe
+that reads an object and casts it to a number has not measured a type; it has measured a pointer.
+
 ## The members this package names and refuses, which are not rows
 
 Three members a plan named are NOT this API and carry NO registry row, because a row records what the

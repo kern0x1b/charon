@@ -121,11 +121,21 @@ int main(int argc, char **argv)
                 printf("%s.page0.pageIndex.supported=%d\n", name,
                        (int)[first respondsToSelector:@selector(pageIndex)]);
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
-                // -annotations hands back PDFAnnotation objects and the annotation model is NOT built
-                // yet - 62 rows of it are still owed - so the case asks whether the selector is there
-                // at all, which is the honest fact until the model exists.
-                printf("%s.page0.annotations.supported=%d\n", name,
-                       (int)[first respondsToSelector:@selector(annotations)]);
+                printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                for (unsigned a = 0; a < first.annotations.count; a++) {
+                    PDFAnnotation *an = first.annotations[a];
+                    CGRect r = an.bounds;
+                    printf("%s.page0.annotation%u.type=%s\n", name, a,
+                           an.type ? an.type.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.bounds=%.4f,%.4f,%.4f,%.4f\n", name, a,
+                           r.origin.x, r.origin.y, r.size.width, r.size.height);
+                    printf("%s.page0.annotation%u.contents=%s\n", name, a,
+                           an.contents ? an.contents.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.userName=%s\n", name, a,
+                           an.userName ? an.userName.UTF8String : "(nil)");
+                    printf("%s.page0.annotation%u.shouldPrint=%d\n", name, a, (int)an.shouldPrint);
+                    printf("%s.page0.annotation%u.page=%s\n", name, a, an.page ? "an-object" : "(nil)");
+                }
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++) {
                     CGRect box = [first boundsForBox:kinds[k].box];
                     printf("%s.page0.%s=%.4f,%.4f,%.4f,%.4f\n", name, kinds[k].name, box.origin.x,
