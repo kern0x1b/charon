@@ -22,13 +22,24 @@
 // is not among them.
 //
 // The measurement that settles it, because "the bridge does not do it" is only half a claim:
-//   - Apple's entry point for handing a command an event is -[MPRemoteCommand deliverEvent:]. It is on
-//     NO line of the 6.1.3 selector universe (113981 distinct names, controls prepareToPlay 1 and
-//     aSelectorNoFrameworkHas 0), and there is no MPRemoteCommand class among the 236 to declare it. The
-//     port does not define it either: no file under packages/a/apple-backports/ DEFINES a deliverEvent:
-//     method - the name appears in this family's own prose about it and in no @implementation. The
-//     port's equivalent is its own -charon_dispatch: (MPRemoteCommandCenter71.m:133), and that is
-//     called from exactly one place, the switch.
+//   - APPLE PUBLISHES NO API THAT HANDS A COMMAND AN EVENT, so there is nothing to wire. grep -rn
+//     'deliverEvent|sendEvent' over MediaPlayer.framework/Headers reads NO file in SDK 26.2 and no file
+//     in 16.4, and MPRemoteCommand's public surface is exactly enabled, addTarget:action:,
+//     removeTarget:action:, removeTarget: and addTargetWithHandler:. An application sets a handler; only
+//     the system invokes it. "deliverEvent:" is a PRIVATE selector on MPRemoteCommandCenter that no
+//     header declares - which is why the 6.1.3 selector universe's 113981 distinct names cannot hold it
+//     either, the 236 classes having no MPRemoteCommand to declare it - and why no file under
+//     packages/a/apple-backports/ defines it either. The port's equivalent is its own
+//     -charon_dispatch: (MPRemoteCommandCenter71.m:133), and that is called from exactly one place.
+//     Adding a delivery seam of the port's own would be the port inventing the event source that no iOS
+//     provides, which is the failure this port exists to avoid - and it would be a private-API trick
+//     where a public mechanism does not exist.
+//   - THE LINE THAT PRODUCED THE FALSE CLAIM IS MPRemoteCommandCenter71.m:33: charon_command()
+//     "creates them lazily by class regardless of which object file defines them". That sentence is
+//     true, and "them" is the COMMAND objects - MPRemoteCommand and its subclasses - which is exactly
+//     what charon_command() allocates. Reading it as covering the events is what this file first
+//     claimed, and the next reader should not.
+//     -charon_dispatch: is called from exactly one place, the switch.
 //   - that switch handles ten subtypes: Play, Pause, Stop, TogglePlayPause, NextTrack, PreviousTrack,
 //     BeginSeekingForward, EndSeekingForward, BeginSeekingBackward, EndSeekingBackward.
 //   - and UIEvent.h in SDK 26.2 AND in 16.4 declares exactly those ten, 100 through 109, with no

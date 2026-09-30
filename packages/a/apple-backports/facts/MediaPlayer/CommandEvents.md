@@ -43,21 +43,32 @@ port's bridge "builds every command event lazily by class, so carrying the event
 command reach a handler", and that `MPFeedbackCommandEvent` closed a link missing from the ancestor
 chain four carried events walk. Both are false, and here is the measurement that says so.
 
-**`deliverEvent:` is Apple's entry point for handing a command an event, and nothing here has it.**
+**Apple publishes no API that hands a command an event, so there is nothing to wire.** That is the
+question the reviewer's finding turns on, and it is settled by the headers, not by this tree:
 
 | question | answer | how it was read |
 | --- | --- | --- |
-| `-deliverEvent:` on 6.1.3? | **no line** in the 113981-name list | `grep -cxF "deliverEvent:" ~/.charon/dyld/6.1.3/selectors_armv7.txt` -> 0; controls `prepareToPlay` 1, `aSelectorNoFrameworkHas` 0 |
-| an `MPRemoteCommand` to declare it on 6.1.3? | none of the 236 classes | `tools/mach32_methods.py`, image `0x31fe3000` |
-| does the port define it? | **nothing** | `grep -rn deliverEvent packages/a/apple-backports/` reads no file |
+| any public API that delivers an event to a command? | **none** | `grep -rn 'deliverEvent\|sendEvent' .../MediaPlayer.framework/Headers` -> no file in SDK 26.2, no file in 16.4 |
+| what does `MPRemoteCommand` publish? | `enabled`, `addTarget:action:`, `removeTarget:action:`, `removeTarget:`, `addTargetWithHandler:` | `MPRemoteCommand.h`, both SDKs, byte-identical |
+| so who invokes a handler? | **only the system** | an application sets a handler and has no way to call it |
+| where does `deliverEvent:` live? | `MPRemoteCommandCenter`, **private**, declared by no header | hence on no line of the 6.1.3 universe either - the 236 classes hold no `MPRemoteCommand` to declare it; controls `prepareToPlay` 1, `aSelectorNoFrameworkHas` 0 |
 | what does the port use instead? | its own `-charon_dispatch:` | `MPRemoteCommandCenter71.m:133` |
 | who calls it? | **one place**, the subtype switch | `MPRemoteCommandCenter71.m:250-275` |
 | what does that switch map? | ten cases: Play, Pause, Stop, TogglePlayPause, NextTrack, PreviousTrack, BeginSeekingForward, EndSeekingForward, BeginSeekingBackward, EndSeekingBackward | read from the switch |
 | could any iOS send more? | **no** - `UIEvent.h` in SDK **26.2 and 16.4** declares exactly those ten, `100` through `109`, with no repeat-mode, shuffle-mode, rating, playback-rate or feedback case at any availability | both SDK headers, read |
 
-So no `UIEvent` on any iOS can carry a repeat-mode, shuffle-mode or feedback change, and no code path in
-this tree builds any of these three events. A repeat-mode change on this release is a switch in
-Settings.app and nothing else; it reaches an application through no API at all.
+So there is no delivery path on any iOS, and a port that invented one would be inventing the event
+source itself - the failure this port exists to avoid, and a private-API trick where the public mechanism
+does not exist. That is why these three are carried as addressable objects and not wired, and it is the
+same answer `MPChangePlaybackPositionCommandEvent` has carried since it landed.
+
+**And the line that produced the false claim is still in the tree, because it is true.**
+`MPRemoteCommandCenter71.m:33` says `charon_command()` "creates them lazily by class regardless of which
+object file defines them, since they all share the same `MPRemoteCommand.initCharon` this file defines".
+"They" is the **command** objects - `MPRemoteCommand` and its subclasses - which is exactly what
+`charon_command()` allocates. Read as covering the *events*, it looks like the wiring that does not exist,
+and that is the misreading this page and two of its rows made. Nothing here changes that line; the next
+reader now has the sentence above it.
 
 **And the ancestor chain does not exist.** The first draft said the port's four carried events walk
 through `MPFeedbackCommandEvent`. `MPRemoteCommandEvent.h` at 26.2 declares `MPRatingCommandEvent`,
@@ -68,9 +79,9 @@ through `MPFeedbackCommandEvent`. `MPRemoteCommandEvent.h` at 26.2 declares `MPR
 grep -n "@interface.*: MPFeedbackCommandEvent" .../MediaPlayer.framework/Headers/*.h
 ```
 
-finds **nothing in 26.2 and nothing in 16.4**. No class Apple publishes derives from it. The port
-followed 26.2 when it declared its siblings over `MPRemoteCommandEvent`, which is the right call, and
-then this page claimed a chain the SDK does not have.
+finds **0 in 26.2 and 0 in 16.4**. No class Apple publishes derives from it. The port followed 26.2 when
+it declared its siblings over `MPRemoteCommandEvent`, which is the right call, and then this page claimed a
+chain the SDK does not have.
 
 ## What the three are therefore carried as
 

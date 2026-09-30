@@ -16,10 +16,15 @@
 // belongs to - MPChangeShuffleModeCommand, introduced 8.0, ios71remotecommand.json - and that command's own
 // row already says "a real, stateful object; never messaged by this port's own bridge, since no old-style
 // shuffle-mode gesture exists". Nothing in this tree makes it otherwise:
-//   - Apple's entry point for handing a command an event is -[MPRemoteCommand deliverEvent:], which is on
-//     no line of the 6.1.3 selector universe and has no MPRemoteCommand class to hang on - the 236 hold
-//     none - and which the port does not define either: no file under packages/a/apple-backports/
-//     DEFINES a deliverEvent: method.
+//   - APPLE PUBLISHES NO API THAT HANDS A COMMAND AN EVENT, so there is nothing to wire: grep -rn
+//     'deliverEvent|sendEvent' over MediaPlayer.framework/Headers reads no file in 26.2 and no file in
+//     16.4, and MPRemoteCommand's public surface is exactly enabled, addTarget:action:,
+//     removeTarget:action:, removeTarget: and addTargetWithHandler:. "deliverEvent:" is a PRIVATE
+//     selector on MPRemoteCommandCenter that no header declares, so the 6.1.3 universe's 113981 names
+//     cannot hold it either - the 236 classes have no MPRemoteCommand - and no file under
+//     packages/a/apple-backports/ defines it. The line that produced the false claim in the first
+//     draft of this file is MPRemoteCommandCenter71.m:33, whose "creates them lazily by class" is about
+//     the COMMAND objects charon_command() allocates, not about the events.
 //   - the port's own -charon_dispatch: (MPRemoteCommandCenter71.m:133) is called from exactly one place,
 //     the subtype switch at :250-275, and that switch maps ten cases and this is not one of them.
 //   - UIEvent.h in SDK 26.2 AND 16.4 declares exactly those ten subtypes, 100 through 109, with no

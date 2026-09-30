@@ -32,9 +32,12 @@
 // new]` was a call on nil. After it, the class exists, a caller may construct one, set -isNegative and
 // read it back, and ask isKindOfClass: of it. That is what carried means here: a real, addressable
 // object, not a wire-up. Like every other event class this port carries, it is never messaged by the
-// port's own bridge - Apple's entry point for that is -[MPRemoteCommand deliverEvent:], which is on no
-// line of the 6.1.3 selector universe and has no MPRemoteCommand class among the 236 to hang on, and
-// which no file under packages/a/apple-backports/ defines either, and the
+// port's own bridge - and that is not an omission on this side either: APPLE PUBLISHES NO API THAT HANDS A
+// COMMAND AN EVENT. grep -rn 'deliverEvent|sendEvent' over MediaPlayer.framework/Headers reads no file in
+// SDK 26.2 and no file in 16.4, MPRemoteCommand's public surface is exactly enabled, addTarget:action:,
+// removeTarget:action:, removeTarget: and addTargetWithHandler:, and "deliverEvent:" is a PRIVATE selector on
+// MPRemoteCommandCenter that no header declares - so it is on no line of the 6.1.3 universe either, the 236
+// classes having no MPRemoteCommand, and no file under packages/a/apple-backports/ defines it. The
 // port's own -charon_dispatch: (MPRemoteCommandCenter71.m:133) is reached only from the subtype switch at
 // :250-275, which handles the ten UIEventSubtypeRemoteControl* cases UIEvent.h declares in 26.2 and 16.4
 // (100 through 109) and which has no feedback case at any availability. MPFeedbackCommand's own row in
