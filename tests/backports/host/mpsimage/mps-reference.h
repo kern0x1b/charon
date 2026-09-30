@@ -336,4 +336,69 @@ static void CharonReferenceImageReduce(const char *name, const float *src, NSUIn
     printf("\n");
 }
 
+
+// MPSImageConvolution, from MPSImageConvolution.h of the iPhoneOS 26.2 surface. Twelve rows owe this
+// family; the base and its fixed-weight subclasses all reduce to one thing - a weighted sum of the source
+// window - so the reference is written once and the case reuses it for each class with that class's own
+// weights.
+//
+// What the header gives, and this is the whole of it:
+//   :62-72 bias - "The bias is a value to be added to convolved pixel before it is converted back to the
+//     storage format." So the sum is taken, the bias added, and the result stored - three steps, and the
+//     order matters: adding the bias before the store is what makes the result a float32 rounding of
+//     (sum + bias), not a float32 rounding of the sum with a float32 bias added afterwards.
+//   :87 -initWithDevice:kernelWidth:kernelHeight:weights: is the designated initializer, and
+//     "kernelWeights A pointer to an array of kernelWidth * kernelHeight values to be used as the kernel",
+//     row-major over kernelWidth.
+//   :154-168 MPSImageBox - the same window, and both dimensions "Must be an odd number", which is what
+//     keeps the window centred on the pixel it writes.
+//   :270 MPSImageGaussianBlur and MPSImageBox mark -initWithDevice: NS_UNAVAILABLE, as the reduction
+//     family does: the kernel size or the sigma is part of what the object IS.
+//
+// The edge rule is inherited, not this header's: MPSUnaryImageKernel's edgeMode, whose default MPSImageKernel.h
+// gives as "usually MPSImageEdgeModeZero". So a window that reaches off the edge reads ZERO there, and the
+// reference clamps by multiplying by zero rather than by replicating the border - replicating would be
+// MPSImageEdgeModeClamp and would answer a different question.
+//
+// min, max and sum of this family are not separate operations here: a convolution is a weighted sum, so it
+// accumulates in double and stores float32 exactly as the reduction family's sum and mean did, and one whole
+// float32 ulp of the answer is the bound. Comparing it for equality would be the same mistake the reduce
+// reference made.
+static void CharonReferenceImageConvolution(const char *name, const float *src, NSUInteger rows, NSUInteger cols,
+                                             NSUInteger kernelWidth, NSUInteger kernelHeight,
+                                             const float *weights, double bias,
+                                             NSUInteger originX, NSUInteger originY,
+                                             const float *out, NSUInteger values)
+{
+    printf("reference %s %lu", name, (unsigned long)values);
+    NSUInteger halfW = kernelWidth / 2, halfH = kernelHeight / 2;
+    for (NSUInteger r = 0; r < values; r++) {
+        NSUInteger y = originY + r / cols;
+        NSUInteger x = originX + r % cols;
+        double total = 0.0;
+        for (NSUInteger ky = 0; ky < kernelHeight; ky++) {
+            for (NSUInteger kx = 0; kx < kernelWidth; kx++) {
+                // MPSImageEdgeModeZero: a sample off the edge contributes nothing. Multiplying by zero
+                // rather than skipping keeps the weights array indexed the way the header describes it.
+                long sy = (long)(y + ky) - (long)halfH;
+                long sx = (long)(x + kx) - (long)halfW;
+                double sample = 0.0;
+                if (sy >= 0 && sy < (long)rows && sx >= 0 && sx < (long)cols)
+                    sample = (double)src[(NSUInteger)sy * cols + (NSUInteger)sx];
+                total += (double)weights[ky * kernelWidth + kx] * sample;
+            }
+        }
+        double want = total + bias;          // bias added before the store, :62-72
+        gCompared++;
+        double got = (double)out[r];
+        if (fabs(got - want) > CharonOneUlp(want)) {
+            gMismatches++;
+            printf("\n  MISMATCH %s [%lu] reference %.9g port %.9g, one float32 ulp is the bound\n",
+                   name, (unsigned long)r, want, got);
+        }
+        printf(" %.9g", want);
+    }
+    printf("\n");
+}
+
 #endif /* CHARON_MPS_REFERENCE_H */

@@ -22,26 +22,6 @@
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
     {
-      "api": "MPSImageBox",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageConvolution",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSImageDilate",
       "kind": "class",
       "introduced": "9.0",
@@ -67,9 +47,8 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "MPSImageConvolution.h:252 makes -initWithDevice:sigma: the designated initializer, but the header nowhere says how many taps a sigma implies, and a blur of a different width is a different blur. The class is therefore HERE and refuses to be built by name, and the case records that as INERT rather than pretending a blur was compared. This is the one row whose object exists and answers nothing, and it is written down rather than left to be discovered."
     },
     {
       "api": "MPSImageHistogram",
@@ -157,19 +136,8 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageTent",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "ios(9.0), :291, with a readonly colorTransform and -initWithDevice:linearGrayColorTransform: (:314): a gradient magnitude followed by a non-maximum suppression, which is not a weighted sum."
     },
     {
       "api": "MPSCNNCrossChannelNormalization",
@@ -307,9 +275,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "a multi-level pyramid where each level is a separate image, so this is several encodes and a level schedule rather than one weighted sum."
     },
     {
       "api": "MPSImageLaplacian",
@@ -317,9 +284,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "ios(10.0), :119. A fixed 3x3 second-derivative kernel with a bias (:131) - it needs its own weights and its own bias default, not a box's or a tent's."
     },
     {
       "api": "MPSImageLaplacianPyramid",
@@ -327,9 +293,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "a pyramid whose bands are Laplacian convolutions of successive levels."
     },
     {
       "api": "MPSImageLaplacianPyramidAdd",
@@ -337,9 +302,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "combines two Laplacian bands; an arithmetic step between convolutions."
     },
     {
       "api": "MPSImageLaplacianPyramidSubtract",
@@ -347,9 +311,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "combines two Laplacian bands; an arithmetic step between convolutions."
     },
     {
       "api": "MPSImagePyramid",
@@ -357,9 +320,8 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the pyramid base: a level schedule and a per-level buffer, not one convolution."
     },
     {
       "api": "MPSTemporaryImage",
@@ -3357,9 +3319,8 @@
       "introduced": "14.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(14.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "ios(14.0), :375. Edge detection with hysteresis and non-maximum suppression - an algorithm, not a convolution."
     }
   ]
 }

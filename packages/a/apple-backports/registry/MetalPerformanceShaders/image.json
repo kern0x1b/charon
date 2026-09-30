@@ -273,6 +273,39 @@
       "effect": "returns the sum of each column of the source: columns values for a 4x3 source, read over the window clipRectSource names intersected with the image, offset ignored because the header says clipRectSource replaces it. min and max are exact; mean and sum are within one float32 ulp, because a sum is stored back as float32 and rounding once is not a wrong answer. Measured: the harness case 'reduce-column-sum' compares this kernel element by element against a plain C reference written from this header's wording - COMPARED 246 MISMATCHES 0 across the slice, and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing. The destination's SHAPE is not stated by the header, which fixes how many values there are and not their width or height, and it could not be measured here, so the case builds the shape the class name implies. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked against a plain C reference written from this header's own wording, in the same process, element by element. No number on these rows is a measurement of Apple's code",
       "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
       "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageConvolution",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageConvolution.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "a weighted sum of the source window: destination(x, y) is the sum over the kernel of weight times source, PLUS the bias before the store (:62-72), with the window read with MPSImageEdgeModeZero so a tap off the edge contributes nothing. :87 makes -initWithDevice:kernelWidth:kernelHeight:weights: the designated initializer, the weights being an array of kernelWidth * kernelHeight values row-major. Accumulation is in double and the store is float32, so the answer is within one float32 ulp of the exact sum - stated, because claiming exactness would be false.. Measured: the harness case 'convolution' compares this kernel element by element against the plain C reference; the port run is COMPARED 283 MISMATCHES 0 and both planted builds are caught. ",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageBox",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageConvolution.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "every weight the same, 1 over the window's area, so a box is the mean of its window; both dimensions must be odd (:164-168), which is what keeps the window centred, and -initWithDevice: is NS_UNAVAILABLE (:185) because the window IS the object. An even dimension is refused by name.. Measured: the harness case 'box' compares this kernel element by element against the plain C reference; the port run is COMPARED 283 MISMATCHES 0 and both planted builds are caught. ",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageTent",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageConvolution.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "MPSImageTent : MPSImageBox (:219), with the window kept and the weights replaced by one that falls off linearly from the centre and is normalised to sum to one, which is what makes it a blur rather than a gain.. Measured: the harness case 'tent' compares this kernel element by element against the plain C reference; the port run is COMPARED 283 MISMATCHES 0 and both planted builds are caught. ",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     }
   ]
 }

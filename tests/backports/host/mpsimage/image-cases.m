@@ -60,6 +60,29 @@
 // The class is declared in MPSImage.framework's MPSImageReduce.h, which the umbrella this file imports
 // does not carry, so the two are spelled out and the kernel is called through this protocol - the same
 // reason CharonImageMatrixEncode exists for the copy's encode.
+@protocol CharonImageConvolutionEncode
+@property (readwrite, nonatomic) float bias;
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                   sourceImage:(MPSImage *)sourceImage
+             destinationImage:(MPSImage *)destinationImage;
+@end
+
+@protocol CharonImageBoxEncode
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+                  kernelHeight:(NSUInteger)kernelHeight
+                   kernelWidth:(NSUInteger)kernelWidth;
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                   sourceImage:(MPSImage *)sourceImage
+             destinationImage:(MPSImage *)destinationImage;
+@end
+
+@protocol CharonImageConvolutionInit
+- (instancetype)initWithDevice:(id<MTLDevice>)device
+                    kernelWidth:(NSUInteger)kernelWidth
+                   kernelHeight:(NSUInteger)kernelHeight
+                        weights:(const float *)kernelWeights;
+@end
+
 @protocol CharonImageReduceEncode
 @property (readwrite, nonatomic) MTLRegion clipRectSource;
 - (instancetype)initWithDevice:(id<MTLDevice>)device;
@@ -446,6 +469,104 @@ int main(int argc, const char **argv)
                 printf("\n");
                 CharonReferenceImageReduce(reduceNames[i], input, rows, cols, 0, 0, byColumn,
                                            kinds[i], got, want);
+            }
+        }
+
+        // MPSImageConvolution, MPSImageConvolution.h:49's base and the three fixed-weight subclasses whose
+        // whole behaviour is a weighted sum: MPSImageBox (:146), MPSImageTent (:219) and
+        // MPSImageGaussianBlur (:237, which cannot be built - see the file). The weights below are chosen
+        // to be ASYMMETRIC and to sum to something other than one, so a kernel that transposed the window,
+        // flipped it, or ignored a weight cannot pass: a symmetric blur of a symmetric-looking image would.
+        //
+        // The edge rule is MPSUnaryImageKernel's edgeMode, whose default MPSImageKernel.h gives as "usually
+        // MPSImageEdgeModeZero", and the case uses a 5x5 window over a 4x3 image on purpose so the window
+        // runs off the edge and the zero rule is actually exercised rather than assumed.
+        //
+        // :62-72 - the bias is added BEFORE the store, so it is set to a value no weight could produce.
+        {
+            static const char *convNames[4] = {"convolution", "box", "tent", "gaussian-blur"};
+            static const char *convRenamed[4] = {"CharonMPSImageConvolution", "CharonMPSImageBox",
+                                                 "CharonMPSImageTent", "CharonMPSImageGaussianBlur"};
+            Class convClasses[4] = {[MPSImageConvolution class], [MPSImageBox class],
+                                    [MPSImageTent class], [MPSImageGaussianBlur class]};
+            NSUInteger kw = 5, kh = 5;
+            static float weights[25] = {0.5f, 0.25f, 0.0f, 0.25f, 0.5f,
+                                        0.25f, 0.5f, 1.0f, 0.5f, 0.25f,
+                                        0.0f,  1.0f, 2.0f, 1.0f, 0.0f,
+                                        0.25f, 0.5f, 1.0f, 0.5f, 0.25f,
+                                        0.5f,  0.25f, 0.0f, 0.25f, 0.5f};
+            // The reference needs the SAME weights each class actually uses. A Box's weights are its own
+            // 1/area array and a Tent's are its own falling-off array, so they are computed here rather
+            // than assumed, and the kernel is not compared against weights it was not given.
+            float boxWeights[25], tentWeights[25];
+            for (NSUInteger i = 0; i < 25; i++)
+                boxWeights[i] = (float)(1.0 / 25.0);
+            double tentTotal = 0.0;
+            for (NSUInteger ky = 0; ky < 5; ky++)
+                for (NSUInteger kx = 0; kx < 5; kx++) {
+                    double wx = (double)(1 + (5 / 2) - (kx < 5 / 2 ? kx : 5 - 1 - kx));
+                    double wy = (double)(1 + (5 / 2) - (ky < 5 / 2 ? ky : 5 - 1 - ky));
+                    tentTotal += wx * wy;
+                }
+            for (NSUInteger ky = 0; ky < 5; ky++)
+                for (NSUInteger kx = 0; kx < 5; kx++) {
+                    double wx = (double)(1 + (5 / 2) - (kx < 5 / 2 ? kx : 5 - 1 - kx));
+                    double wy = (double)(1 + (5 / 2) - (ky < 5 / 2 ? ky : 5 - 1 - ky));
+                    tentWeights[ky * 5 + kx] = (float)(wx * wy / tentTotal);
+                }
+            const float *each[4] = {weights, boxWeights, tentWeights, weights};
+            for (int i = 0; i < 4; i++) {
+                if (!NSClassFromString([NSString stringWithUTF8String:convRenamed[i]])) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: this port has no %s (looked for %s), so the case is absent"
+                           " and not merely wrong\n", convNames[i], convRenamed[i], convRenamed[i]);
+                    printf("case %s 0\n", convNames[i]);
+                    continue;
+                }
+                MPSImage *out = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+                id kernel = nil;
+                if (i == 0) {
+                    id<CharonImageConvolutionInit> made =
+                        [[convClasses[i] alloc] initWithDevice:gDevice kernelWidth:kw
+                                                 kernelHeight:kh weights:each[i]];
+                    ((id<CharonImageConvolutionEncode>)made).bias = 0.125f;   // :62-72, before the store
+                    kernel = made;
+                } else if (i == 1 || i == 2) {
+                    Class box = convClasses[i];
+                    kernel = [[box alloc] initWithDevice:gDevice kernelHeight:kh kernelWidth:kw];
+                } else {
+                    kernel = [[convClasses[i] alloc] initWithDevice:gDevice sigma:1.5f];
+                    if (!kernel) {
+                        // The header does not say how many taps a sigma implies, so the object refuses to
+                        // be built. That refusal is the measured behaviour of this class on this port and
+                        // the case records it rather than pretending a blur was compared.
+                        gCompared++;
+                        printf("\n  INERT %s: MPSImageGaussianBlur builds no object here -"
+                               " MPSImageConvolution.h:252 needs a tap count the header does not state\n",
+                               convNames[i]);
+                        printf("case %s 0\n", convNames[i]);
+                        continue;
+                    }
+                }
+                if (!kernel) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: %s exists but would not instantiate\n", convNames[i],
+                           convRenamed[i]);
+                    printf("case %s 0\n", convNames[i]);
+                    continue;
+                }
+                [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                 sourceImage:source
+                           destinationImage:out];
+                float got[12] = {0};
+                [[out texture] getBytes:got bytesPerRow:cols * sizeof(float)
+                           fromRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0];
+                printf("case %s %lu", convNames[i], (unsigned long)values);
+                for (NSUInteger v = 0; v < values; v++)
+                    printf(" %.9g", (double)got[v]);
+                printf("\n");
+                CharonReferenceImageConvolution(convNames[i], input, rows, cols, kw, kh, each[i],
+                                                i == 0 ? 0.125 : 0.0, 0, 0, got, values);
             }
         }
     }
