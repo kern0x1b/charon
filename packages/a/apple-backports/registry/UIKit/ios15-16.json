@@ -1889,7 +1889,7 @@
       "status": "absent",
       "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextFieldDelegate textField:willPresentEditMenuWithAnimator:]",
@@ -1899,7 +1899,7 @@
       "status": "absent",
       "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextInput editMenuForTextRange:suggestedActions:]",
@@ -1990,7 +1990,7 @@
       "status": "absent",
       "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); asking the delegate would mean hooking that menu and turning its items into a UIMenu and back - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextViewDelegate textView:willDismissEditMenuWithAnimator:]",
@@ -2000,7 +2000,7 @@
       "status": "absent",
       "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextViewDelegate textView:willPresentEditMenuWithAnimator:]",
@@ -2010,7 +2010,7 @@
       "status": "absent",
       "reason": "the release's text view builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); sending this would mean hooking that menu and making a UIEditMenuInteractionAnimating animator for it - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UIWindowScene requestGeometryUpdateWithPreferences:errorHandler:]",
@@ -2020,7 +2020,7 @@
       "status": "absent",
       "reason": "asks the system to rotate the scene to the orientations of a UIWindowSceneGeometryPreferencesIOS, which the port carries; the release rotates by supportedInterfaceOrientations and attemptRotationToDeviceOrientation, and wiring a request into that - including what to do when the device is not held that way - is real work; no demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "NSCollectionLayoutSection.supplementaryContentInsetsReference",
@@ -2030,7 +2030,7 @@
       "status": "absent",
       "reason": "the edge the insets of a section's headers and footers are measured from; the port carries contentInsetsReference for the section itself (facts/UIKit/NSCollectionLayoutContentInsetsReference.md), and the supplementary items could take the same measure - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "NSTextList.ordered",
@@ -2040,7 +2040,7 @@
       "status": "absent",
       "reason": "whether the list is numbered rather than bulleted; the release's own NSTextList (UIFoundation) has the marker format this follows from, though no isOrdered of its own (objc.inventory on 6.1.3) - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIAlertController.severity",
@@ -2060,7 +2060,7 @@
       "status": "absent",
       "reason": "part of the item-group toolbar's visibility model, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIBarButtonItem.menuRepresentation",
@@ -2070,7 +2070,7 @@
       "status": "absent",
       "reason": "the menu form the item-group toolbar shows when the item overflows; that toolbar is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIBarButtonItem.preferredMenuElementOrder",
@@ -2080,7 +2080,7 @@
       "status": "absent",
       "reason": "orders the item's own menu (UIBarButtonItem.menu, implemented) inside the overflow menu of the item-group toolbar, which is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIBarButtonItemGroup.alwaysAvailable",
@@ -2090,7 +2090,7 @@
       "status": "absent",
       "reason": "declared @dynamic in UIBarButtonItemGroup.m to keep the compiler from synthesising a silent accessor, but never given one: it steers the item-group toolbar's overflow behaviour, and that toolbar is not built - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIBarButtonItemGroup.hidden",
@@ -2100,7 +2100,7 @@
       "status": "absent",
       "reason": "same @dynamic-but-unimplemented property as alwaysAvailable, for the same reason - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "UIBarButtonItemGroup.menuRepresentation",
