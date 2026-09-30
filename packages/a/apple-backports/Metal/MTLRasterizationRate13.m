@@ -64,6 +64,17 @@
 // compares against Apple's.
 @implementation MTLRasterizationRateSampleArray
 
+// THE SAME -init THIS CLASS NEEDED AND DID NOT HAVE. Its NSMutableArray ivar was never created, and
+// -setObject:atIndexedSubscript: grows the storage in a while loop: a message to nil does not advance
+// the count, so the loop never ends. Writing one sample into a fresh array hung, and the layer array
+// above hung the same way for the same reason. Both containers now create their own storage, and
+// neither has a member that can grow without it.
+- (instancetype)init
+{
+    if ((self = [super init])) { _samples = [[NSMutableArray alloc] init]; }
+    return self;
+}
+
 - (NSNumber *)objectAtIndexedSubscript:(NSUInteger)index
 {
     return index < [_samples count] ? [_samples objectAtIndex:index] : nil;
@@ -117,9 +128,31 @@
 
 @implementation MTLRasterizationRateLayerArray
 
+// THE STORAGE IS CREATED HERE, and it had to be: this class had no -init of its own, so its
+// NSMutableArray ivar was never created and -setLayer:atIndex: on a map sent addObject: and
+// replaceObjectAtIndex: to nil. That does not crash and it does not loop - it leaves the map
+// with no layers and no count, which is the quiet nothing a test that only reads a count
+// would sail past. The map already made one, so the array was the half that never existed.
+- (instancetype)init
+{
+    if ((self = [super init])) { _layers = [[NSMutableArray alloc] init]; }
+    return self;
+}
+
+// THE COUNT IS THE LEADING CONTIGUOUS RUN OF WRITTEN LAYERS, and that is Apple's own answer,
+// measured rather than guessed. Writing a layer at index 2 on an empty map makes layerAtIndex:2
+// return it while layerCount stays 0; the count reaches 2 only once 0 and 1 are written too; and
+// writing at index 5 after one layer leaves the count at 1 with index 5 still readable. A count that
+// were merely the array's length would have said 3 and 6, and this was the divergence the review
+// asked me to measure and copy.
 - (NSUInteger)count
 {
-    return [_layers count];
+    NSUInteger run = 0;
+    for (id v in _layers) {
+        if (v == [NSNull null]) { break; }
+        run++;
+    }
+    return run;
 }
 
 - (MTLRasterizationRateLayerDescriptor *)objectAtIndexedSubscript:(NSUInteger)index

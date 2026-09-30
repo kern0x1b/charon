@@ -333,20 +333,22 @@
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the container a map keeps its layers in, with the two indexed members the header declares",
+      "effect": "the port DEFINES MTLRasterizationRateLayerArray under APPLE'S OWN NAME, and tests/backports/host/metal-census/rasterrate.m compares it against Apple's own object of the same class with no device created; a layer written at any index reads back there, and the count the map reports is the leading run, both measured against Apple's own map",
+      "source": "SDK 16.4 MTLRasterizationRate.h, that class's own declaration; the semantics measured against Apple's own objects on the host; the cache ladder's band for this symbol is 13.0, and it reports that no release is held between 12.0 and 14.0, so 13.0 means after 12.0 and by 14.0, not a measured first release",
+      "facts": "facts/Metal/RasterRate.md"
     },
     {
       "api": "MTLRasterizationRateLayerDescriptor",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "one layer of a map: a sample count and the two sample arrays that go with it",
+      "effect": "the port DEFINES MTLRasterizationRateLayerDescriptor under APPLE'S OWN NAME, and tests/backports/host/metal-census/rasterrate.m compares it against Apple's own object of the same class with no device created; the sample count is the one the caller built the layer with, compared against the HEADER rather than against Apple, because initWithSampleCount: is ignored on a host with no device and those two then read back 9.88131e-324",
+      "source": "SDK 16.4 MTLRasterizationRate.h, that class's own declaration; the semantics measured against Apple's own objects on the host; the cache ladder's band for this symbol is 13.0, and it reports that no release is held between 12.0 and 14.0, so 13.0 means after 12.0 and by 14.0, not a measured first release",
+      "facts": "facts/Metal/RasterRate.md"
     },
     {
       "api": "MTLRasterizationRateMap",
@@ -363,20 +365,22 @@
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a rasterization rate map is what a render target is sampled at: a screen size, a label and a layer count, all of it numbers a caller writes and reads back",
+      "effect": "the port DEFINES MTLRasterizationRateMapDescriptor under APPLE'S OWN NAME, and tests/backports/host/metal-census/rasterrate.m compares it against Apple's own object of the same class with no device created; layerCount is the LEADING CONTIGUOUS RUN of written layers, which is what Apple's own map answers - writing index 2 on an empty map leaves the count at 0 - and not the array's length",
+      "source": "SDK 16.4 MTLRasterizationRate.h, that class's own declaration; the semantics measured against Apple's own objects on the host; the cache ladder's band for this symbol is 13.0, and it reports that no release is held between 12.0 and 14.0, so 13.0 means after 12.0 and by 14.0, not a measured first release",
+      "facts": "facts/Metal/RasterRate.md"
     },
     {
       "api": "MTLRasterizationRateSampleArray",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "the container a layer keeps its sample rates in, with the two indexed members the header declares",
+      "effect": "the port DEFINES MTLRasterizationRateSampleArray under APPLE'S OWN NAME, and tests/backports/host/metal-census/rasterrate.m compares it against Apple's own object of the same class with no device created; a sample written at an index reads back there and a past-the-end index reads nil, as the header's nullable element says; MEASURED DIVERGENCE: Apple's own object answers 0 there, and that is recorded rather than asserted equal",
+      "source": "SDK 16.4 MTLRasterizationRate.h, that class's own declaration; the semantics measured against Apple's own objects on the host; the cache ladder's band for this symbol is 13.0, and it reports that no release is held between 12.0 and 14.0, so 13.0 means after 12.0 and by 14.0, not a measured first release",
+      "facts": "facts/Metal/RasterRate.md"
     },
     {
       "api": "MTLResourceStateCommandEncoder",

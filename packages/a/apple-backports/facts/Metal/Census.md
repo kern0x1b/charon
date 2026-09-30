@@ -155,6 +155,7 @@ check-split-control.sh   packages/a/apple-backports/facts/Metal/FunctionStitchin
 counters.sh              packages/a/apple-backports/facts/Metal/CounterConstants.md
 descriptors.sh           packages/a/apple-backports/facts/Metal/Descriptors14.md
 pre-export.sh            packages/a/apple-backports/facts/Metal/FunctionStitching.md tests/backports/host/metal-census/check-split-control.sh
+rasterrate.sh            packages/a/apple-backports/facts/Metal/RasterRate.md
 reflection.sh            packages/a/apple-backports/facts/Metal/TypeTree.md tests/backports/host/metal-census/reflection.m
 stitch.sh                packages/a/apple-backports/facts/Metal/FunctionStitching.md tests/backports/host/foundation-constants/run.sh tests/backports/host/metal-census/argbinding.sh
 ```
