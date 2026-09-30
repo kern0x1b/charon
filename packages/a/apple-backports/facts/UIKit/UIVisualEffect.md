@@ -73,6 +73,10 @@ key exchange), so the 5.8 frames a second above is still the figure for the shad
 - The reason the shading may leave the thread at all, which is a property and not a hope: compiled on its own, `CharonBlur.m`'s only undefined symbols are `_malloc` and
   `_free`. It touches no UIKit, no CoreGraphics, no Foundation, so it is arithmetic over a buffer its caller owns. `tests/backports/host/blurcost` enforces that with `nm -u` and
   fails the run if a later change gives it a call into a framework, because then this reasoning would no longer hold.
+- **What that check does NOT cover:** it reads `CharonBlur.m` alone. The five CoreGraphics calls the shading block makes around it -- `CGColorSpaceCreateDeviceRGB`,
+  `CGDataProviderCreateWithData`, `CGImageCreate`, `CGImageCreateWithImageInRect` and their releases -- are off the main thread on a second and separate argument, that an
+  immutable `CGImage` may be created on any thread, and no check in this series enforces it. They are CoreGraphics, not UIKit, and the shadow already builds its own image
+  the same way (`UISheetPresentationController.md`); if that is ever in doubt the check would have to be widened, and today it is not.
 - A reading is not taken while the last one is being shaded (`-backdropIsWanted:` says no while one is), which is the shadow's guard: a second reading would queue up behind a
   98 ms pass, and the read is what holds the main thread.
 

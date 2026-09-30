@@ -23,11 +23,15 @@ static const CGFloat CharonMaximumScale = 0.25;
     CharonBackdrop *_reader;
     /* Where the box blur and the colour matrix run. The read has to be on the main thread -- the
        display link is on the main run loop and CoreAnimation is not thread-safe for a layer read --
-       but the shading is arithmetic over a buffer this view owns, and it is the whole cost of a
-       refresh: measured, charon_blur_pixels over a whole screen is 97.90 ms at best and 174.75 ms
-       mean, against a whole refresh of 172 ms (tests/backports/host/blurcost, and
-       facts/UIKit/UIVisualEffect.md:54-55). The sheet's shadow already shades off the main thread
-       for the same reason (UISheetPresentationController.m:795-796). */
+       but the shading is arithmetic over a buffer this view owns, and it was the whole cost of a
+       refresh: on the iPad 2 a whole-screen refresh measured 172 ms, 5.8 frames a second, of which
+       the read is 21 to 33 ms. That is a property of the device and is the figure to reason from.
+       What the shading costs on any one machine is not, and is not put here: it moves by a factor of
+       2.6 with the machine's load, and
+       tests/backports/host/blurcost measures it here for whoever wants the number with the load it
+       was taken at. The reasoning and the measurements, including the load, are in
+       facts/UIKit/UIVisualEffect.md. The sheet's shadow already shades off the main thread for the
+       same reason (UISheetPresentationController.m:795-796). */
     dispatch_queue_t _shadeQueue;
     /* Set while a reading is being shaded, so a second reading does not queue up behind the first: the
        same guard the shadow's client uses for the same reason. */
