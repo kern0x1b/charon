@@ -854,10 +854,10 @@
     "api": "CKSyncEngine",
     "kind": "class",
     "introduced": "17.0",
-    "status": "absent",
-    "reason": "not carried yet: the engine's four request methods are the walk itself and come in the group after the state",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference does not link. Nothing answers for it, and the class is named in CharonCKSyncEngine26.h so the lift's sets are measured against it",
-    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "status": "implemented",
+    "reason": "the sync engine, carried as an object of this package: it needs a container and an account to reach the network, and it does not need them to exist and to answer its properties, so the local half - the state, the options and the four walks - is here and every walk answers the transport's own refusal",
+    "effect": "the configuration's three properties as given, the engine's state, and its four walks answering the transport's own refusal in Apple's CKErrorDomain, which is what any other request answers on a release with no iCloud account",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {
@@ -1021,6 +1021,16 @@
     "facts": "facts/CloudKit/Values.md"
   },
   {
+    "api": "CKSyncEnginePendingZoneDelete",
+    "kind": "class",
+    "introduced": "17.0",
+    "status": "implemented",
+    "reason": "a record-zone deletion the sync engine has read and not yet carried out, so it is a value here: it needs its zone's identifier and nothing else to exist",
+    "effect": "the zone the engine will delete on its next pass, answerable as given",
+    "source": "packages/a/apple-backports/CloudKit/CKSyncEngine17.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
     "api": "CKSyncEngineFailedRecordSave",
     "kind": "class",
     "introduced": "17.0",
@@ -1121,6 +1131,46 @@
     "reason": "the class of this package carries the surface, and its -main is where the request goes",
     "effect": "users/lookup with the lookups; the participant of a refused lookup arrives as that item's own error, and the deprecated block of iOS 10 is called as well as the iOS 15 one a caller of either has",
     "source": "packages/a/apple-backports/CloudKit/CKOperations10.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchDatabaseChangesOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes: the database's own changes are the zones that moved, which the service answers under the database root rather than under a zone's",
+    "effect": "a caller learns which zones to fetch before it fetches any of them: -main sends the previous server change token as a continuation marker beside the results limit, adds fetchAllChanges when it was asked for, and hands back the zone identifiers and the server's own error; the results limit defaults to the framework's own maximum when the caller gave none",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations1210.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordZoneChangesOperation",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "the class of this package carries the surface, and its -main is where the request goes: several zones in one request, each with its own configuration or its own options, and the zone-changing walk stays beside it",
+    "effect": "one request that walks the zones it was given and answers the completion block per zone; an initialiser given no zone answers CKErrorInvalidArguments in Apple's CKErrorDomain, and a zone the service refused arrives through CharonCKErrorFromPayload as the service's own code",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations1210.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordZoneChangesOptions",
+    "kind": "class",
+    "introduced": "10.0",
+    "status": "implemented",
+    "reason": "a value the caller builds and the record-zone fetch reads, so it is a plain object here: +options, +new, -init, -copyWithZone: and -description",
+    "effect": "the per-zone desired keys, the change token to continue from and the results limit, held as the caller gave them and copied and described as the value is",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations1210.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKFetchRecordZoneChangesConfiguration",
+    "kind": "class",
+    "introduced": "12.0",
+    "status": "implemented",
+    "reason": "a value the caller builds and the record-zone fetch reads, so it is a plain object here: +configuration, +new, -init, -copyWithZone: and -description",
+    "effect": "the configuration the record-zone fetch is asked for, held as the caller gave it and copied and described as the value is",
+    "source": "packages/a/apple-backports/CloudKit/CKOperations12.m",
     "facts": "facts/CloudKit/Values.md"
   },
   {

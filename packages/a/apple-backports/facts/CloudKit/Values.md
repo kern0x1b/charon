@@ -96,3 +96,27 @@ said `implemented` would be a claim about code that is not in the tree - the def
 value half for and the reviewer refused it for. They are this series' first two **owed** CloudKit names,
 and carrying them is the same work as the engine's: a configuration over the transport, a local state, and
 the transport's own refusal in `CKErrorDomain` for the one request each would make.
+
+## The five names the two halves of the pile defined without a row
+
+`CKFetchDatabaseChangesOperation`, `CKFetchRecordZoneChangesOptions` and `CKFetchRecordZoneChangesOperation`
+are defined in `CloudKit/CKOperations1210.m`, `CKFetchRecordZoneChangesConfiguration` in
+`CloudKit/CKOperations12.m`, and `CKSyncEnginePendingZoneDelete` in `CloudKit/CKSyncEngine17.m`. Every one
+of them had **no row at all**: the two halves of the pile each carried the definitions, and neither carried
+the registry entry that says so. An `implemented` row without code is what the gate refuses; a definition
+without a row is the same defect seen from the other side, and the gate's own rule names it - "built, but no
+entry in `registry/`". Each of the five now has a row whose `source` is the file that defines it.
+
+Two things were wrong with the check that should have caught this, and both are fixed here rather than
+worked around:
+
+- `tools/corpus/cloudkit-registry-mirror.py` printed its two numbers and **returned nothing**, so it exited 0
+  whatever it had found. A check that cannot fail is not evidence: the five names above were reported as
+  "both directions 0" on the strength of a mirror that could not have said otherwise. It now exits
+  non-zero on either direction.
+- The duplicate `(CharonCKBuilding)` categories in `CloudKit/CharonCKSubscription.h` were the same fact in
+  the source: two categories of one name on one class, where the runtime keeps one and the other's members
+  are never registered. `CKUserIdentity` was declared twice - the four properties in one, `-charon_identity`
+  in the other - and `CKShareParticipant` twice, the two properties in one and `-initWithType:` in the
+  other. Each pair is one category now, carrying every member it had between them. The pile's own final
+  commit carries the same duplication, so this is not a replay artefact.

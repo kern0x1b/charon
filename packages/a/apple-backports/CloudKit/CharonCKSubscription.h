@@ -35,16 +35,28 @@
 // A user identity, a participant and a lookup are values the service fills in and the port keeps:
 // there is no initializer of any of the three that a caller may use, so what the service sent is the
 // only thing that can build one.
+// A user identity and a participant are values the service fills in and the SDK marks unbuildable
+// by a caller, and a share's metadata is one too - so all three are made here, and the one
+// initializer declared is the port's own. This is the fourth port-declared initialiser the
+// coordinator has to re-measure the lift's sets for, after
+// -[CKSubscription initWithSubscriptionID:], -[CKNotificationID initWithNotificationName:object:]
+// and -[CKShareParticipant initWithType:].
+// The properties and the initialiser were each declared as a category of this one name by a
+// different half of the pile. Two categories of one name on one class are not two categories: the
+// runtime keeps one and the other's members are never registered, so the initialiser was declared
+// where nothing could see it. It is one category here, carrying every member it had between them.
 @interface CKUserIdentity (CharonCKBuilding)
 @property (nonatomic, copy, nullable) CKRecordID *userRecordID;
 @property (nonatomic, assign) BOOL hasiCloudAccount;
 @property (nonatomic, copy, nullable) CKUserIdentityLookupInfo *lookupInfo;
 @property (nonatomic, copy, nullable) NSArray<NSString *> *contactIdentifiers;
+- (instancetype)charon_identity;
 @end
 
 @interface CKShareParticipant (CharonCKBuilding)
 @property (nonatomic, copy, nullable) CKUserIdentity *userIdentity;
 @property (nonatomic, copy, nullable) NSString *participantID;
+- (instancetype)initWithType:(CKShareParticipantType)type;
 @end
 
 // A user identity and a participant are values the service fills in and the SDK marks unbuildable
@@ -53,10 +65,6 @@
 // coordinator has to re-measure the lift's sets for, after
 // -[CKSubscription initWithSubscriptionID:], -[CKNotificationID initWithNotificationName:object:]
 // and -[CKShareParticipant initWithType:].
-@interface CKUserIdentity (CharonCKBuilding)
-- (instancetype)charon_identity;
-@end
-
 @interface CKShareMetadata (CharonCKBuilding)
 - (instancetype)initWithRootRecordID:(CKRecordID *)rootRecordID
                   containerIdentifier:(nullable NSString *)containerIdentifier
@@ -84,10 +92,6 @@
 // that gives one a name is declared here for the notification files of this folder.
 @interface CKNotificationID (CharonCKBuilding)
 - (instancetype)initWithNotificationName:(NSString *)notificationName object:(id)object;
-@end
-
-@interface CKShareParticipant (CharonCKBuilding)
-- (instancetype)initWithType:(CKShareParticipantType)type;
 @end
 
 #endif
