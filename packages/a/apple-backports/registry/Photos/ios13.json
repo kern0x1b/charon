@@ -35,7 +35,7 @@
       "source": "the header of iOS 16.4 for the declaration; tools/corpus/cache-value.lua over the arm64e cache of 16.0 for the name's presence in the device's own Photos; tests/backports/device/photosavailability13.m through tests/backports/device/photos/run.sh on an iPhone 4S running 6.1.3 for every answer below"
     },
     {
-      "api": "PHPhotoLibraryAvailabilityObserver photoLibraryDidBecomeUnavailable:",
+      "api": "-[PHPhotoLibraryAvailabilityObserver photoLibraryDidBecomeUnavailable:]",
       "kind": "method",
       "introduced": "13.0",
       "status": "implemented",

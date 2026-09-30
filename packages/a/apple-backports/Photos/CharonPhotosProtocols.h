@@ -7,4 +7,5 @@
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
 
+@protocol PHPhotoLibraryAvailabilityObserver;
 @protocol PHPhotoLibraryChangeObserver;
