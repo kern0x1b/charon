@@ -94,7 +94,7 @@
 
 #pragma mark - CKNotification
 
-@interface CKNotification (CharonCKPayload)
+@interface CKNotification ()
 @property (nonatomic, copy, nullable) NSString *alertBody;
 @property (nonatomic, copy, nullable) NSString *alertLocalizationKey;
 @property (nonatomic, copy, nullable) NSArray<NSString *> *alertLocalizationArgs;
@@ -111,7 +111,7 @@
 @property (nonatomic, copy, nullable) NSArray<NSString *> *subtitleLocalizationArgs;
 @property (nonatomic, copy, nullable) CKNotificationID *notificationID;
 @end
-@interface CKNotification (CharonCKPayload)
+@interface CKNotification ()
 // The fifteen members the SDK declares readonly and a payload fills in. They are readwrite here
 // because CloudKit makes a notification by reading one rather than by setting anything, and a
 // class that owns the reading is the only place that can - which is also why the three kinds
