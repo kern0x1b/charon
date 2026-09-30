@@ -246,6 +246,38 @@ measured answer is a route choice whose three variants properties are empty arra
 `userInfo` is nil. Each class's own reason is in its entry, and for the ones the port does not carry
 `NSClassFromString` answers nil, which is what `absent` means.
 
+## `CarPlayTemplatesView12.m` carries four releases, and the split is owed
+
+**One `.m` defines the API of exactly one release**, and `CarPlayTemplatesView12.m` does not: besides its
+12.0 rows it carries 14.0, 15.0 and 26.0 API. The gate cannot see it, because `minimums()` reads
+`entry.minimum` and never `entry.introduced`, and every one of these rows is `minimum: 6.0` — so one
+object, one minimum, and no complaint. The rule is read by hand, and a reviewer's read found this.
+
+The non-12.0 members, and what each one touches in the 12.0 class's private storage — which is the whole
+of why this is not a cut-and-paste:
+
+| introduced | member | private storage it reaches |
+| --- | --- | --- |
+| 14.0 | the seven `-[CPInterfaceController …animated:completion:]` forms | `_stack` |
+| 14.0 | `-[CPListTemplate indexPathForItem:]` | `_sections` |
+| 14.0 | `-[CPMapTemplate showTripPreviews:selectedTrip:textConfiguration:]` | no code at all — the row is `owed` |
+| 15.0 | `-[CPListTemplate initWithTitle:sections:assistantCellConfiguration:]` | the list's own storage |
+| 15.0 | `-[CPGridTemplate updateGridButtons:]` | `_gridButtons`, `_grid` |
+| 15.0 | `-[CPGridTemplate updateTitle:]` | `_title` |
+| 15.0 | `-[CPListSection initWithItems:header:headerSubtitle:headerImage:headerButton:sectionIndexTitle:]` | the section's own storage |
+| 26.0 | `-[CPListTemplate initWithTitle:sections:assistantCellConfiguration:headerGridButtons:]` | the list's own storage |
+
+A category cannot reach an ivar, so the split needs five `Charon`-prefixed accessors on the classes in
+`CarPlayTemplatesView12.m` (`_stack`, `_sections`, `_gridButtons`, `_grid`, `_title`, plus whatever the
+three initialisers need) and then three new objects named for 14.0, 15.0 and 26.0 — which is what
+`CarPlayNavigationSession12.m` and `CarPlayNavigationSession154.m` do for the session, one release each,
+and what `CarPlayMapTemplate12.m` would do for the map template. **It is not done, and this page does not
+claim it is.** Doing it is a change to code this series did not write, in a family whose two band gates
+the coordinator runs and this band does not, so it belongs to a round that can gate it.
+
+The 12.0 object this series added, `CarPlayNavigationSession12.m`, carries only 12.0 API, and
+`CarPlayNavigationSession154.m` only 15.4 — one release each, named for it.
+
 ## What is not carried, and why that is not `absent`
 
 The 48 classes named in the table above -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,

@@ -64,10 +64,12 @@ static const NSTimeInterval CharonVoiceMaximumCycle = 5.0;
 // The header's own initialiser, and the header's own nullability: titleVariants and image may be
 // nil and then answer nil, which is measured (Apple's object answers nil for a nil array rather than
 // an empty one, and a `?: @[]` here would be a quiet different answer).
-- (instancetype)initWithIdentifier:(NSString *)identifier
-                     titleVariants:(NSArray<NSString *> *)titleVariants
-                             image:(UIImage *)image
-                           repeats:(BOOL)repeats
+// The signature is on ONE line on purpose. Apple's own CPVoiceControlTemplate.h:36 wraps this same
+// four-argument selector over four lines, and a grep of that one line reads a complete one-argument
+// selector -- a name no CarPlay class in any SDK declares, which a reader then goes looking for in the
+// registry. A line that cannot be mistaken for a shorter selector is worth more here than the four
+// lines Apple's header wraps it over.
+- (instancetype)initWithIdentifier:(NSString *)identifier titleVariants:(NSArray<NSString *> *)titleVariants image:(UIImage *)image repeats:(BOOL)repeats
 {
     self = [super init];
     if (self) {
