@@ -246,7 +246,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the factory is exported and builds through the release's own constructor, so it returns a real bar button item; it is NOT a fixed-width spacer, because a 6.1.3 bar has no such item",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -256,7 +256,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the factory is exported and builds through the release's own constructor, so it returns a real bar button item; it is NOT a fixed-width spacer, because a 6.1.3 bar has no such item",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -266,7 +266,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -276,7 +276,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -286,7 +286,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -296,7 +296,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -306,7 +306,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -316,7 +316,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -326,7 +326,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -336,7 +336,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -346,7 +346,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -356,7 +356,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -366,7 +366,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -376,7 +376,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -386,7 +386,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -396,7 +396,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -406,7 +406,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -416,7 +416,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -426,7 +426,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -436,7 +436,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -446,7 +446,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -456,7 +456,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -466,7 +466,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -476,7 +476,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -486,7 +486,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -496,7 +496,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -506,7 +506,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -516,7 +516,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -526,7 +526,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -536,7 +536,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -546,7 +546,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -556,7 +556,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -566,7 +566,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -576,7 +576,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -586,7 +586,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -596,7 +596,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -606,7 +606,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -616,7 +616,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -626,7 +626,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -636,7 +636,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -646,7 +646,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -656,7 +656,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -666,7 +666,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -676,7 +676,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -686,7 +686,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -696,7 +696,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -706,7 +706,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -716,7 +716,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -726,7 +726,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -736,7 +736,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the invalidate/update cycle the release already owns: the flag is set, the hook is called only when the flag is set, and the flag is cleared",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -746,7 +746,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -756,7 +756,7 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported so a conforming object links and respondsToSelector: answers YES, and the body is the honest NO or nothing: a 6.1.3 release never produces this event, so there is no caller",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -766,7 +766,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -776,7 +776,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIBackgroundExtensionView resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -786,7 +786,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -796,7 +796,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -806,7 +806,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -816,7 +816,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -826,7 +826,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIBarButtonItemBadge resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -836,7 +836,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -846,7 +846,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -856,7 +856,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -866,7 +866,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -876,7 +876,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -886,7 +886,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -896,7 +896,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIContextMenuSystem resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -906,7 +906,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UICornerConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -916,7 +916,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UICornerRadius resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -926,7 +926,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -936,7 +936,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIDeferredMenuElementProvider resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -946,7 +946,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIGlassContainerEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -956,7 +956,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIGlassEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -966,7 +966,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIMainMenuSystem resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -976,7 +976,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIMainMenuSystemConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -986,7 +986,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIMenuSystemFindElementGroupConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -996,7 +996,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1006,7 +1006,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1016,7 +1016,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1026,7 +1026,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1036,7 +1036,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1046,7 +1046,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1056,7 +1056,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1066,7 +1066,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1076,7 +1076,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1086,7 +1086,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1096,7 +1096,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1106,7 +1106,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1116,7 +1116,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1126,7 +1126,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1136,7 +1136,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1146,7 +1146,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UISceneDestructionCondition resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1156,7 +1156,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UISceneWindowingControlStyle resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1166,7 +1166,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeEffect resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1176,7 +1176,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeEffectStyle resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1186,7 +1186,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIScrollEdgeElementContainerInteraction resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1196,7 +1196,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1206,7 +1206,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1216,7 +1216,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1226,7 +1226,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1236,7 +1236,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1246,7 +1246,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1256,7 +1256,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UISliderTick resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1266,7 +1266,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UISliderTrackConfiguration resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1276,7 +1276,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1286,7 +1286,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1296,7 +1296,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1306,7 +1306,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1316,7 +1316,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1326,7 +1326,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1336,7 +1336,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1346,7 +1346,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UISymbolContentTransition resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1356,7 +1356,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UITabAccessory resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1366,7 +1366,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1376,7 +1376,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1386,7 +1386,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1396,7 +1396,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1406,7 +1406,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1416,7 +1416,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1426,7 +1426,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1436,7 +1436,7 @@
    "kind": "class",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the class is declared and exported, so an application that links strongly against UIViewLayoutRegion resolves the symbol instead of failing to launch; the port adds no members, because a name whose only requirement is that dyld resolve it has no other honest answer",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1446,7 +1446,7 @@
    "kind": "property",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the selector is exported and the body is the honest nothing: the 16.4 SDK's UIViewPropertyAnimator declares no flush and no updateEverything, so there is nothing to forward to",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1456,7 +1456,7 @@
    "kind": "method",
    "introduced": "26.1",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1466,7 +1466,7 @@
    "kind": "property",
    "introduced": "26.1",
    "minimum": "6.0",
-   "status": "carried",
+   "status": "implemented",
    "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
@@ -1477,8 +1477,8 @@
    "introduced": "26.4",
    "minimum": "6.0",
    "status": "owed",
-   "reason": "owed: coordination/api-queue.md names this row. A 26.4 name cannot appear in a 26.2 surface by construction, so what this needs is a NEWER SURFACE that declares it",
-   "effect": "NOT carried: the queue dates this 26.4 but the SDK 26.2 surface does not declare it, so there is no declaration here to read the signature from, and carrying a member on a remembered signature would be a guess with a symbol on it",
+   "reason": "owed: coordination/api-queue.md names this row, under 'UIKit 26.x - two rows owed because the surface predates them'. A 26.4 name cannot appear in the SDK 26.2 SURFACE by construction - the surface predates it - so there is no declaration in the tree to read the signature from, and carrying the property on a remembered signature would be a guess with a symbol on it. What closes it is a newer surface that declares the row, not a different implementation",
+   "effect": "NOT implemented while the row is owed: the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises - the same position an `absent` row is in, and the difference is why this one is owed rather than absent: the RELEASE carries the name and the PORT could carry it",
    "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
    "facts": "facts/UIKit/UIContentUnavailable26.md"
   }

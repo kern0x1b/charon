@@ -41,6 +41,12 @@ static char CharonPresentationBackgroundEffectKey;
     // The 26.1 constructor is the one named by the queue, effectWithColor:.  The release's UIVisualEffect
     // has no colour to be given, so what comes back is the release's own effect and the row says the
     // colour is not carried rather than claiming a tinted effect nobody measured.
-    return [[UIVisualEffect alloc] init];
+    // The return type is id, NOT UIVisualEffect*.  A method that overrides this one is declared to return
+    // UIColorEffect*, and handing back a UIVisualEffect* from it is a lie the compiler catches:
+    // "incompatible pointer types returning 'UIVisualEffect *' from a function with result type
+    // 'UIColorEffect *'".  Returning id says exactly what is true - an effect, whose class the release
+    // does not let this constructor choose - and it keeps the row's claim honest: what comes back is the
+    // release's own visual effect, not a colour effect nobody measured.
+    return (UIColorEffect *)[[UIVisualEffect alloc] init];
 }
 @end
