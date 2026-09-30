@@ -59,7 +59,10 @@ class Surface:
     version or later; "none" when no version reaches it). full=True also walks what declared() leaves out for the callers that only
     match names: enum types and their cases, struct types, inline functions, and it lets a
     category's availability reach its members. A member with no availability of its own takes
-    unavailable and obsoleted from its container as well as introduced. `owns` says which header
+    unavailable and obsoleted from its container as well as introduced. unavailable_ios says the
+    unavailability came from an ios availability attribute -- `API_UNAVAILABLE(ios)`, a declaration
+    that is tvOS's or visionOS's and not iOS's at all, which is a different fact from
+    NS_UNAVAILABLE and the surface keeps the two apart only here. `owns` says which header
     paths belong to this walk (default: the framework's own bundle); `anonymous` counts the enums
     and structs that have no name and so no row (their cases and members still get one)."""
 
@@ -95,6 +98,7 @@ class Surface:
         deprecated = None
         obsoleted = None
         unavailable = False
+        unavailable_ios = False
         for found in self.target_attrs:
             if found[0] and found[0] != (0,):
                 introduced = found[0] if introduced is None else min(introduced, found[0])
@@ -103,6 +107,8 @@ class Surface:
             if found[2] and found[2] != (0,):
                 obsoleted = found[2] if obsoleted is None else min(obsoleted, found[2])
             unavailable = unavailable or found[3]
+            unavailable_ios = unavailable_ios or bool(found[3] and len(found) > 4
+                                                     and found[4] == "ios")
         via = "own" if introduced is not None else "none"
         container = self.container_detail if kind in ("method", "property", "case") else None
         if container is not None:
@@ -112,7 +118,9 @@ class Surface:
             if not self.target_attrs:
                 obsoleted = container["obsoleted"]
                 unavailable = container["unavailable"]
-        return {"introduced": introduced, "deprecated": deprecated, "obsoleted": obsoleted, "unavailable": unavailable, "via": via}
+                unavailable_ios = container.get("unavailable_ios", False)
+        return {"introduced": introduced, "deprecated": deprecated, "obsoleted": obsoleted,
+                "unavailable": unavailable, "unavailable_ios": unavailable_ios, "via": via}
 
     def finish_target(self):
         if self.target is None:
@@ -157,16 +165,24 @@ class Surface:
                         self.target[2].append((999,))
                     whole = AVAILABILITY.search(rest)
                     if whole:
-                        self.target_attrs.append((parse_version(whole.group(1)), parse_version(whole.group(2)), parse_version(whole.group(3)), bool(whole.group(4))))
+                        # The fifth value is which platform the attribute speaks for: an
+                        # `API_UNAVAILABLE(ios)` is a declaration that exists for tvOS or visionOS
+                        # and not for iOS at all, which is a different fact from NS_UNAVAILABLE,
+                        # and the surface cannot keep the two apart in one column.
+                        self.target_attrs.append((parse_version(whole.group(1)),
+                                                   parse_version(whole.group(2)),
+                                                   parse_version(whole.group(3)),
+                                                   bool(whole.group(4)),
+                                                   "ios" if found and found.group(1) == "ios" else None))
                 continue
             if kind == "UnavailableAttr" or kind == "DeprecatedAttr":
                 # NS_UNAVAILABLE and the plain deprecated attribute: no platform in them, they
                 # hold for iOS as they do for every platform.
                 if self.full and self.target is not None and depth == self.target_depth + 1:
                     if kind == "UnavailableAttr":
-                        self.target_attrs.append((None, None, None, True))
+                        self.target_attrs.append((None, None, None, True, None))
                     else:
-                        self.target_attrs.append((None, DEPRECATED_NO_VERSION, None, False))
+                        self.target_attrs.append((None, DEPRECATED_NO_VERSION, None, False, None))
                 continue
             if depth == 0:
                 self.finish_target()
@@ -287,7 +303,10 @@ def sdk_version(sdk):
         return json.load(stream)["Version"]
 
 
-def clang_command(sdk, target, full=False):
+def clang_command(sdk, target, full=False, vfs=None):
+    # vfs: an -ivfsoverlay to read the headers through, i.e. the lift's own header tree. The walk
+    # that built the surface read the SDK's headers as they ship; a walk of the same SDK with a
+    # vfs reads the lifted headers instead, which is what api-ledger.py measures against.
     command = ["xcrun", "clang", "-x", "objective-c", "-target", target, "-isysroot", sdk, "-w", "-fsyntax-only", "-Xclang", "-ast-dump"]
     support = os.path.join(sdk, "System", "iOSSupport", "System", "Library", "Frameworks")
     if target.endswith("macabi"):
@@ -296,6 +315,8 @@ def clang_command(sdk, target, full=False):
         command += ["-iframework", cryptex_frameworks(sdk)]
     if full and subframeworks(sdk):
         command += ["-iframework", subframeworks(sdk)]
+    if vfs:
+        command += ["-ivfsoverlay", vfs, "-Wno-incompatible-sysroot"]
     return command
 
 
@@ -359,20 +380,21 @@ def declared_surface(sdk, framework, target, full=False, failed=None):
     return surface
 
 
-def declared_surface_full(sdk, framework, target, failed=None):
+def declared_surface_full(sdk, framework, target, failed=None, vfs=None):
     """The walk for an iPhoneOS SDK taken whole (Surface(full=True)): the umbrella header where
     there is one and every other header in the framework's Headers/ together, since an umbrella
     leaves public headers out (CoreImage's CIFilterBuiltins.h: 1063 members the umbrella never
     reaches). When the lot does not parse, each header is read on its own and the ones clang rejects
     are named in `failed` (a list, when the caller passes one) instead of taking the rest down with
-    them. A framework with no header at all yields an empty Surface."""
+    them. A framework with no header at all yields an empty Surface. vfs: read the headers through
+    this -ivfsoverlay (the lift's header tree) instead of the SDK's own."""
     headers_dir = framework_headers_dir(sdk, framework, target, full=True)
     headers = sorted(f for f in os.listdir(headers_dir) if f.endswith(".h")) if headers_dir else []
     surface = Surface(framework, full=True)
     imports = [h for h in headers if h != framework + ".h"]
     if framework + ".h" in headers:
         imports.insert(0, framework + ".h")
-    walk_imports(surface, clang_command(sdk, target, full=True), ["%s/%s" % (framework, h) for h in imports], failed)
+    walk_imports(surface, clang_command(sdk, target, full=True, vfs=vfs), ["%s/%s" % (framework, h) for h in imports], failed)
     return surface
 
 
@@ -433,16 +455,17 @@ def include_libraries(sdk):
     return dict(sorted(libraries.items()))
 
 
-def library_surface(sdk, library, headers, target, failed=None):
+def library_surface(sdk, library, headers, target, failed=None, vfs=None):
     """The Surface of one usr/include library (see include_libraries), walked like a framework:
     every header of it in one translation unit, and one by one when that does not parse. The headers
-    the walk reaches through #include belong to their own library, by path."""
+    the walk reaches through #include belong to their own library, by path. vfs: read the headers
+    through this -ivfsoverlay (the lift's header tree) instead of the SDK's own."""
     if library == INCLUDE_TOP:
         owns = lambda path: re.search(r"/usr/include/[^/]+$", path) is not None
     else:
         owns = lambda path: "/usr/include/%s/" % library.split("/", 1)[1] in path
     surface = Surface(library, full=True, owns=owns)
-    walk_imports(surface, clang_command(sdk, target, full=True), headers, failed)
+    walk_imports(surface, clang_command(sdk, target, full=True, vfs=vfs), headers, failed)
     return surface
 
 
