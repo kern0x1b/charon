@@ -7,6 +7,12 @@ store a payload could be read out of. Everything below is that one fact and what
 
 ## The witnesses this page's numbers come out of
 
+**Every row of this family ends its `effect` with the same short clause** — *"Not a device measurement; no
+device has been asked and the guest run is owed"* — and that is said once here rather than argued once per
+row. It is true of all 390 implemented rows and of the one `absent` row: what is measured anywhere in
+this framework is the HOST's own SensorKit and the port's own compiled objects, and not one device has
+been asked anything.
+
 Seven paths, and every count below is one of their outputs. A number on this page that names none of
 them is not evidence, and this page used to carry several.
 
