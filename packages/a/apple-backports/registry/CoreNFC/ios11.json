@@ -108,9 +108,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "no session is made, so nothing calls a delegate",
+      "reason": "not carried, and the release never sends it: the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC, and neither this protocol nor NFCReaderSession's own is a protocol in 11.0's or 12.0's cache - the SDK header declares both, but Apple's own 11.0 and 12.0 binaries emit no protocol metadata for either, and both first appear as protocols in 16.0's arm64e cache",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCNDEFReaderSessionDelegate",
@@ -118,9 +118,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "no session is made, so nothing calls a delegate",
+      "reason": "not carried, and the release never sends it: the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC, and neither this protocol nor NFCReaderSession's own is a protocol in 11.0's or 12.0's cache - the SDK header declares both, but Apple's own 11.0 and 12.0 binaries emit no protocol metadata for either, and both first appear as protocols in 16.0's arm64e cache",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "the SDK 16.4 headers NFCReaderSession.h and NFCNDEFReaderSession.h"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCISO15693CustomCommandConfiguration",
@@ -128,9 +128,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the configuration is the 11.0 class NFCTagCommandConfiguration's own, and it came with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives the name its first held rung at 11.0, where 11.0's own cache has it as a class",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCISO15693ReadMultipleBlocksConfiguration",
@@ -138,9 +138,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the configuration is the 11.0 class NFCTagCommandConfiguration's own, and it came with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives the name its first held rung at 11.0, where 11.0's own cache has it as a class",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCISO15693ReaderSession",
@@ -148,9 +148,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: it is the reader session for ISO15693 tags, which arrived with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives the name its first held rung at 11.0, where the cache has it as a class",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCTagCommandConfiguration",
@@ -158,9 +158,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the configuration is the 11.0 class NFCTagCommandConfiguration's own, and it came with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives the name its first held rung at 11.0, where 11.0's own cache has it as a class",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCISO15693Tag",
@@ -168,9 +168,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the tag is what an NFC session hands a delegate, and the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all; first-rung.py gives the name its first held rung at 11.0, where the cache carries it as both a class and a protocol",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCTag",
@@ -178,9 +178,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the tag is what an NFC session hands a delegate, and the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all; first-rung.py gives the name its first held rung at 11.0, where the cache carries it as both a class and a protocol",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
       "api": "NFCISO15693TagResponseErrorKey",
@@ -188,9 +188,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no NFC hardware and no reader daemon: a reader session needs both",
+      "reason": "not carried, and it is not a gap in this series: the key names the error entry of a tag response, which only an ISO15693 session produces, and the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC; first-rung.py gives the symbol _NFCISO15693TagResponseErrorKey its first held rung at 11.0, so at the releases this package serves a weak reference to it is NULL",
       "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory: 0 of 524 and 0 of 354 images name CoreNFC and no class or protocol of either begins with NFC; tools/cache-index/first-rung.py, whose self-test passes 8 of 8, gives the symbol _NFCISO15693TagResponseErrorKey its first held rung at 11.0, and 11.0's cache holds that symbol, so the row is an arrival rather than a missing export"
     },
     {
       "api": "NSUserActivity.ndefMessagePayload",
@@ -198,9 +198,9 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a tag read at the moment the application was opened by it arrives on a device with NFC hardware and a system that reads it, and the release has neither",
+      "reason": "not carried, and the owner is the port's own class: Foundation/NSUserActivity.m implements NSUserActivity itself and declares no ndefMessagePayload, so the accessor is not there on the class the release would have used either - the release's own caches carry no such accessor, the 12.0 arm64 cache carries no CoreNFC at all, and the first held cache with the property is 16.0's arm64e, where first-rung.py finds it",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the SDK 16.4 headers of CoreNFC"
+      "source": "the armv7 shared caches of iOS 6.1.3 and 4.3, which carry no NSUserActivity class of CoreNFC's making (0 NFC* classes and 0 protocols); Foundation/NSUserActivity.m of this package, whose declared surface has no ndefMessagePayload; and 16.0's arm64e cache, the first held rung first-rung.py gives the name"
     }
   ]
 }
