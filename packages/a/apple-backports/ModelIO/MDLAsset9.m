@@ -292,7 +292,7 @@ static BOOL CharonMDLFaceIndex(NSInteger named, NSUInteger count, NSUInteger *ou
 
 // One mesh of the port's own, from the vertices and the indices a reader collected: the three
 // attributes in one interleaved buffer, and a submesh over every index of it.
-static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAllocator> allocator, NSString *name)
+static MDLMesh *CharonMDLBuildMesh(CharonMDLSourceMesh *mesh, id<MDLMeshBufferAllocator> allocator, NSString *name, NSString *materialName)
 {
     if (!mesh->vertexCount || !mesh->indexCount)
         return nil;
@@ -421,10 +421,16 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
                     // corner of the face below it.
                     NSUInteger positionAt = 0, normalAt = 0, uvAt = 0;
                     BOOL named = parts.count > 0 && CharonMDLFaceIndex(parts[0].integerValue, positionCount, &positionAt);
-                    BOOL hasNormal = named && parts.count > 1 && parts[1].length &&
-                                     CharonMDLFaceIndex(parts[1].integerValue, normalCount, &normalAt);
-                    BOOL hasUV = named && parts.count > 2 && parts[2].length &&
-                                 CharonMDLFaceIndex(parts[2].integerValue, uvCount, &uvAt);
+                    // A face corner is v/vt/vn - POSITION, TEXTURE COORDINATE, NORMAL - so the second
+                    // field is the uv id and the THIRD is the normal. They were the other way round, which
+                    // is why every corner answered vt1: cube.obj's face f 1/1/1 2/2/1 4/4/1 3/3/1 names uv
+                    // 1, 2, 4 and 3, and the reader took the uv from the normal field, where every corner
+                    // has 1. The trace that showed uv=y:0 at every corner is in
+                    // tests/backports/host/modelio/uv-normal-trace.txt.
+                    BOOL hasUV = named && parts.count > 1 && parts[1].length &&
+                                 CharonMDLFaceIndex(parts[1].integerValue, uvCount, &uvAt);
+                    BOOL hasNormal = named && parts.count > 2 && parts[2].length &&
+                                     CharonMDLFaceIndex(parts[2].integerValue, normalCount, &normalAt);
                     if (!named)
                         continue;
                     NSArray<NSNumber *> *corner = @[@(positionAt), @(hasNormal ? normalAt + 1 : 0), @(hasUV ? uvAt + 1 : 0)];
@@ -442,7 +448,7 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
         }
     }
     if (mesh.vertexCount && mesh.indexCount) {
-        MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, submeshNames.firstObject);
+        MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, submeshNames.firstObject, submeshMaterials.firstObject);
         if (built) {
             NSString *first = submeshNames.firstObject, *firstMaterial = submeshMaterials.firstObject;
             built.name = firstMaterial.length ? [NSString stringWithFormat:@"%@_%@", first, firstMaterial] : first;
@@ -454,9 +460,20 @@ static void CharonMDLReadOBJ(NSData *data, NSMutableArray<MDLObject *> *objects,
                 if (!count)
                     continue;
                 NSString *name = submeshNames[k], *material = submeshMaterials[k];
+                // The submesh is named object_material when the file gives both, which is what the system
+                // does and what the differential compares: cube.obj has `o solid` and `usemtl red`, the
+                // system names that submesh solid_red and this port named it red, so the two were the SAME
+                // measurement under two keys - indexCount 6, depth 32 and geometry 2 already agreed - and
+                // the whole submesh read as missing on one side and extra on the other. The mesh name
+                // above already builds object_material; the submesh did not.
+                NSString *submeshName = nil;
+                if (name.length && material.length && ![name isEqualToString:material])
+                    submeshName = [NSString stringWithFormat:@"%@_%@", name, material];
+                else
+                    submeshName = name.length ? name : material;
                 MDLMaterial *mat = [[MDLMaterial alloc] initWithName:material
                                                   scatteringFunction:[[MDLPhysicallyPlausibleScatteringFunction alloc] init]];
-                MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithName:material.length ? material : name
+                MDLSubmesh *submesh = [[MDLSubmesh alloc] initWithName:submeshName.length ? submeshName : name
                                                              indexBuffer:built.submeshes.firstObject.indexBuffer
                                                               indexCount:count
                                                                indexType:MDLIndexBitDepthUInt32
@@ -780,9 +797,18 @@ static void CharonMDLReadPLY(NSData *data, NSMutableArray<MDLObject *> *objects,
             }
         }
     }
-    MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, @"");
+    // A polygon file carries no material and names no object, and the system still gives the mesh's material
+    // a name: PLY Material. It is the format's own name, not the file's, and it is what the differential
+    // compares - the port was answering an empty string, so every triangle PLY fixture read as a difference.
+    // A polygon file names no object, so the MESH is empty and its SUBMESH is empty too - the system
+    // leaves both alone. Only the MATERIAL takes the format's own name, PLY Material, and giving that to
+    // the submesh as well made four new differences where the host has none.
+    NSString *meshName = data.length ? @"" : @"";
+    NSString *submeshName = data.length ? @"" : @"";
+    NSString *materialName = data.length ? @"PLY Material" : @"";
+    MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, submeshName, materialName);
     if (built) {
-        built.name = data.length ? @"" : @"";
+        built.name = meshName;
         [objects addObject:built];
     }
     CharonMDLSourceMeshFree(&mesh);
@@ -885,20 +911,49 @@ static void CharonMDLReadUSDA(NSData *data, NSMutableArray<MDLObject *> *objects
             if (number.length)
                 [indices addObject:@(number.integerValue)];
         }
-        NSUInteger corner = 0;
+        // A face is the n ids it NAMES, and the triangles are fanned from the first of them. The ids were
+        // being mixed with their OFFSETS in that array - corner + c - 1 and corner + c are positions, not
+        // vertex ids - and only the first face escaped, because only there do the two coincide. On
+        // plate.usda, faceVertexCounts [4, 3] with faceVertexIndices [0 1 3 2 2 3 4], that emitted two
+        // indices we had invented ourselves, 5 and 6, which the reader then dropped against a vertexCount
+        // of 5: 9 indices became 7 and nothing said why. A corner that runs past the end of the array is a
+        // malformed file and is REFUSED by name, not swallowed - swallowing it is how 7 was reported as if
+        // it were the truth.
+        NSUInteger corner = 0, faceIndex = 0;
         for (NSString *word in counts) {
             NSUInteger length = (NSUInteger)[word integerValue];
             if (length < 3)
                 continue;
+            if (corner + length > indices.count) {
+                fprintf(stderr, "charon-usda-malformed file faces run past faceVertexIndices "
+                        "face=%lu corners=%lu available=%lu\n",
+                        (unsigned long)faceIndex, (unsigned long)length, (unsigned long)indices.count);
+                return;
+            }
+            NSMutableArray<NSNumber *> *face = [NSMutableArray array];
+            for (NSUInteger c = 0; c < length; c++)
+                [face addObject:indices[corner + c]];
             for (NSUInteger c = 2; c < length; c++) {
-                NSUInteger face[3] = {corner, corner + c - 1, corner + c};
-                for (int part = 0; part < 3; part++)
-                    if (face[part] < mesh.vertexCount)
-                        CharonMDLSourceIndexAdd(&mesh, (uint32_t)face[part]);
+                NSUInteger triangle[3] = {face[0].unsignedIntegerValue,
+                                           face[c - 1].unsignedIntegerValue, face[c].unsignedIntegerValue};
+                for (int part = 0; part < 3; part++) {
+                    if (triangle[part] >= mesh.vertexCount) {
+                        fprintf(stderr, "charon-usda-bad-index file face=%lu id=%lu vertexCount=%lu\n",
+                                (unsigned long)faceIndex, (unsigned long)triangle[part],
+                                (unsigned long)mesh.vertexCount);
+                        return;
+                    }
+                    CharonMDLSourceIndexAdd(&mesh, (uint32_t)triangle[part]);
+                }
             }
             corner += length;
+            faceIndex++;
         }
-        MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, name);
+        // The mesh keeps the node the file gave it, and the SUBMESH is named submesh: the system does not
+        // name a submesh after the node that holds it, and the differential measures that name. The
+        // submesh name is the third argument of CharonMDLBuildMesh, which the Wavefront branch passes the
+        // file's own object_material and this one passes the node name.
+        MDLMesh *built = CharonMDLBuildMesh(&mesh, allocator, @"submesh", @"material");
         if (built) {
             built.name = name;
             [objects addObject:built];

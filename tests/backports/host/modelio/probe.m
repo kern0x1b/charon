@@ -7,6 +7,9 @@
 // Nothing here is tuned to agree. A line that differs is a line where the port and the system answer
 // differently, and it is reported as it is: that is the measurement.
 #import <Foundation/Foundation.h>
+#import <dlfcn.h>
+#include <string.h>
+#include <stdint.h>
 #import <ModelIO/ModelIO.h>
 #import <simd/simd.h>
 #import <string.h>
@@ -16,6 +19,26 @@
 #endif
 
 static void put(NSString *format, ...) NS_FORMAT_FUNCTION(1, 2);
+// WHICH IMAGE ANSWERED, proved at runtime rather than inferred from link flags. The port process does not
+// link the system ModelIO, which already guarantees the two never meet in one runtime - but that is a fact
+// about the build, and a build can be edited. dladdr on the class pointer returns the Mach-O that defined
+// it, so every answer carries the path it came from and run.sh can refuse a port answer that came from
+// ModelIO.framework. A differential that compares two runtimes cannot tell from its own output which one it
+// measured; this can.
+static void report_image(NSString *cls)
+{
+    Class k = NSClassFromString(cls);
+    Dl_info info;
+    memset(&info, 0, sizeof(info));
+    const char *path = k && dladdr((const void *)(uintptr_t)k, &info) ? info.dli_fname : "unknown";
+    // stderr, NEVER answers.txt. That file is compared LINE BY LINE, and an IMAGE line is not a
+    // measurement: it is asymmetric by construction - a family prints one only when that family ran, so the
+    // two sides legitimately differ - and the absolute path differs too. Putting it in answers.txt made
+    // compare.py report every one as "only one side". run.sh reads the two stderr streams instead.
+    fprintf(stderr, "image %s %s %s\n", cls.UTF8String, path ? path : "unknown",
+            path && strstr(path, "ModelIO") ? "system-modelio" : "port");
+}
+
 static void put(NSString *format, ...)
 {
     va_list arguments;
@@ -71,7 +94,11 @@ static void writeOBJ(NSString *path)
         @"mtllib cube.mtl",
         @"o solid",
         @"v -1 -1 0", @"v 1 -1 0", @"v 1 1 0", @"v -1 1 0", @"v 0 0 1",
-        @"vt 0 0", @"vt 1 0", @"vt 1 1", @"vt 0 1",
+        // DISTINCTIVE uv pairs, so whether the two sides flip V is visible in the numbers instead of
+        // being inferred from the code. Every y is 0.75: if a side answers 0.25 it is reading the file, and
+        // if it answers 0.75 for a y of 0.25 it has flipped. The x values 0.25/0.50/0.75 are distinct too,
+        // so a shifted read cannot pass as a flipped one.
+        @"vt 0.25 0.25", @"vt 0.50 0.25", @"vt 0.75 0.25", @"vt 0.25 0.75",
         @"vn 0 0 1", @"vn 0 0 -1",
         @"usemtl red",
         @"f 1/1/1 2/2/1 4/4/1 3/3/1",
@@ -83,6 +110,24 @@ static void writeOBJ(NSString *path)
 
 // The same shape as a polygon file in its ASCII form, with a colour per vertex and a face list of
 // three, so the reader is measured over its header's properties and its fan of a face.
+// The same body as writePLYAscii with one line inserted inside the face element s data.
+static void writePLYAsciiWithMidDataComment(NSString *path)
+{
+    NSArray *lines = @[
+        @"ply", @"format ascii 1.0", @"comment a triangle with a colour",
+        @"element vertex 4",
+        @"property float x", @"property float y", @"property float z",
+        @"property float nx", @"property float ny", @"property float nz",
+        @"property uchar red", @"property uchar green", @"property uchar blue",
+        @"element face 2", @"property list uchar int vertex_indices", @"end_header",
+        @"0 0 0 0 0 1 255 0 0", @"1 0 0 0 0 1 0 255 0",
+        @"1 1 0 0 0 1 0 0 255", @"0 1 0 0 0 1 255 255 0",
+        @"# the two faces of the plate",
+        @"3 0 1 2", @"3 0 2 3",
+    ];
+    [[lines componentsJoinedByString:@"\n"] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
+}
+
 static void writePLYAscii(NSString *path)
 {
     NSArray<NSString *> *lines = @[
@@ -91,9 +136,19 @@ static void writePLYAscii(NSString *path)
         @"property float ny", @"property float nz", @"property uchar red", @"property uchar green",
         @"property uchar blue", @"element face 2", @"property list uchar int vertex_indices", @"end_header",
         @"0 0 0 0 0 1 255 0 0", @"1 0 0 0 0 1 0 255 0", @"1 1 0 0 0 1 0 0 255", @"0 1 0 0 0 1 255 255 0",
-        // A comment after end_header is legal PLY and is what real writers emit. It is here because
-        // reading the body as one flat token stream ate every word of it as a coordinate.
-        @"# the two faces of the plate",
+        // NO COMMENT HERE, and that is a MEASURED change. A comment inside the face element s DATA makes
+        // the system read this file as a point cloud - 12 indices, geometry 0 - where it plainly holds two
+        // triangles, 6 indices, geometry 2. Four variants of the same bytes, measured:
+        //
+        //   no comment                      6 indices  geometry 2  triangle     <- what the file says
+        //   comment before the first face   3 indices  geometry 2  triangle     <- a face is DROPPED
+        //   comment between two faces       6 indices  geometry 2  triangle     <- ignored
+        //   comment in the HEADER          12 indices  geometry 0  point cloud  <- the shape changes
+        //
+        // The behaviour is POSITION-dependent, not comment-dependent, and no single consistent rule fits:
+        // the second variant loses a face SILENTLY, which is not something to copy. So tri.ply is written
+        // comment-free so both sides measure the same file, the port keeps its correct reading of the faces,
+        // and the divergence lives in its own fixture - tri-comment.ply - recorded in the facts file.
         @"3 0 1 2", @"3 0 2 3",
     ];
     [[lines componentsJoinedByString:@"\n"] writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:NULL];
@@ -207,9 +262,10 @@ static void reportAsset(NSString *key, NSString *extension)
     put(@"%@ objects %lu", key, (unsigned long)asset.count);
     put_box([key stringByAppendingString:@" box"], asset.boundingBox);
     for (MDLObject *object in asset) {
-        if ([object isKindOfClass:[MDLMesh class]])
+        if ([object isKindOfClass:[MDLMesh class]]) {
+            report_image(@"MDLMesh");
             reportMesh((MDLMesh *)object, [key stringByAppendingString:@" mesh"]);
-        else
+        } else
             put(@"%@ object %@", key, NSStringFromClass([object class]));
     }
 }
@@ -281,11 +337,20 @@ static void reportGenerators(void)
     put(@"ellipsoid vertices %lu indices %lu", (unsigned long)ball.vertexCount,
         (unsigned long)ball.submeshes.firstObject.indexCount);
     put_box(@"ellipsoid", ball.boundingBox);
-    MDLMesh *cylinder = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1} radialSegments:8 verticalSegments:2
-                                         geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
-    put(@"cylinder vertices %lu indices %lu", (unsigned long)cylinder.vertexCount,
-        (unsigned long)cylinder.submeshes.firstObject.indexCount);
-    put_box(@"cylinder", cylinder.boundingBox);
+      // The cylinder at THREE parameter sets, so its topology can be SOLVED rather than fitted to one
+      // point. 47 vertices and 162 indices at 8 segments and 2 vertical segments is one observation; the
+      // formula has to hold at the other two or it is not the formula.
+      {
+          const int radial[5] = {8, 8, 8, 12, 5};
+          const int vertical[5] = {1, 2, 3, 2, 4};
+          for (int c = 0; c < 5; c++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:radial[c] verticalSegments:vertical[c]
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              put(@"cylinder s%d v%d vertices %lu indices %lu", radial[c], vertical[c],
+                  (unsigned long)cyl.vertexCount, (unsigned long)cyl.submeshes.firstObject.indexCount);
+          }
+      }
 }
 
 static void reportSubmesh(void)
@@ -444,6 +509,11 @@ int main(int argc, const char **argv)
         [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:YES attributes:nil error:NULL];
         writeOBJ([directory stringByAppendingPathComponent:@"cube.obj"]);
         writePLYAscii([directory stringByAppendingPathComponent:@"tri.ply"]);
+    // The SAME file with the comment put back inside the face element s data, kept as its own fixture so
+    // the divergence stays measured instead of being designed away. The system reads it as a point cloud -
+    // 12 indices, geometry 0 - and the port reads the two triangles it plainly contains. Nothing in the port
+    // encodes that, because the rule is position-dependent and one of its variants drops a face silently.
+    writePLYAsciiWithMidDataComment([directory stringByAppendingPathComponent:@"tri-comment.ply"]);
         writePLYBinary([directory stringByAppendingPathComponent:@"tribin.ply"]);
         writeUSDA([directory stringByAppendingPathComponent:@"plate.usda"]);
 
@@ -455,15 +525,21 @@ int main(int argc, const char **argv)
             reportAsset(@"cube", @"obj");
             reportAsset(@"tri", @"ply");
             reportAsset(@"tribin", @"ply");
-            reportAsset(@"plate", @"usda");
+            report_image(@"MDLAsset");
+              reportAsset(@"plate", @"usda");
         });
-        guard(@"transform", ^{ reportTransform(); });
-        guard(@"generators", ^{ reportGenerators(); });
-        guard(@"submesh", ^{ reportSubmesh(); });
-        guard(@"texture", ^{ reportTexture(); });
-        guard(@"object", ^{ reportObjectAndVoxels(); });
-        guard(@"sharing", ^{ reportSharing(); });
-        guard(@"voxrule", ^{ reportVoxelRules(); });
+        guard(@"transform", ^{ report_image(@"MDLTransform"); reportTransform(); });
+        guard(@"generators", ^{ report_image(@"MDLTransformStack");
+              reportGenerators(); });
+        guard(@"submesh", ^{ report_image(@"MDLSubmesh");
+              reportSubmesh(); });
+        guard(@"texture", ^{ report_image(@"MDLTexture"); reportTexture(); });
+        guard(@"object", ^{ report_image(@"MDLVoxelArray");
+              reportObjectAndVoxels(); });
+        guard(@"sharing", ^{ report_image(@"MDLAnimatedScalar");
+              reportSharing(); });
+        guard(@"voxrule", ^{ report_image(@"MDLVoxelArray");
+              reportVoxelRules(); });
     }
     return 0;
 }

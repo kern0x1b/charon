@@ -277,7 +277,7 @@
         // refraction, the normal and the ambient occlusion, each of the type a renderer reads it in.
         [self charon_add:@"baseColor" semantic:MDLMaterialSemanticBaseColor type:MDLMaterialPropertyTypeColor value:1];
         [self charon_add:@"emission" semantic:MDLMaterialSemanticEmission type:MDLMaterialPropertyTypeColor value:0];
-        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeColor value:0];
+        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeFloat value:0];
         [self charon_add:@"materialIndexOfRefraction"
                 semantic:MDLMaterialSemanticMaterialIndexOfRefraction
                     type:MDLMaterialPropertyTypeFloat
@@ -400,7 +400,7 @@
         // sheen, and no anisotropy.
         [self charon_add:@"subsurface" semantic:MDLMaterialSemanticSubsurface type:MDLMaterialPropertyTypeFloat value:0];
         [self charon_add:@"metallic" semantic:MDLMaterialSemanticMetallic type:MDLMaterialPropertyTypeFloat value:0];
-        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeColor value:0];
+        [self charon_add:@"specular" semantic:MDLMaterialSemanticSpecular type:MDLMaterialPropertyTypeFloat value:0];
         [self charon_add:@"specularTint" semantic:MDLMaterialSemanticSpecularTint type:MDLMaterialPropertyTypeFloat value:0];
         [self charon_add:@"roughness" semantic:MDLMaterialSemanticRoughness type:MDLMaterialPropertyTypeFloat value:0.9f];
         [self charon_add:@"anisotropicRotation"

@@ -41,9 +41,11 @@ def numbers(text):
 
 host, port = read(host_path), read(port_path)
 same = different = only = 0
+only_host = only_port = 0
 for key, (value, line) in host.items():
     if key not in port:
         only += 1
+        only_host += 1
         print('only the system answers: %s' % line)
         continue
     other = port[key][1]
@@ -63,7 +65,19 @@ for key, (value, line) in host.items():
 for key, (value, line) in port.items():
     if key not in host:
         only += 1
+        only_port += 1
         print('only the port answers: %s' % line)
-print('%s: %d measurements, %d the same, %d different, %d one side only (tolerance %g)'
-      % (label, len(host), same, different, only, tolerance))
+# THE TALLY IS ASSERTED, and it used to be unreadable: the summary printed len(host) as "measurements"
+# while also reporting keys that only the PORT has, so 264 + 41 + 55 came to 360 against a stated 317 and
+# looked like a counting bug. There was no counting bug. `measurements` is the HOST S key count, so the
+# identity is  same + different + only_host == len(host)  and the port-only keys are OUTSIDE it, making the
+# cross-side total len(host) + only_port. Both are now stated, and both identities are checked - a tally
+# that does not add up must fail the run rather than be routed to someone else.
+assert same + different + only_host == len(host), (
+    'the categories do not sum over the host: %d + %d + %d != %d'
+    % (same, different, only_host, len(host)))
+assert only_host + only_port == only, 'one-side-only does not split: %d + %d != %d' % (only_host, only_port, only)
+print('%s: %d host keys = %d the same + %d different + %d host-only; %d port-only, %d across both sides'
+      ' (tolerance %g)'
+      % (label, len(host), same, different, only_host, only_port, len(host) + only_port, tolerance))
 sys.exit(0 if different == 0 else 1)
