@@ -1095,88 +1095,88 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate dismissPanningInterfaceAnimated:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate hideTripPreviews]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate presentNavigationAlert:animated:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate showPanningInterfaceAnimated:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate showRouteChoicesPreviewForTrip:textConfiguration:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate showTripPreviews:selectedTrip:textConfiguration:]",
       "kind": "method",
       "introduced": "14.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate showTripPreviews:textConfiguration:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate startNavigationSessionForTrip:]",
@@ -1194,22 +1194,22 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPMapTemplate updateTravelEstimates:forTrip:withTimeRemainingColor:]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the release's own MKMapView, which is the only map this port has, with the template's own map buttons drawn over it inside the window's own safe area, the leading bar buttons in its own bar, and the navigation alert drawn as a guidance card out of its own title and subtitle variants",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: absent would say the release has no such API, and the 6.1.3 armv7 cache carries no CarPlay class of any name while Apple's own CarPlay has all of them. What carrying these needs is in facts/CarPlay/NavigationSession.md and in facts/CarPlay/CarPlay.md",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPNavigationAlert initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration:]",
