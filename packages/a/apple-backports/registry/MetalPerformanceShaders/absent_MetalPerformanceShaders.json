@@ -6,7 +6,7 @@
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "inert",
       "reason": "MPSImageConvolution.h's own annotation above this interface says ios(9.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
       "effect": "MPSImageConvolution.h:252 makes -initWithDevice:sigma: the designated initializer, but the header nowhere says how many taps a sigma implies, and a blur of a different width is a different blur. The class is therefore HERE and refuses to be built by name, and the case records that as INERT rather than pretending a blur was compared. This is the one row whose object exists and answers nothing, and it is written down rather than left to be discovered."
     },
