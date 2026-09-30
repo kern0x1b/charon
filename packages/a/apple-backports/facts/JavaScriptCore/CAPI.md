@@ -21,11 +21,19 @@ says so.
 Where each group is decided, so that this page can be read against the tree at any revision and found to
 match it: the thirteen are in `registry/JavaScriptCore/absent_JavaScriptCore.json`, the twelve in
 `registry/JavaScriptCore/capi.json` - eight `implemented`, four `inert`. **This page was first written by
-the commit that decided the thirteen, `34399e57b`, and at that revision every one of the twenty-six rows
-read `absent`**: the other twelve did not exist yet. The commit that carried them is `9f82434f9`, and the
+the commit "Name the value JavaScriptCore's thirteen typed-array rows would report on", and at that
+revision every one of the twenty-six rows read `absent`**: the other twelve did not exist yet. They are
+carried by "Answer the twelve JavaScriptCore C API rows the release's own engine can answer", and the
 sentence this paragraph used to hold - that the twelve "are carried" - was written one commit too early,
 which is the way this page goes wrong: a claim about work that is not in the range reads as measured. The
 number each group has is the number its registry file holds, and the two files are the whole of it.
+
+Those two commits are named by their subjects and not by their hashes, and the reason is worth keeping
+beside them. A hash of a commit that is not on main resolves to nothing for a reader of the merged tree -
+and it stops resolving even for the band that wrote it, because a rebase rewrites every hash in the series:
+this page named both of these by hash, the series was rebased onto a main that had moved, and the two
+names were left pointing at objects no branch held. A subject survives that, and a subject is what a reader
+goes looking for.
 
 ## The engine the release carries, and what it can be asked
 
