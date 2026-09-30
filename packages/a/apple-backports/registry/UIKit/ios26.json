@@ -519,11 +519,11 @@
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "owed",
-   "effect": "the selector is NOT defined on UIResponder: a category cannot be on a protocol and the release has no such class. The port answers this selector as -[NSObject providerForDeferredMenuElement:], and this row exists so the protocol's member and the port's are two rows rather than one row naming a selector nothing provides",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
+   "status": "implemented",
+   "effect": "the selector is EXPORTED on UIResponder, so an application that names it links, and it answers nil: the release has no menu system and therefore no deferred element for a provider to be asked about",
    "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "reason": "owed: the member belongs to UIResponder, and the port does not define it there. A CATEGORY CANNOT BE ON A PROTOCOL, so the selector this band actually builds is the same selector on NSObject - carried as a row of its own, -[NSObject providerForDeferredMenuElement:] - because a 6.1.3 release has no class to hang it on. This row names the protocol member, which nothing in the dylib answers under that name"
+   "reason": "built on UIResponder itself, which is a class the 6.1.3 release HAS, so this needs no protocol workaround: the port answers the query and returns nil, because a 6.1.3 menu system has no deferred element to hand a provider for. The row said absent, which claims the release has no such member at all - it does - so the status was the wrong claim and the object is right",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes"
   },
   {
    "api": "-[UIResponderStandardEditActions alignCenter:]",
@@ -1503,90 +1503,6 @@
    "facts": "facts/UIKit/UIContentUnavailable26.md"
   },
   {
-   "api": "-[NSObject alignLeft:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject alignCenter:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject alignRight:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject alignJustified:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject newFromPasteboard:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject performClose:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
-   "api": "-[NSObject toggleInspector:]",
-   "kind": "method",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UIResponderStandardEditActions declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to this selector, which is the price of a selector the port does not own a class for",
-   "effect": "the selector is EXPORTED, so an application that names it links, and the body is the honest NO or nothing: a 6.1.3 release never produces this event - no ranges-based text change, no edit menu, no inspector column, no window-scene callback and no menu tree - so there is no caller and nothing to answer",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
    "api": "-[NSObject providerForDeferredMenuElement:]",
    "kind": "method",
    "introduced": "26.0",
@@ -1875,18 +1791,6 @@
    "ledger": "missing"
   },
   {
-   "api": "NSObject.allowsNumberPadPopover",
-   "kind": "property",
-   "introduced": "26.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "built as the port's own member: UITextInputTraits is a @protocol and a category cannot be on one, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: every object answers YES to it",
-   "effect": "the accessor is EXPORTED on NSObject, so an application that names it links; the getter returns what the setter stored and the default is NO, because a 6.1.3 release has no number-pad popover to show. The UITextInputTraits row of the same name is owed, because the protocol's member is defined nowhere",
-   "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
-   "ledger": "missing"
-  },
-  {
    "api": "UITextInputTraits.allowsNumberPadPopover",
    "kind": "property",
    "introduced": "26.0",
@@ -1899,15 +1803,123 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject allowsNumberPadPopover]",
+   "api": "-[NSObject alignLeft]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions alignLeft] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject alignCenter]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions alignCenter] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject alignRight]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions alignRight] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject alignJustified]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions alignJustified] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject newFromPasteboard]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions newFromPasteboard] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject performClose]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions performClose] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[NSObject toggleInspector]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "owed",
+   "reason": "owed: UIResponderStandardEditActions declares this selector as a protocol member and the 6.1.3 release has no class of its own for it, so a CATEGORY CANNOT BE ON A PROTOCOL and the only place the port can put it is NSObject. This row names the selector the object actually builds - with NO trailing colon, because __objc_methname prints a no-argument selector that way, and aligned with the -[UIResponderStandardEditActions toggleInspector] row, which is owed because nothing answers under that name",
+   "effect": "the selector is BUILT on NSObject and exported, so a caller naming it links; the body is the honest nothing, because a 6.1.3 release has no text alignment command and no inspector to toggle. The COST IS STATED: an unrelated object also answers YES to it, which is the price of a selector the port does not own a class for",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[UINavigationItem largeAttributedTitle]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "built as the port's own member: UITextInputTraits declares this selector as a protocol member and a 6.1.3 release has no class of its own for it, so the accessor is a category on NSObject, which every conforming object inherits. THE COST IS STATED: every object answers YES to it",
-   "effect": "the accessor is EXPORTED on NSObject, so an application that names it links; the getter returns what the setter stored and the default is NO, because a 6.1.3 release has no number-pad popover to show. The UITextInputTraits row of the same name is owed, because the protocol's member is defined nowhere",
+   "reason": "built on UINavigationItem itself, which is a class the 6.1.3 release HAS, so this is plain new storage on an existing class and not a protocol workaround: the getter returns what the setter stored. The queue names the property UINavigationItem.largeAttributedTitle, and the object builds its accessor pair, so this row is that pair under the names it is built and the property row beside it",
+   "effect": "the accessor is EXPORTED, so an application that names it links, and the getter returns what the setter stored; the default is nil, and the 6.1.3 navigation bar draws no large title at all, so the row says the value is held and nothing displays it",
    "facts": "facts/UIKit/UIContentUnavailable26.md",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "UIColorEffect",
+   "kind": "class",
+   "introduced": "26.1",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "built because the 16.4 SDK does NOT declare it: measured, no header under its UIKit.framework/Headers has @interface UIColorEffect, so the port declares it here as an empty UIVisualEffect subclass. An empty class is the whole honest answer for a name whose requirement is that dyld resolve it",
+   "effect": "the class is declared and exported, so an application that links strongly against UIColorEffect resolves the symbol instead of failing to launch; it has no members beyond UIVisualEffect's, because a colour effect nobody measured is worse than none",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
+   "ledger": "missing"
+  },
+  {
+   "api": "-[UINavigationItem setLargeAttributedTitle:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "built on UINavigationItem itself, which is a class the 6.1.3 release HAS, so this is plain new storage on an existing class. It is the setter half of the pair the object builds, and the gate asks about built names, so both halves carry a row under the name they are built and the dotted property row stands beside them",
+   "effect": "the accessor is EXPORTED, so an application that names it links; it stores the attributed string and the getter returns what was stored. The 6.1.3 navigation bar draws no large title, so the value is held and nothing displays it",
+   "facts": "facts/UIKit/UIContentUnavailable26.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname and __objc_classname, which is the count the registry check makes",
    "ledger": "missing"
   }
  ]

@@ -478,15 +478,6 @@ static char CharonNavItemSubtitleKey;
 {
     objc_setAssociatedObject(self, &CharonNavItemLargeTitleKey, [title copy], OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-// -largeSubtitle returns the OBJECT form and -largeSubtitleText the string form.  The 26.0 API has both
-// and they are different members, so one pair of accessors cannot serve both: declaring -largeSubtitle
-// twice is "duplicate declaration of method".
-- (NSString *)largeSubtitleText { return objc_getAssociatedObject(self, &CharonNavItemLargeTitleKey); }
-- (void)setLargeSubtitleText:(NSString *)subtitle
-{
-    objc_setAssociatedObject(self, &CharonNavItemLargeSubtitleKey, [subtitle copy],
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
 - (NSAttributedString *)largeAttributedTitle { return objc_getAssociatedObject(self, &CharonNavItemLargeAttributedTitleKey); }
 - (void)setLargeAttributedTitle:(NSAttributedString *)title
 {
