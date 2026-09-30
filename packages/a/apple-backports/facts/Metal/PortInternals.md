@@ -35,8 +35,19 @@ Three separate facts, each checkable:
    no branch structure, no constant and no return value to port. What these objects answer is the port's
    own model of the GPU-less case, and a row in an SDK ledger has no business claiming to describe it.
 
-So these rows are `ignored`: the ledger records no behaviour for them, and the claim they could have
-made - that Metal answers something here - is not a claim anyone can check against Apple.
+So these rows are **`absent`**, and absent is the claim about the RELEASE: no release ever exported
+`CharonMetalDevice`, so nothing in any band's inventory can answer the name. That is checkable three
+ways - no cache holds it, no SDK header declares it, no SDK surface lists it - and all three are cited
+above. The status is deliberately NOT `ignored`, which means the opposite thing: the release carries the
+name and the port declines to. Nothing ever carried it.
+
+It is deliberately NOT `implemented` either. That status means the port defines the name and the band
+EXPORTS it, and hidden visibility rules it out however many methods the class has.
+
+And the port does build all nineteen - `CharonMetalDevice` defines 32 methods, `CharonMetalQueue` 20,
+`CharonMetalBuffer` 18 - which the rows now say alongside the absence, because both are true and a
+reader who found only one of them would draw the wrong conclusion. The earlier rows carried only the
+second half, and the half they carried was false.
 
 ## Where the real API is
 
