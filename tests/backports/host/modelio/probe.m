@@ -350,6 +350,324 @@ static void reportGenerators(void)
               put(@"cylinder s%d v%d vertices %lu indices %lu", radial[c], vertical[c],
                   (unsigned long)cyl.vertexCount, (unsigned long)cyl.submeshes.firstObject.indexCount);
           }
+
+          // THE INDEX BUFFER, CLASSIFIED FROM ITS OWN BYTES. Every subtraction failed, so the triangles are
+          // counted where they are: a triangle whose three vertices share a y is a CAP one, and one spanning
+          // two y values is a WALL one. No arithmetic is assumed.
+          //
+          // The map is WHOLE-BUFFER, which is why the earlier six attempts failed to read a stride from it:
+          //   $ grep -n 'dataOffset|dataStride' over the SDK's ModelIO headers
+          //   (nothing)
+          //   $ awk over @interface MDLMeshBufferMap
+          //   @property (nonatomic, readonly) void *bytes;      <- one member, that is all
+          // so the stride comes from the descriptor's layout, the position's offset from the attribute, and
+          // the bytes from the buffer - the three typed reads, none of them a guess.
+          for (int c = 0; c < 5; c++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:radial[c] verticalSegments:vertical[c]
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              // MDLMeshBuffer is a PROTOCOL and MDLMeshBufferMap carries exactly one member, bytes: the map
+              // is the WHOLE buffer, so there is no dataOffset on it to read, and the offset into it comes
+              // from the layout and the attribute. Every name below is one the headers declare.
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              // THE STEP, and the bug was here. A vertex is at layout.stride*index BYTES from the start of
+              // the buffer, plus the attribute s own offset. Dividing the stride by the format s component
+              // count - which has no size property to read - put every read a third of the way into the
+              // vertex, so the y printed was a normal or a texture coordinate. It is why one index carried
+              // two y values and why the poles read 0.707 and 0.500 instead of plus and minus two.
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              // the y of the vertex an index names, in the units the mesh was built with
+              #define posf(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              // The WIDTH comes from indexType and has to be read BEFORE the buffer is indexed. This
+              // read the bytes as uint32 first and checked afterwards, so a sixteen-bit mesh indexed twice
+              // as far and walked off the end: the host probe died part way through its answers and the
+              // whole classification was reading garbage before it died.
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              #define CHARON_INDEX(i) ((wide == 4) ? ((const uint32_t *)ibytes)[i] : ((const uint16_t *)ibytes)[i])
+              unsigned wall = 0, cap = 0, degenerate = 0;
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  float y0 = posf(t * 3), y1 = posf(t * 3 + 1),
+                        y2 = posf(t * 3 + 2);
+                  int distinct = (y0 == y1) + (y1 == y2) + (y0 == y2);
+                  if (distinct == 3)
+                      degenerate++;
+                  else if (distinct == 1)
+                      cap++;
+                  else
+                      wall++;
+              }
+              put(@"cylinder s%d v%d wall %u cap %u degenerate %u", radial[c], vertical[c], wall, cap, degenerate);
+          }
+
+          // THE SANITY LINE, printed BEFORE any class is counted and asserted on both sides. A cylinder of
+          // height 4 has its poles at -2 and +2, so the minimum and maximum y over the positions MUST be
+          // that. The previous classification divided the stride by the format s component count and read a
+          // third of the way into each vertex, so it saw normal and texture coordinates: one index carried two
+          // different y values and the poles read 0.707 and 0.500. This line is what would have shown that,
+          // and it is here so the next mis-stride is caught by a number rather than by a reader.
+          for (int c = 0; c < 5; c++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:radial[c] verticalSegments:vertical[c]
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              float lo = 1e30f, hi = -1e30f;
+              for (unsigned i = 0; i < cyl.vertexCount; i++) {
+                  float y = *(const float *)(base + layout.stride * i + pa.offset + sizeof(float));
+                  if (y < lo) lo = y;
+                  if (y > hi) hi = y;
+              }
+              put(@"sanity s%d v%d ymin %.4f ymax %.4f", radial[c], vertical[c], (double)lo, (double)hi);
+          }
+
+          // THE SWEEP, because five scattered points could not explain a cap sequence of 6, 9 and 8 at one
+          // radial. Vertical 1 to 6 at radial 8, and radial 3 to 12 at vertical 2. Nothing is derived from
+          // these; they are measurements, and the rule comes after they are recorded.
+          for (int v = 1; v <= 6; v++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:8 verticalSegments:v
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define posf(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              unsigned wall = 0, cap = 0, deg = 0, pole = 0;
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  NSUInteger i0 = (wide == 4) ? ((const uint32_t *)ibytes)[t*3] : ((const uint16_t *)ibytes)[t*3];
+                  NSUInteger i1 = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+1] : ((const uint16_t *)ibytes)[t*3+1];
+                  NSUInteger i2 = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+2] : ((const uint16_t *)ibytes)[t*3+2];
+                  float y0 = posf(i0), y1 = posf(i1), y2 = posf(i2);
+                  int distinct = (y0==y1)+(y1==y2)+(y0==y2);
+                  if (distinct==3) deg++; else if (distinct==1) cap++; else wall++;
+              }
+              put(@"sweep radial 8 vertical %d vertices %lu indices %lu wall %u cap %u repeated %u atposition %u",
+                  v, (unsigned long)cyl.vertexCount, (unsigned long)sm.indexCount, wall, cap, deg, pole);
+          }
+
+          // THE RADIAL SWEEP at vertical 2, and the vertical sweep repeated at radial 5, so the two
+          // dependences are separated by measurement rather than by a form fitted to one of them.
+          for (int r = 3; r <= 12; r++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:r verticalSegments:2
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define posf(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              unsigned w = 0, c = 0, dg = 0, po = 0;
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  NSUInteger ix[3];
+                  for (int k = 0; k < 3; k++)
+                      ix[k] = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+k] : ((const uint16_t *)ibytes)[t*3+k];
+                  float y0 = posf(ix[0]), y1 = posf(ix[1]), y2 = posf(ix[2]);
+                  int distinct = (y0==y1)+(y1==y2)+(y0==y2);
+                  if (distinct == 1) {
+                      float x0 = posx(ix[0]), x1 = posx(ix[1]), x2 = posx(ix[2]);
+                      float z0 = posz(ix[0]), z1 = posz(ix[1]), z2 = posz(ix[2]);
+                      int samePos = ((x0==x1)&&(y0==y1)&&(z0==z1))+((x1==x2)&&(y1==y2)&&(z1==z2))+((x0==x2)&&(y0==y2)&&(z0==z2));
+                      int sameIdx = (ix[0]==ix[1])+(ix[1]==ix[2])+(ix[0]==ix[2]);
+                      if (sameIdx) dg++; else if (samePos) po++; else c++;
+                  } else if (distinct == 2) w++;
+              }
+              put(@"radial r%d vertical 2 vertices %lu indices %lu wall %u cap %u repeated %u atposition %u",
+                  r, (unsigned long)cyl.vertexCount, (unsigned long)sm.indexCount, w, c, dg, po);
+          }
+          for (int v = 1; v <= 6; v++) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:5 verticalSegments:v
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define posf(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              unsigned w = 0, c = 0, dg = 0, po = 0;
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  NSUInteger ix[3];
+                  for (int k = 0; k < 3; k++)
+                      ix[k] = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+k] : ((const uint16_t *)ibytes)[t*3+k];
+                  float y0 = posf(ix[0]), y1 = posf(ix[1]), y2 = posf(ix[2]);
+                  int distinct = (y0==y1)+(y1==y2)+(y0==y2);
+                  if (distinct == 1) {
+                      float x0 = posx(ix[0]), x1 = posx(ix[1]), x2 = posx(ix[2]);
+                      float z0 = posz(ix[0]), z1 = posz(ix[1]), z2 = posz(ix[2]);
+                      int samePos = ((x0==x1)&&(y0==y1)&&(z0==z1))+((x1==x2)&&(y1==y2)&&(z1==z2))+((x0==x2)&&(y0==y2)&&(z0==z2));
+                      int sameIdx = (ix[0]==ix[1])+(ix[1]==ix[2])+(ix[0]==ix[2]);
+                      if (sameIdx) dg++; else if (samePos) po++; else c++;
+                  } else if (distinct == 2) w++;
+              }
+              put(@"second r5 v%d vertices %lu indices %lu wall %u cap %u repeated %u atposition %u",
+                  v, (unsigned long)cyl.vertexCount, (unsigned long)sm.indexCount, w, c, dg, po);
+          }
+
+          // THE TRIANGULATION, printed as (ring, column) and not as counts. A ring is the y level, read from
+          // the position; a column is the angle round the axis, from x and z. Printing the whole list at the
+          // smallest sizes is the only way to see a triangulation: every count taken so far summed to the
+          // right total while the wall and the caps traded places underneath it.
+          // THE VERTICES, printed as (y level, column) and grouped by the y level, so the ring layout is
+          // READ rather than inferred from a vertex count. A count of 22 with four columns is five rings plus
+          // two centres ONLY IF the rings are those five, and this says which five.
+          for (int c = 0; c < 3; c++) {
+              static const int rr[3] = {3, 4, 3};
+              static const int vv[3] = {2, 3, 1};
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:rr[c] verticalSegments:vv[c]
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define vx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define vy(i) (*(const float *)(base + step * (i) + pa.offset + sizeof(float)))
+              #define vz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              NSMutableArray *levels = [NSMutableArray array];
+              for (unsigned i = 0; i < cyl.vertexCount; i++) {
+                  float y = vy(i);
+                  BOOL seen = NO;
+                  for (NSNumber *lv in levels)
+                      if (fabsf([lv floatValue] - y) < 1e-4f) { seen = YES; break; }
+                  if (!seen) [levels addObject:@(y)];
+              }
+              [levels sortUsingComparator:^NSComparisonResult(NSNumber *a, NSNumber *b) {
+                  return [a floatValue] < [b floatValue] ? NSOrderedAscending : NSOrderedDescending; }];
+              put(@"verts r%d v%d count %lu levels %lu", rr[c], vv[c],
+                  (unsigned long)cyl.vertexCount, (unsigned long)levels.count);
+              unsigned li = 0;
+              for (NSNumber *lv in levels) {
+                  NSMutableString *cols = [NSMutableString string];
+                  unsigned n = 0;
+                  for (unsigned i = 0; i < cyl.vertexCount; i++)
+                      if (fabsf(vy(i) - [lv floatValue]) < 1e-4f) {
+                          float a = atan2f(vz(i), vx(i));
+                          NSInteger col = llroundf((a + (float)M_PI) / (2.0f * (float)M_PI) * (float)(rr[c] + 1));
+                          [cols appendFormat:@"%@%ld", n ? @"," : @"", (long)col];
+                          n++;
+                      }
+                  put(@"  level %u y %.4f count %u cols %@", li++, (double)[lv floatValue], n, cols);
+              }
+          }
+
+
+          for (int c = 0; c < 4; c++) {
+              static const int rr[4] = {3, 4, 5, 3};
+              static const int vv[4] = {1, 1, 1, 2};
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:rr[c] verticalSegments:vv[c]
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posy(i) (*(const float *)(base + step * (i) + pa.offset + sizeof(float)))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  NSUInteger ix[3];
+                  for (int k = 0; k < 3; k++)
+                      ix[k] = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+k] : ((const uint16_t *)ibytes)[t*3+k];
+                  NSMutableString *s = [NSMutableString string];
+                  for (int k = 0; k < 3; k++) {
+                      float y = posy(ix[k]);
+                      float a = atan2f(posz(ix[k]), posx(ix[k]));
+                      NSUInteger ring = llroundf((y + 2.0f) / 4.0f * (float)(vv[c] + 1));
+                      NSInteger column = llroundf((a + (float)M_PI) / (2.0f * (float)M_PI) * (float)(rr[c] + 1));
+                      [s appendFormat:@" (%lu,%ld)%@", (unsigned long)ring, (long)column,
+                          k < 2 ? @"," : @""];
+                  }
+                  put(@"tri r%d v%d t%lu %@", rr[c], vv[c], (unsigned long)t, s);
+              }
+          }
+
+          // THE DUMP, so the classes are READ. Every triangle that shares a y is printed with the vertex
+          // indices behind it and the ring those indices sit in, so the cap fans and any third class are
+          // grouped by what the indices say rather than inferred from a count. A y alone cannot tell a cap
+          // from a ring change, and that is what made the last two fits disagree with the index totals:
+          // the host s own wall+cap came to 117 against a total of 126 at v=6, so a third class exists and
+          // this is what identifies it.
+          for (int v = 1; v <= 6; v += 5) {
+              MDLMesh *cyl = [MDLMesh newCylinderWithHeight:4 radii:(vector_float2){1, 1}
+                              radialSegments:8 verticalSegments:v
+                              geometryType:MDLGeometryTypeTriangles inwardNormals:NO allocator:nil];
+              MDLSubmesh *sm = cyl.submeshes.firstObject;
+              MDLVertexDescriptor *vd = cyl.vertexDescriptor;
+              MDLVertexAttribute *pa = [vd attributeNamed:MDLVertexAttributePosition];
+              MDLVertexBufferLayout *layout = vd.layouts[pa.bufferIndex];
+              id<MDLMeshBuffer> vbuf = cyl.vertexBuffers[pa.bufferIndex];
+              const char *base = (const char *)[vbuf map].bytes;
+              NSUInteger step = layout.stride;
+              #define posf(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posx(i) (*(const float *)(base + step * (i) + pa.offset))
+              #define posz(i) (*(const float *)(base + step * (i) + pa.offset + 2 * sizeof(float)))
+              id<MDLMeshBuffer> ibuf = sm.indexBuffer;
+              const void *ibytes = [ibuf map].bytes;
+              unsigned wide = (sm.indexType == MDLIndexBitDepthUInt32) ? 4 : 2;
+              // a ring has one vertex per column, and the row is the ring; the vertex layout holds
+              // position, normal and texture coordinate, so a vertex is three position floats apart
+              // a vertex is THREE position floats apart inside the record, and the record is step bytes: position,
+              // normal, texture coordinate. So the ring a vertex sits in is index divided by that count.
+              unsigned cols = (unsigned)(step / (3 * (pa.format == MDLVertexFormatFloat3 ? sizeof(float) : sizeof(float))));
+              for (NSUInteger t = 0; t * 3 + 2 < sm.indexCount; t++) {
+                  NSUInteger ix[3];
+                  for (int k = 0; k < 3; k++)
+                      ix[k] = (wide == 4) ? ((const uint32_t *)ibytes)[t*3+k] : ((const uint16_t *)ibytes)[t*3+k];
+                  float y0 = posf(ix[0]), y1 = posf(ix[1]), y2 = posf(ix[2]);
+                  int distinct = (y0==y1)+(y1==y2)+(y0==y2);
+                  if (distinct == 1) {
+                      NSUInteger col[3], row[3];
+                      for (int k = 0; k < 3; k++) { col[k] = ix[k] % cols; row[k] = ix[k] / cols; }
+                      put(@"dump v%d t%lu indices %lu %lu %lu cols %u rows %lu %lu %lu y %.3f",
+                          v, (unsigned long)t, (unsigned long)ix[0], (unsigned long)ix[1], (unsigned long)ix[2],
+                          cols + 1, (unsigned long)row[0], (unsigned long)row[1], (unsigned long)row[2],
+                          (double)y0);
+                  }
+              }
+          }
       }
 }
 

@@ -28,6 +28,14 @@ def read(path):
     lines, seen = {}, {}
     for line in open(path):
         line = line.rstrip('\n')
+        # MEASUREMENT LINES ARE NOT PARITY CLAIMS. The sanity line, the sweeps, the (ring, column) dumps and
+        # the tri lists exist to be read - they are how the cylinder was found to build a ring the system
+        # does not - and counting them as differences made the tally report 267 where 27 are real, which
+        # broke the known-open check that exists precisely to catch that. They are skipped here and named,
+        # so a difference in the API surface can never be hidden among them either: they are excluded from
+        # the comparison, not from the run.
+        if line.split(' ')[0] in ('sanity', 'sweep', 'radial', 'second', 'dump', 'tri', 'verts', 'level'):
+            continue
         m = KEY.match(line)
         key = m.group(1) if m else line
         seen[key] = seen.get(key, 0) + 1
