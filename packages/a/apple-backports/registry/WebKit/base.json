@@ -1,5 +1,13 @@
 {"framework": "WebKit", "entries": [
   {
+    "api": "+[WKWebExtensionContext contextForExtension:]",
+    "kind": "method",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "carries it: the host answers a real object for a real extension, and raises on anything else -- 'Invalid parameter not satisfying: [extension isKindOfClass:WKWebExtension.class]'. Measured.",
+    "effect": "the method is there"
+  },
+  {
     "api": "-[WKNavigationDelegate webView:decidePolicyForNavigationResponse:decisionHandler:]",
     "kind": "method",
     "introduced": "8.0",
@@ -112,6 +120,30 @@
     "status": "absent",
     "reason": "UIWebView opens no windows of its own",
     "effect": "the message is never sent"
+  },
+  {
+    "api": "-[WKWebExtensionAction closePopup]",
+    "kind": "method",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "drops the popup: the flag goes NO and the controller goes away",
+    "effect": "the method is there"
+  },
+  {
+    "api": "-[WKWebExtensionAction iconForSize:]",
+    "kind": "method",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's action icon; the port answers it at the manifest's own size rather than inventing a scale the manifest does not name",
+    "effect": "the method is there"
+  },
+  {
+    "api": "-[WKWebExtensionContext actionForTab:]",
+    "kind": "method",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil until a tab is given; the host has no tab on a fresh context. Measured.",
+    "effect": "the method is there"
   },
   {
     "api": "-[WKWebView allowsBackForwardNavigationGestures]",
@@ -287,6 +319,534 @@
     "status": "implemented",
     "facts": "facts/WebKit/WKWebView.md",
     "source": "the host's own WebKit under Mac Catalyst, recorded by tests/backports/host/webkit and held against the port by tests/backports/device/webkit.m"
+  },
+  {
+    "api": "WKWebExtensionAction",
+    "kind": "class",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "a toolbar button, and a value holder a context fills in: neither -init nor +new is reachable, measured, and a button only means something against a loaded extension",
+    "effect": "the class is there"
+  },
+  {
+    "api": "WKWebExtensionAction.associatedTab",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the tab the action was clicked on, weak and nil until one is set",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.badgeText",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's action badge text, supplied by the context",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.enabled",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "whether the extension behind the button is loaded; the port's default for an action with nothing behind it is NO",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.hasUnreadBadgeText",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "readwrite in the release's header, so the port carries a setter too rather than narrowing the property",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.inspectionName",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the name the release shows an action under while inspecting, supplied by the context",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.label",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's action title, supplied by the context that loaded the extension",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.menuItems",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the menu the context builds for the action, empty until a context fills it",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.popupViewController",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the popup's controller, nil unless a context has one: the popup is a web view and this port has none to give",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.popupWebView",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil on this port, which is what the release answers for an action presenting no popup, and the flag says which",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.presentsPopup",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "whether the action has a popup; the flag, not the popup, is what the port can answer without a web view",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionAction.webExtensionContext",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the context the action belongs to, held weakly as the release holds it",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand",
+    "kind": "class",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "a keyboard shortcut, and a value holder the same way: a context hands it out, and its key command is built from its activation key and its modifiers",
+    "effect": "the class is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.activationKey",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's suggested key, and setting it rebuilds the key command",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.identifier",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's command name, which is the identifier the release gives it",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.keyCommand",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "built from the activation key and the modifiers, and nil while there is no activation key",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.menuItem",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the menu element the context builds for the command",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.modifierFlags",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "readwrite, and setting it rebuilds the key command from the activation key and the new flags",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.title",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's command title",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionCommand.webExtensionContext",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the context the command belongs to, held weakly as the release holds it",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext",
+    "kind": "class",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "carried and callable: it is SOFTWARE STATE, not a thing a machine has or lacks. The host hands one out for a real extension through +[WKWebExtensionContext contextForExtension:], and every member below has a measured answer for a fresh one.",
+    "effect": "the class is there"
+  },
+  {
+    "api": "WKWebExtensionContext.baseURL",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "webkit-extension://<that UUID>/, measured off a real context: webkit-extension://40b2e76e-3b1b-4efb-bb0a-5597824e02b7/.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.commands",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the release SYNTHESISES a command for an action section rather than listing the manifest's own: the host answers one entry whose identifier is _execute_action and whose title is the action's default_title, and the manifest's do-it is not it. Measured.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.currentPermissionMatchPatterns",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.currentPermissions",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.deniedPermissionMatchPatterns",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.deniedPermissions",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty until one is denied. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.errors",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the extension's own errors, and NOT empty: the host answers the same two the extension answers for the same manifest. Measured.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.focusedWindow",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil on a fresh context. Measured: 0x0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.grantedPermissionMatchPatterns",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.grantedPermissions",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty until a permission is granted. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasAccessToAllHosts",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasAccessToAllURLs",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasAccessToPrivateData",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasContentModificationRules",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's own answer: YES for a manifest with declarative_net_request. Measured: 0 for a manifest with none, and the port follows the manifest.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasInjectedContent",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's own answer: YES for a manifest with content_scripts, which the host confirmed. Measured: 1.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.hasRequestedOptionalAccessToAllHosts",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.inspectable",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO for a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.inspectionName",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the manifest's name and what the context is showing: the host answers 'Charon probe \u2014 Extension Background Page' for a manifest with a background section, an em dash and all. Measured.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.loaded",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "NO for a context that has not been loaded into a web view, which is the state this context is in. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.openTabs",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty until a tab is opened against the context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.openWindows",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "empty on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.optionsPageURL",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "webkit-extension://<the same UUID>/options.html, from the manifest's options_ui page, and nil for a manifest with no options page. Measured.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.overrideNewTabPageURL",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil for a manifest with no chrome_url_overrides, which is what the host answers and what this carries. Measured: 0x0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.uniqueIdentifier",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "a fresh UUID per context: two calls answered two different ones, measured. The base URL carries it.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.unsupportedAPIs",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "an empty list on a fresh context. Measured: 0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.webExtension",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the extension the context was made for; the host answers the same object that was passed in. Measured.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.webExtensionController",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil until a controller has the context, and the host answers nil on a fresh one. Measured: 0x0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContext.webViewConfiguration",
+    "kind": "property",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "nil until the context is loaded into a web view, and the host answers nil on a fresh one. Measured: 0x0.",
+    "effect": "the property is there"
+  },
+  {
+    "api": "WKWebExtensionContextDeniedPermissionMatchPatternsWereRemovedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextDeniedPermissionMatchPatternsWereRemoved",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextDeniedPermissionsWereRemovedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextDeniedPermissionsWereRemoved",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextErrorDomain",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the domain a context's errors carry, and the host's is this string, read by dlsym",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextErrorsDidUpdateNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextErrorsDidUpdate",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextGrantedPermissionsWereRemovedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextGrantedPermissionsWereRemoved",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextNotificationUserInfoKeyMatchPatterns",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the user-info key is matchPatterns, measured",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextNotificationUserInfoKeyPermissions",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the user-info key is permissions, measured",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionMatchPatternsWereDeniedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextPermissionMatchPatternsWereDenied",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionMatchPatternsWereGrantedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the same, measured: WKWebExtensionContextPermissionMatchPatternsWereGranted",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusDeniedExplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's fourth case",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusDeniedImplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's fifth case",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusGrantedExplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's second case, numbered from 0 in the SDK's declared order",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusGrantedImplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's third case",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusRequestedExplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's sixth case",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusRequestedImplicitly",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the enum's seventh case",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionStatusUnknown",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the zero of the 26.2 SDK's enum, and what a caller reads when nothing has been decided",
+    "effect": "the constant is there"
+  },
+  {
+    "api": "WKWebExtensionContextPermissionsWereGrantedNotification",
+    "kind": "constant",
+    "introduced": "18.4",
+    "status": "implemented",
+    "reason": "the name is the symbol WITHOUT its Notification suffix, measured: WKWebExtensionContextPermissionsWereGranted",
+    "effect": "the constant is there"
   },
   {
     "api": "WKWebView",
