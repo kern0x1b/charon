@@ -2,7 +2,7 @@
 //
 // The category is three thin wrappers over the conversions this package already has: an SRAbsoluteTime
 // and a CFAbsoluteTime are the same instant read on two clocks, joined by the one anchor in
-// Security/SRAbsoluteTime.m, and SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime
+// SensorKit/SRAbsoluteTime.m, and SRAbsoluteTimeToCFAbsoluteTime and SRAbsoluteTimeFromCFAbsoluteTime
 // are each other's inverse through it. So nothing here computes anything of its own, and the numbers
 // the header's three relations are about are the ones the existing time functions already answer.
 //
@@ -20,10 +20,10 @@
 //   @end
 //
 // SRAbsoluteTime is CFTimeInterval (SRAbsoluteTime.h:14) and the category is marked
-// API_UNAVAILABLE(macOS), which is why the host differential asks for these three through the runtime
-// rather than naming them: the host's own build has the two instance methods and not the class one, and
-// that difference is recorded rather than papered over. See facts/SensorKit/SensorKit.md and
-// tests/backports/host/sensorkit.
+// API_UNAVAILABLE(macOS). That marking is why the host differential asks for these three through the
+// RUNTIME rather than naming them - a host translation unit cannot write the selector - and the host's
+// own build has all three, so the two sides are held to the same three relations. See
+// facts/SensorKit/SensorKit.md and tests/backports/host/sensorkit.
 //
 // Open source checked: swift-corelibs-foundation 6.x - not used. The arithmetic is Foundation's own
 // NSTimeInterval read through this package's existing conversion pair, and nothing here reimplements
