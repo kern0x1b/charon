@@ -1759,7 +1759,7 @@
       "status": "absent",
       "reason": "the \"Find Previous\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions move:]",
@@ -1769,7 +1769,7 @@
       "status": "absent",
       "reason": "the \"Move\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions rename:]",
@@ -1779,7 +1779,7 @@
       "status": "absent",
       "reason": "the \"Rename\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions useSelectionForFind:]",
@@ -1789,7 +1789,7 @@
       "status": "absent",
       "reason": "the \"Use Selection for Find\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UISearchControllerDelegate searchController:didChangeFromSearchBarPlacement:]",
@@ -1799,7 +1799,7 @@
       "status": "absent",
       "reason": "sent after the search bar moves between inline and stacked; the port has one placement, the title view (facts/UIKit/UISearchController.md), so the bar never moves and there is nothing to send",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UISearchControllerDelegate searchController:willChangeToSearchBarPlacement:]",
@@ -1809,7 +1809,7 @@
       "status": "absent",
       "reason": "sent before the search bar moves between inline and stacked; the port has one placement, the title view (facts/UIKit/UISearchController.md), so the bar never moves and there is nothing to send",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UISearchResultsUpdating updateSearchResultsForSearchController:selectingSearchSuggestion:]",
@@ -1817,9 +1817,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the iOS 16 update sent when a suggestion is chosen; the port's controller sends the iOS 8 updateSearchResultsForSearchController: (base.json), but the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so no suggestion is ever chosen to send this with",
+      "reason": "the iOS 16 update sent when a suggestion is chosen; the port's controller sends the iOS 8 updateSearchResultsForSearchController: (base.json), but the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so no suggestion is ever chosen to send this with - and the band could not carry it if it tried: session and delta both DEFINE this selector (corpus/defcache), so the method is the application's own and a definition exported here would shadow it, while a redeclaration of the protocol is discarded as a duplicate and the object exports no symbol at all, which implemented would fail on as unbuilt",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UISearchTextFieldDelegate searchTextField:didSelectSuggestion:]",
@@ -1829,7 +1829,7 @@
       "status": "absent",
       "reason": "sent when a suggestion under the search field is chosen; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so none is ever chosen",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITableViewCell defaultBackgroundConfiguration]",
@@ -1839,7 +1839,7 @@
       "status": "absent",
       "reason": "the background configuration a cell starts from, by its table's style; the port carries UIBackgroundConfiguration with the list cell styles (listPlainCellConfiguration, listGroupedCellConfiguration), so the answer could be picked from them - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITableViewDelegate tableView:canPerformPrimaryActionForRowAtIndexPath:]",
@@ -1849,7 +1849,7 @@
       "status": "absent",
       "reason": "asks whether a tap on a row is a primary action rather than a selection; a tap on a row of the release's own UITableView goes straight into its selection, which the port does not intercept, so nothing asks - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITableViewDelegate tableView:performPrimaryActionForRowAtIndexPath:]",
@@ -1859,7 +1859,7 @@
       "status": "absent",
       "reason": "tells the delegate a tap on a row was a primary action rather than a selection; a tap on a row of the release's own UITableView goes straight into its selection, which the port does not intercept, so nothing sends it - a hook on that path could, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITableViewHeaderFooterView defaultBackgroundConfiguration]",
@@ -1869,7 +1869,7 @@
       "status": "absent",
       "reason": "the background configuration a header or footer starts from, by its table's style; the port carries UIBackgroundConfiguration with the list header and footer styles, so the answer could be picked from them - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextFieldDelegate textField:editMenuForCharactersInRange:suggestedActions:]",
@@ -1879,7 +1879,7 @@
       "status": "absent",
       "reason": "the release's text field builds its edit menu with the old UIMenuController and never asks a delegate for one (facts/UIKit/UITextInputEditMenu16.md); asking the delegate would mean hooking that menu and turning its items into a UIMenu and back - real work, no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
       "api": "-[UITextFieldDelegate textField:willDismissEditMenuWithAnimator:]",
