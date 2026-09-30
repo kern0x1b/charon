@@ -56,7 +56,28 @@ of the same screen at scale 1 (33 ms): a reduced context draws the layer tree sl
 took) is what those costs leave. What would improve it, not measured: reading the whole window once at scale 1 (33 ms whatever the region) and scaling that down, in
 place of a reduced context; and even then a read above 16.7 ms alone keeps 60 frames a second out of reach on this device, whatever the filter costs.
 The shadow's shading is not part of this: since the client shades off the main thread (`UISheetPresentationController.md`) the display link kept 60, 55 and 55 frames a second
-with a shadow refresh running (the read, 3 ms a frame on average, 25.5 to 37.6 ms at p95, is what is left on the main thread). The blur's box filter is still on the main thread.
+with a shadow refresh running (the read, 3 ms a frame on average, 25.5 to 37.6 ms at p95, is what is left on the main thread).
+
+**The blur's box filter is no longer on the main thread either.** `UIVisualEffectView` shades a reading on a serial queue of its own, `org.charon.visualeffect.shade`, and the
+main thread only puts the picture on the layer, which is the shadow's arrangement applied to the thing the shadow was measured against. The read stays where it was: the display
+link is on the main run loop and CoreAnimation is not thread-safe for a layer read, so `renderInContext:` is still what holds the main thread, at 21 to 33 ms as above. The
+shading was the rest of it, and at 768 x 1024 the rest was everything: a whole refresh measured 172 ms and the shading is what the 172 ms was made of.
+
+What that is worth, and what is NOT measured: the main thread's share of a refresh is now the read alone, down by the whole cost of the shading. **The frames a second the
+iPad 2 keeps with a blur running are not measured** -- the device would not answer an SSH connection while this was written (the tunnel listens on 2232 and the phone resets the
+key exchange), so the 5.8 frames a second above is still the figure for the shading on the main thread, and no new device figure is claimed. What is measured here instead:
+
+- `charon_blur_pixels` over a whole screen measured on this machine, through `tests/backports/host/blurcost`: 0.71 ms at 320 x 100, 3.46 ms at 540 x 300, and 36.6 to 37.1 ms at
+  768 x 1024 at a load average of 17.7, against 97.90 ms best and 174.75 ms mean at the same size measured an hour earlier under a load of 13 to 23. The host's own number is
+  therefore a poor oracle for the device's -- it moves by a factor of 2.6 with the load -- and it is recorded as a range, not as a figure.
+- The reason the shading may leave the thread at all, which is a property and not a hope: compiled on its own, `CharonBlur.m`'s only undefined symbols are `_malloc` and
+  `_free`. It touches no UIKit, no CoreGraphics, no Foundation, so it is arithmetic over a buffer its caller owns. `tests/backports/host/blurcost` enforces that with `nm -u` and
+  fails the run if a later change gives it a call into a framework, because then this reasoning would no longer hold.
+- A reading is not taken while the last one is being shaded (`-backdropIsWanted:` says no while one is), which is the shadow's guard: a second reading would queue up behind a
+  98 ms pass, and the read is what holds the main thread.
+
+So the arithmetic the change rests on is: the main thread did read + shading, and now does read. The exact number of frames a second that buys on a device is the one thing here
+that is not measured, and it is the one thing only a device can say.
 
 The system's view has three private subviews (the backdrop, an effect subview and the content view) and the port has one, the content view, and a layer for the
 picture, so an application that walks `subviews` of a visual effect view sees fewer. The styles that iOS 10

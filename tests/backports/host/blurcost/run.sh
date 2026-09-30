@@ -29,5 +29,26 @@ if ! cmp -s "$sources/CharonBlur.m" "$build/CharonBlur.m"; then
 fi
 printf '  source: %s\n' "$sources/CharonBlur.m" >&2
 
+cc -O2 -Wall -Wno-unused-parameter -I"$build" -c "$build/CharonBlur.m" -o "$build/CharonBlur.o"
 cc -O2 -Wall -Wno-unused-parameter -I"$build" -o "$build/blurcost" "$here/blurcost.c" "$build/CharonBlur.m"
 "$build/blurcost"
+
+# The shading is run off the main thread, and the reason it may be is that it touches no framework:
+# it is arithmetic over a buffer its caller owns, plus malloc and free. That is checkable, so it is
+# checked, and the check fails loudly if a later change gives it a call into UIKit, CoreGraphics or
+# Foundation -- because then the same reasoning would no longer hold and the shading would have to
+# come back to the thread that owns those.
+imports=$(nm -u "$build/CharonBlur.o" 2>/dev/null | sed 's/^ *//' | sort -u | tr '\n' ' ')
+printf '  undefined symbols in CharonBlur.o: %s\n' "${imports:-none}" >&2
+for symbol in $imports; do
+    case "$symbol" in
+        _malloc|_free) ;;
+        *)
+            echo "blurcost: charon_blur_pixels now needs $symbol, so it is no longer free of the" >&2
+            echo "  framework and may not be shaded off the main thread. Undo that, or move the call" >&2
+            echo "  back onto the thread that owns the framework and say why here." >&2
+            exit 2
+            ;;
+    esac
+done
+echo "  the shading imports malloc and free only: it is free of the framework" >&2
