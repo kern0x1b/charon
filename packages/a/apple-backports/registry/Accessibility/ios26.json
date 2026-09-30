@@ -60,9 +60,11 @@
       "kind": "class",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the two values the header's two factories were given, kept as one attributed string a side: customContentWithLabel:value: builds an attributed string from each plain string and customContentWithAttributedLabel:attributedValue: keeps the two it was given, and all four properties answer from that one pair. NSCopying shares the pair and carries importance, NSSecureCoding carries both strings and the number, and isEqual: compares the class, both strings and the number, so two contents that differ only in how urgently the user wants them are not equal - all measured on the host's own Accessibility.framework by tests/backports/host/accessibilitymath/expected-differences.tsv"
     },
     {
       "api": "AXDataPoint",
@@ -473,45 +475,55 @@
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the very attributed string the factory was given, kept as given"
     },
     {
       "api": "AXCustomContent.attributedValue",
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the very attributed string the factory was given, kept as given"
     },
     {
       "api": "AXCustomContent.importance",
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the number that was set, and the header's named default AXCustomContentImportanceDefault - which is 0 because it is the first case of the NS_ENUM the header declares - for a content nothing set it on. The two numbers are 0 and 1 and both are in that header; no value here was invented"
     },
     {
       "api": "AXCustomContent.label",
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the very string inside the attributed string that was given, and not a second copy of the text, so an attribute the application put on the label is still there when a caller reads the plain spelling - measured on the host, where label == attributedLabel.string"
     },
     {
       "api": "AXCustomContent.value",
       "kind": "property",
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
-      "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "the header of iPhoneOS 16.4, which is the SDK this package compiles against, so the declaration is not transcribed",
+      "reason": "hand written in packages/a/apple-backports/Accessibility/CharonAXCustomContent.m: one attributed string a side and the header's two factories, and the four properties are four spellings of the two values, which is what the host answers",
+      "effect": "the very string inside the attributed string that was given, and not a second copy of the text, so an attribute the application put on the label is still there when a caller reads the plain spelling - measured on the host, where label == attributedLabel.string"
     },
     {
       "api": "AXCustomContentProvider.accessibilityCustomContent",
@@ -519,8 +531,8 @@
       "introduced": "14.0",
       "facts": "facts/Accessibility/Accessibility.md",
       "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "reason": "a protocol with no object behind it on this release, and none to provide: NSProtocolFromString answers nil for AXCustomContentProvider in a process with nothing of this library in it, and nil on the host's own Accessibility.framework too, where the protocol is declared in a header and never registered. An application that adopts the protocol is one of the port's own classes and implements the accessor itself, which is where the value lives; the two rows below are the members such a class carries and the one member of 17.0 that the SDK of 16.4 does not declare at all. Measured by tests/backports/host/accessibilitymath/",
+      "effect": "nothing in the package answers it: the protocol is a type here and not an object the port provides, so NSProtocolFromString(\"AXCustomContentProvider\") answers nil and an object asked respondsToSelector: for either member answers no"
     },
     {
       "api": "AXCustomContentProvider.accessibilityCustomContentBlock",
@@ -528,8 +540,8 @@
       "introduced": "17.0",
       "facts": "facts/Accessibility/Accessibility.md",
       "status": "absent",
-      "reason": "a class of a later group of this framework: the release carries none of the thirty Accessibility classes the SDK of 26.2 declares, and this group is the six whose behaviour is more than a container, so the rest are its next groups",
-      "effect": "nothing in the package answers it: respondsToSelector: answers no, and a port that reached it would not find it"
+      "reason": "nothing in the package answers it, and the build SDK cannot even name it: the block-returning typedef, the @optional marker and this property are six lines that iPhoneOS 26.2's AXCustomContentProvider has and the SDK of 16.4's does not, so the port declares neither the property nor a second copy of the protocol. An application that wants it needs a header of its own, which is the same wall Accessibility/CharonAccessibility.h's header comment describes",
+      "effect": "nothing in the package answers it, and the build SDK cannot even name it: the block-returning typedef, the @optional marker and this property are six lines that iPhoneOS 26.2's AXCustomContentProvider has and the SDK of 16.4's does not, so the port declares neither the property nor a second copy of the protocol. An application that wants it needs a header of its own, which is the same wall Accessibility/CharonAccessibility.h's header comment describes"
     },
     {
       "api": "AXDataAxisDescriptor.attributedTitle",
