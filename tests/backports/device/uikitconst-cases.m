@@ -130,4 +130,31 @@ void uikitrotor_run(UIKitConstantsRecorder record)
     record(@"rotors.firstIsRotor", exposer.accessibilityCustomRotors.firstObject == rotor ? @"same" : @"other");
     exposer.accessibilityCustomRotors = nil;
     record(@"rotors.afterClear", exposer.accessibilityCustomRotors ? @"set" : @"nil");
+
+    // A custom action's attributed name, which is the rotor's arrangement again on the other of the
+    // two objects an assistive technology is handed: a custom action is made with a name and this
+    // release's own carries one, so what the host answers for it is what the port answers for it.
+    NSObject *actionTarget = [[NSObject alloc] init];
+    UIAccessibilityCustomAction *action = [[UIAccessibilityCustomAction alloc] initWithName:@"Links"
+                                                                                       target:actionTarget
+                                                                                     selector:@selector(description)];
+    record(@"action.name", action.name ?: @"(nil)");
+    record(@"action.attributedNameString", action.attributedName ? action.attributedName.string : @"(nil)");
+    action.attributedName = [[NSAttributedString alloc] initWithString:@"Misspelled"];
+    record(@"action.nameAfterAttributedNameSet", action.name ?: @"(nil)");
+    record(@"action.attributedNameAfterSet", action.attributedName ? action.attributedName.string : @"(nil)");
+
+    NSAttributedString *styled = [[NSAttributedString alloc] initWithString:@"Links"
+                                                                  attributes:@{NSForegroundColorAttributeName: [UIColor redColor]}];
+    UIAccessibilityCustomAction *attributed = [[UIAccessibilityCustomAction alloc] initWithAttributedName:styled
+                                                                                                    target:actionTarget
+                                                                                                  selector:@selector(description)];
+    record(@"action.attributedInitName", attributed.name ?: @"(nil)");
+    record(@"action.attributedInitString", attributed.attributedName ? attributed.attributedName.string : @"(nil)");
+    record(@"action.attributedInitKeepsAttributes",
+           [attributed.attributedName attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:NULL] != nil ? @"keeps" : @"drops");
+    record(@"action.attributedInitTargetIsSame", attributed.target == actionTarget ? @"same" : @"other");
+    attributed.name = @"Renamed";
+    record(@"action.attributedInitNameAfterSet", attributed.name ?: @"(nil)");
+    record(@"action.attributedInitStringAfterNameSet", attributed.attributedName ? attributed.attributedName.string : @"(nil)");
 }

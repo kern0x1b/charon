@@ -23,6 +23,46 @@ class - the title, the image, the property list, the attributes, the state and t
 automatic style as the defaults. VoiceOver of iOS 6 lists no custom actions and does not read the other two, so they are
 `inert`.
 
+## The attributed name of a custom action (iOS 11)
+
+`UIAccessibilityCustomAction.attributedName` and
+`-[UIAccessibilityCustomAction initWithAttributedName:target:selector:]` were registered `absent` with the reason
+"this release's VoiceOver never asks the question the member answers", which is the reason every member of this
+class carries, including the four that were already undecided, so it was a reason that could never decide anything.
+Both are `implemented`, in `UIKit/UIAccessibilityCustomAction+AttributedName11.m`.
+
+**What it is: the name, styled.** The plain name is the string and this file keeps the style, so the two are one
+name in two spellings and neither is a second source of truth for the other. That arrangement is what makes
+`-setName:` work without this file touching the class's own setter, and it is not a choice: a category cannot
+override the method the class itself implements, so moving the string across in both directions from here would
+either lose the plain write or call the plain setter in a loop. Deriving the string from the plain name is the
+third arrangement and the only one that has neither defect.
+
+Recorded from the host's own UIKit under Mac Catalyst by `tests/backports/host/uikitconst`, over the ten cases
+added to `device/uikitconst-cases.m`, which the device test reads out of `device/UIKitConstants-expectations.h`:
+
+| the host's answer | key |
+|---|---|
+| an action made with a plain name ALREADY has an attributed name, and its string is that name | `action.attributedNameString` |
+| setting the attributed one sets the plain name | `action.nameAfterAttributedNameSet` |
+| the plain setter leaves the attributed name describing the same action, keeping the style | `action.attributedInitStringAfterNameSet` |
+| `initWithAttributedName:target:selector:` keeps the attributes it was given | `action.attributedInitKeepsAttributes` |
+| and the target it was passed | `action.attributedInitTargetIsSame` |
+
+**What has not been run.** The host half ran: `tests/backports/host/uikitconst` records all ten, and the
+regenerated `device/UIKitConstants-expectations.h` is the tracked file plus exactly those ten keys — 81 entries
+where the file held 71, none removed and none of the 71 changed. The device half did **not** run, and no verdict
+is claimed for it: it is the device test that holds this port to those answers, and a reviewer should not read
+this section as a device result.
+
+What did run for the port is the logic, which is a weaker claim and is stated as one. The port's class
+re-implements a class the SDK declares, so on this host the framework's own class wins and the port's category
+would never be called — a probe under the real name measures the SDK, not the port. So
+`.agent-work/runs/uikit11/probe/probe.m` runs the port's base class and the port's new category verbatim under
+another name and checks they produce the recorded answers: ten of ten agree, exit 0. Its negative control is the
+defect this arrangement exists to prevent — a getter that stops reading the plain name, which is one line, and
+which the probe turns into two failures and exit 1.
+
 ## Accessibility settings (iOS 8, 9)
 
 iOS 6 has none of bold text, grayscale, reduce motion, reduce transparency, darker system colours, speak screen, speak

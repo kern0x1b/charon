@@ -1180,19 +1180,21 @@
    "api": "-[UIAccessibilityCustomAction initWithAttributedName:target:selector:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "status": "implemented",
+   "effect": "an action made with a styled name: its plain name is that name's string, the style is kept whole, and the target and selector are the ones passed. Nothing VoiceOver of this release ever performs the action, so it is the class's inert shape with the name styled as the header has it",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches: UIAccessibilityCustomAction is in neither, the port builds it, and neither release's own carries the 11.0 member. The behaviour is the host's, recorded by tests/backports/host/uikitconst under Mac Catalyst over the ten cases in device/uikitconst-cases.m, which the device test reads out of device/UIKitConstants-expectations.h; the port's own object is UIKit/UIAccessibilityCustomAction+AttributedName11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+   "minimum": "6.0"
   },
   {
    "api": "UIAccessibilityCustomAction.attributedName",
    "kind": "property",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "UIKit of iOS 11.0 arm64"
+   "status": "implemented",
+   "effect": "the name, styled: an action made with a plain name already answers an attributed string over that name, exactly as the system's own does, and setting either name moves the string across keeping the attributes rather than dropping them. The plain name is the string and this property is the style, so a category need not override the class's own setter to keep them in step",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches: UIAccessibilityCustomAction is in neither, the port builds it, and neither release's own carries the 11.0 member. The behaviour is the host's, recorded by tests/backports/host/uikitconst under Mac Catalyst over the ten cases in device/uikitconst-cases.m, which the device test reads out of device/UIKitConstants-expectations.h; the port's own object is UIKit/UIAccessibilityCustomAction+AttributedName11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md",
+   "minimum": "6.0"
   },
   {
    "api": "-[UIAccessibilityReadingContent accessibilityAttributedContentForLineNumber:]",
