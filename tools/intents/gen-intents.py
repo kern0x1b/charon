@@ -306,6 +306,360 @@ EXTRA_METHODS = {
         "    return self;",
         "}",
     ],
+    # The four singleton accessors. Each of these headers names the accessor and says to use it -
+    # "@c Use the @c defaultStore singleton" - so the accessor is the class's whole surface and the
+    # one object for the process is what it answers. dispatch_once is the tree's own spelling of
+    # one instance for the process: packages/a/apple-backports/Intents/CharonIntents100.m's
+    # +[INVocabulary sharedVocabulary] is this body.
+    ("INRelevantShortcutStore", "defaultStore"): [
+        "+ (INRelevantShortcutStore *)defaultStore",
+        "{",
+        "    // The header's own note is to use this singleton, so it is one object for the process.",
+        "    static INRelevantShortcutStore *shared;",
+        "    static dispatch_once_t once;",
+        "    dispatch_once(&once, ^{",
+        "        shared = [[INRelevantShortcutStore alloc] init];",
+        "    });",
+        "    return shared;",
+        "}",
+    ],
+    ("INUpcomingMediaManager", "sharedManager"): [
+        "+ (INUpcomingMediaManager *)sharedManager",
+        "{",
+        "    // The header's own note is to use this singleton, so it is one object for the process.",
+        "    static INUpcomingMediaManager *shared;",
+        "    static dispatch_once_t once;",
+        "    dispatch_once(&once, ^{",
+        "        shared = [[INUpcomingMediaManager alloc] init];",
+        "    });",
+        "    return shared;",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "sharedCenter"): [
+        "+ (INVoiceShortcutCenter *)sharedCenter",
+        "{",
+        "    // The header's own note is to use this singleton, so it is one object for the process.",
+        "    static INVoiceShortcutCenter *shared;",
+        "    static dispatch_once_t once;",
+        "    dispatch_once(&once, ^{",
+        "        shared = [[INVoiceShortcutCenter alloc] init];",
+        "    });",
+        "    return shared;",
+        "}",
+    ],
+    ("INFocusStatusCenter", "defaultCenter"): [
+        "+ (INFocusStatusCenter *)defaultCenter",
+        "{",
+        "    // The header's own note is to use this singleton, so it is one object for the process.",
+        "    static INFocusStatusCenter *shared;",
+        "    static dispatch_once_t once;",
+        "    dispatch_once(&once, ^{",
+        "        shared = [[INFocusStatusCenter alloc] init];",
+        "    });",
+        "    return shared;",
+        "}",
+    ],
+    ("INRelevantShortcutStore", "setRelevantShortcuts:completionHandler:"): [
+        "- (void)setRelevantShortcuts:(NSArray<INRelevantShortcut *> *)shortcuts",
+        "    completionHandler:(void (^ __nullable)(NSError * __nullable error))completionHandler",
+        "{",
+        "    // The header's own note is that a new set replaces every one provided before, so the",
+        "    // whole set is replaced here rather than added to. This release runs no assistant",
+        "    // daemon to read the set, so it is kept in the class's own state and the handler is",
+        "    // answered with no error, which is what the framework reports for a set it took.",
+        "    _relevantShortcuts = [shortcuts copy] ?: [NSArray array];",
+        "    if (completionHandler) {",
+        "        completionHandler(nil);",
+        "    }",
+        "}",
+    ],
+    ("INUpcomingMediaManager", "setSuggestedMediaIntents:"): [
+        "- (void)setSuggestedMediaIntents:(NSOrderedSet<INPlayMediaIntent *> *)intents",
+        "{",
+        "    // The header calls these the intents to suggest. This release runs no assistant daemon",
+        "    // to read them, so they are kept in the class's own state in the order they were given.",
+        "    _suggestedMediaIntents = [intents copy] ?: [NSOrderedSet orderedSet];",
+        "}",
+    ],
+    ("INUpcomingMediaManager", "setPredictionMode:forType:"): [
+        "- (void)setPredictionMode:(INUpcomingMediaPredictionMode)mode",
+        "    forType:(INMediaItemType)type",
+        "{",
+        "    // One mode per media item type, which is what the selector says: it takes the type, so",
+        "    // the mode asked about a type is that type's own. Nothing here predicts anything -",
+        "    // there is no assistant daemon on this release - so the mode is kept to be read back.",
+        "    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)type];",
+        "    if (!_predictionModes) {",
+        "        _predictionModes = [[NSMutableDictionary alloc] init];",
+        "    }",
+        "    if (mode == INUpcomingMediaPredictionModeDefault) {",
+        "        [_predictionModes removeObjectForKey:key];",
+        "    } else {",
+        "        [_predictionModes setObject:[NSNumber numberWithInteger:(NSInteger)mode] forKey:key];",
+        "    }",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "setShortcutSuggestions:"): [
+        "- (void)setShortcutSuggestions:(NSArray<INShortcut *> *)suggestions",
+        "{",
+        "    // Suggestions replace the ones before, as the header's discussion says they are shown",
+        "    // to the user in the Shortcuts app - which this release has no app for. They are kept",
+        "    // in the class's own state in the order they were offered.",
+        "    _shortcutSuggestions = [suggestions copy] ?: [NSArray array];",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "getAllVoiceShortcutsWithCompletion:"): [
+        "- (void)getAllVoiceShortcutsWithCompletion:",
+        "    (void (^)(NSArray<INVoiceShortcut *> * _Nullable, NSError * _Nullable))completionHandler",
+        "{",
+        "    // This release runs no assistant daemon and has no Shortcuts app, so no shortcut was",
+        "    // ever added to Siri: the answer is an empty array and no error, which is what the",
+        "    // framework reports when the app has none. A nil handler is not called.",
+        "    if (completionHandler) {",
+        "        completionHandler([NSArray array], nil);",
+        "    }",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "getVoiceShortcutWithIdentifier:completion:"): [
+        "- (void)getVoiceShortcutWithIdentifier:(NSUUID *)identifier",
+        "    completion:(void (^)(INVoiceShortcut * _Nullable, NSError * _Nullable))completionHandler",
+        "{",
+        "    // The same empty store as getAllVoiceShortcutsWithCompletion:, read by the identifier",
+        "    // this release was never given one for: nil and no error. A nil handler is not called.",
+        "    if (completionHandler) {",
+        "        completionHandler(nil, nil);",
+        "    }",
+        "}",
+    ],
+    # INFile: the header says a file holds its data and the name and uniform type identifier it
+    # was given, and that data made from a URL memory maps on access - so the URL is kept and the
+    # data is read through it rather than cached twice. -init is NS_UNAVAILABLE in the header and
+    # the generator emits a body for it anyway (see own_init_unavailable), which is why these two
+    # can allocate.
+    ("INFile", "fileWithData:filename:typeIdentifier:"): [
+        "+ (INFile *)fileWithData:(NSData *)data",
+        "    filename:(NSString *)filename",
+        "    typeIdentifier:(NSString * __nullable)typeIdentifier",
+        "{",
+        "    // Data in memory: there is no URL, and the header's own fileURL property answers nil.",
+        "    INFile *file = [[INFile alloc] init];",
+        "    file->_data = [data copy];",
+        "    file->_filename = [filename copy];",
+        "    file->_typeIdentifier = [typeIdentifier copy];",
+        "    return file;",
+        "}",
+    ],
+    ("INFile", "fileWithFileURL:filename:typeIdentifier:"): [
+        "+ (INFile *)fileWithFileURL:(NSURL *)fileURL",
+        "    filename:(NSString * __nullable)filename",
+        "    typeIdentifier:(NSString * __nullable)typeIdentifier",
+        "{",
+        "    // A file on disk: the URL is kept so the data property memory maps it on access, and a",
+        "    // filename the caller gave is kept as it is - the header makes it nullable here, so no",
+        "    // name is invented for a file whose caller offered none.",
+        "    INFile *file = [[INFile alloc] init];",
+        "    file->_fileURL = [fileURL copy];",
+        "    file->_filename = [filename copy];",
+        "    file->_typeIdentifier = [typeIdentifier copy];",
+        "    return file;",
+        "}",
+    ],
+    # The accessors the two factories above fill. They are readonly in the header, so nothing
+    # synthesises them: with the fields in EXTRA_IVARS a body reads them directly.
+    ("INFile", "data"): [
+        "- (NSData *)data",
+        "{",
+        "    // A file made from a URL memory maps its contents on access, as the header says, so the",
+        "    // bytes are read where they are rather than copied into a second copy of the file.",
+        "    if (!_data && _fileURL) {",
+        "        _data = [NSData dataWithContentsOfURL:_fileURL];",
+        "    }",
+        "    return _data;",
+        "}",
+    ],
+    ("INFile", "filename"): [
+        "- (NSString *)filename",
+        "{",
+        "    return _filename;",
+        "}",
+    ],
+    ("INFile", "typeIdentifier"): [
+        "- (NSString *)typeIdentifier",
+        "{",
+        "    return _typeIdentifier;",
+        "}",
+    ],
+    ("INFile", "fileURL"): [
+        "- (NSURL *)fileURL",
+        "{",
+        "    // A file made from data was never on disk, and the header's property is nullable.",
+        "    return _fileURL;",
+        "}",
+    ],
+    ("INSendMessageAttachment", "attachmentWithAudioMessageFile:"): [
+        "+ (INSendMessageAttachment *)attachmentWithAudioMessageFile:(INFile *)audioMessageFile",
+        "{",
+        "    // The header names this the audio message file of the attachment, and it is the class's",
+        "    // only property, so the attachment is that file and nothing else.",
+        "    INSendMessageAttachment *attachment = [[INSendMessageAttachment alloc] init];",
+        "    attachment->_audioMessageFile = [audioMessageFile copy];",
+        "    return attachment;",
+        "}",
+    ],
+    ("INSendMessageAttachment", "audioMessageFile"): [
+        "- (INFile *)audioMessageFile",
+        "{",
+        "    return _audioMessageFile;",
+        "}",
+    ],
+    ("INMediaDestination", "libraryDestination"): [
+        "+ (instancetype)libraryDestination",
+        "{",
+        "    // The header's own two properties say what this is: a destination whose type is the",
+        "    // library's and whose playlist name is none, which is the difference between it and",
+        "    // +playlistDestinationWithName:.",
+        "    INMediaDestination *destination = [[INMediaDestination alloc] init];",
+        "    destination->_mediaDestinationType = INMediaDestinationTypeLibrary;",
+        "    return destination;",
+        "}",
+    ],
+    ("INMediaDestination", "playlistDestinationWithName:"): [
+        "+ (instancetype)playlistDestinationWithName:(NSString *)playlistName",
+        "{",
+        "    // The same destination type as +libraryDestination with the name kept, which is the one",
+        "    // difference the header's two properties can express.",
+        "    INMediaDestination *destination = [[INMediaDestination alloc] init];",
+        "    destination->_mediaDestinationType = INMediaDestinationTypePlaylist;",
+        "    destination->_playlistName = [playlistName copy];",
+        "    return destination;",
+        "}",
+    ],
+    ("INMediaDestination", "mediaDestinationType"): [
+        "- (INMediaDestinationType)mediaDestinationType",
+        "{",
+        "    return _mediaDestinationType;",
+        "}",
+    ],
+    ("INMediaDestination", "playlistName"): [
+        "- (NSString * __nullable)playlistName",
+        "{",
+        "    return _playlistName;",
+        "}",
+    ],
+    ("INUserContext", "becomeCurrent"): [
+        "- (void)becomeCurrent",
+        "{",
+        "    // The header marks this unavailable in an extension and calls it nothing else: it tells",
+        "    // the system that this context is the current one, and there is no system on this",
+        "    // release to tell - no assistant daemon reads a user context - so there is nothing to do",
+        "    // and nothing to record. Saying so is the whole of the answer; inventing a current",
+        "    // context that nothing reads would be a value that looks filled and is not.",
+        "}",
+    ],
+    ("INAddTasksTargetTaskListResolutionResult",
+     "confirmationRequiredWithTaskListToConfirm:forReason:"): [
+        "+ (instancetype)confirmationRequiredWithTaskListToConfirm:(INTaskList * __nullable)taskListToConfirm",
+        "    forReason:(INAddTasksTargetTaskListConfirmationReason)reason",
+        "{",
+        "    // The same answer the typed task-list factories build, with the task list to confirm as",
+        "    // the value to confirm. The reason is one case of its own enumeration and the class",
+        "    // exposes no reader for it, so it is not stored - see CharonIntentsResolution.h's",
+        "    // charon_unsupportedReason for why a swallowed reason is a different answer.",
+        "    return [self charon_resolutionWithStatus:CharonIntentsResolutionConfirmationRequired",
+        "                                resolvedValue:nil",
+        "                          valuesToDisambiguate:nil",
+        "                                 valueToConfirm:taskListToConfirm];",
+        "}",
+    ],
+    ("INFocusStatusCenter", "requestAuthorizationWithCompletionHandler:"): [
+        "- (void)requestAuthorizationWithCompletionHandler:",
+        "    (void (^ __nullable)(INFocusStatusAuthorizationStatus status))completionHandler",
+        "{",
+        "    // The same answer packages/a/apple-backports/Intents/CharonIntents100.m gives for",
+        "    // +[INPreferences requestSiriAuthorization:]: this release has no Focus setting to ask",
+        "    // about and no prompt to show, so it answers the handler with Restricted rather than",
+        "    // leaving the handler waiting for a system that will never call it. A nil handler is not",
+        "    // called.",
+        "    if (completionHandler) {",
+        "        completionHandler(INFocusStatusAuthorizationStatusRestricted);",
+        "    }",
+        "}",
+    ],
+
+    ("INCar", "maximumPowerForChargingConnectorType:"): [
+        "- (NSMeasurement<NSUnitPower *> *)maximumPowerForChargingConnectorType:",
+        "    (INCarChargingConnectorType)chargingConnectorType",
+        "{",
+        "    // The header's own two methods are a pair: this one reads what the setter wrote for",
+        "    // that connector type, and answers nil for a type nothing was set for. NSMeasurement",
+        "    // and NSUnitPower are Foundation's own and are carried by this delivery (minimum 6.0),",
+        "    // so the value has somewhere real to be kept.",
+        "    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)chargingConnectorType];",
+        "    return [_maximumPowerByConnectorType objectForKey:key];",
+        "}",
+    ],
+    ("INCar", "setMaximumPower:forChargingConnectorType:"): [
+        "- (void)setMaximumPower:(NSMeasurement<NSUnitPower *> *)power",
+        "    forChargingConnectorType:(INCarChargingConnectorType)chargingConnectorType",
+        "{",
+        "    // One maximum per connector type, which is what the selector says. A nil power removes",
+        "    // the entry rather than storing a nil, so the reader's nil means \"set to nothing\".",
+        "    if (!_maximumPowerByConnectorType) {",
+        "        _maximumPowerByConnectorType = [[NSMutableDictionary alloc] init];",
+        "    }",
+        "    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)chargingConnectorType];",
+        "    if (power) {",
+        "        [_maximumPowerByConnectorType setObject:power forKey:key];",
+        "    } else {",
+        "        [_maximumPowerByConnectorType removeObjectForKey:key];",
+        "    }",
+        "}",
+    ],
+    # INMediaDestination's two properties are readonly and its -init is NS_UNAVAILABLE, so the two
+    # class methods below are the only way to make one and they fill these.
+    "INMediaDestination": [
+        "    INMediaDestinationType _mediaDestinationType;  // mediaDestinationType",
+        "    NSString * _playlistName;  // playlistName",
+    ],
+}
+
+# The state a hand-written body keeps that the class's own headers declare no property for, so it
+# has no @synthesize and no coding or copying entry. Each field is named after the method that
+# writes it, and the body says what it owns.
+
+# The state a hand-written body keeps that the class's own headers declare no property for, so it
+# has no @synthesize and no coding or copying entry. Each field is named after the method that
+# writes it, and the body says what it owns.
+EXTRA_IVARS = {
+    "INRelevantShortcutStore": [
+        "    NSArray * _relevantShortcuts;  // setRelevantShortcuts:completionHandler:",
+    ],
+    "INUpcomingMediaManager": [
+        "    NSOrderedSet * _suggestedMediaIntents;  // setSuggestedMediaIntents:",
+        "    NSMutableDictionary * _predictionModes;  // setPredictionMode:forType:, by media item type",
+    ],
+    "INVoiceShortcutCenter": [
+        "    NSArray * _shortcutSuggestions;  // setShortcutSuggestions:",
+    ],
+    # INFile's four properties are readonly and its only two constructors are the class methods
+    # written below, so the generator has no initialiser to hang them on and synthesises nothing:
+    # the field is what the two factories fill, and both are declared on the class itself.
+    "INFile": [
+        "    NSData * _data;  // data",
+        "    NSString * _filename;  // filename",
+        "    NSString * _typeIdentifier;  // typeIdentifier",
+        "    NSURL * _fileURL;  // fileURL",
+    ],
+    # INSendMessageAttachment's one property is readonly and its only constructor is the class
+    # method written below, for the same reason as INFile's four.
+    "INSendMessageAttachment": [
+        "    INFile * _audioMessageFile;  // audioMessageFile",
+    ],
+    # The header's two charging-power methods are a read/write pair keyed by connector type, so
+    # the field is a dictionary and neither is a property the header declares.
+    "INCar": [
+        "    NSMutableDictionary * _maximumPowerByConnectorType;  // maximumPowerForChargingConnectorType:",
+    ],
 }
 
 
@@ -820,8 +1174,13 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     causes_by_name = {}
     dynamic_causes = {}
     for name, member in sorted(class_properties.items()):
-        causes_by_name[name] = "class_property"
-        dynamic.append((name, member.get("category"), "class_property"))
+        # A class property whose accessor EXTRA_METHODS writes a body for is ANSWERED by that body:
+        # the four singleton accessors are the four, and each is the class's whole surface. One that
+        # has no body stays dynamic under the class_property cause, which is what the filter used
+        # to do to all of them silently.
+        if not (interface.name, name) in EXTRA_METHODS:
+            causes_by_name[name] = "class_property"
+            dynamic.append((name, member.get("category"), "class_property"))
     for name, member in sorted(own.items()):
         kind = type_of(member)
         if base_type(kind) == interface.name:
@@ -891,15 +1250,26 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     # in this file, so the class's own initialisers can reach all of them and a category
     # implementation has a place to synthesise the properties a category declared.
     out = []
-    if stored:
+    # State a hand-written body keeps that the class's own headers declare no property for. The
+    # extension above carries one ivar per declared property, so a body that stores a value the
+    # header has no property for - the shortcuts a store was given, the suggestions a center was
+    # offered, the prediction mode of one media item type - has nowhere to put it without this.
+    extra = EXTRA_IVARS.get(interface.name)
+    if stored or extra:
         out.append("@interface %s ()" % interface.name)
         out.append("{")
-        width = max(len(kind) for _, kind, _ in stored)
-        for ivar, kind, name in sorted(stored, key=lambda item: item[0]):
-            out.append("    %-*s %s;  // %s" % (width, kind, ivar, name))
+        if extra:
+            out += extra
+        if stored:
+            width = max(len(kind) for _, kind, _ in stored)
+            for ivar, kind, name in sorted(stored, key=lambda item: item[0]):
+                out.append("    %-*s %s;  // %s" % (width, kind, ivar, name))
         out.append("}")
         out.append("@end")
         out.append("")
+    # A field a hand-written body keeps is not a property the header declares, so it is in neither
+    # `stored` nor `synthesised`: nothing synthesises it and the copy/coding helpers do not walk it.
+    # Each body that writes one says so at the point it writes it.
     out += ["@implementation %s" % interface.name] + synthesised
     # Three fields: the name, the category it came from, and why it is dynamic. The unpacking here
     # took two until a class property made `dynamic` non-empty for the first time (see the class
@@ -997,6 +1367,19 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
             out += written + [""]
 
     for method in interface.methods:
+        # The name under which a cause is recorded and under which EXTRA_METHODS is keyed. The
+        # initialiser loop above leaves its own `selector` behind, so it is set here too: a lookup
+        # that read the previous loop's value matched the wrong method, and the method it belonged
+        # to was emitted twice.
+        selector = method.get("name") or ""
+        # A member the header marks UNAVAILABLE is not answered, and the cause is the mark: a port
+        # cannot call it, so there is nothing to answer. These were falling through to the group's
+        # blanket reason, which is what made +[INShortcut new] and the six -init rows read "a class
+        # of a later group of this same delivery" for classes this delivery carries.
+        if has_attr(method, "UnavailableAttr") and (interface.name, selector) not in EXTRA_METHODS \
+                and selector not in accessors and selector not in own:
+            skipped.append((selector, "unavailable"))
+            continue
         # An accessor whose return type is a class this package does not carry: there is
         # nothing to keep the value in and no header of the port's own SDK that declares the
         # class, so a body would not compile against one.  INDateComponentsRange's
@@ -1005,8 +1388,15 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         # INRecurrenceRule.  It was falling through to the group's blanket reason and the
         # registry wrote "a class of a later group of this same delivery", which is not what
         # stops it.
+        # The guard below skips a member whose return type is a class this package does not carry,
+        # and it runs BEFORE the hand-written hook is consulted. A body written by hand is not
+        # generated from that type, so it is not subject to the guard: INCar's two charging-power
+        # methods return NSMeasurement<NSUnitPower *>, which is Foundation's and is carried by the
+        # Foundation package, but it is not in this framework's own class list, so both were
+        # dropped as foreign_class and their rows fell back to the group's blanket reason.
+        hand_written = (interface.name, selector) in EXTRA_METHODS
         withheld = deferred_type(returns_of(method), intents, carried, forward)
-        if withheld and method.get("instance") is not False \
+        if withheld and not hand_written and method.get("instance") is not False \
                 and not has_attr(method, "UnavailableAttr") \
                 and (method.get("name") or "") not in accessors \
                 and (method.get("name") or "") not in own \
@@ -1019,6 +1409,14 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
                                              interface.name, method.get("name") or "")] = \
                 "collection_factory"
             continue
+        # A hand-written body for a method that is not an initialiser. The hook existed only for
+        # initialisers: it was consulted inside the `selector.startswith("init")` loop above, so a
+        # declared, available method the generator has no rule for - a singleton's setter, a
+        # completion handler, a factory with no storage to fill - could not be given a body at
+        # all, and its registry row fell back to the group's blanket reason. It is consulted here
+        # too, so one table names every body that is written by hand.
+        if hand_written:
+            built = EXTRA_METHODS[(interface.name, selector)]
         out += built
         out.append("")
 
@@ -1073,6 +1471,15 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         causes[selector] = cause
     report = answer_of(out, interface.name)
     report["causes"] = causes
+    # A class property is answered by its +accessor, which is the only thing in the emitted text
+    # that carries the name: there is no @synthesize for it and the header declares no ivar, so
+    # answer_of() cannot see it. So it is matched here against the class's OWN declaration list and
+    # against an accessor that was actually written - +name is the shape, and it has to be in the
+    # emitted methods, so a class property with no accessor written is not claimed.
+    written = set(entry.partition("[")[2].rpartition(" ")[2].rstrip("]")
+                  for entry in report["methods"] if entry.startswith("+["))
+    report["class_properties"] = sorted(name for name in class_properties
+                                        if name in written)
     return out, report
 
 

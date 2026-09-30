@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 1 member(s) are left dynamic - a class property of the
+//  parent's state, and 0 member(s) are left dynamic - a class property of the
 //  class's own type, or a property of a class of a later group - and answered in
 //  registry/Intents instead of with nil.
 //
@@ -234,6 +234,19 @@
         [self charon_adoptResolutionOf:taskListResolutionResult];
     }
     return self;
+}
+
++ (instancetype)confirmationRequiredWithTaskListToConfirm:(INTaskList * __nullable)taskListToConfirm
+    forReason:(INAddTasksTargetTaskListConfirmationReason)reason
+{
+    // The same answer the typed task-list factories build, with the task list to confirm as
+    // the value to confirm. The reason is one case of its own enumeration and the class
+    // exposes no reader for it, so it is not stored - see CharonIntentsResolution.h's
+    // charon_unsupportedReason for why a swallowed reason is a different answer.
+    return [self charon_resolutionWithStatus:CharonIntentsResolutionConfirmationRequired
+                                resolvedValue:nil
+                          valuesToDisambiguate:nil
+                                 valueToConfirm:taskListToConfirm];
 }
 
 @end
@@ -1149,6 +1162,7 @@
 
 @interface INCar ()
 {
+    NSMutableDictionary * _maximumPowerByConnectorType;  // maximumPowerForChargingConnectorType:
     NSString *                            _carIdentifier;  // carIdentifier
     CGColorRef                            _color;  // color
     NSString *                            _displayName;  // displayName
@@ -1197,6 +1211,33 @@
         _year = [year copy];
     }
     return self;
+}
+
+- (void)setMaximumPower:(NSMeasurement<NSUnitPower *> *)power
+    forChargingConnectorType:(INCarChargingConnectorType)chargingConnectorType
+{
+    // One maximum per connector type, which is what the selector says. A nil power removes
+    // the entry rather than storing a nil, so the reader's nil means "set to nothing".
+    if (!_maximumPowerByConnectorType) {
+        _maximumPowerByConnectorType = [[NSMutableDictionary alloc] init];
+    }
+    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)chargingConnectorType];
+    if (power) {
+        [_maximumPowerByConnectorType setObject:power forKey:key];
+    } else {
+        [_maximumPowerByConnectorType removeObjectForKey:key];
+    }
+}
+
+- (NSMeasurement<NSUnitPower *> *)maximumPowerForChargingConnectorType:
+    (INCarChargingConnectorType)chargingConnectorType
+{
+    // The header's own two methods are a pair: this one reads what the setter wrote for
+    // that connector type, and answers nil for a type nothing was set for. NSMeasurement
+    // and NSUnitPower are Foundation's own and are carried by this delivery (minimum 6.0),
+    // so the value has somewhere real to be kept.
+    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)chargingConnectorType];
+    return [_maximumPowerByConnectorType objectForKey:key];
 }
 
 + (BOOL)supportsSecureCoding
@@ -1536,6 +1577,10 @@
 
 @interface INFile ()
 {
+    NSData * _data;  // data
+    NSString * _filename;  // filename
+    NSString * _typeIdentifier;  // typeIdentifier
+    NSURL * _fileURL;  // fileURL
     NSData *   _data;  // data
     NSURL *    _fileURL;  // fileURL
     NSString * _filename;  // filename
@@ -1559,6 +1604,58 @@
 - (void)setRemovedOnCompletion:(BOOL)removedOnCompletion
 {
     _removedOnCompletion = removedOnCompletion;
+}
+
++ (INFile *)fileWithData:(NSData *)data
+    filename:(NSString *)filename
+    typeIdentifier:(NSString * __nullable)typeIdentifier
+{
+    // Data in memory: there is no URL, and the header's own fileURL property answers nil.
+    INFile *file = [[INFile alloc] init];
+    file->_data = [data copy];
+    file->_filename = [filename copy];
+    file->_typeIdentifier = [typeIdentifier copy];
+    return file;
+}
+
++ (INFile *)fileWithFileURL:(NSURL *)fileURL
+    filename:(NSString * __nullable)filename
+    typeIdentifier:(NSString * __nullable)typeIdentifier
+{
+    // A file on disk: the URL is kept so the data property memory maps it on access, and a
+    // filename the caller gave is kept as it is - the header makes it nullable here, so no
+    // name is invented for a file whose caller offered none.
+    INFile *file = [[INFile alloc] init];
+    file->_fileURL = [fileURL copy];
+    file->_filename = [filename copy];
+    file->_typeIdentifier = [typeIdentifier copy];
+    return file;
+}
+
+- (NSData *)data
+{
+    // A file made from a URL memory maps its contents on access, as the header says, so the
+    // bytes are read where they are rather than copied into a second copy of the file.
+    if (!_data && _fileURL) {
+        _data = [NSData dataWithContentsOfURL:_fileURL];
+    }
+    return _data;
+}
+
+- (NSString *)filename
+{
+    return _filename;
+}
+
+- (NSString *)typeIdentifier
+{
+    return _typeIdentifier;
+}
+
+- (NSURL *)fileURL
+{
+    // A file made from data was never on disk, and the header's property is nullable.
+    return _fileURL;
 }
 
 + (BOOL)supportsSecureCoding
@@ -1887,7 +1984,30 @@
 @implementation INFocusStatusCenter
     @synthesize authorizationStatus = _authorizationStatus;
     @synthesize focusStatus = _focusStatus;
-    @dynamic defaultCenter;  // a property of the class's own type: see registry/Intents
+
+- (void)requestAuthorizationWithCompletionHandler:
+    (void (^ __nullable)(INFocusStatusAuthorizationStatus status))completionHandler
+{
+    // The same answer packages/a/apple-backports/Intents/CharonIntents100.m gives for
+    // +[INPreferences requestSiriAuthorization:]: this release has no Focus setting to ask
+    // about and no prompt to show, so it answers the handler with Restricted rather than
+    // leaving the handler waiting for a system that will never call it. A nil handler is not
+    // called.
+    if (completionHandler) {
+        completionHandler(INFocusStatusAuthorizationStatusRestricted);
+    }
+}
+
++ (INFocusStatusCenter *)defaultCenter
+{
+    // The header's own note is to use this singleton, so it is one object for the process.
+    static INFocusStatusCenter *shared;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        shared = [[INFocusStatusCenter alloc] init];
+    });
+    return shared;
+}
 
 @end
 
@@ -2506,6 +2626,36 @@
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
++ (instancetype)libraryDestination
+{
+    // The header's own two properties say what this is: a destination whose type is the
+    // library's and whose playlist name is none, which is the difference between it and
+    // +playlistDestinationWithName:.
+    INMediaDestination *destination = [[INMediaDestination alloc] init];
+    destination->_mediaDestinationType = INMediaDestinationTypeLibrary;
+    return destination;
+}
+
++ (instancetype)playlistDestinationWithName:(NSString *)playlistName
+{
+    // The same destination type as +libraryDestination with the name kept, which is the one
+    // difference the header's two properties can express.
+    INMediaDestination *destination = [[INMediaDestination alloc] init];
+    destination->_mediaDestinationType = INMediaDestinationTypePlaylist;
+    destination->_playlistName = [playlistName copy];
+    return destination;
+}
+
+- (INMediaDestinationType)mediaDestinationType
+{
+    return _mediaDestinationType;
+}
+
+- (NSString * __nullable)playlistName
+{
+    return _playlistName;
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -2804,6 +2954,22 @@
     // -init is called through CharonCoding.h's one definition of it.
     if ((self = charon_intents_super_init(self, [NSObject class]))) {
         _sections = [sections copy];
+    }
+    return self;
+}
+
+- (instancetype)initWithItems:(NSArray *)items
+{
+    // The header's own two properties say what a collection of items is: allItems is the
+    // items, and sections is them under one section with no title. Collation is not
+    // indexed, because the items arrive in the order they were given and nothing here
+    // sorts them.
+    INObjectSection *section =
+        [[INObjectSection alloc] initWithTitle:nil items:items ?: [NSArray array]];
+    if ((self = [super init])) {
+        _sections = @[section];
+        _allItems = [items copy] ?: [NSArray array];
+        _usesIndexedCollation = NO;
     }
     return self;
 }
@@ -3809,11 +3975,26 @@
 @interface INSendMessageAttachment ()
 {
     INFile * _audioMessageFile;  // audioMessageFile
+    INFile * _audioMessageFile;  // audioMessageFile
 }
 @end
 
 @implementation INSendMessageAttachment
     @synthesize audioMessageFile = _audioMessageFile;
+
++ (INSendMessageAttachment *)attachmentWithAudioMessageFile:(INFile *)audioMessageFile
+{
+    // The header names this the audio message file of the attachment, and it is the class's
+    // only property, so the attachment is that file and nothing else.
+    INSendMessageAttachment *attachment = [[INSendMessageAttachment alloc] init];
+    attachment->_audioMessageFile = [audioMessageFile copy];
+    return attachment;
+}
+
+- (INFile *)audioMessageFile
+{
+    return _audioMessageFile;
+}
 
 @end
 
@@ -5211,6 +5392,15 @@
     SEL selector = @selector(init);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
+- (void)becomeCurrent
+{
+    // The header marks this unavailable in an extension and calls it nothing else: it tells
+    // the system that this context is the current one, and there is no system on this
+    // release to tell - no assistant daemon reads a user context - so there is nothing to do
+    // and nothing to record. Saying so is the whole of the answer; inventing a current
+    // context that nothing reads would be a value that looks filled and is not.
 }
 
 + (BOOL)supportsSecureCoding

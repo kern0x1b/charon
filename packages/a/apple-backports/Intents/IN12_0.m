@@ -8,7 +8,7 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 3 member(s) are left dynamic - a class property of the
+//  parent's state, and 0 member(s) are left dynamic - a class property of the
 //  class's own type, or a property of a class of a later group - and answered in
 //  registry/Intents instead of with nil.
 //
@@ -845,8 +845,13 @@
 
 @end
 
+@interface INRelevantShortcutStore ()
+{
+    NSArray * _relevantShortcuts;  // setRelevantShortcuts:completionHandler:
+}
+@end
+
 @implementation INRelevantShortcutStore
-    @dynamic defaultStore;  // a property of the class's own type: see registry/Intents
 
 - (instancetype)init
 {
@@ -858,6 +863,30 @@
     SEL selector = @selector(init);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
+- (void)setRelevantShortcuts:(NSArray<INRelevantShortcut *> *)shortcuts
+    completionHandler:(void (^ __nullable)(NSError * __nullable error))completionHandler
+{
+    // The header's own note is that a new set replaces every one provided before, so the
+    // whole set is replaced here rather than added to. This release runs no assistant
+    // daemon to read the set, so it is kept in the class's own state and the handler is
+    // answered with no error, which is what the framework reports for a set it took.
+    _relevantShortcuts = [shortcuts copy] ?: [NSArray array];
+    if (completionHandler) {
+        completionHandler(nil);
+    }
+}
+
++ (INRelevantShortcutStore *)defaultStore
+{
+    // The header's own note is to use this singleton, so it is one object for the process.
+    static INRelevantShortcutStore *shared;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        shared = [[INRelevantShortcutStore alloc] init];
+    });
+    return shared;
 }
 
 @end
@@ -964,8 +993,49 @@
 
 @end
 
+@interface INUpcomingMediaManager ()
+{
+    NSOrderedSet * _suggestedMediaIntents;  // setSuggestedMediaIntents:
+    NSMutableDictionary * _predictionModes;  // setPredictionMode:forType:, by media item type
+}
+@end
+
 @implementation INUpcomingMediaManager
-    @dynamic sharedManager;  // a property of the class's own type: see registry/Intents
+
+- (void)setSuggestedMediaIntents:(NSOrderedSet<INPlayMediaIntent *> *)intents
+{
+    // The header calls these the intents to suggest. This release runs no assistant daemon
+    // to read them, so they are kept in the class's own state in the order they were given.
+    _suggestedMediaIntents = [intents copy] ?: [NSOrderedSet orderedSet];
+}
+
+- (void)setPredictionMode:(INUpcomingMediaPredictionMode)mode
+    forType:(INMediaItemType)type
+{
+    // One mode per media item type, which is what the selector says: it takes the type, so
+    // the mode asked about a type is that type's own. Nothing here predicts anything -
+    // there is no assistant daemon on this release - so the mode is kept to be read back.
+    NSNumber *key = [NSNumber numberWithInteger:(NSInteger)type];
+    if (!_predictionModes) {
+        _predictionModes = [[NSMutableDictionary alloc] init];
+    }
+    if (mode == INUpcomingMediaPredictionModeDefault) {
+        [_predictionModes removeObjectForKey:key];
+    } else {
+        [_predictionModes setObject:[NSNumber numberWithInteger:(NSInteger)mode] forKey:key];
+    }
+}
+
++ (INUpcomingMediaManager *)sharedManager
+{
+    // The header's own note is to use this singleton, so it is one object for the process.
+    static INUpcomingMediaManager *shared;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        shared = [[INUpcomingMediaManager alloc] init];
+    });
+    return shared;
+}
 
 @end
 
@@ -1022,8 +1092,13 @@
 
 @end
 
+@interface INVoiceShortcutCenter ()
+{
+    NSArray * _shortcutSuggestions;  // setShortcutSuggestions:
+}
+@end
+
 @implementation INVoiceShortcutCenter
-    @dynamic sharedCenter;  // a property of the class's own type: see registry/Intents
 
 - (instancetype)init
 {
@@ -1035,6 +1110,46 @@
     SEL selector = @selector(init);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
+- (void)getAllVoiceShortcutsWithCompletion:
+    (void (^)(NSArray<INVoiceShortcut *> * _Nullable, NSError * _Nullable))completionHandler
+{
+    // This release runs no assistant daemon and has no Shortcuts app, so no shortcut was
+    // ever added to Siri: the answer is an empty array and no error, which is what the
+    // framework reports when the app has none. A nil handler is not called.
+    if (completionHandler) {
+        completionHandler([NSArray array], nil);
+    }
+}
+
+- (void)getVoiceShortcutWithIdentifier:(NSUUID *)identifier
+    completion:(void (^)(INVoiceShortcut * _Nullable, NSError * _Nullable))completionHandler
+{
+    // The same empty store as getAllVoiceShortcutsWithCompletion:, read by the identifier
+    // this release was never given one for: nil and no error. A nil handler is not called.
+    if (completionHandler) {
+        completionHandler(nil, nil);
+    }
+}
+
+- (void)setShortcutSuggestions:(NSArray<INShortcut *> *)suggestions
+{
+    // Suggestions replace the ones before, as the header's discussion says they are shown
+    // to the user in the Shortcuts app - which this release has no app for. They are kept
+    // in the class's own state in the order they were offered.
+    _shortcutSuggestions = [suggestions copy] ?: [NSArray array];
+}
+
++ (INVoiceShortcutCenter *)sharedCenter
+{
+    // The header's own note is to use this singleton, so it is one object for the process.
+    static INVoiceShortcutCenter *shared;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        shared = [[INVoiceShortcutCenter alloc] init];
+    });
+    return shared;
 }
 
 @end

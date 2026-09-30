@@ -185,6 +185,18 @@ INIT_SOURCE = SOURCE + (
     "that harness runs")
 
 
+# The (class, selector) pairs whose body is written by hand in the generator's EXTRA_METHODS,
+# read from the generator itself rather than listed again here: a second list would be a third
+# thing to keep in step with the first, and this row's reason is only true if the two agree.
+def hand_written_bodies():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "gen_intents", os.path.join(os.path.dirname(os.path.abspath(__file__)), "gen-intents.py"))
+    generator = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(generator)
+    return set(generator.EXTRA_METHODS)
+
+
 def member_name(api):
     """The name the generator records a cause under, for a row of either shape.
 
@@ -341,8 +353,9 @@ def main():
     causes = {}
     for path in options.report:
         for name, report in json.load(open(path)).items():
-            answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set()})
-            for kind in ("properties", "dynamic", "methods"):
+            answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set(),
+                                        "class_properties": set()})
+            for kind in ("properties", "dynamic", "methods", "class_properties"):
                 answered[name][kind] |= set(report.get(kind, []))
             # The generator records why it left a member out. That cause is the reason, and it is
             # the whole of N3: an entry that says "a class of a later group" for a member whose
@@ -390,10 +403,13 @@ def main():
                 block.append(line)
         if not block:
             continue
-        answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set()})
+        answered.setdefault(name, {"properties": set(), "dynamic": set(), "methods": set(),
+                                        "class_properties": set()})
         report = generator.answer_of(block, name)
-        for kind in ("properties", "dynamic", "methods"):
-            answered[name][kind] |= set(report[kind])
+        for kind in ("properties", "dynamic", "methods", "class_properties"):
+            # .get: answer_of() reports class_properties only for a GENERATED class, and the
+            # hand-written ones read here go through the same function without that key.
+            answered[name][kind] |= set(report.get(kind, ()))
         for method in list(answered[name]["methods"]):
             for spelling in generator_property_names(method):
                 answered[name]["properties"].add(spelling)
@@ -404,6 +420,7 @@ def main():
     # member's own accessor, and an entry that claims one the file does not have is exactly the
     # silent fake the rules forbid. This is the check that refuses to write it.
     hand_written = {name for name in HAND_WRITTEN}
+    HAND_WRITTEN_BODIES = hand_written_bodies()
 
     entries, missing = [], collections.Counter()
     for row in load_corpus(options.corpus, options.framework):
@@ -514,7 +531,12 @@ def main():
                 if spelled in report["properties"]:
                     entries.append(implemented(api, "property", intro, owner, options.facts,
                                                where="%s's own @implementation synthesises it"
-                                                     % owner if owner in hand_written else None))
+                                                     % owner if owner in hand_written else None,
+                                               hand=(owner, spelled) in HAND_WRITTEN_BODIES))
+                    continue
+                if spelled in report["class_properties"]:
+                    entries.append(implemented(api, "property", intro, owner, options.facts,
+                                               hand=True))
                     continue
                 if api.split(".")[1] in report["dynamic"]:
                     entries.append(absent(api, "property", intro,
@@ -535,7 +557,8 @@ def main():
                     entries.append(implemented(api, "method", intro, owner, options.facts,
                                                where="%s's own @implementation answers it"
                                                      % owner if owner in hand_written else None,
-                                               source=INIT_SOURCE if marked_init else None))
+                                               source=INIT_SOURCE if marked_init else None,
+                                               hand=(owner, member_name(api)) in HAND_WRITTEN_BODIES))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:
                     # The fourth of the four lookups, and the busiest branch in the file: it
@@ -551,8 +574,17 @@ def main():
                                                      "header does declare"), options.facts))
                     missing["init"] += 1
                     continue
-                entries.append(absent(api, "method", intro,
-                                      reason_for(causes, vocabulary, api, options.reason), options.facts))
+                # A method of a class this delivery carries, that no header declares and that the
+                # generator therefore never mentioned: not_declared, not the group's blanket reason.
+                # Without the fallback below this branch is the one place a carried class's member
+                # still read "a class of a later group of this same delivery", which is how
+                # +[INIntentResolutionResult unsupportedWithReason:] - declared by NEITHER 16.4 nor
+                # 26.2 - and the five post-16.4 -[INMessage initWithIdentifier:...] rows did.
+                absent_reason = reason_for(causes, vocabulary, api, None)
+                if absent_reason is None:
+                    absent_reason = vocabulary.get("not_declared")
+                entries.append(absent(api, "method", intro, absent_reason or options.reason,
+                                      options.facts))
                 missing["skipped"] += 1
                 continue
         if kind == "class":
@@ -616,11 +648,19 @@ def main():
     return 0
 
 
-def implemented(api, kind, introduced, owner, facts, where=None, source=None):
+def implemented(api, kind, introduced, owner, facts, where=None, source=None, hand=None):
+    """An implemented row, and WHICH body answers it.
+
+    A body the generator wrote itself and a body written by hand in EXTRA_METHODS are both in the
+    class's own generated implementation file, so saying "the generated implementation answers" is
+    true of both and useless for telling them apart. A reader deciding whether a body here is a
+    derivation of the header or a decision needs to know which, so the hand-written ones say so.
+    """
     return {"api": api, "kind": kind, "introduced": introduced, "minimum": "6.0",
             "status": "implemented", "facts": facts,
             "reason": ("a member of %s, which %s" % (owner, where or
-                       "the class's own generated implementation answers")),
+                       ("answers it with a body written by hand in the generator's EXTRA_METHODS"
+                        if hand else "the class's own generated implementation answers"))),
             "source": source or SOURCE}
 
 

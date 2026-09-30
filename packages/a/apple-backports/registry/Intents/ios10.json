@@ -2013,7 +2013,7 @@
       "kind": "method",
       "introduced": "13.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -2042,7 +2042,7 @@
       "kind": "method",
       "introduced": "13.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3129,7 +3129,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3208,7 +3208,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3237,7 +3237,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3316,7 +3316,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3335,7 +3335,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3344,7 +3344,7 @@
       "kind": "method",
       "introduced": "17.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3353,7 +3353,7 @@
       "kind": "method",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3362,7 +3362,7 @@
       "kind": "method",
       "introduced": "18.0",
       "status": "absent",
-      "reason": "a class of a later group of this same delivery",
+      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3511,7 +3511,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3870,7 +3870,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -4587,7 +4587,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
+      "reason": "the header marks the initialiser unavailable, so a port cannot call it",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -5615,10 +5615,11 @@
       "api": "INIntent.donationMetadata",
       "kind": "property",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "a class of a later group of this same delivery",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INIntent, which INIntent's own @implementation synthesises it",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INIntent.identifier",

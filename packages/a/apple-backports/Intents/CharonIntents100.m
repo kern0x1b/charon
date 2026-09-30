@@ -127,6 +127,7 @@
     NSString *_suggestedInvocationPhrase;
     INShortcutAvailabilityOptions _shortcutAvailability;
     NSMutableDictionary *_imagesByParameter;
+    INIntentDonationMetadata *_donationMetadata;
 }
 
 // The phrase the system offers to speak for this intent, which the system reads and the
@@ -152,11 +153,21 @@
     _shortcutAvailability = shortcutAvailability;
 }
 
-// donationMetadata is an INIntentDonationMetadata, a class of iOS 15 that is in a later group
-// of this delivery, so the property is dynamic below: the header keeps its availability mark, a
-// port on this release cannot call it, and respondsToSelector: answers no rather than a process
-// dying on a setter this class does not have.
-@dynamic donationMetadata;
+// donationMetadata is the metadata the system reads when the intent is donated. The class it names,
+// INIntentDonationMetadata, arrived with iOS 15 and IS carried by this delivery - IN16_0.m defines
+// it - so the property is answered here rather than left dynamic. It was @dynamic with the reason
+// "a class of a later group of this same delivery", which was false: the class is in the 16.0
+// group of this same delivery, and a getter that answers nil and a setter that keeps what it is
+// given are what the header's own copy/nullable wording says this is.
+- (INIntentDonationMetadata *)donationMetadata
+{
+    return _donationMetadata;
+}
+
+- (void)setDonationMetadata:(INIntentDonationMetadata *)donationMetadata
+{
+    _donationMetadata = [donationMetadata copy];
+}
 
 - (instancetype)init
 {
