@@ -141,6 +141,21 @@ static inline double CharonMPSLoad(const void *bytes, MPSDataType type, size_t i
 
 static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, double value)
 {
+#if defined(CHARON_PLANT)
+    // THE RED CONTROL. Compiled only into the harness's planted builds, never into the library: this
+    // perturbs what a KERNEL writes, on its way out through the shared store, so the differential is
+    // shown a wrong kernel rather than a wrong print. That distinction matters - a plant in the case
+    // file only proves the comparison can read two numbers, while a plant here proves it notices when
+    // the port computes the wrong thing, and it reaches every kernel in the family that stores through
+    // this function, which is all of them except the two that hand a finished buffer to -writeBytes:.
+    // Those two are planted at the other end, in CharonMPSImageWriteRegion.
+#if CHARON_PLANT == 1
+    value = value + 1.0;                // every element of every case, off by one
+#elif CHARON_PLANT == 2
+    if (index == 0)
+        value = value + 1.0;            // the first element of each case, and the rest exactly right
+#endif
+#endif
     switch (type) {
     case MPSDataTypeFloat32: {
         float narrowed = (float)value;

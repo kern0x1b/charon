@@ -125,3 +125,88 @@ image kernels of this family (`MPSImageArithmetic` and the four operations, the 
 reductions, the statistics, the area and integral kernels, transpose, copy to matrix, median, box and the
 four histograms), and the image's `writeBytes:...bytesPerColumn:bytesPerImage:` form. None of them is
 carried, and none of them is described here as if it were.
+
+## This slice: the five thresholds and the arithmetic kernel, and what is measured
+
+`MPSImageArithmetic` and its four operations, `MPSImageThresholdToZero`, `MPSImageThresholdToZeroInverse`,
+`MPSImageThresholdTruncate`, `MPSImageThresholdBinary` and `MPSImageThresholdBinaryInverse` - ten rows,
+each `implemented` with `minimum: 6.0`, because every one reaches `MTLTextureDescriptor` and `MTLDevice`
+through `MPSImage13.m` and the 4.3 gate refuses an object naming a class a band below Metal does not carry.
+
+### The host cannot be the oracle on this machine, and that is measured
+
+The release's own `MPSImageThresholdToZero` is the class that would answer - `dladdr` on its encode
+method resolves it to
+`/System/Library/Frameworks/MetalPerformanceShaders.framework/…/Frameworks/MPSImage.framework/…` - and
+then the process dies:
+
+    *** Terminating app due to uncaught exception 'NSInvalidArgumentException', reason:
+      '-[AGXG16XFamilyCommandBuffer_mtlnext computeCommandEncoderWithDispatchType:]': unrecognized selector
+
+This host's AGX family does not implement the encoder selector the framework calls, so the release's
+kernels answer **nothing** here. Every row's `reason` and `effect` says so:
+*host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from
+the header formula and checked against a CPU reference.* The port's own kernels do not touch an AGX
+command buffer - the encode walks the image on the CPU - which is why the port side produces nine cases
+where the host side produces none.
+
+### What the measurement is
+
+`tests/backports/host/mpsimage/run.sh` builds the slice from the current tree into a fresh directory and
+runs nine cases over a twelve-value source `{-1.5, -0.25, 0, 0.25, 0.5, 0.5, 0.75, 1.0, 1.5, 2.0, -0.75, 0.1}`
+and a second image, with a threshold of 0.5 and a maximum of 1.0. `mps-reference.h` computes each
+expected answer in plain C from the header's own formula - `MPSImageThreshold.h:194`, `:246`, `:141`,
+`:21`, `:81` and `MPSImageMath.h` - **independently of the port**, and the case compares and exits
+non-zero on any mismatch beyond one whole float32 ulp of the answer, which is the bound these kernels
+need: they accumulate in double and store float32, so a narrower bound fails every case and a wider one
+hides a real defect.
+
+    COMPARED 108  MISMATCHES 0
+    RESULT case_lines=9 AGX_assertion=0
+
+    port  threshold-to-zero         12 0 0 0 0 0 0 0 0.75 1 1.5 2 0 0
+    ref   threshold-to-zero         12 0 0 0 0 0 0 0 0.75 1 1.5 2 0 0
+    port  threshold-binary          12 0 0 0 0 0 0 1 1 1 1 0 0
+    ref   threshold-binary          12 0 0 0 0 0 0 1 1 1 1 0 0
+    port  MPSImageAdd               12 -1 0.25 0.5 0.75 1.5 2.5 4.75 1.5 1.75 2.5 0.75 2.0999999
+    port  MPSImageSubtract          12 -2 -0.75 -0.5 -0.25 -0.5 -1.5 -3.25 0.5 1.25 1.5 -2.25 -1.89999998
+    port  MPSImageMultiply          12 -0.75 -0.125 0 0.125 0.5 1 3 0.5 0.375 1 -1.125 0.200000003
+    port  MPSImageDivide            12 -3 -0.5 0 0.5 0.5 0.25 0.1875 2 6 4 -0.5 0.0500000007
+
+The largest difference from the reference is **1e-07**, one float32 ulp at that magnitude.
+
+### Two defects the reference and the header found, and what each was
+
+**A strict comparison.** `MPSImageThreshold.h:21` and `:81` write `sourcePixelValue > thresholdValue`,
+strictly greater. The port compared `>=`, so a source sitting **exactly on** the threshold took the
+maximum branch. The reference caught it at elements [4] and [5] of the twelve-value source, which is where
+the two 0.5 values are, on both kernels and both times:
+
+    COMPARED 108  MISMATCHES 4
+      MISMATCH threshold-binary [4] reference 0 port 1, one ulp 1.4e-45
+      MISMATCH threshold-binary-inverse [4] reference 1 port 0, one ulp 1.19e-07
+
+**A transform that was never in the rule.** `MPSImageThreshold.h:18-19`, and the same at `:78-79`,
+`:138-139`, `:198-199` and `:258-259`: *"If the input image is not a single channel image, convert the
+input image to a single channel luminance image using the linearGrayColorTransform and then apply the
+threshold."* That is **one scalar luminance per pixel** - 0.299r + 0.587g + 0.114b at the default -
+computed from the three channels and then thresholded **once**. The port multiplied each channel by its
+own coefficient and thresholded each separately, which is three comparisons where the header does one and
+three writes where the header writes one; and on a **one** channel image it multiplied the value by
+0.299, which is where a case's `0.598` came from against a source of `2.0`. The five thresholds now
+answer a one channel image, thresholded on its own value, and **refuse a multi channel image by name**,
+quoting the rule they are not answering, rather than answering per channel.
+
+### Owed, and not claimed
+
+- **The multi channel luminance.** All five thresholds. The header states the rule and the default
+  coefficients; the port refuses the image instead of implementing it. A caller with an RGB or RGBA
+  image gets a refusal naming the feature channel count, not an answer.
+- **The arithmetic clamp**, `minimumValue` and `maximumValue` on `MPSImageArithmetic`. The header
+  declares both; no case sets either, and the port's `CharonMPSCombine` applies them, but nothing here has
+  measured that it does so where the release would.
+- **The strides**, `primaryStrideInPixels` and `secondaryStrideInPixels`. Declared by the header, carried
+  by the port, and **no case exercises them**: a kernel given a stride and a kernel given none are the
+  same code path in every case run here.
+- **`MPSImageDivide` at a zero secondary divisor.** The port answers 0; no case divides by zero, and
+  what the release answers there is not established by anything on this machine.

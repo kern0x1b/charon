@@ -1,0 +1,346 @@
+// image-cases.m - the MPSImage arithmetic and threshold kernels, against the release's own answers.
+//
+// Compiled twice from this one file. The system build links the host's MetalPerformanceShaders and runs
+// the release's own kernels. The port build is marked -DCHARON_PORT_BUILD, is renamed through
+// `rename.h`, and links this package's objects and the Metal band's, so the MPSImage it builds and the
+// answer it reads back are the port's own - not the release's class reached by accident, which is the
+// failure the CNN harness had and now refuses.
+//
+// The images are filled and read through `image.texture` and its `replaceRegion:`/`getBytes:`, which
+// both SDKs declare, rather than through the image-path `readBytes:`/`writeBytes:` the port's MPSImage
+// implements. The two probes that decided it are in facts/MetalPerformanceShaders/Image.md; the short
+// of it is that the host SDK declares neither image-path selector and the runtime answers neither, while
+// the kernels themselves are reached through selectors it does answer.
+//
+// The two builds each print, per case, `case <name> <count> <values…>` and a line naming the classes
+// each build resolved. The comparison is in run.sh.
+//
+// Three modes, and the third two exist to show the comparison can fail:
+//   normal        the port's own arithmetic
+//   all-wrong     every value the port prints is replaced by a constant, so every element of every
+//                 case differs
+//   one-wrong     every value but the first of the first case is right, so the grader has to name one
+//                 wrong element rather than a case
+
+#import <Foundation/Foundation.h>
+#import <Metal/Metal.h>
+#import <MetalPerformanceShaders/MetalPerformanceShaders.h>
+// The reference this case is checked against, computed in plain C from the release's own
+// formulas and NOT from this port. Why not the host: MPSImageThreshold.h and the host cannot
+// answer on this machine, and the header of this file says so at length.
+#include "mps-reference.h"
+// class_getImageName, which the class line below prints: the sibling harness imports this for the
+// same reason (cnn-cases.m:6), and without it the call does not compile at all.
+#import <objc/runtime.h>
+
+// Neither image-path encode is declared by the SDK this harness compiles against, and the two sides
+// of the family do not use the same one - measured on this host, 2026-09-30:
+//
+//   MPSImageThresholdToZero  class present  initWithDevice:yes  threshold-init:yes  image-encode:yes
+//   MPSImageArithmetic       class present  initWithDevice:yes  threshold-init:no  image-encode:no
+//   MPSImageAdd              class present  initWithDevice:yes  threshold-init:no  image-encode:no
+//   the three-image encode: the host answers it
+//
+// so the five thresholds are called through the first protocol and the four operations through the
+// second, and both selectors are answered by the release and by this port.
+@protocol CharonImageUnaryEncode
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                 sourceImage:(MPSImage *)sourceImage
+            destinationImage:(MPSImage *)destinationImage;
+@end
+
+@protocol CharonImageBinaryEncode
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                  primaryImage:(MPSImage *)primaryImage
+                secondaryImage:(MPSImage *)secondaryImage
+               destinationImage:(MPSImage *)destinationImage;
+@end
+
+static id<MTLDevice> gDevice = nil;
+
+// One case: a source image of the given values, a destination, and the kernel's answer written into it
+// and read back out. The read is through the destination's own texture, which on the port side is the
+// port's MPSImage and on the system side the release's.
+static void runUnary(const char *name, id<CharonImageUnaryEncode> kernel, MPSImage *destination,
+                     MPSImage *source, NSUInteger rows, NSUInteger cols, NSUInteger values,
+                     const float *input, CharonRefThreshold which, double threshold, double maximum)
+{
+    @autoreleasepool {
+        float out[256] = {0};
+        // the source, written through its own writeBytes: on both sides
+        for (NSUInteger y = 0; y < rows; y++) {
+            for (NSUInteger x = 0; x < cols; x++) {
+                out[y * cols + x] = input[y * cols + x];
+            }
+        }
+        NSUInteger perRow = cols * sizeof(float);
+        [[source texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0
+                             withBytes:out bytesPerRow:perRow];
+        memset(out, 0, sizeof(out));
+        [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                         sourceImage:source
+                    destinationImage:destination];
+        // the answer, read through the destination's own texture
+        float answer[256] = {0};
+        [[destination texture] getBytes:answer bytesPerRow:perRow
+                              fromRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0];
+        // The red control is not here. It used to be - it perturbed what this file PRINTS - and that was
+        // the weaker control of the two: it proved the comparison can read two numbers, not that it
+        // notices a wrong kernel, and it could not reach the two kernels that print their own lines.
+        // It now perturbs what a kernel writes, in the shared store layer (CharonMPSStore and
+        // CharonMPSImageWriteRegion), so every case in the family is under it. See CharonMPS.h.
+        printf("case %s %lu", name, (unsigned long)values);
+        for (NSUInteger i = 0; i < values; i++)
+            printf(" %.9g", (double)answer[i]);
+        printf("\n");
+        CharonCompareUnary(name, input, values, answer, which, threshold, maximum);
+    }
+}
+
+// The same, for the four operations: two images in, one out, through the three-image encode.
+static void runBinary(const char *name, id<CharonImageBinaryEncode> kernel, MPSImage *destination,
+                      MPSImage *primary, MPSImage *secondary, NSUInteger rows, NSUInteger cols,
+                      NSUInteger values, const float *input, const float *other, CharonRefOperation op)
+{
+    @autoreleasepool {
+        NSUInteger perRow = cols * sizeof(float);
+        float out[256] = {0};
+        for (NSUInteger i = 0; i < values; i++)
+            out[i] = input[i];
+        [[primary texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0
+                              withBytes:out bytesPerRow:perRow];
+        for (NSUInteger i = 0; i < values; i++)
+            out[i] = other[i];
+        [[secondary texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0
+                                 withBytes:out bytesPerRow:perRow];
+        memset(out, 0, sizeof(out));
+        [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                        primaryImage:primary
+                      secondaryImage:secondary
+                     destinationImage:destination];
+        float answer[256] = {0};
+        [[destination texture] getBytes:answer bytesPerRow:perRow
+                              fromRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0];
+        printf("case %s %lu", name, (unsigned long)values);
+        for (NSUInteger i = 0; i < values; i++)
+            printf(" %.9g", (double)answer[i]);
+        printf("\n");
+        CharonCompareBinary(name, input, other, values, answer, op);
+    }
+}
+
+int main(int argc, const char **argv)
+{
+    @autoreleasepool {
+        gDevice = MTLCreateSystemDefaultDevice();
+        if (!gDevice) { printf("no metal device\n"); return 2; }
+        printf("device: %s\n", [[gDevice name] UTF8String]);
+
+        // The two builds each say which MPSImage and which kernels they resolved, so a case that ran
+        // against the wrong class is visible in the output rather than in a number.
+        // Through the class EXPRESSION, not through NSClassFromString of a literal: the rename header
+        // rewrites a class name in an expression and does not rewrite the contents of a string literal, so
+        // a literal lookup on the port build asks the runtime for the HOST's class by name. Measured,
+        // before this change, on the port build:
+        //   -[MPSImageThresholdToZero charon_mps_hasThreshold]: unrecognized selector sent to instance
+        Class listed[] = {MPSImage.class, MPSImageDescriptor.class,
+                          MPSImageThresholdToZero.class, MPSImageThresholdToZeroInverse.class,
+                          MPSImageThresholdBinary.class, MPSImageThresholdBinaryInverse.class,
+                          MPSImageThresholdTruncate.class, MPSImageArithmetic.class,
+                          MPSImageAdd.class, MPSImageSubtract.class, MPSImageMultiply.class,
+                          MPSImageDivide.class};
+        const char *names[] = {"MPSImage", "MPSImageDescriptor", "MPSImageThresholdToZero",
+                               "MPSImageThresholdToZeroInverse", "MPSImageThresholdBinary",
+                               "MPSImageThresholdBinaryInverse", "MPSImageThresholdTruncate",
+                               "MPSImageArithmetic", "MPSImageAdd", "MPSImageSubtract",
+                               "MPSImageMultiply", "MPSImageDivide"};
+        for (unsigned i = 0; i < sizeof(listed) / sizeof(listed[0]); i++) {
+            Class c = listed[i];
+            // The IMAGE NAME, as the sibling harness prints it and as facts/MetalPerformanceShaders/Image.md
+            // quotes. A name is not enough: the rename header rewrites a class name in an EXPRESSION and not
+            // the contents of a string, so `names[i]` is the same twelve lines on both builds and cannot
+            // say whether a case ran against the port's class or the release's. The image name can.
+            const char *image = c ? (class_getImageName(c) ?: "(none)") : "(absent)";
+            printf("class %-32s %-38s %s%s\n", names[i], image, c ? "present" : "ABSENT",
+                   (c && [c instancesRespondToSelector:@selector(initWithDevice:)]) ? ", answers initWithDevice:" : "");
+        }
+
+        // The four arithmetic subclasses, built the way a caller builds them - through the class
+        // expression, so the port build builds the port's four - and each is asked whether it answers
+        // -initWithDevice: before it is called, because a compile that succeeds is not a call that answers.
+        id arithmetic[4] = {nil, nil, nil, nil};
+        Class arith[4] = {MPSImageAdd.class, MPSImageSubtract.class,
+                          MPSImageMultiply.class, MPSImageDivide.class};
+        const char *arithNames[4] = {"MPSImageAdd", "MPSImageSubtract", "MPSImageMultiply", "MPSImageDivide"};
+        for (int i = 0; i < 4; i++) {
+            BOOL answers = [arith[i] instancesRespondToSelector:@selector(initWithDevice:)];
+            arithmetic[i] = answers ? [[arith[i] alloc] initWithDevice:gDevice] : nil;
+            printf("built %-18s responds %s, %s\n", arithNames[i], answers ? "yes" : "no",
+                   arithmetic[i] ? "an object" : "NIL");
+        }
+
+        // The source every case reads: 4x3, with a value below, at and above each threshold.
+        NSUInteger rows = 3, cols = 4, values = 12;
+        const float input[12] = {-1.5f, -0.25f, 0.0f, 0.25f, 0.5f, 0.5f, 0.75f, 1.0f, 1.5f, 2.0f, -0.75f, 0.1f};
+        const float second[12] = {0.5f, 0.5f, 0.5f, 0.5f, 1.0f, 2.0f, 4.0f, 0.5f, 0.25f, 0.5f, 1.5f, 2.0f};
+
+        MPSImageDescriptor *descriptor =
+            [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                                            width:cols height:rows featureChannels:1];
+        MPSImage *source = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+        MPSImage *left = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+        MPSImage *right = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+
+        // the five thresholds, each at 0.5, which the source straddles
+        Class thresholds[5] = {MPSImageThresholdToZero.class, MPSImageThresholdToZeroInverse.class,
+                               MPSImageThresholdBinary.class, MPSImageThresholdBinaryInverse.class,
+                               MPSImageThresholdTruncate.class};
+        const char *thresholdNames[5] = {"threshold-to-zero", "threshold-to-zero-inverse",
+                                         "threshold-binary", "threshold-binary-inverse",
+                                         "threshold-truncate"};
+        for (int i = 0; i < 5; i++) {
+            if (!thresholds[i]) { printf("case %s 0\n", thresholdNames[i]); continue; }
+            id kernel = [[thresholds[i] alloc] initWithDevice:gDevice
+                                                 thresholdValue:0.5f
+                                        linearGrayColorTransform:NULL];
+            static const CharonRefThreshold kinds[5] = {CharonRefToZero, CharonRefToZeroInverse,
+                                                        CharonRefBinary, CharonRefBinaryInverse,
+                                                        CharonRefTruncate};
+            runUnary(thresholdNames[i], (id<CharonImageUnaryEncode>)kernel, left, source,
+                     rows, cols, values, input, kinds[i], 0.5, 1.0);
+        }
+
+        // the four arithmetic operations over the two images, at the header's default scales
+        for (int i = 0; i < 4; i++) {
+            if (!arithmetic[i]) continue;
+            static const CharonRefOperation ops[4] = {CharonRefAdd, CharonRefSubtract,
+                                                        CharonRefMultiply, CharonRefDivide};
+            runBinary(arithNames[i], (id<CharonImageBinaryEncode>)arithmetic[i], right, source, left,
+                      rows, cols, values, input, second, ops[i]);
+        }
+
+        // MPSImageTranspose, over a 3x4 destination from the same 4x3 source, so the permutation is
+        // visible: a destination of width x height is height x wide, and destination(row, column) takes
+        // source(column, row). The destination is a different shape from the source on purpose.
+        {
+            NSUInteger dstCols = rows, dstRows = cols;            // 3 wide, 4 tall
+            MPSImageDescriptor *wide =
+                [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                                                width:dstCols height:dstRows featureChannels:1];
+            MPSImage *narrow = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:descriptor];
+            MPSImage *transposed = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:wide];
+            id kernel = [[MPSImageTranspose alloc] initWithDevice:gDevice];
+            printf("built %-24s %s\n", "MPSImageTranspose",
+                   kernel ? "an object" : "NIL (absent)");
+            if (kernel) {
+                float fed[12];
+                for (NSUInteger i = 0; i < 12; i++)
+                    fed[i] = input[i];
+                // the source is filled through its own texture, as the other cases do, so the case
+                // does not depend on which -writeBytes: form the SDK declares
+                [[narrow texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0
+                                        withBytes:fed bytesPerRow:cols * sizeof(float)];
+                [(id<CharonImageUnaryEncode>)kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                                              sourceImage:narrow
+                                                         destinationImage:transposed];
+                float got[12] = {0};
+                [[transposed texture] getBytes:got bytesPerRow:dstCols * sizeof(float)
+                                       fromRegion:MTLRegionMake2D(0, 0, dstCols, dstRows) mipmapLevel:0];
+                printf("case transpose %lu", (unsigned long)(dstCols * dstRows));
+                for (NSUInteger i = 0; i < dstCols * dstRows; i++)
+                    printf(" %.9g", (double)got[i]);
+                printf("\n");
+                CharonReferenceTranspose("transpose", fed, cols, rows, got, dstCols, dstRows);
+            }
+        }
+
+        // MPSImageCopyToMatrix, under both of the header's two data layouts, into a matrix whose rows are
+        // longer than one image and whose origin is not [0, 0], so the placement is checked as well as
+        // the order. The image has TWO feature channels on purpose: MPSImage.h:300-303's two orders are
+        // the same order with one channel, so a one-channel image cannot tell them apart.
+        {
+            NSUInteger channels = 2, images = 2;
+            NSUInteger perImage = cols * rows * channels;
+            NSUInteger originRow = 1, originColumn = 3;
+            NSUInteger rowElements = perImage + 5;         // longer than the header's minimum
+            NSUInteger matrixRows = originRow + images;    // one row per image, from the origin's row
+            NSUInteger rowBytes = rowElements * sizeof(float);
+            // two matrices, so the kernel's destinationMatrixBatchIndex of 1 has somewhere to land and the
+            // first one must come back untouched, which is what the case checks
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:matrixRows * rowBytes * 2
+                                                      options:MTLResourceStorageModeShared];
+            if (!buffer) { printf("case image-copy-to-matrix 0 (no buffer)\n"); }
+            else {
+                memset([buffer contents], 0, matrixRows * rowBytes * 2);
+                MPSMatrixDescriptor *md =
+                    [MPSMatrixDescriptor matrixDescriptorWithRows:matrixRows columns:rowElements matrices:2
+                                                         rowBytes:rowBytes matrixBytes:matrixRows * rowBytes
+                                                         dataType:MPSDataTypeFloat32];
+                MPSMatrix *matrix = [[MPSMatrix alloc] initWithBuffer:buffer descriptor:md];
+                printf("built %-24s %s\n", "MPSImageCopyToMatrix",
+                       MPSImageCopyToMatrix.class ? "an object" : "NIL (absent)");
+                {
+                    static const MPSDataLayout layouts[2] = {MPSDataLayoutFeatureChannelsxHeightxWidth,
+                                                            MPSDataLayoutHeightxWidthxFeatureChannels};
+                    static const char *layoutNames[2] = {"featureChannelsxHeightxWidth",
+                                                         "heightxWidthxFeatureChannels"};
+                    float fed[perImage * images];
+                    for (NSUInteger i = 0; i < perImage * images; i++)
+                        fed[i] = input[i % values];
+                    // fill both slices through the image's own texture, two channels per pixel
+                    MPSImageDescriptor *two =
+                        [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                                                        width:cols height:rows
+                                                              featureChannels:channels];
+                    two.numberOfImages = images;
+                    MPSImage *batch = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:two];
+                    for (NSUInteger slice = 0; slice < images; slice++) {
+                        float pixels[cols * rows * channels];
+                        for (NSUInteger i = 0; i < cols * rows * channels; i++)
+                            pixels[i] = fed[slice * perImage + i];
+                        [[batch texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:slice
+                                            withBytes:pixels bytesPerRow:cols * channels * sizeof(float)];
+                    }
+                    for (int l = 0; l < 2; l++) {
+                        memset([buffer contents], 0, matrixRows * rowBytes * 2);
+                        MPSImageCopyToMatrix *kernel =
+                            [[MPSImageCopyToMatrix alloc] initWithDevice:gDevice dataLayout:layouts[l]];
+                        if (!kernel) { printf("case %s 0\n", layoutNames[l]); continue; }
+                        kernel.destinationMatrixOrigin = MTLOriginMake(originRow, originColumn, 0);
+                        kernel.destinationMatrixBatchIndex = 1;   // the second matrix of the batch
+                        [kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                          sourceImage:batch
+                                    destinationMatrix:matrix];
+                        // the whole matrix the batch index named, from its own row 0, because the
+                        // reference indexes it by the kernel's origin row
+                        float got[matrixRows * rowElements];
+                        memcpy(got, (char *)[buffer contents] + matrix.matrixBytes * 1,
+                               matrixRows * rowElements * sizeof(float));
+                        // MPSImageCopy.h:19-24 says the image data is stored in a row of a matrix, so the
+                        // first matrix of the batch is not one of them and must still be the zero it was.
+                        NSUInteger untouched = 0;
+                        float *first = (float *)[buffer contents];
+                        for (NSUInteger i = 0; i < matrixRows * rowElements; i++)
+                            if (first[i] != 0.0f) untouched++;
+                        gCompared++;
+                        if (untouched) {
+                            gMismatches++;
+                            printf("\n  MISMATCH %s: %lu elements of the matrix the batch index did not name"
+                                   " were written\n", layoutNames[l], (unsigned long)untouched);
+                        }
+                        printf("case image-copy-to-matrix layout %s %lu", layoutNames[l],
+                               (unsigned long)(perImage * images));
+                        for (NSUInteger i = 0; i < perImage * images; i++)
+                            printf(" %.9g", (double)got[originColumn + i]);
+                        printf("\n");
+                        CharonReferenceImageCopyToMatrix(layoutNames[l], fed, cols, rows, channels, images,
+                                                         layouts[l], originRow, originColumn,
+                                                         got, rowElements);
+                    }
+                }
+            }
+        }
+    }
+    printf("COMPARED %lu  MISMATCHES %lu\n", (unsigned long)gCompared, (unsigned long)gMismatches);
+    return gMismatches ? 1 : 0;
+}

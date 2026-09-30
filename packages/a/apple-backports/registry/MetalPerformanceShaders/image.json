@@ -20,6 +20,138 @@
       "effect": "the image is a real texture on the port's carried Metal classes, made through MTLTextureDescriptor and read and written through the texture's own getBytes: and replaceRegion:, which is the shape the release takes. Measured by tests/backports/host/mpscnn/run.sh on macOS 27.0 (build 26A428), which builds each of its six cases' source and destination through this class on the port's side and through the release's on its own: the four pooling cases and fresh-image are bit-identical and batch-normalization differs on one of nine elements, 0.00118 of the case's 1e-4 tolerance, which is the accumulation order and not a different answer. Two mutants say the comparison can fail: the average's divisor one short takes `differing cases: 0` to 3, and a fresh image filled with 0x7F7F7F7F instead of asked for as zeros takes it to 1. Before this class existed the port side's MPSImage resolved to the release's own and the five cases then compared the release with itself; tests/backports/host/mpscnn/cnn-cases.m now refuses a case whose classes the port does not have, and the run is red while that is so.",
       "facts": "facts/MetalPerformanceShaders/Image.md",
       "source": "tests/backports/host/mpscnn/run.sh"
+    },
+    {
+      "api": "MPSImageArithmetic",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMath.h",
+      "effect": "the binary arithmetic over two images: primary*primaryScale OP secondary*secondaryScale + bias, with the clamp applied to the whole of it. Nine cases over a twelve-value source and a second image, compared against the header's four operations in tests/backports/host/mpsimage/mps-reference.h: COMPARED 108 MISMATCHES 0, the largest difference one float32 ulp of the answer. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: minimumValue and maximumValue, and primaryStrideInPixels and secondaryStrideInPixels, are not implemented and no case exercises them.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageAdd",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMath.h",
+      "effect": "MPSImageArithmetic with add fixed. Twelve elements of a 4x3 Float32 image against the reference, max abs diff 1e-07 - one float32 ulp at that magnitude, the kernel accumulating in double and storing float32. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageSubtract",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMath.h",
+      "effect": "MPSImageArithmetic with subtract fixed. Twelve elements against the reference, max abs diff 2e-08. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageMultiply",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMath.h",
+      "effect": "MPSImageArithmetic with multiply fixed. Twelve elements against the reference, max abs diff 3e-09. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageDivide",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageMath.h",
+      "effect": "MPSImageArithmetic with divide fixed, and a zero secondary divisor answered 0 rather than infinity, which no case exercises. Twelve elements against the reference, max abs diff 7e-10. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageThresholdToZero",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageThreshold.h:194",
+      "effect": "dst = src > threshold ? src : 0, per channel, on a ONE channel image. Twelve elements against the reference: 0 0 0 0 0 0 0 0.75 1 1.5 2 0 0, with the two 0.5 elements taking the zero branch because the header's comparison is strictly greater. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: a multi channel image needs one scalar luminance per pixel, 0.299r + 0.587g + 0.114b at the default, and this port REFUSES it by name rather than answering per channel.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageThresholdToZeroInverse",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageThreshold.h:246",
+      "effect": "dst = src > threshold ? 0 : src, per channel, one channel image. Twelve elements against the reference. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: the multi channel luminance, as above - refused by name.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageThresholdTruncate",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageThreshold.h:141",
+      "effect": "dst = src > threshold ? threshold : src, per channel, one channel image. Twelve elements against the reference: the two 0.5 elements become exactly the threshold. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: the multi channel luminance, as above - refused by name.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageThresholdBinary",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageThreshold.h:21",
+      "effect": "dst = src > threshold ? maximum : 0, per channel, one channel image. Twelve elements against the reference, 0 0 0 0 0 0 0 1 1 1 1 0 0. The comparison is strictly greater, as :21 writes, so a source exactly AT the threshold takes the zero branch; an earlier `>=` here was a defect the reference found, at elements [4] and [5]. maximum is the caller's and the case names 1.0. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: the multi channel luminance, as above - refused by name.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageThresholdBinaryInverse",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageThreshold.h:81",
+      "effect": "dst = src > threshold ? 0 : maximum, per channel, one channel image, strictly greater as :81 writes. Twelve elements against the reference, 1 1 1 1 1 1 0 0 0 0 1 1. host MPS cannot run here: AGX family lacks computeCommandEncoderWithDispatchType:; behaviour taken from the header formula and checked against a CPU reference. OWED: the multi channel luminance, as above - refused by name.",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageTranspose",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageTranspose.h:16, :18 and :21; MPSImageKernel.h:141-144. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'; behaviour taken from the header formula and checked against a CPU reference",
+      "effect": "destination(row, column) takes source(column, row), over the intersection of the clip rectangle with the destination, with MPSRectNoClip meaning the whole destination - the header's own words, cited on the row's reason. The value moves unchanged, so there is no arithmetic to differ by an ulp and the comparison is exact: 12 elements of a 3-wide 4-tall destination fed from a 4-wide 3-tall source, COMPARED 120 MISMATCHES 0 over the whole slice, the transpose's twelve among them equal. A destination larger than the source can feed is refused by name rather than clipped, and the source is read at the transposed index, so no pixel outside the source is read. OWED: -copyWithTexture:, which the header also declares and this does not implement - a copy into an image of the texture's shape with no permutation. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'; behaviour taken from the header formula and checked against a CPU reference",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageCopyToMatrix",
+      "kind": "class",
+      "introduced": "11.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageCopy.h:19-24 (the copy into a matrix row), :23 and :89 (the origin's x is the row and its y the column), :26-29 (the row must hold width * height * featureChannels), :37 (the default layout), :70 and :91 (the data types must match); MPSImage.h:300-303 (the two orders). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'; behaviour taken from the header's own wording and checked against a CPU reference",
+      "effect": "the image data is stored in a row of the matrix, and dataLayout decides the order inside that row: MPSDataLayoutFeatureChannelsxHeightxWidth, the default, is channel * width * height + y * width + x and MPSDataLayoutHeightxWidthxFeatureChannels is (y * width + x) * channels + channel - the two are the same order with one feature channel, which is why the case's image has two. A batch of images in one MPSImage goes to one row each, from the origin's row; destinationMatrixBatchIndex names which matrix of a batch of matrices, and the case writes into the second and checks the first came back untouched. A destination whose z is not 0, a layout that is neither of the two the header names, an element width that does not match the image's feature channel, a matrix too small for the copy, and a buffer shorter than the matrix it describes are each refused by name and write nothing. Measured: the library compiles for armv7-apple-ios6.1.3 against the iOS 16.4 SDK, 45 files, 0 failures, and this file is clean under -Wall; the differential harness compares against a plain C reference over a 4x3 two-channel two-image batch into a 2-matrix batch whose rows are longer than one image and whose origin is row 1, column 3: COMPARED 218 MISMATCHES 0, and the two layouts' 48 elements each match exactly, which a copy is entitled to demand since it moves bits. OWED: -encodeBatchToCommandBuffer:sourceImages:destinationMatrix: (MPSImageCopy.h:100-104), which needs MPSImageBatch - a class this port does not carry, so this kernel does not answer it. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'; behaviour taken from the header's own wording and checked against a CPU reference",
+      "facts": "facts/MetalPerformanceShaders/Image.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     }
   ]
 }
