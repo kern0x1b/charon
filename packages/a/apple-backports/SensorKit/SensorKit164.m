@@ -94,3 +94,12 @@ CHARON_VALUE_PROPERTY(NSString *, identifier)
 @implementation SRSupplementalCategory (CharonSensorKitValue)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
+
+// The single string constant of iOS 16.4,
+// declared at SRSensors.h:246,
+// named from CharonSensorKitNames.h rather than written here: an object carries the API of
+// one release alone, while the values are one list that the host comparison in
+// tests/backports/host/sensorkit-names walks whole.
+
+#define CHARON_SENSORKIT_NAMES_16_4
+#import "CharonSensorKitNames.h"

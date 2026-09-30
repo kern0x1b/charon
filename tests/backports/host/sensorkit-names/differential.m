@@ -1,9 +1,16 @@
 // The port's own values, printed from its own LINKED symbols.
 //
-// This object is the one tests compile from packages/a/apple-backports/SensorKit/SensorKitNames14.m, so
-// every name below resolves to THIS PACKAGE'S definition and not to the host framework's - the port's
-// object wins at link time, and the host's values come from the other process, which is what makes the
-// two independent.
+// This object links TWO port-side sources, so every name below resolves to THIS PACKAGE'S definition
+// and not to the host framework's - the port's object wins at link time, and the host's values come
+// from the other process, which is what makes the two independent:
+//
+//   packages/a/apple-backports/SensorKit/SensorKitNames14.m   the 39 names of iOS 14.0
+//   names-extra.m, which imports CharonSensorKitNames.h       the 18 names of 15.0 .. 26.0
+//
+// The second is a harness file rather than a release object because those eighteen constants are split
+// across six objects, one release each, and their values live in one header behind one guard per
+// release. Linking all six guards here walks that header whole; it is the same list the six objects
+// carry between them, read through one definition rather than six copies.
 #import <Foundation/Foundation.h>
 #import <CoreFoundation/CoreFoundation.h>
 
@@ -46,15 +53,69 @@ extern CFStringRef SRSensorPedometerData;
 extern CFStringRef SRSensorPhoneUsageReport;
 extern CFStringRef SRSensorRotationRate;
 extern CFStringRef SRSensorVisits;
+extern CFStringRef SRSensorSiriSpeechMetrics;
+extern CFStringRef SRSensorTelephonySpeechMetrics;
+extern CFStringRef SRSensorAmbientPressure;
+extern CFStringRef SRSensorMediaEvents;
+extern CFStringRef SRSensorWristTemperature;
+extern CFStringRef SRSensorHeartRate;
+extern CFStringRef SRSensorFaceMetrics;
+extern CFStringRef SRSensorOdometer;
+extern CFStringRef SRSensorElectrocardiogram;
+extern CFStringRef SRSensorPhotoplethysmogram;
+extern CFStringRef SRPhotoplethysmogramOpticalSampleConditionSignalSaturation;
+extern CFStringRef SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise;
+extern CFStringRef SRPhotoplethysmogramSampleUsageForegroundHeartRate;
+extern CFStringRef SRPhotoplethysmogramSampleUsageDeepBreathing;
+extern CFStringRef SRPhotoplethysmogramSampleUsageForegroundBloodOxygen;
+extern CFStringRef SRPhotoplethysmogramSampleUsageBackgroundSystem;
+extern CFStringRef SRSensorAcousticSettings;
+extern CFStringRef SRSensorSleepSessions;
 
 int main(void)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
     CFStringRef all[] = {
-        SRDeviceUsageCategoryBooks, SRDeviceUsageCategoryBusiness, SRDeviceUsageCategoryCatalogs, SRDeviceUsageCategoryDeveloperTools, SRDeviceUsageCategoryEducation, SRDeviceUsageCategoryEntertainment, SRDeviceUsageCategoryFinance, SRDeviceUsageCategoryFoodAndDrink, SRDeviceUsageCategoryGames, SRDeviceUsageCategoryGraphicsAndDesign, SRDeviceUsageCategoryHealthAndFitness, SRDeviceUsageCategoryKids, SRDeviceUsageCategoryLifestyle, SRDeviceUsageCategoryMedical, SRDeviceUsageCategoryMiscellaneous, SRDeviceUsageCategoryMusic, SRDeviceUsageCategoryNavigation, SRDeviceUsageCategoryNews, SRDeviceUsageCategoryNewsstand, SRDeviceUsageCategoryPhotoAndVideo, SRDeviceUsageCategoryProductivity, SRDeviceUsageCategoryReference, SRDeviceUsageCategoryShopping, SRDeviceUsageCategorySocialNetworking, SRDeviceUsageCategorySports, SRDeviceUsageCategoryStickers, SRDeviceUsageCategoryTravel, SRDeviceUsageCategoryUtilities, SRDeviceUsageCategoryWeather, SRSensorAccelerometer, SRSensorAmbientLightSensor, SRSensorDeviceUsageReport, SRSensorKeyboardMetrics, SRSensorMessagesUsageReport, SRSensorOnWristState, SRSensorPedometerData, SRSensorPhoneUsageReport, SRSensorRotationRate, SRSensorVisits
+        SRDeviceUsageCategoryBooks, SRDeviceUsageCategoryBusiness, SRDeviceUsageCategoryCatalogs, SRDeviceUsageCategoryDeveloperTools, SRDeviceUsageCategoryEducation, SRDeviceUsageCategoryEntertainment, SRDeviceUsageCategoryFinance, SRDeviceUsageCategoryFoodAndDrink, SRDeviceUsageCategoryGames, SRDeviceUsageCategoryGraphicsAndDesign, SRDeviceUsageCategoryHealthAndFitness, SRDeviceUsageCategoryKids, SRDeviceUsageCategoryLifestyle, SRDeviceUsageCategoryMedical, SRDeviceUsageCategoryMiscellaneous, SRDeviceUsageCategoryMusic, SRDeviceUsageCategoryNavigation, SRDeviceUsageCategoryNews, SRDeviceUsageCategoryNewsstand, SRDeviceUsageCategoryPhotoAndVideo, SRDeviceUsageCategoryProductivity, SRDeviceUsageCategoryReference, SRDeviceUsageCategoryShopping, SRDeviceUsageCategorySocialNetworking, SRDeviceUsageCategorySports, SRDeviceUsageCategoryStickers, SRDeviceUsageCategoryTravel, SRDeviceUsageCategoryUtilities, SRDeviceUsageCategoryWeather, SRSensorAccelerometer, SRSensorAmbientLightSensor, SRSensorDeviceUsageReport, SRSensorKeyboardMetrics, SRSensorMessagesUsageReport, SRSensorOnWristState, SRSensorPedometerData, SRSensorPhoneUsageReport, SRSensorRotationRate, SRSensorVisits,
+    SRSensorSiriSpeechMetrics,
+    SRSensorTelephonySpeechMetrics,
+    SRSensorAmbientPressure,
+    SRSensorMediaEvents,
+    SRSensorWristTemperature,
+    SRSensorHeartRate,
+    SRSensorFaceMetrics,
+    SRSensorOdometer,
+    SRSensorElectrocardiogram,
+    SRSensorPhotoplethysmogram,
+    SRPhotoplethysmogramOpticalSampleConditionSignalSaturation,
+    SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise,
+    SRPhotoplethysmogramSampleUsageForegroundHeartRate,
+    SRPhotoplethysmogramSampleUsageDeepBreathing,
+    SRPhotoplethysmogramSampleUsageForegroundBloodOxygen,
+    SRPhotoplethysmogramSampleUsageBackgroundSystem,
+    SRSensorAcousticSettings,
+    SRSensorSleepSessions
     };
     const char *label[] = {
-        "SRDeviceUsageCategoryBooks", "SRDeviceUsageCategoryBusiness", "SRDeviceUsageCategoryCatalogs", "SRDeviceUsageCategoryDeveloperTools", "SRDeviceUsageCategoryEducation", "SRDeviceUsageCategoryEntertainment", "SRDeviceUsageCategoryFinance", "SRDeviceUsageCategoryFoodAndDrink", "SRDeviceUsageCategoryGames", "SRDeviceUsageCategoryGraphicsAndDesign", "SRDeviceUsageCategoryHealthAndFitness", "SRDeviceUsageCategoryKids", "SRDeviceUsageCategoryLifestyle", "SRDeviceUsageCategoryMedical", "SRDeviceUsageCategoryMiscellaneous", "SRDeviceUsageCategoryMusic", "SRDeviceUsageCategoryNavigation", "SRDeviceUsageCategoryNews", "SRDeviceUsageCategoryNewsstand", "SRDeviceUsageCategoryPhotoAndVideo", "SRDeviceUsageCategoryProductivity", "SRDeviceUsageCategoryReference", "SRDeviceUsageCategoryShopping", "SRDeviceUsageCategorySocialNetworking", "SRDeviceUsageCategorySports", "SRDeviceUsageCategoryStickers", "SRDeviceUsageCategoryTravel", "SRDeviceUsageCategoryUtilities", "SRDeviceUsageCategoryWeather", "SRSensorAccelerometer", "SRSensorAmbientLightSensor", "SRSensorDeviceUsageReport", "SRSensorKeyboardMetrics", "SRSensorMessagesUsageReport", "SRSensorOnWristState", "SRSensorPedometerData", "SRSensorPhoneUsageReport", "SRSensorRotationRate", "SRSensorVisits"
+        "SRDeviceUsageCategoryBooks", "SRDeviceUsageCategoryBusiness", "SRDeviceUsageCategoryCatalogs", "SRDeviceUsageCategoryDeveloperTools", "SRDeviceUsageCategoryEducation", "SRDeviceUsageCategoryEntertainment", "SRDeviceUsageCategoryFinance", "SRDeviceUsageCategoryFoodAndDrink", "SRDeviceUsageCategoryGames", "SRDeviceUsageCategoryGraphicsAndDesign", "SRDeviceUsageCategoryHealthAndFitness", "SRDeviceUsageCategoryKids", "SRDeviceUsageCategoryLifestyle", "SRDeviceUsageCategoryMedical", "SRDeviceUsageCategoryMiscellaneous", "SRDeviceUsageCategoryMusic", "SRDeviceUsageCategoryNavigation", "SRDeviceUsageCategoryNews", "SRDeviceUsageCategoryNewsstand", "SRDeviceUsageCategoryPhotoAndVideo", "SRDeviceUsageCategoryProductivity", "SRDeviceUsageCategoryReference", "SRDeviceUsageCategoryShopping", "SRDeviceUsageCategorySocialNetworking", "SRDeviceUsageCategorySports", "SRDeviceUsageCategoryStickers", "SRDeviceUsageCategoryTravel", "SRDeviceUsageCategoryUtilities", "SRDeviceUsageCategoryWeather", "SRSensorAccelerometer", "SRSensorAmbientLightSensor", "SRSensorDeviceUsageReport", "SRSensorKeyboardMetrics", "SRSensorMessagesUsageReport", "SRSensorOnWristState", "SRSensorPedometerData", "SRSensorPhoneUsageReport", "SRSensorRotationRate", "SRSensorVisits",
+    "SRSensorSiriSpeechMetrics",
+    "SRSensorTelephonySpeechMetrics",
+    "SRSensorAmbientPressure",
+    "SRSensorMediaEvents",
+    "SRSensorWristTemperature",
+    "SRSensorHeartRate",
+    "SRSensorFaceMetrics",
+    "SRSensorOdometer",
+    "SRSensorElectrocardiogram",
+    "SRSensorPhotoplethysmogram",
+    "SRPhotoplethysmogramOpticalSampleConditionSignalSaturation",
+    "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
+    "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
+    "SRPhotoplethysmogramSampleUsageDeepBreathing",
+    "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
+    "SRPhotoplethysmogramSampleUsageBackgroundSystem",
+    "SRSensorAcousticSettings",
+    "SRSensorSleepSessions"
     };
     for (size_t i = 0; i < sizeof all / sizeof all[0]; i++) {
         char b[256] = {0};

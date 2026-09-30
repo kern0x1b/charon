@@ -1,9 +1,27 @@
 # SensorKit, on a release that collects nothing
 
 SensorKit arrived in iOS 14. This port deploys to iOS 6.1.3, and the release's armv7 6.1.3 cache
-carries **no SensorKit surface at all**: `objc.binary_inventory` over the cache finds no `SR*` class
-and no `SR*` symbol. There is no daemon, no usage database, and no store a payload could be read out
-of. Everything below is that one fact and what follows from it.
+carries **no SensorKit surface at all**: `binary_inventory` at `modules/apple/objc.lua:395`, run over
+the cache, finds no `SR*` class and no `SR*` symbol. There is no daemon, no usage database, and no
+store a payload could be read out of. Everything below is that one fact and what follows from it.
+
+## The witnesses this page's numbers come out of
+
+Four paths, and every count below is one of their outputs. A number on this page that names none of
+them is not evidence, and this page used to carry several.
+
+| what it answers | the path | what a run of it prints |
+| --- | --- | --- |
+| the 57 string constants, the port's against the host's own SensorKit | `tests/backports/host/sensorkit-names/run.sh` | `sensorkit-names: 57 names compared, 0 differing`, then three plants and the empty control |
+| the four time functions, both sides in one binary | `tests/backports/host/sensorkit/run.sh` | the three relations, and the port's side `1, 1, 1` |
+| what one cache of one release carries, and what one image of it exports | `modules/apple/objc.lua`, `binary_inventory` at `:395` | the class and symbol inventory of a cache or an image |
+| one symbol's release of first appearance, over the held ladder | `tools/cache-index/first-rung.py` | one TSV line per name, or `NONE` |
+
+`tools/cache-index/first-rung.py` answers **presence, not version**, and that limit is load-bearing
+here: the ladder it walks (`dyld.held_ladder` in `modules/apple/dyld.lua`) has a hole above 12.0, so a
+`NONE` from it for a SensorKit name is not evidence about the release that introduced it and is not
+used on this page as such. What introduced a SensorKit name comes from the SDK's own
+`API_AVAILABLE(ios(...))` on the declaration, and every row's `source` names the header and the line.
 
 ## What is real, and what is not
 
@@ -56,20 +74,94 @@ package develops against, and the gap is the whole reason `CharonSensorKit.h` ex
 | **13 properties on 6 classes** | a per-class diff of the two headers' property lists | declared in `(CharonSensorKitNNN)` categories, one per release, because a class the SDK declares cannot be declared again |
 | **4 property types from frameworks this package does not carry** | a probe naming `ARFaceAnchor`, `SNClassificationResult`, `SFSpeechRecognitionResult`, `SampleType` against the build's headers | **not carried**: `SRFaceMetrics.faceAnchor`, `SRSpeechMetrics.soundClassification`, `SRSpeechMetrics.speechRecognition`, `SRFetchResult.sample`. There is no such type here to answer with, and a property declared over one would read nil for ever |
 
-Two more blocks of absences, for reasons that are the same in kind:
+## The 57 string constants, and why the eighteen newest could not be carried before
 
-- **the 58 `SRDeviceUsageCategory*` constants.** The SDK declares each as a
-  `SRDeviceUsageCategoryKey const SRDeviceUsageCategoryGames` **variable**, not as a macro, so no
-  header this package builds against gives the value, and the release's cache has no SensorKit symbol
-  to read it from. The port does not invent a value the system would not recognise, so they are not
-  carried. This is the one place in the delivery where a reviewer might reasonably have wanted the
-  constant's own name — and the SDK's own form is the reason that is not safe here: these are not
-  `#define NAME @"NAME"` constants, and unlike MessageUI's usage categories there is nothing to check
-  the guess against.
-- **the 20 `SRSensorReaderDelegate` methods.** The delegate is the application's own object: no class
-  of this port conforms to the protocol, so the port carries no protocol and emits **no
-  `__OBJC_PROTOCOL_$_` for it**. The reader still *sends* these messages — that half of the contract
-  is implemented and is what the two `didFailWithError:` callbacks above are — but it declares nothing.
+All of SensorKit's string constants are **const object-pointer variables**, never macros. `SRSensor`,
+`SRDeviceUsageCategoryKey`, `SRPhotoplethysmogramSampleUsage` and
+`SRPhotoplethysmogramOpticalSampleCondition` are each a typedef of `NSString *`, and each constant is
+declared `SR_EXTERN <type> const <name>` with no initializer anywhere. So no header this package
+builds against spells a value, and the release's own cache holds no SensorKit symbol to read one from:
+the value has to come from somewhere, and the only honest somewhere is Apple's own framework.
+
+**It is on the host.** `/System/Library/Frameworks/SensorKit.framework` exports every one of them, so
+`tests/backports/host/sensorkit-names/run.sh` measures each value rather than writing it down: one
+process `dlopen`s the framework and `dlsym`s each name **dereferencing once** — these are variables,
+so `dlsym` returns the address of the variable and the address of the variable is the string — and
+another process links the port's own definitions and prints those. The two are independent because an
+object wins at link time.
+
+A run of it prints:
+
+```
+sensorkit-names: 57 names compared, 0 differing
+sensorkit-names: 57 names compared, 57 differing      <- the all-wrong plant
+the one-wrong plant of SensorKitNames14.m is red and names exactly 1 row: SRDeviceUsageCategoryBooks
+the one-wrong plant of CharonSensorKitNames.h is red and names exactly 1 row: SRSensorSiriSpeechMetrics
+sensorkit-names: 0 names compared, 57 differing  <- COMPARED NOTHING   <- the empty-host control
+```
+
+Those three plants and that control are what make the comparison falsifiable rather than decorative: a
+value that differs is red, a name one side did not print is red, and **a host file with no rows at
+all is red**, so a run that compared nothing cannot come out green. There are two one-wrong plants
+rather than one because there are two port-side sources now, and a mutation that reached only the
+first would leave the second unwatched.
+
+The **57** is `names.txt`, and the count is not the interesting part. The interesting part is the
+eighteen that were `absent` before this change and are `implemented` now, in six objects:
+
+| release | the object | the constants | what the host's framework holds |
+| --- | --- | --- | --- |
+| 15.0 | `SensorKit150.m` | `SRSensorSiriSpeechMetrics`, `SRSensorTelephonySpeechMetrics` | `com.apple.SensorKit.speechMetrics.siri`, `…telephony` |
+| 15.4 | `SensorKit154.m` | `SRSensorAmbientPressure` | `com.apple.SensorKit.ambientPressure` |
+| 16.4 | `SensorKit164.m` | `SRSensorMediaEvents` | `com.apple.SensorKit.mediaEvents` |
+| 17.0 | `SensorKit170.m` | `SRSensorWristTemperature`, `SRSensorHeartRate`, `SRSensorFaceMetrics`, `SRSensorOdometer` | `com.apple.SensorKit.wristTemperature`, `…heart.rate`, `…faceMetrics`, `…odometer` |
+| 17.4 | `SensorKit174.m` | `SRSensorElectrocardiogram`, `SRSensorPhotoplethysmogram`, and the six `SRPhotoplethysmogram…` | `com.apple.SensorKit.ECG`, `com.apple.SensorKit.PPG`, and `SignalSaturation`, `UnreliableNoise`, `ForegroundHeartRate`, `DeepBreathing`, `ForegroundBloodOxygen`, `BackgroundSystem` |
+| 26.0 | `SensorKit260.m` | `SRSensorAcousticSettings`, `SRSensorSleepSessions` | `com.apple.SensorKit.hearing.acousticSettings`, `com.apple.SensorKit.sleep.sessions` |
+
+Two of these deserve their own sentence, because they are the cases a rule written from the shape of
+the name would have got wrong, and the harness is the only reason they are carried at all:
+
+- **the six photoplethysmogram values are the SUFFIX of the constant's own name, not the name.**
+  `SRPhotoplethysmogramSampleUsageDeepBreathing` is the string `DeepBreathing`. They look exactly
+  like `#define NAME @"NAME"` constants and are not macros at all, which is why the older version of
+  this page refused to guess them: there was nothing to check a guess against. There is now.
+- **two of the values are Apple-internal shapes the name does not suggest**: `SRSensorHeartRate` holds
+  `com.apple.SensorKit.heart.rate`, and `SRSensorElectrocardiogram` and `SRSensorPhotoplethysmogram`
+  hold `com.apple.SensorKit.ECG` and `com.apple.SensorKit.PPG`. The port does not construct these
+  strings; it carries what the host's framework holds, and the comparison is what says they are right.
+
+**The values are the HOST's, not a device's.** No iOS device has been asked what its SensorKit holds,
+and every row says so in its own `effect`. This is the limit of this measurement and it is a real one.
+
+**Where the values live, and why they are not written six times.** An object carries the API of exactly
+one release, so the eighteen belong to six objects; their values, though, are one list, and the
+harness has to walk that whole list from a single host-compilable source. They are therefore defined
+once, in `CharonSensorKitNames.h`, behind one guard per release: each release object defines its own
+guard and imports the header, and the harness's `names-extra.m` defines all six and imports it. One
+definition of each string in the tree, read seven ways.
+
+## What the delegate's ten methods are
+
+**There are ten of them, all `@optional`, and the port's reader sends four.** That is the whole shape
+of this corner, and the numbers are the SDK 26.2 header's own: `@protocol SRSensorReaderDelegate
+<NSObject>` at `SRSensorReader.h:21`, `@optional` at `:22`, and ten declarations between `:40` and
+`:84`, the protocol's `@end` at `:86`.
+
+The delegate is the application's own object, so there are two halves and they are different:
+
+- **four are sent, and an application that implements them is reached.** `-startRecording` and
+  `-stopRecording` send `startRecordingFailedWithError:` and `stopRecordingFailedWithError:`; `-fetch:`
+  sends `fetchingRequest:failedWithError:`; `-fetchDevices` sends `fetchDevicesDidFailWithError:`. Each
+  carries SensorKit's own `SRErrorDataInaccessible` from `SRError.h`, which is "Data is not accessible at
+  this time" and is exactly right: there is no store behind any of the four. Each is guarded by
+  `respondsToSelector:` on the delegate, so a subscriber that implements one is messaged and one that
+  does not is not messaged at all — never messaged wrongly.
+- **six are never sent, and nothing here pretends otherwise**: `fetchingRequest:didFetchResult:` and
+  `didCompleteFetch:` need a fetch that produced a result, `didFetchDevices:` needs a device list the
+  port will not invent, `didChangeAuthorizationStatus:` needs a status that changes when this reader's
+  never does — it answers `denied` and stays there — and `sensorReaderWillStartRecording:` and
+  `sensorReaderDidStopRecording:` report a recording that this release never begins. That is the same
+  wall as the four: no daemon collects anything, so there is no result, no device and no change.
 
 ## The four shapes in the source, each forced by something measured
 
@@ -146,7 +238,7 @@ so the probe could not see it. That is the second time in these two families a r
 question it was not asked (`SRSensor*` "0 of 10" from `objc_getClass`, in slice 1). The expected
 difference is gone and both sides are held to the same three relations.
 
-**The twelve rows of the reader's own surface stay `absent`, and this file's earlier reason for that
+**The eleven rows of the reader's own surface stay `absent`, and this file's earlier reason for that
 still stands** — the delegate is the application's own object, so the port declares no protocol and emits
 no `__OBJC_PROTOCOL_$_` for it. What this slice adds is the host's own account of that surface, measured
 through the runtime rather than assumed: `SRSensorReaderDelegate` is present on the host and declares

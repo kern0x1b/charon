@@ -1,6 +1,17 @@
-// THE 39 NAMES, in one list both processes walk: the port's own object and the host's framework
+// THE 57 NAMES, in one list both processes walk: the port's own object and the host's framework
 // are compared name by name against it, so a name neither side printed is a failure rather than a
 // row quietly missing from the comparison.
+//
+// The list is not sorted, because these are not one alphabetical family but six releases' worth of
+// them: the 39 of iOS 14.0 come first, in the order SensorKitNames14.m declares them, and then each
+// later release's constants in theirs. A name's place in this list is the release it arrived in,
+// which is what release-split.lua reads off the object that defines it.
+//
+// The eighteen after the thirty-nine are the string constants of iOS 15.0, 15.4, 16.4, 17.0, 17.4
+// and 26.0. They live in the port's six release objects, one release each, and their VALUES live in
+// one place - CharonSensorKitNames.h - which the harness's own port-side source imports with all six
+// guards defined, so the eighteen values the comparison walks are the eighteen the objects carry and
+// not a second copy of them.
 static const char *const CHaronNames[] = {
     "SRDeviceUsageCategoryBooks",
     "SRDeviceUsageCategoryBusiness",
@@ -41,4 +52,34 @@ static const char *const CHaronNames[] = {
     "SRSensorPhoneUsageReport",
     "SRSensorRotationRate",
     "SRSensorVisits",
+
+    // iOS 15.0 - SRSensors.h:194, :213
+    "SRSensorSiriSpeechMetrics",
+    "SRSensorTelephonySpeechMetrics",
+
+    // iOS 15.4 - SRSensors.h:230
+    "SRSensorAmbientPressure",
+
+    // iOS 16.4 - SRSensors.h:246
+    "SRSensorMediaEvents",
+
+    // iOS 17.0 - SRSensors.h:265, :276, :295, :307
+    "SRSensorWristTemperature",
+    "SRSensorHeartRate",
+    "SRSensorFaceMetrics",
+    "SRSensorOdometer",
+
+    // iOS 17.4 - SRSensors.h:320, :332, and SRPhotoplethysmogramSample.h:14, :15, :213, :223, :232, :242
+    "SRSensorElectrocardiogram",
+    "SRSensorPhotoplethysmogram",
+    "SRPhotoplethysmogramOpticalSampleConditionSignalSaturation",
+    "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
+    "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
+    "SRPhotoplethysmogramSampleUsageDeepBreathing",
+    "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
+    "SRPhotoplethysmogramSampleUsageBackgroundSystem",
+
+    // iOS 26.0 - SRSensors.h:345, :357
+    "SRSensorAcousticSettings",
+    "SRSensorSleepSessions",
 };

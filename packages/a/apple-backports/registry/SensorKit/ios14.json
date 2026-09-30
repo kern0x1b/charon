@@ -724,60 +724,66 @@
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramOpticalSampleCondition const SRPhotoplethysmogramOpticalSampleConditionSignalSaturation`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:14) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: SignalSaturation. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"SignalSaturation\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:14); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise",
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramOpticalSampleCondition const SRPhotoplethysmogramOpticalSampleConditionUnreliableNoise`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:15) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: UnreliableNoise. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"UnreliableNoise\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:15); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageBackgroundSystem",
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramSampleUsage const SRPhotoplethysmogramSampleUsageBackgroundSystem`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:242) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: BackgroundSystem. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"BackgroundSystem\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:242); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageDeepBreathing",
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramSampleUsage const SRPhotoplethysmogramSampleUsageDeepBreathing`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:223) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: DeepBreathing. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"DeepBreathing\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:223); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageForegroundBloodOxygen",
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramSampleUsage const SRPhotoplethysmogramSampleUsageForegroundBloodOxygen`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:232) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: ForegroundBloodOxygen. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"ForegroundBloodOxygen\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:232); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRPhotoplethysmogramSampleUsageForegroundHeartRate",
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "a typed string constant, `SR_EXTERN SRPhotoplethysmogramSampleUsage const SRPhotoplethysmogramSampleUsageForegroundHeartRate`, where the type is a typedef of NSString * in the same header (SRPhotoplethysmogramSample.h:213) and the constant is a const object-pointer VARIABLE, so the header declares the name and no value. The value is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object, and for this one it is the suffix of the constant's own name and not the name: ForegroundHeartRate. That is the whole reason it could not be carried before, and it is why no #define rule can produce it.",
+      "effect": "the string \"ForegroundHeartRate\", which is the host's own SensorKit's value for this name and NOT the constant's own name. NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRPhotoplethysmogramSample.h:213); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorAccelerometer",
@@ -794,10 +800,11 @@
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorAcousticSettings`, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header spells its value - and here not even the SDK that declares it is one this package compiles against, so the build has neither the symbol nor the value. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names: com.apple.SensorKit.hearing.acousticSettings",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.hearing.acousticSettings\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)) (SRSensors.h:345); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit260.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorAmbientLightSensor",
@@ -814,10 +821,11 @@
       "kind": "constant",
       "introduced": "15.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorAmbientPressure` at SRSensors.h:230, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.ambientPressure",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.ambientPressure\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.4)) (SRSensors.h:230); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit154.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorDeviceUsageReport",
@@ -834,30 +842,33 @@
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorElectrocardiogram` at SRSensors.h:320, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.ECG",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.ECG\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRSensors.h:320); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorFaceMetrics",
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorFaceMetrics` at SRSensors.h:295, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.faceMetrics",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.faceMetrics\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)) (SRSensors.h:295); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit170.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorHeartRate",
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorHeartRate` at SRSensors.h:276, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.heart.rate",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.heart.rate\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)) (SRSensors.h:276); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit170.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorKeyboardMetrics",
@@ -874,10 +885,11 @@
       "kind": "constant",
       "introduced": "16.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorMediaEvents` at SRSensors.h:246, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.mediaEvents",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.mediaEvents\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(16.4)) (SRSensors.h:246); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit164.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorMessagesUsageReport",
@@ -894,10 +906,11 @@
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorOdometer` at SRSensors.h:307, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.odometer",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.odometer\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)) (SRSensors.h:307); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit170.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorOnWristState",
@@ -934,10 +947,11 @@
       "kind": "constant",
       "introduced": "17.4",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorPhotoplethysmogram` at SRSensors.h:332, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.PPG",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.PPG\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.4)) (SRSensors.h:332); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit174.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorRotationRate",
@@ -954,30 +968,33 @@
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorSiriSpeechMetrics` at SRSensors.h:194, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.speechMetrics.siri",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.speechMetrics.siri\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)) (SRSensors.h:194); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit150.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorSleepSessions",
       "kind": "constant",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorSleepSessions`, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header spells its value - and here not even the SDK that declares it is one this package compiles against, so the build has neither the symbol nor the value. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names: com.apple.SensorKit.sleep.sessions",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.sleep.sessions\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(26.0)) (SRSensors.h:357); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit260.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorTelephonySpeechMetrics",
       "kind": "constant",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorTelephonySpeechMetrics` at SRSensors.h:213, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.speechMetrics.telephony",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.speechMetrics.telephony\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(15.0)) (SRSensors.h:213); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit150.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRSensorVisits",
@@ -994,10 +1011,11 @@
       "kind": "constant",
       "introduced": "17.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the value is Apple's own string, declared as a `SRDeviceUsageCategoryKey const` VARIABLE in SRDeviceUsageCategories.h and not as a macro, so no header this package builds against gives it - and the 6.1.3 cache carries no SensorKit symbol to read it from, measured with objc.binary_inventory. The port does not invent a value the system would not recognise",
-      "effect": "not carried: the symbol is absent, so a link against this library resolves it from the application's own sensors framework if it has one, and an application that declares its usage categories by name on a release with no SensorKit has nothing to collect them into anyway",
-      "source": "the header of SRDeviceUsageCategories.h in SDK 26.2"
+      "status": "implemented",
+      "reason": "`SR_EXTERN SRSensor const SRSensorWristTemperature` at SRSensors.h:265, where SRSensor is an NSString typedef in SRDefines.h and the constant is a const object-pointer VARIABLE, so no header this package builds against spells its value and the build's own cache holds no SensorKit symbol to read one from. The VALUE is the HOST's own SensorKit's, read by dlsym in tests/backports/host/sensorkit-names and compared against the port's own object: com.apple.SensorKit.wristTemperature",
+      "effect": "the sensor identifier of the host's own SensorKit, the string \"com.apple.SensorKit.wristTemperature\". NOT measured on an iOS device: this is what the host framework holds and the guest measurement is owed.",
+      "facts": "facts/SensorKit/SensorKit.md",
+      "source": "SensorKit.framework of SDK 26.2 for the declaration and its API_AVAILABLE(ios(17.0)) (SRSensors.h:265); the host's own SensorKit.framework for the value, read by dlsym in tests/backports/host/sensorkit-names; the definition itself is SensorKit170.m and the values live in CharonSensorKitNames.h, which that object imports under the guard for its own release"
     },
     {
       "api": "SRAbsoluteTimeFromCFAbsoluteTime()",
