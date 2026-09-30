@@ -121,15 +121,65 @@ rung in the table must be one the ladder holds, and `get()` must agree with a wh
 spread of names across every block. A tool that answered a rung for a name no release has would pass
 a positive control alone, so the negative one is not optional.
 
-**`_NSFileSize` answers `3.0`, and the workspace's own notes say `4.3`.** The notes are wrong, and so
-is what `strings -a | grep -xF` answers (`3.1.3`). The measured reason: **strings(1) does not read a
-Mach-O symbol table**, and the name is in one. On the `Foundation` of iPhone OS 3.0 it sits at byte
-offset 1534962, NUL-delimited between `_NSFileReferenceCount` and `_NSFileSystemFileNumber`, and
-`nm -gU` reports it — while `strings -a` on the same file reports **2060 of its 2061 `-gU` names as
-absent**. A control that asserted 4.3 would be asserting the old method's blind spot rather than the
-release's contents, which is why the control is 3.0 and why this paragraph exists. Anyone who changes
-the extraction should re-run that count: it is the number that says whether the index is a superset of
-what it replaces.
+## The 3.0 vs 3.1.3 disagreement, and which is right: **3.0**
+
+Three answers existed for the same name and they do not agree:
+
+| answer | where it came from |
+| --- | --- |
+| `4.3` | the workspace's own notes |
+| `3.1.3` | `strings -a CACHE \| grep -xF _NSFileSize` — the method this tool replaces |
+| `3.0` | this index |
+
+**3.0 is right, and here is the whole measurement.** The name is in the `Foundation` of iPhone OS
+3.0, at byte offset 1534962, and the bytes around it are
+
+```
+b'issions\x00_NSFileReferenceCount\x00_NSFileSize\x00_NSFileSystemFileNumber'
+```
+
+so `_NSFileSize` is a complete NUL-terminated name, preceded by a NUL and followed by a NUL, sitting
+between two other real names. Three independent measurements agree it is there and is a defined
+symbol of that library:
+
+| measurement | result |
+| --- | --- |
+| offset 1534962 falls in | `__LINKEDIT` (fileoff 1163264, size 709952) — the **symbol table string table** |
+| `nm -gU` on that file | `38502664 S _NSFileSize` — a defined symbol, `S` (in a section), not `U` (undefined) |
+| this index, `--rungs _NSFileSize` | present in **all 50** held rungs, 3.0 onward |
+
+**And `strings -a` cannot see it**, which is the whole disagreement:
+
+| on that one file | |
+| --- | --- |
+| `strings -a \| grep -xF _NSFileSize` | **0 matches** |
+| `strings -a \| grep -F _NSFileSize` (substring, not exact) | **0 matches** |
+| distinct `nm -gU` names in the file | 2061 |
+| of those, absent from `strings -a` | **2060 — 99.95 %** |
+
+The missed ones are real API: `_NSAMPMDesignation`, `_NSAffineTransformStructIdentity`,
+`_NSAllHashTableObjects`, `_NSAllMapTableKeys`, `_NSAllMapTableValues`, `_NSAllocateCollectable`, and
+`_NSFileSize` among them.
+
+**The cause is one sentence: `strings(1)` does not read a Mach-O symbol table.** `__LINKEDIT` is where
+a Mach-O keeps its symbol table, and the name is in the table, not in a string section — so there is
+no run of printable bytes for `strings` to find, because the bytes around the name are the *string
+table's* delimiters, not a C string. Every symbol-table name in a binary is invisible to the old
+method; only the names that also live in a `__TEXT` string section (selectors in
+`__objc_methname`, class names in `__objc_classname`, literals in `__cstring`) were ever visible to
+it. That is why the old answer was not merely late, it was *wrong by a release*, and why the notes'
+`4.3` is wrong too: it was inherited from the same scan.
+
+So: this index reads the **whole symbol table** (the export trie for what a client binds, and the full
+defined-symbol range for what is there at all), which is what `__objc_protolist` and the rest of the
+Objective-C metadata sit next to. A reader that changes the extraction should re-run the 2061/2060
+count above: it is the number that says whether the index is a superset of what it replaces.
+
+**The negative control is what makes the positive one mean anything**: a name in no release must
+answer `NONE`, or a tool that answered a rung for everything would pass the first line alone.
+
+The measurements in this file come from the machine this was written on: `strings`, `nm` and
+`stat` are base system tools, and the numbers are reproducible with the commands shown.
 
 ## Reuse, not a second parser
 
