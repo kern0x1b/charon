@@ -113,6 +113,8 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
 // supplies the values. WKWebExtensionTab and WKWebExtensionContext are forward-declared here: they
 // are their own families and this one only holds weak references to them.
 @class WKWebExtensionContext;
+@class WKWebExtensionController;
+@protocol WKWebExtensionWindow;
 @protocol WKWebExtensionTab;
 @class WKWebView;
 
@@ -211,12 +213,13 @@ typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
 @interface WKWebExtensionContext : NSObject
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
++ (nullable instancetype)contextForExtension:(WKWebExtension *)extension;
 @property (nonatomic, readonly, weak) WKWebExtensionController *webExtensionController;
 @property (nonatomic, readonly, weak) WKWebExtension *webExtension;
 @property (nonatomic, readonly, copy) NSUUID *uniqueIdentifier;
 @property (nonatomic, readonly) BOOL loaded;
 @property (nonatomic, readonly) BOOL inspectable;
-@property (nonatomic, readonly, copy) NSURL *baseURL;
+@property (nonatomic, readonly, copy) NSURL *baseURL;   /* webkit-extension://<uniqueIdentifier>/ */
 @property (nonatomic, readonly, nullable, copy) NSURL *optionsPageURL;
 @property (nonatomic, readonly, nullable, copy) NSURL *overrideNewTabPageURL;
 @property (nonatomic, readonly, copy) NSArray<NSError *> *errors;
@@ -234,10 +237,17 @@ typedef NS_ENUM(NSInteger, WKWebExtensionContextPermissionStatus) {
 @property (nonatomic, readonly) BOOL hasContentModificationRules;
 @property (nonatomic, readonly) BOOL hasInjectedContent;
 @property (nonatomic, readonly, nullable) WKWebViewConfiguration *webViewConfiguration;
-@property (nonatomic, readonly) NSArray<WKWebExtensionTab *> *openTabs;
-@property (nonatomic, readonly) NSArray<WKWebExtensionWindow *> *openWindows;
-@property (nonatomic, readonly, nullable) WKWebExtensionWindow *focusedWindow;
+@property (nonatomic, readonly) NSArray<id<WKWebExtensionTab>> *openTabs;
+@property (nonatomic, readonly) NSArray<id<WKWebExtensionWindow>> *openWindows;
+@property (nonatomic, readonly, nullable) id<WKWebExtensionWindow> focusedWindow;
 @property (nonatomic, readonly) NSArray<WKWebExtensionCommand *> *commands;
-@property (nonatomic, readonly, nullable) WKWebExtensionAction *actionForTab:(WKWebExtensionTab *)tab;
+- (nullable WKWebExtensionAction *)actionForTab:(id<WKWebExtensionTab>)tab;
 @property (nonatomic, readonly, nullable) NSString *inspectionName;
+@end
+
+// The port's own initialiser, charon_-prefixed and in the init family, and the build step the class
+// method calls once it has an extension.
+@interface WKWebExtensionContext (CharonContext)
+- (instancetype)charon_initWithExtension:(WKWebExtension *)extension __attribute__((objc_method_family(init)));
+- (void)charon_buildFromManifest;
 @end
