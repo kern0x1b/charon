@@ -78,6 +78,12 @@
 @synthesize requiresLinearPlayback = _requiresLinearPlayback;
 // Declared by the header, not carried: without @dynamic clang synthesizes accessors that store a
 // value and do nothing with it (measured with nm on the object). canStopPictureInPicture is tvOS's.
+//
+// `contentSource` and `-initWithContentSource:` are implemented, in
+// AVPictureInPictureControllerContentSource15.m, the object that owns the 15.0 API - and they stay on
+// this @dynamic line for the reason the 8.0 object gives for `speeds`: with the name dropped, this
+// object synthesizes its own `contentSource` and `setContentSource:` over the 15.0 category's, and a
+// class's own methods beat a category's. Measured with otool -ov, same shape.
 @dynamic contentSource, canStartPictureInPictureAutomaticallyFromInline, canStopPictureInPicture;
 
 - (BOOL)isPictureInPictureSuspended

@@ -58,30 +58,33 @@
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not built: no application of the corpus reaches it, and AVPlaybackSpeed, the class it holds, is not carried",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "status": "implemented",
+      "reason": "a speed list is presentation over a rate the release really has: the armv7 cache of 6.1.3 carries AVPlayer's `rate` (first rung 3.0) and `canPlayFastForward`/`canPlaySlowForward` (5.0), and not `defaultRate` (16.0), and this port's transport bar already reads player.rate to choose play or pause",
+      "effect": "kept and copied; an unset or nil list answers +[AVPlaybackSpeed systemDefaultSpeeds], and a selection that is no longer in the list stops being the selection. Emptying the list is refused for the header's own reason - every later -selectSpeed: would be ignored by the rule below - so it is not a value this property accepts",
+      "source": "SDK 26.2 AVKit/AVPlayerViewController.h:177-182; the armv7 cache of 6.1.3 carries AVPlayer's `rate` (first rung 3.0) and `canPlayFastForward`/`canPlaySlowForward` (5.0), and not `defaultRate` (16.0)",
+      "facts": "facts/AVKit/AVPlaybackSpeed.md"
     },
     {
       "api": "AVPlayerViewController.selectedSpeed",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not built: no application of the corpus reaches it, and AVPlaybackSpeed, the class it answers, is not carried",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "status": "implemented",
+      "reason": "the header ties this to the player's `defaultRate` (AVPlayerViewController.h:187), which the release does not carry - first rung 16.0 - so the port answers it from the rate the player is really running at",
+      "effect": "the speed in the speeds list whose rate the player's is, and nil when the rate matches none, which is the header's rule; not a stored copy of the last selection, so a rate set from outside is answered from the rate itself",
+      "source": "SDK 26.2 AVKit/AVPlayerViewController.h:185-189; the armv7 cache of 6.1.3 carries AVPlayer's `rate` (first rung 3.0) and `canPlayFastForward`/`canPlaySlowForward` (5.0), and not `defaultRate` (16.0)",
+      "facts": "facts/AVKit/AVPlaybackSpeed.md"
     },
     {
       "api": "-[AVPlayerViewController selectSpeed:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not built: no application of the corpus reaches it, and AVPlaybackSpeed, the class it takes, is not carried",
-      "effect": "the method is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "status": "implemented",
+      "reason": "the same rate the release has: the armv7 cache of 6.1.3 carries AVPlayer's `rate` (first rung 3.0) and `canPlayFastForward`/`canPlaySlowForward` (5.0), and not `defaultRate` (16.0)",
+      "effect": "ignored when the speed is not in the speeds list and when it is nil, as AVPlayerViewController.h:196 says; otherwise the selection is kept and the rate set on the player at once when it is already playing, and on the next press of play when it is not, which is the event AVPlaybackSpeed.h:51 names",
+      "source": "SDK 26.2 AVKit/AVPlayerViewController.h:192-198 and AVPlaybackSpeed.h:49-53; the armv7 cache of 6.1.3 carries AVPlayer's `rate` (first rung 3.0) and `canPlayFastForward`/`canPlaySlowForward` (5.0), and not `defaultRate` (16.0)",
+      "facts": "facts/AVKit/AVPlaybackSpeed.md"
     },
     {
       "api": "AVPlayerViewControllerDelegate",

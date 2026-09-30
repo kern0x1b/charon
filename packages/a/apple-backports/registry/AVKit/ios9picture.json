@@ -115,20 +115,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "AVPictureInPictureControllerContentSource, the class it holds, is not carried, and no application of the corpus reaches it",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+      "status": "implemented",
+      "reason": "the content source's player-layer half is this port's own picture-in-picture: AVPlayerLayer is exported on this release and AVPictureInPictureController.m already reparents one into its floating window, so the box holds the very layer that window uses",
+      "effect": "the source the controller was built with, kept, and settable; a source handed in later is recorded and its layer adopted as the one to float, because changing the layer under a controller that is already floating would strand the old layer in the window with nothing pointing at it",
+      "source": "SDK 26.2 AVKit/AVPictureInPictureController.h:106-109; AVPlayerLayer is exported on this release and AVPictureInPictureController.m already reparents one into its floating window, so the box holds the very layer that window uses",
+      "facts": "facts/AVKit/AVPictureInPictureContentSource.md"
     },
     {
       "api": "-[AVPictureInPictureController initWithContentSource:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "AVPictureInPictureControllerContentSource, the class it takes, is not carried, and no application of the corpus reaches it",
-      "effect": "the method is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+      "status": "implemented",
+      "reason": "the same player-layer half: AVPlayerLayer is exported on this release and AVPictureInPictureController.m already reparents one into its floating window, so the box holds the very layer that window uses. The sample-buffer half is not carried and the row of AVPictureInPictureSampleBufferPlaybackDelegate says which",
+      "effect": "a source carrying a player layer builds the controller over that layer, so the window floats it; a source with no layer answers nil, which is what -initWithPlayerLayer: already does for a nil layer, so the two agree rather than one of them inventing a controller with no source",
+      "source": "SDK 26.2 AVKit/AVPictureInPictureController.h:90-95; AVPlayerLayer is exported on this release and AVPictureInPictureController.m already reparents one into its floating window, so the box holds the very layer that window uses",
+      "facts": "facts/AVKit/AVPictureInPictureContentSource.md"
     }
   ]
 }

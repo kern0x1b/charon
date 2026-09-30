@@ -3,6 +3,9 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <QuartzCore/QuartzCore.h>
 #import <CoreImage/CoreImage.h>
+// The one declaration this object needs from the 16.0 speed object, for the play path's call. A
+// declaration, not a definition: the method lives in AVPlayerViewControllerSpeeds16.m.
+#import "CharonAVKitSpeeds.h"
 
 // Rank 25 of coordination/corpus/band-frameworks.tsv, LOAD-FAIL: session strong-imports the class
 // (Session and SignalUtilitiesKit bind _OBJC_CLASS_$_AVPlayerViewController), so the application
@@ -280,6 +283,14 @@ static NSMutableSet *charon_players_in_picture(void)
 @synthesize charonVideoView = _charonVideoView;
 // Declared by the header, not carried: without @dynamic clang would synthesize accessors that store
 // a value and do nothing with it. See the registry's absent entries for why each is not built.
+//
+// `speeds` and `selectedSpeed` are on this line and STAY on it, though both are now implemented - in
+// AVPlayerViewControllerSpeeds16.m, the object that owns the 16.0 API. Dropping them here is not
+// neutral: this object has no @dynamic then, and clang synthesizes its own `speeds` and
+// `selectedSpeed` that store a value and are never read. A class's own synthesized methods beat a
+// category's, so the 16.0 implementation would never be reached. Measured: with the names removed
+// from this line, otool -ov of THIS object lists -[AVPlayerViewController speeds] and
+// -[AVPlayerViewController selectedSpeed], and the 16.0 object's category lists neither.
 @dynamic showsTimecodes, canStartPictureInPictureAutomaticallyFromInline, allowsVideoFrameAnalysis, speeds,
     selectedSpeed;
 
@@ -903,6 +914,11 @@ static NSString *charon_contents_gravity(NSString *videoGravity)
     if (item && CMTIME_IS_NUMERIC(item.duration) && CMTimeCompare(_player.currentTime, item.duration) >= 0)
         [_player seekToTime:kCMTimeZero];
     [_player play];
+    // A playback speed selected while paused is applied here, which is the event AVPlaybackSpeed.h:51
+    // names. The method belongs to the 16.0 object, so it is asked for rather than sent blindly: this
+    // object also links in the bands that do not carry it.
+    if ([self respondsToSelector:@selector(charon_applySelectedSpeed)])
+        [self charon_applySelectedSpeed];
 }
 
 - (void)charon_scrubBegan:(UISlider *)slider
