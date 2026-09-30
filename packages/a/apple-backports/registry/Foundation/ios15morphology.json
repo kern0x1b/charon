@@ -29,26 +29,35 @@
     },
     {
       "api": "+[NSMorphologyPronoun new]",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "method",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "-[NSInflectionRule init]",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
       "kind": "method",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the header marks -init unavailable on the abstract base, and the differential calls no initialiser of its own. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "-[NSInflectionRuleExplicit initWithMorphology:]",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
       "kind": "method",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
@@ -71,18 +80,24 @@
     },
     {
       "api": "-[NSMorphologyPronoun initWithPronoun:morphology:dependentMorphology:]",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "method",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "-[NSMorphologyPronoun init]",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "method",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
@@ -105,10 +120,13 @@
     },
     {
       "api": "NSInflectionRuleExplicit.morphology",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
@@ -185,18 +203,24 @@
     },
     {
       "api": "NSMorphology.unspecified",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "NSMorphology.userMorphology",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
@@ -246,26 +270,35 @@
     },
     {
       "api": "NSMorphologyPronoun.dependentMorphology",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "NSMorphologyPronoun.morphology",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     },
     {
       "api": "NSMorphologyPronoun.pronoun",
+      "effect": "the member is in the library and compiles, but nothing measures it yet, so a caller that reaches it before the owed case lands is unanswered rather than wrong",
       "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
       "kind": "property",
+      "minimum": "6.0",
       "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
-      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "source": "the implementation is in the library; the row is held absent until the differential measures it",
       "status": "absent"
     }
   ],
