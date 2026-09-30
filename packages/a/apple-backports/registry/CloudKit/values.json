@@ -61,6 +61,46 @@
     "facts": "facts/CloudKit/Values.md"
   },
   {
+    "api": "CKRecordZone.zoneID",
+    "kind": "property",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "the identifier a zone is known by, and the half of a zone's identity a caller reads first",
+    "effect": "as given, and a zone is a thing rather than a name: measured, a copy of a zone and the zone it was copied from are not equal, in four constructions that all agreed",
+    "source": "packages/a/apple-backports/CloudKit/CKRecords8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZone.capabilities",
+    "kind": "property",
+    "introduced": "8.0",
+    "status": "implemented",
+    "reason": "what a zone can do, which is 0 for a zone this port makes; the bits are 1, 2, 4 and 8, read from the 26.2 header",
+    "effect": "the bits the zone holds and the text (none) for zero, which is what the host answers",
+    "source": "packages/a/apple-backports/CloudKit/CKRecords8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZone.encryptionScope",
+    "kind": "property",
+    "introduced": "26.0",
+    "status": "implemented",
+    "reason": "how a zone stores its encryption keys, which the header declares from 26.0; per-record is 0 and per-zone is 1",
+    "effect": "the scope the zone holds, and the description's per-record, which is the host's measured answer",
+    "source": "packages/a/apple-backports/CloudKit/CKRecords8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
+    "api": "CKRecordZone.share",
+    "kind": "property",
+    "introduced": "15.0",
+    "status": "implemented",
+    "reason": "the zone-wide share on a zone fetched from the server, which the header declares from 15.0 and sets only on a fetched zone",
+    "effect": "nil, which is what the host answers, and the description's <null> where there is none",
+    "source": "packages/a/apple-backports/CloudKit/CKRecords8.m",
+    "facts": "facts/CloudKit/Values.md"
+  },
+  {
     "api": "CKAsset",
     "kind": "class",
     "introduced": "8.0",

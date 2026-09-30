@@ -38,8 +38,12 @@ def key(row):
     return (row["kind"], row["api"])
 
 def owner(api):
-    """the class a member row belongs to"""
-    return api[2:].split(" ")[0] if api[:2] in ("+[", "-[") else api.split("(")[0].strip("+-[]")
+    """the class a member row belongs to: a bracketed method, or the head of a dotted property"""
+    if api[:2] in ("+[", "-["):
+        return api[2:].split(" ")[0]
+    if "." in api and "(" not in api:
+        return api.split(".")[0]
+    return api.split("(")[0].strip("+-[]")
 
 rows_by_key = {key(r): r for r in rows}
 class_rows = {r["api"]: r for r in rows if r["kind"] == "class"}
@@ -47,8 +51,16 @@ member_rows = [r for r in rows if r["kind"] == "method"]
 row_apis = {r["api"] for r in rows}
 
 def defined_here(row):
-    """(kind, api) -> the file that defines it, or None. A method is defined by its class."""
-    if row["kind"] == "method":
+    """(kind, api) -> the file that defines it, or None.
+
+    A method is defined by its class, and so is a PROPERTY: a property row's api is a selector,
+    `CKRecordZone.zoneID`, and the thing that has to exist for it is the class that owns it. Until
+    CloudKit had property rows this tool never had to say so - it was class-only because the registry
+    was - and 4490 property rows in the other frameworks are admitted by the gate, which is the
+    arbiter. A property whose class the tree does not define is still a failure: the row names a
+    member of a class that is not here.
+    """
+    if row["kind"] in ("method", "property"):
         return impl.get(owner(row["api"]))
     if row["kind"] == "constant":
         return externs.get(row["api"])

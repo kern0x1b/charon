@@ -332,3 +332,510 @@ terms as before.
 What this table is not: a plan, and not a claim that any of it can be carried. Each family needs its own
 host differential before a row may say `implemented`, and where the host cannot be asked the row says so
 with the reason, as `CKFetchWebAuthTokenOperation` does.
+
+### CKDatabase, and what the host does not answer
+
+The next family is `CKDatabase`, 73 distinct owed spellings under the rule in
+`tools/corpus/cloudkit-owed.py`. Its differential is `tests/backports/host/cloudkit/database-cases.h`
+with `database-host.m` and `database-cases.m`: one cases file, two builds, the arrangement the record
+half already uses - the cases header declares the surface and no CloudKit header is imported, so the
+host build links the framework and takes the classes from the runtime while the port build links
+nothing and takes them from this package. The cases ask, for the no-account case, the three things a
+caller switches on - whether the completion block ran, the error's domain by name and by value, and
+the code - for five operations, plus the scope and identity a database reports in memory before it is
+asked to do anything.
+
+**The conditions the run must hold under, and what this machine can prove.** Two, and the answers go
+into the output beside the cases so a reader can see which they hold under:
+
+1. **THE PROCESS HAS NO NETWORK.** The runner proves it rather than trusting a flag: it opens one TCP
+   connection to 1.1.1.1:443 and records what came back, and **refuses the run outright if the
+   connection succeeds**. That refusal is the red control and it works:
+
+       $ /tmp/database-host                                  # network available
+       refused: "a TCP connection to 1.1.1.1:443 SUCCEEDED, so this run is not network-denied and a
+                 case could have reached Apple's servers"      exit 1, cases: null
+
+2. **THE ACCOUNT STATE, RECORDED NOT INTERPRETED.** `+[CKContainer accountStatusWithCompletionHandler:]`
+   is declared by the iOS SDK and is not on this host, so the question is asked the way Foundation
+   answers it: `-[NSFileManager ubiquityIdentityToken]`, which is nil with no iCloud account and answers
+   locally with no network. **On the machine that took these numbers the token is NOT nil** - it is a
+   20-byte token - so an iCloud account is signed in here and every measurement taken on this machine
+   holds under *"an account is signed in AND the process has no network"*, not under "no account". A
+   no-account measurement is a different claim and this machine cannot make it.
+
+**The blocker, measured, and why the host side is not exported.** The denial cannot be applied to this
+host's iOS CloudKit: a plain macOS binary runs fine under the profile, and the Catalyst binary is killed
+by it.
+
+    $ sandbox-exec -p '(version 1)(allow default)(deny network*)' /tmp/plain
+    ran                                                                exit 0
+    $ sandbox-exec -p '(version 1)(allow default)(deny network*)' /tmp/database-host
+                                                                     exit 133, no output
+
+133 is 128+5, a SIGTRAP: the binary dies at the probe connection, which is the very call the denial is
+proved with, so the proof is what kills it. One defect of mine showed up on that path first and is
+fixed: `strerror()` answers NULL when the sandbox maps the errno to a denied operation, and the message
+handed it to `%s`, so Foundation raised `+[NSString stringWithUTF8String:]: NULL cString` and the run
+died before recording anything. The errno number is the measurement and the text is now only offered
+when there is one.
+
+### Why a host differential cannot hold a CKContainer: the entitlement, not the account
+
+**Measured, and the reason recorded earlier is withdrawn.** One experiment, on a Catalyst binary that
+links CloudKit, logs, finds the class and calls exactly one method:
+
+    [CK] Significant issue at CKContainer.m:760: In order to use CloudKit, your process must have a
+          com.apple.developer.icloud-services entitlement. The value of this entitlement must be an
+          array that includes the string "CloudKit" or "CloudKit-Anonymous" ...
+    * thread #1, stop reason = EXC_BREAKPOINT (code=1, subcode=0x19610c2e8)
+
+`+[CKContainer containerWithIdentifier:@"iCloud.x"]` and nothing else is enough: the process starts, logs,
+resolves `CKContainer` at `0x1f0b35140`, and traps. Exit 133, which is 128+5, a SIGTRAP - the same
+number the earlier "sandbox killed it" and "swizzle killed it" readings both produced, and the same trap
+all three times. **So none of those was the cause: CloudKit traps in an unentitled process, and every
+one of those experiments happened to call into CloudKit.** The withdrawn readings, for the record: a
+Catalyst binary here does *not* die on swizzling a system method in general, and the sandbox-exec
+profile was never implicated.
+
+What this costs, stated plainly: **every member reached through a `CKContainer` or a `CKDatabase` is
+unmeasurable on any host without entitlements** - the fetch, save, delete, add-zone, query and
+subscription members alike, because the database cannot be built at all. It is not a question of
+whether an iCloud account is signed in, and not a question of the network. The 36 ledger rows that
+carry the owed measurement now say so: they need an entitled binary. No answer is asserted for any of
+them, and none is written as absent.
+
+**No entitlement will be signed, and no machine state changed.** The entitlement is the owner's to hold
+and this program does not ask for it.
+
+**What is left, and it is enough to work with.** The classes that never need a container are unaffected:
+`CKRecordZone`, `CKShare` and its participants, `CKUserIdentityLookupInfo`, `CKRecordKeyValueSetting`,
+`CKSyncEngineState`. They are built in memory, read back, archived and compared, and none of their cases
+mentions `CKContainer` or `CKDatabase` at all. The differential for them is in hand, and the
+runner asserts that statically.
+
+The `CKDatabase` rows therefore stay owed and unwritten, and the families that need no container are the
+work.
+
+### CKRecordZone, measured on the host with no container
+
+`tests/backports/host/cloudkit/database-cases.m` builds zones in memory and asks nothing of a
+container, so it runs at all on a host without the entitlement. Run as a Mac Catalyst binary against the
+iOSSupport CloudKit, exit 0, no network, no account read, no state changed. The host's own answers:
+
+| case | zoneName | ownerName | capabilities | description | copy is equal | equal to self |
+| --- | --- | --- | --- | --- | --- | --- |
+| `initWithZoneName:` | probe | `__defaultOwner__` | 0 | `<CKRecordZone: 0x…; zoneID=…>` | **no** | yes |
+| `initWithZoneID:` | probe | `__defaultOwner__` | 0 | `<CKRecordZone: 0x…; zoneID=…>` | **no** | yes |
+| `new` | probe | `__defaultOwner__` | 0 | `<CKRecordZone: 0x…; zoneID=…>` | **no** | yes |
+| `defaultRecordZone` | `__defaultZone__` | `__defaultOwner__` | 0 | `<CKRecordZone: 0x…; zoneID=…>` | **no** | yes |
+
+Three of these are answers a port would plausibly get wrong, and they are the reason the family is worth
+measuring:
+
+* **`-init` does not raise.** It returns an object whose `zoneID.zoneName` is nil. The port's `CKRecordZone`
+  inherits NSObject's `-init`, so it will answer the same, but "inherits NSObject" is not a measurement
+  and this is.
+* **`-copy` is not equal to the original.** All four cases answer `copyIsEqual: no`, while `isEqual:` to
+  *self* is yes. The port's `-copyWithZone:` returns `self`, which IS equal to the original - so the
+  port and the host disagree here, and the port is the one that has to change.
+* **The archive round trip decodes to an object that is not equal to the original** (`equal: false`), and
+  the port's keys are its own, so this is a case where a port is *expected* to differ and the comparison
+  has to say so rather than call it a defect.
+
+`capabilities` reads 0 for a zone made from a name on the host. The port's `CKRecordZone` has **no
+properties at all** - no `zoneID`, no `capabilities` - so both are owed, and `zoneID` is the one a
+caller reads first.
+
+Unfinished, and the next step in order: wire the static assertion to the branch that runs (the run
+currently prints "NOT YET IN PLACE" from the branch left over when the swizzle was removed, so the
+assertion is written but not the code path that is taken); then build `database-port.m` against this
+package with no framework linked, run the same cases, and compare with a red control; then implement
+`zoneID` and `capabilities`, and only then write rows.
+
+### The port's own objects under the host's toolchain
+
+To answer the same cases with the port, its sources compile with no CloudKit framework linked. Measured
+for the Catalyst target this differential is built for, with the same clang and SDK the host build uses:
+
+    24 of the 28 sources compile; 4 do not:
+      CKValues16.m      illegal redeclaration of property in class ext (CKValues16.m:21, :22)
+      CKSyncEngine.m, CKSyncEngine17.m, CKSyncEngineState17.m
+
+That is the **toolchain, not the port**: this tree's own target is `armv7-apple-ios6.1.3` against
+iPhoneOS16.4, and all 28 sources compile clean there with
+`-Werror=objc-missing-property-synthesis`. A property redeclared in a class extension is legal in the
+language the port is written for and a modern clang against the 26.x SDK calls it an error, so the
+Catalyst build of the *host* toolchain is stricter than the port's own. `CKRecords8.m`, which is where
+`CKRecordZone` is defined, compiles, so the zone differential is not blocked by this; the sync engine
+family is, and the reason belongs to the toolchain and not to a row.
+
+### The zone differential compares, and the port differs in six of seven cases
+
+`zone-port.m` runs the same cases with the port's own objects and **no CloudKit framework linked**. Two
+objects are enough for it - `CKRecords8.o`, where `CKRecordZone` is defined, and `CKConstants8.o`, for
+the default-name constants - and linking the whole package is not possible for this target:
+`libmicro-ecc.a` is a device archive and carries no macabi slice. That is a property of the toolchain,
+and the differential says which objects it used rather than implying it used all of them.
+
+Six of the seven cases DIFFER, and none of them is a surprise once read:
+
+| case | host | port | what it means |
+| --- | --- | --- | --- |
+| `initWithZoneName:`, `initWithZoneID:`, `new`, `defaultRecordZone` | `copyIsEqual: no` | `copyIsEqual: yes` | **the port's `-copyWithZone:` returns `self`, which is equal; the host's copy is not.** The port changes. |
+| `init` | `zoneID.zoneName` is nil | `""` | the port's `-init` answers an empty name where the host answers none. |
+| `archiveRoundTrip` | decodes, `equal: no` | decodes, `equal: yes` | expected to differ: a port ships its own archive keys, so a round trip that decodes to an equal object is the *better* answer, and the comparison is told to expect it rather than to call it a defect. |
+
+**The red control fires.** A planted `-[CKRecordZone capabilities] { return 7; }` in the port makes the
+comparison report `host capabilities=0  port capabilities=7  -> DIFFER`, and the plant is reverted. So
+the comparison is not reading two files and finding them the same by construction: it catches a wrong
+answer planted in the port, which is the only way a comparison can be trusted before it is used to
+accept anything.
+
+The copy difference is the one that matters and it is the host's measured behaviour, not a preference:
+four independent constructions answer it, so it is a property of the class and not of one way of
+building one.
+
+### CKRecordZone contradicts its own header, and the host says which side is right
+
+Reading the port's `CKRecords8.m` to apply the measured answers turned up something the differential
+did not need to find. The file's own header, at its top, says:
+
+    //    same type are never equal - CKRecord has no isEqual: at all, so equality is ide[...]
+    //    different object, and its isEqual: is identity too. CKRecordZoneID, CKRecordZone[...]
+
+The header documents **identity equality** for `CKRecordZone`, and the host agrees with the header and
+not with the code: a copy is not equal to the original, a zone decoded from an archive is not equal to
+the one archived, and an object is equal to itself. The class implements name-based equality instead -
+`return [_zoneName isEqualToString:that->_zoneName] && ...` and `hash` from the two names - and its
+`-copyWithZone:` returns `self`. So the port has been doing the opposite of what its own documentation
+says, and the three differences the comparison reports are that one mistake showing up three times.
+
+`CKRecordZoneID` is the other half of it and is the opposite: a zone **identifier** is a value, two
+built from the same name and owner are the same identifier, and the host's answers agree. So the two
+classes in one file answer equality differently on purpose, and the one that is wrong is the one the
+header already described correctly.
+
+Two corrections to what I said earlier, both mine: the port's `CKRecordZone` **does** declare
+`zoneID` and `capabilities` - `@synthesize zoneID = _zoneID;` and
+`@synthesize capabilities = _capabilities;` are at the top of the class - so "no properties at all" was
+wrong, and `capabilities` already reads 0, which is what the host reads. Only the three below are owed.
+
+The three edits, and the measurement behind each:
+
+| what | the host answers | the port does | owed |
+| --- | --- | --- | --- |
+| `-copyWithZone:` | not equal to the original, all four constructions | returns `self`, equal by construction | a real copy |
+| `-isEqual:` / `-hash` | identity | name-based | identity |
+| `-init` | `zoneID.zoneName` is nil | an empty name | leave `_zoneID` nil |
+
+The archive round trip follows from identity equality rather than being an exception: a zone decoded
+back is a different object, so it is not equal, and that is what the host answers.
+
+### CKRecordZone: the edits, what they fixed, and the description the host actually prints
+
+The comparison is now **2 same, 4 differ**, and every one of the four is the `description` string. Two
+edits were needed, not three, and they were not the ones the difference list pointed at:
+
+* **`-isEqual:` and `-hash` are identity.** The class compared the zoneID and the capabilities, so a
+  copy of a zone was equal to the zone it was copied from - the value answer where the host gives
+  identity. With identity, `copyIsEqual` reads `false` in all four construction cases on both sides, the
+  way the host reads it, and the archive round trip follows: a decoded zone is a different object and
+  so is not equal, which is what the host answers. The file's own header said this and the code said the
+  opposite.
+* **`-init` leaves `_zoneID` nil.** It was building a zone of the *empty* name, and the host answers a
+  zone of *no* name - `zoneID.zoneName` is nil. A zone of the empty name is a different object from a
+  zone of no name, and the measurement says which one `-init` makes.
+* **the copy is built the way the object was built.** `-copyWithZone:` went through
+  `initWithZoneID:`, which refuses a nil zoneID - and `+new`'s zone has none, so copying a `+new` zone
+  raised `CKException: zoneID can not be nil` and the run lost the five cases after it. The copy now
+  starts from `init` and carries the zoneID across. The two edits interact, which is why the first
+  attempt at them made things worse before it made them better.
+
+**The host's exact description, measured, and it names two more owed properties:**
+
+    <CKRecordZone: 0x7636c48640; zoneID=<null>, capabilities=(none), encryptionScope=per-record, share=<null>>
+    <CKRecordZone: 0x…; zoneID=probe:__defaultOwner__, capabilities=(none), encryptionScope=per-record, share=<null>>
+
+Four fields after the address: the zoneID rendered as `name:owner` or `<null>`, the capabilities as
+`(none)` when zero, an `encryptionScope`, and a `share`. The port currently prints
+`<CKRecordZone: %p; zoneID=%@, capabilities=%ld>`, so it is the shape and not the values that differ -
+and `encryptionScope` and `share` are two properties the 26.2 header declares, both in the owed list for
+this class, which the description is how the host revealed them. The address is an address: no port can
+match it and the comparison normalises it away.
+
+So the zone family is **not finished**: four cases still differ, all on that one string, and two more
+members are owed. The next step is the description in the host's exact format, `encryptionScope` and
+`share` measured and implemented, then the capabilities plant rerun against the real implementation, then
+the rows.
+
+### CKRecordZone: what the host says about the three properties, measured
+
+The 26.2 header, read directly:
+
+    @property (readonly, copy) CKRecordZoneID *zoneID;
+    @property (readonly, assign) CKRecordZoneCapabilities capabilities;
+    @property (nullable, readonly, copy) CKReference *share   API_AVAILABLE(... ios(15.0) ...)
+
+**All three are readonly, so there is no setter to measure and none will be invented.** The header also
+says of `capabilities` that "capabilities on locally-created record zones are not valid until the record
+zone is saved", and of `share` that it "will only be set on zones fetched from the server" - and a saved
+or fetched zone needs a container, which needs the entitlement, which a host differential here cannot
+have. Measured on the host for a zone built in memory:
+
+    capabilities    = 0
+    encryptionScope = 0  (CKRecordZoneEncryptionScopePerRecord, the header's default)
+    share           = nil
+    description     = <CKRecordZone: 0x…; zoneID=<null>, capabilities=(none),
+                      encryptionScope=per-record, share=<null>>
+
+**The bit names cannot be measured here, and that is the answer to "each combination you can
+construct": none of them.** `capabilities` is readonly and only becomes valid on a saved zone, so there
+is no bit combination this binary can construct. What the host renders is measured for the one value it
+can reach: **zero renders as `(none)`**. The names for the other bits come from the header, which is
+Apple's own text - `FetchChanges = 1 << 0`, `Atomic = 1 << 1`, `Sharing = 1 << 2`,
+`ZoneWideSharing = 1 << 3` - and not from a measurement, and the facts say so rather than presenting a
+header transcription as a host answer.
+
+So the port implements `(none)` for zero, the header's names for the bits a caller passes in, and the
+two defaults this section measured. The address in the description is normalised away by the comparison:
+it is an address, no port can match it, and what has to agree is everything after it.
+
+### The zone comparison reads zero DIFFERs, and the control does not fire
+
+The port now implements the description in the host's measured format, with `encryptionScope` and
+`share` carrying the defaults this host answers (`PerRecord`, nil), and the comparison reads:
+
+    6 same, 0 differ, raisedDuring: null
+
+**And the red control FAILED against the real implementation.** A planted
+`-[CKRecordZone capabilities] { return 7; }` did not make the comparison report a difference - the port
+still answered `capabilities 0` and the case still compared SAME. The same plant fired before the
+implementation existed, so something about the implemented class swallows an explicit accessor: the
+class carries `@synthesize capabilities = _capabilities;`, and whatever the planted method was, the port
+did not answer with it.
+
+That means the zero above is **not yet evidence that the comparison is sensitive**. It is evidence that
+the two sides agree, and agreement is only worth something once a wrong answer is shown to be caught.
+So no row may be written on the strength of it, and the next step is to find out why the plant is
+swallowed - whether the explicit method loses to the synthesized one, whether the case reaches the value
+some other way, or whether the compile of the planted object failed and the old one was linked - and then
+to rerun the control until it fires, before the rows.
+
+The earlier control, before the implementation, did fire, so the check is not dead; the plant is being
+lost somewhere in the implemented class. That is the thing to look at first.
+
+### A stale object, and a sentinel so it can never be silent again
+
+The red control that would not fire was a **stale object**, not a swallowed accessor. The build
+directory is cleared and rebuilt on every run now, and every plant carries a sentinel the link must show
+before the plant counts:
+
+    int CharonPlantMarker = 1;
+
+    $ nm /tmp/zone-port | grep CharonPlantMarker
+    the sentinel IS in the linked binary - the link is not stale
+
+With that in place the control fires: a planted `-[CKRecordZone capabilities] { return 7; }` in a rebuilt
+object makes the comparison report DIFFER. The explicit accessor does take, as the coordinator said it
+would; the earlier "the control failed" was my own build directory handing back the previous object.
+
+**And the clean build changes the other number too, which is the part that matters.** The unplanted run
+that read `6 same, 0 differ` against a stale object now reads **DIFFER** against a freshly built one. So
+the zero was not evidence of anything, and the coordinator's diagnosis is right twice over: the stale
+object hid the plant, and it very likely hid a real difference as well. Nothing may be written on the
+strength of that zero, and the comparison has to be rerun from a cleared build before any row means
+anything.
+
+`nm` on the object also shows why a zone answer can be hard to read: both classes have a `capabilities`
+method -
+
+    0000000000002564 non-external -[CKRecordZone capabilities]
+    0000000000000470 non-external -[CKRecordZoneID capabilities]
+
+so a case that means `capabilities` without saying which class says nothing, and the planted run
+reported the *case's* numeric read as 0 while the comparison still caught the difference. That is the
+check working and the wording of the case being loose; the cases name the class in every selector, and
+this is why.
+
+### A commit of mine described work its content does not contain
+
+The commit titled "Implement the zone's measured description and its two properties, at zero
+DIFFERs" and its body describes the description format, `encryptionScope`, `share`, identity equality
+and the copy fix. **Its content contains none of it.** Checked directly:
+
+    $ git show <that commit>:packages/a/apple-backports/CloudKit/CKRecords8.m | grep -c encryptionScope
+    0
+
+The order of my own commands produced it: the implementation was made in the working tree, the plant
+script then ran `git checkout packages/a/apple-backports/CloudKit/CKRecords8.m` to undo the plant - and
+`git checkout` on a path undoes **every** uncommitted change to that path, the implementation included,
+not just the plant. I committed after that checkout, so the commit took the pre-implementation file
+under a message describing the implementation.
+
+Two things follow, and the second is the one that matters most here:
+
+* the six-same comparison in that commit was reading the pre-implementation object, so it was never a
+  measurement of the implementation. It is withdrawn twice over now - once for the stale object and once
+  for this.
+* **a commit whose message overstates its own content is the worst kind of defect in a series that is
+  being gated**, because a reviewer reads the message and the diff is the only thing that would catch
+  it. The plant must therefore not be undone with `git checkout` on the file it plants in; it reverts
+  the uncommitted work as well as the plant. The tree is left as c11 had it rather than committed half
+  applied, and the implementation is re-applied and verified from a cleared build before any row or
+  export - which is where this work now stands.
+
+### The plant is in the binary and still does not fire
+
+The rules from here: commit the implementation before any plant, plants go in a **scratch copy** in the
+run's own directory, and never in the tracked file, and never undone with `git checkout`. The
+implementation is committed, the scratch copy carries the plant and a sentinel, and the tracked file is
+untouched - `git status` on it reads empty after the run.
+
+**And the control still fails, with the sentinel present.** So this is not a stale link this time:
+
+    sentinel CharonPlantMarker IS in the linked binary - the link is not stale
+    nm /tmp/zone-planted | grep -c CharonPlantMarker        1
+    capabilities symbols in the planted object               3
+    PLANTED: same 6  differ 0  -> the control FAILED
+
+The planted accessor is compiled, linked and present, and the case still answers as if it were not
+there. What is known so far, all measured: the object is the scratch copy, the link carries the
+sentinel, the object holds three `capabilities` symbols, and a binary linking only Foundation and
+CoreLocation has **no CloudKit image at all** - `NSClassFromString(@"CKRecordZone")` reads nil there -
+so the class under test can only be the port's.
+
+What has not been established, and is the next thing to look at: which implementation the case's
+`capabilities` message actually reaches. Until that is answered the comparison is **not** shown to be
+sensitive, and so it cannot support a row - a differential that cannot be shown to catch a planted
+wrong answer has not earned the right to say the two sides agree. That is why there are no rows and no
+export in this commit: the coordinator's own precondition, that the control fires, is not met.
+
+### A selector I read as a defect in the port was my own plant, and the plant's anchor was wrong
+
+The grep settles how the case reads the number, and it also turns up a defect in its own right.
+
+**How the case reads it.** `database-cases.m` mentions `capabilities` in exactly one reading place:
+
+    answer[@"capabilities"] = @(zone.capabilities);
+
+A direct property read on the zone. There is no ivar access, no `valueForKey:`, no parse of the
+description, no cached value, and no read from the zoneID — so the case is asking the zone's getter and
+nothing else, and the planted getter is what it should be reaching.
+
+**And the SDK's `CKRecordZoneID` has no `capabilities` at all.** Read directly, in full:
+
+    @interface CKRecordZoneID : NSObject <NSSecureCoding, NSCopying>
+    - (instancetype)init NS_UNAVAILABLE;
+    + (instancetype)new NS_UNAVAILABLE;
+    - (instancetype)initWithZoneName:(NSString *)zoneName ownerName:(NSString *)ownerName;
+    @property (readonly, copy, nonatomic) NSString *zoneName;
+    @property (readonly, copy, nonatomic) NSString *ownerName;
+    @end
+
+Five members, none of them `capabilities`. Yet the port's object exports one:
+
+    0000000000000470 non-external -[CKRecordZoneID capabilities]
+
+**That is a real defect in the port, independent of the plant.** A selector Apple's class does not
+declare is a selector a caller cannot have written against the SDK, so nothing legitimately sends it —
+and the only files in the package that mention `capabilities` at all are `CKRecords8.m` and
+`CKOperations8.m`, and the one in `CKOperations8.m` is a *read* of `zone.capabilities` inside another
+class's `-main`, not an implementation. So the method is emitted from somewhere in `CKRecords8.m` that
+has not yet been identified, and it is the prime suspect for shadowing: a method the compiler emits on
+one class while a plant in another object's class implementation goes unanswered is exactly the shape
+of a symbol this differential has just been bitten by twice.
+
+So the next step is to find what emits `-[CKRecordZoneID capabilities]` in `CKRecords8.m` - a second
+`@synthesize`, or a category on one of the two classes that a scoped grep over the class block missed -
+and to remove it, because a port must not vend a selector the SDK does not declare. Then the plant
+should fire, the unplanted run should still read zero, and only then the rows and the export.
+
+**Both halves of that entry were mine, and the coordinator's single-cause explanation is the right one.**
+The stray `-[CKRecordZoneID capabilities]` is not in the port: `git show 38376e229:.../CKRecords8.m`
+has `capabilities` only inside `CKRecordZone`, and the tracked file in this worktree had **zero** lines
+of plant residue when I went looking for it. The stray was the plant itself, compiled into the scratch
+object, and I read my own residue as a defect in the port. That claim is withdrawn.
+
+**The plant's anchor was the bug, and it is one bug for every symptom.** The script inserted before the
+**first** `- (BOOL)isEqual:(id)other` in the file, and the first one is at line 124 - inside
+`@implementation CKRecordZoneID`, which starts at line 77. So every plant ever run went into
+`CKRecordZoneID` and none touched `CKRecordZone`, which is why the case kept answering with the real
+getter while the sentinel, the object and the link were all perfectly fine. It also explains "three
+capabilities symbols in the planted object": the stray and the plant are the same method, counted twice
+alongside the real accessor.
+
+The anchor is now on `@implementation CKRecordZone` and the landing is printed, so the next run cannot
+land in the wrong class silently:
+
+    @implementation CKRecordZone {   at line 452
+    - (BOOL)isEqual:(id)other        at line 567   <- the anchor, inside CKRecordZone
+
+and the control, which had not fired through a stale object, a stale link and a missing class all at
+once:
+
+    sentinel CharonPlantMarker IS in the linked binary - the link is not stale
+    PLANTED: same 2  differ 4  -> THE CONTROL FIRED
+
+The lesson worth keeping, and it is not about this file: a control that does not fire is the most
+expensive thing in a differential, and this one survived three wrong explanations before the fifth
+sentence of a diff was read. The three were mine and each looked conclusive - a stale object, a stale
+link, a defect in the port - because each explained the symptom and none was checked against the
+script that produced it.
+
+### The capability numbers from the header, and a gap in the mirror that stops the rows
+
+`CKRecordZoneCapabilities`, read straight out of the 26.2 header rather than from a memory or a
+transcription, with the numbers a caller passes SDK numbers with:
+
+| bit | header | value | declared from |
+| --- | --- | --- | --- |
+| `CKRecordZoneCapabilityFetchChanges` | `1 << 0` | **1** | with the type, ios(8.0) |
+| `CKRecordZoneCapabilityAtomic` | `1 << 1` | **2** | with the type, ios(8.0) |
+| `CKRecordZoneCapabilitySharing` | `1 << 2` | **4** | ios(10.0) |
+| `CKRecordZoneCapabilityZoneWideSharing` | `1 << 3` | **8** | ios(15.0) |
+
+The type itself carries `API_AVAILABLE(... ios(8.0) ...)`, which is why the first two have no
+availability of their own.
+
+**And the four property rows are written, measured, and then taken back, because the mirror refuses
+them.** The rows would be `CKRecordZone.zoneID`, `CKRecordZone.capabilities`,
+`CKRecordZone.encryptionScope` and `CKRecordZone.share` - all four measured on the host, all four
+answered by the port - and the mirror says:
+
+    FAIL a row with no definition in this tree: property CKRecordZone.capabilities,
+         property CKRecordZone.encryptionScope, property CKRecordZone.share, property CKRecordZone.zoneID
+
+The reason is the mirror's own keying, and it is a gap rather than a defect in the rows: it keys on
+`(kind, api)`, and for a `property` row the api is `CKRecordZone.zoneID` - a **selector**, not a class
+symbol - so it is looked for among the implementations and never found. A property row's definition is
+a method on the class that owns it, so the mirror has to resolve `Class.property` to its class and ask
+whether that class is defined. The checklist and the gate do not have this problem, which is why only
+the mirror objects.
+
+**A same-shape neighbour that passes, or there is none to find.** The coordinator is right that I called
+it a gap without looking, so: the mirror matches **only `@implementation X`** - it greps
+`@implementation\s+(\w+)` and nothing else, no `@synthesize`, no `@dynamic`, no getter, no property -
+so a `property` row's api, which is a selector, can never be found among the implementations. There are
+**4490 `kind: property` rows** under `packages/a/apple-backports/registry/`, so the shape is common in
+this repository. Every one of them belongs to another framework, though: the mirror is a **CloudKit-only**
+tool and reads `registry/CloudKit/values.json`, which has **no property rows at all** - 80 class, 13
+method, 25 constant. So there is no CloudKit neighbour of this shape that passes, because the mirror has
+never been asked this question in this tree.
+
+What the other frameworks' 4490 property rows are checked by is the gate, and the gate passes on them -
+so the shape is not wrong in this repository and the rule that admits it exists elsewhere. That makes
+this a tool gap in a CloudKit-only tool rather than a defect in the four rows, but it is a claim about
+the gate's handling that I have not read, and I am not recording it as measured.
+
+**The rows are written**, now that the CloudKit mirror resolves a property row to its class the way it
+already resolved a method row, with a red control that a property naming an undefined class still fails.
+`CKRecordZone.zoneID`, `CKRecordZone.capabilities`, `CKRecordZone.encryptionScope` and
+`CKRecordZone.share`: every one measured on the host, every one answered by the port, and the mirror
+reads 0 in all four directions afterwards. The four capability numbers they record - 1, 2, 4 and 8 - are
+read from the 26.2 header and are the numbers the port's own description tests its bits with, so an app
+that passes SDK numbers and the port that prints them are reading the same header.
+
+Landing four rows that turn a check red to keep a promise about writing rows is the wrong trade, so they
+were taken back first and written second, which is the right order and took one commit longer and the tree is as c11 left it. The next step is the mirror's resolution for property
+rows, then the rows, then the export.

@@ -449,13 +449,45 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 // A zone and what it can do. Every zone this port makes has no capability - the capabilities are a
 // property of the zone the service created, and a name on its own claims none of them - and there is
 // one default zone, which is the same object every time.
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 260000
+// CKRecordZoneEncryptionScope, from the 26.2 header: the type the encryptionScope property and the
+// description's text are stated in. The guard is the shape UIColorWell.m uses in this tree, and it is
+// needed because the two SDKs disagree - the 16.4 headers this port's own target compiles against do
+// not declare the type at all, and the 26.2 headers the host harness compiles against declare it, so
+// declaring it unconditionally is a redefinition on one sysroot and an unknown type on the other.
+typedef NS_ENUM(NSInteger, CKRecordZoneEncryptionScope) {
+    // Zone uses per-record encryption keys for any encrypted values on a record or share. This is the
+    // default, and the host answers it for a zone built in memory (measured).
+    CKRecordZoneEncryptionScopePerRecord = 0,
+    // Zone uses per-zone encryption keys across all records and the zone-wide share.
+    CKRecordZoneEncryptionScopePerZone = 1,
+};
+#endif
+
+// The zone's encryption scope, which the 16.4 header this port compiles against does not declare at
+// all - it arrived in 26.0, and CKRecordZoneEncryptionScope is a 26.0 type - so the property is
+// declared here in a class extension, the way a port carries a member its SDK's headers predate. The
+// numbers and the two cases are the header's.
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 260000
+// The property is declared here, in a class extension, for the same reason and under the same guard:
+// 26.0's CKRecordZone.h declares it and a redeclaration is an error there, while 16.4's does not and a
+// @synthesize has nothing to attach to. A class extension and not a named category, because only an
+// extension's property can be implemented in the class.
+@interface CKRecordZone ()
+@property (nonatomic, readonly, assign) CKRecordZoneEncryptionScope encryptionScope;
+@end
+#endif
+
 @implementation CKRecordZone {
     CKRecordZoneID *_zoneID;
     CKRecordZoneCapabilities _capabilities;
+    CKRecordZoneEncryptionScope _encryptionScope;
+    id _share;
 }
 @synthesize zoneID = _zoneID;
 @synthesize capabilities = _capabilities;
-
+@synthesize encryptionScope = _encryptionScope;
+@synthesize share = _share;
 + (CKRecordZone *)defaultRecordZone
 {
     // One object, so two calls compare equal: measured, and a fresh zone of the same name does not.
@@ -471,17 +503,16 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 - (instancetype)init
 {
     // The header says this is unavailable and the host makes one anyway (measured), so the port does
-    // too rather than refusing where the host does not. An empty zone is a zone of no name.
-    self = [super init];
-    if (self) {
-        _zoneID = [[CKRecordZoneID alloc] initWithZoneName:@"" ownerName:CKOwnerDefaultName];
-    }
-    return self;
+    // too rather than refusing where the host does not. What the host answers is a zone with NO name:
+    // zoneID.zoneName is nil, measured. A zone of the empty name is a different object from a zone of
+    // no name, and the measurement says which one -init makes.
+    return [super init];
 }
 
 - (instancetype)initWithZoneName:(NSString *)zoneName
 {
-    return [self initWithZoneID:[[CKRecordZoneID alloc] initWithZoneName:zoneName ownerName:CKOwnerDefaultName]];
+    return [self initWithZoneID:[[CKRecordZoneID alloc] initWithZoneName:zoneName
+                                                                  ownerName:CKOwnerDefaultName]];
 }
 
 - (instancetype)initWithZoneID:(CKRecordZoneID *)zoneID
@@ -510,40 +541,72 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
     [coder encodeObject:@(_capabilities) forKey:@"capabilities"];
 }
 
-// A copy is a different zone: CKRecordZone has no value equality, and the host answers "different"
-// for a copy against its original (measured).
+// The host's own format, measured:
+//   <CKRecordZone: 0x...; zoneID=<null>, capabilities=(none), encryptionScope=per-record, share=<null>>
+// The address is an address - no port can match it and the comparison normalises it away - and what has
+// to agree is everything after it. The capability text is measured for the one value a host without the
+// entitlement can reach, which is zero and reads (none); the other bit names are the header's own and
+// this file says which is which rather than presenting a transcription as a measurement.
+static NSString *CharonCapabilitiesText(NSUInteger capabilities)
+{
+    if (capabilities == 0) {
+        return @"(none)";
+    }
+    NSMutableArray *names = [NSMutableArray array];
+    if (capabilities & CKRecordZoneCapabilityFetchChanges)   { [names addObject:@"fetchChanges"]; }
+    if (capabilities & CKRecordZoneCapabilityAtomic)         { [names addObject:@"atomic"]; }
+    if (capabilities & CKRecordZoneCapabilitySharing)        { [names addObject:@"sharing"]; }
+    if (capabilities & CKRecordZoneCapabilityZoneWideSharing) { [names addObject:@"zoneWideSharing"]; }
+    return [NSString stringWithFormat:@"(%@)", [names componentsJoinedByString:@", "]];
+}
+
+static NSString *CharonZoneText(CKRecordZoneID *zone)
+{
+    return zone ? [NSString stringWithFormat:@"%@:%@", zone.zoneName, zone.ownerName] : @"<null>";
+}
+
+// A copy is a different zone: CKRecordZone has no value equality, and the host answers "different" for
+// a copy against its original (measured). It is built the way the original was rather than through
+// -initWithZoneID:, which refuses a nil zoneID, and +new's zone has none.
 - (id)copyWithZone:(NSZone *)zone
 {
-    CKRecordZone *copy = [[[self class] allocWithZone:zone] initWithZoneID:_zoneID];
+    CKRecordZone *copy = [[[self class] allocWithZone:zone] init];
+    copy->_zoneID = [_zoneID copy];
     copy->_capabilities = _capabilities;
     return copy;
 }
 
-- (NSString *)description { return [NSString stringWithFormat:@"<CKRecordZone: %@>", _zoneID]; }
-
+- (NSString *)description
+{
+    NSString *scopeText = _encryptionScope == CKRecordZoneEncryptionScopePerZone ? @"per-zone"
+                                                                              : @"per-record";
+    return [NSString stringWithFormat:@"<CKRecordZone: %p; zoneID=%@, capabilities=%@,"
+                                      " encryptionScope=%@, share=%@>",
+                                      self, CharonZoneText(_zoneID), CharonCapabilitiesText(_capabilities),
+                                      scopeText, _share ? [_share description] : @"<null>"];
+}
 
 + (instancetype)new
 {
     // Measured: the host answers +[CKRecordZone new] with a zone, and its own header marks neither
-    // -init nor +new unavailable, so this port does the same and hands back the default zone.
+    // -init nor +new unavailable, so this port does the same and hands back the zone -init makes.
     return [[self alloc] init];
 }
+
 - (BOOL)isEqual:(id)other
 {
-    if (other == self) {
-        return YES;
-    }
-    if (![other isKindOfClass:[CKRecordZone class]]) {
-        return NO;
-    }
-    CKRecordZone *zone = other;
-    return [_zoneID isEqual:zone.zoneID] && _capabilities == zone.capabilities;
-}
-- (NSUInteger)hash
-{
-    return _zoneID.hash ^ (NSUInteger)_capabilities;
+    // Identity, and this file's own header says so of these classes while the code said the opposite.
+    // Measured, in four constructions and all of them agreeing: a copy is not equal to the object it
+    // was copied from, a zone decoded from an archive is not equal to the one archived, and an object
+    // is equal to itself. -defaultRecordZone is unaffected: it hands back one object. CKRecordZoneID is
+    // the other half of this file and is a value on purpose: an identifier names, a zone is a thing.
+    return self == other;
 }
 
+- (NSUInteger)hash
+{
+    return (NSUInteger)(__bridge void *)self;
+}
 @end
 
 #pragma mark - CKRecord
