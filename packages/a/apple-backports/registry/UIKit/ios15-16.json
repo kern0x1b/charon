@@ -2320,7 +2320,7 @@
       "status": "absent",
       "reason": "asked by a find interaction for the session to search with; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UIFindSession",
@@ -2330,7 +2330,7 @@
       "status": "absent",
       "reason": "one search of a find interaction, its results and the highlight of the current one; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIMenu.preferredElementSize",
@@ -2591,7 +2591,7 @@
       "status": "absent",
       "reason": "the delegate told when a document is renamed from the title menu of its navigation bar; the release's navigation bar has no title menu, so nothing is ever renamed there",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UIPageControl.direction",
@@ -2621,7 +2621,7 @@
       "status": "absent",
       "reason": "a paste button the system draws, which pastes without the paste prompt of iOS 16; the release asks nothing before a paste, so a button calling paste: would do what this one does, but drawing it as the system does is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIPasteControlConfiguration",
@@ -2631,7 +2631,7 @@
       "status": "absent",
       "reason": "the look of a UIPasteControl - its shape, colours and label; follows UIPasteControl, not carried (see its row)",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIPopoverPresentationControllerSourceItem",
@@ -2641,7 +2641,7 @@
       "status": "absent",
       "reason": "the protocol UIView and UIBarButtonItem take so a popover can hang from either through sourceItem; the port's UIPopoverPresentationController already hangs from a sourceView or a barButtonItem (facts/UIKit/UIPopoverPresentationController.md), so the protocol could be declared over those - not built for lack of demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UISceneWindowingBehaviors",
@@ -2651,7 +2651,7 @@
       "status": "absent",
       "reason": "the closable and miniaturizable settings of a scene's window, which only a Mac window has; UIWindowScene.windowingBehaviors is nil on a platform without them, as the header says, so no object of this class is ever handed out on a phone or tablet",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory) and the 16.0 cache carries no such name either, so the SDK's 16.0 is uncorroborated by the cache of that release"
     },
     {
       "api": "UIScreen.currentEDRHeadroom",
@@ -2741,7 +2741,7 @@
       "status": "absent",
       "reason": "the protocol of a suggestion listed under a search field; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so there is no list to put one in",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UISearchSuggestionItem",
@@ -2751,7 +2751,7 @@
       "status": "absent",
       "reason": "a suggestion listed under a search field, with a title and an image; the port's search controller shows no suggestion list (facts/UIKit/UISearchController.md) and its search text field has no suggestions (facts/UIKit/UISearchTextField.md), so there is no list to put one in",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UISearchTextField.searchSuggestions",
@@ -2801,7 +2801,7 @@
       "status": "absent",
       "reason": "collects the results of a text search as they are found; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UITextSearchOptions",
@@ -2811,7 +2811,7 @@
       "status": "absent",
       "reason": "the options of a text search - whole words, case, how a match starts; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UITextSearching",
@@ -2821,7 +2821,7 @@
       "status": "absent",
       "reason": "the protocol a view adopts to be searched by a find interaction; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and the 6.1.3 cache declares none (objc-inventory)"
     },
     {
       "api": "UITextSearchingFindSession",
@@ -2831,7 +2831,7 @@
       "status": "absent",
       "reason": "a find session over a view that adopts UITextSearching; the release has no find panel for a text view, and building one over the text view's WebKit body is real work - no demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UITextView.findInteraction",
@@ -2931,7 +2931,7 @@
       "status": "absent",
       "reason": "the scene's resolved orientation, coordinate space and size restrictions; the port's scene answers each of those already (UIKit/UIWindowScene.m), so the object could be built from them - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no held release below 16.0 carries the name (first-rung over the 50-rung ladder), and the 6.1.3 cache holds no such class (objc-inventory)"
     },
     {
       "api": "UIWindowSceneGeometryPreferences",
