@@ -128,7 +128,15 @@ link_one() { # $1 output, rest: objects
     $PHOTOS_CC -target "$triple" -isysroot "$PHOTOS_SDK" -fuse-ld="$PHOTOS_LD" -fobjc-arc \
         -Wl,-rename_section,__DATA,__objc_catlist,__DATA,__charon_catlist \
         -o "$output" "$@" $frameworks $extra
-    ldid -S "$output" >/dev/null 2>&1 || echo "run.sh: ldid could not sign $output" >&2
+    # Fatal, like the [ -e "$tool" ] and `command -v ldid` guards above: a binary that could not be
+    # signed is a binary that is pushed and launched and then fails somewhere else -- an opaque launch
+    # error for an application, and a confusing one for a bare process that a stock release does not
+    # sign at all. `cmd || echo` is the shape self-review §2 names, a swallowed failure on a step whose
+    # failure nobody would notice, and `set -eu` cannot stop on it.
+    if ! ldid -S "$output" >/dev/null 2>&1; then
+        echo "run.sh: ldid could not sign $output" >&2
+        exit 1
+    fi
 }
 
 # $1 program name, $2 process|app, $3 the plist's executable name. Every program is built over the
@@ -202,6 +210,8 @@ copy() { CHARON_ROOT=$root xmake l "$here/copy.lua" "$1" "$2" >/dev/null; }
 fetch() { CHARON_ROOT=$root xmake l "$here/copy.lua" "$1" "$2" --fetch >/dev/null; }
 
 failed=0
+refused=0
+ran=0
 report() { # $1 program, $2 report path on this host
     name=$1
     report=$2
@@ -234,6 +244,7 @@ report() { # $1 program, $2 report path on this host
 for name in $built; do
     case $name in
         photosalbums8|photosavailability13|control)
+            ran=$((ran + 1))
             copy "$out/$name" "$remote_dir/$name"
             run_device "chmod +x $remote_dir/$name; $remote_dir/$name $remote_dir/$name.log; echo \"exit=\$?\""
             fetch "$remote_dir/$name.log" "$out/$name-$device_name.report"
@@ -245,9 +256,12 @@ for name in $built; do
                 echo "$name: REFUSED -- it writes to the photo library, and $which's library is the owner's."
                 echo "  Run it on the iPad 2 (the one holding the fleet's CharonPhotosProbe fixtures), or set PHOTOS_ALLOW_WRITE=1"
                 echo "  if that device's library is a test library. Nothing was pushed and nothing ran."
-                failed=1
+                # Counted as refused, not as a failed check: a check did not fail, a program did not
+                # run. The exit status stays non-zero either way, so a partial run is never a pass.
+                refused=$((refused + 1))
                 continue
             fi
+            ran=$((ran + 1))
             executable=$(echo "$name" | sed 's/photoschanges8/photoschanges/; s/photosdata9/photosdata/')
             copy "$out/$executable.app" "/Applications/$executable.app"
             run_device "uicache -p /Applications/$executable.app; sblaunch local.charon.backports.${executable}"
@@ -286,5 +300,14 @@ for name in $built; do
 done
 
 echo "reports and builds: $out"
-[ "$failed" -eq 0 ] && echo "photos device: every program that ran passed" || echo "photos device: FAILED"
-exit $failed
+# Three counts, because one number would have to mean two things: a program that ran and passed, a
+# program that ran and failed, and a program this script declined to run at all. A default run on any
+# device but the iPad 2 refuses the two that write, and that is not a check failure -- saying which
+# is the difference between a reader trusting the last line and a reader hunting a broken check that
+# does not exist.
+if [ "$failed" -eq 0 ] && [ "$refused" -eq 0 ]; then
+    echo "photos device: $ran ran, 0 refused, every check that ran passed"
+else
+    echo "photos device: $ran ran, $refused refused (not run), $failed failed"
+fi
+[ "$failed" -eq 0 ] && [ "$refused" -eq 0 ]

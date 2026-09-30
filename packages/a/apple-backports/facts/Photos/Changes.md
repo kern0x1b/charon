@@ -158,6 +158,32 @@ at 7bb1720d, in an earlier form whose small test videos the iPad's encoder refus
 code checks this tree passes (18 checks, 11 failed, the rest not reached); and before the staged file took an extension, the
 video given as data failed with no asset (32 checks, 1 failed).
 
+## The run of 2026-09-30, and the path that takes it again
+
+The three programs above had no path that ran them: they were in the tree and their figures were in this
+page, and a regeneration of the queue files had taken the header that says so with it. There is one now --
+`sh tests/backports/device/photos/run.sh` builds each program from this tree's own Photos sources, pushes it
+through the driver's own transport, waits for the report the program writes, and prints the figure and every
+`FAIL` line. Run on an **iPhone 4S running 6.1.3** on 2026-09-30 with `--control photosalbums8`:
+
+    photosalbums8: 3 checks, 0 failed
+    control: 1 checks, 1 failed   (the control failing, as it must)
+    photos device: every program that ran passed
+
+`photosalbums8` is the one program of the three that writes nothing, and a daemon is refused the photo library
+by 6.1.3, so it runs on any device: the release's own enumeration fails with `ALAssetsLibraryErrorDomain`
+-3311 "User denied access", and the port's album check answers that same error instead of "no such album". The
+control is `tests/backports/device/photos/control.m`, which asserts the opposite of that check on the same
+call in the same process and must fail; a run that does not see it fail is told its figures are not evidence.
+
+**The 22 checks above and the 33 were not re-measured on 2026-09-30, and this commit does not restate them.**
+Both need the iPad 2: `photoschanges8` and `photosdata9` are applications that add assets to the library on
+every run, and the runner refuses them on any other device, because the photo library of a device that is not
+the iPad 2 is the owner's. The iPad 2 was not attached on 2026-09-30, so the runner printed the refusal and
+ran nothing else. What the two figures say about the port is unchanged and what is missing is a device, not a
+test: the next run of that script on the iPad 2 prints both, and the page's own text above is what they are
+compared against.
+
 The saved photos of iOS 6 do not keep the bytes they are given: a 726-byte JPEG written with
 `writeImageDataToSavedPhotosAlbum:metadata:` and `nil` metadata reads back as 1929 bytes, measured the same with no port code on the
 path. The resource and the resource manager hand back what the library stores — identical to a direct `ALAssetsLibrary` read of the
