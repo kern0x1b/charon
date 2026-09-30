@@ -5,10 +5,48 @@ before a line of code is written:
 
 | class | in the release? | what it has there |
 | --- | --- | --- |
-| `PKPass` | **yes**, 90 instance methods | `-initWithData:error:`, `-initWithCoder:`, `-encodeWithCoder:`, `passTypeIdentifier`, `serialNumber`, `passNumber`, `organizationName`, `localizedDescription`, `expirationDate`, `activationDate`, `userName`, `deviceName`, `primaryAccountNumberSuffix`, `foregroundColor`, `backgroundColor`, `logoImage`, `-copyWithZone:`, `+supportsSecureCoding` |
-| `PKPassLibrary` | **yes**, 34 instance methods | `-containsPass:`, `-passesOfType:`, `-cardAddedWithUniqueID:`, `-cardChangedWithUniqueID:`, `-cardRemovedWithPassTypeIdentifier:serialNumber:`, `+isPassLibraryAvailable` |
-| `PKAddPassesViewController` | **yes**, 26 instance methods | `-initWithPass:`, `-initWithPass:orURL:`, `-initWithURL:`, `-setDelegate:`, `delegate`, `+isAvailable` |
-| `PKPaymentAuthorizationViewController`, `PKPaymentRequest`, `PKPaymentSummaryItem`, `PKPaymentToken`, `PKPaymentAuthorizationController` | **no** | absent from the release entirely |
+| `PKPass` | **yes**, 90 instance methods, 1 class method | `-initWithData:error:`, `-initWithCoder:`, `-encodeWithCoder:`, `-copyWithZone:`, `-supportsSecureCoding`, `passTypeIdentifier`, `serialNumber`, `uniqueID`, `teamID`, `organizationName`, `localizedDescription`, `localizedName`, `templateDescription`, `activationDate`, `expirationDate`, `relevantDate`, `institution`, `passURL`, `webServiceURL`, `logoRect`, `logoText`, `iconImage`, `barcode`, `transitType`, `authenticationToken`, `manifestHash`, `storeIdentifiers` |
+| `PKPassLibrary` | **yes**, 34 instance methods, 1 class method | `-containsPass:`, `-cardAddedWithUniqueID:`, `-cardChangedWithUniqueID:`, `-cardRemovedWithPassTypeIdentifier:serialNumber:`, `-cardRemovedWithInfo:`, `-passes`, `-passesWithHandler:`, `-passWithUniqueID:`, `-passWithPassTypeIdentifier:serialNumber:`, `-removePass:`, `-addFakeBulletin`, `-isPassLibraryAvailable` (class) |
+| `PKAddPassesViewController` | **yes**, 26 instance methods, 1 class method | `-initWithPass:`, `-initWithPass:orURL:`, `-initWithURL:`, `-initWithNibName:bundle:`, `-setDelegate:`, `delegate`, `-isAvailable` (class) |
+| `PKRemotePass` | **yes**, 8 instance methods, superclass `PKPass` | the release's own pass relay: a pass on another device, which is what `PKPass.remotePass` answers with |
+| `PKLocalPass` | **yes**, 42 instance methods, superclass `PKPass` | the release's own pass on this device |
+| `PKPaymentAuthorizationViewController`, `PKPaymentRequest`, `PKPaymentSummaryItem`, `PKPaymentToken`, `PKPaymentAuthorizationController` | **no** | absent from the release entirely: zero `PKPayment*` and zero `PKAddPayment*` classes in the 12549 the cache yields |
+
+**Eight of the thirty selectors an earlier revision of this table claimed are not in the cache, and
+that drift is what made a registry row's reason false.** Checked one by one against the measured
+`apple.objc.inventory` dump of the armv7 cache of 6.1.3 (`.agent-work/runs/passkit-1/rung3-6.1.3-objc.tsv`):
+
+| claimed | where | really |
+| --- | --- | --- |
+| `PKPass.passNumber` | iOS 9 | **absent from 6.1.3** |
+| `PKPass.userName` | iOS 8 | **absent from 6.1.3** |
+| `PKPass.deviceName` | iOS 9 | **absent from 6.1.3** |
+| `PKPass.primaryAccountNumberSuffix` | iOS 8 | **absent from 6.1.3** |
+| `PKPass.foregroundColor` | iOS 8 | **absent from 6.1.3** |
+| `PKPass.backgroundColor` | iOS 8 | **absent from 6.1.3** |
+| `PKPass.logoImage` | iOS 8 | **absent from 6.1.3** -- the release has `-iconImage`, `-logoRect` and `-logoText` |
+| `PKPassLibrary.-passesOfType:` | iOS 8 | **absent from 6.1.3** -- the release has `-passes` and `-passesWithHandler:` |
+
+The `PKAddPassesViewController` row was right in all six. So the table claimed **30** selectors across
+the three rows and **22** are there; eight were not. `PKPass.deviceName` is the one that cost
+something: the registry row for it read "Apple's own answers it for a pass on another device", on the
+authority of a table listing `deviceName` among the release's members. The release has no such
+accessor, so that sentence was false, and the row now says what the cache says.
+
+**A bare name is not a member: `first-rung` answers presence, never ownership.** Run over the held
+ladder, `deviceName` first appears at **3.0** -- and that is *another class's* selector (`UIDevice`),
+not `PKPass`'s. The ladder searches every C string in a cache, so a name shared by a hundred classes
+reads at whichever release introduced the first of them. So for a name owned by a class, presence in
+the ladder says nothing about whether THAT class has it, and the only measurement that does is
+`apple.objc.inventory`'s per-class selector list. Read the ladder for whether a name exists anywhere;
+read the inventory for who owns it.
+
+**A third trap, which cost this table three more entries: the inventory prefixes every selector with
+`-`, class methods included.** Its class-method table is keyed `-selector`, not `+selector` (which is
+what `carried_by_release` in `modules/apple/backports.lua` looks up). So a class method written `+`
+in prose matches nothing on a naive grep, and reads as absent when it is present. `+supportsSecureCoding`,
+`+isPassLibraryAvailable` and `+isAvailable` are all in the cache as `-supportsSecureCoding`,
+`-isPassLibraryAvailable`, `-isAvailable`; all three are the class column, and all three are there.
 
 The five classes of the 8.0 payment request, measured the same way, with the control that certifies
 the reader in the same run:
@@ -56,6 +94,27 @@ category methods, which is why the check above was run one selector at a time in
 `apple.dyld`'s `first_releases` for the 75 classes the SDK 26.2 declares and this port does not
 have: 8.0 ×7, 8.1 ×1, 9.0 ×6, 10.0.1 ×1, 10.1.1 ×2, 11.0 ×5, 12.0 ×1, 16.0 ×39, 18.0 ×9, and 3 in
 no held release (the 26.x identity-document classes).
+
+## `PKRemotePass`: the release has the pass relay, so `remotePass` is an answer and not an absence
+
+The cache holds **`PKRemotePass`**, superclass `PKPass`, 8 instance methods, and **`PKLocalPass`**,
+superclass `PKPass`, 42 -- the release's own split of a pass by where it lives. That is Apple's pass
+relay of 6.1.3 working, the service that kept a pass on another device current, and it is the reason
+`PKPass.remotePass` (SDK 9.0) is **not** the "absent hardware" row its two siblings were.
+
+The release tracks the distinction **by class identity, not by a property**: 6.1.3's `PKPass` carries
+no `remotePass` accessor and no `isRemotePass` either (all 90 selectors measured, the only `remote`
+strings in the whole `PK*` set are `PKAddPassesViewController`'s `-_remoteViewController` and
+`PKServiceAddPassesViewController`'s `-remoteViewControllerProxy`). The subclass IS the record. So the
+category answers from the release's own data, with no invented state:
+
+    isKindOfClass: the release's own PKRemotePass  ->  self (that is the remote pass)
+    otherwise                                        ->  nil   (no other device's pass)
+
+That is a measured answer to a real question, which is the whole difference between this row and
+`PKPass.secureElementPass`, where the answer is nil because there is no Secure Element at all. Getting
+this from the cache is what a header cannot tell you: `PKPass.h` says the property exists from 9.0 and
+says nothing about whether the 6.1.3 release had the thing behind it. It did.
 
 ## What this decides
 
