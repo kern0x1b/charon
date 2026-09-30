@@ -8,8 +8,9 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 0 member(s) whose type is a class of a later group are
-//  left dynamic and answered in registry/Intents instead of with nil.
+//  parent's state, and 3 member(s) are left dynamic - a class property of the
+//  class's own type, or a property of a class of a later group - and answered in
+//  registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
 //  CharonIntents12.0.m, and the generator leaves them out.
@@ -845,6 +846,7 @@
 @end
 
 @implementation INRelevantShortcutStore
+    @dynamic defaultStore;  // a property of the class's own type: see registry/Intents
 
 - (instancetype)init
 {
@@ -963,6 +965,7 @@
 @end
 
 @implementation INUpcomingMediaManager
+    @dynamic sharedManager;  // a property of the class's own type: see registry/Intents
 
 @end
 
@@ -1020,6 +1023,7 @@
 @end
 
 @implementation INVoiceShortcutCenter
+    @dynamic sharedCenter;  // a property of the class's own type: see registry/Intents
 
 - (instancetype)init
 {

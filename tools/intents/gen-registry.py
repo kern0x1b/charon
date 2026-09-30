@@ -185,17 +185,35 @@ INIT_SOURCE = SOURCE + (
     "that harness runs")
 
 
+def member_name(api):
+    """The name the generator records a cause under, for a row of either shape.
+
+    A method row is "-[INCar setMaximumPower:forChargingConnectorType:]" and the name is what
+    follows the last space with the bracket off. A PROPERTY row is "INRelevantShortcutStore.defaultStore"
+    and there is no space in it at all, so the space test alone left every property row with no
+    name to look up: the cause was recorded under "defaultStore", the lookup asked under the whole
+    row, it missed, and the member fell back to the group's blanket reason. That is how the four
+    class properties read "a class of a later group of this same delivery" when the generator had
+    recorded class_property for each of them. Both spellings are asked for, so one function serves
+    the two row shapes rather than one of them being right by accident.
+    """
+    if " " in api:
+        return api.rsplit(" ", 1)[-1][:-1]
+    return api.split(".", 1)[1] if "." in api else None
+
+
 def reason_for(causes, vocabulary, api, fallback):
     """The reason for a member, from the cause the generator recorded for it.
 
-    The generator records a cause under the member's own selector - "EKRecurrenceRule",
-    "initWithEKRecurrenceRule:" - and the registry asks under the whole row,
-    "-[INDateComponentsRange EKRecurrenceRule]".  Every lookup that did only the second missed,
-    and the member fell back to the group's blanket reason, which is how a row whose class this
-    delivery carries read "a class of a later group of this same delivery".
+    The generator records a cause under the member's own name - "EKRecurrenceRule",
+    "initWithEKRecurrenceRule:", "defaultStore" - and the registry asks under the whole row,
+    "-[INDateComponentsRange EKRecurrenceRule]", "INRelevantShortcutStore.defaultStore". Every
+    lookup that did only the second missed, and the member fell back to the group's blanket reason,
+    which is how a row whose class this delivery carries read "a class of a later group of this
+    same delivery".
     """
-    selector = api.rsplit(" ", 1)[-1][:-1] if " " in api else None
-    return vocabulary.get(causes.get(api) or causes.get(selector), fallback)
+    name = member_name(api)
+    return vocabulary.get(causes.get(api) or causes.get(name), fallback)
 
 
 def generator_property_names(selector):
@@ -566,8 +584,9 @@ def main():
         # same delivery" when the cause the generator had recorded for one of them was
         # deferred_value and for the other now foreign_class.  The selector is tried too.
         # "a class of the same name" no: "X" is the class and "selector]" is the member, so the
-        # selector is what follows the LAST space with the closing bracket off.
-        selector = api.rsplit(" ", 1)[-1][:-1] if " " in api else None
+        # name is what follows the LAST space with the closing bracket off, or the whole of a
+        # property row's "Class.property" second field - member_name() has both spellings, and this
+        # second copy of the space-only test is what left every property cause unlooked-up.
         reason = reason_for(causes, vocabulary, api, None)
         if reason is None and owner in answered:
             # The generator read every header of the SDK this port compiles against and wrote

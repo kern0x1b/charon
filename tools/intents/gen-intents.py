@@ -254,6 +254,16 @@ CAUSES = {
         "a member of a class of a later group of this same delivery",
 }
 
+# The same causes in the short form a @dynamic line in the generated source can carry. CAUSES is a
+# sentence for the registry's `reason`; a source comment needs a phrase, and the two are kept
+# beside each other so a cause cannot be added to one and not the other.
+CAUSE_LABELS = {
+    "later_group": "a class of a later group",
+    "forward_only_class": "a class the headers only forward declare",
+    "class_property": "a property of the class's own type",
+    "unanswered": "a class of a later group",
+}
+
 # The enumerations whose zero case is the one that says nothing, measured from the host: its own
 # framework logs "Success resolution with <Enum>Unknown will be reformed to notRequired." for a
 # success carrying that case (observed on the host's own Intents, 2026-09-27, for
@@ -774,6 +784,22 @@ def render(interface, protocols, carried, intents, interfaces, forward=()):
 def implementation(interface, protocols, carried, intents, interfaces, forward=()):
     resolution = resolution_result(interface.superclass, interfaces)
     conformed = conformed_by(interface, interfaces)
+    # A CLASS PROPERTY is dropped here, and it used to be dropped silently: the filter took
+    # `not p.get("class")` and the property reached neither `stored`, nor `dynamic`, nor `skipped`,
+    # so no cause was recorded for it and gen-registry.py fell back to the group's blanket reason.
+    # That made a member whose class this delivery carries read "a class of a later group of this
+    # same delivery", which is the false claim this generator's own history is about. It is the
+    # eight rows INRelevantShortcutStore.defaultStore, INUpcomingMediaManager.sharedManager,
+    # INVoiceShortcutCenter.sharedCenter and INFocusStatusCenter.defaultCenter came to have.
+    #
+    # They are the members the class_property cause already names - a singleton of the class's own
+    # type is the class's own identity, which the runtime holds - so they are recorded as dynamic
+    # under that cause rather than filtered away, and the registry says the cause instead of the
+    # group. A class property is still not answered: the body belongs to the class, and one that
+    # returns a fresh instance each call would not be the singleton the header's own comment asks
+    # for. That is a separate change and it is not this one.
+    class_properties = {p.get("name"): p for p in interface.properties
+                        if p.get("name") and p.get("class")}
     own = {p.get("name"): p for p in interface.properties
            if p.get("name") and not p.get("class")}
 
@@ -793,6 +819,9 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     stored, synthesised, dynamic, setters, skipped, members = [], [], [], [], [], []
     causes_by_name = {}
     dynamic_causes = {}
+    for name, member in sorted(class_properties.items()):
+        causes_by_name[name] = "class_property"
+        dynamic.append((name, member.get("category"), "class_property"))
     for name, member in sorted(own.items()):
         kind = type_of(member)
         if base_type(kind) == interface.name:
@@ -872,16 +901,21 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         out.append("@end")
         out.append("")
     out += ["@implementation %s" % interface.name] + synthesised
-    for name, category in dynamic:
+    # Three fields: the name, the category it came from, and why it is dynamic. The unpacking here
+    # took two until a class property made `dynamic` non-empty for the first time (see the class
+    # property branch in implementation()), and the cause is now what the comment should name -
+    # "a class of a later group" is one cause of several and is wrong for the rest.
+    for name, category, cause in dynamic:
         if not category:
-            out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
+            out.append("    @dynamic %s;  // %s: see registry/Intents"
+                       % (name, CAUSE_LABELS.get(cause, cause)))
 
     if interface.name in HAND_WRITTEN:
         return out + ["", "@end", ""], {"properties": [], "dynamic": [], "methods": [],
                                         "causes": {}}
 
     out.append("")
-    deferred_names = {name for name, _ in dynamic}
+    deferred_names = {name for name, _, _ in dynamic}
     methods_written = set()
     states = {}
     for ivar, kind, name in stored:
@@ -1022,9 +1056,10 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
     # extension's ivars, which are declared in this same file.
     for category, found in sorted(by_category.items()):
         out.append("@implementation %s (Charon%s%s)" % (interface.name, interface.name, category))
-        for name, where in dynamic:
+        for name, where, cause in dynamic:
             if where == category:
-                out.append("    @dynamic %s;  // a class of a later group: see registry/Intents" % name)
+                out.append("    @dynamic %s;  // %s: see registry/Intents"
+                       % (name, CAUSE_LABELS.get(cause, cause)))
         for name, kind, member in sorted(found, key=lambda item: item[0]):
             getter = (member.get("getter") or {}).get("name") or name
             out += ["", "- (%s)%s" % (kind, getter), "{", "    return _%s;" % name, "}"]
@@ -1173,8 +1208,9 @@ def banner(name, classes, release, deferred):
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and %(deferred)d member(s) whose type is a class of a later group are
-//  left dynamic and answered in registry/Intents instead of with nil.
+//  parent's state, and %(deferred)d member(s) are left dynamic - a class property of the
+//  class's own type, or a property of a class of a later group - and answered in
+//  registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
 //  CharonIntents%(release)s.m, and the generator leaves them out.

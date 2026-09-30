@@ -8,8 +8,9 @@
 //
 //  Every method the header declares here has a body that stores or returns the class's own
 //  state, the coding and copying helpers walk the whole ivar chain so a subclass keeps its
-//  parent's state, and 0 member(s) whose type is a class of a later group are
-//  left dynamic and answered in registry/Intents instead of with nil.
+//  parent's state, and 1 member(s) are left dynamic - a class property of the
+//  class's own type, or a property of a class of a later group - and answered in
+//  registry/Intents instead of with nil.
 //
 //  The classes whose behaviour is more than storage are hand written in
 //  CharonIntents16.0.m, and the generator leaves them out.
@@ -1886,6 +1887,7 @@
 @implementation INFocusStatusCenter
     @synthesize authorizationStatus = _authorizationStatus;
     @synthesize focusStatus = _focusStatus;
+    @dynamic defaultCenter;  // a property of the class's own type: see registry/Intents
 
 @end
 

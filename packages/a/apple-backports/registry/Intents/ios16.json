@@ -3680,7 +3680,7 @@
       "kind": "property",
       "introduced": "15.0",
       "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
+      "reason": "a property of the class's own type on the class is the class's own identity, which the runtime holds, and there is no storage for it to keep",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
