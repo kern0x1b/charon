@@ -107,3 +107,63 @@ typedef NS_ENUM(NSInteger, WKWebExtensionMatchPatternError) {
                            resourcePath:(NSString *)resourcePath
                                  errors:(NSArray<NSError *> *)errors __attribute__((objc_method_family(init)));
 @end
+
+// The toolbar button and the keyboard commands. Both are NS_UNAVAILABLE to a program -- a CONTEXT
+// hands them out -- and both are value holders, so the port carries the members and a context
+// supplies the values. WKWebExtensionTab and WKWebExtensionContext are forward-declared here: they
+// are their own families and this one only holds weak references to them.
+@class WKWebExtensionContext;
+@protocol WKWebExtensionTab;
+@class WKWebView;
+
+@interface WKWebExtensionAction : NSObject
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
+@property (nonatomic, readonly, weak) WKWebExtensionContext *webExtensionContext;
+@property (nonatomic, readonly, nullable, weak) id<WKWebExtensionTab> associatedTab;
+- (nullable UIImage *)iconForSize:(CGSize)size;
+@property (nonatomic, readonly, copy) NSString *label;
+@property (nonatomic, readonly, copy) NSString *badgeText;
+@property (nonatomic) BOOL hasUnreadBadgeText;
+@property (nonatomic, nullable, copy) NSString *inspectionName;
+@property (nonatomic, readonly, getter=isEnabled) BOOL enabled;
+@property (nonatomic, readonly, copy) NSArray<UIMenuElement *> *menuItems;
+@property (nonatomic, readonly) BOOL presentsPopup;
+@property (nonatomic, readonly, nullable) UIViewController *popupViewController;
+@property (nonatomic, readonly, nullable) WKWebView *popupWebView;
+- (void)closePopup;
+@end
+
+@interface WKWebExtensionCommand : NSObject
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+@property (nonatomic, readonly, weak) WKWebExtensionContext *webExtensionContext;
+@property (nonatomic, readonly, copy) NSString *identifier;
+@property (nonatomic, readonly, copy) NSString *title;
+@property (nonatomic, nullable, copy) NSString *activationKey;
+@property (nonatomic) UIKeyModifierFlags modifierFlags;
+@property (nonatomic, readonly, copy) UIMenuElement *menuItem;
+@property (nonatomic, readonly, copy, nullable) UIKeyCommand *keyCommand;
+@end
+
+// The port's own initialisers and setters, charon_-prefixed so they can never collide with a selector
+// a later SDK grows, and in the init family because they assign to self.
+@interface WKWebExtensionAction (CharonAction)
+- (instancetype)charon_initWithContext:(WKWebExtensionContext *)context __attribute__((objc_method_family(init)));
+- (void)charon_setLabel:(NSString *)label
+              badgeText:(NSString *)badgeText
+       inspectionName:(NSString *)inspectionName
+             menuItems:(NSArray<UIMenuElement *> *)menuItems
+                   icon:(UIImage *)icon
+        presentsPopup:(BOOL)presentsPopup
+  popupViewController:(UIViewController *)popupViewController
+               enabled:(BOOL)enabled;
+- (void)charon_setAssociatedTab:(id<WKWebExtensionTab>)tab;
+@end
+
+@interface WKWebExtensionCommand (CharonCommand)
+- (instancetype)charon_initWithContext:(WKWebExtensionContext *)context
+                             identifier:(NSString *)identifier
+                                  title:(NSString *)title __attribute__((objc_method_family(init)));
+- (void)charon_setActivationKey:(NSString *)activationKey menuItem:(UIMenuElement *)menuItem;
+@end
