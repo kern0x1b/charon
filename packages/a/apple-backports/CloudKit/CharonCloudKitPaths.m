@@ -51,6 +51,17 @@ NSDictionary *CharonCKZoneIDDocument(CKRecordZoneID *zoneID)
     return @{@"zoneName": zoneID.zoneName, @"ownerName": zoneID.ownerName};
 }
 
+CKRecordZoneID *CharonCKZoneIDFromDocument(NSDictionary *json)
+{
+    if (![json isKindOfClass:[NSDictionary class]]
+        || ![json[@"zoneName"] isKindOfClass:[NSString class]]) {
+        return nil;
+    }
+    NSString *owner = json[@"ownerName"];
+    return [[CKRecordZoneID alloc] initWithZoneName:json[@"zoneName"]
+                                         ownerName:[owner isKindOfClass:[NSString class]] ? owner : nil];
+}
+
 CKRecordID *CharonCKRecordIDFromDocument(NSDictionary *json)
 {
     if (![json isKindOfClass:[NSDictionary class]] || ![json[@"recordName"] isKindOfClass:[NSString class]]) {

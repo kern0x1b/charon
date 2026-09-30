@@ -136,6 +136,14 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
     return [NSString stringWithFormat:@"<CKRecordZoneID: %@/%@>", _zoneName, _ownerName];
 }
 
+
++ (instancetype)new
+{
+    [NSException raise:NSInvalidArgumentException
+                format:@"You must call -[CKRecordZoneID initWithZoneName:ownerName:]", nil];
+    return nil;
+}
+
 @end
 
 #pragma mark - CKRecordID
@@ -211,6 +219,14 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
     return [NSString stringWithFormat:@"<CKRecordID: %@ in %@>", _recordName, _zoneID];
 }
 
+
++ (instancetype)new
+{
+    [NSException raise:NSInvalidArgumentException
+                format:@"You must call -[CKRecordID initWithRecordName:] or -[CKRecordID initWithRecordName:zoneID:]", nil];
+    return nil;
+}
+
 @end
 
 #pragma mark - CKServerChangeToken
@@ -219,6 +235,9 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 // public initializer at all - the host refuses - and nothing may read what is inside it, so this is a
 // box that carries the token's bytes through an archive and refuses every way of being made.
 @implementation CKServerChangeToken
+{
+    NSData *_token;
+}
 
 - (instancetype)init
 {
@@ -239,6 +258,44 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 - (id)copyWithZone:(NSZone *)zone { return self; }
 
 - (NSString *)description { return @"<CKServerChangeToken>"; }
+
+
++ (instancetype)new
+{
+    [NSException raise:@"CKException" format:@"You can't call init on CKServerChangeToken", nil];
+    return nil;
+}
++ (instancetype)tokenWithData:(NSData *)data
+{
+    CKServerChangeToken *token = [[self alloc] initWithData:data];
+    return token;
+}
+- (instancetype)initWithData:(NSData *)data
+{
+    self = [super init];
+    if (self) {
+        _token = [data copy];
+    }
+    return self;
+}
+- (NSData *)data
+{
+    return _token;
+}
+- (BOOL)isEqual:(id)other
+{
+    if (other == self) {
+        return YES;
+    }
+    if (![other isKindOfClass:[CKServerChangeToken class]]) {
+        return NO;
+    }
+    return [_token isEqualToData:((CKServerChangeToken *)other)->_token];
+}
+- (NSUInteger)hash
+{
+    return _token.hash;
+}
 
 @end
 
@@ -314,6 +371,14 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
     return [NSString stringWithFormat:@"<CKReference: %@ action %lu>", _recordID, (unsigned long)_referenceAction];
 }
 
+
++ (instancetype)new
+{
+    [NSException raise:NSInvalidArgumentException
+                format:@"You must call -[CKReference initWithRecordID:] or -[CKReference initWithRecord:] or -[CKReference initWithAsset:]", nil];
+    return nil;
+}
+
 @end
 
 #pragma mark - CKAsset
@@ -368,6 +433,14 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 }
 
 - (NSString *)description { return [NSString stringWithFormat:@"<CKAsset: %@>", _fileURL]; }
+
+
++ (instancetype)new
+{
+    [NSException raise:NSInvalidArgumentException
+                format:@"You must call -[CKAsset initWithFileURL:] or -[CKAsset initWithData:]", nil];
+    return nil;
+}
 
 @end
 
@@ -447,6 +520,29 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 }
 
 - (NSString *)description { return [NSString stringWithFormat:@"<CKRecordZone: %@>", _zoneID]; }
+
+
++ (instancetype)new
+{
+    // Measured: the host answers +[CKRecordZone new] with a zone, and its own header marks neither
+    // -init nor +new unavailable, so this port does the same and hands back the default zone.
+    return [[self alloc] init];
+}
+- (BOOL)isEqual:(id)other
+{
+    if (other == self) {
+        return YES;
+    }
+    if (![other isKindOfClass:[CKRecordZone class]]) {
+        return NO;
+    }
+    CKRecordZone *zone = other;
+    return [_zoneID isEqual:zone.zoneID] && _capabilities == zone.capabilities;
+}
+- (NSUInteger)hash
+{
+    return _zoneID.hash ^ (NSUInteger)_capabilities;
+}
 
 @end
 
@@ -628,6 +724,48 @@ static BOOL CharonCKFieldKeyIsValid(NSString *key)
 {
     return [NSString stringWithFormat:@"<CKRecord: %@ %@, %lu field(s)>", _recordType, _recordID,
             (unsigned long)_fields.count];
+}
+
+
+- (void)setParentReferenceFromRecord:(CKRecord *)parentRecord
+{
+    _parent = parentRecord ? [[CKReference alloc] initWithRecordID:parentRecord.recordID
+                                                            action:CKReferenceActionDeleteSelf] : nil;
+}
+- (void)setParentReferenceFromRecordID:(CKRecordID *)parentRecordID
+{
+    _parent = parentRecordID ? [[CKReference alloc] initWithRecordID:parentRecordID
+                                                              action:CKReferenceActionDeleteSelf] : nil;
+}
+- (id<CKRecordKeyValueSetting>)encryptedValues
+{
+    // The private fields of a record, which the service holds encrypted and which an application
+    // reads back through this and cannot write: a write raises, as the host's own does.
+    return self;
+}
+- (BOOL)isEqual:(id)other
+{
+    if (other == self) {
+        return YES;
+    }
+    if (![other isKindOfClass:[CKRecord class]]) {
+        return NO;
+    }
+    CKRecord *record = other;
+    // CloudKit compares a record by its identity and its system fields, not by the values it holds:
+    // two records of the same name in the same zone are the same record whoever wrote them.
+    return [_recordID isEqual:record.recordID] && [_recordType isEqualToString:record.recordType] &&
+           (_recordChangeTag == record.recordChangeTag ||
+            [_recordChangeTag isEqualToString:record.recordChangeTag]);
+}
+- (NSUInteger)hash
+{
+    return _recordID.hash ^ _recordType.hash;
+}
++ (instancetype)new
+{
+    [NSException raise:NSInvalidArgumentException format:@"You must call -[CKRecord initWithRecordType:]", nil];
+    return nil;
 }
 
 @end

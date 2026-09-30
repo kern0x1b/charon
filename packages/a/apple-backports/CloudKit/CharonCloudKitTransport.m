@@ -36,6 +36,16 @@
 - (void)finishBody:(id)body error:(NSError *)error;
 @end
 
+@implementation CharonCKRequest
+
+@synthesize request = _request;
+@synthesize completion = _completion;
+@synthesize finished = _finished;
+@synthesize body = _body;
+@synthesize status = _status;
+
+@end
+
 @implementation CharonCKTransport
 
 // The two tables are private, set once by +initialize and read through -containerForDatabase and
