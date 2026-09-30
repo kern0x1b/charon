@@ -173,6 +173,30 @@ int main(void)
             check(@"+supportsSecureCoding is YES (NSSecureCoding is in the header)",
                   [CPVoiceControlState supportsSecureCoding] ? @"YES" : @"NO",
                   [CPVoiceControlState supportsSecureCoding] ? @"YES" : @"NO");
+            // A nil array in, nil out. The header declares titleVariants `nullable, copy`, and a
+            // getter that answered an empty array instead would be a quiet different answer -- the
+            // port's row says nil and the port's object has to answer nil.
+            CPVoiceControlState *bare = [[CPVoiceControlState alloc] initWithIdentifier:@"charon.bare"
+                                                                          titleVariants:nil
+                                                                                  image:nil
+                                                                                repeats:NO];
+            check(@"titleVariants answers nil when it was given nil", bare.titleVariants == nil,
+                  describe(bare.titleVariants));
+            // "Voice Control state images may be a maximum of 150 by 150 points" is enforced by the
+            // framework, not only documented: a 300x300 image comes back 150x150. The port scales
+            // rather than keeps, because this is what Apple's own object does.
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(300.0, 300.0), NO, 1.0);
+            [[UIColor redColor] setFill];
+            UIRectFill(CGRectMake(0.0, 0.0, 300.0, 300.0));
+            UIImage *large = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+            CPVoiceControlState *scaled = [[CPVoiceControlState alloc] initWithIdentifier:@"charon.scaled"
+                                                                             titleVariants:@[@"Scaled"]
+                                                                                     image:large
+                                                                                   repeats:NO];
+            check(@"an image over 150 points a side comes back 150 by 150",
+                  scaled.image != nil && scaled.image.size.width <= 150.0 && scaled.image.size.height <= 150.0,
+                  [NSString stringWithFormat:@"%g by %g", scaled.image.size.width, scaled.image.size.height]);
             // The round trip, because the header declares NSSecureCoding and a value that cannot
             // encode is a value that cannot cross a process boundary.
             NSError *error = nil;
@@ -231,6 +255,34 @@ int main(void)
             check(@"an identifier no state carries becomes the active one anyway (measured)",
                   [voice.activeStateIdentifier isEqualToString:@"charon.state99"],
                   [NSString stringWithFormat:@"active is now %@", describe(voice.activeStateIdentifier)]);
+            // The header's rate limit -- "the template will ignore voice control state changes that
+            // occur too rapidly or frequently in a short period of time" -- measured against the
+            // object's own state: twelve activations in a tight loop, and every one of them takes.
+            // The limit the header describes is on what a car then shows, which is the wall; the
+            // object follows every activation, and the port must not invent an interval.
+            NSUInteger effective = 0;
+            const NSUInteger rounds = 12;
+            for (NSUInteger round = 0; round < rounds; round++) {
+                NSString *wanted = [NSString stringWithFormat:@"charon.state%lu", (unsigned long)(round % 5)];
+                [voice activateVoiceControlStateWithIdentifier:wanted];
+                if ([voice.activeStateIdentifier isEqualToString:wanted]) {
+                    effective++;
+                }
+            }
+            check(@"twelve activations in a tight loop all take effect: no interval in the object",
+                  effective == rounds,
+                  [NSString stringWithFormat:@"%lu of %lu", (unsigned long)effective, (unsigned long)rounds]);
+            // An empty array and a nil array are two different answers, and the port keeps them apart.
+            CPVoiceControlTemplate *empty = [[CPVoiceControlTemplate alloc] initWithVoiceControlStates:@[]];
+            check(@"an empty array of states keeps an empty array and no active state",
+                  [empty.voiceControlStates count] == 0 && empty.activeStateIdentifier == nil,
+                  [NSString stringWithFormat:@"%lu states, active %@", (unsigned long)[empty.voiceControlStates count],
+                      describe(empty.activeStateIdentifier)]);
+            CPVoiceControlTemplate *none = [[CPVoiceControlTemplate alloc] initWithVoiceControlStates:nil];
+            check(@"a nil array of states answers nil for both, as the framework does",
+                  none.voiceControlStates == nil && none.activeStateIdentifier == nil,
+                  [NSString stringWithFormat:@"states %@, active %@", describe(none.voiceControlStates),
+                      describe(none.activeStateIdentifier)]);
         }
         printf("\n");
 

@@ -139,10 +139,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a navigation session is a car driving: there is no car, so the session the class names is not there",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "the SDK's own header forbids the call: CPNavigationSession.h:33-34 marks it NS_UNAVAILABLE, which is a compile-time refusal, so the port's own header refuses an app's call the same way and nothing of ours answers it. Apple's object answers the inherited NSObject one when a program sends it anyway (measured), and carrying that would be a stand-in for an object no header says may be made -- it is not inert, because an inert row promises the port answers",
+      "effect": "nothing of ours answers it, for the same reason as -init: a session is begun with -startNavigationSessionForTrip: on a map template and is not made by the program that is given it",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "+[CPRouteChoice new]",
@@ -150,10 +150,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a route choice is offered by a car's navigation: with no car there is no route choice to offer",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "the SDK's own header forbids the call: CPTrip.h:25-26 marks it NS_UNAVAILABLE, which is a compile-time refusal, so the port's own header refuses an app's call the same way and nothing of ours answers it. Apple's object answers the inherited NSObject one when a program sends it anyway (measured), and carrying that would be a stand-in for an object no header says may be made -- it is not inert, because an inert row promises the port answers",
+      "effect": "nothing of ours answers it: a route choice is made by -initWithSummaryVariants:additionalInformationVariants:selectionSummaryVariants:, which the port carries, and the call the header forbids is not compiled at all",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "+[CPSessionConfiguration new]",
@@ -161,10 +161,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "the SDK's own header forbids the call: CPSessionConfiguration.h:29-30 marks it NS_UNAVAILABLE, which is a compile-time refusal, so the port's own header refuses an app's call the same way and nothing of ours answers it. Apple's object answers the inherited NSObject one when a program sends it anyway (measured), and carrying that would be a stand-in for an object no header says may be made -- it is not inert, because an inert row promises the port answers",
+      "effect": "nothing of ours answers it, for the same reason as -init, and there is no session for a configuration to describe in any case",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "+[CPTextButton new]",
@@ -1294,10 +1294,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a navigation session is a car driving: there is no car, so the session the class names is not there",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "the SDK's own header forbids the call: CPNavigationSession.h:33-34 marks it NS_UNAVAILABLE, which is a compile-time refusal, so the port's own header refuses an app's call the same way and nothing of ours answers it. Apple's object answers the inherited NSObject one when a program sends it anyway (measured), and carrying that would be a stand-in for an object no header says may be made -- it is not inert, because an inert row promises the port answers",
+      "effect": "nothing of ours answers it: the 26.2 header says a CPNavigationSession is created for the app when it calls -startNavigationSessionForTrip: on its map template, and no session is created anywhere in this port",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "-[CPNavigationSession pauseTripForReason:description:]",
@@ -1360,10 +1360,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: both of this class's values are the connected system's own -- limitedUserInterfaces is 'a bitmask of what type of user interfaces are limited' and contentStyle is 'the current content style suggested by the connected CarPlay system', both readonly, and at 16.0 the class observes a CarPlay session through the private protocol CARSessionObserving and its setters are _setContentStyle: and _setLimitedUserInterfaces:. A session is a connection to a head unit and there is none on either fleet device (iPhone 4S, iPad 2, iOS 6.1.3), so there is no session to configure. Measured with no head unit, Apple's own object answers 0 for both -- which is why the port does not carry it: its every answer would be that one value for good, and the delegate it holds would never be called, which is a quiet stand-in rather than an answer",
+      "effect": "there is no session to configure, so there is nothing for the delegate to be asked about, and the class is not there to ask",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "-[CPSessionConfiguration init]",
@@ -1371,10 +1371,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "the SDK's own header forbids the call: CPSessionConfiguration.h:29-30 marks it NS_UNAVAILABLE, which is a compile-time refusal, so the port's own header refuses an app's call the same way and nothing of ours answers it. Apple's object answers the inherited NSObject one when a program sends it anyway (measured), and carrying that would be a stand-in for an object no header says may be made -- it is not inert, because an inert row promises the port answers",
+      "effect": "nothing of ours answers it: a configuration is made with -initWithDelegate:, and the two calls the header forbids are not compiled at all",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "-[CPTextButton initWithTitle:textStyle:handler:]",
@@ -2878,10 +2878,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: both of this class's values are the connected system's own -- limitedUserInterfaces is 'a bitmask of what type of user interfaces are limited' and contentStyle is 'the current content style suggested by the connected CarPlay system', both readonly, and at 16.0 the class observes a CarPlay session through the private protocol CARSessionObserving and its setters are _setContentStyle: and _setLimitedUserInterfaces:. A session is a connection to a head unit and there is none on either fleet device (iPhone 4S, iPad 2, iOS 6.1.3), so there is no session to configure. Measured with no head unit, Apple's own object answers 0 for both -- which is why the port does not carry it: its every answer would be that one value for good, and the delegate it holds would never be called, which is a quiet stand-in rather than an answer",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPSessionConfiguration.contentStyle",
@@ -2889,10 +2889,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: both of this class's values are the connected system's own -- limitedUserInterfaces is 'a bitmask of what type of user interfaces are limited' and contentStyle is 'the current content style suggested by the connected CarPlay system', both readonly, and at 16.0 the class observes a CarPlay session through the private protocol CARSessionObserving and its setters are _setContentStyle: and _setLimitedUserInterfaces:. A session is a connection to a head unit and there is none on either fleet device (iPhone 4S, iPad 2, iOS 6.1.3), so there is no session to configure. Measured with no head unit, Apple's own object answers 0 for both -- which is why the port does not carry it: its every answer would be that one value for good, and the delegate it holds would never be called, which is a quiet stand-in rather than an answer",
+      "effect": "the style the connected CarPlay system suggests, and the same: measured 0 with no head unit and unreachable for anything else from this library",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPSessionConfiguration.delegate",
@@ -2900,10 +2900,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: both of this class's values are the connected system's own -- limitedUserInterfaces is 'a bitmask of what type of user interfaces are limited' and contentStyle is 'the current content style suggested by the connected CarPlay system', both readonly, and at 16.0 the class observes a CarPlay session through the private protocol CARSessionObserving and its setters are _setContentStyle: and _setLimitedUserInterfaces:. A session is a connection to a head unit and there is none on either fleet device (iPhone 4S, iPad 2, iOS 6.1.3), so there is no session to configure. Measured with no head unit, Apple's own object answers 0 for both -- which is why the port does not carry it: its every answer would be that one value for good, and the delegate it holds would never be called, which is a quiet stand-in rather than an answer",
+      "effect": "the delegate is the one the connected system calls when the limited interfaces or the content style change; with no class there is no object to set it on, which is the honest answer rather than a delegate that is never called",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPSessionConfiguration.limitedUserInterfaces",
@@ -2911,10 +2911,10 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "a session configuration configures a car's session: there is no car and no session to configure",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: both of this class's values are the connected system's own -- limitedUserInterfaces is 'a bitmask of what type of user interfaces are limited' and contentStyle is 'the current content style suggested by the connected CarPlay system', both readonly, and at 16.0 the class observes a CarPlay session through the private protocol CARSessionObserving and its setters are _setContentStyle: and _setLimitedUserInterfaces:. A session is a connection to a head unit and there is none on either fleet device (iPhone 4S, iPad 2, iOS 6.1.3), so there is no session to configure. Measured with no head unit, Apple's own object answers 0 for both -- which is why the port does not carry it: its every answer would be that one value for good, and the delegate it holds would never be called, which is a quiet stand-in rather than an answer",
+      "effect": "the mask the connected system suggests, which Apple's own object measures 0 with no head unit; the port carries no object whose every answer would be that one value for good",
+      "facts": "facts/CarPlay/Session.md",
+      "source": "the SDK 26.2 headers this port targets (CarPlay.framework/Headers, the NS_UNAVAILABLE lines quoted in the row), apple.objc.inventory over the arm64e dyld shared cache of 16.0 (CPSessionConfiguration conforms to the private CARSessionObserving and its values are written by _setContentStyle: and _setLimitedUserInterfaces:), and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplate",
