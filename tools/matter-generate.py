@@ -392,6 +392,61 @@ def cluster_block(lines, name):
     return block, supers
 
 
+HEADERS_CACHE = {}
+
+
+def header_lines(sdk, header):
+    """One header's lines, read once per run: the readers below ask for the same headers per class."""
+    key = (sdk, header)
+    if key not in HEADERS_CACHE:
+        with open(os.path.join(sdk, header)) as handle:
+            HEADERS_CACHE[key] = handle.read().splitlines()
+    return HEADERS_CACHE[key]
+
+
+def declaration_of(sdk, name):
+    """(block, header) for a class the SDK declares, and (None, None) for one it does not.
+
+    The CLUSTER headers first, then the rest of the framework's, and the order is the rule rather than
+    a detail: a cluster is declared in MTRBaseClusters.h or MTRClusters.h, while the base class every
+    cluster sits on is declared in MTRCluster.h and nowhere else - so the header a class's own
+    availability is read from is found, not assumed to be the one the clusters come from.
+    MTRBackwardsCompatShims.h declares DEPRECATED SUBCLASSES of some clusters under other names, which
+    is why it is read last: a class found there under its own name is still that class, and one found
+    only as somebody else's subclass is not in this list at all.
+    """
+    directory = os.path.dirname(HEADERS[0])
+    ordered = [header for header in HEADERS if os.path.exists(os.path.join(sdk, header))]
+    if os.path.isdir(os.path.join(sdk, directory)):
+        ordered += [os.path.join(directory, each) for each in sorted(os.listdir(os.path.join(sdk, directory)))
+                    if each.endswith(".h") and os.path.join(directory, each) not in ordered]
+    for header in ordered:
+        block, supers = cluster_block(header_lines(sdk, header), name)
+        if block is not None:
+            return block, header
+    return None, None
+
+
+def implemented_class(path):
+    """The class one emitted object defines, read back out of the emitted text.
+
+    Every object the run writes IS a class - a cluster the SDK the library builds against does not
+    declare, or a shared base - so this is the name the registry has to date and the band has to hold,
+    and it is read from the object rather than from a list kept beside it. Zero or more than one
+    @implementation is a finding for the caller, not a guess: the port would be implementing a class it
+    cannot name, and a row under the wrong name is the row the gate cannot place.
+    """
+    found = []
+    with open(path) as handle:
+        for line in handle:
+            if line.lstrip().startswith("//"):
+                continue
+            named = re.match(r"^@implementation\s+(\w+)", line)
+            if named:
+                found.append(named.group(1))
+    return found[0] if len(found) == 1 else None
+
+
 def facts(block):
     """What the header says a cluster has: its attributes, its commands, and the release it arrived in.
 
@@ -1671,7 +1726,22 @@ def main():
         print("every object compiles against the SDK the library builds with: %d" % len(
             [name for name in os.listdir(arguments.out) if name.endswith(".m")]))
 
-    everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING or COMPILE_FAILURES or HEADER_NOT_ALONE)
+    # Every object names the class it implements, and the count is printed: the registry dates that
+    # class and the band holds it, so an object that cannot name one is an API nothing can place. It
+    # read silently for a whole series - the shared base class MTRGenericBaseCluster is written here and
+    # not from the cluster loop, so it was in no emitted list, and the gate answered "neither the SDK
+    # nor the registry says which iOS release MTRGenericBaseCluster arrived in".
+    emitted = sorted(name for name in os.listdir(arguments.out) if name.endswith(".m"))
+    unnamed = [name for name in emitted if implemented_class(os.path.join(arguments.out, name)) is None]
+    if unnamed:
+        print("")
+        print("OBJECTS THAT DO NOT NAME THE CLASS THEY IMPLEMENT: %d" % len(unnamed))
+        for name in unnamed[:10]:
+            print("  %s" % name)
+    else:
+        print("every object names the class it implements: %d of %d" % (len(emitted), len(emitted)))
+
+    everything_clear = not (OFFENDERS or LOST or PORT_ONLY or NAME_ERRORS or PARAMS_MISSING or COMPILE_FAILURES or HEADER_NOT_ALONE or unnamed)
     return 0 if everything_clear else 1
 
 
