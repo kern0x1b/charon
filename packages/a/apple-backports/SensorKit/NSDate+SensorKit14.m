@@ -20,10 +20,12 @@
 //   @end
 //
 // SRAbsoluteTime is CFTimeInterval (SRAbsoluteTime.h:14) and the category is marked
-// API_UNAVAILABLE(macOS). That marking is why the host differential asks for these three through the
-// RUNTIME rather than naming them - a host translation unit cannot write the selector - and the host's
-// own build has all three, so the two sides are held to the same three relations. See
-// facts/SensorKit/SensorKit.md and tests/backports/host/sensorkit.
+// API_UNAVAILABLE(macOS). That marking is why the host differential asks for these three through a
+// SELECTOR rather than a typed call: a host translation unit may write @selector(...) - a selector
+// expression needs no declaration - but it may not declare or call the method, which is why the port's
+// half is built with rename.h and the host's is not. The host's own build has all three, so the two
+// sides are held to the same three relations. See facts/SensorKit/SensorKit.md and
+// tests/backports/host/sensorkit.
 //
 // Open source checked: swift-corelibs-foundation 6.x - not used. The arithmetic is Foundation's own
 // NSTimeInterval read through this package's existing conversion pair, and nothing here reimplements
