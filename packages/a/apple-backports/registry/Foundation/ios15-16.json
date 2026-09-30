@@ -2,33 +2,33 @@
   "entries": [
     {
       "api": "+[NSAttributedString localizedAttributedStringWithFormat:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the format is walked conversion by conversion and each substituted run is drawn with the format's own attributes merged with the argument's, the argument winning, and the text is the argument's own string for an attributed argument and its -description for anything else, (null) for a nil one; the numbers come out in the current locale, which is what this family does where the initialisers are canonical",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.classMethod",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "+[NSAttributedString localizedAttributedStringWithFormat:options:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "as the class method, and the options decide the two things they name: InsertArgumentAttributesWithoutMerging keeps the argument's attributes alone and ApplyReplacementIndexAttribute puts NSReplacementIndexAttributeName on each substituted run, numbered from 1",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the cases format.classMethod.options1 and format.classMethod.options2",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString attributedStringByInflectingString]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the runs are read one at a time, a run carrying NSInflectionRuleAttributeName is handed to the rule in it, the tag is dropped once the rule has been followed and the neighbours that answer alike are written as one run: the system answers \"the house and the dog\" as ONE run with no attribute for an explicit rule, for the automatic rule, for a tagged number and for a whole tagged string, and so does the port. A word under a case, a gender or a number is CLDR's rule table, which this object does not carry, so the port's rules answer the text as it stood - which is what the system answers for every shape measured",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the five cases inflect.explicitRule, inflect.automaticRule, inflect.whole, inflect.number and inflect.untagged",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithContentsOfMarkdownFileAtURL:options:baseURL:error:]",
@@ -43,23 +43,23 @@
     },
     {
       "api": "-[NSAttributedString initWithFormat:options:locale:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the format is walked and substituted the way the class method is, and the numbers are CANONICAL whatever locale the initialiser was handed: de_DE, fr_FR and nil all answer \"1234 and 1234.50\", measured",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.options0 and the three format.canonical cases",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithFormat:options:locale:arguments:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the list is the whole of the difference and it is read one argument at a time: a list handed to the release's formatter twice reads its floating point register area as spent and answers 0.00 where it answered 1234.50, so each argument is taken out with the type C promotes it to and formatted on its own",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.widths, which passes a double, a long, an int and a string",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSAttributedString initWithMarkdown:options:baseURL:error:]",
@@ -85,33 +85,34 @@
     },
     {
       "api": "-[NSBundle localizedAttributedStringForKey:value:table:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the release's own -localizedStringForKey:value:table: answers the text and the language it was found in is put on it under NSLanguageIdentifierAttributeName, so a key the table does not carry answers the caller's value tagged the same way",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSBundle a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case bundle.missingKey, which prints the attribute name the system itself used",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "-[NSMutableAttributedString appendLocalizedFormat:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the answer is appended to what the string already holds, and the current locale is the one its numbers are formatted with",
       "introduced": "15.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSMutableAttributedString a method like it: it arrived in iOS 15",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case format.append",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSAlternateDescriptionAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the symbol is exported with the value the release shipped, read out of the system's own image with dlsym and compared here, and dladdr on the value says which image answered",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSAlternateDescriptionAttributeName",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSAttributedStringMarkdownParsingOptions",
@@ -126,13 +127,14 @@
     },
     {
       "api": "NSImageURLAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the symbol is exported with the value the release shipped, \"NSImageURL\", read out of the system's own image with dlsym and compared here",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSImageURLAttributeName",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSInflectionAlternativeAttributeName",
@@ -175,23 +177,25 @@
     },
     {
       "api": "NSInlinePresentationIntentAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the symbol is exported with the value the release shipped, and the Markdown parser writes the NSInlinePresentationIntent numbers this name carries: 1 emphasized, 2 strong, 4 code, 32 strikethrough, 64 a soft break and 128 a hard break",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "the port's own members beside the system's own, measured by tests/backports/host/attributed15/run.sh (checks=48 failures=0): the port's selectors are prefixed with charonHost_ and its Markdown class is renamed CharonHostNSAttributedStringMarkdownParsingOptions, so the two answer in one process and every case compares them in the case constant.NSInlinePresentationIntentAttributeName and in the three markdown.document cases",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSLanguageIdentifierAttributeName",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the symbol is exported and its value is NSLanguage - not its own name - which the system shows by putting that key on the answer -localizedAttributedStringForKey: gives; the Markdown parser writes it on the ranges the options' languageCode covers",
       "introduced": "15.0",
       "kind": "constant",
       "minimum": "6.0",
       "reason": "the constant arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Foundation",
-      "status": "absent"
+      "source": "sh tests/backports/host/attributed15/run.sh: the system exports no symbol for this name on either of its images, so the value is measured by the case bundle.missingKey, which prints the attribute name the system itself used, and by markdown.languageCode",
+      "status": "implemented",
+      "facts": "facts/Foundation/AttributedStrings15.md"
     },
     {
       "api": "NSMorphology",
