@@ -214,13 +214,12 @@
     },
     {
       "api": "-[NSUndoManager setActionUserInfoValue:forKey:]",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "introduced": "18.0",
       "kind": "method",
+      "introduced": "18.0",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSUndoManager a method like it: it arrived in iOS 18",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "status": "implemented",
+      "effect": "the value is held, not copied: a mutable string set here and appended to afterwards reads back with the append on it; with no group open and nothing on the undo stack it raises NSInternalInconsistencyException, as the release does",
+      "source": "the host's own Foundation, measured in tests/backports/host/nsundo/run.sh: userinfo.copyHeld=NO userinfo.mutableAfterSet=one-changed empty.setUserInfo=raised NSInternalInconsistencyException"
     },
     {
       "api": "NSDateComponents.dayOfYear",

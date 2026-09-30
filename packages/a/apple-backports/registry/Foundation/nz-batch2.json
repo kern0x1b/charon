@@ -301,9 +301,9 @@
       "introduced": "18.0",
       "minimum": "6.0",
       "maximum": "18.0",
-      "status": "absent",
-      "reason": "it reads the user info of the action at the top of the release's own redo stack, which no 6.1.3 entry point reaches",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "status": "implemented",
+      "effect": "nil while nothing is redoable, and the tag of the group that was undone once an action has registered its inverse while undoing",
+      "source": "the host's own Foundation, measured in tests/backports/host/nsundo/run.sh: after-undo.redoUserInfo(tag)=\"two\" after-undo.redoActionName=inverse-of-second, and plain.afterUndo.redoCount=0 with no value"
     },
     {
       "api": "-[NSUndoManager undoActionUserInfoValueForKey:]",
@@ -311,9 +311,9 @@
       "introduced": "18.0",
       "minimum": "6.0",
       "maximum": "18.0",
-      "status": "absent",
-      "reason": "it reads the user info of the action at the top of the release's own undo stack, which no 6.1.3 entry point reaches",
-      "effect": "the method is not there: respondsToSelector: answers honestly and an unchecked call raises"
+      "status": "implemented",
+      "effect": "a fresh manager answers nil; a tag set on the open group reads back, and after the undo the redo stack reads the tag of the group just undone",
+      "source": "the host's own Foundation, measured in tests/backports/host/nsundo/run.sh: fresh.undoUserInfo(k)=(nil) two-groups.undoUserInfo(tag)=\"two\" after-undo.redoUserInfo(tag)=\"two\""
     },
     {
       "api": "-[NSUserActivityDelegate userActivity:didReceiveInputStream:outputStream:]",
@@ -630,9 +630,9 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "maximum": "17.4",
-      "status": "absent",
-      "reason": "the count is the release's own redo stack, which its NSUndoManager keeps with no API that reports a size",
-      "effect": "the property is not there: an application asking how many steps there are has to keep its own count"
+      "status": "implemented",
+      "effect": "0 until an action registers its inverse while undoing, then 1, and 2 after a second undo; it is 0 when the action registers nothing, and a registration outside an undo or a redo empties it",
+      "source": "the host's own Foundation, measured in tests/backports/host/nsundo/run.sh: after-undo.redoCount=1 after-undo2.redoCount=2 plain.afterUndo.redoCount=0 plain.afterUndo.canRedo=NO after-new-registration.redoCount=0"
     },
     {
       "api": "NSUndoManager.undoCount",
@@ -640,9 +640,9 @@
       "introduced": "17.4",
       "minimum": "6.0",
       "maximum": "17.4",
-      "status": "absent",
-      "reason": "the count is the release's own undo stack, which its NSUndoManager keeps with no API that reports a size",
-      "effect": "the property is not there: an application asking how many steps there are has to keep its own count"
+      "status": "implemented",
+      "effect": "a fresh manager answers 0; two registered groups answer 2; each undo takes one off, down to 0 through two undos, and a redo puts one back",
+      "source": "the host's own Foundation, measured in tests/backports/host/nsundo/run.sh: fresh.undoCount=0 two-groups.undoCount=2 after-undo.undoCount=1 after-undo2.undoCount=0 after-redo.undoCount=1, dladdr naming Foundation.framework for the getter on both sides"
     },
     {
       "api": "NSUserActivity.persistentIdentifier",
