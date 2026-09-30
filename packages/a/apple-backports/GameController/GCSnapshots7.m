@@ -142,32 +142,3 @@ static float CharonGCReadFloat(id element, SEL which)
 
 @end
 
-// The 7.0 method returning the 9.0 class, because GCExtendedGamepad.h:65 declares it that way.
-@implementation GCExtendedGamepad (CharonGCSnapshot7)
-
-- (GCExtendedGamepadSnapshot *)saveSnapshot
-{
-    GCExtendedGamepadSnapShotDataV100 v100;
-    memset(&v100, 0, sizeof(v100));
-    v100.version = GCExtendedGamepadSnapshotDataVersion1;
-    v100.size = (uint16_t)sizeof(v100);
-    v100.dpadX = CharonGCReadFloat([self charon_elementNamed:@"Direction Pad"], @selector(xAxis));
-    v100.dpadY = CharonGCReadFloat([self charon_elementNamed:@"Direction Pad"], @selector(yAxis));
-    v100.buttonA = CharonGCButtonValue([self charon_elementNamed:@"Button A"]);
-    v100.buttonB = CharonGCButtonValue([self charon_elementNamed:@"Button B"]);
-    v100.buttonX = CharonGCButtonValue([self charon_elementNamed:@"Button X"]);
-    v100.buttonY = CharonGCButtonValue([self charon_elementNamed:@"Button Y"]);
-    v100.leftShoulder = CharonGCButtonValue([self charon_elementNamed:@"Left Shoulder"]);
-    v100.rightShoulder = CharonGCButtonValue([self charon_elementNamed:@"Right Shoulder"]);
-    v100.leftThumbstickX = CharonGCReadFloat([self charon_elementNamed:@"Left Thumbstick X Axis"], @selector(xAxis));
-    v100.leftThumbstickY = CharonGCReadFloat([self charon_elementNamed:@"Left Thumbstick Y Axis"], @selector(yAxis));
-    v100.rightThumbstickX = CharonGCReadFloat([self charon_elementNamed:@"Right Thumbstick X Axis"], @selector(xAxis));
-    v100.rightThumbstickY = CharonGCReadFloat([self charon_elementNamed:@"Right Thumbstick Y Axis"], @selector(yAxis));
-    v100.leftTrigger = CharonGCReadFloat([self charon_elementNamed:@"Left Trigger"], @selector(value));
-    v100.rightTrigger = CharonGCReadFloat([self charon_elementNamed:@"Right Trigger"], @selector(value));
-    GCExtendedGamepadSnapshot *snapshot =
-        [[GCExtendedGamepadSnapshot alloc] initWithSnapshotData:NSDataFromGCExtendedGamepadSnapShotDataV100(&v100)];
-    return snapshot;
-}
-
-@end

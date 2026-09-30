@@ -673,9 +673,9 @@
    "kind": "method",
    "introduced": "7.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "as the plain game's, over the 60-byte structure: 4 + 14 floats. The return type first appears at 9.0 and the method at 7.0, which is the SDK's own inconsistency; the port reproduces the declaration, and release-split is satisfied because the method's own first appearance is 7.0",
-   "effect": "the same for the extended game's 60-byte GCExtendedGamepadSnapShotDataV100 - two axes, six buttons, four thumbstick axes and two triggers - and it answers the 9.0 GCExtendedGamepadSnapshot because GCExtendedGamepad.h:65 declares it that way; with nothing attached the data is 0001 3c00",
+   "status": "absent",
+   "reason": "owed, and not for want of the work: the SDK declares -saveSnapshot at 7.0 (GCExtendedGamepad.h:65) returning GCExtendedGamepadSnapshot, which first appears at 9.0. One object per release forbids the 7.0 file to name the 9.0 class: the method's IMP emits an objc-class-ref for it, and the 6.1.3 band has no 9.0 object to satisfy it, so the dylib does not link. Measured: with the method built, GCSnapshots7.o carries an undefined _OBJC_CLASS_$_GCExtendedGamepadSnapshot; without it the object names only GCGamepad, NSData, NSDictionary and NSNumber, all of which 6.1.3 has. A forward @class declares without emitting; the method's return type does emit. Queued in coordination/api-queue.md",
+   "effect": "until that collision is resolved the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises, rather than a 7.0 object handing back a class it cannot build",
    "source": "the header of iOS 16.4"
   },
   {
