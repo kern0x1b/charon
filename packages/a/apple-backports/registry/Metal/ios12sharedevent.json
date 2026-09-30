@@ -130,7 +130,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLSharedEvent12.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalSharedEvent, because it is port machinery and not API. The class is defined in Metal/MTLSharedEvent12.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, MTLEvent.h, whose protocol arrived in 12.0"
+      "source": "SDK 16.4, Metal, MTLEvent.h, whose protocol arrived in 12.0",
+      "facts": "facts/Metal/PortInternals.md"
     }
   ]
 }

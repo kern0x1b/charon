@@ -9,7 +9,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLBlitCommandEncoder12.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalBlitEncoder, because it is port machinery and not API. The class is defined in Metal/MTLBlitCommandEncoder12.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of MTLBlitCommandEncoder, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of MTLBlitCommandEncoder, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalBuffer",
@@ -19,7 +20,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalBuffer.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalBuffer, because it is port machinery and not API. The class is defined in Metal/CharonMetalBuffer.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalCommandBuffer",
@@ -29,7 +31,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalQueue.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalCommandBuffer, because it is port machinery and not API. The class is defined in Metal/CharonMetalQueue.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalComputeEncoder",
@@ -39,7 +42,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLComputeCommandEncoder8.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalComputeEncoder, because it is port machinery and not API. The class is defined in Metal/MTLComputeCommandEncoder8.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalComputePipeline",
@@ -49,7 +53,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/MTLComputePipeline8.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalComputePipeline, because it is port machinery and not API. The class is defined in Metal/MTLComputePipeline8.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalDepthStencil",
@@ -59,7 +64,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDepthStencil.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDepthStencil, because it is port machinery and not API. The class is defined in Metal/CharonMetalDepthStencil.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalDevice",
@@ -69,7 +75,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDevice.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDevice, because it is port machinery and not API. The class is defined in Metal/CharonMetalDevice.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalDrawable",
@@ -79,7 +86,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDrawable.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalDrawable, because it is port machinery and not API. The class is defined in Metal/CharonMetalDrawable.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalEncoder",
@@ -89,7 +97,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalEncoder.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalEncoder, because it is port machinery and not API. The class is defined in Metal/CharonMetalEncoder.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalFunction",
@@ -99,7 +108,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalLibrary.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalFunction, because it is port machinery and not API. The class is defined in Metal/CharonMetalLibrary.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalLayerState",
@@ -109,7 +119,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalDrawable.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalLayerState, because it is port machinery and not API. The class is defined in Metal/CharonMetalDrawable.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalLibrary",
@@ -119,7 +130,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalLibrary.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalLibrary, because it is port machinery and not API. The class is defined in Metal/CharonMetalLibrary.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalPipeline",
@@ -129,7 +141,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalPipeline.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalPipeline, because it is port machinery and not API. The class is defined in Metal/CharonMetalPipeline.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalQueue",
@@ -139,7 +152,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalQueue.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalQueue, because it is port machinery and not API. The class is defined in Metal/CharonMetalQueue.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalSampler",
@@ -149,7 +163,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalTexture.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalSampler, because it is port machinery and not API. The class is defined in Metal/CharonMetalTexture.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     },
     {
       "api": "CharonMetalTexture",
@@ -159,7 +174,8 @@
       "status": "ignored",
       "reason": "a class of the port's own under a name no SDK header declares, compiled with hidden visibility so the band exports nothing under it, defined at packages/a/apple-backports/Metal/CharonMetalTexture.m. It is not an SDK api and the ledger is an SDK ledger, so nothing is claimed about SDK behaviour with it",
       "effect": "nothing is claimed: the ledger records no behaviour for CharonMetalTexture, because it is port machinery and not API. The class is defined in Metal/CharonMetalTexture.m and the band's export list does not and should not contain it",
-      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0"
+      "source": "SDK 16.4, Metal, the header of the render surface, whose API arrived in 8.0",
+      "facts": "facts/Metal/PortInternals.md"
     }
   ]
 }
