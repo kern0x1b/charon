@@ -2,113 +2,119 @@
   "entries": [
     {
       "api": "SecPolicyCopyProperties()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the OID of the creator the port called - kSecPolicyAppleX509Basic or kSecPolicyAppleSSL, which are the two strings the host's own SecPolicyCopyProperties answers for those two creators - plus every key the caller passed, and NULL for a policy the port never made: 6.1.3 has no accessor and no readable state, so a policy SecPolicyCreateBasicX509 made directly has nothing this call could report and does not get a guessed OID",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has the object (both creators are iOS 2.0 and exported by both releases) and not the accessor, so the properties a caller can be shown on this release are the ones the port was handed by its own SecPolicyCreateWithProperties - a round trip, not a reconstruction",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     },
     {
       "api": "SecPolicyCreateWithProperties()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the release's own policy for the two identifiers it can build - kSecPolicyAppleX509Basic through SecPolicyCreateBasicX509 and kSecPolicyAppleSSL through SecPolicyCreateSSL with kSecPolicyClient deciding server or client and kSecPolicyName the hostname - and NULL for every other identifier, which is the header's own answer for a policy that could not be created and the whole of the difference from the host, which answers a policy for kSecPolicyAppleSMIME and kSecPolicyAppleRevocation as well",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3's policy creators are fixed and take no dictionary: SecPolicyCreateBasicX509 and SecPolicyCreateSSL, both iOS 2.0 and the only two, so the identifier is mapped onto them rather than answered with a policy of the port's own",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     },
     {
       "api": "SecTrustCopyCustomAnchorCertificates()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "NULL and errSecSuccess, always: the anchors a caller set are NOT reported back, and NULL is the header's own answer for \"no custom anchors have been specified\" rather than an empty array that would claim to be a list of anchors that is empty; the host, asked the same question over the same trust, returns the one anchor it was given, and that is the whole of this row's difference - 6.1.3 resolves against those anchors, only this reader cannot report them",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has both setters (iOS 2.0) and no reader, and the setter a caller reaches is the release's own, so the port never sees the call and has nothing to report",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "inert"
     },
     {
       "api": "SecTrustCopyPolicies()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "an empty array and errSecSuccess, always: the policies a caller set are NOT reported back, and the empty array does not mean \"this trust has no policies\" but that 6.1.3 cannot be asked - the host returns the caller's one policy over the same trust, and 6.1.3 resolves against the very array the caller passed",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has the setter (SecTrustSetPolicies is iOS 6.0 and exported by 6.1.3, and not by 4.3) and no reader, and the setter a caller reaches is the release's own, so the port never sees the call; 4.3 has no setter at all and answers the same way",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "inert"
     },
     {
       "api": "SecTrustCopyResult()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "a dictionary of exactly two keys - kSecTrustResultValue, the release's own SecTrustEvaluate verdict read out of that call, and kSecTrustEvaluationDate, the moment of it - and the difference from the host is named: the host's dictionary also carries TrustResultDetails, a per-certificate status dictionary, and 6.1.3 has no per-certificate status accessor at all, so there is nothing here that could fill it, and the keys SecTrust.h declares as conditional (extended validation, organization name, revocation) are absent rather than invented",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 gives the verdict and nothing else - SecTrustEvaluate is iOS 2.0 and no call on this release reads a result dictionary back - so the dictionary is built from the release's own answer and carries the two keys that answer can come from",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     },
     {
       "api": "SecTrustEvaluateAsync()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the release's own SecTrustEvaluate verdict, delivered to the caller's block on the queue the caller named so the callback arrives after this call returns, as the contract promises; the difference is visible only as blocking, because 6.1.3's evaluation is synchronous (SecTrustEvaluate, iOS 2.0) and has therefore already run by the time the callback fires - which is why SecTrust.h:354-357 tells a caller to put this work on a queue of its own",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has no asynchronous evaluation at all, so the port runs the release's own synchronous call and delivers the release's own verdict rather than inventing an answer",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     },
     {
       "api": "SecTrustSetOCSPResponse()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "errSecSuccess and the response is NOT consulted: 6.1.3 has no OCSP input to its evaluation, so a revocation that a caller's response would have proved is not proved by it - a caller that passes a real response and evaluates gets the same verdict it would have got passing nothing",
       "introduced": "7.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has no OCSP setter and nothing for one to feed - its only evaluation call, SecTrustEvaluate, takes no responder data and there is no revocation call to hand one to",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "inert"
     },
     {
       "api": "SecAccessControlGetTypeID()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the runtime's own CFTypeID for the port's private SecAccessControl class, so the number is real and belongs to no other type - and no object on 6.1.3 can ever carry it, because 6.1.3 has no SecAccessControl at all: neither this function nor SecAccessControlCreateWithFlags is exported by 6.1.3 or 4.3, the port's own SecAccessControlCreateWithFlags answers NULL with errSecUnimplemented, and the literals \"accc\" and \"akpu\" first appear at 8.0",
       "introduced": "8.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 8, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "the type arrived in iOS 8 with the two functions that name it and the release this port runs carries neither, so 6.1.3 can produce no instance for a type ID to identify",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names",
+      "status": "inert"
     },
     {
       "api": "SecTrustEvaluateAsyncWithError()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the release's own verdict as a bool - errSecSuccess with proceed or unspecified - and, when the release's own SecTrustEvaluate fails, false with an NSError in NSOSStatusErrorDomain carrying that OSStatus; two differences are named, that the evaluation runs on the calling thread so it has already finished when the callback fires, and that this port does NOT enforce the header's \"MUST be called from that queue\" precondition, which the host does enforce by trapping",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "13.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 has no error-reporting evaluation and no asynchronous one; the verdict comes from the release's own SecTrustEvaluate (iOS 2.0) and the error is this port's translation of the release's own OSStatus into the domain the header documents",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     },
     {
       "api": "kSecUseDataProtectionKeychain",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
+      "effect": "the CFString \"nleg\", which is what the host's own Security.framework exports for this name, so a caller that logs or compares the dictionary it built sees what it would see on a newer release - and 6.1.3 ignores it: the key selects a data-protection keychain, and this release has one keychain and neither kSecAttrAccessControl nor a protection class to put in it, both first appearing at 8.0",
       "introduced": "13.0",
       "kind": "constant",
       "minimum": "6.0",
-      "reason": "the constant arrived in iOS 13, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "the key arrived in iOS 13 to select a keychain this release does not have, so the port declares it with the host's value so a caller that passes it compiles and the release addresses the same keychain it would have without it",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; the value read by dlsym off the host framework, this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "inert"
     },
     {
       "api": "SecTrustCopyCertificateChain()",
-      "effect": "the function is not there: a weak reference to it is NULL",
+      "effect": "the release's own evaluated chain, leaf first, walked through SecTrustGetCertificateCount and SecTrustGetCertificateAtIndex - the pair the header names this function as the replacement for - and each certificate is retained by the returned array; the one difference the header names at SecTrust.h:514-515 is that those two accessors are not thread-safe, so a concurrent evaluation can change the chain under the walk and the caller receives what the release held while it ran rather than a snapshot",
+      "facts": "facts/Security/AbsentRows613.md",
       "introduced": "15.0",
       "kind": "function",
       "minimum": "6.0",
-      "reason": "the function arrived in iOS 15, and nothing in iOS 6 has what it names",
-      "source": "SDK 16.4, Security",
-      "status": "absent"
+      "reason": "6.1.3 answers this one, with two accessors it has carried since iOS 2.0, so this is a loop over the release's own chain and not a reconstruction of the caller's certificates",
+      "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+      "status": "implemented"
     }
   ],
   "framework": "Security"

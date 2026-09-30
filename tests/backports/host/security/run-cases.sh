@@ -254,6 +254,18 @@ N=$S/SecTrustNetworkFetch7_0.m
 G=$S/SecTrustGetTrustResult7_0.m
 O=$S/SecObjectWrappers12_0.m
 SI=$S/SecObjectWrappersIdentity12_0.m
+# The fourteen accessors of the absent-rows series, one object per release.
+TA=$S/SecurityTrust7_0.m
+TAS=$S/SecurityTrustAsync7_0.m
+TOC=$S/SecurityTrustOCSP7_0.m
+TCH=$S/SecurityTrustChain15_0.m
+TSCT=$S/SecurityTrustSCT12_1.m
+TK=$S/SecurityKeychain13_0.m
+AC=$S/SecAccessControl8.m
+K11=$S/SecurityConstants11_0.m
+N70=$S/SecurityNames70.m
+# the case's sources, with the one a mutant replaces given separately
+TA_REST="$TAS $TOC $TCH $TSCT $TK $AC $K11 $N70"
 SI16=$S/SecObjectWrappersIdentity16_0.m
 LI=$S/SecProtocolOptionsLocalIdentity.m
 PM=$S/SecProtocolMetadata13_0.m
@@ -504,6 +516,47 @@ else
         fi
     done
 fi
+# The fourteen rows of coordination/corpus/queue/Security.tsv: the PORT's answer beside the HOST'S on
+# one run, so a difference is a measurement and not an assertion. Twenty-one of the twenty-eight keys
+# must agree - the three constants' values, the OIDs, the chain, the verdict, both async pairs and both
+# setter statuses - and seven must differ by the reason compare-trust-accessors.py names.
+run_case trust-accessors  compare-trust-accessors.py  $H/trust-accessors.m  $TA $TA_REST
+
+# Seven mutations, one per answer the case can be asked to hold. Each replaces its own origin on the
+# link line - run_mutation's rule - and each has a control on the identical line.
+mutate "$TCH" "$build/mutant-chain-guard.m" \
+'    if (count < 1)' \
+'    if (count < 2)' \
+'a trust with one certificate answers NULL instead of the chain it holds'
+mutate "$TA" "$build/mutant-result-no-date.m" \
+'{kSecTrustResultValue, kSecTrustEvaluationDate}' \
+'{kSecTrustResultValue, kSecTrustResultValue}' \
+'the result dictionary loses its evaluation date'
+mutate "$TA" "$build/mutant-result-no-value.m" \
+'{kSecTrustResultValue, kSecTrustEvaluationDate}' \
+'{kSecTrustEvaluationDate, kSecTrustEvaluationDate}' \
+'the result dictionary loses the verdict, which is the one key the release owns'
+mutate "$TA" "$build/mutant-oid-swapped.m" \
+'        oid = kSecPolicyAppleSSL;' \
+'        oid = kSecPolicyAppleX509Basic;' \
+'an SSL policy is given the basic X.509 OID, which the key count alone cannot see'
+mutate "$K11" "$build/mutant-constant-split.m" \
+'kSecAttrPersistantReference = CFSTR("persistref")' \
+'kSecAttrPersistantReference = CFSTR("persref")' \
+'the misspelled spelling gets a value of its own instead of the one both names carry'
+mutate "$TOC" "$build/mutant-ocsp-refuses.m" \
+'    return errSecSuccess;   // the release' \
+'    return errSecUnimplemented; // the release' \
+'the OCSP setter refuses instead of accepting, which is the answer that must match the host'
+mutate "$TSCT" "$build/mutant-sct-refuses.m" \
+'    return errSecSuccess;   // the release' \
+'    return errSecParam; // the release' \
+'the SCT setter refuses instead of accepting, likewise'
+mutate "$AC" "$build/mutant-ac-type-id-cfstring.m" \
+'    return (CFTypeID)[CharonSecAccessControl class];' \
+'    return (CFTypeID)CFStringGetTypeID();' \
+'the access control type ID answers another type'"'"'s, the wrongness this row exists to avoid'
+
 run_case sec-object-wrappers compare-sec-object-wrappers.py $H/sec-object-wrappers.m $O
 run_mutation sec-object-otherref compare-sec-object-wrappers.py sec-object-wrappers $O
 run_mutation sec-object-noretain compare-sec-object-wrappers.py sec-object-wrappers $O
@@ -563,6 +616,14 @@ run_mutation data-halfpair compare-protocol-options-data.py protocol-options-dat
 run_mutation held-nocopy   compare-protocol-options-held.py  protocol-options-held $PO
 run_mutation identity       compare-protocol-options-held.py  protocol-options-held $PO
 run_mutation trust-result      compare-trust-result.py      trust-result      $G
+run_mutation chain-guard       compare-trust-accessors.py  trust-accessors  $TCH $TAS $TOC $TA $TSCT $TK $AC $K11 $N70
+run_mutation result-no-date    compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation result-no-value   compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation oid-swapped      compare-trust-accessors.py  trust-accessors  $TA  $TAS $TOC $TCH $TSCT $TK $AC $K11 $N70
+run_mutation constant-split   compare-trust-accessors.py  trust-accessors  $K11 $TA $TAS $TOC $TCH $TSCT $TK $AC $N70
+run_mutation ocsp-refuses      compare-trust-accessors.py  trust-accessors  $TOC $TA $TAS $TCH $TSCT $TK $AC $K11 $N70
+run_mutation sct-refuses       compare-trust-accessors.py  trust-accessors  $TSCT $TA $TAS $TOC $TCH $TK $AC $K11 $N70
+run_mutation ac-type-id-cfstring compare-trust-accessors.py trust-accessors $AC $TA $TAS $TOC $TCH $TSCT $TK $K11 $N70
 
 # --- the fuzz: no comparison, it must simply not crash, and it is built with the sanitizers on ---
 if xcrun clang $common -fsanitize=address,undefined -fno-omit-frame-pointer -g \

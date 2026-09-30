@@ -70,6 +70,16 @@ Two rows in `ios11.json` state a *release* fact rather than an arrival one — `
 is deliberate, but "not read" is a measurement that was never taken, so they are owed measurements rather
 than absences.
 
+**That measurement was taken on 2026-10-01 and all three rows are now decided; see
+[AbsentRows613.md](AbsentRows613.md).** The measurement did not need a 6.1.3 guest: `persistref` — the
+value both persistent-reference spellings carry, read by `dlsym` off the host's own framework — is in
+**no held rung below 11.0**, read out of all fifty per-release indexes, so no code path in 6.1.3 compares
+a keychain query against that attribute's name. That is the sentence "not read" was reaching for, and it
+is a fact about the release rather than an assumption. All fourteen rows of `absent_Security.json` and
+`ios11.json` are decided in the same series: six `implemented`, eight `inert`, none `absent`, none
+`owed`. Two verdicts in `DecisionTable.md` were overturned by it and say so in place — the port cannot
+hold what a caller passed to a **release** setter, and 6.1.3 **does** hold the certificate chain.
+
 ## A claim withdrawn: "the release offers neither half of the pair"
 
 An earlier version of this file, and of the probe beside it, said the release has no

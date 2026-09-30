@@ -41,33 +41,33 @@
   },
   {
    "api": "SecTrustSetSignedCertificateTimestamps()",
-   "effect": "the function is not there: a weak reference to it is NULL",
+   "effect": "errSecSuccess and the timestamps are NOT consulted: 6.1.3 has no certificate transparency at all, so a caller stapling timestamps gets no additional scrutiny and no error, and a chain that should only verify with CT verifies here",
    "introduced": "12.1.1",
    "kind": "function",
    "minimum": "6.0",
-   "reason": "the release evaluates no certificate transparency",
-   "source": "the SDK 16.4 headers of Security",
-   "status": "absent"
+   "reason": "6.1.3 has no SCT parser, no place in an evaluation where a timestamp is consulted, and no call that reads a stapled SCT back; the declared release is 12.1.1 per SecTrust.h:628, and first-rung answers 9.0 only because the held ladder has no cache between 12.0 and 16.0",
+   "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names",
+   "status": "inert"
   },
   {
    "api": "kSecAttrPersistentReference",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
+   "effect": "the CFString \"persistref\", the same value this name and its misspelled twin both carry: dlsym off the host's own framework hands back the same string for each, which is how SecItem.h:553-556 declares them. 6.1.3 ignores the attribute - the string is in no held rung below 11.0 - so the port declares the key so a caller that passes it compiles",
    "introduced": "11.0",
    "kind": "constant",
    "minimum": "6.0",
-   "reason": "the keychain of iOS 6 was not read for this attribute",
-   "source": "the SDK 16.4 headers of Security",
-   "status": "absent"
+   "reason": "the attribute arrived in iOS 11; on this release no code reads it, so the port carries the key with the value the release itself would hand a caller",
+   "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; the value read by dlsym off the host framework, this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+   "status": "inert"
   },
   {
    "api": "kSecAttrPersistantReference",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
+   "effect": "the CFString \"persistref\", which is what the host's own Security.framework exports for this name - and 6.1.3 ignores the attribute: the string is in no held rung below 11.0, read out of all fifty per-release indexes, so no code path in the release compares a query against it. A caller that adds an item with this attribute and later queries by it gets no match, while the item is still findable by its other attributes",
    "introduced": "11.0",
    "kind": "constant",
    "minimum": "6.0",
-   "reason": "the keychain of iOS 6 was not read for this attribute",
-   "source": "the SDK 16.4 headers of Security",
-   "status": "absent"
+   "reason": "the attribute arrived in iOS 11 with the name the framework still exports; on this release there is no code that reads it, so the port declares the key so a caller that passes it compiles and passes the release's own string",
+   "source": "the armv7 shared caches of 6.1.3 and 4.3 through tools/cache-index (first-rung.py --rungs), which carry _SecTrustEvaluate, _SecTrustGetCertificateCount, _SecTrustGetCertificateAtIndex, _SecPolicyCreateBasicX509 and _SecPolicyCreateSSL and none of the fourteen names; the value read by dlsym off the host framework, this Mac's own Security.framework, asked through the case in tests/backports/host/security/trust-accessors.m",
+   "status": "inert"
   },
   {
    "api": "kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA224AESGCM",
