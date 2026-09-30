@@ -11,14 +11,18 @@ confined to one file:
   Foundation/nz-private-classes.json  3   CharonPersonNameParts, CharonPresentationIntentState,
                                            CharonTermOfAddressState
 
-Sixteen of the twenty-three were in one file, which is what made the earlier count of "nineteen rows
-name a CharonMetal-prefixed class" wrong twice over: nineteen is right for the CharonMetal prefix across
-the Metal files, and sixteen is right for the file that held most of them. All of them are gone from the
-ledger now, and this page is what a reader has instead.
+The count in this family's commit subjects moved as the question got sharper - 16, then 19, then 23 -
+with no commit saying why, so here it is for a reader counting subjects rather than rows:
 
-They were the port's own. One page says so for all of them because it is one fact about all of them,
-and rows that each pointed at a page about something else would have been claims to look somewhere that
-does not answer them.
+  16  the Charon-prefixed rows in Metal/ios80classes.json, which is where I started looking
+  19  the CharonMetal-PREFIXED rows across the Metal files, adding CharonMetalEventState,
+      CharonMetalHeap and CharonMetalSharedEvent from three files I had not opened
+  23  the Charon-prefixed rows across the WHOLE registry, adding CharonEdgeList in
+      UIKit/ios17-18.json and three in Foundation/nz-private-classes.json
+
+Each was true of its own set and none was a miscount; using one number for all three was the error. The
+23 over six files is the form worth having, because it says the pattern was never confined to one
+registry.
 
 ## What they are
 
@@ -27,6 +31,36 @@ for a device, a buffer or a command queue, and on a release with no GPU to ask, 
 hands back. Each is an `@implementation` in `packages/a/apple-backports/Metal/`, and each answers: a
 device that reports a registry ID and a name, a buffer with a length, a queue that runs what it is
 given.
+
+## Why the rows exist, which is not what they look like
+
+A row here is the PLACEMENT RECORD for every band that carries the object, whatever its status claims.
+backports.lua:2014 is the whole of it:
+
+    local entry = entry_of(listed, name)
+    local minimum = entry.minimum or ""
+
+`minimums()` reads `entry_of` and takes `entry.minimum` for every name an object carries, and it never
+reads `entry.status`. `in_range()` likewise reads only `minimum` and `maximum`. So the status on these
+rows says nothing to the band checker - `absent` is a claim about the RELEASE - and the minimum is what
+actually places the object.
+
+That is why deleting them looked clean and was not. Five objects every band carries read their minimum
+from these rows - CharonMetalLibrary.o, MTLBlitCommandEncoder10.o, MTLHeap11.o, MTLHeap13.o,
+MTLSharedEvent15.o - and with the rows gone the 4.3 band cannot place or link them while 6.1.3 stays
+green, because everything those five name is also carried at 6.0. **A row that looks like a redundant API
+entry may be the only record of when a symbol becomes linkable.** This paragraph is here so the next band
+does not "tidy" these the way this one nearly did.
+
+## The one-line rule in backports.lua, and its empty set
+
+That rule - `bare:startswith("charon_") or bare:startswith("Charon")` on the unlisted computation, taken
+from release-split.lua:100 - guards a DIFFERENT set from these rows, and that set is presently EMPTY.
+There are 342 `Charon*` classes in the tree and 23 rows; the other 319 never appear as unlisted builds
+because `-fvisibility=` keeps them out of the export list the check reads, so the rule cannot fire for
+them. It is insurance for the day someone drops `-fvisibility=` on one object, which is the honest
+description of a guard whose triggering set is nil today - and it keeps its teeth, since it is an extra
+conjunct on the existing condition and every other unlisted build is still named.
 
 ## Why the ledger says nothing about them
 
