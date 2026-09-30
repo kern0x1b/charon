@@ -37,9 +37,9 @@ avf=$root/packages/a/apple-backports/AVFoundation
 #
 # They are kept as two variables because they are the two SIDES of the same claim - a table that
 # silently lost rows on one side would otherwise not be noticed - and both are 49.
-expected_host=${AVF_DESC_ROWS_HOST:-49}
-expected_port=${AVF_DESC_ROWS_PORT:-49}
-sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9"
+expected_host=${AVF_DESC_ROWS_HOST:-63}
+expected_port=${AVF_DESC_ROWS_PORT:-63}
+sources="AVPlayerMediaSelectionCriteria7 AVPlayerMediaSelectionCriteria7Members AVCaptureBracket8 AVAssetResourceRenewalRequest8 AVMediaSelection9 AVAudioFile8 AVAudioFile8Members"
 control=${CONTROL:-0}
 break=${BREAK:-0}
 mutant=${AVFMUTANT:-0}
@@ -51,7 +51,7 @@ mkdir -p "$build/src" "$build/o" "$baseline_dir"
 renames=""
 for name in AVPlayerMediaSelectionCriteria AVCaptureBracketedStillImageSettings \
             AVCaptureAutoExposureBracketedStillImageSettings AVCaptureManualExposureBracketedStillImageSettings \
-            AVAssetResourceRenewalRequest AVMediaSelection AVMutableMediaSelection; do
+            AVAssetResourceRenewalRequest AVMediaSelection AVMutableMediaSelection AVAudioFile; do
     renames="$renames -D$name=charon_host_$name"
 done
 

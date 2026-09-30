@@ -294,6 +294,19 @@ int main(void)
             structure("AVAssetResourceRenewalRequest", members, 4);
         }
 
+        // ---- AVAudioFile, the first owner the bulk generator named. Structural: presence, superclass,
+        // instance size and the selectors an instance answers. The URL-backed VALUES it computes are
+        // asked through the port's own designated initialiser and are ~ rows, because the host's own
+        // AVAudioFile is a class cluster whose -init needs a real file on this build and there is
+        // nothing here to point it at.
+        {
+            static const char *members[] = {"url", "length", "framePosition", "isOpen", "processingFormat",
+                                            "fileFormat", "initForReading:error:", "readIntoBuffer:error:",
+                                            "readIntoBuffer:frameCount:error:", "close",
+                                            "writeFromBuffer:error:"};
+            structure("AVAudioFile", members, 11);
+        }
+
         // ---- the media selection pair.
         {
             static const char *members[] = {"asset", "mediaSelectionGroups", "selectedMediaOptions",
