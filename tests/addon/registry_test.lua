@@ -8,6 +8,81 @@ import("fixtures")
 -- entries place it below an object it calls: it would not link in between. An installer that
 -- calls into the 6.0 object takes its minimum, as it links only where that object is carried: the band
 -- for 6.0 keeps it and the band for 4.3 leaves it out.
+-- The rule tools/registry-one-minimum.lua enforces, on synthetic objects rather than on the
+-- repository's: an object is carried from one release on, so every row of one object names the same
+-- minimum or none of them names one, and a mix is what minimums() refuses. The test drives the tool's
+-- own offenders() over a fixture built here, which is where a rule of this shape is settled - the
+-- tool itself is not a guard test, because over the whole repository it is red on four objects that
+-- are not ours and belong to whoever owns them.
+--
+-- The fixture is the two shapes the rule has to tell apart: CharonMixedA.m holds one row with no
+-- minimum and one at 6.0, CharonClean.m holds one at 6.0 and one with none, and a class two files
+-- implement is asked of both.
+local function one_minimum_step(backports, root, found)
+    local tool = import("registry-one-minimum", {rootdir = path.join(root, "..", "..", "..", "tools")})
+    local work = path.join(fixtures.scratch(), "one-minimum")
+    os.rm(work)
+    os.mkdir(path.join(work, "registry", "CharonThing"))
+    os.mkdir(path.join(work, "CharonThing"))
+    io.writefile(path.join(work, "CharonThing", "CharonMixedA.m"),
+        "#import <Foundation/Foundation.h>\n"
+        .. "@implementation CharonMixedOne\n@end\n"
+        .. "@implementation CharonMixedTwo\n@end\n")
+    io.writefile(path.join(work, "CharonThing", "CharonMixedB.m"),
+        "#import <Foundation/Foundation.h>\n"
+        .. "@implementation CharonMixedThree\n@end\n"
+        .. "@implementation CharonMixedFour\n@end\n")
+    io.writefile(path.join(work, "CharonThing", "CharonClean.m"),
+        "#import <Foundation/Foundation.h>\n"
+        .. "@implementation CharonCleanOne\n@end\n")
+    local entries = {}
+    for _, row in ipairs({{"CharonMixedOne", ""}, {"CharonMixedTwo", "6.0"},
+                           {"CharonMixedThree", "7.0"}, {"CharonMixedFour", "6.0"},
+                           {"CharonCleanOne", "6.0"}}) do
+        table.insert(entries, string.format('{"api": "%s", "kind": "class", "introduced": "9.0",'
+            .. ' "status": "implemented", "reason": "a fixture", "effect": "a fixture",'
+            .. ' "minimum": "%s"}', row[1], row[2]))
+    end
+    io.writefile(path.join(work, "registry", "CharonThing", "values.json"),
+        '{"framework": "CharonThing", "entries": [' .. table.concat(entries, ",") .. "]}")
+    local mixed = tool.offenders(work)
+    local by_object, objects = {}, 0
+    for _, one in ipairs(mixed) do
+        by_object[path.filename(one.object)] = one
+        objects = objects + 1
+    end
+    if not by_object["CharonMixedA.m"] then
+        table.insert(found, "one minimum per object: CharonMixedA.m holds a row with no minimum beside"
+            .. " one at 6.0 and must be refused, and the rule did not name it")
+    else
+        if #by_object["CharonMixedA.m"].minimums ~= 2 then
+            table.insert(found, "one minimum per object: CharonMixedA.m must be named as holding none"
+                .. " and 6.0, and it names " .. table.concat(by_object["CharonMixedA.m"].minimums, " and "))
+        end
+    end
+    if not by_object["CharonMixedB.m"] then
+        table.insert(found, "one minimum per object: CharonMixedB.m holds 6.0 and 7.0, two values, and"
+            .. " must be refused, and the rule did not name it")
+    end
+    if by_object["CharonClean.m"] then
+        table.insert(found, "one minimum per object: CharonClean.m holds every row at 6.0 and must not"
+            .. " be named, and the rule named it")
+    end
+    if objects ~= 2 then
+        table.insert(found, string.format("one minimum per object: the fixture holds three objects and"
+            .. " exactly two of them mix, and the rule named %d", objects))
+    end
+    -- the same rule over a framework that has no mix at all must read clean, or a refusal says
+    -- nothing about a clean tree
+    local scoped = tool.offenders(path.join(root, "..", "..", "..", "packages", "a", "apple-backports"), "Foundation")
+    for _, one in ipairs(scoped) do
+        if path.filename(one.object) ~= "NSURLSessionWebSocket13.m" then
+            table.insert(found, "one minimum per object: Foundation holds one object that mixes and the"
+                .. " rule named " .. path.filename(one.object) .. " as well")
+        end
+    end
+end
+
 local function range_step(backports, folder, found)
     local work = path.join(folder, "range")
     os.mkdir(path.join(work, "registry"))
@@ -751,8 +826,8 @@ function failures(opt)
     end
     wiring(backports, root, found)
     range_step(backports, fixtures.scratch(), found)
+    one_minimum_step(backports, root, found)
     spelling(backports, found)
-    one_minimum_per_object(backports, root, listed, found)
     unreadable(backports, found)
     named_twice(backports, found)
     type_rows(backports, found)
@@ -983,67 +1058,6 @@ end
 
 function wiring(backports, root, found)
 
--- An object is carried from one release on, and its minimum is read from the entries the symbols it
--- carries answer to, so every one of those entries names the same minimum or none of them names one:
--- a set holding both none and a value, or two values, is what minimums() refuses. The rule above is
--- exercised on synthetic objects; this is the same rule over the repository's own objects, which is
--- where a registry that disagrees with itself is found.
---
--- Objects are the files, so the grouping is by the file that DEFINES a class and never by the row's
--- `source` field: that field is a transcription, it can be wrong, and one is - CKSyncEngineConfiguration
--- names CKSyncEngine17.m and is defined in CKSyncEngine.m - which is how a check keyed on it reads
--- clean over an object the gate refuses. A class two files implement is carried by both objects, so
--- both are asked.
-function one_minimum_per_object(backports, root, listed, found)
-    local defines, files = {}, {}
-    for _, file in ipairs(os.files(path.join(root, "*/*.m"))) do
-        table.insert(files, file)
-        -- comments go first: a sentence beginning "// @implementation" is not a definition
-        local text = io.readfile(file):gsub("//[^\n]*", "")
-        for cls in text:gmatch("@implementation%s+(%w+)") do
-            local places = defines[cls]
-            if not places then
-                places = {}
-                defines[cls] = places
-            end
-            if not table.contains(places, file) then
-                table.insert(places, file)
-            end
-        end
-    end
-    local objects, order = {}, {}
-    for api, entry in pairs(listed) do
-        for _, file in ipairs(defines[api] or {}) do
-            local by = objects[file]
-            if not by then
-                by = {minimums = {}, names = {}}
-                objects[file] = by
-                table.insert(order, file)
-            end
-            local minimum = entry.minimum or "none"
-            by.minimums[minimum] = true
-            table.insert(by.names, api .. " (" .. minimum .. ")")
-        end
-    end
-    for _, file in ipairs(order) do
-        local by = objects[file]
-        local all, values = {}, 0
-        for minimum in pairs(by.minimums) do
-            table.insert(all, minimum)
-            if minimum ~= "none" then
-                values = values + 1
-            end
-        end
-        table.sort(all)
-        if values > 1 or (values > 0 and by.minimums["none"]) then
-            table.sort(by.names)
-            table.insert(found, string.format(
-                "%s is one object and its rows name the minimums %s, and an object is carried from one"
-                .. " release on, so it is one minimum or none: %s",
-                path.filename(file), table.concat(all, " and "), table.concat(by.names, ", ")))
-        end
-    end
-end
 
     local recipe = io.readfile(path.join(root, "xmake.lua"))
     if not recipe then
