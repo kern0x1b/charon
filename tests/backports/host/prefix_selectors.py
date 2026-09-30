@@ -100,11 +100,181 @@ def declaration(sign, node, prefix):
     return head + " ".join(parts)
 
 
+def named(qualified):
+    """The name a type names, whether clang wrote it bare or wrapped: an id-typed receiver is written
+    id<UIContextMenuInteractionDelegate> and a protocol-typed one UIContextMenuInteractionDelegate, and both
+    name the protocol."""
+    inner = re.search(r"<([^<>]+)>", qualified)
+    if inner:
+        return inner.group(1).strip()
+    return bare(qualified)
+
+
+FAMILIES = ("mutableCopy", "copy", "init", "new", "alloc")
+
+
+def nodes(text):
+    """Every node of an AST dump, top level and nested."""
+    def walk(node):
+        if isinstance(node, list):
+            for item in node:
+                yield from walk(item)
+        elif isinstance(node, dict):
+            yield node
+            for value in node.values():
+                yield from walk(value)
+    for document in documents(text):
+        yield from walk(document)
+
+
+def ported_classes(objects):
+    """The classes the objects define, which a category's owner is not among: those are the host's own."""
+    names = subprocess.run(["xcrun", "nm", *objects], capture_output=True, text=True, check=True).stdout
+    return {line.split()[2][len("_OBJC_CLASS_$_"):] for line in names.splitlines()
+            if len(line.split()) == 3 and line.split()[1] != "U" and line.split()[2].startswith("_OBJC_CLASS_$_")}
+
+
+def framework_headers(flags):
+    """Every header of every framework on the include path. Each framework's Headers directory is read with
+    scandir and not by walking the tree: the include path names the whole SDK and a walk of it takes minutes,
+    while the headers are one directory deep inside each framework."""
+    roots = set()
+    for index, word in enumerate(flags):
+        if word in ("-iframework", "-F") and index + 1 < len(flags):
+            roots.add(flags[index + 1])
+        elif word == "-isysroot" and index + 1 < len(flags):
+            roots.add(os.path.join(flags[index + 1], "System", "Library", "Frameworks"))
+    for root in sorted(roots):
+        try:
+            entries = list(os.scandir(root))
+        except OSError:
+            continue
+        for entry in entries:
+            headers = os.path.join(entry.path, "Headers")
+            if os.path.isdir(headers):
+                try:
+                    for header in os.scandir(headers):
+                        if header.name.endswith(".h"):
+                            yield header.path
+                except OSError:
+                    continue
+
+
+def header_conformers(flags, classes):
+    """{class: [protocol, ...]} for the classes given, read out of the frameworks' headers and cached beside the
+    build: the answer is the same for every file of a group and the scan is the whole SDK."""
+    import hashlib
+    import tempfile
+    wanted = sorted(classes)
+    key = hashlib.sha256(("\\0".join([f for f in flags if f.startswith("-")] + wanted)).encode()).hexdigest()[:16]
+    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-headers-" + key + ".json")
+    try:
+        with open(cache, encoding="utf-8") as handle:
+            return json.load(handle)
+    except (OSError, ValueError):
+        pass
+    found = {}
+    for header in framework_headers(flags):
+        try:
+            text = open(header, encoding="utf-8", errors="replace").read()
+        except OSError:
+            continue
+        for name in wanted:
+            for match in re.finditer(r"@interface\s+" + re.escape(name) + r"\b[^@{;]*", text, re.S):
+                line = match.group(0)
+                opened = line.find("<")
+                if opened < 0:
+                    continue
+                names = [p.strip() for p in line[opened + 1:line.find(">", opened)].split(",") if p.strip()]
+                if names:
+                    found.setdefault(name, []).extend(names)
+    try:
+        with open(cache, "w", encoding="utf-8") as handle:
+            json.dump(found, handle)
+    except OSError:
+        pass
+    return found
+
+
+def conformers(sources, flags, classes):
+    """{protocol: {class, ...}} for the classes given: the ones that adopt it.
+
+    Two sources, because clang's JSON records the protocols a declaration adopts only for the declarations the
+    file itself makes - UIControl's own adoption of UIContextMenuInteractionDelegate is in the SDK's header and
+    nowhere in a dump - so the port's own classes come from the AST and the classes the port only extends come
+    from the headers those declarations sit in.
+
+    The tool runs once per file and a group is twenty files, and the answer depends on the group's sources and
+    not on the file, so it is cached beside the build and paid once for the group."""
+    import hashlib
+    import tempfile
+    key = hashlib.sha256(("\\0".join(sorted(sources) + [f for f in flags if f.startswith("-")] + sorted(classes)))
+                         .encode()).hexdigest()[:16]
+    cache = os.path.join(tempfile.gettempdir(), "charon-prefix-conformers-" + key + ".json")
+    try:
+        with open(cache, encoding="utf-8") as handle:
+            return {name: set(values) for name, values in json.load(handle).items()}
+    except (OSError, ValueError, AttributeError):
+        pass
+    owners = {}
+
+    def adopt(name, protocol):
+        if name and protocol:
+            owners.setdefault(named(protocol), set()).add(name)
+
+    for path in sources:
+        dump = subprocess.run(["xcrun", "clang", *flags, "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json",
+                                "-Xclang", "-ast-dump-filter=haron", path],
+                              capture_output=True, text=True, check=True).stdout
+        for node in nodes(dump):
+            if node.get("kind") not in ("ObjCInterfaceDecl", "ObjCCategoryDecl"):
+                continue
+            if node["kind"] == "ObjCInterfaceDecl":
+                name = node.get("name")
+            else:
+                # A category adopts what its own protocol list says, and the class it extends is the conformer.
+                name = (node.get("interface") or {}).get("name")
+            for protocol in node.get("protocols", []):
+                adopt(name, protocol.get("name") or protocol.get("qualType"))
+    for name, protocols in header_conformers(flags, classes).items():
+        for protocol in protocols:
+            adopt(name, protocol)
+    try:
+        with open(cache, "w", encoding="utf-8") as handle:
+            json.dump({name: sorted(values) for name, values in owners.items()}, handle)
+    except OSError:
+        pass
+    return owners
+
+
+def send_declaration(sign, node, prefix):
+    """The declaration of a selector a *send* now names, which a definition's declaration cannot be: a send
+    carries its keywords in `selector` and not in `name`.
+
+    The parameters are typed `id` and the return is `id`, which is all a declaration has to be for the
+    rewritten file to compile: the send passes the arguments the source passes it and the receiver is typed by
+    the protocol, so nothing narrower is wanted or checked here. The colons are the part that matters - a
+    prototype without them does not parse at all."""
+    keywords = [keyword for keyword in node["selector"].split(":") if keyword]
+    parts = ["%s:(id)value0" % prefixed(keywords[0], prefix)]
+    parts += ["%s:(id)value%d" % (keyword, index) for index, keyword in enumerate(keywords[1:], start=1)]
+    return "%s (id)%s" % (sign, " ".join(parts))
+
+
+def text_after(source, offset):
+    """Whether there is a receiver between the `[` and the keyword at all, which a send to a class does not
+    have - `[Foo bar:]` - and which therefore takes no cast."""
+    return source[offset + 1:offset + 2] not in ("]", "")
+
+
 class Rewriter:
-    def __init__(self, source, carried, superclasses):
+    def __init__(self, source, carried, superclasses, protocol_owners=None, ported_classes=None):
         self.source = source
         self.carried = carried
         self.superclasses = superclasses
+        self.ported_classes = ported_classes or set()
+        # literal insertions, for a rewrite that is not a rename: the cast a protocol-typed receiver needs
+        self.protocol_owners = protocol_owners or {}
         self.inserts = set()
         self.unresolved = []
         self.candidates = []
@@ -116,6 +286,24 @@ class Rewriter:
     def owns(self, kind, receiver, selector):
         while receiver:
             if (kind, receiver, selector) in self.carried:
+                return True
+            if receiver in self.protocol_owners:
+                # A receiver typed as a protocol names no class, and the spelling a send to it needs is the
+                # one its conformers carry. A receiver typed id<P> is one of P's conformers and the tool
+                # cannot know which, so the send is only placeable when EVERY conformer carries the
+                # selector: then each answers the prefixed name and the rewrite is right whichever the
+                # receiver turns out to be. A conformer the port itself defines is already isolated by the
+                # class rename and no member of it is ever carried, so it counts as one that does not --
+                # which is the listmenus case, where the receiver is the port's own delegate while UIControl,
+                # the SDK's other conformer, does carry the selector. One carrying it and one not is
+                # ambiguity, and the send keeps the name the port gives it.
+                conformers = self.protocol_owners[receiver]
+                owners = {name for name in conformers
+                          if (kind, name, selector) in self.carried and name not in self.ported_classes}
+                # owners and conformers both empty is not agreement: there is nothing to place, so the
+                # send is left alone.
+                if not owners or owners != conformers:
+                    return False
                 return True
             receiver = self.superclasses.get(receiver)
         return False
@@ -131,7 +319,13 @@ class Rewriter:
         if kind in ("super_instance", "super_class") or not node.get("inner"):
             return None, None
         inner = node["inner"][0]
-        qualified = bare(inner["type"]["qualType"])
+        # named(), not bare(): an id-typed receiver is written id<UIContextMenuInteractionDelegate> and
+        # bare() strips the <...> whole, which leaves "id" -- the type, not the protocol this send is about.
+        qualified = named(inner["type"]["qualType"])
+        if qualified in self.protocol_owners and qualified not in self.superclasses:
+            # A protocol-typed receiver: owns() places the send from the conformers, and the receiver is
+            # named by the protocol here so the walk reports the send rather than dropping it silently.
+            return "-", qualified
         if qualified in ("instancetype", "id"):
             # an id-typed receiver names no class: only self, and only inside a method, is placeable. Outside
             # one - in a C function - even self is not, and a receiver left as the type name would be silently
@@ -331,11 +525,73 @@ def collect(node, owner, owners):
             collect(value, owner, owners)
 
 
+FIXTURE = """#import <Foundation/Foundation.h>
+@protocol CharonWidgetDelegate <NSObject>
+- (void)widgetSaysHello;
+@end
+@interface CharonWidget : NSObject <CharonWidgetDelegate>
+- (void)widgetSaysHello;
+@end
+@implementation CharonWidget
+- (void)greet:(id<CharonWidgetDelegate>)delegate
+{
+    [delegate widgetSaysHello];
+}
+@end
+"""
+
+
+def selftest():
+    """A protocol-typed receiver, placed from the conformers that carry the selector -- and the same run
+    without the map, which must NOT place it. The second case is the point: it is what this tool did before
+    the conformers existed, and an assertion that holds in both cases would be testing the fixture, not the
+    mechanism. One file, one AST dump, no build."""
+    import subprocess
+    import tempfile
+    handle, path = tempfile.mkstemp(suffix=".m")
+    with os.fdopen(handle, "w", encoding="utf-8") as out:
+        out.write(FIXTURE)
+    try:
+        dump = subprocess.run(["xcrun", "clang", "-fsyntax-only", "-w", "-Xclang", "-ast-dump=json",
+                               "-Xclang", "-ast-dump-filter=haron", path],
+                              capture_output=True, text=True, check=True).stdout
+        carried = {("-", "CharonWidget", "widgetSaysHello")}
+        # the expected spelling comes from prefixed(), the function the rewrite itself uses, so the assertion
+        # is about whether the send was placed and not about how this tool spells a prefixed selector
+        renamed = prefixed("widgetSaysHello", "charonHost")
+
+        def rewrite(owners):
+            rewriter = Rewriter(FIXTURE, carried, {}, owners, set())
+            for document in documents(dump):
+                rewriter.walk(document, None)
+            return rewriter.result("charonHost")
+
+        placed = rewrite({"CharonWidgetDelegate": {"CharonWidget"}})
+        print("ok   the send to id<CharonWidgetDelegate> is placed: %s"
+              % ("yes" if renamed in placed else "NO -- the conformers did not place it"))
+        control = rewrite({})
+        # the control has to show the send UNCHANGED as well as unprefixed: a rewrite that dropped the body
+        # would pass "the prefixed name is absent" for the wrong reason
+        quiet = renamed not in control and "[delegate widgetSaysHello]" in control
+        print("%s   the same send with no conformer map is left exactly as written, which is what proves"
+              % ("ok  " if quiet else "FAIL"))
+        print("     the first line is about the mechanism and not about the fixture")
+        if renamed not in placed or not quiet:
+            print("FAIL the protocol-typed send is not placed from its conformers, or the control placed it too",
+                  file=sys.stderr)
+            sys.exit(1)
+    finally:
+        os.unlink(path)
+
+
 def main():
     source_path, output_path, prefix = sys.argv[1], sys.argv[2], sys.argv[3]
     declarations = None
     if sys.argv[4].startswith("--declarations="):
         declarations = sys.argv.pop(4).split("=", 1)[1]
+    group_sources = None
+    if sys.argv[4].startswith("--sources="):
+        group_sources = [p for p in sys.argv.pop(4).split("=", 1)[1].split(",") if p]
     flags = sys.argv[4:sys.argv.index("--")]
     objects = sys.argv[sys.argv.index("--") + 1:]
     carried = ported(objects)
@@ -343,7 +599,13 @@ def main():
                           capture_output=True, text=True, check=True).stdout
     superclasses = runtime_superclasses()
     source = open(source_path, encoding="utf-8").read()
-    rewriter = Rewriter(source, carried, superclasses)
+    # The group is one release: the conformers of a protocol are the same for every file of it, so they are
+    # read once for the group and handed to the rewriter, which cannot answer for a protocol receiver
+    # without them. A caller that names no --sources gets no map, and a protocol-typed send is then left
+    # alone rather than placed against a guess.
+    classes = ported_classes([*objects, *superclasses.values()])
+    owners = conformers(group_sources or [source_path], flags, classes) if group_sources else {}
+    rewriter = Rewriter(source, carried, superclasses, owners, classes)
     for document in documents(dump):
         rewriter.walk(document, None)
     if rewriter.candidates:
@@ -387,4 +649,7 @@ def main():
                 header.write("@interface %s ()\n%s;\n@end\n" % (owner, declaration(sign, node, prefix)))
 
 
-main()
+if "--selftest" in sys.argv:
+    selftest()
+else:
+    main()

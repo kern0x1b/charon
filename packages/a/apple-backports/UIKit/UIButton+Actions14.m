@@ -7,6 +7,11 @@
 
 static const char charon_menu_key, charon_role_key;
 
+// As UIControl's: the three messages of UIContextMenuInteractionDelegate are carried here, so the
+// conformance is declared and the interaction has a conformer to send them to.
+@interface UIButton (CharonActions14) <UIContextMenuInteractionDelegate>
+@end
+
 @implementation UIButton (CharonActions14)
 
 + (instancetype)buttonWithType:(UIButtonType)buttonType primaryAction:(UIAction *)primaryAction

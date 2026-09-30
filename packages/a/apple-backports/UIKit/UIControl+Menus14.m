@@ -119,6 +119,12 @@ static void charon_update_trigger(UIControl *control)
     }
 }
 
+// The category carries the three messages of UIContextMenuInteractionDelegate and says so: a receiver the
+// interaction sends them to is typed by that protocol, and a category that implements a protocol answers it
+// only by declaring the conformance, which is what puts the class among the protocol's conformers.
+@interface UIControl (CharonMenus14) <UIContextMenuInteractionDelegate>
+@end
+
 @implementation UIControl (CharonMenus14)
 
 - (UIContextMenuInteraction *)contextMenuInteraction

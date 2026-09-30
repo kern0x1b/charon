@@ -73,7 +73,9 @@ prefixed_build() {
         source=$build/rewritten/$name/$base
         if [ -s "$build/$name.carried" ]; then
             if ! python3 "$prefixer" "$sources/$file" "$source" charonHost \
-                --declarations="$build/$name.declarations.h" $flags -I"$sources" \
+                --declarations="$build/$name.declarations.h" \
+                --sources="$(for f in $files; do printf '%s,' "$sources/$f"; done | sed 's/,$//')" \
+                $flags -I"$sources" \
                 -I"$(dirname "$sources/$file")" \
                 -target arm64-apple-ios15.0-macabi -isysroot "$sdk" -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" \
                 -- $objects; then
