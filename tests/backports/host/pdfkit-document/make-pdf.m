@@ -4,6 +4,10 @@
 #import <CoreGraphics/CoreGraphics.h>
 #include <stdio.h>
 
+// The three box fixtures, written as files rather than with CGPDFContext: a page that NAMES every box,
+// one with no /CropBox at all, and one rotated - the three cases that decide what -boundsForBox: answers.
+// Measured against the host's own -boundsForBox:, all three agree with CGPDFPageGetBoxRect, so these
+// are facts the run compares rather than a rule the port has to implement.
 static void draw(NSString *path, int pages, CGRect box)
 {
     NSMutableDictionary *info = [NSMutableDictionary dictionary];
@@ -45,15 +49,22 @@ int main(int argc, char **argv)
         draw(three, 3, CGRectMake(0, 0, 612, 792));   // US Letter, three pages
         draw(one, 1, CGRectMake(0, 0, 200, 400));     // a box of our own, one page
         draw(none, 0, CGRectMake(0, 0, 100, 100));    // no pages at all
+        // the three box fixtures come from make-box-pdfs.py, which measures every xref offset and the
+        // stream's /Length from the object bytes; they are geometry-only and carry no text to find
         for (NSString *path in @[ three, one, none ])
             printf("%s %s\n", path.UTF8String,
                    [[NSFileManager defaultManager] fileExistsAtPath:path] ? "written" : "MISSING");
         // what was asked for, so the fixture check knows which pages are meant to carry text: the
         // no-pages fixture comes out of CGPDFContextClose with one page and nothing on it
         NSMutableString *manifest = [NSMutableString string];
-        [manifest appendFormat:@"%@\t3\n", three.lastPathComponent];
-        [manifest appendFormat:@"%@\t1\n", one.lastPathComponent];
-        [manifest appendFormat:@"%@\t0\n", none.lastPathComponent];
+        [manifest appendFormat:@"%@\t3\tpage N\n", three.lastPathComponent];
+        [manifest appendFormat:@"%@\t1\tpage N\n", one.lastPathComponent];
+        [manifest appendFormat:@"%@\t0\t\n", none.lastPathComponent];
+        // the box fixtures are geometry-only: their text expectation is nothing, and saying so is not
+        // the same as weakening the check on the fixtures that DO carry text
+        [manifest appendFormat:@"%@\t1\tgeometry-only\n", @"box-all.pdf"];
+        [manifest appendFormat:@"%@\t1\tgeometry-only\n", @"box-nocrop.pdf"];
+        [manifest appendFormat:@"%@\t1\tgeometry-only\n", @"box-rotated.pdf"];
         [manifest writeToFile:[directory stringByAppendingPathComponent:@"drew.txt"]
                   atomically:YES encoding:NSUTF8StringEncoding error:NULL];
     }

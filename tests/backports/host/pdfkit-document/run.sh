@@ -25,6 +25,7 @@ mkdir -p "$build/fixtures"
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation "$here/make-pdf.m" -framework Foundation -framework CoreGraphics \
     -o "$build/make-pdf" 2> "$build/make.log" || {
     echo "BUILD the fixture writer did not compile:"; head -6 "$build/make.log" | sed 's/^/    /'; exit 1; }
+python3 "$here/make-box-pdfs.py" "$build/fixtures" > /dev/null
 "$build/make-pdf" "$build/fixtures" > /dev/null
 
 
@@ -81,8 +82,10 @@ echo "images differ by construction: host=$hostimage port=$portimage"
 # document, its page count and the past-the-end page are comparable, while the three attributes and
 # the two boxes are not - the host's PDFKit has no such methods, which the run names per line
 fixtures_expected=$(ls "$build"/fixtures/*.pdf | wc -l | tr -d ' ')
-compared_expected=$((fixtures_expected * 3 + 1))
-skipped_expected=$((fixtures_expected * 5))
+# per fixture: the document, its page count, the past-the-end page and the three attributes the host has
+# no accessor for; plus the five box kinds, which the host's -boundsForBox: answers
+compared_expected=$((fixtures_expected * 3 + 1 + fixtures_expected * 5))
+skipped_expected=$((fixtures_expected * 3))
 
 # the facts both sides can answer, compared key by key
 python3 - "$build/host.txt" "$build/port.txt" "$compared_expected" "$skipped_expected" <<'PYEOF'
@@ -115,6 +118,21 @@ for key in sorted(set(host) | set(port)):
         print(f"  MISSING   {key}  host={hv} port={pv}")
         differences += 1
         continue
+    if ".page0." in key:
+        # a rect: four numbers, compared with a stated tolerance rather than as text
+        try:
+            a = [float(x) for x in hv.split(",")]
+            b = [float(x) for x in pv.split(",")]
+        except ValueError:
+            a = b = None
+        if a and len(a) == 4 and len(b) == 4:
+            compared += 1
+            near = all(abs(x - y) <= 0.001 for x, y in zip(a, b))
+            print(f"  {'agree  ' if near else 'DIFFER '} {key}  host={hv} port={pv}"
+                  f"{'' if near else '   (tolerance 0.001)'}")
+            if not near:
+                differences += 1
+            continue
     if hv.startswith("NOT-COMPARED") or pv.startswith("NOT-COMPARED"):
         skipped += 1
         print(f"  not compared  {key}  host={hv}  port={pv}")

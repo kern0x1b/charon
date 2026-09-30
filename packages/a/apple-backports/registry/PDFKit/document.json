@@ -63,11 +63,11 @@
    "kind": "method",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "the release's own CGPDFPageGetBoxRect for the box asked for, a zero rect for a page that could not be opened; a box the page does not carry reads as its media box, which is the format's own rule",
+   "status": "implemented",
+   "effect": "the page's own box, read through the release's own CGPDFPageGetBoxRect for the kind asked for: a named /BleedBox, /TrimBox or /ArtBox is honoured, a page with no /CropBox answers its MediaBox, and /Rotate is reported through rotation and left out of the box",
    "reason": "the host's PDFPage has neither -boundsForBox: nor -mediaBox, so nothing here is host-checked",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the release's own CGPDFPageGetBoxRect, exported by both bands; the host's PDFKit has no such accessor, which the run names",
+   "source": "the host's own PDFKit in a process that holds no port object, against the port's objects in a process that holds no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 49 MISMATCHES 0, the five box kinds on every fixture, the rects compared as four numbers within 0.001",
    "ledger": "missing"
   },
   {
@@ -77,7 +77,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "-boundsForBox: with the media box, read from the release's own CGPDFPageGetBoxRect",
-   "reason": "the host's PDFPage has no such property, so nothing here is host-checked",
+   "reason": "the host's PDFPage has no -mediaBox and no -cropBox PROPERTY (measured: responds to -mediaBox: 0), so no fact covers them; the box they wrap IS compared, through -boundsForBox: with that kind, which the host answers",
    "facts": "facts/PDFKit/Document11.md",
    "source": "as -boundsForBox:, through the release's own reader",
    "ledger": "?"
@@ -89,7 +89,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "-boundsForBox: with the crop box, read from the release's own CGPDFPageGetBoxRect; a page with no crop box answers its media box",
-   "reason": "the host's PDFPage has no such property, so nothing here is host-checked",
+   "reason": "the host's PDFPage has no -mediaBox and no -cropBox PROPERTY (measured: responds to -mediaBox: 0), so no fact covers them; the box they wrap IS compared, through -boundsForBox: with that kind, which the host answers",
    "facts": "facts/PDFKit/Document11.md",
    "source": "as -boundsForBox:, through the release's own reader",
    "ledger": "?"

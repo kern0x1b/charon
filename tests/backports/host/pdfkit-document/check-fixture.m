@@ -31,13 +31,19 @@ static int check(NSString *path, NSString *dir)
     // and nothing on it, and a checker that could not tell would either pass it or fail it by luck
     NSString *name = path.lastPathComponent;
     long expectPages = 1;
+    NSString *expectText = nil;   // what this fixture's pages are MEANT to carry, from the manifest
     NSString *manifestPath = [[dir stringByAppendingPathComponent:@"drew.txt"] copy];
     if (manifestPath != nil) {
         for (NSString *line in [[NSString stringWithContentsOfFile:manifestPath encoding:NSUTF8StringEncoding error:NULL]
                                  componentsSeparatedByString:@"\n"]) {
             NSArray *parts = [line componentsSeparatedByString:@"\t"];
-            if (parts.count == 2 && [parts[0] isEqualToString:name])
+            if (parts.count >= 2 && [parts[0] isEqualToString:name]) {
                 expectPages = [parts[1] integerValue];
+                // "geometry-only" is a SENTINEL, not the text to look for: taking it as the expected
+                // text sent the checker looking for the word in a stream that never holds it.
+                if (parts.count >= 3 && [parts[2] length] && ![parts[2] isEqualToString:@"geometry-only"])
+                    expectText = parts[2];
+            }
         }
     }
     if (expectPages == 0) {
@@ -47,26 +53,62 @@ static int check(NSString *path, NSString *dir)
         return 0;
     }
     for (size_t i = 1; i <= pages; i++) {
+        if (expectText == nil) {
+            // geometry-only, decided from the manifest BEFORE anything is read: these fixtures are read
+            // for their boxes by the run, and their content stream is not asked about at all.  This is
+            // not a weaker check on the fixtures that DO carry text - those still have to answer, and
+            // they are read and asked below.  The no-pages early return above comes first, so a
+            // fixture drawn with no pages is not counted as one missing its text.
+            printf("  fixture: %s page %zu is geometry-only, read for its boxes and not asked for text\n",
+                   path.lastPathComponent.UTF8String, i);
+            continue;
+        }
         CGPDFPageRef page = CGPDFDocumentGetPage(document, i);
+        // /Contents through the OBJECT reader and not through CGPDFDictionaryGetStream: a reference the
+        // stream reader does not resolve is what made these three fixtures look empty, and a page whose
+        // /Contents is an ARRAY of streams carries its operators across all of them
         CGPDFDictionaryRef dictionary = CGPDFPageGetDictionary(page);
-        CGPDFStreamRef stream = NULL;
-        CGPDFDictionaryGetStream(dictionary, "Contents", &stream);
-        if (stream == NULL) {
-            printf("  fixture: %s page %zu has no /Contents stream\n", path.lastPathComponent.UTF8String, i);
+        CGPDFObjectRef contents = NULL;
+        CGPDFDictionaryGetObject(dictionary, "Contents", &contents);
+        NSMutableData *joined = [NSMutableData data];
+        if (contents == NULL) {
+            printf("  fixture: %s page %zu has no /Contents\n", path.lastPathComponent.UTF8String, i);
             bad++;
             continue;
         }
-        CFDataRef data = CGPDFStreamCopyData(stream, NULL);   // the format out-param says nothing here
-        if (data == NULL) {
-            printf("  fixture: %s page %zu has no stream data\n", path.lastPathComponent.UTF8String, i);
+        if (CGPDFObjectGetType(contents) == kCGPDFObjectTypeStream) {
+            CGPDFStreamRef one = NULL;
+            CGPDFObjectGetValue(contents, kCGPDFObjectTypeStream, &one);
+            [joined appendData:(__bridge_transfer NSData *)CGPDFStreamCopyData(one, NULL)];
+        } else if (CGPDFObjectGetType(contents) == kCGPDFObjectTypeArray) {
+            CGPDFArrayRef array = NULL;
+            CGPDFObjectGetValue(contents, kCGPDFObjectTypeArray, &array);
+            for (size_t k = 0; k < CGPDFArrayGetCount(array); k++) {
+                CGPDFObjectRef one = NULL;
+                CGPDFArrayGetObject(array, k + 1, &one);
+                if (one && CGPDFObjectGetType(one) == kCGPDFObjectTypeStream) {
+                    CGPDFStreamRef stream = NULL;
+                    CGPDFObjectGetValue(one, kCGPDFObjectTypeStream, &stream);
+                    [joined appendData:(__bridge_transfer NSData *)CGPDFStreamCopyData(stream, NULL)];
+                }
+            }
+        }
+        if (joined.length == 0) {
+            printf("  fixture: %s page %zu has no content bytes\n", path.lastPathComponent.UTF8String, i);
             bad++;
             continue;
         }
+        printf("  fixture: %s page %zu content stream: %.*s|\n", path.lastPathComponent.UTF8String, i,
+               (int)MIN(joined.length, 90), (const char *)joined.bytes);
+        CFDataRef data = (__bridge_retained CFDataRef)joined;   // the format out-param says nothing here
         CFIndex length = CFDataGetLength(data);
         const char *bytes = (const char *)CFDataGetBytePtr(data);
         // the writer labels its pages, so page i must show "page i" - and a fixture written with no
         // pages at all has nothing to show, which is a fixture the run does not compare text on
-        NSString *want = [NSString stringWithFormat:@"page %zu", i];
+        // the manifest says what the pages carry: "page N" is the per-page label the writer draws,
+        // anything else is that literal on every page
+        NSString *want = [expectText isEqualToString:@"page N"] ? [NSString stringWithFormat:@"page %zu", i]
+                                                                        : expectText;
         BOOL hasShow = length > 2 && memmem(bytes, (size_t)length, "Tj", 2) != NULL;
         BOOL hasText = memmem(bytes, (size_t)length, want.UTF8String, want.length) != NULL;
         if (hasShow && hasText) {

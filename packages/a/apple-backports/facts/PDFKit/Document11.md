@@ -99,7 +99,29 @@ through a `Tj` - `BT 0.0002 Tc 12 0 0 12 20 752 Tm /TT1 1 Tf (page 1) Tj 0 Tc ET
 `check-fixture.m` reads each page's stream back through `CGPDFStreamCopyData` to prove it, because the
 file's own bytes hold the compressed form and a grep over them sees nothing.
 
-**Owed: the `-boundsForBox:` comparison.** The host's `PDFPage` has `-boundsForBox:` and answers it
+### The box comparison, and what the host does
+
+`-[PDFPage boundsForBox:]` is now compared on both sides for all five kinds `CGPDFBox` declares, on
+three fixtures: one naming every box, one with no `/CropBox`, and one rotated 90. The host's
+`-[PDFPage boundsForBox:]` and `CGPDFPageGetBoxRect` were measured to **agree on every kind in every
+case**, so the port's one call per kind is already right and it needed no change. What the measurement
+shows: a named `/BleedBox` is honoured, a page with no `/CropBox` answers its MediaBox, and `/Rotate 90`
+is reported through `rotation` and left out of every box.
+
+The five box kinds are separate registry rows and all of them are `implemented` on that comparison;
+`PDFPage.mediaBox` and `PDFPage.cropBox` stay `inert` with the reason the host has neither as a
+property, and their row now points at the comparison that does cover the box they wrap.
+
+### Owed
+
+**The fixture writer still draws text through the deprecated calls.** `CGContextSelectFont` and
+`CGContextShowTextAtPoint` are both marked deprecated and "No longer supported" in the SDK header, so
+`make-pdf.m` is on a path that stops working, and `-Wall` now says so on every build of it. The
+fixtures should be drawn with CoreText or with the CGPDFContext text operators instead. Not this
+slice, and nothing here depends on it: the boxes the run compares come from the page dictionary and
+not from what the writer drew.
+
+**Owed, and unchanged: the `-string` extraction** The host's `PDFPage` has `-boundsForBox:` and answers it
 (`responds to -boundsForBox:: 1`) while it has no `-mediaBox` or `-cropBox` (`responds to -mediaBox: 0`),
 so the run is probing two selectors the host lacks and leaving a fact it can answer on the floor. The
 comparison is the next slice, over all five box kinds `CGPDFBox` declares, with the rects compared
