@@ -380,11 +380,11 @@
       "kind": "method",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a grid button that is an NSObject and not a view: the grid template's collection view asks it to draw itself into the cell it is in, and its own handler is called when the cell is chosen",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: the 6.1.3 armv7 cache carries no CarPlay class of any name and Apple's own CarPlay declares these, so absent would be a false claim about Apple",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "source": "the 26.2 headers this port targets, which declare each of these, the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPGridButton updateTitleVariants:]",
@@ -446,11 +446,11 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "the header's own light and dark content images, and the image the port draws with, which is the light one because the release has no dark mode for a car screen to be in",
+      "status": "owed",
+      "reason": "owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. It was `implemented` and nothing implemented it -- the selector appears in no source file in the package, and the gate could not see that because backports.lua's unbuilt check counts a member row as built when its owner class is exported. Not absent: the 6.1.3 armv7 cache carries no CarPlay class of any name and Apple's own CarPlay declares these, so absent would be a false claim about Apple",
+      "effect": "nothing yet: the selector is in no source file in the package, and the row said otherwise",
       "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
+      "source": "the 26.2 headers this port targets, which declare each of these, the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
       "api": "-[CPImageSet init]",
