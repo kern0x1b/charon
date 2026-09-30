@@ -21,7 +21,8 @@ seen = collections.defaultdict(list)
 rows = 0
 for path in sorted(glob.glob(os.path.join(REGISTRY, "*.json")) + glob.glob(os.path.join(REGISTRY, "*", "*.json"))):
     document = json.load(open(path))
-    entries = document["entries"] if isinstance(document, dict) else document
+    entries = (document["entries"] if isinstance(document, dict) and isinstance(document.get("entries"), list)
+                  else (document if isinstance(document, list) else None))
     for entry in entries:
         seen[entry.get("api")].append(os.path.basename(path))
         rows += 1

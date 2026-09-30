@@ -40,7 +40,8 @@ def main():
     rows = []
     for path in files:
         document = json.load(open(path))
-        entries = document["entries"] if isinstance(document, dict) else document
+        entries = (document["entries"] if isinstance(document, dict) and isinstance(document.get("entries"), list)
+                      else (document if isinstance(document, list) else None))
         for entry in entries:
             if entry.get("facts") != WANT:
                 continue
