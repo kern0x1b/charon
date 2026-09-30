@@ -1,15 +1,24 @@
 # The CharonMetal objects, which are the port's and not Apple's
 
-Nineteen rows in the registry name a `CharonMetal`-prefixed class: `CharonMetalBlitEncoder`,
-`CharonMetalBuffer`, `CharonMetalCommandBuffer`, `CharonMetalComputeEncoder`,
-`CharonMetalComputePipeline`, `CharonMetalDepthStencil`, `CharonMetalDevice`, `CharonMetalDrawable`,
-`CharonMetalEncoder`, `CharonMetalEventState`, `CharonMetalFunction`, `CharonMetalHeap`,
-`CharonMetalLayerState`, `CharonMetalLibrary`, `CharonMetalPipeline`, `CharonMetalQueue`,
-`CharonMetalSampler`, `CharonMetalSharedEvent` and `CharonMetalTexture`.
+Across the SDK ledger there were 23 rows whose api was a `Charon`-prefixed name, and they were not
+confined to one file:
 
-They are this port's own. One page says so for all nineteen because it is one fact about all of them,
-and nineteen rows each pointing at a page about something else would be nineteen claims to look
-somewhere that does not answer them.
+  Metal/ios80classes.json            16   the object model below
+  Metal/ios120classes.json            1   CharonMetalEventState
+  Metal/ios10heap.json                1   CharonMetalHeap
+  Metal/ios12sharedevent.json         1   CharonMetalSharedEvent
+  UIKit/ios17-18.json                 1   CharonEdgeList
+  Foundation/nz-private-classes.json  3   CharonPersonNameParts, CharonPresentationIntentState,
+                                           CharonTermOfAddressState
+
+Sixteen of the twenty-three were in one file, which is what made the earlier count of "nineteen rows
+name a CharonMetal-prefixed class" wrong twice over: nineteen is right for the CharonMetal prefix across
+the Metal files, and sixteen is right for the file that held most of them. All of them are gone from the
+ledger now, and this page is what a reader has instead.
+
+They were the port's own. One page says so for all of them because it is one fact about all of them,
+and rows that each pointed at a page about something else would have been claims to look somewhere that
+does not answer them.
 
 ## What they are
 
@@ -35,25 +44,22 @@ Three separate facts, each checkable:
    no branch structure, no constant and no return value to port. What these objects answer is the port's
    own model of the GPU-less case, and a row in an SDK ledger has no business claiming to describe it.
 
-So these rows are **`absent`**, and absent is the claim about the RELEASE: no release ever exported
-`CharonMetalDevice`, so nothing in any band's inventory can answer the name. That is checkable three
-ways - no cache holds it, no SDK header declares it, no SDK surface lists it - and all three are cited
-above. The status is deliberately NOT `ignored`, which means the opposite thing: the release carries the
-name and the port declines to. Nothing ever carried it.
+THEY ARE NOT ROWS ANY MORE, and the check this page now feeds is backports.lua:1950, "built, but no
+entry in registry/". A CharonMetal object is built by the port, is hidden, and can never appear in any
+release inventory - so while a row existed for it, that check was answering about a name the ledger has
+no business holding, and the row was doing nothing except stopping the check reporting its seventeen
+port-internal neighbours. That is the whole failure: a row that suppressed a diagnostic.
 
-It is deliberately NOT `implemented` either. That status means the port defines the name and the band
-EXPORTS it, and hidden visibility rules it out however many methods the class has.
+The fix is one line in the unlisted computation at :1867, using release-split.lua:100's own prefix rule -
+bare:startswith("charon_") or bare:startswith("Charon") - so a built port-internal object is no longer
+reported as an unlisted build, and every OTHER unlisted build still is. The check keeps its teeth: a
+non-Charon object that is built and unlisted is still named.
 
-And the port does build all nineteen - `CharonMetalDevice` defines 32 methods, `CharonMetalQueue` 20,
-`CharonMetalBuffer` 18 - which the rows now say alongside the absence, because both are true and a
-reader who found only one of them would draw the wrong conclusion. The earlier rows carried only the
-second half, and the half they carried was false.
-
-## Where the real API is
-
-The Metal rows that *are* SDK API are the `MTL`-named ones, and they are adjudicated against what a
-held release's body does. The pages for those are the rest of this directory: `Blits.md`,
-`Heaps.md`, `ArgumentBindings.md`, `Census.md`, `Absent.md` and the rest. `Census.md` is the count of
-what the caches hold; `Absent.md` is what the release does not have.
+They were also never `ignored`, which means the release carries the name and the port declines to, and no
+release ever exported CharonMetalDevice. And they were never `implemented`, which needs a definition the
+band EXPORTS, and hidden visibility rules that out however many methods the class has. There was no
+status available to these rows, which is the reviewer's point and it is right: an SDK ledger carries SDK
+API. The port's answer to "what does the GPU-less case look like" belongs here, in prose a reader can
+check, and not in a row whose every field has to be true of a release.
 
 This page is deliberately NOT one of those. It describes port machinery, and it says so in its title.

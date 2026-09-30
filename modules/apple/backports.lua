@@ -1865,7 +1865,12 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
         for name in pairs(carried) do
             -- the protocol metadata symbols answer for the protocol rows and are not API of their own
             local protocol_metadata = name:startswith("_OBJC_PROTOCOL_$_") or name:startswith("_OBJC_LABEL_PROTOCOL_$_")
-            if not protocol_metadata and not entry_of(listed, name, inventory) then
+            -- A port-internal object is not API and can never appear in a release inventory, so an SDK ledger
+            -- row had nothing for entry_of to compare it against, and listing one only suppressed this check
+            -- for its neighbours. The prefix rule is release-split.lua:100's own; it is not a new one.
+            local bare_name = name:match("^_OBJC_%u*CLASS_%$_(.+)$") or name:match("^_(.+)$") or name
+            local port_internal = bare_name:startswith("charon_") or bare_name:startswith("Charon")
+            if not protocol_metadata and not port_internal and not entry_of(listed, name, inventory) then
                 table.insert(unlisted, name)
             end
         end
