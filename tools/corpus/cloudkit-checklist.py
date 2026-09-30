@@ -19,12 +19,26 @@ import sys
 
 # The sweep's file, found beside the repository rather than written down: a home path in a tracked file
 # is refused by the commit hook, and rightly - the tool moves with the machine.
-# this file is <repo>/tools/corpus/cloudkit-checklist.py, and the sweep's file is under the workspace
-# beside the repository - three levels up is the repository's parent, which is the workspace.
-_WORKSPACE = os.path.dirname(os.path.dirname(os.path.dirname(
-    os.path.dirname(os.path.abspath(__file__)))))
-SWEEP = os.environ.get("SWEEP_TSV") or os.path.join(
-    _WORKSPACE, "charon", ".agent-work", "runs", "sweep", "3d90-api-by-framework.tsv")
+# The sweep's file, found by WALKING UP rather than by counting: this script is
+# <repo>/tools/corpus/cloudkit-checklist.py, and <repo> is either the shared checkout (where the sweep's
+# file is at .agent-work/runs/sweep/) or a worktree of it under .agent-work/worktrees/<name> (where the
+# shared checkout is three levels up). Counting produced a path one level short of both, and the first two
+# commits of this tool said otherwise; this walks until it finds the file, and fails by name if it cannot.
+def _find_sweep():
+    here = os.path.abspath(__file__)
+    while True:
+        candidate = os.path.join(os.path.dirname(here), ".agent-work", "runs", "sweep",
+                                 "3d90-api-by-framework.tsv")
+        if os.path.exists(candidate):
+            return candidate
+        parent = os.path.dirname(here)
+        if parent == here:
+            break
+        here = parent
+    raise SystemExit("cloudkit-checklist.py: no 3d90-api-by-framework.tsv above this file; set SWEEP_TSV")
+
+
+SWEEP = os.environ.get("SWEEP_TSV") or _find_sweep()
 REG = "packages/a/apple-backports/registry/CloudKit"
 SRC = "packages/a/apple-backports/CloudKit"
 
