@@ -180,19 +180,51 @@ method is not there rather than finding it in the corpus and wondering:
 - **eight `-init` methods** — `-[HKCategorySample init]`, `-[HKObject init]`, `-[HKObjectType init]`,
   `-[HKQuantity init]`, `-[HKSource init]`, `-[HKStatistics init]`, `-[HKStatisticsCollection init]` and
   `-[HKWorkoutEvent init]`. The header marks `-init` unavailable for each of those classes, so a caller
-  cannot call it and the release declares none of its own. `-[HKUnit init]` and `-[HKQuery init]` are
-  *available* in the header and are carried.
+  cannot call it and the release declares none of its own. **Both** SDKs this repository holds say so:
+  `- (instancetype)init NS_UNAVAILABLE;` at the class's own declaration in `HKObject.h`,
+  `HKObjectType.h`, `HKQuantity.h`, `HKSource.h`, `HKStatistics.h`, `HKCategorySample.h`,
+  `HKStatisticsCollectionQuery.h` and `HKWorkout.h`, of iOS 16.4 and of iOS 26.2 alike. An earlier
+  version of this paragraph said `-[HKUnit init]` and `-[HKQuery init]` are *available* in the header and
+  are carried; measured on 2026-09-30, `HKUnit.h:21` and `HKQuery.h:35` of iOS 26.2 carry the same
+  `NS_UNAVAILABLE`, and so do they in iOS 16.4, so there is no class of this framework whose header
+  leaves `-init` open. Those two rows stay `implemented` and what answers them is the `-init` `NSObject`
+  gives every object.
 - **the four workout-session methods of `HKHealthStore`** — `startWorkoutSession:`, `endWorkoutSession:`,
-  `pauseWorkoutSession:` and `resumeWorkoutSession:`. The header marks them unavailable on iOS: they are
-  the watchOS surface of the class, and the watch application and app extensions both arrived after this
-  release.
+  `pauseWorkoutSession:` and `resumeWorkoutSession:`. The header marks them unavailable on iOS
+  (`API_UNAVAILABLE(ios, macCatalyst, macos)` on the first two, `API_UNAVAILABLE(ios)` on the other
+  two, at the method's own declaration in `HKHealthStore.h` of 16.4 and of 26.2 alike): they are the
+  watchOS surface of the class, and the watch application and app extensions both arrived after this
+  release. Their selector strings are in the images of 9.0 and of 10.0.1 — which is the string being
+  present, not the method being this release's API, and `first-rung.py` answers presence and never a
+  version.
 - **the four states-of-mind predicates of `HKQuery`** — `predicateForStatesOfMindWithValence:operatorType:`,
   `predicateForStatesOfMindWithKind:`, `predicateForStatesOfMindWithLabel:` and
   `predicateForStatesOfMindWithAssociation:`. The header leaves them unannotated, so the corpus gave them
   the version of the class they sit in (its `via=class-floor`). They are not 8.0 API: the HealthKit image
   of the armv7 shared cache holds no such selector, and neither do the images of 8.2, 9.0 and 9.3, and
   the type of each argument — `HKStateOfMindAssociation` and its two siblings — is of iOS 18. They were
-  carried here for a while and are removed; the group of 18.0 answers them.
+  carried here for a while and are removed. **Their rows now say 18.0**, which is what they are:
+  `HKStateOfMind.h` of iOS 26.2 carries `API_AVAILABLE(ios(18.0), watchos(11.0), macCatalyst(18.0),
+  macos(15.0), visionos(2.0))` on each of those three typedefs and on the class `HKStateOfMind` itself,
+  and `first-rung.py` puts the first held rung carrying any of the four selectors at 18.0. A row whose
+  `introduced` field says 8.0 while its own reason says the method is not 8.0's is a row that cannot be
+  read — the field and the sentence have to agree, and the field is the one a reader trusts.
+
+**A word about the effect of an `-init` row, because it is the same word in every library's copy of
+this page.** `respondsToSelector:` does **not** answer NO for the `-init` of one of these classes: it
+answers YES, on the release and in this library alike, because every object inherits `-init` from
+`NSObject` and the release declares no `-init` of its own either. What is absent is the class's own
+initialiser, the one the header closes off, and an `effect` that says otherwise is a claim a reader can
+measure in one line and find false. Say what is absent and say what answers the question.
+
+`absent` is also the only status these sixteen can carry, and that is measured in the check rather than
+decided here: `check_registry` puts a row listed `ignored` into its `missing` branch whenever the
+release it is checked against does not carry the name itself
+(`modules/apple/backports.lua`, `carried_by_release(entry, inventory) == false`), and the release every
+band of this library is checked against is iOS 6.1.3, whose caches hold no HealthKit at all. So `owed`
+and `ignored` are both refusable here and `absent` is the answer; a row that means "the release carries
+it and this port has not done the work" is `owed`, and none of these sixteen is in that position except
+the four states-of-mind predicates, whose release this port carries no object of.
 
 The check that finds these, and that a later session should run before each delivery, is
 `tools/cfconst/api-check.py`: every registered row against the set of names the gate's own
