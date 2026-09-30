@@ -112,6 +112,66 @@ The five box kinds are separate registry rows and all of them are `implemented` 
 `PDFPage.mediaBox` and `PDFPage.cropBox` stay `inert` with the reason the host has neither as a
 property, and their row now points at the comparison that does cover the box they wrap.
 
+## The host's `-string`, measured, and why the row is inert
+
+| fixture | content stream | host `-string` |
+| --- | --- | --- |
+| kern-20 | `BT /F1 12 Tf 72 720 Td [(al) -20 (pha)] TJ ET` | `alpha` |
+| kern-50 | `BT /F1 12 Tf 72 720 Td [(al) -50 (pha)] TJ ET` | `alpha` |
+| kern-100 | `BT /F1 12 Tf 72 720 Td [(al) -100 (pha)] TJ ET` | `alpha` |
+| kern-150 | `BT /F1 12 Tf 72 720 Td [(al) -150 (pha)] TJ ET` | `al pha` |
+| kern-250 | `BT /F1 12 Tf 72 720 Td [(al) -250 (pha)] TJ ET` | `al pha` |
+| kern-500 | `BT /F1 12 Tf 72 720 Td [(al) -500 (pha)] TJ ET` | `al pha` |
+| kern-1000 | `BT /F1 12 Tf 72 720 Td [(al) -1000 (pha)] TJ ET` | `al pha` |
+| kern-plus250 | `BT /F1 12 Tf 72 720 Td [(al) 250 (pha)] TJ ET` | `alpha` |
+| td-x-only | `BT /F1 12 Tf 72 720 Td (alpha) Tj 72 0 Td (beta) Tj ET` | `alpha beta` |
+| td-small-y | `BT /F1 12 Tf 72 720 Td (alpha) Tj 0 -2 Td (beta) Tj ET` | `alphabeta` |
+| td-y--0.4 | `BT /F1 12 Tf 72 720 Td (alpha) Tj 0 -0.4 Td (beta) Tj ET` | `alphabeta` |
+| td-y--14 | `BT /F1 12 Tf 72 720 Td (alpha) Tj 0 -14 Td (beta) Tj ET` | `alpha\nbeta` |
+| td-y--40 | `BT /F1 12 Tf 72 720 Td (alpha) Tj 0 -40 Td (beta) Tj ET` | `alpha\nbeta` |
+| op-TD-next-line | `BT /F1 12 Tf 72 720 Td (alpha) Tj 0 -14 TD (beta) Tj ET` | `alpha\nbeta` |
+| op-quote-operator | `BT /F1 12 Tf 72 720 Td (alpha) ' ET` | `alpha` |
+| op-TD-star-between | `BT /F1 12 Tf 72 720 Td 0 -14 Td (beta) Tj T* (gamma) Tj ET` | `betagamma` |
+| size-6 | `BT /F1 6 Tf 72 720 Td [(al) -100 (pha)] TJ ET` | `alpha` |
+| size-12 | `BT /F1 12 Tf 72 720 Td [(al) -100 (pha)] TJ ET` | `alpha` |
+| size-24 | `BT /F1 24 Tf 72 720 Td [(al) -100 (pha)] TJ ET` | `alpha` |
+| op-Tm-set | `BT /F1 12 Tf 72 720 Td 1 0 0 1 72 706 Tm 0 -14 Td ET` | `(nil)` |
+| op-TD-star-next-line | `BT /F1 12 Tf 72 720 Td 0 -14 T* ET` | `(nil)` |
+| op-dquote-operator | `BT /F1 12 Tf 72 720 Td (alpha) " ET` | `(nil)` |
+
+Reproduce with `tools/make-text-fixtures.py` and `tools/host-string.m` under
+`tests/backports/host/pdfkit-document/tools/`, both committed here so this table is not a claim in a
+message that scrolls away.
+
+### What the host does, and the region it was measured in
+
+* **A `TJ` kerning inserts exactly one space past a threshold, never more.** Between `-100` (no space)
+  and `-150` (one space) at 12pt; `-500` and `-1000` still give ONE space, so magnitude past the
+  threshold buys nothing. A positive kerning inserts nothing.
+* **Movement down between two shows inserts a newline past a threshold.** `-0.4` and `-2` give nothing,
+  `-14` and `-40` give a newline, and `TD` behaves as `Td`. **Horizontal** movement (`72 0 Td`) gives
+  a SPACE, not a newline.
+* **The thresholds are bracketed, not located.** The kerning threshold is somewhere in `(-100, -150]` and
+  the vertical one in `(-2, -14]`, both at one font size.
+* **Three cases are void, not measurements.** `op-Tm-set`, `op-TD-star-next-line` and
+  `op-dquote-operator` answered nil - the reader rejected those content streams - so nothing is known
+  about `Tm`, a leading `T*`, or the double-quote operator here.
+* **The font-size question is UNRESOLVED.** The kerning was held at `-100` while the size went 6, 12,
+  24, and all three gave no space, which is consistent with BOTH an absolute and an em-relative
+  threshold. Separating them needs the kerning to scale with the size, which is not measured.
+* **One result does not fit the movement rule.** `T*` between two shows gives `betagamma` - no
+  separator - where `Td` between the same two gives a newline.
+
+### Why the row stays inert, with this boundary
+
+Reproducing the host means reproducing a layout heuristic whose two thresholds are bracketed but not
+located, on a page that can carry fonts nobody has measured, with three operator cases unread and a
+font-size dependence still unresolved. A port that flattens string operands and joins on newlines
+would agree on a single `Tj`, on a `Td`-separated pair and on a kerned `TJ` array, and would
+disagree on every `Td` threshold case, on horizontal movement, and on the `T*` case - with no way to
+say where the agreement stops. So `PDFPage.string` is carried as inert with the measured region in its
+effect, and the extraction is owed rather than claimed.
+
 ### Owed
 
 **The fixture writer still draws text through the deprecated calls.** `CGContextSelectFont` and

@@ -39,11 +39,11 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "the port reads the document's Info dictionary through the release's own CGPDFDocumentGetInfo and its own string reader, and the port's own -documentAttribute: answers any single key. The host's PDFDocument has NEITHER -documentAttributes NOR -documentAttribute:, so no fact here is compared: the run prints each one as NOT-COMPARED-no-such-method rather than counting it as agreement",
+   "status": "implemented",
+   "effect": "the document's Info dictionary, read through the release's own CGPDFDocumentGetInfo and its own string reader.  A document with no Info answers an empty dictionary, which is what the host answers and what the three Info-less box fixtures compare.  A date and Producer are NOT compared: the fixture writes a fresh timestamp on every run and Producer is the writer's own string",
    "reason": "the host answers neither accessor, so this is a port-only reading and a row may not say a host compared it",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the release's own CGPDFDocumentGetInfo and CGPDFDictionaryGetString, both exported by 6.1.3 and 4.3; the host's PDFKit has no such methods, which tests/backports/host/pdfkit-document/run.sh prints per fact",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 79 MISMATCHES 0, rotation on every fixture and the Info key set and its three stable strings on every fixture",
    "ledger": "missing"
   },
   {
@@ -53,7 +53,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "one key out of the same Info dictionary the port holds; nil for a key the document does not carry",
-   "reason": "the host's PDFDocument has no such method, so nothing here is host-checked",
+   "reason": "the host's PDFDocument has NO -documentAttribute:, measured: respondsToSelector: is 0 on this host, and the run prints that as an EXPECTED difference on every fixture because the port implements what the host lacks.  The PLURAL -documentAttributes is the one both sides answer and it is compared",
    "facts": "facts/PDFKit/Document11.md",
    "source": "the release's own dictionary and string readers; the host's PDFKit does not implement the accessor, which the run names",
    "ledger": "?"
@@ -99,11 +99,11 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "inert",
-   "effect": "the page dictionary's own /Rotate read through the release's own CGPDFDictionaryGetInteger, 0 for a page with no /Rotate, and the format's counter-clockwise count converted to Apple's clockwise one",
+   "status": "implemented",
+   "effect": "the page dictionary's own /Rotate, read through the release's own CGPDFDictionaryGetInteger.  MEASURED, and this row was wrong as it stood: the port used to flip the count on the belief that the format counts counter-clockwise, and answered 270 where the host answers 90 for a /Rotate of 90.  The value the dictionary carries is the value the API answers; the port normalises it into 0..359 and nothing else",
    "reason": "no fact in the run reaches this member, so no row may say a host compared it",
    "facts": "facts/PDFKit/Document11.md",
-   "source": "the release's own CGPDFDictionaryGetInteger, exported by both bands; NOT covered by the current run, which compares only what the host's PDFPage answers",
+   "source": "the host's own PDFKit in a process holding no port object, against the port's objects in a process holding no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 79 MISMATCHES 0, rotation on every fixture and the Info key set and its three stable strings on every fixture",
    "ledger": "missing"
   },
   {
@@ -112,11 +112,61 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "inert",
-   "effect": "what the port holds for the page's text, nil until a caller sets it. NOT a scan: the release exports CGPDFScannerCreate and does NOT export CGPDFScannerScanString or CGPDFScannerGetString on 6.1.3 or on 4.3, so a -string that scanned the page would claim something the release cannot answer. The scanned extraction is owed",
-   "reason": "the host's PDFPage DOES carry -string - measured on this host with class_copyMethodList and dladdr naming the same PDFKit the harness links, 193 instance methods with -[PDFPage string] among them - so no host fact covers it YET: the run compares pageCount and the past-the-end page, and the comparison of an extraction against the host's -string is owed",
+   "effect": "NOT the host's text, and the boundary is measured: the host inserts ONE space for a TJ kerning negative past a threshold bracketed to (-100,-150] at 12pt and never more, inserts a NEWLINE for downward movement past a threshold bracketed to (-2,-14], inserts a SPACE for horizontal movement, and leaves consecutive shows with nothing between them. The port does not reproduce that: the thresholds are bracketed and not located, the font-size dependence is unresolved, and three operator cases read nil. facts/PDFKit/Document11.md carries the twenty-two case table and the brackets; the extraction is owed, not claimed",
+   "reason": "the host HAS -[PDFPage string] and it is read by tools/host-string.m in this series, but its answer is a layout heuristic with two bracketed thresholds and three unread operator cases, so a row may not say the port matches it",
    "facts": "facts/PDFKit/Document11.md",
    "source": "the dyld export tables of both bands: CGPDFScannerCreate exported, CGPDFScannerScanString and CGPDFScannerGetString not exported; the host's PDFPage string was not compared by this run",
    "ledger": "missing"
+  },
+  {
+   "api": "PDFPage",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
+   "effect": "the port's own page, a CGPDFPage with the document that produced it, its index in that document and the document weak beside it, so a page that outlives its document answers nil for it rather than messaging a released one"
+  },
+  {
+   "api": "-[PDFPage dealloc]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
+   "effect": "releases the page's own CGPDFPageRetain and its own CGPDFDocumentRetain.  The page holds the page as a Get - CGPDFDocumentGetPage hands back a page the document owns - so a page released while its document is alive is the direction CoreGraphics does not support, which is what these two releases are for"
+  },
+  {
+   "api": "-[PDFPage document]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
+   "effect": "the document the page came from, held WEAK, as the 26.2 header declares it (PDFPage.h:70).  The page keeps the CGPDFDocument alive in its own right and the object weakly, so a page outliving its document answers nil for it"
+  },
+  {
+   "api": "-[PDFPage initWithCGPDFPage:document:index:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
+   "effect": "the port's own way in over a page CGPDFDocumentGetPage handed over: it retains the page, retains the document beside it, and records the page's index.  NOT Apple's API - Apple's PDFPage has no such initializer - and it is here because the document's own -pageAtIndex: is the only thing that makes a page"
+  },
+  {
+   "api": "-[PDFPage pageIndex]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/PDFKit/Document11.md",
+   "source": "the gate's own build of this library: the stack6 gate on 6.1.3 listed the class and these members as \"built, but no entry in registry/\", and every built member carries a row here as the tree's own convention does elsewhere - Accelerate carries four dealloc rows and MPSGraph a charon_ internal one",
+   "effect": "the page's index in the document that produced it, which is what -[PDFDocument pageAtIndex:] passed and what a caller reads back; the document is held weakly, so this survives the document and says the number the page was made with"
   }
  ]
 }

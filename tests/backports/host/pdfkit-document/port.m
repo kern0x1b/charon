@@ -46,9 +46,22 @@ int main(int argc, char **argv)
             }
             printf("%s.document=an-object\n", name);
             printf("%s.pageCount=%lu\n", name, (unsigned long)document.pageCount);
+            // the SINGULAR accessor's presence is EXPECTED to differ: the port implements it and the
+            // host does not (respondsToSelector: 0), which is why its row stays inert.
+            printf("%s.documentAttribute.supported=%d\n", name,
+                   (int)[document respondsToSelector:@selector(documentAttribute:)]);
+            // the PLURAL -documentAttributes, which the host does have, compared by KEY SET and by the
+            // three stable strings.  A date and Producer are NOT compared: the fixture writes a fresh
+            // timestamp on every run and Producer is the writer's own string, so neither can agree.
+            NSDictionary *attributes = [document documentAttributes];
+            NSMutableArray *keys = [[attributes allKeys] mutableCopy];
+            [keys sortUsingSelector:@selector(compare:)];
+            printf("%s.documentAttributes.keys=%lu\n", name, (unsigned long)keys.count);
+            for (NSString *key in keys)
+                printf("%s.documentAttributes.key.%s\n", name, [(NSString *)key UTF8String]);
             for (NSString *key in @[ @"Title", @"Author", @"Creator" ]) {
-                id value = [document documentAttribute:key];
-                printf("%s.documentAttribute.%s=%s\n", name, [(NSString *)key UTF8String],
+                id value = attributes[key];
+                printf("%s.documentAttributes.%s=%s\n", name, [(NSString *)key UTF8String],
                        value ? [(NSString *)value UTF8String] : "(nil)");
             }
             // the page must not outlive the document: a page holds its own reference to the
@@ -60,7 +73,9 @@ int main(int argc, char **argv)
             if (first == nil) {
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++)
                     printf("%s.page0.%s=NOT-COMPARED-no-page\n", name, kinds[k].name);
+                printf("%s.page0.rotation=NOT-COMPARED-no-page\n", name);
             } else {
+                printf("%s.page0.rotation=%ld\n", name, (long)[first rotation]);
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++) {
                     CGRect box = [first boundsForBox:kinds[k].box];
                     printf("%s.page0.%s=%.4f,%.4f,%.4f,%.4f\n", name, kinds[k].name, box.origin.x,

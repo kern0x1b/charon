@@ -98,8 +98,11 @@
     if (!CGPDFDictionaryGetInteger(dictionary, "Rotate", &raw))
         return 0;
     NSInteger degrees = (NSInteger)raw;
-    // The format counts counter-clockwise and Apple's API counts clockwise.
-    return degrees == 0 ? 0 : (360 - (degrees % 360)) % 360;
+    // The host answers 90 for a page whose /Rotate is 90, MEASURED on the rotated fixture
+    // (box-rotated.pdf: host=90, port=270).  So the host does NOT flip the format's
+    // counter-clockwise count here, and this flipping - written before anything was measured - was
+    // wrong.  The value the page dictionary carries is the value the API answers.
+    return degrees == 0 ? 0 : (degrees % 360 + 360) % 360;
 }
 
 // What the port holds as the page's text.  NOT a scan: the release exports CGPDFScannerCreate but

@@ -45,21 +45,32 @@ int main(int argc, char **argv)
             }
             printf("%s.document=an-object\n", name);
             printf("%s.pageCount=%lu\n", name, (unsigned long)document.pageCount);
+            // the SINGULAR -documentAttribute: the host does not have it (respondsToSelector: 0), so it is
+            // not a fact this run can compare and the row stays inert with that reason
+            printf("%s.documentAttribute.supported=%d\n", name,
+                   (int)[document respondsToSelector:NSSelectorFromString(@"documentAttribute:")]);
+            // the PLURAL -documentAttributes the host does have, compared by KEY SET and by the three
+            // stable strings.  Never a date and never Producer: the fixture writes a fresh timestamp on
+            // every run and Producer is the writer's own string, so neither is a fact that can agree.
+            NSDictionary *attributes = document.documentAttributes;
+            NSMutableArray *keys = [[attributes allKeys] mutableCopy];
+            [keys sortUsingSelector:@selector(compare:)];
+            printf("%s.documentAttributes.keys=%lu\n", name, (unsigned long)keys.count);
+            for (NSString *key in keys)
+                printf("%s.documentAttributes.key.%s\n", name, [(NSString *)key UTF8String]);
             for (NSString *key in @[ @"Title", @"Author", @"Creator" ]) {
-                SEL attribute = NSSelectorFromString(@"documentAttribute:");
-                if ([document respondsToSelector:attribute]) {
-                    id value = ((id (*)(id, SEL, id))objc_msgSend)(document, attribute, key);
-                    printf("%s.documentAttribute.%s=%s\n", name, [(NSString *)key UTF8String],
-                           value ? [(NSString *)value UTF8String] : "(nil)");
-                } else {
-                    printf("%s.documentAttribute.%s=NOT-COMPARED-no-such-method\n", name,
-                           [(NSString *)key UTF8String]);
-                }
+                id value = attributes[key];
+                printf("%s.documentAttributes.%s=%s\n", name, [(NSString *)key UTF8String],
+                       value ? [(NSString *)value UTF8String] : "(nil)");
             }
             SEL pageAt = NSSelectorFromString(@"pageAtIndex:");
             PDFPage *first = [document respondsToSelector:pageAt]
                                   ? ((id (*)(id, SEL, NSUInteger))objc_msgSend)(document, pageAt, (NSUInteger)0)
                                   : nil;
+            if (first != nil)
+                printf("%s.page0.rotation=%ld\n", name, (long)first.rotation);
+            else
+                printf("%s.page0.rotation=NOT-COMPARED-no-page\n", name);
             if (first == nil || ![first respondsToSelector:@selector(boundsForBox:)]) {
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++)
                     printf("%s.page0.%s=NOT-COMPARED-no-such-method\n", name, kinds[k].name);
