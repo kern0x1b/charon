@@ -39,77 +39,77 @@
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierConditionRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierImmunizationRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierLabResultRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierMedicationRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierProcedureRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKClinicalTypeIdentifierVitalSignRecord",
    "kind": "constant",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this constant holds its own name, which is the shape 6dc5caf3 is generating for every HealthKit constant, so this group does not define it and waits for that run; the overlap is written up in coordination/reviews/healthkit-12-constants.md",
-   "effect": "the symbol is not in the library until that run lands; the value is the name itself, measured in the arm64 cache of 12.0, so nothing is lost by its absence and no value is invented here",
+   "status": "implemented",
+   "reason": "the release exports it and the port answers it: the HealthKit image of the arm64 shared cache of iOS 12.0 carries the symbol, and its __cfstring names the bytes the constant holds, which for these seven is the constant's own name - read with tools/cfconst.py, not with the name the reader was asked for",
+   "effect": "the symbol is in the library with the value that release's image holds: the constant names itself, as the seven clinical type identifiers of 12.0 do. +[HKObjectType clinicalTypeForIdentifier:] answers a type for each of the seven and nil for any other identifier, and the record's type is one of them",
    "facts": "facts/HealthKit/HealthKit.md",
-   "source": "the arm64 shared cache of iOS 12.0"
+   "source": "the HealthKit image of the arm64 shared cache of iOS 12.0, through that image's own export trie, read with tools/cfconst.py; HKClinicalType.h of iOS 16.4 and of iOS 26.2 for the declaration; two controls the same way, HKQuantityTypeIdentifierStepCount and HKErrorDomain, and a name the image does not export"
   },
   {
    "api": "HKFHIRResourceTypeAllergyIntolerance",

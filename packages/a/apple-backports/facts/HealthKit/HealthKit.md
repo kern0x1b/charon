@@ -23,13 +23,31 @@ constant followed through its entry in that image's symbol table to the `__cfstr
 Two controls: `HKQuantityTypeIdentifierStepCount` and `HKErrorDomain` are read out as real strings,
 and a name no image exports reports that instead of a value.
 
+**A 64-bit image of a shared cache has to be read in 64-bit words, and its pointers carry flags above
+its address space.** `tools/cfconst.py` is that reader and it does both. Measured on the arm64 cache of
+iOS 12.0: a 32-bit read of the variable a constant is exported at stops with
+`address 0x201b26026b8 is in no mapping`, and the same read on the arm64 cache of 10.0.1 stops with
+`address 0xa1f5c0d0 is in no mapping` - so no constant of any arm64 cache could be read out of this
+image before, and the twenty-one of 12.0 that were already written down had no reader behind them.
+Above the cache's own address space there is a flag: 0x2 in a variable of `__DATA,__const`, 0x4 in the
+isa of an `__cfstring` and in its pointer to the bytes, while all three mappings of the cache of 12.0
+end below 2^41 and all three of 10.0.1 do too. The reader masks the flags off, derives that mask from
+the cache's own mappings rather than writing it down, refuses a 32-bit image by name - its pointers are
+32 bits wide and carry no flags, and the reader for that is `tools/cfconst/cache32.py` over an image
+`modules/apple/dyld.lua`'s `extract()` has written out - and reports a name the image does not export
+by name while still answering for the rest of the batch. It answers `HKErrorDomain` as
+`com.apple.healthkit` and `HKQuantityTypeIdentifierStepCount` as its own name out of the HealthKit image
+of 12.0, and the four values this file records for 10.0.1 the same way, which is the reader's own
+control across two caches.
+
 **The unit arithmetic is the host's, measured.** `tests/backports/host/healthkit/` asks the
 system's own HealthKit and this library the same questions in one process: every unit string, the
 factor of every one of them against the base of its dimension, both directions of every conversion at
 eight values, the compatibility of every pair, the four arithmetic operations, every prefixed factory at
-every prefix of the header's enum, every plain factory, and every one of the 120 quantity types with
-its aggregation. **5554 comparisons, 0 differences**, and three mutants of the port are run through it
-and none survives, so a pass is a pass.
+every prefix of the header's enum, every plain factory, every one of the 120 quantity types with
+its aggregation, and every constant of a group that exports one. **5699 comparisons, 0 differences**
+on 2026-09-30, and fourteen mutants of the port are run through it and none survives, so a pass is a
+pass.
 
 It is what corrected the units, and every correction is in `HKUnit.m` with the measurement beside it:
 
@@ -259,6 +277,28 @@ held `HKDocumentType`, `HKDocumentSample`, `HKCDADocumentSample`, `HKWheelchairU
 document is its own file now, in its own group, and the corpus's dating of its five members to 10.0 -
 they took the version of the class they sit in - is corrected in the generator, which moves a member to
 its class's release.
+
+**The seven clinical type identifiers of 12.0 were `absent` because a run was going to write them, and
+they are carried now.** Their rows said a commit was generating every HealthKit constant whose value is
+its own name, so the group did not define those seven and waited. A wait is not a status the registry
+has: an `absent` row says the release has nothing there, and the release has carried all seven since
+12.0 - `HKClinicalTypeIdentifierAllergyRecord` and its six siblings are exported by the HealthKit image
+of the arm64 shared cache of 12.0, and `HKClinicalType.h` declares each of them with
+`API_AVAILABLE(ios(12.0), ...)` in 16.4 and in 26.2 alike. `HKConstants120.m` is whole at twenty-one
+constants, the seven among them, each value read out of that image with `tools/cfconst.py`
+above; all seven hold their own name, and their bytes sit next to one another in the image's own
+`__cstring`, which is where the release keeps them. `+[HKObjectType clinicalTypeForIdentifier:]` asks
+the seven constants themselves now instead of seven copies of their names written as literals beside
+them, which is what it did while the constants did not exist.
+
+The host differential holds the twenty-one to the host's own symbols rather than to strings written
+beside them: `run.sh` renames them, because the host's HealthKit exports the same twenty-one names and
+one process cannot link both under one name, and `CharonHKConstants12()` reads each value out of the
+port's object and out of the host's and compares the two. Each of the seven clinical identifiers is then
+used as the identifier of a clinical type on both sides, because a value that is right and a value the
+store can find are two different things. Two mutants of the two shapes are run through it and neither
+survives: a clinical identifier one letter short of its own name, and a metadata key spelled as the
+constant's own name rather than as `HKCrossTrainerDistance`, which is what that release's image holds.
 
 **The 20 constants of 10.0 came out of the arm64 cache of 10.0.1**, not an armv7 one: there is no
 10.0 or 10.0.1 armv7 cache in this workspace, and the armv7s slice's data pointers are tagged, so the

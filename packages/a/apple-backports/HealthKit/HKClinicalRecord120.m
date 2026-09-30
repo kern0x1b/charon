@@ -27,17 +27,21 @@
 {
     if (![identifier isKindOfClass:[NSString class]] || ![identifier hasPrefix:@"HKClinicalTypeIdentifier"])
         return nil;
-    static NSMutableDictionary *known;
+    static NSSet *known;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        known = [NSMutableDictionary dictionary];
-        for (NSString *name in @[ @"HKClinicalTypeIdentifierAllergyRecord", @"HKClinicalTypeIdentifierConditionRecord",
-                                   @"HKClinicalTypeIdentifierImmunizationRecord", @"HKClinicalTypeIdentifierLabResultRecord",
-                                   @"HKClinicalTypeIdentifierMedicationRecord", @"HKClinicalTypeIdentifierProcedureRecord",
-                                   @"HKClinicalTypeIdentifierVitalSignRecord" ])
-            known[name] = name;
+        // the seven identifiers of 12.0, as the constants of that release hold them - each value was
+        // read out of the HealthKit image of the arm64 shared cache of iOS 12.0, and HKConstants120.m
+        // is the file that defines them
+        known = [NSSet setWithObjects:HKClinicalTypeIdentifierAllergyRecord,
+                                 HKClinicalTypeIdentifierConditionRecord,
+                                 HKClinicalTypeIdentifierImmunizationRecord,
+                                 HKClinicalTypeIdentifierLabResultRecord,
+                                 HKClinicalTypeIdentifierMedicationRecord,
+                                 HKClinicalTypeIdentifierProcedureRecord,
+                                 HKClinicalTypeIdentifierVitalSignRecord, nil];
     });
-    if (!known[identifier])
+    if (![known containsObject:identifier])
         return nil;
     return [HKClinicalType charon_typeWithIdentifier:identifier];
 }

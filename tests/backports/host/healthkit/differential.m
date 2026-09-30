@@ -331,6 +331,96 @@ static const double CharonHKProbe = 1.0 + 1.0 / 3.0;
 // that is right from one that is not.
 static const double CharonHKSecondProbe = 21.5;
 
+// The twenty-one constants of 12.0, as the port's own object holds them. run.sh renames them, because
+// the host's HealthKit exports the same twenty-one symbols and one process cannot link both under one
+// name - so these are the port's values read out of its own compiled object, side by side with the
+// host's values read out of the host's. The 11.0 section above compares the host's constants with the
+// strings this library writes in its source; this compares the symbols themselves.
+extern NSString *const CharonHK120_HKFHIRResourceTypeAllergyIntolerance;
+extern NSString *const CharonHK120_HKFHIRResourceTypeCondition;
+extern NSString *const CharonHK120_HKFHIRResourceTypeImmunization;
+extern NSString *const CharonHK120_HKFHIRResourceTypeMedicationDispense;
+extern NSString *const CharonHK120_HKFHIRResourceTypeMedicationOrder;
+extern NSString *const CharonHK120_HKFHIRResourceTypeMedicationStatement;
+extern NSString *const CharonHK120_HKFHIRResourceTypeObservation;
+extern NSString *const CharonHK120_HKFHIRResourceTypeProcedure;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierAllergyRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierConditionRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierImmunizationRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierLabResultRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierMedicationRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierProcedureRecord;
+extern NSString *const CharonHK120_HKClinicalTypeIdentifierVitalSignRecord;
+extern NSString *const CharonHK120_HKMetadataKeyCrossTrainerDistance;
+extern NSString *const CharonHK120_HKMetadataKeyFitnessMachineDuration;
+extern NSString *const CharonHK120_HKMetadataKeyIndoorBikeDistance;
+extern NSString *const CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier;
+extern NSString *const CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceType;
+extern NSString *const CharonHK120_HKPredicateKeyPathSum;
+
+// ---------------------------------------------------------------------- constants of 12.0
+
+// Every constant the 12.0 object exports, the port's against the host's, by the name both know it by.
+// The seven clinical type identifiers are the ones a reader would write from the name alone, and each
+// is compared as a string and then used as the identifier of a clinical type, because a value that is
+// right and a value the store can find are two different things.
+static void CharonHKConstants12(void)
+{
+    CharonHKCompare(@"HKFHIRResourceTypeAllergyIntolerance", CharonHK120_HKFHIRResourceTypeAllergyIntolerance,
+                    HKFHIRResourceTypeAllergyIntolerance);
+    CharonHKCompare(@"HKFHIRResourceTypeCondition", CharonHK120_HKFHIRResourceTypeCondition, HKFHIRResourceTypeCondition);
+    CharonHKCompare(@"HKFHIRResourceTypeImmunization", CharonHK120_HKFHIRResourceTypeImmunization,
+                    HKFHIRResourceTypeImmunization);
+    CharonHKCompare(@"HKFHIRResourceTypeMedicationDispense", CharonHK120_HKFHIRResourceTypeMedicationDispense,
+                    HKFHIRResourceTypeMedicationDispense);
+    CharonHKCompare(@"HKFHIRResourceTypeMedicationOrder", CharonHK120_HKFHIRResourceTypeMedicationOrder,
+                    HKFHIRResourceTypeMedicationOrder);
+    CharonHKCompare(@"HKFHIRResourceTypeMedicationStatement", CharonHK120_HKFHIRResourceTypeMedicationStatement,
+                    HKFHIRResourceTypeMedicationStatement);
+    CharonHKCompare(@"HKFHIRResourceTypeObservation", CharonHK120_HKFHIRResourceTypeObservation,
+                    HKFHIRResourceTypeObservation);
+    CharonHKCompare(@"HKFHIRResourceTypeProcedure", CharonHK120_HKFHIRResourceTypeProcedure, HKFHIRResourceTypeProcedure);
+    CharonHKCompare(@"HKMetadataKeyCrossTrainerDistance", CharonHK120_HKMetadataKeyCrossTrainerDistance,
+                    HKMetadataKeyCrossTrainerDistance);
+    CharonHKCompare(@"HKMetadataKeyFitnessMachineDuration", CharonHK120_HKMetadataKeyFitnessMachineDuration,
+                    HKMetadataKeyFitnessMachineDuration);
+    CharonHKCompare(@"HKMetadataKeyIndoorBikeDistance", CharonHK120_HKMetadataKeyIndoorBikeDistance,
+                    HKMetadataKeyIndoorBikeDistance);
+    CharonHKCompare(@"HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier",
+                    CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier,
+                    HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier);
+    CharonHKCompare(@"HKPredicateKeyPathClinicalRecordFHIRResourceType",
+                    CharonHK120_HKPredicateKeyPathClinicalRecordFHIRResourceType,
+                    HKPredicateKeyPathClinicalRecordFHIRResourceType);
+    CharonHKCompare(@"HKPredicateKeyPathSum", CharonHK120_HKPredicateKeyPathSum, HKPredicateKeyPathSum);
+
+    // The seven clinical type identifiers, each against the host's own symbol, and each used as the
+    // identifier of a clinical type on both sides. The host answers for 12.0's seven and refuses the
+    // two of 14.0 and 16.4, which are not in the port's 12.0 object, so only the seven are asked.
+    struct { NSString *mine, *theirs, *label; } clinical[] = {
+        {CharonHK120_HKClinicalTypeIdentifierAllergyRecord, HKClinicalTypeIdentifierAllergyRecord, @"allergy record"},
+        {CharonHK120_HKClinicalTypeIdentifierConditionRecord, HKClinicalTypeIdentifierConditionRecord, @"condition record"},
+        {CharonHK120_HKClinicalTypeIdentifierImmunizationRecord, HKClinicalTypeIdentifierImmunizationRecord,
+         @"immunization record"},
+        {CharonHK120_HKClinicalTypeIdentifierLabResultRecord, HKClinicalTypeIdentifierLabResultRecord, @"lab result record"},
+        {CharonHK120_HKClinicalTypeIdentifierMedicationRecord, HKClinicalTypeIdentifierMedicationRecord,
+         @"medication record"},
+        {CharonHK120_HKClinicalTypeIdentifierProcedureRecord, HKClinicalTypeIdentifierProcedureRecord,
+         @"procedure record"},
+        {CharonHK120_HKClinicalTypeIdentifierVitalSignRecord, HKClinicalTypeIdentifierVitalSignRecord, @"vital sign record"},
+    };
+    for (size_t index = 0; index < sizeof(clinical) / sizeof(clinical[0]); index++) {
+        NSString *what = [@"HKClinicalTypeIdentifier" stringByAppendingString:clinical[index].label];
+        CharonHKCompare(what, clinical[index].mine, clinical[index].theirs);
+        HKClinicalType *theirsType = [HKObjectType clinicalTypeForIdentifier:clinical[index].theirs];
+        CharonHostHKClinicalType *mineType = [CharonHostHKObjectType clinicalTypeForIdentifier:clinical[index].mine];
+        CharonHKCompareBool([what stringByAppendingString:@" is a clinical type"], mineType != nil, theirsType != nil);
+        if (mineType && theirsType)
+            CharonHKCompare([what stringByAppendingString:@" is the same clinical type"], mineType.identifier,
+                            theirsType.identifier);
+    }
+}
+
 // ---------------------------------------------------------------------- units
 
 typedef struct {
@@ -2087,6 +2177,7 @@ int main(void)
     // one a reader of the library gets.
     CharonHKDefaultResolver();
     CharonHKInstallClassResolver();
+    CharonHKConstants12();
     CharonHKUnitCases();
     CharonHKPrefixedFactories();
     CharonHKUnitArithmetic();

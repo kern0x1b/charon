@@ -9,9 +9,13 @@
 # queries are not in here — a host keeps its data in a healthd behind an entitlement, and this port's
 # is a SQLite database of its own, so neither side is an oracle for the other's.
 #
-# The port's constants are NOT compiled in: the host's HealthKit exports the same symbols, and the two
-# would collide. That is also the better arrangement for this test — the identifiers both sides are
-# asked about are the host's own, and the port's table is what is held to them.
+# The port's constants are compiled in under names of their own (CharonHK120_HKErrorDomain and so on):
+# the host's HealthKit exports the same symbols, so the port's definitions and the host's cannot both be
+# linked under one name. That is also the better arrangement for this test - each of the twenty-one
+# constants of 12.0 is read out of the port's own object and out of the host's and the two values are
+# compared, where a literal in the differential would only compare the host against a string written
+# beside it. The identifier both sides are asked about for the arithmetic is the host's own, and the
+# port's table is what is held to it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 healthkit=${HEALTHKIT:-$here/../../../../packages/a/apple-backports/HealthKit}
@@ -29,7 +33,7 @@ mkdir -p "$BUILD/plain" "$BUILD/renamed"
 # live (the error it answers with and the line it says once in the log) and which is the only file that
 # defines them. Nothing in this test opens a database: the store is compiled so that what the unit and
 # quantity code calls exists, not so that the store is measured.
-sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKCumulativeQuantitySeriesSample120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m"
+sources="HKUnit.m HKQuantity.m HKQuantityType.m HKQuantityTypes.m HKObjectType.m HKObject.m HKSource.m HKSample.m HKWorkout.m HKStatistics.m HKQuery.m HKQueries.m HKQueryAnchor9.m HKSourceRevision9.m HKSamples.m HKWorkoutRoute110.m HKWorkoutRouteQuery110.m HKCDADocument11.m HKClinicalRecord120.m HKWorkoutBuilder120.m HKQuantitySeriesSampleBuilder120.m HKQuantitySeriesSampleQuery120.m HKCumulativeQuantitySample130.m HKCumulativeQuantitySeriesSample120.m HKDocument10.m HKObject9.m HKSource9.m HKHealthStore.m CharonHKStore.m HKConstants120.m"
 
 for source in $sources; do
     xcrun clang -fobjc-arc $quiet -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/plain/$source.o"
@@ -43,8 +47,28 @@ for name in $(xcrun nm -gU "$BUILD"/plain/*.o | awk 'NF == 3 {print $3}' | grep 
 done
 echo "renamed:$renames"
 
+# The twenty-one constants of 12.0, renamed for the same reason the classes are: the host's HealthKit
+# exports those symbols too, so the port's definitions and the host's cannot both be linked under one
+# name. The list is written out rather than taken from the plain objects' symbol list, because that
+# list holds the port's C functions as well and renaming one would answer to a name nothing declares -
+# this file declares CharonHKClassForObjectKind and CharonHKSetClassResolver itself, and it is
+# compiled without these flags.
+constants=""
+for name in HKFHIRResourceTypeAllergyIntolerance HKFHIRResourceTypeCondition HKFHIRResourceTypeImmunization \
+            HKFHIRResourceTypeMedicationDispense HKFHIRResourceTypeMedicationOrder HKFHIRResourceTypeMedicationStatement \
+            HKFHIRResourceTypeObservation HKFHIRResourceTypeProcedure \
+            HKClinicalTypeIdentifierAllergyRecord HKClinicalTypeIdentifierConditionRecord \
+            HKClinicalTypeIdentifierImmunizationRecord HKClinicalTypeIdentifierLabResultRecord \
+            HKClinicalTypeIdentifierMedicationRecord HKClinicalTypeIdentifierProcedureRecord \
+            HKClinicalTypeIdentifierVitalSignRecord \
+            HKMetadataKeyCrossTrainerDistance HKMetadataKeyFitnessMachineDuration HKMetadataKeyIndoorBikeDistance \
+            HKPredicateKeyPathClinicalRecordFHIRResourceIdentifier HKPredicateKeyPathClinicalRecordFHIRResourceType \
+            HKPredicateKeyPathSum; do
+    constants="$constants -D$name=CharonHK120_$name"
+done
+
 for source in $sources; do
-    xcrun clang -fobjc-arc $quiet $renames -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/renamed/$source.o"
+    xcrun clang -fobjc-arc $quiet $renames $constants -I"$healthkit" -c "$healthkit/$source" -o "$BUILD/renamed/$source.o"
 done
 
 # Built under a second name and moved into place only once it exists, so the line after this one can
@@ -96,7 +120,7 @@ mutant() {
     cp "$here/../../../../packages/a/apple-backports/CharonSayOnce.h" "$BUILD/mutant/"
     python3 "$here/mutate.py" "$BUILD/mutant/HealthKit/$file" "$from" "$to"
     for source in $sources; do
-        xcrun clang -fobjc-arc $quiet $renames -I"$BUILD/mutant/HealthKit" -c "$BUILD/mutant/HealthKit/$source" \
+        xcrun clang -fobjc-arc $quiet $renames $constants -I"$BUILD/mutant/HealthKit" -c "$BUILD/mutant/HealthKit/$source" \
             -o "$BUILD/mutant/$source.o" 2>/dev/null || true
     done
     xcrun clang -fobjc-arc $quiet -I"$BUILD/mutant/HealthKit" "$here/differential.m" "$BUILD"/mutant/*.o \
@@ -140,3 +164,13 @@ mutant HKCumulativeQuantitySample130.m 'return _sumQuantity;' 'return nil;'
 # superclass. The kind is not used here - since the archive's root is decoded by the unarchiver, the kind
 # does not decide what comes back - so a mutant on it would test nothing.
 mutant HKCumulativeQuantitySeriesSample120.m 'return _sum;' 'return nil;'
+# Two mutants of the twenty-one constants of 12.0. The clinical type identifiers hold their own names,
+# which is the shape that is easiest to write from the name alone without ever reading the release, so
+# one of them is a name that is one letter short - the value the port would have if the name had been
+# copied rather than read, and the differential compares the port's own string against the host's own
+# symbol of the same name, so it cannot pass.
+mutant HKConstants120.m '= @"HKClinicalTypeIdentifierAllergyRecord";' '= @"HKClinicalTypeIdentifierAllergy";'
+# And one of a constant whose value is not its name at all: HKMetadataKeyCrossTrainerDistance is
+# `HKCrossTrainerDistance` in that release's image, and a value spelled as the constant's own name is
+# what a reader who never opened the image would write.
+mutant HKConstants120.m '= @"HKCrossTrainerDistance";' '= @"HKMetadataKeyCrossTrainerDistance";'
