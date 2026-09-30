@@ -56,7 +56,6 @@ exports the 16.0 names must not find itself holding a mix, which is what `band()
 singles are the same case: `introduced` is corrected to the rung for them, because `carried` is
 `introduced <= deployment` and Apple's header annotation is later than its own export.
 
-**23 of the 33 answer their own symbol's name and 10 do not**, and which 10 is a measurement and not a
 **23 of the 33 answer their own symbol's name and 10 do not**, and both numbers are counted from the
 tree - each definition's symbol against the value it is given - rather than written from memory. Of
 those 10, **6 are `AVPlayerInterstitialEventMonitor*` names** that drop the monitor's own prefix
