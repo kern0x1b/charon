@@ -1,0 +1,273 @@
+{
+  "entries": [
+    {
+      "api": "+[NSInflectionRule canInflectLanguage:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); compared with the host's own, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "+[NSMorphologyCustomPronoun isSupportedForLanguage:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); compared with the host's own, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "+[NSMorphologyCustomPronoun requiredKeysForLanguage:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); the key set compared with the host's own, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "+[NSMorphologyPronoun new]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "method",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "-[NSInflectionRule init]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "method",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the header marks -init unavailable on the abstract base, and the differential calls no initialiser of its own. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "-[NSInflectionRuleExplicit initWithMorphology:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "method",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "-[NSMorphology customPronounForLanguage:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); the subject form read back and compared, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "-[NSMorphology setCustomPronoun:forLanguage:error:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "method",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set on a fresh image and read back, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "-[NSMorphologyPronoun initWithPronoun:morphology:dependentMorphology:]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "method",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "-[NSMorphologyPronoun init]",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "method",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reaches an NSMorphologyPronoun only through customPronounForLanguage: and calls neither of its initialisers. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSInflectionRule.automaticRule",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); compared with the host's own, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "NSInflectionRule.canInflectPreferredLocalization",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); compared with the host's own, for en, es and de",
+      "status": "implemented"
+    },
+    {
+      "api": "NSInflectionRuleExplicit.morphology",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential never constructs an NSInflectionRuleExplicit, so nothing compares this. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSMorphology.definiteness",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.determination",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.grammaticalCase",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.grammaticalGender",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.grammaticalPerson",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.number",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.partOfSpeech",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.pronounType",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "17.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); read and written over every value of its own enumeration",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphology.unspecified",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSMorphology.userMorphology",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential walks the eight settings, and this is not one of them. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun.objectForm",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set and read back through the release's own accessor",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun.possessiveAdjectiveForm",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set and read back through the release's own accessor",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun.possessiveForm",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set and read back through the release's own accessor",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun.reflexiveForm",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set and read back through the release's own accessor",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphologyCustomPronoun.subjectForm",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "introduced": "15.0",
+      "kind": "property",
+      "minimum": "6.0",
+      "source": "the NSMorphology surface, measured against the host's own Foundation by tests/backports/host/morphology/run.sh (checks=466, failures=0, dladdr on both sides' IMPs so the two images answered separately); set and read back through the release's own accessor",
+      "status": "implemented"
+    },
+    {
+      "api": "NSMorphologyPronoun.dependentMorphology",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSMorphologyPronoun.morphology",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    },
+    {
+      "api": "NSMorphologyPronoun.pronoun",
+      "facts": "facts/Foundation/NSMorphology.md",
+      "kind": "property",
+      "reason": "the implementation is in the library and compiles, but the differential does not measure this member: the differential reads the NSMorphologyCustomPronoun, not the NSMorphologyPronoun behind it. Owed: a case that does.",
+      "source": "the host's own NSMorphology, NSMorphologyCustomPronoun, NSMorphologyPronoun, NSInflectionRule and NSInflectionRuleExplicit, held against the port by tests/backports/host/morphology: 344 comparisons, none differing, over the 172 cases in expected.txt and built from scratch every run so nothing stale is measured. **device-unverified**: the class calls the release's own NSBundle and its own runtime, and no device run exists",
+      "status": "absent"
+    }
+  ],
+  "framework": "Foundation"
+}
