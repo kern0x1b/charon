@@ -63,6 +63,14 @@
 
 @protocol UIDocumentPickerDelegate;
 
+@protocol UIDragAnimating;
+
+@protocol UIDragInteractionDelegate;
+
+@protocol UIDragSession;
+
+@protocol UIDropInteractionDelegate;
+
 @protocol UIDropSession;
 
 @protocol UIInteraction;
@@ -102,6 +110,10 @@
 @protocol UITableViewDropItem;
 
 @protocol UITableViewDropPlaceholderContext;
+
+@protocol UITextDragRequest;
+
+@protocol UITextDropRequest;
 
 @protocol UITextInputTraits;
 

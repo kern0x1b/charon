@@ -24,6 +24,37 @@ reason is true of the part that leaves the application and false of everything i
 whole of these value objects. Their entries have moved from `registry/UIKit/ios11.json` to
 `registry/UIKit/dragdrop.json`.
 
+## Six protocols were registered absent for the same false reason, and the port emits them
+
+`UIDragSession`, `UIDragAnimating`, `UIDragInteractionDelegate`, `UIDropInteractionDelegate`,
+`UITextDragRequest` and `UITextDropRequest` carried that identical `absent` reason and the effect
+"the name is not there: an application that asks for it before dragging keeps the path it has for a
+release without dragging". The port's own objects emit all six, which is what that effect denies.
+
+Measured, not read off the source: the seventeen sources that name any row of this family compiled
+for the port's own target (`clang -target armv7-apple-ios6.1.3` against the 16.4 SDK, all seventeen
+exit 0), and each object's `__objc_protolist` read through the tree's own Mach-O reader and its own
+relocation reading — an object file has no bind opcodes, so a pointer to a symbol another file
+defines is an external relocation of the pointer's size:
+
+    UIDropSession.o            NSObject NSProgressReporting UIDragDropSession UIDragSession UIDropSession
+    CharonDropCoordinatorObjects.o  NSObject UICollectionViewDropCoordinator
+                                UICollectionViewDropPlaceholderContext UIDragAnimating
+                                UITableViewDropCoordinator UITableViewDropPlaceholderContext
+    UITextView+TextDragDrop11.o NSObject UIDragInteractionDelegate UIDropInteractionDelegate
+                                UITextDragRequest UITextDropRequest
+
+`__objc_protolist` is the list the runtime reads at load time, so a protocol in it is a protocol
+`NSProtocolFromString` answers and a class can conform to. The negative control: the four sibling
+protocols this family uses only as type qualifiers — `UITextDraggable`, `UITextDroppable`,
+`UITextDragDelegate`, `UITextDropDelegate` — are in none of these lists and stay `absent`, and so do
+`UIFocusSystem`, `UIPasteConfiguration`, `UISpringLoadedInteraction` and
+`UIAccessibilityContainerDataTable`, which nothing in the port names at all. The same 20 names across
+all seventeen objects is what a working reader produces, and the four that should read false do.
+
+So the six are `implemented` and their reason is gone: a drag here IS lifted, carried and dropped in
+one process, and the protocol that says so is what the port's objects already emit.
+
 ## The previews duplicate nothing
 
 `UIDragPreviewParameters` is a subclass of `UIPreviewParameters` and `UIDragPreviewTarget` of

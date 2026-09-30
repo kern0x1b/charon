@@ -34,6 +34,35 @@ of those are protocols, not classes**: `UITextDragRequest`, `UITextDropRequest`,
 `UITextPasteConfigurationSupporting` and the three spring-loaded protocols are all `@protocol` in the
 SDK. Only `UITextDragPreviewRenderer` is a class in the family, and it is built.
 
+## The two request protocols are carried, the four qualifiers are not, and the difference is measured
+
+`UITextDragRequest` and `UITextDropRequest` were registered `absent` with the reason "text
+dragging, dropping and pasting hang off the same drag session, and the text input of this release
+knows nothing of them". The port's own objects emit both, so that reason describes a release and not
+the tree.
+
+What settles it is `__objc_protolist`, the list a loadable image's runtime reads to learn which
+protocols exist. `UITextView+TextDragDrop11.o`, compiled for the port's own target
+(`clang -target armv7-apple-ios6.1.3` against the 16.4 SDK), carries five entries in it, and the
+reading is the tree's own — `modules/apple/macho.lua`'s reading, because an object file has no bind
+opcodes and a pointer to a symbol another file defines is an external relocation of the pointer's
+size:
+
+    NSObject UIDragInteractionDelegate UIDropInteractionDelegate UITextDragRequest UITextDropRequest
+
+The two request protocols are there because `CharonTextDragRequest` and `CharonTextDropRequest`
+**adopt** them: those are the objects that answer a text drag's delegate and a text drop's delegate,
+and an adoption is what puts a protocol in the list. `UITextDraggable`, `UITextDroppable`,
+`UITextDragDelegate` and `UITextDropDelegate` are in the same file and are in **no** list, because the
+port only ever uses them as type qualifiers — `id<UITextDraggable>`, `id<UITextPasteDelegate>` — and
+a qualifier constrains a pointer without making the protocol an object anything can ask for. Those
+four stay `absent`, and saying why they differ is the point: `NSProtocolFromString(@"UITextDragRequest")`
+answers a protocol here and `NSProtocolFromString(@"UITextDraggable")` does not.
+
+The negative control is in the same reading: across all seventeen objects that name a row of this
+band, twenty distinct protocols are named in a protolist, and none of those twenty is
+`UITextDraggable`, `UITextDroppable`, `UITextDragDelegate` or `UITextDropDelegate`.
+
 ## What the renderer differential does and does not show
 
 The differential in `tests/backports/host/renderer-differential/` compares the port's renderer with the
