@@ -66,6 +66,25 @@ the `SKViewDelegate` protocol are absent, 0 entries each, from both caches, and
 nonsense control reads `NONE`). SpriteKit has no folder, no row and no implementation in this tree,
 so the view is missing on every release the port carries, not only on 6.1.3.
 
+### The light estimate is a fixed pair, and no direction is computed
+
+`ARDirectionalLightEstimate` is `absent` and its row had to be re-grounded to say why, because the
+first version leaned on the parent as a substrate and the parent is not one. What the port
+actually does: `ARLightEstimate` (`ARFrame.m:302`) holds two scalars, the frame builds it from the
+tracker's two numbers (`ARFrame.m:366`), and `CharonARTracker.m:642-643` fills those in as the
+fixed pair **1000** and **6500** in `-init` — they are set once and never measured from a frame.
+There is no ambient estimator in the port, and no direction anywhere: `primaryLightDirection` and
+`directionalLightEstimate` are in no source file of this package, and `-primaryLightDirection` is in
+none of the 113 981 selectors of 6.1.3 nor of the 70062 of 4.3. So the subclass is not missing
+from a substrate that would have carried it; there is nothing to carry it on.
+
+That is stated here rather than only in the row because the neighbouring truth belongs with it: the
+`implemented` row `ARLightEstimate` says its class "answers from the tracker", and the tracker
+answers a constant. The row is not wrong — the value does come from the tracker — but a reader will
+take it for a measurement, and it is not one. **It is not edited here**: it is a different row, and
+the fix is either an estimator or an effect that says the pair is fixed, which is the owning band's
+call. Recorded for the coordinator with the lines.
+
 ### What the hardware claim rests on, and what it does not
 
 The sensor rows turn on one hardware fact: a device with no depth sensor cannot produce a face
