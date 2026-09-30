@@ -16,6 +16,7 @@
 //
 
 #import <Intents/Intents.h>
+#import <objc/runtime.h>
 #import "../../../c/charon-coding/files/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
@@ -81,6 +82,18 @@
 
 @implementation INEditMessageIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INEditMessageIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INEditMessageIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {

@@ -1834,10 +1834,11 @@
       "api": "-[INAddMediaIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INAddMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INAddMediaMediaDestinationResolutionResult initWithMediaDestinationResolutionResult:]",
@@ -1893,10 +1894,11 @@
       "api": "-[INAirline init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INAirline, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INAirport initWithName:iataCode:icaoCode:]",
@@ -1912,10 +1914,11 @@
       "api": "-[INAirport init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INAirport, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INAirportGate initWithAirport:terminal:gate:]",
@@ -1931,10 +1934,11 @@
       "api": "-[INAirportGate init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INAirportGate, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INAnswerCallIntent initWithAudioRoute:callIdentifier:]",
@@ -1960,10 +1964,11 @@
       "api": "-[INAnswerCallIntentResponse init]",
       "kind": "method",
       "introduced": "16.2",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INAnswerCallIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBoatReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:boatTrip:]",
@@ -1979,10 +1984,11 @@
       "api": "-[INBoatReservation init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBoatReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBoatTrip initWithProvider:boatName:boatNumber:tripDuration:departureBoatTerminalLocation:arrivalBoatTerminalLocation:]",
@@ -1998,10 +2004,11 @@
       "api": "-[INBoatTrip init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBoatTrip, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBusReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:busTrip:]",
@@ -2017,10 +2024,11 @@
       "api": "-[INBusReservation init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBusReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBusTrip initWithProvider:busName:busNumber:tripDuration:departureBusStopLocation:departurePlatform:arrivalBusStopLocation:arrivalPlatform:]",
@@ -2036,10 +2044,11 @@
       "api": "-[INBusTrip init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBusTrip, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INCallGroup initWithGroupName:groupId:]",
@@ -2055,10 +2064,11 @@
       "api": "-[INCallGroup init]",
       "kind": "method",
       "introduced": "14.5",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCallGroup, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INCallRecordFilter initWithParticipants:callTypes:callCapability:]",
@@ -2074,10 +2084,11 @@
       "api": "-[INCallRecordFilter init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCallRecordFilter, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INCar initWithCarIdentifier:displayName:year:make:model:color:headUnit:supportedChargingConnectors:]",
@@ -2093,10 +2104,11 @@
       "api": "-[INCar init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCar, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INCar maximumPowerForChargingConnectorType:]",
@@ -2130,10 +2142,11 @@
       "api": "-[INCarHeadUnit init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCarHeadUnit, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INDeleteTasksIntent initWithTaskList:tasks:all:]",
@@ -2159,10 +2172,11 @@
       "api": "-[INDeleteTasksIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDeleteTasksIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INDeleteTasksTaskListResolutionResult initWithTaskListResolutionResult:]",
@@ -2198,10 +2212,11 @@
       "api": "-[INFlight init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INFlight, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INFlightReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:flight:]",
@@ -2237,10 +2252,11 @@
       "api": "-[INFocusStatus init]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INFocusStatus, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INFocusStatusCenter requestAuthorizationWithCompletionHandler:]",
@@ -2275,10 +2291,11 @@
       "api": "-[INGetReservationDetailsIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INGetReservationDetailsIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INHangUpCallIntent initWithCallIdentifier:]",
@@ -2304,19 +2321,21 @@
       "api": "-[INHangUpCallIntentResponse init]",
       "kind": "method",
       "introduced": "16.2",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INHangUpCallIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INIntentDonationMetadata init]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INIntentDonationMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INListCarsIntent init]",
@@ -2341,10 +2360,11 @@
       "api": "-[INListCarsIntentResponse init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INListCarsIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INLodgingReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:lodgingBusinessLocation:reservationDuration:numberOfAdults:numberOfChildren:]",
@@ -2370,10 +2390,11 @@
       "api": "-[INMediaDestination init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaDestination, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMediaSearch initWithMediaType:sortOrder:mediaName:artistName:albumName:genreNames:moodNames:releaseDate:reference:mediaIdentifier:]",
@@ -2389,19 +2410,21 @@
       "api": "-[INMediaSearch init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaSearch, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMediaUserContext init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaUserContext, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INObjectCollection initWithItems:]",
@@ -2427,10 +2450,11 @@
       "api": "-[INObjectCollection init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObjectCollection, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INObjectSection initWithTitle:items:]",
@@ -2446,10 +2470,11 @@
       "api": "-[INObjectSection init]",
       "kind": "method",
       "introduced": "14.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObjectSection, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPlayMediaMediaItemResolutionResult initWithMediaItemResolutionResult:]",
@@ -2485,10 +2510,11 @@
       "api": "-[INRentalCar init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRentalCar, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRentalCarReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:rentalCar:rentalDuration:pickupLocation:dropOffLocation:]",
@@ -2514,10 +2540,11 @@
       "api": "-[INReservation init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INReservation, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INReservationAction initWithType:validDuration:userActivity:]",
@@ -2533,10 +2560,11 @@
       "api": "-[INReservationAction init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INReservationAction, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRestaurantReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservationDuration:partySize:restaurantLocation:]",
@@ -2582,10 +2610,11 @@
       "api": "-[INSearchForMediaIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSearchForMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchForMediaMediaItemResolutionResult initWithMediaItemResolutionResult:]",
@@ -2611,19 +2640,21 @@
       "api": "-[INSeat init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSeat, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSendMessageIntentDonationMetadata init]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSendMessageIntentDonationMetadata, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetTaskAttributeTemporalEventTriggerResolutionResult initWithTemporalEventTriggerResolutionResult:]",
@@ -2659,10 +2690,11 @@
       "api": "-[INShareFocusStatusIntentResponse init]",
       "kind": "method",
       "introduced": "15.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INShareFocusStatusIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSnoozeTasksIntent initWithTasks:nextTriggerTime:all:]",
@@ -2688,10 +2720,11 @@
       "api": "-[INSnoozeTasksIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSnoozeTasksIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSnoozeTasksTaskResolutionResult initWithTaskResolutionResult:]",
@@ -2767,10 +2800,11 @@
       "api": "-[INStartCallIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INStartCallIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTicketedEvent initWithCategory:name:eventDuration:location:]",
@@ -2786,10 +2820,11 @@
       "api": "-[INTicketedEvent init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTicketedEvent, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTicketedEventReservation initWithItemReference:reservationNumber:bookingTime:reservationStatus:reservationHolderName:actions:URL:reservedSeat:event:]",
@@ -2845,10 +2880,11 @@
       "api": "-[INTrainTrip init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INTrainTrip, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INUnsendMessagesIntent initWithMessageIdentifiers:]",
@@ -2874,10 +2910,11 @@
       "api": "-[INUnsendMessagesIntentResponse init]",
       "kind": "method",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INUnsendMessagesIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INUpdateMediaAffinityIntent initWithMediaItems:mediaSearch:affinityType:]",
@@ -2903,10 +2940,11 @@
       "api": "-[INUpdateMediaAffinityIntentResponse init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INUpdateMediaAffinityIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INUpdateMediaAffinityMediaItemResolutionResult initWithMediaItemResolutionResult:]",
@@ -2931,10 +2969,11 @@
       "api": "-[INUserContext init]",
       "kind": "method",
       "introduced": "13.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INUserContext, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "INAddMediaIntent.mediaDestination",

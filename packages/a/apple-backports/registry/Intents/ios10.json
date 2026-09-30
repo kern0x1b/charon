@@ -2820,10 +2820,11 @@
       "api": "-[INActivateCarSignalIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INActivateCarSignalIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBillDetails initWithBillType:paymentStatus:billPayee:amountDue:minimumDue:lateFee:dueDate:paymentDate:]",
@@ -2839,10 +2840,11 @@
       "api": "-[INBillDetails init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBillDetails, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBillPayee initWithNickname:number:organizationName:]",
@@ -2858,10 +2860,11 @@
       "api": "-[INBillPayee init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INBillPayee, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INBookRestaurantReservationIntent initWithRestaurant:bookingDateComponents:partySize:bookingIdentifier:guest:selectedOffer:guestProvidedSpecialRequestText:]",
@@ -2907,10 +2910,11 @@
       "api": "-[INCancelWorkoutIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCancelWorkoutIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INCurrencyAmount initWithAmount:currencyCode:]",
@@ -2926,10 +2930,11 @@
       "api": "-[INCurrencyAmount init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INCurrencyAmount, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INDateComponentsRange EKRecurrenceRule]",
@@ -2973,10 +2978,11 @@
       "api": "-[INDateComponentsRange init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDateComponentsRange, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INEndWorkoutIntent initWithWorkoutName:]",
@@ -3002,10 +3008,11 @@
       "api": "-[INEndWorkoutIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INEndWorkoutIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INGetAvailableRestaurantReservationBookingDefaultsIntent initWithRestaurant:]",
@@ -3071,10 +3078,11 @@
       "api": "-[INGetCarLockStatusIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INGetCarLockStatusIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INGetCarPowerLevelStatusIntent initWithCarName:]",
@@ -3100,10 +3108,11 @@
       "api": "-[INGetCarPowerLevelStatusIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INGetCarPowerLevelStatusIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INGetRestaurantGuestIntentResponse initWithCode:userActivity:]",
@@ -3138,10 +3147,11 @@
       "api": "-[INGetRideStatusIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INGetRideStatusIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INGetUserCurrentRestaurantReservationBookingsIntent initWithRestaurant:reservationIdentifier:maximumNumberOfResults:earliestBookingDateForResults:]",
@@ -3265,10 +3275,11 @@
       "api": "-[INListRideOptionsIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INListRideOptionsIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMessage initWithIdentifier:content:dateSent:sender:recipients:]",
@@ -3369,10 +3380,11 @@
       "api": "-[INMessage init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPauseWorkoutIntent initWithWorkoutName:]",
@@ -3398,10 +3410,11 @@
       "api": "-[INPauseWorkoutIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPauseWorkoutIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPayBillIntent initWithBillPayee:fromAccount:transactionAmount:transactionScheduledDate:transactionNote:billType:dueDate:]",
@@ -3427,10 +3440,11 @@
       "api": "-[INPayBillIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPayBillIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPaymentAccount initWithNickname:number:accountType:organizationName:]",
@@ -3456,10 +3470,11 @@
       "api": "-[INPaymentAccount init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPaymentAccount, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPaymentAmount initWithAmountType:amount:]",
@@ -3475,10 +3490,11 @@
       "api": "-[INPaymentAmount init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPaymentAmount, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPaymentMethod initWithType:name:identificationHint:icon:]",
@@ -3523,10 +3539,11 @@
       "api": "-[INPaymentRecord init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPaymentRecord, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPerson initWithHandle:displayName:contactIdentifier:]",
@@ -3622,10 +3639,11 @@
       "api": "-[INPerson init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPerson, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPersonHandle initWithValue:type:]",
@@ -3651,10 +3669,11 @@
       "api": "-[INPersonHandle init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPersonHandle, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPriceRange initWithMaximumPrice:currencyCode:]",
@@ -3700,10 +3719,11 @@
       "api": "-[INPriceRange init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPriceRange, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRequestPaymentIntent initWithPayer:currencyAmount:note:]",
@@ -3729,10 +3749,11 @@
       "api": "-[INRequestPaymentIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRequestPaymentIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRequestRideIntent initWithPickupLocation:dropOffLocation:rideOptionName:partySize:paymentMethod:]",
@@ -3768,10 +3789,11 @@
       "api": "-[INRequestRideIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRequestRideIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRestaurant initWithLocation:name:vendorIdentifier:restaurantIdentifier:]",
@@ -3837,10 +3859,11 @@
       "api": "-[INResumeWorkoutIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INResumeWorkoutIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRideCompletionStatus init]",
@@ -3903,10 +3926,11 @@
       "api": "-[INRideFareLineItem init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRideFareLineItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRideOption initWithCoder:]",
@@ -3932,10 +3956,11 @@
       "api": "-[INRideOption init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRideOption, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRidePartySizeOption initWithPartySizeRange:sizeDescription:priceRange:]",
@@ -3951,10 +3976,11 @@
       "api": "-[INRidePartySizeOption init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRidePartySizeOption, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSaveProfileInCarIntent initWithProfileNumber:profileLabel:]",
@@ -3990,10 +4016,11 @@
       "api": "-[INSaveProfileInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSaveProfileInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchCallHistoryIntent initWithCallType:dateCreated:recipient:callCapabilities:]",
@@ -4029,10 +4056,11 @@
       "api": "-[INSearchCallHistoryIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSearchCallHistoryIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchForBillsIntent initWithBillPayee:paymentDateRange:billType:status:dueDateRange:]",
@@ -4058,10 +4086,11 @@
       "api": "-[INSearchForBillsIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSearchForBillsIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchForMessagesIntent initWithRecipients:senders:searchTerms:attributes:dateTimeRange:identifiers:notificationIdentifiers:groupNames:]",
@@ -4107,10 +4136,11 @@
       "api": "-[INSearchForMessagesIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSearchForMessagesIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSearchForPhotosIntent initWithDateCreated:locationCreated:albumName:searchTerms:includedAttributes:excludedAttributes:peopleInPhoto:]",
@@ -4136,10 +4166,11 @@
       "api": "-[INSearchForPhotosIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSearchForPhotosIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSendMessageIntent initWithRecipients:content:groupName:serviceName:sender:]",
@@ -4195,10 +4226,11 @@
       "api": "-[INSendMessageIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSendMessageIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSendPaymentIntent initWithPayee:currencyAmount:note:]",
@@ -4224,10 +4256,11 @@
       "api": "-[INSendPaymentIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSendPaymentIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetAudioSourceInCarIntent initWithAudioSource:relativeAudioSourceReference:]",
@@ -4253,10 +4286,11 @@
       "api": "-[INSetAudioSourceInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetAudioSourceInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetCarLockStatusIntent initWithLocked:carName:]",
@@ -4282,10 +4316,11 @@
       "api": "-[INSetCarLockStatusIntentResponse init]",
       "kind": "method",
       "introduced": "10.3",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetCarLockStatusIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetClimateSettingsInCarIntent initWithEnableFan:enableAirConditioner:enableClimateControl:enableAutoMode:airCirculationMode:fanSpeedIndex:fanSpeedPercentage:relativeFanSpeedSetting:temperature:relativeTemperatureSetting:climateZone:]",
@@ -4321,10 +4356,11 @@
       "api": "-[INSetClimateSettingsInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetClimateSettingsInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetDefrosterSettingsInCarIntent initWithEnable:defroster:]",
@@ -4360,10 +4396,11 @@
       "api": "-[INSetDefrosterSettingsInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetDefrosterSettingsInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetMessageAttributeIntent initWithIdentifiers:attribute:]",
@@ -4389,10 +4426,11 @@
       "api": "-[INSetMessageAttributeIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetMessageAttributeIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetProfileInCarIntent initWithProfileNumber:profileLabel:defaultProfile:]",
@@ -4438,10 +4476,11 @@
       "api": "-[INSetProfileInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetProfileInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetRadioStationIntent initWithRadioType:frequency:stationName:channel:presetNumber:]",
@@ -4467,10 +4506,11 @@
       "api": "-[INSetRadioStationIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetRadioStationIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSetSeatSettingsInCarIntent initWithEnableHeating:enableCooling:enableMassage:seat:level:relativeLevelSetting:]",
@@ -4506,10 +4546,11 @@
       "api": "-[INSetSeatSettingsInCarIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INSetSeatSettingsInCarIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INSpeakableString initWithIdentifier:spokenPhrase:pronunciationHint:]",
@@ -4584,10 +4625,11 @@
       "api": "-[INStartAudioCallIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INStartAudioCallIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INStartPhotoPlaybackIntent initWithDateCreated:locationCreated:albumName:searchTerms:includedAttributes:excludedAttributes:peopleInPhoto:]",
@@ -4613,10 +4655,11 @@
       "api": "-[INStartPhotoPlaybackIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INStartPhotoPlaybackIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INStartVideoCallIntent initWithContacts:]",
@@ -4642,10 +4685,11 @@
       "api": "-[INStartVideoCallIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INStartVideoCallIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INStartWorkoutIntent initWithWorkoutName:goalValue:workoutGoalUnitType:workoutLocationType:isOpenEnded:]",
@@ -4671,10 +4715,11 @@
       "api": "-[INStartWorkoutIntentResponse init]",
       "kind": "method",
       "introduced": "10.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INStartWorkoutIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INTermsAndConditions initWithLocalizedTermsAndConditionsText:privacyPolicyURL:termsAndConditionsURL:]",
@@ -9551,897 +9596,6 @@
       "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
       "effect": "nothing: the port does not declare the protocol and a conforming class is not given one to conform to",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
-    },
-    {
-      "api": "INAnswerCallIntentIdentifier",
-      "kind": "constant",
-      "introduced": "16.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INAnswerCallIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCancelWorkoutIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INCancelWorkoutIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeCCS1",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.CCS1",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeCCS2",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.CCS2",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeCHAdeMO",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.CHAdeMO",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeGBTAC",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.GBTAC",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeGBTDC",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.GBTDC",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeJ1772",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.J1772",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeMennekes",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.Mennekes",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INCarChargingConnectorTypeTesla",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.CarChargingConnectorType.Tesla",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INEndWorkoutIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INEndWorkoutIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INGetRideStatusIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INGetRideStatusIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INHangUpCallIntentIdentifier",
-      "kind": "constant",
-      "introduced": "16.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INHangUpCallIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INIntentErrorDomain",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: IntentsErrorDomain",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INListRideOptionsIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INListRideOptionsIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPauseWorkoutIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INPauseWorkoutIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelHome",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Home",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelHomeFax",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Home_Fax",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelMain",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Main",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelMobile",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Mobile",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelOther",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Other",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelPager",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Pager",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelSchool",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.School",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelWork",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Work",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabelWorkFax",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.Work_Fax",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonHandleLabeliPhone",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonHandleLabel.iPhone",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipAssistant",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Assistant",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipBrother",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Brother",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipChild",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Child",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipDaughter",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Daughter",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipFather",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Father",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipFriend",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Friend",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipManager",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Manager",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipMother",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Mother",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipParent",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Parent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipPartner",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Partner",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipSister",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Sister",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipSon",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Son",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INPersonRelationshipSpouse",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.PersonRelationship.Spouse",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INRequestPaymentIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INRequestPaymentIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INRequestRideIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INRequestRideIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INResumeWorkoutIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INResumeWorkoutIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSaveProfileInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSaveProfileInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSearchCallHistoryIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSearchCallHistoryIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSearchForMessagesIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSearchForMessagesIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSearchForPhotosIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSearchForPhotosIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSendMessageIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSendMessageIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSendPaymentIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSendPaymentIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetAudioSourceInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetAudioSourceInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetClimateSettingsInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetClimateSettingsInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetDefrosterSettingsInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetDefrosterSettingsInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetMessageAttributeIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetMessageAttributeIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetProfileInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetProfileInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetRadioStationIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetRadioStationIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INSetSeatSettingsInCarIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INSetSeatSettingsInCarIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INStartAudioCallIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INStartAudioCallIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INStartCallIntentIdentifier",
-      "kind": "constant",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INStartCallIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INStartPhotoPlaybackIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INStartPhotoPlaybackIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INStartVideoCallIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INStartVideoCallIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INStartWorkoutIntentIdentifier",
-      "kind": "constant",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: INStartWorkoutIntent",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierCrosstraining",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Crosstraining",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierCycle",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Cycle",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierDance",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Dance",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierElliptical",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Elliptical",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierExercise",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Exercise",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierHighIntensityIntervalTraining",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.HighIntensityIntervalTraining",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierHike",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Hike",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierIndoorcycle",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Indoorcycle",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierIndoorrun",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Indoorrun",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierIndoorwalk",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Indoorwalk",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierMove",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Move",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierOther",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Other",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierRower",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Rower",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierRun",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Run",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierSit",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Sit",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierStairs",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Stairs",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierStand",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Stand",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierSteps",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Steps",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierSwim",
-      "kind": "constant",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Swim",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierWalk",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Walk",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
-    },
-    {
-      "api": "INWorkoutNameIdentifierYoga",
-      "kind": "constant",
-      "introduced": "10.2",
-      "minimum": "6.0",
-      "status": "implemented",
-      "facts": "facts/Intents/Constants.md",
-      "source": "the value read out of the host's own Intents at runtime, dlsym over /System/Library/Frameworks/Intents.framework and the NSString *const dereferenced once, by tools/intents/emit-intents-constants.py",
-      "reason": "the header declares it an extern NSString *const and the release has no such symbol, so the port exports it with the value the system gives it: com.apple.intents.WorkoutNameIdentifier.Yoga",
-      "effect": "the symbol is there and its value is the system's own: a program that reads it gets the same string the framework's is"
     }
   ]
 }

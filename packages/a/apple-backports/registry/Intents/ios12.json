@@ -269,10 +269,11 @@
       "api": "-[INDefaultCardTemplate init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INDefaultCardTemplate, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INLocationRelevanceProvider initWithRegion:]",
@@ -308,10 +309,11 @@
       "api": "-[INMediaItem init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMediaItem, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INMessageLinkMetadata initWithSiteName:summary:title:openGraphType:linkURL:]",
@@ -367,10 +369,11 @@
       "api": "-[INObject init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INObject, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INPlayMediaIntent initWithMediaItems:mediaContainer:playShuffled:playbackRepeatMode:resumePlayback:]",
@@ -406,19 +409,21 @@
       "api": "-[INPlayMediaIntentResponse init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INPlayMediaIntentResponse, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRelevanceProvider init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevanceProvider, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRelevantShortcut initWithShortcut:]",
@@ -434,10 +439,11 @@
       "api": "-[INRelevantShortcutStore init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INRelevantShortcutStore, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INRelevantShortcutStore setRelevantShortcuts:completionHandler:]",
@@ -472,10 +478,11 @@
       "api": "-[INShortcut init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INUpcomingMediaManager setPredictionMode:forType:]",
@@ -499,10 +506,11 @@
       "api": "-[INVoiceShortcut init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INVoiceShortcut, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INVoiceShortcutCenter getAllVoiceShortcutsWithCompletion:]",
@@ -526,10 +534,11 @@
       "api": "-[INVoiceShortcutCenter init]",
       "kind": "method",
       "introduced": "12.0",
-      "status": "absent",
-      "reason": "the header marks the class's -init unavailable, so a port cannot call it and the class answers the initialiser the header does declare",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INVoiceShortcutCenter, which the class's own generated implementation answers",
+      "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
       "api": "-[INVoiceShortcutCenter setShortcutSuggestions:]",

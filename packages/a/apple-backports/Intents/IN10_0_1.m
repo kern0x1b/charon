@@ -16,6 +16,7 @@
 //
 
 #import <Intents/Intents.h>
+#import <objc/runtime.h>
 #import "../../../c/charon-coding/files/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
@@ -176,6 +177,18 @@
 
 @implementation INBooleanResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INBooleanResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedValue:(BOOL)resolvedValue
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -194,6 +207,18 @@
 @end
 
 @implementation INCallRecordTypeResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCallRecordTypeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedCallRecordType:(INCallRecordType)resolvedCallRecordType
 {
@@ -264,6 +289,18 @@
 @implementation INCancelWorkoutIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCancelWorkoutIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INCancelWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -305,6 +342,18 @@
 
 @implementation INCarAirCirculationModeResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCarAirCirculationModeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedCarAirCirculationMode:(INCarAirCirculationMode)resolvedCarAirCirculationMode
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -338,6 +387,18 @@
 @end
 
 @implementation INCarAudioSourceResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCarAudioSourceResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedCarAudioSource:(INCarAudioSource)resolvedCarAudioSource
 {
@@ -373,6 +434,18 @@
 
 @implementation INCarDefrosterResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCarDefrosterResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedCarDefroster:(INCarDefroster)resolvedCarDefroster
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -406,6 +479,18 @@
 @end
 
 @implementation INCarSeatResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCarSeatResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedCarSeat:(INCarSeat)resolvedCarSeat
 {
@@ -450,6 +535,18 @@
     @synthesize amount = _amount;
     @synthesize currencyCode = _currencyCode;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCurrencyAmount alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithAmount:(NSDecimalNumber *)amount currencyCode:(NSString *)currencyCode
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -491,6 +588,18 @@
 
 @implementation INCurrencyAmountResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INCurrencyAmountResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedCurrencyAmount:(INCurrencyAmount *)resolvedCurrencyAmount
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -525,6 +634,18 @@
     @synthesize endDateComponents = _endDateComponents;
     @synthesize recurrenceRule = _recurrenceRule;
     @synthesize startDateComponents = _startDateComponents;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INDateComponentsRange alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithStartDateComponents:(NSDateComponents *)startDateComponents endDateComponents:(NSDateComponents *)endDateComponents
 {
@@ -579,6 +700,18 @@
 
 @implementation INDateComponentsRangeResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INDateComponentsRangeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedDateComponentsRange:(INDateComponentsRange *)resolvedDateComponentsRange
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -603,6 +736,18 @@
 
 @implementation INDateComponentsResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INDateComponentsResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedDateComponents:(NSDateComponents *)resolvedDateComponents
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -626,6 +771,18 @@
 @end
 
 @implementation INDoubleResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INDoubleResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedValue:(double)resolvedValue
 {
@@ -695,6 +852,18 @@
 
 @implementation INEndWorkoutIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INEndWorkoutIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INEndWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -1140,6 +1309,18 @@
     _rideStatus = [rideStatus copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INGetRideStatusIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INGetRideStatusIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -1305,6 +1486,18 @@
 
 @implementation INIntegerResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INIntegerResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedValue:(NSInteger)resolvedValue
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -1438,6 +1631,18 @@
     _rideOptions = [rideOptions copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INListRideOptionsIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INListRideOptionsIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -1503,6 +1708,18 @@
     @synthesize recipients = _recipients;
     @synthesize sender = _sender;
     @synthesize serviceName = _serviceName;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INMessage alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithIdentifier:(NSString *)identifier conversationIdentifier:(NSString *)conversationIdentifier content:(NSString *)content dateSent:(NSDate *)dateSent sender:(INPerson *)sender recipients:(NSArray<INPerson *> *)recipients groupName:(INSpeakableString *)groupName messageType:(INMessageType)messageType serviceName:(NSString *)serviceName audioMessageFile:(INFile *)audioMessageFile
 {
@@ -1618,6 +1835,18 @@
 
 @implementation INMessageAttributeOptionsResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INMessageAttributeOptionsResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedMessageAttributeOptions:(INMessageAttributeOptions)resolvedMessageAttributeOptions
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -1651,6 +1880,18 @@
 @end
 
 @implementation INMessageAttributeResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INMessageAttributeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedMessageAttribute:(INMessageAttribute)resolvedMessageAttribute
 {
@@ -1736,6 +1977,18 @@
 @implementation INPauseWorkoutIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPauseWorkoutIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INPauseWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -1795,6 +2048,18 @@
     @synthesize payer = _payer;
     @synthesize paymentMethod = _paymentMethod;
     @synthesize status = _status;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPaymentRecord alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithPayee:(INPerson *)payee payer:(INPerson *)payer currencyAmount:(INCurrencyAmount *)currencyAmount paymentMethod:(INPaymentMethod *)paymentMethod note:(NSString *)note status:(INPaymentStatus)status feeAmount:(INCurrencyAmount *)feeAmount
 {
@@ -1882,6 +2147,18 @@
     @synthesize nameComponents = _nameComponents;
     @synthesize personHandle = _personHandle;
     @synthesize relationship = _relationship;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPerson alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithPersonHandle:(INPersonHandle *)personHandle nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image contactIdentifier:(NSString *)contactIdentifier customIdentifier:(NSString *)customIdentifier
 {
@@ -2097,6 +2374,18 @@
     @synthesize type = _type;
     @synthesize value = _value;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPersonHandle alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithValue:(NSString *)value type:(INPersonHandleType)type label:(INPersonHandleLabel)label
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -2150,6 +2439,18 @@
 
 @implementation INPersonResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPersonResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedPerson:(INPerson *)resolvedPerson
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -2173,6 +2474,18 @@
 @end
 
 @implementation INPlacemarkResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPlacemarkResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedPlacemark:(CLPlacemark *)resolvedPlacemark
 {
@@ -2208,6 +2521,18 @@
     @synthesize currencyCode = _currencyCode;
     @synthesize maximumPrice = _maximumPrice;
     @synthesize minimumPrice = _minimumPrice;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INPriceRange alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithRangeBetweenPrice:(NSDecimalNumber *)firstPrice andPrice:(NSDecimalNumber *)secondPrice currencyCode:(NSString *)currencyCode
 {
@@ -2285,6 +2610,18 @@
 
 @implementation INRadioTypeResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRadioTypeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedRadioType:(INRadioType)resolvedRadioType
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -2319,6 +2656,18 @@
 
 @implementation INRelativeReferenceResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRelativeReferenceResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedRelativeReference:(INRelativeReference)resolvedRelativeReference
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -2352,6 +2701,18 @@
 @end
 
 @implementation INRelativeSettingResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRelativeSettingResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedRelativeSetting:(INRelativeSetting)resolvedRelativeSetting
 {
@@ -2448,6 +2809,18 @@
 - (void)setPaymentRecord:(INPaymentRecord *)paymentRecord
 {
     _paymentRecord = [paymentRecord copy];
+}
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRequestPaymentIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
 - (instancetype)initWithCode:(INRequestPaymentIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -2573,6 +2946,18 @@
 - (void)setRideStatus:(INRideStatus *)rideStatus
 {
     _rideStatus = [rideStatus copy];
+}
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRequestRideIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
 - (instancetype)initWithCode:(INRequestRideIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -2713,6 +3098,18 @@
     _phoneNumber = [phoneNumber copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRestaurantGuest alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INPerson class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithNameComponents:(NSPersonNameComponents *)nameComponents phoneNumber:(NSString *)phoneNumber emailAddress:(NSString *)emailAddress
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -2843,6 +3240,18 @@
 @end
 
 @implementation INRestaurantGuestResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRestaurantGuestResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedRestaurantGuest:(INRestaurantGuest *)resolvedRestaurantGuest
 {
@@ -3132,6 +3541,18 @@
 
 @implementation INRestaurantResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRestaurantResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedRestaurant:(INRestaurant *)resolvedRestaurant
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -3205,6 +3626,18 @@
 
 @implementation INResumeWorkoutIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INResumeWorkoutIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INResumeWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -3280,6 +3713,18 @@
     return _personHandle;
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRideDriver alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INPerson class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithPhoneNumber:(NSString *)phoneNumber nameComponents:(NSPersonNameComponents *)nameComponents displayName:(NSString *)displayName image:(INImage *)image rating:(NSString *)rating
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -3349,6 +3794,18 @@
     @synthesize currencyCode = _currencyCode;
     @synthesize price = _price;
     @synthesize title = _title;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRideFareLineItem alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithTitle:(NSString *)title price:(NSDecimalNumber *)price currencyCode:(NSString *)currencyCode
 {
@@ -3480,6 +3937,18 @@
     _usesMeteredFare = [usesMeteredFare copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRideOption alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithName:(NSString *)name estimatedPickupDate:(NSDate *)estimatedPickupDate
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -3545,6 +4014,18 @@
     @synthesize partySizeRange = _partySizeRange;
     @synthesize priceRange = _priceRange;
     @synthesize sizeDescription = _sizeDescription;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INRidePartySizeOption alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithPartySizeRange:(NSRange)partySizeRange sizeDescription:(NSString *)sizeDescription priceRange:(INPriceRange *)priceRange
 {
@@ -3866,6 +4347,18 @@
 @implementation INSaveProfileInCarIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSaveProfileInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSaveProfileInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -3995,6 +4488,18 @@
 - (void)setCallRecords:(NSArray<INCallRecord *> *)callRecords
 {
     _callRecords = [callRecords copy];
+}
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSearchCallHistoryIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
 - (instancetype)initWithCode:(INSearchCallHistoryIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -4179,6 +4684,18 @@
     _messages = [messages copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSearchForMessagesIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSearchForMessagesIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -4297,6 +4814,18 @@
 - (void)setSearchResultsCount:(NSNumber *)searchResultsCount
 {
     _searchResultsCount = [searchResultsCount copy];
+}
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSearchForPhotosIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
 - (instancetype)initWithCode:(INSearchForPhotosIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
@@ -4473,6 +5002,18 @@
     _sentMessages = [sentMessages copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSendMessageIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSendMessageIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -4591,6 +5132,18 @@
     _paymentRecord = [paymentRecord copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSendPaymentIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSendPaymentIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -4684,6 +5237,18 @@
 
 @implementation INSetAudioSourceInCarIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetAudioSourceInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INSetAudioSourceInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -4827,6 +5392,18 @@
 @implementation INSetClimateSettingsInCarIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetClimateSettingsInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSetClimateSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -4933,6 +5510,18 @@
 @implementation INSetDefrosterSettingsInCarIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetDefrosterSettingsInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSetDefrosterSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -5026,6 +5615,18 @@
 
 @implementation INSetMessageAttributeIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetMessageAttributeIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INSetMessageAttributeIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -5157,6 +5758,18 @@
 @implementation INSetProfileInCarIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetProfileInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSetProfileInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -5259,6 +5872,18 @@
 
 @implementation INSetRadioStationIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetRadioStationIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INSetRadioStationIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -5382,6 +6007,18 @@
 @implementation INSetSeatSettingsInCarIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSetSeatSettingsInCarIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INSetSeatSettingsInCarIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -5422,6 +6059,18 @@
 @end
 
 @implementation INSpeakableStringResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INSpeakableStringResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedString:(INSpeakableString *)resolvedString
 {
@@ -5507,6 +6156,18 @@
 
 @implementation INStartAudioCallIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INStartAudioCallIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INStartAudioCallIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -5628,6 +6289,18 @@
     _searchResultsCount = [searchResultsCount copy];
 }
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INStartPhotoPlaybackIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INStartPhotoPlaybackIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -5718,6 +6391,18 @@
 
 @implementation INStartVideoCallIntentResponse
     @synthesize code = _code;
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INStartVideoCallIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 - (instancetype)initWithCode:(INStartVideoCallIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
@@ -5822,6 +6507,18 @@
 @implementation INStartWorkoutIntentResponse
     @synthesize code = _code;
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INStartWorkoutIntentResponse alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResponse class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 - (instancetype)initWithCode:(INStartWorkoutIntentResponseCode)code userActivity:(NSUserActivity *)userActivity
 {
     // The header marks this class's -init unavailable, so the superclass's own
@@ -5863,6 +6560,18 @@
 
 @implementation INStringResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INStringResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedString:(NSString *)resolvedString
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -5886,6 +6595,18 @@
 @end
 
 @implementation INTemperatureResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INTemperatureResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedTemperature:(NSMeasurement<NSUnitTemperature *> *)resolvedTemperature
 {
@@ -5960,6 +6681,18 @@
 
 @implementation INWorkoutGoalUnitTypeResolutionResult
 
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INWorkoutGoalUnitTypeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (instancetype)successWithResolvedWorkoutGoalUnitType:(INWorkoutGoalUnitType)resolvedWorkoutGoalUnitType
 {
     // The host re-forms a success carrying the zero case of its type as a
@@ -5993,6 +6726,18 @@
 @end
 
 @implementation INWorkoutLocationTypeResolutionResult
+
+- (instancetype)init
+{
+    // The header marks this class's -init unavailable.  The system still answers one:
+    // measured, [[INWorkoutLocationTypeResolutionResult alloc] init] returns an object with every property nil.  So the
+    // method is defined here, and the superclass's own -init is reached through its
+    // IMP, because the header forbids naming the selector.
+    Class parent = [INIntentResolutionResult class];
+    SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
 
 + (instancetype)successWithResolvedWorkoutLocationType:(INWorkoutLocationType)resolvedWorkoutLocationType
 {

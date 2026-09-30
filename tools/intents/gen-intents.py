@@ -704,6 +704,25 @@ def initialiser(interface, method, states, spellings, interfaces):
     return lines
 
 
+def own_init_blocked_here(interface, interfaces):
+    """Whether the -init a bare -init would chain to is the marked one, and not this class's own.
+
+    own_init_unavailable walks the whole chain, which is the right question for an initialiser
+    WITH arguments: such an initialiser stores its arguments in this class and then has to reach a
+    superclass -init, and the whole chain is what decides whether that call may be spelled.  A bare
+    -init stores nothing, so the question is narrower: the selector it forwards to is the nearest
+    implementation in the chain, and only the one it would actually reach matters.
+    """
+    seen, name = set(), interface
+    while name is not None and name.name not in seen:
+        seen.add(name.name)
+        declared = name.method("init")
+        if declared is not None and has_attr(declared, "UnavailableAttr"):
+            return name.name != interface.name or declared.get("params") == []
+        name = interfaces.get(name.superclass)
+    return False
+
+
 def own_init_unavailable(interface, interfaces):
     """Whether the -init a [super init] would reach is marked unavailable in the SDK's header.
 
@@ -884,6 +903,28 @@ def implementation(interface, protocols, carried, intents, interfaces, forward=(
         assigned = "[%s copy]" % name if copied else name
         out += ["- (void)set%s:(%s)%s" % (name[0].upper() + name[1:], kind, name), "{",
                 "    _%s = %s;" % (name, assigned), "}", ""]
+
+    # A class whose own header marks -init NS_UNAVAILABLE still answers one, and the SYSTEM does:
+    # measured on the host's own Intents through class_getMethodImplementation - a compile-time call
+    # does not build, which is the point - INMessage, INPerson, INBillDetails, INBalanceAmount,
+    # INCurrencyAmount, INCallRecord, INCar and INFile each returned an object, no exception, with
+    # respondsToSelector:init 1 and every property present and nil.  So the port emits -init too:
+    # the marker is a compile-time marker, and refusing to define the method leaves a caller that
+    # sends it reaching a NULL IMP.  The superclass's own -init is called through its IMP rather
+    # than by name, for the same reason the marker exists.
+    own_init = own_init_unavailable(interface, interfaces)
+    if own_init and (interface.method("init") is not None or own_init_blocked_here(interface, interfaces)):
+        out += ["- (instancetype)init", "{",
+                "    // The header marks this class's -init unavailable.  The system still answers one:",
+                "    // measured, [[%s alloc] init] returns an object with every property nil.  So the"
+                % interface.name,
+                "    // method is defined here, and the superclass's own -init is reached through its",
+                "    // IMP, because the header forbids naming the selector.",
+                "    Class parent = [%s class];" % interface.superclass,
+                "    SEL selector = @selector(init);",
+                "    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;",
+                "    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;",
+                "}", ""]
 
     for method in interface.methods:
         selector = method.get("name") or ""
@@ -1140,6 +1181,7 @@ def banner(name, classes, release, deferred):
 //
 
 #import <Intents/Intents.h>
+#import <objc/runtime.h>
 #import "../../../c/charon-coding/files/CharonCoding.h"
 #import "CharonIntentsResolution.h"
 #import "CharonIntents262.h"
