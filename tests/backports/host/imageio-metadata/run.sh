@@ -77,6 +77,15 @@ case "$binding" in
   *) echo "FAIL  the binding record did not name every function: $binding"; exit 1 ;;
 esac
 echo "  BINDING: every function this slice carries resolves to the port's object"
+
+# AN INERT ROW SAYS SO ONCE, and that is a claim the output text cannot carry: it goes to the log. The
+# cases.m PORTONLY block calls CGImageSourceRemoveCacheAtIndex twice, so a line that appeared twice would
+# be a line that appeared every time, which is not what "once" means.
+logged=$(grep -c 'CGImageSourceRemoveCacheAtIndex: the decoded image cache' "$build/port.err" || true)
+[ "$logged" -eq 1 ] || { echo "FAIL  the port's log line for CGImageSourceRemoveCacheAtIndex appears $logged times, not once"; exit 1; }
+hostlogged=$(grep -c 'CGImageSourceRemoveCacheAtIndex: the decoded image cache' "$build/host.err" || true)
+[ "$hostlogged" -eq 0 ] || { echo "FAIL  the host printed the port's own log line"; exit 1; }
+echo "  INERT ROW: CGImageSourceRemoveCacheAtIndex says once that it freed nothing, and only once"
 grep -v '^PORTONLY' "$build/port.out" > "$build/port.cmp"
 grep -v '^PORTONLY' "$build/host.out" > "$build/host.cmp"
 
@@ -105,32 +114,57 @@ undeclared=$(comm -13 "$build/declared.txt" "$build/differing-cases.txt")
 [ -z "$undeclared" ] || { echo "FAIL  the port differs from the host on a case nobody declared:"; echo "$undeclared" | sed 's/^/    /'; exit 1; }
 if [ "$differing" -eq 0 ]; then echo "  GREEN: every case answers what the host answers"; fi
 
-# THE MUTATION: the port's own source changed, the same cases asked again, and the comparison must notice.
-# Without it a harness that compares nothing would print GREEN above and this file would be worthless.
+# THE MUTATION: the port's own source changed, and the run has to notice. Two plants, because the run has
+# two kinds of check: one compares case answers, one counts a log line. A harness whose only proof is the
+# first cannot see a change in the second.
 plant=$build/plant
 rm -rf "$plant"; mkdir -p "$plant"
 cp "$here/cases.m" "$plant/cases.m"
 # shellcheck disable=SC2086
 for f in $files; do cp "$f" "$plant/$(basename "$f")"; done
-target=$plant/$(basename $(echo $files | cut -d' ' -f1))
-# the default prefix of a public namespace is a table entry; changing one entry must move the answer
-sed -i '' "s/table\[7\].prefix = kCGImageMetadataPrefixTIFF;/table[7].prefix = CFSTR(\"charon-plant\");/" "$target"
-hit=$(grep -c "charon-plant" "$target" || true)
-[ "$hit" -eq 1 ] || { echo "FAIL  the mutation changed nothing (the pattern is stale)"; exit 1; }
-plantfiles=""
-for f in $plant/*.m; do
-  [ "$f" = "$plant/cases.m" ] && continue
-  plantfiles="$plantfiles $f"
-done
-# shellcheck disable=SC2086
-xcrun clang -w -DCHARON_PORT -fobjc-arc -I"$port" $plantfiles "$plant/cases.m" \
-  -framework Foundation -framework CoreFoundation -framework ImageIO -o "$build/plantbin" 2>"$build/plant.log" || {
-  echo "BUILD  the mutated port"; head -5 "$build/plant.log" | sed 's/^/    /'; exit 1; }
-"$build/plantbin" > "$build/plant.out" 2>/dev/null || { echo "FAIL  the mutated port build raised"; exit 1; }
+
+build_plant() {  # $1 = label; echoes the object list of the planted sources
+  rm -f "$plant"/*.o
+  objs=""
+  for f in "$plant"/*.m; do
+    [ "$f" = "$plant/cases.m" ] && continue
+    xcrun clang -w -DCHARON_PORT -fobjc-arc -I"$port" -c "$f" -o "$f.o" 2>"$build/plant.log" || {
+      echo "BUILD  the mutated port ($f)"; head -3 "$build/plant.log" | sed 's/^/    /'; exit 1; }
+    objs="$objs $f.o"
+  done
+  xcrun clang -w -DCHARON_PORT -fobjc-arc -I"$port" $objs "$plant/cases.m" \
+    -framework Foundation -framework CoreFoundation -framework ImageIO -o "$build/plantbin" 2>"$build/plant.log" || {
+    echo "BUILD  the mutated port ($1)"; head -3 "$build/plant.log" | sed 's/^/    /'; exit 1; }
+  printf '%s' "${objs# }"
+}
+
+# 1. a namespace's default prefix: a case answer must move
+metadata_file=$plant/ImageIOMetadata7.m
+sed -i '' "s/table\[7\].prefix = kCGImageMetadataPrefixTIFF;/table[7].prefix = CFSTR(\"charon-plant\");/" "$metadata_file"
+hit=$(grep -c "charon-plant" "$metadata_file" || true)
+[ "$hit" -eq 1 ] || { echo "FAIL  the first mutation changed nothing (the pattern is stale)"; exit 1; }
+build_plant "default prefix" > /dev/null
+"$build/plantbin" > "$build/plant.out" 2>"$build/plant.err" || { echo "FAIL  the mutated port build raised"; exit 1; }
 grep -v '^PORTONLY' "$build/plant.out" > "$build/plant.cmp"
 if diff -q "$build/host.cmp" "$build/plant.cmp" > /dev/null; then
   echo "  NOT NOTICED  changing a namespace's default prefix and the comparison did not see it"; exit 1
 fi
-echo "  MUTATION: a changed default prefix is noticed, so the comparison can go red"
+echo "  MUTATION 1: a changed default prefix moves a case answer, so the comparison can go red"
+
+# 2. the one-time log line of the inert row: the count must move
+git_dir=$plant/ImageIOSourceState7.m
+[ -f "$git_dir" ] && {
+  sed -i '' "s/the decoded image cache belongs/charon-plant-belongs/" "$git_dir"
+  hit=$(grep -c "charon-plant-belongs" "$git_dir" || true)
+  [ "$hit" -eq 1 ] || { echo "FAIL  the second mutation changed nothing (the pattern is stale)"; exit 1; }
+  cp "$here/cases.m" "$plant/cases.m"
+  build_plant "log line" > /dev/null
+  "$build/plantbin" > /dev/null 2>"$build/plant.err" || { echo "FAIL  the mutated port build raised"; exit 1; }
+  logged=$(grep -c 'CGImageSourceRemoveCacheAtIndex: the decoded image cache' "$build/plant.err" || true)
+  [ "$logged" -eq 0 ] || { echo "  NOT NOTICED  changing the inert row's log line and the once-check did not see it"; exit 1; }
+  echo "  MUTATION 2: a changed log line empties the once-check, so that check can go red too"
+}
+cp "$here/cases.m" "$plant/cases.m"
+
 echo "imageio-metadata: $n cases compared, $differing declared differences, mutation RED"
 exit 0

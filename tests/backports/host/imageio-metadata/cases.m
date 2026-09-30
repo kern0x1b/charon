@@ -138,7 +138,11 @@ int main(void)
         // an object that is not this library's must be refused, never read
         {
             NSDictionary *foreign = [NSDictionary dictionary];
-            record(@"PORTONLY foreign-tag", tagline(CGImageMetadataTagCopyName((__bridge CGImageMetadataTagRef)foreign)));
+            // the inert row, called twice: the line it logs has to appear once, and run.sh counts it in stderr
+        CGImageSourceRemoveCacheAtIndex(NULL, 0);
+        CGImageSourceRemoveCacheAtIndex(NULL, 1);
+        record(@"PORTONLY inert-row", @"called twice");
+        record(@"PORTONLY foreign-tag", tagline(CGImageMetadataTagCopyName((__bridge CGImageMetadataTagRef)foreign)));
             record(@"PORTONLY foreign-metadata",
                    CGImageMetadataCopyTags((__bridge CGImageMetadataRef)foreign) ? @"answered" : @"(nil)");
             record(@"PORTONLY foreign-copy",

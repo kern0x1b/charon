@@ -7,9 +7,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "reason": "the release's CGImageSourceRef and CGImageDestinationRef are objects of its own private classes and it exports no symbol that reads or writes their state: its own CGImageSourceCopyMetadataAtIndex answers an object of its own private class and nothing public converts it to or from anything else, so an object this library made cannot be handed to the release and the release's own cannot be read here; carrying the call would mean carrying the release's whole ImageIO object model",
+      "effect": "the function is not there: a weak reference to it is NULL and a link against it fails, which is the answer an application can test for",
+      "source": "tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 7.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt)"
     },
     {
       "api": "CGImageDestinationCopyImageSource()",
@@ -17,9 +17,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "reason": "the source it returns is the one the release's own destination was handed by CGImageDestinationAddImageFromSource, which is a 4.0 function of the release's that this library does not carry and cannot intercept without re-implementing the release's destination",
+      "effect": "the function is not there: a weak reference to it is NULL and a link against it fails",
+      "source": "tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 7.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt)"
     },
     {
       "api": "CGImageMetadataCopyStringValueWithPath()",
@@ -264,10 +264,11 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "inert",
+      "reason": "the decoded image cache is the release's own, held inside the release's source object, and no public mechanism on iOS 6 frees it; the call is a hint to a cache this library does not run, and doing nothing to it corrupts nothing",
+      "effect": "the call is accepted and frees nothing, and the first call in a process says so once in the log; nothing is written and nothing is dropped from the file",
+      "source": "the header of iOS 16.4 for the contract (\"Deletes all the decoded image data for the image at the specified index\"); tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 7.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt); the once-check in tests/backports/host/imageio-metadata/run.sh, which counts the line in the port's own stderr",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageDestinationAddAuxiliaryDataInfo()",
@@ -275,9 +276,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "reason": "the release's CGImageSourceRef and CGImageDestinationRef are objects of its own private classes and it exports no symbol that reads or writes their state: its own CGImageSourceCopyMetadataAtIndex answers an object of its own private class and nothing public converts it to or from anything else, so an object this library made cannot be handed to the release and the release's own cannot be read here, so auxiliary data cannot be written into a destination the release built",
+      "effect": "the function is not there: a weak reference to it is NULL and a link against it fails, so an application knows before it writes an image that its auxiliary data went nowhere",
+      "source": "tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 11.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt)"
     },
     {
       "api": "CGImageSourceCopyAuxiliaryDataInfoAtIndex()",
@@ -285,9 +286,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 11, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "reason": "the release's CGImageSourceRef and CGImageDestinationRef are objects of its own private classes and it exports no symbol that reads or writes their state: its own CGImageSourceCopyMetadataAtIndex answers an object of its own private class and nothing public converts it to or from anything else, so an object this library made cannot be handed to the release and the release's own cannot be read here, and iOS 6 has no other call that answers the auxiliary data of an index",
+      "effect": "the function is not there: a weak reference to it is NULL and a link against it fails, so an application is not told that an image carries no auxiliary data when it may carry some",
+      "source": "tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 11.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt)"
     },
     {
       "api": "CGImageSourceGetPrimaryImageIndex()",
@@ -295,9 +296,9 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the function arrived in iOS 12, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "reason": "which image a source treats as the default is decided inside the release's source object while the data is read, and no public call on iOS 6 reports it; answering 0 for every source would be a guess that is wrong for a file that designates a primary frame",
+      "effect": "the function is not there: a weak reference to it is NULL and a link against it fails",
+      "source": "tools/cache-index/first-rung.py over the 50 held rungs, which puts this symbol at 12.0 and on no rung below it (2026-09-30, .agent-work/runs/io-rungs.txt)"
     },
     {
       "api": "CGAnimateImageAtURLWithBlock()",

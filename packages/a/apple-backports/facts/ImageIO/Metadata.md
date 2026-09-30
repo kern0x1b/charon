@@ -130,3 +130,37 @@ array answers NULL rather than the array's first element.
 XMP and image-property half of the same iOS 7 surface, and `CGAnimateImageDataWithBlock` and
 `CGAnimateImageAtURLWithBlock` the iOS 13 animation pair. Their registry rows still carry the reason main
 gave them, which is not a decision this slice made; what each needs is named in the delivery.
+
+## The rows that are decided, not carried: the release's own objects
+
+Six of the thirty rows take or hand back an object ImageIO itself owns, and on iOS 6 there is no public way
+to reach inside one. `registry/ImageIO/absent_ImageIO.json` carried them as `absent` with the reason "the
+function arrived in iOS N, and nothing in iOS 6 has what it names", which is not a decision: it is the
+sentence a row gets before anyone has asked what the port could do about it.
+
+What settles them is one measured fact each, from `tools/cache-index/first-rung.py` over the 50 held rungs
+(2026-09-30, `.agent-work/runs/io-rungs.txt`), and the shape of the objects:
+
+| row | first held rung | decision |
+| --- | --- | --- |
+| `CGImageDestinationAddImageAndMetadata()` | 7.0 | absent |
+| `CGImageDestinationCopyImageSource()` | 7.0 | absent |
+| `CGImageSourceRemoveCacheAtIndex()` | 7.0 | inert, and it says so once |
+| `CGImageDestinationAddAuxiliaryDataInfo()` | 11.0 | absent |
+| `CGImageSourceCopyAuxiliaryDataInfoAtIndex()` | 11.0 | absent |
+| `CGImageSourceGetPrimaryImageIndex()` | 12.0 | absent |
+
+The reason is the same in the five `absent` rows: the release's `CGImageDestinationRef` and
+`CGImageSourceRef` are objects of its own private classes, and the release exports no other symbol that
+reads or writes their internal state. Its own `CGImageSourceCopyMetadataAtIndex` hands back an object of
+its own private class, and there is no public call that converts it to or from anything else - so a metadata
+container this library made cannot be given to the release's destination, and the release's destination
+cannot be asked which source or which primary frame it holds. Carrying them would mean carrying the
+release's whole ImageIO object model, which is a different port and not this row.
+
+`CGImageSourceRemoveCacheAtIndex` is the one that is safe to accept and do nothing: it asks the release to
+free memory it is holding for itself, nothing is written or dropped from the file, and the memory stays
+memory the release was already keeping. That is the registry README's own case for `inert` - "a hint to a
+scheduler it does not run". It is built, and it logs one line the first time it is called, which
+`tests/backports/host/imageio-metadata/run.sh` counts in the port's own stderr and which a planted change
+to that line empties, so the claim is checked rather than asserted.
