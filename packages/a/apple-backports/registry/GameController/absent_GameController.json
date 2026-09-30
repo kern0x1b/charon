@@ -6,9 +6,9 @@
    "kind": "class",
    "introduced": "7.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a snapshot is serialized state the package already carries, not something iOS 6 lacks the values for, so there is no wall here: the class is owed and not yet written",
-   "effect": "until it is written the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "implemented",
+   "reason": "the release has no GameController at all, and this class is the port's part of it: the snapshot data is measured, not guessed, and the reader that gates it is the one this object already ships",
+   "effect": "the snapshot is the game's own values as data: the 36-byte GCGamepadSnapShotDataV100 with its version 0x0100 and size in the first four bytes, which on this release is a zeroed structure because nothing is attached; -snapshotData answers those bytes and the elements answer the decoded values",
    "source": "SDK 16.4, GameController"
   },
   {
@@ -663,9 +663,9 @@
    "kind": "method",
    "introduced": "7.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "saveSnapshot serializes values the controller state already carries into a snapshot object that is itself owed, not absent; the method is unwritten until its snapshot class is",
-   "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "status": "implemented",
+   "reason": "no controller is attached on this release, so the snapshot is the zeroed structure; the encode is the measured one and the two sizes come from the header layout, 4 + 8 + 6 floats = 36",
+   "effect": "reads the gamepad's dpad and its six buttons into a GCGamepadSnapShotDataV100 and answers a GCGamepadSnapshot holding the encoded 36 bytes; with no controller attached every value is zero and the data is 0001 2400, which is the encoding measured in facts/GameController/Snapshots.md",
    "source": "the header of iOS 16.4"
   },
   {
@@ -673,9 +673,9 @@
    "kind": "method",
    "introduced": "7.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "saveSnapshot serializes values the controller state already carries into a snapshot object that is itself owed, not absent; the method is unwritten until its snapshot class is",
-   "effect": "until it is written the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+   "status": "implemented",
+   "reason": "as the plain game's, over the 60-byte structure: 4 + 14 floats. The return type first appears at 9.0 and the method at 7.0, which is the SDK's own inconsistency; the port reproduces the declaration, and release-split is satisfied because the method's own first appearance is 7.0",
+   "effect": "the same for the extended game's 60-byte GCExtendedGamepadSnapShotDataV100 - two axes, six buttons, four thumbstick axes and two triggers - and it answers the 9.0 GCExtendedGamepadSnapshot because GCExtendedGamepad.h:65 declares it that way; with nothing attached the data is 0001 3c00",
    "source": "the header of iOS 16.4"
   },
   {
