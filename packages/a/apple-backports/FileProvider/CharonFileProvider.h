@@ -49,6 +49,20 @@ typedef NS_OPTIONS(NSUInteger, NSFileProviderKnownFolders) {
 @interface NSFileProviderKnownFolderLocation : NSObject
 @end
 
+// The storage the 16.0 object answers, reached the only way a category can on this target: the class owns
+// it and hands it over. A class extension may not carry ivars on armv7 - the compiler says
+//     instance variables may not be placed in class extension
+// - and an @implementation ivar block is private to its own file, so neither place is reachable from a
+// second object. One slot on the class, a method that returns it, and the category stores through that.
+@interface NSFileProviderDomain (Charon16Storage)
+- (void)charon_setUserEnabled:(BOOL)userEnabled replicated:(BOOL)replicated
+                     hidden:(BOOL)hidden supportsSyncingTrash:(BOOL)supportsSyncingTrash;
+- (BOOL)charon_userEnabled;
+- (BOOL)charon_replicated;
+- (BOOL)charon_hidden;
+- (BOOL)charon_supportsSyncingTrash;
+@end
+
 @interface NSFileProviderKnownFolderLocations : NSObject
 @end
 
