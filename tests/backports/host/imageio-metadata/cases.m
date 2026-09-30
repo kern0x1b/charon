@@ -96,6 +96,19 @@ static void reportValue(NSString *label, CGImageMetadataTagRef tag)
     record([NSString stringWithFormat:@"value %@", label], show(value));
 }
 
+static void dumpAll(const char *label, CGImageMetadataRef m)
+        {
+            CFArrayRef tags = CGImageMetadataCopyTags(m);
+            NSMutableString *out = [NSMutableString stringWithString:[NSString stringWithFormat:@"%@", @(label)]];
+            for (CFIndex i = 0; tags && i < CFArrayGetCount(tags); i++) {
+                CGImageMetadataTagRef tag = (CGImageMetadataTagRef)CFArrayGetValueAtIndex(tags, i);
+                [out appendFormat:@"|%@", show((__bridge id)tag)];
+            }
+            record(@"tags", out);
+            if (tags)
+                CFRelease(tags);
+        }
+
 int main(void)
 {
     @autoreleasepool {
@@ -228,6 +241,139 @@ int main(void)
         record(@"copy count of empty", [NSString stringWithFormat:@"%ld/%ld", sourceTags ? (long)CFArrayGetCount(sourceTags) : -1L,
                                                                      copyTags ? (long)CFArrayGetCount(copyTags) : -1L]);
         record(@"copy is another container", source == copy ? @"same" : @"different");
+        // MARK: paths
+        // Every path function is asked of the same paths and the container is printed after each step, so a
+        // difference in what a path DID shows up as a difference in what the container then holds, not only
+        // in a boolean the caller never checks.
+        CGMutableImageMetadataRef pathed = CGImageMetadataCreateMutable();
+        struct { const char *label; const char *path; int value; } sets[] = {
+            { "string", "exif:Flash", 0 },
+            { "number", "tiff:Orientation", 1 },
+            { "field", "exif:Flash.Fired", 1 },
+            { "array", "dc:subject", 2 },
+            { "element", "dc:subject[1]", 3 },
+            { "unregistered", "ex:Thing", 0 },
+            { "unknown-ns", "nope:Thing", 0 },
+            { "no-prefix", "Thing", 0 },
+        };
+        for (size_t i = 0; i < sizeof sets / sizeof sets[0]; i++) {
+            CFStringRef path = CFRetain((__bridge CFStringRef)[NSString stringWithUTF8String:sets[i].path]);
+            CFTypeRef value = sets[i].value == 1 ? (__bridge CFTypeRef)@"1"
+                             : sets[i].value == 2 ? (__bridge CFTypeRef)[NSArray arrayWithObjects:@"one", @"two", nil]
+                                                  : (CFTypeRef)CFSTR("v");
+            BOOL ok = CGImageMetadataSetValueWithPath(pathed, NULL, path, value);
+            record([NSString stringWithFormat:@"set %@", @(sets[i].label)],
+                   [NSString stringWithFormat:@"%d %@", (int)ok, show((__bridge id)value)]);
+            dumpAll("after set", pathed);
+            CFRelease(path);
+        }
+        for (size_t i = 0; i < sizeof sets / sizeof sets[0]; i++) {
+            CFStringRef path = CFRetain((__bridge CFStringRef)[NSString stringWithUTF8String:sets[i].path]);
+            CFStringRef text = CGImageMetadataCopyStringValueWithPath(pathed, NULL, path);
+            NSString *answer = text ? (__bridge_transfer NSString *)text : @"(nil)";
+            if (text)
+                CFRelease(text);
+            record([NSString stringWithFormat:@"string %@", @(sets[i].label)], answer);
+            CGImageMetadataTagRef tag = CGImageMetadataCopyTagWithPath(pathed, NULL, path);
+            record([NSString stringWithFormat:@"tag-at %@", @(sets[i].label)], tagline(tag));
+            if (tag)
+                CFRelease(tag);
+            CFRelease(path);
+        }
+        // a tag set through the path API, then replaced by SetTagWithPath
+        CGImageMetadataTagRef made = CGImageMetadataTagCreate(kCGImageMetadataNamespaceExif, NULL, CFSTR("Made"),
+                                                             kCGImageMetadataTypeString, CFSTR("by tag"));
+        record(@"set-tag made", CGImageMetadataSetTagWithPath(pathed, NULL, CFSTR("exif:Made"), made) ? @"yes" : @"no");
+        dumpAll("after set-tag", pathed);
+        record(@"set-tag missing path",
+               CGImageMetadataSetTagWithPath(pathed, NULL, CFSTR("nope:Made"), made) ? @"yes" : @"no");
+        record(@"set-tag foreign tag",
+               CGImageMetadataSetTagWithPath(pathed, NULL, CFSTR("exif:Foreign"), (CGImageMetadataTagRef)(const void *)CFSTR("x"))
+                   ? @"yes"
+                   : @"no");
+        // a parent tag: the header says the children of the parent are modified and have to be committed
+        CGImageMetadataTagRef parentTag = CGImageMetadataCopyTagWithPath(pathed, NULL, CFSTR("exif:Flash"));
+        record(@"parent found", parentTag ? @"yes" : @"no");
+        record(@"set in parent", CGImageMetadataSetValueWithPath(pathed, parentTag, CFSTR("RedEyeMode"), CFSTR("on"))
+                                       ? @"yes"
+                                       : @"no");
+        dumpAll("after set in parent", pathed);
+        {
+            CFStringRef text = CGImageMetadataCopyStringValueWithPath(pathed, parentTag, CFSTR("RedEyeMode"));
+            record(@"parent value", text ? (__bridge_transfer NSString *)text : @"(nil)");
+            if (text)
+                CFRelease(text);
+        }
+
+        record(@"remove present", CGImageMetadataRemoveTagWithPath(pathed, NULL, CFSTR("exif:Made")) ? @"yes" : @"no");
+        record(@"remove again", CGImageMetadataRemoveTagWithPath(pathed, NULL, CFSTR("exif:Made")) ? @"yes" : @"no");
+        record(@"remove missing ns", CGImageMetadataRemoveTagWithPath(pathed, NULL, CFSTR("nope:Made")) ? @"yes" : @"no");
+        dumpAll("after removes", pathed);
+
+        CGMutableImageMetadataRef registered = CGImageMetadataCreateMutable();
+        CFErrorRef conflict = NULL;
+        record(@"register new", CGImageMetadataRegisterNamespaceForPrefix(registered, CFSTR("http://example.com/ns/"),
+                                                                        CFSTR("ex"), NULL)
+                                      ? @"yes"
+                                      : @"no");
+        record(@"register same again",
+               CGImageMetadataRegisterNamespaceForPrefix(registered, CFSTR("http://example.com/ns/"), CFSTR("ex"), NULL)
+                   ? @"yes"
+                   : @"no");
+        record(@"register conflict",
+               CGImageMetadataRegisterNamespaceForPrefix(registered, CFSTR("http://other.example/"), CFSTR("ex"),
+                                                         &conflict)
+                   ? @"yes"
+                   : @"no");
+        record(@"register conflict error", conflict ? @"yes" : @"no");
+        if (conflict)
+            CFRelease(conflict);
+        record(@"set with registered prefix",
+               CGImageMetadataSetValueWithPath(registered, NULL, CFSTR("ex:Thing"), CFSTR("v")) ? @"yes" : @"no");
+        {
+            CFStringRef text = CGImageMetadataCopyStringValueWithPath(registered, NULL, CFSTR("ex:Thing"));
+            NSString *answer = text ? (__bridge_transfer NSString *)text : @"(nil)";
+            if (text)
+                CFRelease(text);
+            record(@"string with registered prefix", answer);
+        }
+        dumpAll("registered", registered);
+
+        // enumeration: the paths the block is given, with and without the recursive option
+        NSMutableString *flat = [NSMutableString string];
+        CGImageMetadataEnumerateTagsUsingBlock(pathed, NULL, NULL, ^(CFStringRef path, CGImageMetadataTagRef tag) {
+            [flat appendFormat:@"%@;", (__bridge NSString *)path];
+            return YES;
+        });
+        record(@"enumerate", flat);
+        NSMutableString *deep = [NSMutableString string];
+        CGImageMetadataEnumerateTagsUsingBlock(
+            pathed, NULL, (__bridge CFDictionaryRef)@{ (__bridge id)kCGImageMetadataEnumerateRecursively : @YES },
+            ^(CFStringRef path, CGImageMetadataTagRef tag) {
+                [flat class]; // keep the block's captures honest for the compiler
+                [deep appendFormat:@"%@;", (__bridge NSString *)path];
+                return YES;
+            });
+        record(@"enumerate recursive", deep);
+        NSMutableString *stopped = [NSMutableString string];
+        CGImageMetadataEnumerateTagsUsingBlock(pathed, NULL, NULL, ^(CFStringRef path, CGImageMetadataTagRef tag) {
+            [stopped appendFormat:@"%@;", (__bridge NSString *)path];
+            return NO; // "return false to stop"
+        });
+        record(@"enumerate stopped", stopped);
+        NSMutableString *rooted = [NSMutableString string];
+        CGImageMetadataEnumerateTagsUsingBlock(pathed, CFSTR("exif:Flash"), NULL, ^(CFStringRef path, CGImageMetadataTagRef tag) {
+            [rooted appendFormat:@"%@;", (__bridge NSString *)path];
+            return YES;
+        });
+        record(@"enumerate rooted", rooted);
+        NSMutableString *none = [NSMutableString string];
+        CGImageMetadataEnumerateTagsUsingBlock(pathed, CFSTR("nope:Flash"), NULL, ^(CFStringRef path, CGImageMetadataTagRef tag) {
+            [none appendString:@"called"];
+            return YES;
+        });
+        record(@"enumerate missing root", none);
+
         if (sourceTags)
             CFRelease(sourceTags);
         if (copyTags)

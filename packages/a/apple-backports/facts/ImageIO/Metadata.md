@@ -77,3 +77,56 @@ port-only records because there is no host answer to compare.
 Nine `CGImageMetadata*` functions of the same iOS 7 surface - the path, matching, enumeration and XMP
 half - arrive in the next commits of this slice, and their registry rows still say `absent`. What is
 refused here and why is in each row.
+## The path half (the second commit of this slice)
+
+Seven more functions of the same iOS 7 surface arrive with it, and the differential grows from 33 cases to
+89: `set`/`string`/`tag-at` for eight paths (a string, a number, a field of a structure, an array, an
+element of it, an unregistered prefix, an unknown namespace, a path with no prefix at all), a tag set
+through `CGImageMetadataSetTagWithPath`, a parent tag and a write inside it, three removes, four
+registrations and the paths an enumeration gives its block for.
+
+What the measurement decided, each of which the port does:
+
+- **A path with an unregistered prefix fails** (`set unregistered 0`), and so does an unknown namespace
+  and a path whose first step names no prefix at all. `CGImageMetadata.h`: "Creating tags will fail if a
+  prefix is encountered that has not been registered."
+- **The containers a path needs are made** ("All tags required to reach the final tag will be created, if
+  needed. Tags will be created with default types (ordered arrays)"): a field becomes a structure, an
+  index becomes an ordered array, and the tags made on the way carry the namespace and prefix of the step
+  that named them.
+- **A tag a path hands back is a copy, value included**, so changing it does not change the container,
+  which is what the header's warning about committing a changed parent asks of the caller.
+- **`CGImageMetadataCopyTags` hands out copies too** ("a shallow copy of all top-level tags") and in the
+  host's order: by name, then by prefix. A tag named `Made` added to a container holding `Flash`,
+  `Orientation` and `subject` answers second on the host, not last.
+- **Registering a prefix again is a re-registration, not a refusal.** The host answers `true` and hands
+  back no error for a second registration of the same prefix to another namespace, so the port does the
+  same; `kCGImageMetadataErrorPrefixConflict` is named by the header but the host does not raise it here,
+  so the port does not invent it.
+- **Writing into a parent tag changes the parent, not the container**, and a parent holding a scalar grows
+  a structure to hold the new child - both measured: after `SetValueWithPath(metadata, parent, "RedEyeMode")`
+  the host's container is unchanged and the parent answers `on`.
+
+Two declared differences are on top of the one above, both in
+`tests/backports/host/imageio-metadata/known-differences.txt`: a tag created for a namespace with no prefix
+answers NULL rather than a degenerate tag, and `CGImageMetadataCopyStringValueWithPath` on a tag holding an
+array answers NULL rather than the array's first element.
+
+### Two shapes the port had to be taught by the host
+
+- **The prefix of a path is matched by text, not by pointer identity.** The public prefixes are constants
+  (the release's own, or `Graphics/ImageIONames70.m`'s), while the prefix inside a path is a string this
+  library made by parsing; the first version compared pointers and refused every path, which the harness
+  showed as `set string 0` against the host's `set string 1`.
+- **A path step travels as a dictionary, not as a C struct.** A struct of ARC-managed fields passing
+  through a function and an `NSValue` made clang emit three copy/destroy helpers with external linkage;
+  `tools/release-split.lua`'s exclusion list covers the `___copy_helper_block_*` family and not those, so
+  they would read as API symbols of a file that has none.
+
+## What this slice does not carry
+
+`CGImageMetadataCreateXMPData`, `CGImageMetadataCreateFromXMPData`,
+`CGImageMetadataCopyTagMatchingImageProperty` and `CGImageMetadataSetValueMatchingImageProperty` are the
+XMP and image-property half of the same iOS 7 surface, and `CGAnimateImageDataWithBlock` and
+`CGAnimateImageAtURLWithBlock` the iOS 13 animation pair. Their registry rows still carry the reason main
+gave them, which is not a decision this slice made; what each needs is named in the delivery.

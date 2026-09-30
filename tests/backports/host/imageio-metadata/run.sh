@@ -114,7 +114,7 @@ cp "$here/cases.m" "$plant/cases.m"
 for f in $files; do cp "$f" "$plant/$(basename "$f")"; done
 target=$plant/$(basename $(echo $files | cut -d' ' -f1))
 # the default prefix of a public namespace is a table entry; changing one entry must move the answer
-sed -i '' "s/{ kCGImageMetadataNamespaceTIFF, kCGImageMetadataPrefixTIFF }/{ kCGImageMetadataNamespaceTIFF, CFSTR(\"charon-plant\") }/" "$target"
+sed -i '' "s/table\[7\].prefix = kCGImageMetadataPrefixTIFF;/table[7].prefix = CFSTR(\"charon-plant\");/" "$target"
 hit=$(grep -c "charon-plant" "$target" || true)
 [ "$hit" -eq 1 ] || { echo "FAIL  the mutation changed nothing (the pattern is stale)"; exit 1; }
 plantfiles=""

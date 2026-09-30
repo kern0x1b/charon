@@ -26,10 +26,11 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the string a path names, asked of the tag that path resolves to",
+      "effect": "the tag's value when that value is a string, and NULL when the path is not there and when the tag there holds an array or a structure - the host answers the first element of an array, which the header does not say it does",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataCopyTagMatchingImageProperty()",
@@ -46,10 +47,11 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the tag a path names, read out of the container; the containers a path needs are walked and the prefix of each step is resolved against the public prefixes and the ones registered on the container",
+      "effect": "a copy of the tag, its value included, so that changing it does not change the container - which is what the caller has to assume; and NULL for a path that names an unregistered prefix, an unknown namespace, or a step that is not there",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataCopyTags()",
@@ -109,40 +111,44 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the tags of a container, or of one tag's children when a root path is given, each with the path that reaches it; the recursive option walks into the arrays and the structures a tag holds",
+      "effect": "the block is called with a copy of each tag and its path and answers whether to go on; nothing is called for a container of this library's that has no such path, and kCGImageMetadataEnumerateRecursively is the only option read",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataRegisterNamespaceForPrefix()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "a namespace registered under a prefix on this container, which is what the path functions resolve a custom prefix against",
+      "effect": "true and no error, including when the prefix already named another namespace - the host answers true for that too, so a second registration re-names the prefix rather than refusing it",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataRemoveTagWithPath()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "the tag a path names taken out of the container it stands in",
+      "effect": "true when the tag was there and is gone, and false when the path names nothing, so a second removal of the same tag answers false",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataSetTagWithPath()",
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "a tag put at a path, with every container the path needs made on the way: a field becomes a structure, an index an ordered array",
+      "effect": "true when the tag was stored, and false when the path names a prefix that is not registered on this container and when a tag that is not one of this library's is handed in",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataSetValueMatchingImageProperty()",
@@ -159,10 +165,11 @@
       "kind": "function",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the function arrived in iOS 7, and nothing in iOS 6 has what it names",
-      "effect": "the function is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, ImageIO"
+      "status": "implemented",
+      "reason": "a value put at a path, which is a tag made with the type read off the CFType of the value exactly as kCGImageMetadataTypeDefault does, then stored by the same walk CGImageMetadataSetTagWithPath uses",
+      "effect": "true when the value was stored, and false for an unregistered prefix and for a parent tag that is not one of this library's; a parent given as the second argument has its children changed and the container behind it is not, which is what the header warns of",
+      "source": "the host's own ImageIO, asked case by case through tests/backports/host/imageio-metadata (89 cases, 2 declared differences); the header of iOS 16.4 for the path grammar and the contract of each function; the 50 held rungs of tools/cache-index/first-rung.py, which carry none of these symbols below 7.0",
+      "facts": "facts/ImageIO/Metadata.md"
     },
     {
       "api": "CGImageMetadataTagCopyName()",
