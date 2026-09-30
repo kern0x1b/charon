@@ -1,4 +1,10 @@
-# Four more rows: members of classes the 6.1.3 release owns
+# Five rows on four classes: members of classes the 6.1.3 release owns
+
+**Five rows, four classes.** `MPMediaLibrary` contributes two of them — `+authorizationStatus` and
+`+requestAuthorization:` — and the other three classes one each. A first draft of this title said "Four"
+because the four is the number of **objects** and of **classes**, and the body counted **rows**; the body
+was right and the title was not. The two counts are both correct and they are not the same number, so
+both are in this first line rather than one being left for the reader to reconcile against the other.
 
 `MPMediaItem.md` records this port's `MPMediaItem`; `CommandEvents.md` the command-event classes;
 `MediaEntityAndPlaylist.md` the entity and playlist members; `AbsentRows.md` the rows that stay `absent`.
