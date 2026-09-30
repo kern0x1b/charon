@@ -29,9 +29,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not built: no application of the corpus reaches it; showing timecodes means reading the asset's timecode track, and a stored flag that showed the ordinary time would be a silent fake",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "reason": "a timecode is a frame count, and this release cannot say how many frames a second the media has: no `timecodeStatus` and no `currentTimeline` in the armv7 shared cache of 6.1.3 (568965 names, armv7), and the port's own transport bar formats elapsed and remaining time from the player's CMTime without ever needing a frame rate. Any HH:MM:SS:FF this port drew would carry a frame rate nobody measured, which is the invented value the registry is for. Apple's own property is documented to show a timecode only \"if available\", and what is unavailable here is the frame rate, not the intent",
+      "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for timecodeStatus and currentTimeline absent; packages/a/apple-backports/AVKit/AVPlayerViewController.m (charon_time_text); SDK 26.2 AVKit/AVPlayerViewController.h:67-70"
     },
     {
       "api": "AVPlayerViewController.canStartPictureInPictureAutomaticallyFromInline",
@@ -39,9 +39,9 @@
       "introduced": "14.2",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property starts picture in picture when the application leaves the foreground, and picture in picture here is a window of the application's own that goes with it; floating video over other applications needs a SpringBoard-side companion this tree does not build (facts/AVKit/AVPictureInPictureController.md)",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "reason": "the property asks for picture-in-picture to start as the application leaves the foreground, and this port's picture-in-picture cannot do that: its window is a UIWindow the application owns, so it is suspended with the rest of the application when the application is not running, exactly as the facts for AVPictureInPictureController record. Answering YES would be a promise the port cannot keep - and answering NO would be false, because starting on the way out is precisely what this port cannot do, so neither value would be the truth",
+      "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
+      "source": "packages/a/apple-backports/facts/AVKit/AVPictureInPictureController.md, \"The wall, measured, not assumed\"; SDK 26.2 AVPictureInPictureController.h:170-174 and AVPlayerViewController.h:123-127"
     },
     {
       "api": "AVPlayerViewController.allowsVideoFrameAnalysis",
@@ -49,9 +49,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "not built: no application of the corpus reaches it, and the frame analysis it allows (text and subjects in a paused frame) is not carried by this package",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPlayerViewController.h"
+      "reason": "the flag is for a system service that samples decoded frames for analysis, and this port has no such consumer: it draws the frames itself, through its own CADisplayLink reading AVPlayerItemVideoOutput (AVPlayerViewController.m's -charon_drawFrame: and +keyPathsForValuesAffectingReadyForDisplay). The release carries no frame-analysis service either - no such name in the armv7 shared cache of 6.1.3 (568965 names, armv7) - so there is nothing on the other side of the flag to allow",
+      "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7); packages/a/apple-backports/AVKit/AVPlayerViewController.m; SDK 26.2 AVKit/AVPlayerViewController.h:104-107"
     },
     {
       "api": "AVPlayerViewController.speeds",

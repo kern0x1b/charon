@@ -137,7 +137,10 @@
     CALayer *layer = self.playerLayer;
     CALayer *superlayer = layer.superlayer;
     if (!superlayer || !self.isPictureInPicturePossible) {
-        NSError *error = [NSError errorWithDomain:@"AVKitErrorDomain" code:-1000
+        // -1001 is AVKitErrorPictureInPictureStartFailed, the code AVError.h:31 gives for exactly
+        // this failure; the -1000 that was here before is AVKitErrorUnknown, which is what the
+        // framework answers when it does not know which error it is, and this port does know.
+        NSError *error = [NSError errorWithDomain:@"AVKitErrorDomain" code:-1001
                                           userInfo:@{NSLocalizedDescriptionKey: @"Picture in Picture could not be started"}];
         if ([_charonDelegate respondsToSelector:@selector(pictureInPictureController:failedToStartPictureInPictureWithError:)])
             [_charonDelegate pictureInPictureController:self failedToStartPictureInPictureWithError:error];

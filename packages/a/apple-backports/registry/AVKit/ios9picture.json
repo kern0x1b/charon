@@ -106,9 +106,9 @@
       "introduced": "14.2",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property starts picture in picture when the application leaves the foreground, and the floating window here is the application's own and goes with it; floating video over other applications needs a SpringBoard-side companion this tree does not build",
-      "effect": "the accessor is not there: respondsToSelector: answers NO and an unchecked call raises",
-      "source": "SDK 16.4, AVKit/AVPictureInPictureController.h"
+      "reason": "the property asks for picture-in-picture to start as the application leaves the foreground, and this port's picture-in-picture cannot do that: its window is a UIWindow the application owns, so it is suspended with the rest of the application when the application is not running, exactly as the facts for AVPictureInPictureController record. Answering YES would be a promise the port cannot keep - and answering NO would be false, because starting on the way out is precisely what this port cannot do, so neither value would be the truth",
+      "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
+      "source": "packages/a/apple-backports/facts/AVKit/AVPictureInPictureController.md, \"The wall, measured, not assumed\"; SDK 26.2 AVPictureInPictureController.h:170-174 and AVPlayerViewController.h:123-127"
     },
     {
       "api": "AVPictureInPictureController.contentSource",
