@@ -1,0 +1,16 @@
+# The clusters this port must NOT generate, and why. ONE list, read by tools/matter-generate.py before it
+# emits anything and by tests/backports/host/matterdifferential/run.sh, so the check cannot be pointed at
+# a cluster the generator refused. Format: <ClassName> <reason>, one a line.
+#
+# Each of these three is a DEPRECATED SUBCLASS the SDK declares of the real cluster of the same name in
+# different capitalisation, verified against the SDK's own headers:
+#   @interface MTRBaseClusterOTASoftwareUpdateProvider : MTRGenericBaseCluster        <- the real cluster
+#   @interface MTRBaseClusterOtaSoftwareUpdateProvider : MTRBaseClusterOTASoftwareUpdateProvider
+#   @interface MTRBaseClusterWakeOnLAN : MTRGenericBaseCluster                       <- the real cluster
+#   @interface MTRBaseClusterWakeOnLan : MTRBaseClusterWakeOnLAN
+# A port must BE the real class. Generating a second class under the deprecated name duplicates a class
+# the release already has - the runtime warned exactly that - and on a case-insensitive volume the two
+# file names are one inode, so the second write silently overwrites the first.
+MTRBaseClusterOtaSoftwareUpdateProvider the SDK declares it a deprecated subclass of MTRBaseClusterOTASoftwareUpdateProvider, which is the cluster the runtime registers
+MTRBaseClusterOtaSoftwareUpdateRequestor the SDK declares it a deprecated subclass of MTRBaseClusterOTASoftwareUpdateRequestor, which is the cluster the runtime registers
+MTRBaseClusterWakeOnLan the SDK declares it a deprecated subclass of MTRBaseClusterWakeOnLAN, which is the cluster the runtime registers
