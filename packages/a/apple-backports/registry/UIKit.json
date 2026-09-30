@@ -370,6 +370,26 @@
       "source": "the host's own UIKit under Mac Catalyst through tests/backports/host/tail2, and tests/backports/device/tail2.m on iOS 6"
     },
     {
+      "api": "-[UIPasteboard charonRecordOptions:]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own seam for recording the options a call was given, which its own objects and its test share and an application never calls",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "the port's own surface, read out of the compiled objects; the UIKit headers of the SDK of iOS 10.3.4 declare neither"
+    },
+    {
+      "api": "-[UIPasteboard charonRecordedOptionsForTest]",
+      "kind": "method",
+      "introduced": "10.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the port's own seam for recording the options a call was given, which its own objects and its test share and an application never calls",
+      "facts": "facts/UIKit/UIPasteboardIOS10.md",
+      "source": "the port's own surface, read out of the compiled objects; the UIKit headers of the SDK of iOS 10.3.4 declare neither"
+    },
+    {
       "api": "-[UISelectionFeedbackGenerator selectionChanged]",
       "kind": "method",
       "introduced": "10.0",
