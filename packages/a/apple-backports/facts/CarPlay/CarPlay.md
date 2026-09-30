@@ -124,10 +124,14 @@ actions are all writable against the release and against UIKit.
 
 ## What is carried, and what is the wall
 
-**23 classes implemented, 7 `absent` at the seam, and 44 with no registry entry at all** -- the 74
-classes the SDK 26.2 declares and this port does not have, accounted for exactly. **These numbers are
-generated from `registry/CarPlay/*.json` and not written by hand, so they cannot drift again.** The
-implemented ones, by the object that carries them:
+**23 classes implemented, 7 `absent`, and 44 with no registry entry at all** -- the 74
+classes the SDK 26.2 declares and this port does not have, accounted for exactly. **The three
+counts come from `registry/CarPlay/*.json` and are checked by reading it, not generated:**
+`python3 -c "import json,collections;d=json.load(open('registry/CarPlay/ios12.json'));print(collections.Counter(e['status'] for e in d['entries'] if e['kind']=='class'))"`
+prints the class rows by status, and the member counts come from the same file without the
+`kind=='class'` filter (312 rows: 263 `implemented`, 48 `absent`, 1 `ignored`). An earlier version of
+this page said these numbers were generated and could not drift; they were typed, and a reader
+counting the file found it. The implemented classes, by the object that carries them:
 
 | object | classes |
 | --- | --- |
@@ -136,10 +140,19 @@ implemented ones, by the object that carries them:
 | 12.0 | CPActionSheetTemplate CPAlertTemplate CPImageSet CPSearchTemplate CPTrip CPRouteChoice CPTripPreviewTextConfiguration |
 | 16.0 | CPButton CPTextButton |
 
-The 7 `absent`, each with its own reason in its row: `CPNavigationSession`, `CPSessionConfiguration`,
+The 7 `absent`, and they are **not** all one kind of row, which an earlier version of this page
+said and was wrong about: `CPNavigationSession`, `CPSessionConfiguration`,
 `CPTemplateApplicationDashboardScene`, `CPTemplateApplicationInstrumentClusterScene`,
-`CPTemplateApplicationScene`, `CPVoiceControlState` and `CPVoiceControlTemplate`. All seven are the
-scene or the car's own driving, which is the wall.
+`CPTemplateApplicationScene`, `CPVoiceControlState` and `CPVoiceControlTemplate`. Three of them
+(`CPTemplateApplicationScene` and its two siblings) **are** the wall — a `UIScene` the system makes
+for a connection to a CarPlay head unit, measured and written up in `facts/CarPlay/Scenes.md`. The
+other four are objects the port can carry, and each says in its own row which world it is in and what
+it answers with no head unit: the voice control state and template (`facts/CarPlay/VoiceControl.md`),
+the navigation session (`facts/CarPlay/NavigationSession.md`) and the session configuration
+(`facts/CarPlay/SessionConfiguration.md`). What decides the split is a measurement, not a reading of
+the words "CarPlay": **every one of the seven is present in Apple's own CarPlay on this machine with
+no head unit attached** (`tests/backports/host/carplay/headunit-probe.m`), so an `absent` row is a
+claim about this port and never about Apple's framework.
 
 A 25th class the corpus does **not** ask about, and the reason the registry names 23 + 7 + 1 where
 the corpus has 74: `CPListItem`. The corpus does not list it as missing, because the release carries
@@ -222,12 +235,16 @@ ledger's row stays `missing` -- which is the honest word for a member nobody car
 template's own buttons are laid out inside the map view's own insets, so the picture does not
 depend on it either way.
 
-**The wall, per class, as `absent` (7 of them):** `CPTemplateApplicationScene` (13.0),
-`CPTemplateApplicationDashboardScene` (13.4), `CPTemplateApplicationInstrumentClusterScene` (15.4),
-`CPNavigationSession`, `CPSessionConfiguration`, `CPVoiceControlState` and `CPVoiceControlTemplate`.
-`CPRouteChoice` is **not** among them: a route choice is a choice of route between two places, which
-is arithmetic, and it is built and registered implemented. Each one's own reason is in its entry, and `NSClassFromString` answers nil
-for all of them, which is what `absent` means.
+**The wall, per class.** Three of the seven absent classes are the wall itself — the scenes, and only
+the scenes, measured in `facts/CarPlay/Scenes.md`: `CPTemplateApplicationScene` (13.0),
+`CPTemplateApplicationDashboardScene` (13.4) and `CPTemplateApplicationInstrumentClusterScene`
+(15.4). The other four, `CPSessionConfiguration` (a configuration the connected system fills in, and
+its own values measure 0 with no head unit) and the three the port now carries, are objects rather
+than gates. `CPRouteChoice` is **not** among them: a route choice is a choice of route between two
+places, which is arithmetic, and it is built and registered implemented — including its `+new`, whose
+measured answer is a route choice whose three variants properties are empty arrays and whose
+`userInfo` is nil. Each class's own reason is in its entry, and for the ones the port does not carry
+`NSClassFromString` answers nil, which is what `absent` means.
 
 ## What is not carried, and why that is not `absent`
 

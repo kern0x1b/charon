@@ -2988,10 +2988,10 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own dashboard, and the car's dashboard is what there is no car for: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the dashboard widget, a second screen in the car",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationDashboardScene.dashboardController",
@@ -2999,10 +2999,10 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own dashboard, and the car's dashboard is what there is no car for: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the dashboard widget, a second screen in the car",
+      "effect": "the dashboard widget's controller, delivered by the release's own _deliverDashboardControllerToDelegate on a connection; there is no dashboard widget",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationDashboardScene.dashboardWindow",
@@ -3010,10 +3010,10 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own dashboard, and the car's dashboard is what there is no car for: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the dashboard widget, a second screen in the car",
+      "effect": "the window the dashboard widget is shown in, which the release attaches with _attachWindow: on a connection; there is no dashboard widget and no such window",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationDashboardScene.delegate",
@@ -3021,10 +3021,10 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own dashboard, and the car's dashboard is what there is no car for: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the dashboard widget, a second screen in the car",
+      "effect": "the delegate the system calls when the dashboard widget connects and disconnects; there is no dashboard widget, nothing ever calls it and there is no object to set it on",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationInstrumentClusterScene",
@@ -3032,10 +3032,10 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own instrument cluster, and there is no car: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the instrument cluster, the car's gauges",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationInstrumentClusterScene.contentStyle",
@@ -3043,10 +3043,10 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own instrument cluster, and there is no car: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the instrument cluster, the car's gauges",
+      "effect": "the style the connected CarPlay system suggests, which answers 0 with no head unit -- measured, and the same value CPSessionConfiguration.contentStyle carries",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationInstrumentClusterScene.delegate",
@@ -3054,10 +3054,10 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own instrument cluster, and there is no car: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the instrument cluster, the car's gauges",
+      "effect": "the delegate the system calls when the instrument cluster connects and disconnects; there is no cluster, nothing ever calls it and there is no object to set it on",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationInstrumentClusterScene.instrumentClusterController",
@@ -3065,10 +3065,10 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the car's own instrument cluster, and there is no car: NSClassFromString answers nil",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the instrument cluster, the car's gauges",
+      "effect": "the controller for the car's instrument cluster, delivered by the release's own _deliverControllerToDelegate on a connection; there is no cluster",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationScene",
@@ -3076,10 +3076,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the scene, and the scene is the connection to a car: NSClassFromString answers nil and a compile-time reference has nothing to link",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the car's centre screen",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationScene.carWindow",
@@ -3087,10 +3087,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the scene, and the scene is the connection to a car: NSClassFromString answers nil and a compile-time reference has nothing to link",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the car's centre screen",
+      "effect": "the window the scene owns on the car's screen, which the release creates in _shouldCreateCarWindow; there is no car's screen and no such window",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationScene.contentStyle",
@@ -3098,10 +3098,10 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the scene, and the scene is the connection to a car: NSClassFromString answers nil and a compile-time reference has nothing to link",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the car's centre screen",
+      "effect": "the style the connected CarPlay system suggests, which answers 0 with no head unit -- the same value CPSessionConfiguration.contentStyle carries, measured",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationScene.delegate",
@@ -3109,10 +3109,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the scene, and the scene is the connection to a car: NSClassFromString answers nil and a compile-time reference has nothing to link",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the car's centre screen",
+      "effect": "the delegate is the one the system calls when the CarPlay screen connects and disconnects; there is no screen, nothing ever calls it and there is no object to set it on",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTemplateApplicationScene.interfaceController",
@@ -3120,10 +3120,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the head unit: a CarPlay scene is a connection to a car, and there is no car, which is Apple's own behaviour without a car and not a limit of this port",
-      "effect": "the class is the scene, and the scene is the connection to a car: NSClassFromString answers nil and a compile-time reference has nothing to link",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "reason": "hardware absence, and the hardware is a CarPlay head unit: at 16.0 the class is a UIScene whose only initialiser is -initWithSession:connectionOptions:, which the system calls when a session connects, so no program on this device can make one; neither fleet device (iPhone 4S, iPad 2, iOS 6.1.3) is connected to a car, so there is no connection, no session and no scene -- what that scene is the gate for is the car's centre screen",
+      "effect": "the controller the scene hands the app when the screen connects -- the release's own _deliverInterfaceControllerToDelegate is that handoff -- and there is no screen to hand it over on",
+      "facts": "facts/CarPlay/Scenes.md",
+      "source": "apple.objc.inventory over the arm64e dyld shared cache of 16.0 (a UIScene subclass whose only initialiser is -initWithSession:connectionOptions:), apple.objc.inventory over the armv7 cache of 6.1.3 (no CarPlay class of any name), first-rung over the held ladder, and Apple's own CarPlay on this machine with no head unit, from tests/backports/host/carplay/headunit-probe.m"
     },
     {
       "api": "CPTextButton",
