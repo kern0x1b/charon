@@ -1,5 +1,4 @@
 {
-  "framework": "Intents",
   "entries": [
     {
       "api": "INActivateCarSignalIntent",
@@ -3889,7 +3888,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the superclass's designated initialiser takes a parameter the SDK does not mark nullable and nothing in the headers says where a subclass would get one, so the port refuses to chain rather than make a call the SDK forbids",
+      "reason": "the SDK obsoletes the selector in the release that introduced it: only INRideDriver_Deprecated.h declares it, in the (Deprecated) category, as API_DEPRECATED(\"Use the designated initializer instead\", ios(10.0, 10.0)), and the replacement that message names, initWithPhoneNumber:, is API_AVAILABLE(ios(10.2)), so at 10.0 the only initialiser the header still permits is the obsoleted one - which is why the port carries the two the header does not obsolete there, initWithPhoneNumber: and initWithPersonHandle:...rating:phoneNumber:, and not these",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -3898,7 +3897,7 @@
       "kind": "method",
       "introduced": "10.0",
       "status": "absent",
-      "reason": "the superclass's designated initialiser takes a parameter the SDK does not mark nullable and nothing in the headers says where a subclass would get one, so the port refuses to chain rather than make a call the SDK forbids",
+      "reason": "the SDK obsoletes the selector in the release that introduced it: only INRideDriver_Deprecated.h declares it, in the (Deprecated) category, as API_DEPRECATED(\"Use the designated initializer instead\", ios(10.0, 10.0)), and the replacement that message names, initWithPhoneNumber:, is API_AVAILABLE(ios(10.2)), so at 10.0 the only initialiser the header still permits is the obsoleted one - which is why the port carries the two the header does not obsolete there, initWithPhoneNumber: and initWithPersonHandle:...rating:phoneNumber:, and not these",
       "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
       "facts": "facts/Intents/Intents.md"
     },
@@ -9133,8 +9132,8 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/Intents/Intents.md",
-      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
-      "effect": "nothing: the port does not declare the protocol and a conforming class is not given one to conform to",
+      "reason": "the SDK declares it in no Objective-C header, and that is the whole of it: the name is in no header of the frameworks of iPhoneOS 16.4 or of iPhoneOS 26.2, and it is declared only in the Swift interface usr/lib/swift/Intents.swiftmodule/arm64e-apple-ios.swiftinterface, where _INIntentSetImageKeyPath carries an empty body and INIntentSetImageKeyPath refines it and is itself empty, so what the name names is a Swift protocol with nothing in it for a header to carry",
+      "effect": "nothing: the port declares neither protocol, and an empty Swift protocol has no Objective-C metadata for the runtime to attach, so the port's INIntent is given nothing to conform to",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
@@ -9614,8 +9613,8 @@
       "minimum": "6.0",
       "status": "absent",
       "facts": "facts/Intents/Intents.md",
-      "reason": "the SDK declares it in no header: the two methods it refines carry NS_REFINED_FOR_SWIFT, which names a Swift refinement and not a protocol any header declares, so there is nothing here for a header to carry",
-      "effect": "nothing: the port does not declare the protocol and a conforming class is not given one to conform to",
+      "reason": "the SDK declares it in no Objective-C header, and that is the whole of it: the name is in no header of the frameworks of iPhoneOS 16.4 or of iPhoneOS 26.2, and it is declared only in the Swift interface usr/lib/swift/Intents.swiftmodule/arm64e-apple-ios.swiftinterface, where _INIntentSetImageKeyPath carries an empty body and INIntentSetImageKeyPath refines it and is itself empty, so what the name names is a Swift protocol with nothing in it for a header to carry",
+      "effect": "nothing: the port declares neither protocol, and an empty Swift protocol has no Objective-C metadata for the runtime to attach, so the port's INIntent is given nothing to conform to",
       "source": "the header of iPhoneOS 16.4 for the contract, and the armv7 release caches for the release each object file is carried from (tools/intents/measure-intents.lua)"
     },
     {
