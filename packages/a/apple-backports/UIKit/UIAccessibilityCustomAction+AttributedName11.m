@@ -46,9 +46,12 @@ static const char charon_attributed_attributes_key;
 
 - (NSAttributedString *)attributedName
 {
-    NSString *name = self.name;
-    if (!name)
-        return nil;
+    // An action made with no name still has one, and it is the empty string: measured on the host, an
+    // action from -initWithName:nil target: nil selector: NULL answers a `name` of length 0 and an
+    // `attributedName` whose string is empty and which is not nil at all. So this does not answer nil
+    // for a name it has none of -- the plain name is already nil here and the host substitutes the
+    // empty string, and a caller asking an action for the string it is described by gets one back.
+    NSString *name = self.name ?: @"";
     NSDictionary *attributes = objc_getAssociatedObject(self, &charon_attributed_attributes_key);
     return attributes ? [[NSAttributedString alloc] initWithString:name attributes:attributes]
                       : [[NSAttributedString alloc] initWithString:name];

@@ -151,6 +151,13 @@ void uikitrotor_run(UIKitConstantsRecorder record)
                                                                                                   selector:@selector(description)];
     record(@"action.attributedInitName", attributed.name ?: @"(nil)");
     record(@"action.attributedInitString", attributed.attributedName ? attributed.attributedName.string : @"(nil)");
+    // the port's getter answers nil for an action with no name, so the host is asked what it answers
+    // there too; nothing in the port is a guess when the host has an answer
+    // named the way the recorder can tell nil from an empty string: record() stores a nil as "",
+    // so each is asked whether it is there first
+    UIAccessibilityCustomAction *nameless = [[UIAccessibilityCustomAction alloc] initWithName:nil target:nil selector:NULL];
+    record(@"action.attributedNameWhenUnset", nameless.attributedName ? @"set" : @"nil");
+
     record(@"action.attributedInitKeepsAttributes",
            [attributed.attributedName attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:NULL] != nil ? @"keeps" : @"drops");
     record(@"action.attributedInitTargetIsSame", attributed.target == actionTarget ? @"same" : @"other");

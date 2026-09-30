@@ -48,6 +48,18 @@ added to `device/uikitconst-cases.m`, which the device test reads out of `device
 | the plain setter leaves the attributed name describing the same action, keeping the style | `action.attributedInitStringAfterNameSet` |
 | `initWithAttributedName:target:selector:` keeps the attributes it was given | `action.attributedInitKeepsAttributes` |
 | and the target it was passed | `action.attributedInitTargetIsSame` |
+| an action made with a nil name still has an attributed name, and it is not nil | `action.attributedNameWhenUnset` |
+
+That last one is the case the first version of this got wrong, and it is why the case exists. The getter
+answered `nil` when the plain name was `nil`, on the reasoning that there was no string to describe. Measured
+on the host, an action from `-initWithName:nil target: nil selector: NULL` answers a `name` of length 0 and
+an `attributedName` that is set and whose string is empty -- the system's own substitutes the empty string
+where the port substituted nil. The getter now answers an empty string over that name, which is what the host
+answers.
+
+Whether `-name` itself is `nil` for that action is the 8.0 class's own question, its row is `inert` in
+base.json, and this series does not touch it; the case above therefore records only what the 11.0 member
+answers. A separate measurement of the class's own name is a question for whoever owns that row.
 
 **What has not been run.** The host half ran: `tests/backports/host/uikitconst` records all ten, and the
 regenerated `device/UIKitConstants-expectations.h` is the tracked file plus exactly those ten keys — 81 entries
