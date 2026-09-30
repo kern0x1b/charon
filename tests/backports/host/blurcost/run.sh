@@ -38,8 +38,20 @@ cc -O2 -Wall -Wno-unused-parameter -I"$build" -o "$build/blurcost" "$here/blurco
 # checked, and the check fails loudly if a later change gives it a call into UIKit, CoreGraphics or
 # Foundation -- because then the same reasoning would no longer hold and the shading would have to
 # come back to the thread that owns those.
-imports=$(nm -u "$build/CharonBlur.o" 2>/dev/null | sed 's/^ *//' | sort -u | tr '\n' ' ')
-printf '  undefined symbols in CharonBlur.o: %s\n' "${imports:-none}" >&2
+# nm's own failure has to be a failure here, and an empty list has to be too: both mean the check
+# did not run, and a check that passes when it did not is worse than no check. The first version read
+# nm through `2>/dev/null` and compared whatever came back, so a missing nm made it pass.
+if ! imports=$(nm -u "$build/CharonBlur.o" | sed 's/^ *//' | sort -u | tr '\n' ' '); then
+    echo "blurcost: nm could not read $build/CharonBlur.o, so the framework-freedom check did not" >&2
+    echo "  run. Refusing to pass a check that did not happen." >&2
+    exit 2
+fi
+if [ -z "$imports" ]; then
+    echo "blurcost: CharonBlur.o reports no undefined symbols at all, which no build of it does." >&2
+    echo "  The check did not run; refusing to pass it." >&2
+    exit 2
+fi
+printf '  undefined symbols in CharonBlur.o: %s\n' "$imports" >&2
 for symbol in $imports; do
     case "$symbol" in
         _malloc|_free) ;;
