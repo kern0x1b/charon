@@ -2,17 +2,6 @@
   "framework": "AVKit",
   "entries": [
     {
-      "api": "AVKitErrorDomain",
-      "kind": "constant",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the release holds no AVKit at all, so it exports no error domain: neither the name nor the symbol is in the armv7 shared cache of 6.1.3 (568965 names, armv7), and the name first appears at 8.0, a release whose AVKit the port also does not carry. The port still needs a domain for the error it reports, and uses the framework's own name written literally (AVPictureInPictureController.m), with the code AVError.h:31 gives for that failure",
-      "effect": "the symbol is not there: a weak reference to it is NULL, and code that wants the domain has to carry the literal as this port's own error path does",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) and the armv7 cache ladder; SDK 26.2 AVKit/AVError.h:19-25 for the declaration and AVError.h:31 for the -1001 the port now reports",
-      "facts": "facts/AVKit/AVPictureInPictureController.md"
-    },
-    {
       "api": "AVPictureInPictureControllerDelegate",
       "kind": "protocol",
       "introduced": "9.0",
@@ -31,7 +20,8 @@
       "status": "absent",
       "reason": "the release carries the route query but not the question the class exists to answer. In the armv7 shared cache of 6.1.3 (568965 names, armv7): AVAudioSession, currentRoute, outputs, AVAudioSessionPortDescription, portName, portType, routeForCategory: and UIActionSheet are all present, and so are AVPlayer's allowsExternalPlayback, externalPlaybackActive and usesExternalPlaybackWhileExternalScreenIsActive. What is missing is any way to say which output is the one in use and which is an alternative: isWireless is absent (first rung 16.0, measured) and AVAudioSessionRouteDescription carries no property that names the current output - the port's own compile of a first attempt failed on exactly that, `property 'port' not found`. The list of AirPlay targets is not public API on this release either",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. A view holding a button that opens a sheet with nothing in it was written and then deleted rather than shipped: it would have been a class that exists and does nothing",
-      "source": "the armv7 cache ladder through tools/cache-index/first-rung.py for every name above, and the failed compile of the deleted first attempt recorded in this row's reason"
+      "source": "the armv7 cache ladder through tools/cache-index/first-rung.py for every name above, and the failed compile of the deleted first attempt recorded in this row's reason",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "AVPlayerItem.externalMetadata",
@@ -41,7 +31,8 @@
       "status": "absent",
       "reason": "the release does carry item metadata - `timedMetadata` is present in the armv7 shared cache of 6.1.3 (568965 names, armv7) - but not this half of it. externalMetadata is the chapter-and-title surface an HLS playlist's EXT-X-MEDIA tags populate, and the release's item has no such store; timedMetadata is timed, this is not, and one is not a substitute for the other",
       "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for timedMetadata present and the name absent; SDK 26.2 AVKit/AVPlayerItem+AVKitAdditions.h"
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for timedMetadata present and the name absent; SDK 26.2 AVKit/AVPlayerItem+AVKitAdditions.h",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "-[AVPlayerViewControllerDelegate playerViewController:restoreUserInterfaceForFullScreenExitWithCompletionHandler:]",
@@ -51,7 +42,8 @@
       "status": "absent",
       "reason": "this port's full screen is its own view controller over the player's own inline view, which it keeps: -charon_fullScreen: presents CharonAVPlayerFullScreenViewController and leaving it returns to that inline view, which the application never tore down. There is therefore no interface for a delegate to restore, which is the situation the message exists for, and the port does not send it",
       "effect": "not built: the message is not there, respondsToSelector: answers NO and an unchecked call raises; the inline view the application built is the one on screen when full screen ends",
-      "source": "packages/a/apple-backports/AVKit/AVPlayerViewController.m (CharonAVPlayerFullScreenViewController and -charon_fullScreen:); SDK 26.2 AVKit/AVPlayerViewController.h"
+      "source": "packages/a/apple-backports/AVKit/AVPlayerViewController.m (CharonAVPlayerFullScreenViewController and -charon_fullScreen:); SDK 26.2 AVKit/AVPlayerViewController.h",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "AVPictureInPictureSampleBufferPlaybackDelegate",
@@ -62,7 +54,7 @@
       "reason": "not for want of the layer it drives. AVSampleBufferDisplayLayer IS on this release - in the armv7 shared cache of 6.1.3 (568965 names, armv7) with its class and metaclass symbols, first rung 6.0, earlier than the 14.0 its own header suggests. No release before 15.0 has picture-in-picture at all (AVPictureInPictureController first appears at 9.0 and never asks a sample-buffer layer to play), so the six-method protocol that would drive one has nothing to talk to. The port's picture-in-picture reparents a real AVPlayerLayer instead, which is the half this port carries",
       "effect": "the protocol is not there: NSProtocolFromString answers nil, and no sample-buffer display layer is ever asked to play, so a delegate implementing these six methods is never called",
       "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) and the armv7 cache ladder; SDK 26.2 AVKit/AVPictureInPictureController_AVSampleBufferDisplayLayerSupport.h:109-131",
-      "facts": "facts/AVKit/AVPictureInPictureContentSource.md"
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "AVPictureInPictureVideoCallViewController",
@@ -72,7 +64,8 @@
       "status": "absent",
       "reason": "it is a view controller around a video CALL, and this release has no call to wrap: the class is a UIViewController whose content source category takes an active video call source view and a content view controller (SDK 26.2 AVPictureInPictureController_VideoCallSupport.h:33-62), and the port builds no call - CallKitBackports' CharonCallScreen is an application's own call screen, not a system video call this controller could adopt. Naming it after the port's own floating window would be a different class wearing Apple's name",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 26.2 AVKit/AVPictureInPictureController_VideoCallSupport.h:21-62; the armv7 cache ladder, which places the name first at 16.0"
+      "source": "SDK 26.2 AVKit/AVPictureInPictureController_VideoCallSupport.h:21-62; the armv7 cache ladder, which places the name first at 16.0",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "-[AVPlayerViewControllerDelegate playerViewController:didPresentInterstitialTimeRange:]",
@@ -82,7 +75,8 @@
       "status": "absent",
       "reason": "the class the message carries is the point: AVInterstitialTimeRange is not carried, and the release has no interstitial machinery to carry it in - in the armv7 shared cache of 6.1.3 (568965 names, armv7) neither `interstitialTimeRanges` nor `insertInterstitialTimeRange` is present, and there is no ad or interstitial pipeline anywhere in this port to present one. A delegate that implements this message is implementing a callback for an event that cannot happen",
       "effect": "not built: the message is not there, respondsToSelector: answers NO and an unchecked call raises, because no interstitial is ever presented",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for both absent names; SDK 26.2 AVKit/AVInterstitialTimeRange.h"
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for both absent names; SDK 26.2 AVKit/AVInterstitialTimeRange.h",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "-[AVPlayerViewControllerDelegate playerViewController:willPresentInterstitialTimeRange:]",
@@ -92,7 +86,8 @@
       "status": "absent",
       "reason": "the class the message carries is the point: AVInterstitialTimeRange is not carried, and the release has no interstitial machinery to carry it in - in the armv7 shared cache of 6.1.3 (568965 names, armv7) neither `interstitialTimeRanges` nor `insertInterstitialTimeRange` is present, and there is no ad or interstitial pipeline anywhere in this port to present one. A delegate that implements this message is implementing a callback for an event that cannot happen",
       "effect": "not built: the message is not there, respondsToSelector: answers NO and an unchecked call raises, because no interstitial is ever presented",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for both absent names; SDK 26.2 AVKit/AVInterstitialTimeRange.h"
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7) for both absent names; SDK 26.2 AVKit/AVInterstitialTimeRange.h",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "AVInterstitialTimeRange",
@@ -102,7 +97,8 @@
       "status": "absent",
       "reason": "a time range is only meaningful against an item that carries interstitial markers, and neither half exists on this release: the class first appears at 16.0, and in the armv7 shared cache of 6.1.3 (568965 names, armv7) there is no `interstitialTimeRanges` and no `insertInterstitialTimeRange`. The release does carry the ranges that DO exist - seekableTimeRanges and loadedTimeRanges are both present - which is what makes the absence specific rather than general: the port can talk about when media is playable, and has nothing to mark an advertisement inside it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7); SDK 26.2 AVKit/AVInterstitialTimeRange.h"
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7); SDK 26.2 AVKit/AVInterstitialTimeRange.h",
+      "facts": "facts/AVKit/Absent.md"
     },
     {
       "api": "AVPlayerItem.interstitialTimeRanges",
@@ -112,7 +108,8 @@
       "status": "absent",
       "reason": "the same absence as AVInterstitialTimeRange, seen from the item: no `interstitialTimeRanges` and no `insertInterstitialTimeRange` in the armv7 shared cache of 6.1.3 (568965 names, armv7), and no interstitial to insert. A property that answered an empty array would read as \"this item has no ads\", which is a claim about the media that nothing here could know",
       "effect": "not built: the accessor is not there, respondsToSelector: answers NO and an unchecked call raises, so respondsToSelector: answers honestly",
-      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7); SDK 26.2 AVKit/AVPlayerItem+AVKitAdditions.h"
+      "source": "the armv7 shared cache of 6.1.3 (568965 names, armv7); SDK 26.2 AVKit/AVPlayerItem+AVKitAdditions.h",
+      "facts": "facts/AVKit/Absent.md"
     }
   ]
 }

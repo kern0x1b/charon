@@ -92,3 +92,28 @@ answered them by storing a value it never used. Now:
   first two need `AVPictureInPictureControllerContentSource`, which is not carried, the third starts
   picture in picture as the application leaves the foreground, which the window does not survive.
 - `canStopPictureInPicture` is tvOS's and is not answered on iOS.
+
+## AVKitErrorDomain, and the -1001
+
+Two values in this file's error path were wrong or unmeasured, and both are now read rather than
+assumed. `facts/AVKit/Absent.md` carries the full measurement with the commands; the short form:
+
+The port reported its picture-in-picture start failure as code **-1000** with the domain written as a
+literal. `AVError.h:30` names -1000 `AVKitErrorUnknown`, which is what the framework answers when it
+does not know which error it is - and this port does know: `AVError.h:31` gives
+`AVKitErrorPictureInPictureStartFailed` as **-1001**, and a failure to start picture in picture is that
+error. The code is -1001 now.
+
+The domain literal became the real constant. The queue header's rule is that the name is never the
+value, so the value was read out of Apple's own data rather than copied off the name:
+
+```
+$ python3 tools/cfconst/cache32.py .agent-work/avkit9/AVKit AVKitErrorDomain
+AVKitErrorDomain	AVKitErrorDomain
+```
+
+against the AVKit image `dyld.lua`'s own `extract()` pulls out of the armv7 shared cache of 9.0. The
+name and the value do coincide; that is now a reading and not a hope. `AVKitErrorDomain` is declared in
+this file's object - it is the 9.0 object, which is the release the constant is from - and the row moved
+out of `absent_AVKit.json` into `ios9picture.json` as `implemented`, because a row that a class object
+exports is not absent however the release treats it.

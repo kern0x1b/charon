@@ -65,6 +65,22 @@
 
 @end
 
+// AVKitErrorDomain, ios(9.0) - the one constant this library declares.
+//
+// The VALUE is measured, not assumed, and the measurement is in
+// facts/AVKit/AVPictureInPictureController.md. The point of measuring it is that the name is not the
+// value: coordination/corpus/queue's header records three constants whose value is not their name, and
+// the same header's rule is that a name is never a value. Read out of Apple's own data - the AVKit
+// image out of the armv7 shared cache of 9.0, through tools/cfconst/cache32.py:
+//
+//     $ python3 tools/cfconst/cache32.py AVKit AVKitErrorDomain
+//     AVKitErrorDomain	AVKitErrorDomain
+//
+// so the two do coincide here, and now that is a reading rather than a hope. The 8.0 image is the
+// control for the date: it carries the cstring but no _AVKitErrorDomain symbol at all, which is what
+// AVError.h's own ios(9.0) says.
+NSString * const AVKitErrorDomain = @"AVKitErrorDomain";
+
 @implementation AVPictureInPictureController
 {
     CharonPictureInPictureWindow *_charonWindow;
@@ -139,8 +155,9 @@
     if (!superlayer || !self.isPictureInPicturePossible) {
         // -1001 is AVKitErrorPictureInPictureStartFailed, the code AVError.h:31 gives for exactly
         // this failure; the -1000 that was here before is AVKitErrorUnknown, which is what the
-        // framework answers when it does not know which error it is, and this port does know.
-        NSError *error = [NSError errorWithDomain:@"AVKitErrorDomain" code:-1001
+        // framework answers when it does not know which error it is, and this port does know. The
+        // domain is the measured constant above, not a literal.
+        NSError *error = [NSError errorWithDomain:AVKitErrorDomain code:-1001
                                           userInfo:@{NSLocalizedDescriptionKey: @"Picture in Picture could not be started"}];
         if ([_charonDelegate respondsToSelector:@selector(pictureInPictureController:failedToStartPictureInPictureWithError:)])
             [_charonDelegate pictureInPictureController:self failedToStartPictureInPictureWithError:error];
