@@ -67,6 +67,45 @@ interface controller asks for the template the controller has no view yet: an ea
 file drew there and pushed an empty screen, which is what the harness caught. A layout pass over the
 same size draws nothing, so the plates a touch is halfway into are not thrown away.
 
+## What puts these at 12.0, and how to read a selector out of this file
+
+`CPVoiceControlState.h` is in no SDK on this machine, in either: the class is declared inside
+`CPVoiceControlTemplate.h` in both the build SDK (16.4) and the one this port targets (26.2), and a
+reader looking for a file of its own will not find one. So the class's `introduced` is read from
+`coordination/corpus/sdk-26.2-surface.tsv`, which the queue header names as the registry's own source
+for a row's `introduced`, and it is measured present in the 16.0 and 18.0 arm64e caches:
+
+```
+class  CPVoiceControlState  introduced=12.0        (sdk-26.2-surface.tsv)
+class  CPVoiceControlTemplate  introduced=12.0
+method -[CPVoiceControlState initWithIdentifier:titleVariants:image:repeats:]  introduced=12.0
+method -[CPVoiceControlTemplate initWithVoiceControlStates:]  introduced=12.0
+```
+
+**A method whose signature spans four lines is one selector, and a grep of one line reads it as a
+shorter one.** A review of this file took `CPVoiceControlVoiceControl12.m:67` for a one-argument
+`-initWithIdentifier:` and looked for Apple's own one-argument form, and the SDK line it compared
+against is the same trap: `CPVoiceControlTemplate.h:36` reads
+`- (instancetype)initWithIdentifier:(NSString *)identifier` and continues on three more lines with
+`titleVariants:image:repeats:`. All fifteen SDK copies on this machine say the same, so there is no
+one-argument `initWithIdentifier:` on any CarPlay class in either SDK and nothing collides with
+anything. What settles it is the object's own method list, which is what a selector question should be
+asked of:
+
+```
+$ xcrun clang -target armv7-apple-ios6.1.3 -isysroot <iOS16.4 SDK> -fobjc-arc -Os -g0 -Wall \
+      -Werror=objc-missing-property-synthesis -c packages/a/apple-backports/CarPlay/CarPlayVoiceControl12.m \
+      -o CarPlayVoiceControl12.o
+$ otool -oV CarPlayVoiceControl12.o | grep name        # every method the class defines
+    initWithIdentifier:titleVariants:image:repeats:
+    encodeWithCoder:   initWithCoder:   identifier   titleVariants   image   repeats
+    .cxx_destruct      (ivars)          supportsSecureCoding   charon_imageLimitedToPoints:
+```
+
+One selector, one registry row, and the only names on the class without a row are `encodeWithCoder:`,
+`initWithCoder:` and `+supportsSecureCoding`, which are NSCoding and NSSecureCoding conformance and are
+named as such by the header the class conforms to.
+
 ## The rows
 
 | row | what a caller gets |
