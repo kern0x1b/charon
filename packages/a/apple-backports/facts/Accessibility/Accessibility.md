@@ -145,6 +145,53 @@ invented: a translation of nothing is the input with **no cells**, and the locat
 because no cell was produced. Both directions answer that way, the second without guessing print text
 out of dot patterns. A table an *application* builds is real and is kept, coded and copied.
 
+## Does the release carry any of these names? Measured, and no
+
+`tools/cache-index/first-rung.py` answers for the oldest held release carrying a name, which is exactly
+the question "is a whole-class `@implementation` the right direction here, or a category":
+
+```
+$ printf '%s\n' AXMathExpression AXMathExpressionNumber AXMathExpressionFenced AXMathExpressionRow \
+      AXCustomContent AXCustomContentProvider NSObject | python3 tools/cache-index/first-rung.py
+AXMathExpression	NONE
+AXMathExpressionNumber	NONE
+AXMathExpressionFenced	NONE
+AXMathExpressionRow	NONE
+AXCustomContent	16.0
+AXCustomContentProvider	16.0
+NSObject	3.0
+```
+
+`NSObject` at 3.0 is the positive control in the same run, so the four `NONE`s are answers and not a
+tool that found nothing. **All fifteen AXMathExpression names read `NONE`**: no held release carries
+the class, so implementing it whole is the right direction. `AXCustomContent` reads **16.0**, the same
+reading `AXChartDescriptor` of 15.0 gets and the same rule written down above - `band()` keeps an object
+in every band whose release is older than the object's own, so an object placed at 16.0 is carried on
+6.1.3, 4.3 and 12.0 and left out from 16.0 up, where the system has the class itself.
+`tools/release-split.lua` reads the same 16.0 for that object, and `minimum: 6.0` is what carries it
+below. The 16.0 is "after 12.0 and by 16.0" and not a measured first release - no release is held
+between 12.0 and 16.0 - and what the reading settles is the one it was asked: **6.1.3 and 4.3 carry
+neither group.**
+
+`AXCustomContentProvider` reads 16.0 too, and that is a *name* in the cache, not a protocol object.
+`NSProtocolFromString(@"AXCustomContentProvider")` answers **nil** - in a process with nothing of this
+library in it, and in the host's own framework, where the protocol is declared in a header and never
+registered. A name in the cache and a protocol with no object are the same fact seen two ways, and they
+are what the two `absent` rows rest on.
+
+The same reading for six classes this repository already ships is what says a `minimum` of 6.0 does not
+mean "the release has this class":
+
+| class | registry `minimum` | first held rung carrying it | whole-class `@implementation` |
+| --- | --- | --- | --- |
+| `HKSource` | 6.0 | 8.0 | yes |
+| `AXRequest` | 6.0 | 18.0 | yes |
+| `AXBrailleTable` | 6.0 | `NONE` | yes |
+| `AXFeatureOverrideSessionManager` | 6.0 | `NONE` | yes |
+| `AXChartDescriptor` | (none) | 16.0 | yes |
+| **`AXCustomContent`** (this band) | 6.0 | 16.0 | yes |
+| **`AXMathExpression`** (this band) | 6.0 | `NONE` | yes |
+
 ## The two groups that had no object behind them: AXCustomContent of 14.0, AXMathExpression of 18.2
 
 45 of the 47 rows of these two groups are now `implemented` and 2 stay `absent`. The two groups were
