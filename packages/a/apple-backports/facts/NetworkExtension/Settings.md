@@ -70,6 +70,10 @@ exit=0  errors=0  warnings=1
 system's preference daemon, and they are a different job: they answer as Apple does without an
 entitlement, with the documented error domain and codes, measured on the host. The four classes
 `NEProxySettings`, `NEProxyServer`, `NEIPv4Settings` and `NEIPv4Route` are settings objects like this
-one, and the ledger's spelling of two of `NEProxySettings`'s properties is wrong: the 26.2 header
-declares **`HTTPEnabled`, `HTTPSEnabled` and `HTTPSServer`**, capitalised, where the ledger rows are
-lowercase. Noted here for the ledger owner; the rows are written as the header declares them.
+one, and their header and object are written.
+
+**The capitalised names, corrected.** An earlier version of this paragraph said the ledger spells two of
+`NEProxySettings`'s properties in lowercase. It does not: `NEProxySettings.HTTPEnabled`,
+`NEProxySettings.HTTPSEnabled` and `NEProxySettings.HTTPSServer` are capitalised in the ledger and
+capitalised in the 26.2 header, and the rows for the next series are written that way. The error was in
+reading the surface dump, not in the ledger.
