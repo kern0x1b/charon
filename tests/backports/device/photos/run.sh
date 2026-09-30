@@ -13,6 +13,10 @@
 #
 #   photosalbums8   a process of its own, denied the photo library by the release; it reads and writes
 #                   nothing. Safe on any device, so it is the one this runs without being asked.
+#   photosavailability13
+#                   a process of its own, in the same state: what -[PHPhotoLibrary unavailabilityReason]
+#                   answers and when an availability observer is told, for iOS 13. Reads and writes
+#                   nothing, so it too runs on any device.
 #   photoschanges8  an application (photoschanges8-Info.plist): it registers change observers and adds
 #                   three 8-by-8 blue fixtures to the saved photos on every run.
 #   photosdata9     an application (photosdata9-Info.plist): the iOS 9 creation request, the asset
@@ -67,7 +71,7 @@ while [ $# -gt 0 ]; do
         *) programs="$programs $1"; shift ;;
     esac
 done
-[ -n "$programs" ] || programs="photosalbums8 photoschanges8 photosdata9"
+[ -n "$programs" ] || programs="photosalbums8 photosavailability13 photoschanges8 photosdata9"
 # No device is named here on purpose: an empty -d is the transport's own default (device.env, the
 # device that is attached), and a run must not silently pick a different one. The write guard below
 # refuses a program that writes unless the device IS the iPad 2 or the operator says otherwise.
@@ -104,16 +108,13 @@ cflags="-target $triple -isysroot $PHOTOS_SDK -isystem $PHOTOS_SDK/usr/include -
 frameworks="-framework AssetsLibrary -framework AVFoundation -framework CoreLocation -framework CoreGraphics
             -framework ImageIO -framework MobileCoreServices -framework UIKit -framework Foundation"
 
-# The band's own sources. Which band an object lands in is its registry minimum, not its file name
-# (modules/apple/backports.lua:2014 -- minimums() reads entry.minimum and never the status, and
-# :2508 band_ranges), which is why PHChangeRequest13.m is in the 6.0 band: registry/Photos/ios13.json
-# gives PHChangeRequest minimum 6.0, and PHAssetCollectionChangeRequest8.m has it for a superclass.
-# The 13.0 and 14.0 objects proper are left out, and a program that needs one cannot link -- which is
-# the failure a program for those releases is written against.
-band8="CharonPhotosStore.m CharonPhotosTransaction.m PHPhotosErrorDomain8.m PHObject8.m PHPhotoLibrary.m
-       PHCollection8.m PHChange8.m PHFetchResult8.m PHFetchOptions8.m PHAsset8.m PHImageManager8.m
-       PHAssetChangeRequest8.m PHAssetCollectionChangeRequest8.m PHChangeRequest13.m"
-band9="PHAssetResource9.m PHAssetResourceManager9.m PHAssetCreationRequest9.m"
+# The band's own sources, asked of the build's own rule and not of a list written out here:
+# band.py reads the registry minimum of every class each file defines and prints the files this
+# release's band carries. A hardcoded list is what it replaces, and it went stale twice in one
+# afternoon -- once for PHChangeRequest13.m, a 13.0 object the 6.0 band carries because
+# registry/Photos/ios13.json gives it minimum 6.0, and once for a file added beside it, whose absence
+# only the device could see, as an unrecognized selector.
+band=$(python3 "$here/band.py" "$release" "$photos" "$root/packages/a/apple-backports/registry")
 
 compile_one() { # $1 source, $2 object
     # shellcheck disable=SC2086
@@ -130,12 +131,14 @@ link_one() { # $1 output, rest: objects
     ldid -S "$output" >/dev/null 2>&1 || echo "run.sh: ldid could not sign $output" >&2
 }
 
-# $1 program name, $2 the sources' band (8 or 9), $3 process|app, $4 the plist's executable name
+# $1 program name, $2 process|app, $3 the plist's executable name. Every program is built over the
+# whole band: the pickers of iOS 14 are in it too (registry/PhotosUI gives them minimum 6.0), they
+# link without PhotosUI, and a program that leaves a file out is a program that will answer for a
+# class the rest of the band is what the release runs with.
 build() {
     name=$1
-    band=$2
-    kind=$3
-    executable=$4
+    kind=$2
+    executable=$3
     # photosdata9.m writes its own test videos with AVAssetWriter and hands AVFoundation the pixel
     # buffer pool, so it links CoreMedia and CoreVideo as well; the other two programs need nothing
     # the library does not already name.
@@ -145,7 +148,7 @@ build() {
     rm -rf "$objects"
     mkdir -p "$objects"
     index=0
-    for source in $band8 $([ "$band" = 9 ] && echo "$band9"); do
+    for source in $band; do
         index=$((index + 1))
         compile_one "$photos/$source" "$objects/$index.o"
     done
@@ -176,11 +179,12 @@ case_ok() { case " $programs " in *" $1 "*) return 0 ;; *) return 1 ;; esac }
 built=""
 for name in $programs; do
     case $name in
-        photosalbums8) build "$name" 8 process photosalbums8 ;;
-        photoschanges8) build "$name" 8 app photoschanges ;;
-        photosdata9) build "$name" 9 app photosdata ;;
-        control) build "$name" 8 process control ;;
-        *) echo "run.sh: $name is not one of photosalbums8, photoschanges8, photosdata9, control" >&2; exit 2 ;;
+        photosalbums8) build "$name" process photosalbums8 ;;
+        photoschanges8) build "$name" app photoschanges ;;
+        photosdata9) build "$name" app photosdata ;;
+        photosavailability13) build "$name" process photosavailability13 ;;
+        control) build "$name" process control ;;
+        *) echo "run.sh: $name is not one of photosalbums8, photoschanges8, photosdata9, photosavailability13, control" >&2; exit 2 ;;
     esac
     built="$built $name"
 done
@@ -232,7 +236,7 @@ report() { # $1 program, $2 report path on this host
 
 for name in $built; do
     case $name in
-        photosalbums8|control)
+        photosalbums8|photosavailability13|control)
             copy "$out/$name" "$remote_dir/$name"
             run_device "chmod +x $remote_dir/$name; $remote_dir/$name $remote_dir/$name.log; echo \"exit=\$?\""
             fetch "$remote_dir/$name.log" "$out/$name-$device_name.report"

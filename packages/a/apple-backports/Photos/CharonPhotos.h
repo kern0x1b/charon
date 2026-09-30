@@ -33,6 +33,21 @@
 - (void)refuseWithReason:(NSString *)reason;
 @end
 
+// PHPhotoLibrary's own instance variables, in a class extension rather than in the @implementation:
+// the members of one release live in one file each (PHPhotoLibrary.m carries 8.0, the availability
+// members of 13.0 are in PHPhotoLibraryAvailability13.m), and a category cannot add an ivar, so the
+// names have to be visible to both. The layout is still the class's own, emitted by its @implementation.
+@interface PHPhotoLibrary () {
+    NSHashTable *_observers;
+    dispatch_queue_t _delivery;
+    id _listening;
+    NSHashTable *_availabilityObservers;
+    dispatch_queue_t _availabilityDelivery;
+    id _availabilityListening;
+    NSInteger _lastAvailability;
+}
+@end
+
 @interface PHObject (Charon)
 - (instancetype)initWithCharonLocalIdentifier:(NSString *)identifier;
 @end

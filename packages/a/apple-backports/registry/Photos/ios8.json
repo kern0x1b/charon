@@ -97,51 +97,6 @@
       "source": "the header of iOS 16.4 for the declarations; ALAssetsLibraryChangedNotification as 6.1.3 posts it for writes of the application, on an iPad 2"
     },
     {
-      "api": "-[PHPhotoLibrary registerAvailabilityObserver:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "status": "absent",
-      "reason": "the release has no availability of the library to report",
-      "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
-    },
-    {
-      "api": "-[PHPhotoLibrary unregisterAvailabilityObserver:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "status": "absent",
-      "reason": "there is no observer to remove",
-      "minimum": "6.0",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
-    },
-    {
-      "api": "PHPhotoLibrary.unavailabilityReason",
-      "kind": "property",
-      "introduced": "13.0",
-      "status": "absent",
-      "reason": "the release has no availability of the library to report",
-      "minimum": "6.0",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises"
-    },
-    {
-      "api": "PHPhotoLibraryAvailabilityObserver",
-      "kind": "protocol",
-      "introduced": "13.0",
-      "status": "absent",
-      "reason": "the release has no availability of the library to report",
-      "minimum": "6.0",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil"
-    },
-    {
-      "api": "-[PHPhotoLibraryAvailabilityObserver photoLibraryDidBecomeUnavailable:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "status": "absent",
-      "reason": "the release has no availability of the library to report",
-      "minimum": "6.0",
-      "effect": "the message is never sent, so an observer that implements it is simply not called"
-    },
-    {
       "api": "-[PHPhotoLibrary cloudIdentifierMappingsForLocalIdentifiers:]",
       "kind": "method",
       "introduced": "15.0",

@@ -13,13 +13,12 @@ static void charon_deliver_authorization(void (^handler)(PHAuthorizationStatus s
     });
 }
 
-@implementation PHPhotoLibrary {
-    NSHashTable *_observers;
-    dispatch_queue_t _delivery;
-    id _listening;
-}
+@implementation PHPhotoLibrary
 
-@dynamic currentChangeToken, unavailabilityReason;
+// currentChangeToken is of iOS 16 and the port does not carry it (registry/Photos/ios8.json), so it
+// is left dynamic: the class declares the property the header declares and answers no selector.
+// unavailabilityReason is of iOS 13 and is implemented in PHPhotoLibraryAvailability13.m.
+@dynamic currentChangeToken;
 
 + (PHPhotoLibrary *)sharedPhotoLibrary
 {
