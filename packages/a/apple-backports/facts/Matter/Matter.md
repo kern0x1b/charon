@@ -30,6 +30,12 @@ methods the header declares answer as Apple documents: no value, and an error.
                                         (or strong)' attribute must be of object type`. The smallest of the
                                         143 objects, which imports Matter.h and declares nothing of its own,
                                         is enough to see it: the error is in a header all of them import
+    the 143 objects, the package's own flags
+                                        armv7-apple-ios6.0, iPhoneOS16.4.sdk, -fobjc-arc -Os -Wall
+                                        -Werror=objc-missing-property-synthesis, xargs -P 2, one log per
+                                        object: 143 of 143 compiled, 0 errors
+    the same 143 objects for armv7-apple-ios4.3
+                                        0 of 143 compile, and the same diagnostic is in all 143 logs
     tests/backports/host/matter/plants.sh
                                         plants run 4, failures 0: control 0, drop 1, rename 1, extra 1
     tests/backports/host/matterdifferential/run.sh

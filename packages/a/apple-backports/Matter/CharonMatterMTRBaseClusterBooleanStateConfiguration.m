@@ -36,6 +36,20 @@
 
 @implementation MTRBaseClusterBooleanStateConfiguration
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AlarmsActiveValues = _AlarmsActiveValues;
+@synthesize AlarmsEnabledValues = _AlarmsEnabledValues;
+@synthesize AlarmsSupportedValues = _AlarmsSupportedValues;
+@synthesize AlarmsSuppressedValues = _AlarmsSuppressedValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CurrentSensitivityLevelValues = _CurrentSensitivityLevelValues;
+@synthesize DefaultSensitivityLevelValues = _DefaultSensitivityLevelValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize SensorFaultValues = _SensorFaultValues;
+@synthesize SupportedSensitivityLevelsValues = _SupportedSensitivityLevelsValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

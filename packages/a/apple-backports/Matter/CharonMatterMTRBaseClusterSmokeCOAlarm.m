@@ -36,6 +36,25 @@
 
 @implementation MTRBaseClusterSmokeCOAlarm
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize BatteryAlertValues = _BatteryAlertValues;
+@synthesize COStateValues = _COStateValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize ContaminationStateValues = _ContaminationStateValues;
+@synthesize DeviceMutedValues = _DeviceMutedValues;
+@synthesize EndOfServiceAlertValues = _EndOfServiceAlertValues;
+@synthesize ExpiryDateValues = _ExpiryDateValues;
+@synthesize ExpressedStateValues = _ExpressedStateValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize HardwareFaultAlertValues = _HardwareFaultAlertValues;
+@synthesize InterconnectCOAlarmValues = _InterconnectCOAlarmValues;
+@synthesize InterconnectSmokeAlarmValues = _InterconnectSmokeAlarmValues;
+@synthesize SmokeSensitivityLevelValues = _SmokeSensitivityLevelValues;
+@synthesize SmokeStateValues = _SmokeStateValues;
+@synthesize TestInProgressValues = _TestInProgressValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

@@ -36,6 +36,21 @@
 
 @implementation MTRBaseClusterMicrowaveOvenControl
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CookTimeValues = _CookTimeValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize MaxCookTimeValues = _MaxCookTimeValues;
+@synthesize MaxPowerValues = _MaxPowerValues;
+@synthesize MinPowerValues = _MinPowerValues;
+@synthesize PowerSettingValues = _PowerSettingValues;
+@synthesize PowerStepValues = _PowerStepValues;
+@synthesize SelectedWattIndexValues = _SelectedWattIndexValues;
+@synthesize SupportedWattsValues = _SupportedWattsValues;
+@synthesize WattRatingValues = _WattRatingValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

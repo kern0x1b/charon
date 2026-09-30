@@ -36,6 +36,14 @@
 
 @implementation MTRBaseClusterMessages
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize ActiveMessageIDsValues = _ActiveMessageIDsValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize MessagesValues = _MessagesValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

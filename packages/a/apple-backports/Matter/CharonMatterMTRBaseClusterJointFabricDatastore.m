@@ -36,6 +36,26 @@
 
 @implementation MTRBaseClusterJointFabricDatastore
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AdminListValues = _AdminListValues;
+@synthesize AnchorNodeIDValues = _AnchorNodeIDValues;
+@synthesize AnchorRootCAValues = _AnchorRootCAValues;
+@synthesize AnchorVendorIDValues = _AnchorVendorIDValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize EndpointBindingListValues = _EndpointBindingListValues;
+@synthesize EndpointGroupIDListValues = _EndpointGroupIDListValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize FriendlyNameValues = _FriendlyNameValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize GroupKeySetListValues = _GroupKeySetListValues;
+@synthesize GroupListValues = _GroupListValues;
+@synthesize NodeACLListValues = _NodeACLListValues;
+@synthesize NodeEndpointListValues = _NodeEndpointListValues;
+@synthesize NodeKeySetListValues = _NodeKeySetListValues;
+@synthesize NodeListValues = _NodeListValues;
+@synthesize StatusValues = _StatusValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

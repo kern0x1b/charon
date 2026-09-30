@@ -36,6 +36,25 @@
 
 @implementation MTRBaseClusterTimeSynchronization
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize DSTOffsetValues = _DSTOffsetValues;
+@synthesize DSTOffsetListMaxSizeValues = _DSTOffsetListMaxSizeValues;
+@synthesize DefaultNTPValues = _DefaultNTPValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize GranularityValues = _GranularityValues;
+@synthesize LocalTimeValues = _LocalTimeValues;
+@synthesize NTPServerAvailableValues = _NTPServerAvailableValues;
+@synthesize SupportsDNSResolveValues = _SupportsDNSResolveValues;
+@synthesize TimeSourceValues = _TimeSourceValues;
+@synthesize TimeZoneValues = _TimeZoneValues;
+@synthesize TimeZoneDatabaseValues = _TimeZoneDatabaseValues;
+@synthesize TimeZoneListMaxSizeValues = _TimeZoneListMaxSizeValues;
+@synthesize TrustedTimeSourceValues = _TrustedTimeSourceValues;
+@synthesize UTCTimeValues = _UTCTimeValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

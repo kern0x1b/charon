@@ -36,6 +36,20 @@
 
 @implementation MTRBaseClusterDeviceEnergyManagement
 
+@synthesize AbsMaxPowerValues = _AbsMaxPowerValues;
+@synthesize AbsMinPowerValues = _AbsMinPowerValues;
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize ESACanGenerateValues = _ESACanGenerateValues;
+@synthesize ESAStateValues = _ESAStateValues;
+@synthesize ESATypeValues = _ESATypeValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize ForecastValues = _ForecastValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize OptOutStateValues = _OptOutStateValues;
+@synthesize PowerAdjustmentCapabilityValues = _PowerAdjustmentCapabilityValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

@@ -36,6 +36,53 @@
 
 @implementation MTRBaseClusterCameraAVStreamManagement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AllocatedAudioStreamsValues = _AllocatedAudioStreamsValues;
+@synthesize AllocatedSnapshotStreamsValues = _AllocatedSnapshotStreamsValues;
+@synthesize AllocatedVideoStreamsValues = _AllocatedVideoStreamsValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CurrentFrameRateValues = _CurrentFrameRateValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize HDRModeEnabledValues = _HDRModeEnabledValues;
+@synthesize HardPrivacyModeOnValues = _HardPrivacyModeOnValues;
+@synthesize ImageFlipHorizontalValues = _ImageFlipHorizontalValues;
+@synthesize ImageFlipVerticalValues = _ImageFlipVerticalValues;
+@synthesize ImageRotationValues = _ImageRotationValues;
+@synthesize LocalSnapshotRecordingEnabledValues = _LocalSnapshotRecordingEnabledValues;
+@synthesize LocalVideoRecordingEnabledValues = _LocalVideoRecordingEnabledValues;
+@synthesize MaxConcurrentEncodersValues = _MaxConcurrentEncodersValues;
+@synthesize MaxContentBufferSizeValues = _MaxContentBufferSizeValues;
+@synthesize MaxEncodedPixelRateValues = _MaxEncodedPixelRateValues;
+@synthesize MaxNetworkBandwidthValues = _MaxNetworkBandwidthValues;
+@synthesize MicrophoneAGCEnabledValues = _MicrophoneAGCEnabledValues;
+@synthesize MicrophoneCapabilitiesValues = _MicrophoneCapabilitiesValues;
+@synthesize MicrophoneMaxLevelValues = _MicrophoneMaxLevelValues;
+@synthesize MicrophoneMinLevelValues = _MicrophoneMinLevelValues;
+@synthesize MicrophoneMutedValues = _MicrophoneMutedValues;
+@synthesize MicrophoneVolumeLevelValues = _MicrophoneVolumeLevelValues;
+@synthesize MinViewportResolutionValues = _MinViewportResolutionValues;
+@synthesize NightVisionValues = _NightVisionValues;
+@synthesize NightVisionIllumValues = _NightVisionIllumValues;
+@synthesize NightVisionUsesInfraredValues = _NightVisionUsesInfraredValues;
+@synthesize RateDistortionTradeOffPointsValues = _RateDistortionTradeOffPointsValues;
+@synthesize SnapshotCapabilitiesValues = _SnapshotCapabilitiesValues;
+@synthesize SoftLivestreamPrivacyModeEnabledValues = _SoftLivestreamPrivacyModeEnabledValues;
+@synthesize SoftRecordingPrivacyModeEnabledValues = _SoftRecordingPrivacyModeEnabledValues;
+@synthesize SpeakerCapabilitiesValues = _SpeakerCapabilitiesValues;
+@synthesize SpeakerMaxLevelValues = _SpeakerMaxLevelValues;
+@synthesize SpeakerMinLevelValues = _SpeakerMinLevelValues;
+@synthesize SpeakerMutedValues = _SpeakerMutedValues;
+@synthesize SpeakerVolumeLevelValues = _SpeakerVolumeLevelValues;
+@synthesize StatusLightBrightnessValues = _StatusLightBrightnessValues;
+@synthesize StatusLightEnabledValues = _StatusLightEnabledValues;
+@synthesize StreamUsagePrioritiesValues = _StreamUsagePrioritiesValues;
+@synthesize SupportedStreamUsagesValues = _SupportedStreamUsagesValues;
+@synthesize TwoWayTalkSupportValues = _TwoWayTalkSupportValues;
+@synthesize VideoSensorParamsValues = _VideoSensorParamsValues;
+@synthesize ViewportValues = _ViewportValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

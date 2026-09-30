@@ -36,6 +36,18 @@
 
 @implementation MTRBaseClusterClosureControl
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CountdownTimeValues = _CountdownTimeValues;
+@synthesize CurrentErrorListValues = _CurrentErrorListValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize LatchControlModesValues = _LatchControlModesValues;
+@synthesize MainStateValues = _MainStateValues;
+@synthesize OverallCurrentStateValues = _OverallCurrentStateValues;
+@synthesize OverallTargetStateValues = _OverallTargetStateValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

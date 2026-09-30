@@ -36,6 +36,35 @@
 
 @implementation MTRBaseClusterEnergyEVSE
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize ApproximateEVEfficiencyValues = _ApproximateEVEfficiencyValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize BatteryCapacityValues = _BatteryCapacityValues;
+@synthesize ChargingEnabledUntilValues = _ChargingEnabledUntilValues;
+@synthesize CircuitCapacityValues = _CircuitCapacityValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize DischargingEnabledUntilValues = _DischargingEnabledUntilValues;
+@synthesize FaultStateValues = _FaultStateValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize MaximumChargeCurrentValues = _MaximumChargeCurrentValues;
+@synthesize MaximumDischargeCurrentValues = _MaximumDischargeCurrentValues;
+@synthesize MinimumChargeCurrentValues = _MinimumChargeCurrentValues;
+@synthesize NextChargeRequiredEnergyValues = _NextChargeRequiredEnergyValues;
+@synthesize NextChargeStartTimeValues = _NextChargeStartTimeValues;
+@synthesize NextChargeTargetSoCValues = _NextChargeTargetSoCValues;
+@synthesize NextChargeTargetTimeValues = _NextChargeTargetTimeValues;
+@synthesize RandomizationDelayWindowValues = _RandomizationDelayWindowValues;
+@synthesize SessionDurationValues = _SessionDurationValues;
+@synthesize SessionEnergyChargedValues = _SessionEnergyChargedValues;
+@synthesize SessionEnergyDischargedValues = _SessionEnergyDischargedValues;
+@synthesize SessionIDValues = _SessionIDValues;
+@synthesize StateValues = _StateValues;
+@synthesize StateOfChargeValues = _StateOfChargeValues;
+@synthesize SupplyStateValues = _SupplyStateValues;
+@synthesize UserMaximumChargeCurrentValues = _UserMaximumChargeCurrentValues;
+@synthesize VehicleIDValues = _VehicleIDValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

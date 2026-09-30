@@ -36,6 +36,18 @@
 
 @implementation MTRBaseClusterThreadBorderRouterManagement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize ActiveDatasetTimestampValues = _ActiveDatasetTimestampValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize BorderAgentIDValues = _BorderAgentIDValues;
+@synthesize BorderRouterNameValues = _BorderRouterNameValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize InterfaceEnabledValues = _InterfaceEnabledValues;
+@synthesize PendingDatasetTimestampValues = _PendingDatasetTimestampValues;
+@synthesize ThreadVersionValues = _ThreadVersionValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

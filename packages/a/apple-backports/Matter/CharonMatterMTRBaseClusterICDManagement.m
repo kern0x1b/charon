@@ -36,6 +36,22 @@
 
 @implementation MTRBaseClusterICDManagement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize ActiveModeDurationValues = _ActiveModeDurationValues;
+@synthesize ActiveModeThresholdValues = _ActiveModeThresholdValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClientsSupportedPerFabricValues = _ClientsSupportedPerFabricValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize ICDCounterValues = _ICDCounterValues;
+@synthesize IdleModeDurationValues = _IdleModeDurationValues;
+@synthesize MaximumCheckInBackOffValues = _MaximumCheckInBackOffValues;
+@synthesize OperatingModeValues = _OperatingModeValues;
+@synthesize RegisteredClientsValues = _RegisteredClientsValues;
+@synthesize UserActiveModeTriggerHintValues = _UserActiveModeTriggerHintValues;
+@synthesize UserActiveModeTriggerInstructionValues = _UserActiveModeTriggerInstructionValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

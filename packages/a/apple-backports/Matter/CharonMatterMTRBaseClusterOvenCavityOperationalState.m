@@ -36,6 +36,18 @@
 
 @implementation MTRBaseClusterOvenCavityOperationalState
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CountdownTimeValues = _CountdownTimeValues;
+@synthesize CurrentPhaseValues = _CurrentPhaseValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize OperationalErrorValues = _OperationalErrorValues;
+@synthesize OperationalStateValues = _OperationalStateValues;
+@synthesize OperationalStateListValues = _OperationalStateListValues;
+@synthesize PhaseListValues = _PhaseListValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

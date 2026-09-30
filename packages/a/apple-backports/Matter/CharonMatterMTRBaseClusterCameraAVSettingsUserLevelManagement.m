@@ -36,6 +36,22 @@
 
 @implementation MTRBaseClusterCameraAVSettingsUserLevelManagement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize DPTZStreamsValues = _DPTZStreamsValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize MPTZPositionValues = _MPTZPositionValues;
+@synthesize MPTZPresetsValues = _MPTZPresetsValues;
+@synthesize MaxPresetsValues = _MaxPresetsValues;
+@synthesize MovementStateValues = _MovementStateValues;
+@synthesize PanMaxValues = _PanMaxValues;
+@synthesize PanMinValues = _PanMinValues;
+@synthesize TiltMaxValues = _TiltMaxValues;
+@synthesize TiltMinValues = _TiltMinValues;
+@synthesize ZoomMaxValues = _ZoomMaxValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

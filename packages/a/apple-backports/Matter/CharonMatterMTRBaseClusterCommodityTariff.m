@@ -36,6 +36,31 @@
 
 @implementation MTRBaseClusterCommodityTariff
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize CalendarPeriodsValues = _CalendarPeriodsValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CurrentDayValues = _CurrentDayValues;
+@synthesize CurrentDayEntryValues = _CurrentDayEntryValues;
+@synthesize CurrentDayEntryDateValues = _CurrentDayEntryDateValues;
+@synthesize CurrentTariffComponentsValues = _CurrentTariffComponentsValues;
+@synthesize DayEntriesValues = _DayEntriesValues;
+@synthesize DayPatternsValues = _DayPatternsValues;
+@synthesize DefaultRandomizationOffsetValues = _DefaultRandomizationOffsetValues;
+@synthesize DefaultRandomizationTypeValues = _DefaultRandomizationTypeValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize IndividualDaysValues = _IndividualDaysValues;
+@synthesize NextDayValues = _NextDayValues;
+@synthesize NextDayEntryValues = _NextDayEntryValues;
+@synthesize NextDayEntryDateValues = _NextDayEntryDateValues;
+@synthesize NextTariffComponentsValues = _NextTariffComponentsValues;
+@synthesize StartDateValues = _StartDateValues;
+@synthesize TariffComponentsValues = _TariffComponentsValues;
+@synthesize TariffInfoValues = _TariffInfoValues;
+@synthesize TariffPeriodsValues = _TariffPeriodsValues;
+@synthesize TariffUnitValues = _TariffUnitValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

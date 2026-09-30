@@ -36,6 +36,23 @@
 
 @implementation MTRBaseClusterValveConfigurationAndControl
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize AutoCloseTimeValues = _AutoCloseTimeValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize CurrentLevelValues = _CurrentLevelValues;
+@synthesize CurrentStateValues = _CurrentStateValues;
+@synthesize DefaultOpenDurationValues = _DefaultOpenDurationValues;
+@synthesize DefaultOpenLevelValues = _DefaultOpenLevelValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize LevelStepValues = _LevelStepValues;
+@synthesize OpenDurationValues = _OpenDurationValues;
+@synthesize RemainingDurationValues = _RemainingDurationValues;
+@synthesize TargetLevelValues = _TargetLevelValues;
+@synthesize TargetStateValues = _TargetStateValues;
+@synthesize ValveFaultValues = _ValveFaultValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

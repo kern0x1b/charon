@@ -36,6 +36,23 @@
 
 @implementation MTRBaseClusterCarbonMonoxideConcentrationMeasurement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize AverageMeasuredValueValues = _AverageMeasuredValueValues;
+@synthesize AverageMeasuredValueWindowValues = _AverageMeasuredValueWindowValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize LevelValueValues = _LevelValueValues;
+@synthesize MaxMeasuredValueValues = _MaxMeasuredValueValues;
+@synthesize MeasuredValueValues = _MeasuredValueValues;
+@synthesize MeasurementMediumValues = _MeasurementMediumValues;
+@synthesize MeasurementUnitValues = _MeasurementUnitValues;
+@synthesize MinMeasuredValueValues = _MinMeasuredValueValues;
+@synthesize PeakMeasuredValueValues = _PeakMeasuredValueValues;
+@synthesize PeakMeasuredValueWindowValues = _PeakMeasuredValueWindowValues;
+@synthesize UncertaintyValues = _UncertaintyValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

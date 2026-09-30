@@ -36,6 +36,31 @@
 
 @implementation MTRBaseClusterElectricalPowerMeasurement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AccuracyValues = _AccuracyValues;
+@synthesize ActiveCurrentValues = _ActiveCurrentValues;
+@synthesize ActivePowerValues = _ActivePowerValues;
+@synthesize ApparentCurrentValues = _ApparentCurrentValues;
+@synthesize ApparentPowerValues = _ApparentPowerValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize FrequencyValues = _FrequencyValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize HarmonicCurrentsValues = _HarmonicCurrentsValues;
+@synthesize HarmonicPhasesValues = _HarmonicPhasesValues;
+@synthesize NeutralCurrentValues = _NeutralCurrentValues;
+@synthesize NumberOfMeasurementTypesValues = _NumberOfMeasurementTypesValues;
+@synthesize PowerFactorValues = _PowerFactorValues;
+@synthesize PowerModeValues = _PowerModeValues;
+@synthesize RMSCurrentValues = _RMSCurrentValues;
+@synthesize RMSPowerValues = _RMSPowerValues;
+@synthesize RMSVoltageValues = _RMSVoltageValues;
+@synthesize RangesValues = _RangesValues;
+@synthesize ReactiveCurrentValues = _ReactiveCurrentValues;
+@synthesize ReactivePowerValues = _ReactivePowerValues;
+@synthesize VoltageValues = _VoltageValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values

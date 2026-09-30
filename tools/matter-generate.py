@@ -1216,6 +1216,19 @@ def emit(path, cluster, supers, attributes, commands, version, cache_reads, cach
     body.append("}\n")
     body.append("@end\n\n")
     body.append("@implementation %s\n\n" % cluster)
+
+    # The class interface above declares one NSMutableDictionary property per attribute, and the
+    # library builds with -Werror=objc-missing-property-synthesis, so every one of them is synthesized
+    # here by name: the flag is an error on a property the compiler would otherwise have synthesized
+    # for us. They cannot be declared in the header instead - @synthesize inside an @interface is an
+    # illegal interface qualifier - so the object that implements the class is where they go, which is
+    # the same place the payload objects above already synthesize theirs, and only where the
+    # interface above was written: for a cluster 16.4 declares, the SDK's own interface is the
+    # declaration and the compiler synthesizes those properties itself.
+    if not DECLARED_16 or cluster not in DECLARED_16:
+        for _name in sorted(attributes):
+            body.append("@synthesize %sValues = _%sValues;\n" % (_name, _name))
+        body.append("\n")
     body.append("// The values the caller has written, by attribute name: one table, keyed by the\n"
                 "// object, guarded by a lock, because armv7 has no thread-local storage to rely on.\n")
     body.append("+ (NSMutableDictionary *)charon_port_values\n{\n"

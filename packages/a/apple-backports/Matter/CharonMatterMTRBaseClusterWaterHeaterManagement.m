@@ -36,6 +36,18 @@
 
 @implementation MTRBaseClusterWaterHeaterManagement
 
+@synthesize AcceptedCommandListValues = _AcceptedCommandListValues;
+@synthesize AttributeListValues = _AttributeListValues;
+@synthesize BoostStateValues = _BoostStateValues;
+@synthesize ClusterRevisionValues = _ClusterRevisionValues;
+@synthesize EstimatedHeatRequiredValues = _EstimatedHeatRequiredValues;
+@synthesize FeatureMapValues = _FeatureMapValues;
+@synthesize GeneratedCommandListValues = _GeneratedCommandListValues;
+@synthesize HeatDemandValues = _HeatDemandValues;
+@synthesize HeaterTypesValues = _HeaterTypesValues;
+@synthesize TankPercentageValues = _TankPercentageValues;
+@synthesize TankVolumeValues = _TankVolumeValues;
+
 // The values the caller has written, by attribute name: one table, keyed by the
 // object, guarded by a lock, because armv7 has no thread-local storage to rely on.
 + (NSMutableDictionary *)charon_port_values
