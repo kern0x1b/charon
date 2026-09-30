@@ -11,25 +11,40 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
+#import <CarPlay/CarPlay.h>
 
-@interface charonHost_CPVoiceControlState : NSObject
-- (instancetype)initWithIdentifier:(NSString *)identifier
-                     titleVariants:(NSArray<NSString *> *)titleVariants
-                             image:(UIImage *)image
-                           repeats:(BOOL)repeats;
-@property (nullable, nonatomic, readonly, copy) NSArray<NSString *> *titleVariants;
-@property (nullable, nonatomic, readonly, strong) UIImage *image;
-@property (nonatomic, readonly, copy) NSString *identifier;
-@property (nonatomic, readonly) BOOL repeats;
-+ (BOOL)supportsSecureCoding;
+// The port's own classes, reached through their renamed names. CarPlay.h is imported with the same
+// -D renames the port's sources are compiled with, so it DECLARES charonHost_CPVoiceControlState,
+// charonHost_CPVoiceControlTemplate, charonHost_CPNavigationSession, charonHost_CPMapTemplate,
+// charonHost_CPTrip, charonHost_CPManeuver and charonHost_CPTravelEstimates with the SDK's own
+// signatures -- which is why nothing below redeclares them.
+//
+// What CarPlay.h does not declare, and what this file needs, are the port's own Charon members: the
+// map template's three accessors for the session it stores and the map it draws over (the storage is
+// the class's own, in CarPlayTemplatesView12.m, because a category cannot add an ivar), and the
+// shim's own factory for an estimates object, which the SDK's property is readonly.
+
+@interface charonHost_CPVoiceControlTemplate (CharonHarness)
+- (UIViewController *)charon_viewControllerForInterfaceController:(id)controller;
 @end
 
-@interface charonHost_CPVoiceControlTemplate : NSObject
-- (instancetype)initWithVoiceControlStates:(NSArray<charonHost_CPVoiceControlState *> *)states;
-@property (nonatomic, readonly, copy) NSArray<charonHost_CPVoiceControlState *> *voiceControlStates;
-- (void)activateVoiceControlStateWithIdentifier:(NSString *)identifier;
-@property (nonatomic, readonly, copy, nullable) NSString *activeStateIdentifier;
-- (UIViewController *)charon_viewControllerForInterfaceController:(id)controller;
+@interface charonHost_CPTrip (CharonHarness)
+- (instancetype)initCharonTrip;
+@end
+
+@interface charonHost_CPManeuver (CharonHarness)
+- (instancetype)initCharonManeuver;
+@end
+
+@interface charonHost_CPMapTemplate (CharonHarness)
+- (id)charon_navigationSession;
+- (void)charon_setNavigationSession:(id)session;
+- (UIView *)charon_mapView;
+- (void)charon_setMapView:(UIView *)view;
+@end
+
+@interface charonHost_CPTravelEstimates (CharonHarness)
+- (instancetype)initCharonWithTimeRemaining:(NSTimeInterval)time;
 @end
 
 static int gChecks = 0;
@@ -91,6 +106,26 @@ static SEL registeredAction(UIControl *control, id target)
         return NSSelectorFromString((NSString *)first);
     }
     return NULL;
+}
+
+// The guidance the map template currently shows, read off its NEWEST card every time. The card is
+// taken off the map and a new one put in its place on each update, so a label read once goes stale and
+// a harness that held on to it would be reading a view the port had already removed.
+static UILabel *currentCardLabel(UIView *canvas)
+{
+    UIView *card = canvas.subviews.lastObject;
+    for (UIView *inner in card.subviews) {
+        if ([inner isKindOfClass:[UILabel class]]) {
+            return (UILabel *)inner;
+        }
+    }
+    return nil;
+}
+
+static NSString *guidanceText(UIView *canvas)
+{
+    UILabel *label = currentCardLabel(canvas);
+    return label != nil ? label.text : nil;
 }
 
 int main(int argc, const char *argv[])
@@ -277,6 +312,78 @@ int main(int argc, const char *argv[])
                 break;
             }
         }
+
+        // ---- the navigation session, the eight rows of CPNavigationSession ----------------------
+        // The way in is the header's own: the map template's -startNavigationSessionForTrip:, which the
+        // 26.2 header says is where a session comes to exist. There is no -init and no +new here and
+        // there is none in the port: the header marks both NS_UNAVAILABLE.
+        printf("\n== the navigation session, begun by the map template ==\n");
+        charonHost_CPMapTemplate *map = [[charonHost_CPMapTemplate alloc] init];
+        UIView *canvas = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 800.0, 480.0)];
+        [map charon_setMapView:canvas];
+        charonHost_CPTrip *trip = [[charonHost_CPTrip alloc] initCharonTrip];
+        charonHost_CPNavigationSession *session = [map startNavigationSessionForTrip:trip];
+        check(@"the map template's own method hands back a session", session != nil,
+              session ? describe(session) : @"nil");
+        check(@"the session answers the trip it was begun for", session.trip == trip,
+              describe(session.trip));
+        check(@"a second call for the same trip hands back the session already running",
+              [map startNavigationSessionForTrip:trip] == session,
+              describe([map startNavigationSessionForTrip:trip]));
+
+        charonHost_CPManeuver *next = [[charonHost_CPManeuver alloc] initCharonManeuver];
+        session.upcomingManeuvers = @[next];
+        check(@"the session keeps the maneuvers a program set", session.upcomingManeuvers.count == 1,
+              describe(session.upcomingManeuvers));
+        charonHost_CPTravelEstimates *estimates =
+            [[charonHost_CPTravelEstimates alloc] initCharonWithTimeRemaining:125.0];
+        [session updateTravelEstimates:estimates forManeuver:next];
+        check(@"the estimates land in the map template's own guidance card",
+              [guidanceText(canvas) isEqualToString:@"2 min 05 sec"], describe(guidanceText(canvas)));
+
+        charonHost_CPTravelEstimates *unknown =
+            [[charonHost_CPTravelEstimates alloc] initCharonWithTimeRemaining:-1.0];
+        [session updateTravelEstimates:unknown forManeuver:next];
+        check(@"a negative time remaining renders as the header's own \"--\"",
+              [guidanceText(canvas) isEqualToString:@"--"], describe(guidanceText(canvas)));
+
+        [session pauseTripForReason:1 description:@"Loading route"];
+        check(@"a pause with the header's own reason shows its description",
+              [guidanceText(canvas) isEqualToString:@"Loading route"], describe(guidanceText(canvas)));
+        [session pauseTripForReason:1 description:nil];
+        check(@"a pause with no description says so rather than nothing",
+              [guidanceText(canvas) isEqualToString:@"Trip paused"], describe(guidanceText(canvas)));
+
+        UIColor *turnCard = [UIColor blueColor];
+        [session pauseTripForReason:1 description:@"Rerouting" turnCardColor:turnCard];
+        UIView *drawn = canvas.subviews.lastObject;
+        check(@"a turn card colour is the card's colour, the header's first choice",
+              drawn != nil && [drawn.backgroundColor isEqual:turnCard],
+              drawn != nil ? @"blue" : @"no card");
+        // The template's own colour first, because the card is drawn when the pause is recorded and not
+        // when a property is set: the chain is read at the moment the guidance is drawn.
+        map.guidanceBackgroundColor = [UIColor greenColor];
+        [session pauseTripForReason:1 description:@"Rerouting" turnCardColor:nil];
+        drawn = canvas.subviews.lastObject;
+        check(@"with no turn card colour the card falls back to the template's guidanceBackgroundColor",
+              drawn != nil && [drawn.backgroundColor isEqual:[UIColor greenColor]],
+              drawn != nil ? @"green" : @"no card");
+
+        [session finishTrip];
+        check(@"a finished trip says so", [guidanceText(canvas) isEqualToString:@"Trip finished"],
+              describe(guidanceText(canvas)));
+        [session cancelTrip];
+        check(@"a cancelled trip says so", [guidanceText(canvas) isEqualToString:@"Trip cancelled"],
+              describe(guidanceText(canvas)));
+
+        // And the drawing is refused when the template has no map yet, which is the state a template is
+        // in before an interface controller pushes it.
+        charonHost_CPMapTemplate *unpushed = [[charonHost_CPMapTemplate alloc] init];
+        charonHost_CPNavigationSession *pending = [unpushed startNavigationSessionForTrip:trip];
+        [pending updateTravelEstimates:estimates forManeuver:next];
+        check(@"guidance asked for before the template is pushed draws nothing and loses nothing",
+              pending != nil && unpushed.charon_mapView == nil,
+              describe(pending));
 
         printf("\nchecks=%d failures=%d\n", gChecks, gFailures);
         if (gAnswers != nil) {

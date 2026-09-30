@@ -851,6 +851,10 @@ static UINavigationBar *_listNavigationBar;
     MKMapView *_mapView;
     CharonCarPlayBar *_charon_bar;
     CharonMapButtons *_charon_map_buttons;
+    // The session begun by -startNavigationSessionForTrip:, which the class's own file keeps because a
+    // category cannot add storage. The method that makes one is in CarPlayNavigationSession12.m, the
+    // same 12.0 object this class belongs to.
+    id _navigationSession;
 }
 
 @synthesize guidanceBackgroundColor = _guidanceBackgroundColor;
@@ -943,6 +947,26 @@ static UINavigationBar *_listNavigationBar;
     label.textColor = [UIColor whiteColor];
     [card addSubview:label];
     [_mapView addSubview:card];
+}
+
+// The map the guidance and the map buttons are drawn over, for the file that draws a session's
+// estimates: it is the release's own MKMapView and nil until the template has been pushed, so
+// guidance asked for before then is not drawn onto a view that does not exist. Charon's own.
+- (UIView *)charon_mapView
+{
+    return _mapView;
+}
+
+// The session begun by -startNavigationSessionForTrip:, and how the file that makes one hands it
+// over. Charon's own, so neither carries API.
+- (id)charon_navigationSession
+{
+    return _navigationSession;
+}
+
+- (void)charon_setNavigationSession:(id)session
+{
+    _navigationSession = session;
 }
 
 @end

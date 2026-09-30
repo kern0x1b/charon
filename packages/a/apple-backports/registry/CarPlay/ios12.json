@@ -1271,22 +1271,22 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: there is no session and no trip to cancel",
+      "status": "implemented",
+      "reason": "the trip is marked cancelled, the maneuvers are dropped and the card says so",
+      "effect": "the card reads \"Trip cancelled\"",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "-[CPNavigationSession finishTrip]",
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: there is no session and no trip to finish",
+      "status": "implemented",
+      "reason": "the trip is marked finished, the maneuvers are dropped and the card says so",
+      "effect": "the card reads \"Trip finished\"",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "-[CPNavigationSession init]",
@@ -1304,22 +1304,22 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: there is no session and no trip to pause",
+      "status": "implemented",
+      "reason": "the reason and the description are recorded and the guidance card shows the description, or \"Trip paused\" when the description is nil -- an answer rather than an empty card",
+      "effect": "the card reads the description, or says the trip is paused",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "-[CPNavigationSession pauseTripForReason:description:turnCardColor:]",
       "kind": "method",
       "introduced": "15.4",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet, and this one is a 15.4 member of a 12.0 class, so it belongs in a 15.4 object as a category",
+      "status": "implemented",
+      "reason": "the 15.4 form is the 12.0 pause plus the turn card colour, kept as given including nil, and the card takes the colour in the header's own order: the turn card colour, else the map template's guidanceBackgroundColor, else the colour the template's own -init sets",
+      "effect": "the card is drawn in the turn card colour, and with none in the template's guidanceBackgroundColor",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "-[CPNavigationSession resumeTripWithUpdatedRouteInformation:]",
@@ -1337,11 +1337,11 @@
       "kind": "method",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: the estimates a program updates are the ones the map template would draw, and there is no session to update",
+      "status": "implemented",
+      "reason": "the estimates are kept for the maneuver they were given and the map template's own guidance card draws the time remaining of the maneuver being arrived at, in minutes and seconds",
+      "effect": "the card over the map reads the new time remaining, and a negative one renders as the header's own \\\"--\\\" rather than as a number",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "-[CPRouteChoice initWithSummaryVariants:additionalInformationVariants:selectionSummaryVariants:]",
@@ -2734,11 +2734,11 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: NSClassFromString answers nil, and the map template's -startNavigationSessionForTrip: -- registered implemented and implemented by nothing -- has no session to hand back",
+      "status": "implemented",
+      "reason": "the session a map template begins, which is the way the 26.2 header says one comes to exist: it holds the program's own trip, its maneuvers and the estimates it was given, and the map template's guidance card is where those land. Not a wall: the wall is the car that renders the guidance on its own screen, and there is none on either fleet device",
+      "effect": "a session for the trip, which answers the trip and takes the maneuvers and the estimates the program gives it",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "CPNavigationSession.currentLaneGuidance",
@@ -2778,22 +2778,22 @@
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: there is no session, so there is no trip to answer with",
+      "status": "implemented",
+      "reason": "the session a map template begins, which is the way the 26.2 header says one comes to exist: it holds the program's own trip, its maneuvers and the estimates it was given, and the map template's guidance card is where those land. Not a wall: the wall is the car that renders the guidance on its own screen, and there is none on either fleet device",
+      "effect": "the trip it was begun for, and nil for a session begun with none",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "CPNavigationSession.upcomingManeuvers",
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "owed",
-      "reason": "a measurement, not a hardware absence, and not carried yet: the 26.2 header says a CPNavigationSession is created for the program when it calls -startNavigationSessionForTrip: on its map template (CPNavigationSession.h:26-27, CPMapTemplate.h:112), so the session is not the connection to a car -- the SCENE is, and that is a different row -- and the creator is a map template this port already carries and draws. Per class on the 16.0 arm64e cache the class has trip, upcomingManeuvers, cancelTrip, finishTrip, pauseTripForReason:description:, pauseTripForReason:description:turnCardColor: and updateTravelEstimates:forManeuver: and none of the six 17.4 members, and on the 18.0 cache it has all six with their private accessors, so they are stored values rather than messages to a car. owed, and this is the port's own word for it: the release carries the name, the port could carry it, and nobody has written it yet. Not absent, because absent would say the release has nothing, and it has had this since 12.0; not inert, which promises the port answers; not implemented, because there is no object yet. What carrying it needs is in facts/CarPlay/NavigationSession.md",
-      "effect": "nothing yet: there is no session to hold the maneuvers a program adds",
+      "status": "implemented",
+      "reason": "the maneuvers a program set, copied and kept in the order it set them: the header says several are displayed at once and which ones those are is the program's to choose",
+      "effect": "the program's own array, and a copy of it",
       "facts": "facts/CarPlay/NavigationSession.md",
-      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-34, CPMapTemplate.h:112), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, and first-rung.py over the held ladder for the names; facts/CarPlay/NavigationSession.md"
+      "source": "the 26.2 headers this port targets (CPNavigationSession.h:26-27 for who makes one, :33-34 for the two calls the header forbids, :44-49 for the turn card colour, CPMapTemplate.h:118 for the way in, CPTravelEstimates.h:24-31 for a negative estimate rendering as \\\"--\\\"), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 (the class's only initialiser is the private -initWithTrip:mapTemplate:, and CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:), and the port's own objects driven by tests/backports/host/carplay/runner.m"
     },
     {
       "api": "CPRouteChoice",

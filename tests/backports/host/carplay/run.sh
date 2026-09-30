@@ -32,8 +32,13 @@ FRAMEWORKS="-F $IOSSUPPORT/System/Library/Frameworks -framework Foundation -fram
 # The renames move the PORT's references; the headers they were read from still declare Apple's
 # names, which is why Apple's CarPlay has to be linked on the probe side and not on the port side.
 RENAME="-DCPTemplate=charonHost_CPTemplate \
-    -DCPVoiceControlTemplate=charonHost_CPVoiceControlTemplate \
+    -DCPNavigationSession=charonHost_CPNavigationSession \
+    -DCPMapTemplate=charonHost_CPMapTemplate \
+    -DCPTrip=charonHost_CPTrip \
+        -DCPVoiceControlTemplate=charonHost_CPVoiceControlTemplate \
     -DCPVoiceControlState=charonHost_CPVoiceControlState \
+    -DCPManeuver=charonHost_CPManeuver \
+    -DCPTravelEstimates=charonHost_CPTravelEstimates \
     -DCPInterfaceController=charonHost_CPInterfaceController"
 
 status=0
@@ -87,7 +92,8 @@ build_runner() {
     out=$1
     source=$2
     xcrun clang -fobjc-arc -Wall $TARGET $FRAMEWORKS -I"$port" $RENAME \
-        "$here/runner.m" "$build/port-classes.o" "$source" -o "$out" 2> "$build/cc.log" || {
+        "$here/runner.m" "$build/port-classes.o" "$source" \
+        "$port/CarPlayNavigationSession12.m" "$port/CarPlayNavigationSession154.m" -o "$out" 2> "$build/cc.log" || {
             grep -m5 ': error:' "$build/cc.log" || true
             exit 1
         }
