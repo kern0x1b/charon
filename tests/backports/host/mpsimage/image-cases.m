@@ -62,6 +62,23 @@
 // reason CharonImageMatrixEncode exists for the copy's encode.
 // MPSImageAreaMax/AreaMin take -initWithDevice:kernelHeight:kernelWidth: (MPSImageMorphology.h:42) and
 // MPSImageDilate/Erode take the same plus -values: (:129), so the two are spelled out rather than merged.
+// MPSImageHistogram's encode takes a texture and a buffer, not two MPSImages, and the normalized form
+// adds a minmax texture between them (MPSImageHistogram.h:115 and :218), so both are spelled out here
+// the way every other selector in this file is.
+@protocol CharonHistogramEncode
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                sourceTexture:(id<MTLTexture>)source
+                     histogram:(id<MTLBuffer>)histogram
+                histogramOffset:(NSUInteger)histogramOffset;
+@end
+@protocol CharonNormalizedHistogramEncode
+- (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                sourceTexture:(id<MTLTexture>)source
+              minmaxTexture:(id<MTLTexture>)minmax
+                     histogram:(id<MTLBuffer>)histogram
+                histogramOffset:(NSUInteger)histogramOffset;
+@end
+
 @protocol CharonMorphologyAreaInit
 - (instancetype)initWithDevice:(id<MTLDevice>)device
                   kernelHeight:(NSUInteger)kernelHeight
@@ -637,6 +654,104 @@ int main(int argc, const char **argv)
                 printf("\n");
                 CharonReferenceImageMorphology(morphNames[i], input, rows, cols, 1, mw, mh,
                                               i < 2 ? NULL : probe, (i == 0 || i == 2), 0, 0, got, values);
+            }
+        }
+
+        // MPSImageHistogram, MPSImageHistogram.h:33 and :145. A histogram COUNTS, so its answer is exact
+        // and is compared exactly - the same argument as the morphology family and the opposite of the
+        // convolution's. The bins are CHANNEL-MAJOR (:206-215, "histogram results for the R channel for all
+        // bins followed by" the G bins...), so a kernel that wrote them bin-major would produce a
+        // plausible-looking array in the wrong order and this catches it.
+        //
+        // histogramForAlpha is set NO (:208 "If histogramInfo.histogramForAlpha is false and the source
+        // image is RGBA then only histogram results for RGB channels are stored"), so the alpha channel's
+        // bins are not compared at all - and a kernel that wrote four channels where three belong would
+        // show up as the first three matching and the buffer size disagreeing.
+        {
+            static const char *histNames[2] = {"histogram", "normalized-histogram"};
+            static const char *histRenamed[2] = {"CharonMPSImageHistogram", "CharonMPSImageNormalizedHistogram"};
+            Class histClasses[2] = {[MPSImageHistogram class], [MPSImageNormalizedHistogram class]};
+            NSUInteger bins = 8;
+            double lo = 0.0, hi = 1.0;
+            MPSImageHistogramInfo info;
+            info.numberOfHistogramEntries = bins;
+            info.histogramForAlpha = NO;
+            info.minPixelValue = (vector_float4){(float)lo, (float)lo, (float)lo, (float)lo};
+            info.maxPixelValue = (vector_float4){(float)hi, (float)hi, (float)hi, (float)hi};
+            // the unorm8 bytes the reference and the kernel both see, written through the image's texture
+            unsigned char pixels[rows * cols * 4];
+            for (NSUInteger p = 0; p < rows * cols; p++)
+                for (NSUInteger c = 0; c < 4; c++)
+                    pixels[p * 4 + c] = (unsigned char)(c == 3 ? 255 : (p * 37 + c * 11) % 256);
+            // The port's descriptor is channel-format based, and MPSImage13's own table maps
+            // MPSImageFeatureChannelFormatUnorm8 to MTLPixelFormatRGBA8Unorm - which is the format the
+            // histogram's :208 wording talks about ("if the source image is RGBA").
+            MPSImageDescriptor *u8 =
+                [MPSImageDescriptor imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatUnorm8
+                                                                width:cols height:rows featureChannels:4];
+            MPSImage *src8 = [[MPSImage alloc] initWithDevice:gDevice imageDescriptor:u8];
+            [[src8 texture] replaceRegion:MTLRegionMake2D(0, 0, cols, rows) mipmapLevel:0
+                                withBytes:pixels bytesPerRow:cols * 4];
+            for (int i = 0; i < 2; i++) {
+                if (!NSClassFromString([NSString stringWithUTF8String:histRenamed[i]])) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: this port has no %s (looked for %s), so the case is absent"
+                           " and not merely wrong\n", histNames[i], histRenamed[i], histRenamed[i]);
+                    printf("case %s 0\n", histNames[i]);
+                    continue;
+                }
+                size_t want = (size_t)bins * 3 * sizeof(uint32_t);
+                id<MTLBuffer> out = [gDevice newBufferWithLength:want options:MTLResourceStorageModeShared];
+                id<MTLTexture> minmax = nil;
+                if (i) {
+                    MTLTextureDescriptor *mmd = [[MTLTextureDescriptor alloc] init];
+                    mmd.textureType = MTLTextureType2D;
+                    mmd.pixelFormat = MTLPixelFormatRGBA8Unorm;
+                    mmd.width = 1;
+                    mmd.height = 1;
+                    mmd.usage = MTLTextureUsageShaderRead | MTLTextureUsageShaderWrite;
+                    minmax = [gDevice newTextureWithDescriptor:mmd];
+                }
+                memset([out contents], 0, want);
+                MPSImageHistogramInfo use = info;
+                if (i) {
+                    // the normalized form measures its own range; give it a range it will replace, so a
+                    // kernel that used the caller's range instead of the image's is visible
+                    use.minPixelValue = (vector_float4){0.25f, 0.25f, 0.25f, 0.25f};
+                    use.maxPixelValue = (vector_float4){0.75f, 0.75f, 0.75f, 0.75f};
+                }
+                Class hc = histClasses[i];
+                id kernel = [[hc alloc] initWithDevice:gDevice histogramInfo:&use];
+                if (!kernel) {
+                    gMismatches++;
+                    printf("\n  MISMATCH %s: %s exists but would not instantiate\n", histNames[i],
+                           histRenamed[i]);
+                    printf("case %s 0\n", histNames[i]);
+                    continue;
+                }
+                if (i)
+                    [(id<CharonNormalizedHistogramEncode>)kernel
+                        encodeToCommandBuffer:[gDevice newCommandBuffer] sourceTexture:[src8 texture]
+                      minmaxTexture:minmax histogram:out histogramOffset:0];
+                else
+                    [(id<CharonHistogramEncode>)kernel encodeToCommandBuffer:[gDevice newCommandBuffer]
+                                                             sourceTexture:[src8 texture]
+                                                                    histogram:out
+                                                              histogramOffset:0];
+                double rangeLo = lo, rangeHi = hi;
+                if (i) {
+                    unsigned char mm[4] = {0, 0, 0, 0};
+                    [minmax getBytes:mm bytesPerRow:4 fromRegion:MTLRegionMake2D(0, 0, 1, 1) mipmapLevel:0];
+                    rangeLo = (double)mm[0] / 255.0;
+                    rangeHi = (double)mm[1] / 255.0;
+                }
+                uint32_t *binsOut = (uint32_t *)[out contents];
+                printf("case %s %lu", histNames[i], (unsigned long)want);
+                for (NSUInteger b = 0; b < (want / sizeof(uint32_t)); b++)
+                    printf(" %lu", (unsigned long)binsOut[b]);
+                printf("\n");
+                CharonReferenceImageHistogram(histNames[i], pixels, rows, cols, bins, rangeLo, rangeHi,
+                                              NO, binsOut, 4);
             }
         }
     }

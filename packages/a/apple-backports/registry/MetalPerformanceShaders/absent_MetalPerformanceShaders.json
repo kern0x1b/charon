@@ -11,24 +11,15 @@
       "effect": "MPSImageConvolution.h:252 makes -initWithDevice:sigma: the designated initializer, but the header nowhere says how many taps a sigma implies, and a blur of a different width is a different blur. The class is therefore HERE and refuses to be built by name, and the case records that as INERT rather than pretending a blur was compared. This is the one row whose object exists and answers nothing, and it is written down rather than left to be discovered."
     },
     {
-      "api": "MPSImageHistogram",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
       "api": "MPSImageHistogramEqualization",
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageHistogram.h's own annotation above this interface says ios(9.0). MPSImageHistogram.h:33/:145 (ios(9.0)), :42 clipRectSource, :49 zeroHistogram (\"Default: YES\" - NO means the caller's existing counts are ADDED to), :59 minPixelThresholdValue (\"incremented only if pixel value is >=\"), :61/:66 minPixelValue/maxPixelValue (outside the range is not binned), :206-215 the result layout (R bins, then G, then B, then A - channel-major), :208 histogramForAlpha false on RGBA stores RGB only, :115/:218 the encodes, :131 histogramSizeForSourceFormat:. Compared for EQUALITY with no tolerance: a histogram COUNTS, so its answer is an integer and a tolerance could only hide an off-by-one. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "Neither of these two is a walk over an image. Both build a TRANSFORM - :249 \"image transform (i.e. a cumulative distribution function of the histogram)\" for the equalization - and their only encode is :425 encodeTransformToCommandBuffer:, which takes an MTLComputeCommandEncoder. That is the one thing this host cannot do at all: its AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding. So there is no oracle here for a transform and no way to check an answer, and an untestable transform would be a guessed one. OWED until a host can run it.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     },
     {
       "api": "MPSImageHistogramSpecification",
@@ -36,9 +27,10 @@
       "introduced": "9.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "MPSImageHistogram.h's own annotation above this interface says ios(9.0). MPSImageHistogram.h:33/:145 (ios(9.0)), :42 clipRectSource, :49 zeroHistogram (\"Default: YES\" - NO means the caller's existing counts are ADDED to), :59 minPixelThresholdValue (\"incremented only if pixel value is >=\"), :61/:66 minPixelValue/maxPixelValue (outside the range is not binned), :206-215 the result layout (R bins, then G, then B, then A - channel-major), :208 histogramForAlpha false on RGBA stores RGB only, :115/:218 the encodes, :131 histogramSizeForSourceFormat:. Compared for EQUALITY with no tolerance: a histogram COUNTS, so its answer is an integer and a tolerance could only hide an off-by-one. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "As the equalization, and with more that the header does not define: :358 builds its transform from a \"desiredHistogram\" the header does not describe, so there is nothing to check an answer against even in principle on this host. OWED.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     },
     {
       "api": "MPSImageIntegral",
@@ -72,16 +64,6 @@
     },
     {
       "api": "MPSImageMedian",
-      "kind": "class",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
-    },
-    {
-      "api": "MPSImageNormalizedHistogram",
       "kind": "class",
       "introduced": "9.0",
       "minimum": "6.0",

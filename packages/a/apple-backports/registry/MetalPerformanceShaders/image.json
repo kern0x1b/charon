@@ -350,6 +350,28 @@
       "effect": "the minimum pixel value in the region with the same probe (:174, MPSImageErode : MPSImageDilate), which is what makes it a distinct answer from MPSImageAreaMin: same window, same clamped edge, but the probe shifts every candidate.. Measured: the harness case 'erode' compares this kernel element by element against the plain C reference; the port run is COMPARED 331 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
       "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
       "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageHistogram",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageHistogram.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageHistogram.h:33/:145 (ios(9.0)), :42 clipRectSource, :49 zeroHistogram (\"Default: YES\" - NO means the caller's existing counts are ADDED to), :59 minPixelThresholdValue (\"incremented only if pixel value is >=\"), :61/:66 minPixelValue/maxPixelValue (outside the range is not binned), :206-215 the result layout (R bins, then G, then B, then A - channel-major), :208 histogramForAlpha false on RGBA stores RGB only, :115/:218 the encodes, :131 histogramSizeForSourceFormat:. Compared for EQUALITY with no tolerance: a histogram COUNTS, so its answer is an integer and a tolerance could only hide an off-by-one. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "computes the histogram of an image (:16). Each pixel of the window is binned into numberOfHistogramEntries buckets across [minPixelValue, maxPixelValue] and its channel's entry is incremented, into a buffer the CALLER owns at histogramOffset - the result layout is channel-major as :206-215 spells out, so a kernel that wrote bin-major would produce a plausible-looking array in the wrong order. A pixel below minPixelThresholdValue is not counted at all (:59), and a value outside the range is not binned (:61, :66). Measured: the harness case 'histogram' compares this kernel element by element against the plain C reference; the port run is COMPARED 379 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
+    },
+    {
+      "api": "MPSImageNormalizedHistogram",
+      "kind": "class",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "MPSImageHistogram.h's own MPS_CLASS_AVAILABLE_STARTING above this interface says ios(9.0). MPSImageHistogram.h:33/:145 (ios(9.0)), :42 clipRectSource, :49 zeroHistogram (\"Default: YES\" - NO means the caller's existing counts are ADDED to), :59 minPixelThresholdValue (\"incremented only if pixel value is >=\"), :61/:66 minPixelValue/maxPixelValue (outside the range is not binned), :206-215 the result layout (R bins, then G, then B, then A - channel-major), :208 histogramForAlpha false on RGBA stores RGB only, :115/:218 the encodes, :131 histogramSizeForSourceFormat:. Compared for EQUALITY with no tolerance: a histogram COUNTS, so its answer is an integer and a tolerance could only hide an off-by-one. host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
+      "effect": "the same histogram with the range taken from the image rather than given (:218 adds a minmaxTexture the per-image minimum and maximum are returned in, :203). So the range is MEASURED - one walk for the minimum and the maximum, then the same binning - and written to minmax, because a range nobody can see is a range nobody can check. The min and max land in the R and G of one RGBA8 pixel, so they are unorm8-quantised, which is what an RGBA8 minmax texture IS; a caller needing float precision is refused rather than silently given a float-looking answer. Measured: the harness case 'normalized-histogram' compares this kernel element by element against the plain C reference; the port run is COMPARED 379 MISMATCHES 0 and both planted builds are caught. A missing kernel is a MISMATCH, not a case reporting nothing.",
+      "facts": "facts/MetalPerformanceShaders/ImageReduce.md",
+      "source": "tests/backports/host/mpsimage/run.sh"
     }
   ]
 }

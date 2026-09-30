@@ -466,4 +466,58 @@ static void CharonReferenceImageMorphology(const char *name, const float *src, N
     printf("\n");
 }
 
+
+// MPSImageHistogram, from MPSImageHistogram.h of the iPhoneOS 26.2 surface: MPSImageHistogram (:33) and
+// MPSImageNormalizedHistogram (:145), both ios(9.0).
+//
+// What the header fixes, and this is the whole contract:
+//   MPSImageHistogramInfo carries numberOfHistogramEntries ("the number of histogram entries, or 'bins'"),
+//   histogramForAlpha, minPixelValue ("Any pixel value less t[han]" it) and maxPixelValue ("Any pixel
+//   value greate[r than]" it) - so the range is half-open at the bottom, closed at the top, and a value
+//   outside it is not binned at all.
+//   :59 minPixelThresholdValue - "The histogram entries will be incremented only if pixel value is >=
+//   minPixelThresholdValue", per channel.
+//   :206-215 the result's layout, verbatim: "histogram results for the R channel for all bins followed by"
+//   the G bins, then the B bins, then the A bins - so CHANNEL-MAJOR, and :208 "If
+//   histogramInfo.histogramForAlpha is false and the source image is RGBA then only histogram results for
+//   RGB channels are stored".
+//
+// EXACT, and for the same reason the morphology reference is exact: a histogram COUNTS. It selects a bin
+// and adds one, so the answer is an integer and a tolerance could only hide an off-by-one. There is no ulp
+// here, and that is stated because the convolution family's reference has one and the difference is a
+// decision about what the operation does rather than an inconsistency in how it is checked.
+static void CharonReferenceImageHistogram(const char *name, const unsigned char *rgba, NSUInteger rows,
+                                          NSUInteger cols, NSUInteger bins, double lo, double hi,
+                                          BOOL histogramForAlpha, const uint32_t *got, NSUInteger channels)
+{
+    printf("reference %s bins %lu range %g..%g", name, (unsigned long)bins, lo, hi);
+    NSUInteger used = histogramForAlpha ? channels : (channels == 4 ? 3 : channels);
+    for (NSUInteger c = 0; c < used; c++) {
+        for (NSUInteger b = 0; b < bins; b++) {
+            uint32_t want = 0;
+            for (NSUInteger y = 0; y < rows; y++)
+                for (NSUInteger x = 0; x < cols; x++) {
+                    double v = (double)rgba[(y * cols + x) * 4 + c] / 255.0;   // the case's unorm8 source
+                    if (v < lo || v > hi)                                       // minPixelValue / maxPixelValue
+                        continue;
+                    NSUInteger bin = (NSUInteger)((v - lo) / (hi - lo) * (double)bins);
+                    if (bin >= bins)
+                        bin = bins - 1;      // the top of the range is a real bin, not one past the end
+                    if (bin == b)
+                        want++;
+                }
+            gCompared++;
+            uint32_t have = got[c * bins + b];        // :206-215, channel-major
+            if (have != want) {
+                gMismatches++;
+                printf("\n  MISMATCH %s channel %lu bin %lu reference %lu port %lu, exact"
+                       " (a histogram counts, so this is an integer)\n", name, (unsigned long)c,
+                       (unsigned long)b, (unsigned long)want, (unsigned long)have);
+            }
+            printf(" %lu", (unsigned long)want);
+        }
+    }
+    printf("\n");
+}
+
 #endif /* CHARON_MPS_REFERENCE_H */
