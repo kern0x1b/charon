@@ -110,12 +110,20 @@ something are built in `JavaScriptCore/JSCAPI.m` and the one that returns a prom
 promise it returns, in `JavaScript.m`'s own file (`JSValue.m`, `DeferredPromise`). Each is asked
 directly by `tests/backports/host/jscontext/checks.m`, which is a differential: the same file runs
 first against the host's own JavaScriptCore, which is the oracle, then against the backport linked over
-the host's C API. **Both sides answer 177 of 177**, and the blocks-and-structs matrix is 351 lines
-identical on the two.
+the host's C API. **Both sides answer every check they run and finish with `checks=all passed`**, and the
+blocks-and-structs matrix is 351 lines identical on the two.
+
+The number to quote is the run's, not the file's, and the two are not the same count: the run prints
+**177** `ok` lines per side (`grep -c '^ok '` on its log), the file carries **181** `check(` statements, of
+which **174** are call sites in a host build - the rest are `#ifdef CHARON_PORT` regions with no `#else`
+and the device-only one - and at least one of those sites runs in a loop over three cases with a name built
+from the case, so executions are not statements either. "177 of 177" was a number this page carried without
+its derivation, and a reader could not reproduce it from the file it described; that is the whole of what is
+wrong with it, and it is the same failure this page was written to correct.
 
 **What has verified the twelve, and what has not.** The host's engine is the oracle for every one of them
 and every expectation in that file passes on both sides, so what each row answers is measured. What is
-**not** measured on these twelve is the release: the Objective-C API beside them has the same 177 checks
+**not** measured on these twelve is the release: the Objective-C API beside them has had this same harness
 run against the 6.1.3 engine on an iPad 2 (151 of 151 at the time, `facts/JavaScriptCore/JSContext.md`),
 and these twelve have not been on a device. The reason is a build, not a doubt: the twelve are new
 symbols, so a 6.1.3 binary that calls them needs a `libJavaScriptCoreBackports.dylib` built from this
