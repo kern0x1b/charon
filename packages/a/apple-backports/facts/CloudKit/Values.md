@@ -281,3 +281,37 @@ file that defines a class, with a class two files implement asked of both object
 already tested above it, on synthetic objects; what it could not do was run over the repository's own,
 which is where a registry that disagrees with itself is found. Run before this fix it reported six
 objects, the two here and four that are not ours.
+
+## What CloudKit is still owed, by class
+
+Measured over `coordination/corpus/ledger/CloudKit.tsv` (1198 rows) against the 118 rows of
+`registry/CloudKit/values.json` in this tree: **1072 ledger rows are not in the registry**, and they are
+mostly members rather than classes - 491 properties, 347 methods, 135 constants, 33 enums, 28 structs,
+27 typealiases, 7 classes, 4 protocols. The registry's 118 rows are the classes this series carries and
+what they answer; the ledger is the whole surface.
+
+By class family, biggest first, the owed members cluster like this:
+
+| class | owed | what it is |
+| --- | --- | --- |
+| `CKContainer` | 21 | the container's accounts, status and configuration surface |
+| `CKShare` | 16 | the share object of iOS 10 and its metadata, acceptance and participants |
+| `CKDatabase` | 14 | the database's notifications, subscriptions and zone fetch |
+| `CKRecord` | 14 | the record's fields, change tracking and the key-value setting protocol |
+| `CKSyncEngine` | 8 | the engine's remaining delegate and event surface |
+| `CKUserIdentityLookupInfo` | 8 | the lookup info's own members |
+| `CKRecordKeyValueSetting` | 7 | the protocol the record's fields answer to |
+| `CKSyncEngineState` | 6 | the state object's own members |
+| `CKRecordZone` | 5 | the zone object's own members |
+| `CKSyncEngineDelegate` | 5 | the delegate the engine calls back into |
+
+`CKContainer` is the next family, and the count is a count of the ledger's rows for that class, not a
+judgement about what it is worth: a member is owed when no row and no definition exist for it here, and
+a member whose behaviour is already answered by a class this series carries is not owed work, it is a row
+to be written. The two owed *classes* - names the sweep lists that nothing in the pile ever carried -
+remain `CKFetchWebAuthTokenOperation` and `CKShareRequestAccessOperation`, and they are owed on the same
+terms as before.
+
+What this table is not: a plan, and not a claim that any of it can be carried. Each family needs its own
+host differential before a row may say `implemented`, and where the host cannot be asked the row says so
+with the reason, as `CKFetchWebAuthTokenOperation` does.
