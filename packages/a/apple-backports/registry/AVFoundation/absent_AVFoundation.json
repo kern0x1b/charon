@@ -2669,19 +2669,20 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the answer is one camera's calibration data about another - the matrix relating their optical frames - and a device with one camera has no second frame to relate it to. 6.1.3's AVCaptureDevice carries 100 own instance selectors and 5 class selectors and returns no matrix, while 16.0's carries 289 own instance selectors including -cameraPoseMatrix, -intrinsicMatrix and -isCameraIntrinsicMatrixDeliverySupported. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and there is nothing on this release to answer it with. A caller that needs two cameras at once adds two AVCaptureDeviceInputs to one AVCaptureSession and lets the session's own graph build from them; the calibration between two optical frames is data no 6.1.3 member returns",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:2313, + (nullable NSData *)extrinsicMatrixFromDevice:(AVCaptureDevice *)fromDevice toDevice:(AVCaptureDevice *)toDevice API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "+[AVMutableVideoComposition videoCompositionWithPropertiesOfAsset:prototypeInstruction:]",
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoComposition a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "the release answers both halves of this one. 6.1.3's AVMutableVideoComposition carries 12 own instance selectors and 3 class selectors, and the class selectors are +videoComposition, +videoCompositionWithPropertiesOfAsset: and +videoCompositionWithPropertiesOfAsset:videoGravity: - the spatial and timing half, present since iOS 6 and deprecated only at iOS 18 - while AVVideoCompositionInstruction carries backgroundColor, enablePostProcessing, layerInstructions and timeRange, which is the whole of what a prototype instruction contributes. The header defines the method as the first half plus an override: 'Also see videoCompositionWithPropertiesOfAsset:. The returned AVVideoComposition will have instructions that respect the spatial properties and timeRanges of the specified asset's video tracks. Anything not pertaining to spatial layout and timing, such as background color for their composition or post-processing behaviors, is eligible to be specified via a prototype instruction.'",
+      "effect": "the composition holds one instruction for each instruction the release built, each a copy of the caller's prototype keeping the release's own layer instructions and time range, so the asset's geometry and timing are the release's answer and the background color and post-processing are the caller's; an asset with no video track yields the release's empty instruction array, which is what the header says that case returns, and a nil prototype returns the release's own composition unchanged",
+      "facts": "facts/AVFoundation/AVFoundation13.md",
+      "source": "iPhoneOS 26.2 AVFoundation/AVVideoComposition.h:322, + (AVMutableVideoComposition *)videoCompositionWithPropertiesOfAsset:(AVAsset *)asset prototypeInstruction:(AVVideoCompositionInstruction *)prototypeInstruction API_DEPRECATED(\"Use videoCompositionWithPropertiesOfAsset:prototypeInstruction:completionHandler: instead\", macos(10.15, 15.0), ios(13.0, 18.0), tvos(13.0, 18.0)) API_UNAVAILABLE(watchos, visionos); plus the selector ladder that certifies the port's copy is inert from 13.0 up, strings -a over the two band ends answering 0 for videoCompositionWithPropertiesOfAsset:prototypeInstruction: against 1 at 6.1.3 and 2 at 12.0 for videoCompositionWithPropertiesOfAsset: and 0 for a nonsense control, and packages/a/apple-backports/attach.c's charon_collect, which installs a category method only where charon_implements finds nothing; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "-[AVAssetExportSession estimateMaximumDurationWithCompletionHandler:]",
@@ -2689,9 +2690,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 54 own instance selectors and 23 class selectors, and the release's answer to this question is the synchronous +[AVAssetExportSession maximumDurationForPreset:properties:], one of the 23 class selectors. It wants the export properties as a dictionary, which this port cannot assemble honestly for a session's own state, and the block here also carries an NSError that the release's answer has no way to produce: no member of 6.1.3's 54 fails an estimate, and +determineCompatibilityOfExportPreset:withAsset:outputFileType:completionHandler: is a different question",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release asks +[AVAssetExportSession maximumDurationForPreset:properties:] with the preset and the properties dictionary it means and reads the CMTime that returns; a value computed here would be the release's number reported under a name whose block also promises an error, and there is no error to report",
+      "source": "iPhoneOS 26.2 AVFoundation/AVAssetExportSession.h:363, - (void)estimateMaximumDurationWithCompletionHandler:(void (^)(CMTime estimatedMaximumDuration, NSError * _Nullable error))handler API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), visionos(1.0)) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "-[AVAssetExportSession estimateOutputFileLengthWithCompletionHandler:]",
@@ -2699,9 +2700,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the release answers this one synchronously and retires it for being the less accurate answer: 6.1.3's AVAssetExportSession carries -estimatedOutputFileLength among its 54 own instance selectors, and the header's own note on that property is 'Note that the returned value does not take into account the source asset information. For a more accurate estimation, use estimateOutputFileLengthWithCompletionHandler.' The more accurate estimate is a pass over the asset's samples with the session's own settings, which is what an export does, and no member of 6.1.3 runs one without writing the file",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller reads -[AVAssetExportSession estimatedOutputFileLength] for the estimate this release can make and treats it as the lower bound its header calls it, or exports and measures the file; a forward would report that same number as the more accurate one and report no error, since the release's answer cannot fail",
+      "source": "iPhoneOS 26.2 AVFoundation/AVAssetExportSession.h:372, - (void)estimateOutputFileLengthWithCompletionHandler:(void (^)(int64_t estimatedOutputFileLength, NSError * _Nullable error))handler API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), visionos(1.0)) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "-[AVCaptureDeviceInput portsWithMediaType:sourceDeviceType:sourceDevicePosition:]",
@@ -2709,9 +2710,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceInput a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it discovers the hidden ports a VIRTUAL device keeps out of its own ports array, and 6.1.3 has no virtual device: AVCaptureDeviceInput carries 15 own instance selectors - -device, -ports, -initWithDevice:error: and the session notifications - and its AVCaptureInputPort carries 11, of which the source-side members are -mediaType, -formatDescription and -isEnabled. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end. The header says the ports it returns originate from a constituent device, which is the hardware this release has not",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller reads the ports this release does expose with -[AVCaptureDeviceInput ports] and -[AVCaptureInputPort mediaType] and filters them itself; no 6.1.3 input has a constituent device whose port could be missing from that array",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureInput.h:245, - (NSArray<AVCaptureInputPort *> *)portsWithMediaType:(AVMediaType)mediaType sourceDeviceType:(AVCaptureDeviceType)sourceDeviceType sourceDevicePosition:(AVCaptureDevicePosition)sourceDevicePosition API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "-[AVMutableCompositionTrack replaceFormatDescription:withFormatDescription:]",
@@ -2719,9 +2720,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableCompositionTrack a method like it: it arrived in iOS 13",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVMutableCompositionTrack carries 19 own instance selectors and none of them touches a format description: the track's whole editing surface is insertEmptyTimeRange:, insertTimeRange:ofTrack:atTime:error:, insertTimeRanges:ofTracks:atTime:error:, removeTimeRange:, scaleTimeRange:toDuration:, segments, preferredTransform, preferredVolume, languageCode and naturalTimeScale. The only format description the release has for the track is the inherited -[AVAssetTrack formatDescriptions], among AVAssetTrack's 52 own instance selectors, and 16.0's AVMutableCompositionTrack is the release that adds both -replaceFormatDescription:withFormatDescription: and a -setEnabled: to its 32",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and a replacement recorded by the port would be a record of a request the release would not apply: 6.1.3's export and playback read their format descriptions from the track's segments. A caller changes what a composition track carries with the insertion, removal and scaling members it does have, and reads the descriptions those segments produce",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCompositionTrack.h:280, - (void)replaceFormatDescription:(CMFormatDescriptionRef)originalFormatDescription withFormatDescription:(nullable CMFormatDescriptionRef)replacementFormatDescription API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), watchos(6.0), visionos(1.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVAsset.minimumTimeOffsetFromLive",
@@ -2729,9 +2730,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the time offset from live is the distance between the playlist's live edge and the presentation clock, and 6.1.3's AVAsset carries 65 own instance selectors and 2 class selectors - -duration, -naturalSize, -naturalTimeScale, -isPlayable, -isExportable, -tracksWithMediaType: - and no live member at all; its only streaming member is the private -_isStreaming, which is a flag and not an offset.",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release times a live stream against the clock itself - it reads -[AVAsset duration] and compares it with a reference the caller keeps, which is the same arithmetic this property reports and is honest about its own clock; a CMTime returned here would have to be a number no 6.1.3 member computed",
+      "source": "iPhoneOS 26.2 AVFoundation/AVAsset.h:101, @property (nonatomic, readonly) CMTime minimumTimeOffsetFromLive API_DEPRECATED(\"Use load(.minimumTimeOffsetFromLive) instead\", macos(10.15, 13.0), ios(13.0, 16.0), tvos(13.0, 16.0), watchos(6.0, 9.0)) API_UNAVAILABLE(visionos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVAssetTrack.hasAudioSampleDependencies",
@@ -2739,9 +2740,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header defines it as 'Indicates whether this audio track has dependencies (e.g. kAudioFormatMPEGD_USAC)' - a property of the track's SAMPLES, each of which carries its own dependency flags. 6.1.3's AVAssetTrack carries 52 own instance selectors and reports sample data in aggregate only: -totalSampleDataLength, -estimatedDataRate, -formatDescriptions, -nominalFrameRate and -samplePresentationTimeForTrackTime:, none of which reads a sample. 16.0's carries 102, including -hasSeamSamples and -segmentsExcludeAudioPrimingAndRemainderDurations, which are the release that can see inside the stream",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that needs the flag walks the audio track's samples itself, reading each sample's dependency attachments as it copies them with an AVAssetReader, which is what the release's own copy path does; answering the flag here without walking the samples would be a guess about every sample in the track, and answering it by walking them would make a property read the whole audio track",
+      "source": "iPhoneOS 26.2 AVFoundation/AVAssetTrack.h:132, @property (nonatomic, readonly) BOOL hasAudioSampleDependencies API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), watchos(6.0), visionos(1.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.constituentDevices",
@@ -2749,9 +2750,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header says 'On non-virtual devices this property returns an empty array', and a constituent device is one physical camera of a virtual device's set. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end. 6.1.3's AVCaptureDevice's 100 own instance selectors end at -formats, -activeFormat, -position, -localizedName and the exposure and focus members, and -virtualDevice itself is the row that would say whether any of this applies",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. Every device a caller can find on 6.1.3 is a physical one and has no constituents, which is what the header's empty array would report; a caller that walks the returned array would find none, and an array built here from 6.1.3's device list would be the same empty array under a name that promises a virtual device's parts",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:775, @property(nonatomic, readonly) NSArray<AVCaptureDevice *> *constituentDevices API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.geometricDistortionCorrectionEnabled",
@@ -2759,9 +2760,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isGeometricDistortionCorrectionEnabled, so it is a flag over whether the camera's lens distortion correction pipeline runs, and the hardware that pipeline lives in arrived with the dual camera. 6.1.3's AVCaptureDevice carries 100 own instance selectors and 5 class selectors, none of them an ISP switch; its nearest members are -lockForConfiguration:, -activeFormat and -exposureDuration, which configure the camera the release has. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and the flag could not be honoured if it were set: 6.1.3's sensor pipeline has no distortion stage to switch on, and a YES recorded here would claim frames were corrected that no member of this release corrects. A caller that needs the correction applies it in the graph, on the buffers it receives",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:2286, @property(nonatomic, getter=isGeometricDistortionCorrectionEnabled) BOOL geometricDistortionCorrectionEnabled API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.geometricDistortionCorrectionSupported",
@@ -2769,9 +2770,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it asks whether the camera's lens has a distortion correction the release could apply at all. the answer is a property of the camera hardware - a tone-mapping pipeline, a lens distortion model in the sensor's calibration table - and 6.1.3's AVCaptureDeviceFormat carries 11 own instance selectors and 3 class selectors, which are the format's dimensions, its frame-rate ranges and its formats; it names no ISP and no distortion table, and no member of the 11 asks the sensor what is in its calibration table. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that needs to know applies the correction to a known aspect ratio and sees whether the result is a distortion; the sensor tables this property reports are not in the release, and a NO here would be indistinguishable from a device whose correction is merely off",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:2269, @property(nonatomic, readonly, getter=isGeometricDistortionCorrectionSupported) BOOL geometricDistortionCorrectionSupported API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.globalToneMappingEnabled",
@@ -2779,9 +2780,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isGlobalToneMappingEnabled and the header states the condition it needs: 'globalToneMappingEnabled may only be set to YES if the receiver's activeFormat.isGlobalToneMappingSupported property returns YES, otherwise an NSGenericException is thrown.' the answer is a property of the camera hardware - a tone-mapping pipeline, a lens distortion model in the sensor's calibration table - and 6.1.3's AVCaptureDeviceFormat carries 11 own instance selectors and 3 class selectors, which are the format's dimensions, its frame-rate ranges and its formats; it names no ISP and no distortion table - the format that could answer is the row below - and a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that needs a tone curve applies one to the buffers it receives, which is the whole of what this flag would switch on; a YES here would claim a global tone map no 6.1.3 member applies",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:1618, @property(nonatomic, getter=isGlobalToneMappingEnabled) BOOL globalToneMappingEnabled API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.virtualDevice",
@@ -2789,9 +2790,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isVirtualDevice and it reports whether one AVCaptureDevice is the front for more than one physical camera. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end - 16.0's AVCaptureDevice carries -isVirtualDevice, -constituentDevices and -primaryConstituentDeviceSwitchingBehavior among its 289 own instance selectors, and 6.1.3 carries none of the three",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and every device this release enumerates is physical, so the only honest answer would be NO from a name whose own header says the property exists because of the hardware that brought it. A caller that needs one camera in the place of two uses an AVCaptureVideoPreviewLayer or an AVAssetWriter with the zoom factor it wants, which are 6.1.3 members",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:765, @property(nonatomic, readonly, getter=isVirtualDevice) BOOL virtualDevice API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDevice.virtualDeviceSwitchOverVideoZoomFactors",
@@ -2799,9 +2800,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header sizes it against the row above: 'The number of switch over video zoom factors is always one less than the count of the constituentDevices property, and the factors progress in the same order as the devices listed in that property. On non-virtual devices this property returns an empty array.' a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end, so the count this array is one less than is 0",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. Every 6.1.3 device is non-virtual, which the header says this array is empty for, and the zoom factors themselves are 7.0's: -[AVCaptureDevice setVideoZoomFactor:] is not among 6.1.3's 100 own instance selectors, so the factors could not be honoured either",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:785, @property(nonatomic, readonly) NSArray<NSNumber *> *virtualDeviceSwitchOverVideoZoomFactors API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceDiscoverySession.supportedMultiCamDeviceSets",
@@ -2809,9 +2810,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceDiscoverySession a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the row's own class is NO CLASS at 6.1.3 - AVCaptureDeviceDiscoverySession arrives with iOS 10 - and at 12.0 it carries 5 own instance selectors and 1 class selector, which are the discovery session's devices and device types. The sets it would report are pairs of physical devices behind one AVCaptureDevice, and 6.1.3 has no device-type vocabulary to name a pair by",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, twice over: at 6.1.3 the class is not there, and at 12.0 the class is there with no such member among its 5. A caller on either release finds its devices with +[AVCaptureDevice devicesWithMediaType:] and filters them itself",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureSession.h:334, @property(nonatomic, readonly) NSArray<AVMultiCamDeviceSet *> *supportedMultiCamDeviceSets API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceFormat.geometricDistortionCorrectedVideoFieldOfView",
@@ -2819,9 +2820,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header ties it to the two rows above: 'If the receiver's AVCaptureDevice does not support GDC, geometricDistortionCorrectedVideoFieldOfView matches the videoFieldOfView property.' the answer is a property of the camera hardware - a tone-mapping pipeline, a lens distortion model in the sensor's calibration table - and 6.1.3's AVCaptureDeviceFormat carries 11 own instance selectors and 3 class selectors, which are the format's dimensions, its frame-rate ranges and its formats; it names no ISP and no distortion table, so the corrected field of view is a number from the lens calibration, and 6.1.3's 11 own selectors report the uncorrected geometry only",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller reads -[AVCaptureDeviceFormat videoFieldOfView], which is 6.1.3's own answer for this format and, with no GDC in the release, the corrected one as well; a value computed here would have to invent a lens model the release does not name",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:3571, @property(nonatomic, readonly) float geometricDistortionCorrectedVideoFieldOfView API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceFormat.globalToneMappingSupported",
@@ -2829,9 +2830,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isGlobalToneMappingSupported and it is the condition the device row names: 'globalToneMappingEnabled may only be set to YES if the receiver's activeFormat.isGlobalToneMappingSupported property returns YES.' the answer is a property of the camera hardware - a tone-mapping pipeline, a lens distortion model in the sensor's calibration table - and 6.1.3's AVCaptureDeviceFormat carries 11 own instance selectors and 3 class selectors, which are the format's dimensions, its frame-rate ranges and its formats; it names no ISP and no distortion table - which is one sentence for every capture row of this group, because the group is one fact about one sensor generation",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that needs a tone curve applies one to the buffers it receives; the sensor generation this reports is not in the release, and a NO here could not be told apart from a device whose mapping is merely disabled",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:3343, @property(nonatomic, readonly, getter=isGlobalToneMappingSupported) BOOL globalToneMappingSupported API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceFormat.highestPhotoQualitySupported",
@@ -2839,9 +2840,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isHighestPhotoQualitySupported and it asks whether some format of this device can carry the sensor's full-resolution photo mode. 6.1.3's AVCaptureDeviceFormat carries 11 own instance selectors and 3 class selectors, which are the format's dimensions, its frame-rate ranges and -[AVCaptureDeviceFormat formatDescription]; the photo modes a device declares came with AVCapturePhotoOutput at iOS 10, and 6.1.3's capture stack has no member that names one",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release takes the largest format the device offers - +[AVCaptureDeviceFormat resolutionWithWidth:height:] is how it enumerates them - and captures it with AVCaptureStillImageOutput, which is the release's own photo path",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:3391, @property(nonatomic, readonly, getter=isHighestPhotoQualitySupported) BOOL highestPhotoQualitySupported API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceFormat.multiCamSupported",
@@ -2849,9 +2850,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isMultiCamSupported and the header ties it to the session: 'Prior to iOS 26, AVCaptureMultiCamSession requires all input devices to have an activeFormat where multiCamSupported returns YES ... This limited subset of capture formats are known to run sustainably in a multi camera capture scenario.' The subset is a property of running two sensors at once, and 6.1.3's 11 own selectors describe one sensor's formats. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that runs one camera reads -[AVCaptureDevice activeFormat] and the format's -videoSupportedFrameRateRanges, which is 6.1.3's own answer about what a format can do; the subset is a statement about two sensors running together, and no 6.1.3 member runs two",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureDevice.h:3542, @property(nonatomic, readonly, getter=isMultiCamSupported) BOOL multiCamSupported API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0), visionos(2.1)) API_UNAVAILABLE(macos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureDeviceInput.videoMinFrameDurationOverride",
@@ -2859,9 +2860,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceInput a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header defines it as a cap on one source's frame rate, to be set before the session starts and changed inside a beginConfiguration / commitConfiguration block. 6.1.3's AVCaptureDeviceInput carries 15 own instance selectors - -device, -ports, -initWithDevice:error:, -didStartForSession: and -willStartForSession: - and no member holds a cap. The cap is applied through the camera, and the camera's -[AVCaptureDevice activeVideoMinFrameDuration] is 7.0's: it is not among 6.1.3's 100 own instance selectors, and the port's own AVCaptureDevice+ActiveFrameDuration.m reaches it only because that file carries the 7.0 API",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and a CMTime stored here would be a number nothing enforces: 6.1.3's session builds its capture graph from the device's own activeFormat and frame duration, so a caller that set this and read the camera back would find the rate unchanged",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureInput.h:283, @property(nonatomic) CMTime videoMinFrameDurationOverride API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureInputPort.sourceDevicePosition",
@@ -2869,9 +2870,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureInputPort a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header states where it comes from: 'All AVCaptureInputPorts contained in an AVCaptureDeviceInput's ports array have the same sourceDevicePosition, which is deviceInput.device.devicePosition.' 6.1.3's AVCaptureInputPort carries 11 own instance selectors - the private -_setFormatDescription:, -input, -mediaType, -formatDescription, -isEnabled, -setEnabled:, -setOwner: and the constructors - and no member that names where the port's input sits. a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end, and -device.position is the release's own route to the same fact",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller reads the position from the input's device with -[AVCaptureDevice position], which is a 6.1.3 member and the value this property would report; a port carrying a position of its own would be a second answer to a question the input's device already answers",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureInput.h:163, @property(nonatomic, readonly) AVCaptureDevicePosition sourceDevicePosition API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureInputPort.sourceDeviceType",
@@ -2879,9 +2880,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureInputPort a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header states where it comes from: 'All AVCaptureInputPorts contained in an AVCaptureDeviceInput's ports array have the same sourceDeviceType, which is equal to deviceInput.device.deviceType.' 6.1.3's AVCaptureDevice has no -deviceType at all - it is not among the 100 own instance selectors and it is 12.0's first entry - so neither the port nor the device this release carries can name a type; the microphone, the wide-angle camera and the back camera are told apart by -[AVCaptureDevice position] and -localizedName, which are what 6.1.3 has",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller distinguishes the inputs of a 6.1.3 device by position and localized name, which are the release's own members; an AVCaptureDeviceType is a constant set that begins with the dual camera, and there is nothing on this release for a port to name one of",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureInput.h:149, @property(nonatomic, readonly) AVCaptureDeviceType sourceDeviceType API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureMultiCamSession",
@@ -2889,9 +2890,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "16.0's AVCaptureMultiCamSession carries 18 own instance selectors and 1 class selector over AVCaptureSession, and what they are is the class's whole reason to exist: -hardwareCost, -systemPressureCost, -_computeISPHardwareCost, -_physicalDevicePowerInfoSet and -handleVideoInputDevice:activeFormatChanged:, the switching of one camera out and another in without interrupting preview. At 6.1.3 the class is NO CLASS and at 12.0 it is NO CLASS; a virtual device is a second physical camera behind one AVCaptureDevice, and 6.1.3 has none: AVCaptureDevice's 100 own instance selectors carry no -deviceType, which is 12.0's first entry and 12.0's AVCaptureDevice answers it, and no AVCaptureDeviceType constant is declared at either band end",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller that wants two cameras at once on this release is served by the session's own addInput:/addOutput: and its configuration blocks, which is the whole of the capture graph 6.1.3 has",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureSession.h:831, @interface AVCaptureMultiCamSession : AVCaptureSession, API_AVAILABLE(ios(13.0), macCatalyst(14.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureSession.connections",
@@ -2899,9 +2900,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the release forms connections but keeps them to itself: 6.1.3's AVCaptureSession carries 84 own instance selectors and 2 class selectors, and the connection half is -addConnection:, -removeConnection:, -canAddConnection:, -_canAddConnection:failureReason: and the private -_liveConnections, which is where the array lives. No member of the 84 reads it back; 16.0's 128 carry -connections",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and the array is not merely undeclared: on 6.1.3 it is the session's own private state, whose contents this port can neither read through public API nor own. A caller walks the connections it can reach instead - a preview layer's -connection, an output's -connection - or keeps the list it added with -addConnection: as it added them",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureSession.h:331, @property(nonatomic, readonly) NSArray<AVCaptureConnection *> *connections API_AVAILABLE(macos(10.15), ios(13.0), macCatalyst(14.0), tvos(17.0), visionos(1.0)) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureVideoDataOutput.automaticallyConfiguresOutputBufferDimensions",
@@ -2909,9 +2910,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoDataOutput a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it is the switch that lets the output choose the size of the buffers it delivers, and 6.1.3's output does not choose: AVCaptureVideoDataOutput carries 26 own instance selectors and 2 class selectors, and the size half is -videoSettings, -setVideoSettings: and -availableVideoPixelFormatTypes - the size the caller set, delivered as set. The header says what the switch governs ('the receiver is free to configure the dimensions of the buffers delivered'), and 6.1.3's graph has no such freedom to hand over",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that wants the size of its buffers sets -[AVCaptureVideoDataOutput setVideoSettings:] with the width, the height and the pixel format and gets exactly that size, which is what this release delivers; a flag here could only be recorded, because the release neither reads it nor resizes anything",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureVideoDataOutput.h:254, @property(nonatomic) BOOL automaticallyConfiguresOutputBufferDimensions API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureVideoDataOutput.deliversPreviewSizedOutputBuffers",
@@ -2919,19 +2920,20 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoDataOutput a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the header defines it as a readback of the row above - 'You can query deliversPreviewSizedOutputBuffers to find out whether automatic configuration of output buffer dimensions is currently downscaling buffers to a preview size' - and 6.1.3's AVCaptureVideoDataOutput downsizes nothing: its 26 own instance selectors size every buffer from -videoSettings, and there is no size in them that is not the one the caller asked for",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that wants to know what it is being delivered reads -[AVCaptureVideoDataOutput videoSettings], which is the release's own answer for the width and the height; the NO this property would report is not the release's answer to anything it can see",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureVideoDataOutput.h:266, @property(nonatomic) BOOL deliversPreviewSizedOutputBuffers API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCaptureVideoPreviewLayer.previewing",
       "kind": "property",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoPreviewLayer a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "the release has every member the answer is made of, and the header states the answer as a predicate over them: 'An AVCaptureVideoPreviewLayer begins previewing when -[AVCaptureSession startRunning] is called. While a session is running, you may enable or disable a video preview layer's connection to re-start or stop the flow of video to the layer.' 6.1.3's layer carries 54 own instance selectors and 2 class selectors - -session and -connection among them - and AVCaptureSession's 84 carry -isRunning while AVCaptureConnection's 56 carry -isEnabled. The session's own -isPreviewing is not used because no SDK header declares it and forwarding to it would be a private call",
+      "effect": "the layer reports YES exactly when its session is running and the layer's own connection is enabled - the two conditions the header names - and NO otherwise, including for the layer made by -initWithLayer:, which has no session. All four members it asks are public API present at iOS 6, so the answer is the release's own state read through public accessors, not a second computation",
+      "facts": "facts/AVFoundation/AVFoundation13.md",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCaptureVideoPreviewLayer.h:135, @property(nonatomic, readonly, getter=isPreviewing) BOOL previewing API_AVAILABLE(ios(13.0), macCatalyst(14.0), tvos(17.0)) API_UNAVAILABLE(macos, visionos) API_UNAVAILABLE(watchos); the getter is isPreviewing, which is the selector the 16.0-arm64e class table carries and the one AVFoundation13.m defines, and the class-scoped read answers it ABSENT for this class at 6.1.3 and at 12.0 and CARRIED at 16.0 while a raw selector-string search of the 6.1.3 cache answers 1 for isPreviewing - that one string belongs to -[AVCaptureSession isPreviewing], which the layer does not carry, so the search certifies the reader and not the row; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCompositionTrack.formatDescriptionReplacements",
@@ -2939,9 +2941,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCompositionTrack a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the array holds AVCompositionTrackFormatDescriptionReplacement objects, which only -replaceFormatDescription:withFormatDescription: creates, and 6.1.3's AVMutableCompositionTrack has no such method among its 19 own instance selectors. AVCompositionTrack itself carries 6 own selectors at 6.1.3 - -_initWithAsset:trackID:trackIndex:, -_mutableComposition, -segments, dealloc, description, finalize - so it has no format-description state to replace either, and the only format description the release has for the track is the inherited -[AVAssetTrack formatDescriptions]",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller reads what the track actually carries with -[AVAssetTrack formatDescriptions], which is a 6.1.3 member; an array returned here would be an empty one, and an empty one reads as 'nothing has been replaced' while in fact nothing on this release could be",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCompositionTrack.h:63, @property (readonly) NSArray <AVCompositionTrackFormatDescriptionReplacement *> *formatDescriptionReplacements API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), watchos(6.0), visionos(1.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVCompositionTrackFormatDescriptionReplacement",
@@ -2949,9 +2951,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it is a value object for one replaced format description, and the class carries no public way to make one: AVCompositionTrack.h:253 declares two readonly properties and NSSecureCoding and no initializer, while the 16.0-arm64e class table carries an -initWithOriginalFormatDescription:andReplacementFormatDescription: that the header does not declare. Its only route is the track's own replace method, which is the row above and which 6.1.3's AVMutableCompositionTrack does not have among its 19 own instance selectors; the class is NO CLASS at 6.1.3 and at 12.0",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller cannot obtain an instance on this release, so the only honest end for the row is that the name is not there; the release's own way to see what a track carries is -[AVAssetTrack formatDescriptions], and nothing in iOS 6 replaces one of them",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCompositionTrack.h:253, @interface AVCompositionTrackFormatDescriptionReplacement : NSObject <NSSecureCoding>, whose declared surface is -originalFormatDescription, -replacementFormatDescription and no public initializer; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVFragmentedMovie",
@@ -2959,9 +2961,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller that has a fragmented file to read on this release hands the URL to +[AVAsset assetWithURL:] and reads its tracks, which is what a fragmented movie is an asset for; the fragments themselves are what AVAssetWriter writes at the end of an export. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller that has a fragmented file to read on this release hands the URL to +[AVAsset assetWithURL:] and reads its -tracksWithMediaType:, -naturalSize and -preferredTransform.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:754, @interface AVFragmentedMovie : AVMovie <AVFragmentMinding>; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVFragmentedMovieMinder",
@@ -2969,9 +2971,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. It exists to hold a fragmented movie open while a reader reads it, and 6.1.3's writer finishes its fragment in one pass: AVAssetWriter is the release's member that produces a playable file, and no 6.1.3 member keeps one open to be minded. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. It holds a movie open for a reader, and on this release the writer that would produce a fragmented movie finishes in one pass and the reader opens the finished file with +[AVAsset assetWithURL:].",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:856, @interface AVFragmentedMovieMinder : AVFragmentedAssetMinder; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVFragmentedMovieTrack",
@@ -2979,9 +2981,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. At 16.0 it adds almost nothing to AVMovieTrack either - 1 own instance selector and 1 class selector, a destructor and a notification expectation - and the content is reachable through +[AVAsset tracksWithMediaType:] on 6.1.3. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. It adds a destructor and a notification expectation to AVMovieTrack, and the track's content is reachable through +[AVAsset tracksWithMediaType:] on this release.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovieTrack.h:477, @interface AVFragmentedMovieTrack : AVMovieTrack; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMediaDataStorage",
@@ -2989,9 +2991,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. It names the storage a movie's track data lives in - a URL and its options, 16.0's 7 own instance selectors - and on this release the storage is the URL the caller passed to +[AVAsset assetWithURL:], which is a member no wrapper class is needed to reach. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. It names the URL and options a movie's track data lives in, and on this release the storage is the URL the caller passed to +[AVAsset assetWithURL:].",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:697, @interface AVMediaDataStorage : NSObject; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMovie",
@@ -2999,9 +3001,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller reads a movie on this release with +[AVAsset assetWithURL:] and its -duration, -tracksWithMediaType:, -naturalSize and -preferredTransform, and writes one with AVAssetExportSession or AVAssetWriter; the 39 instance selectors 16.0's AVMovie adds are the movie-file editing this release does not do. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller reads a movie on this release with +[AVAsset assetWithURL:], whose -duration, -tracks, -naturalSize and -preferredTransform are the asset's own, and writes one with AVAssetExportSession or AVAssetWriter.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:57, @interface AVMovie : AVAsset <NSCopying, NSMutableCopying>; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMovieTrack",
@@ -3009,9 +3011,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller reads a track of any asset on this release through -[AVAsset tracksWithMediaType:] and the AVAssetTrack surface, and AVCaptureFileOutput is the release's own movie writer. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller reads a track on this release through -[AVAsset tracksWithMediaType:] and the AVAssetTrack surface, and AVCaptureFileOutput is the release's own movie writer.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovieTrack.h:33, @interface AVMovieTrack : AVAssetTrack; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMutableCompositionTrack.enabled",
@@ -3019,9 +3021,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableCompositionTrack a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is answered 51 selectors up the chain and the setter by nothing at all: this is the slice's one INHERITED verdict. 6.1.3's AVMutableCompositionTrack carries 19 own instance selectors and none of them sets the enable flag, while -[AVAssetTrack isEnabled] carries 52 own instance selectors and is read-only; 16.0's AVMutableCompositionTrack is the release that adds both -isEnabled and -setEnabled: to its own 32. The one setter-shaped member 6.1.3 has is the private -_setTrackReaderPropertyValue:forKey:, whose keys this port cannot read",
+      "effect": "reading answers honestly, because the release's -[AVAssetTrack isEnabled] is there and answers it; writing raises an unrecognised selector. A flag this object stored for itself would not be read by 6.1.3's export or playback, which ask the track, so the read side would start disagreeing with the write side the moment a caller used it",
+      "source": "iPhoneOS 26.2 AVFoundation/AVCompositionTrack.h:88, @property (nonatomic, getter=isEnabled) BOOL enabled API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), visionos(1.0)) API_UNAVAILABLE(watchos), against the readonly -isEnabled it inherits from AVAssetTrack at 301; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMutableMovie",
@@ -3029,9 +3031,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller builds a file on this release with AVAssetWriter, whose inputs and segments are the 6.0 API this release does have, or with an AVAssetExportSession over an AVComposition. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller builds a file on this release with AVAssetWriter, whose inputs and segments are the 6.0 API this release does have, or with an AVAssetExportSession over an AVComposition.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovie.h:332, @interface AVMutableMovie : AVMovie; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVMutableMovieTrack",
@@ -3039,9 +3041,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it. A caller edits a track on this release through AVMutableCompositionTrack - insertTimeRange:ofTrack:atTime:error:, removeTimeRange: and scaleTimeRange:toDuration:, all 6.1.3 members among its 19 - and exports the composition, which is the route AVMutableMovieTrack itself was built to replace. 16.0's AVMovie carries 39 own instance selectors and 5 class selectors and its AVMutableMovieTrack carries 73 own instance selectors, and at neither band end is one of the eight classes there; what 6.1.3 does have is AVAssetExportSession's 54 own instance selectors, which is the whole of the file-level editing this release can do",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller edits a track on this release through AVMutableCompositionTrack's insertTimeRange:ofTrack:atTime:error:, removeTimeRange: and scaleTimeRange:toDuration:, all 6.1.3 members among its 19, and exports the composition.",
+      "source": "iPhoneOS 26.2 AVFoundation/AVMovieTrack.h:86, @interface AVMutableMovieTrack : AVMovieTrack; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVPlayerItem.audioSpatializationAllowed",
@@ -3049,9 +3051,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isAudioSpatializationAllowed and it allows the player to spatialize an item's audio through the spatial renderer, which is AVAudioEnvironmentNode - and that class is NO CLASS at 6.1.3 and carries 15 own instance selectors at 12.0. 6.1.3's AVPlayerItem carries 237 own instance selectors and 35 class selectors and none of them is an audio graph switch: the item's audio is played by the release's own audio unit, which has no spatial renderer to switch on",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller plays spatial audio on this release by decoding the item's audio itself - AVAudioPlayer, AVAudioEngine at iOS 8, or an AVAssetReader and a PCM buffer - which is what the release's own audio path is; a YES here would claim a renderer no 6.1.3 member runs",
+      "source": "iPhoneOS 26.2 AVFoundation/AVPlayerItem.h:473, @property (nonatomic, assign, getter=isAudioSpatializationAllowed) BOOL audioSpatializationAllowed API_DEPRECATED(\"Use allowedAudioSpatializationFormats instead\", macos(10.15, 15.0), ios(13.0, 18.0)) API_UNAVAILABLE(visionos) API_UNAVAILABLE(tvos, watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVPlayerItem.automaticallyPreservesTimeOffsetFromLive",
@@ -3059,9 +3061,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the time offset from live is the distance between the playlist's live edge and the presentation clock, and 6.1.3's AVAsset carries 65 own instance selectors and 2 class selectors - -duration, -naturalSize, -naturalTimeScale, -isPlayable, -isExportable, -tracksWithMediaType: - and no live member at all; its only streaming member is the private -_isStreaming, which is a flag and not an offset. 6.1.3's AVPlayerItem carries 237 own instance selectors and 35 class selectors - -forwardPlaybackEndTime, -canUseNetworkResourcesForLiveStreamingPriorToRequestingNetworkResources, -preferredForwardBufferDuration and the rest of the buffering surface - and the item keeping the offset across sessions is not among them; 16.0's 563 is the first table that has all three",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller times a live item against the clock itself, reading -[AVPlayerItem currentTime] and comparing it with a reference it keeps; a CMTime returned here would have to be a number no 6.1.3 member computed from a playlist's live edge, and the release has no member that knows where that edge is",
+      "source": "iPhoneOS 26.2 AVFoundation/AVPlayerItem.h, the three declarations at 262, 267 and 278, @property CMTime configuredTimeOffsetFromLive, @property (readonly) CMTime recommendedTimeOffsetFromLive and @property (nonatomic) BOOL automaticallyPreservesTimeOffsetFromLive, each API_AVAILABLE(ios(13.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVPlayerItem.configuredTimeOffsetFromLive",
@@ -3069,9 +3071,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the time offset from live is the distance between the playlist's live edge and the presentation clock, and 6.1.3's AVAsset carries 65 own instance selectors and 2 class selectors - -duration, -naturalSize, -naturalTimeScale, -isPlayable, -isExportable, -tracksWithMediaType: - and no live member at all; its only streaming member is the private -_isStreaming, which is a flag and not an offset. 6.1.3's AVPlayerItem carries 237 own instance selectors and 35 class selectors - -forwardPlaybackEndTime, -canUseNetworkResourcesForLiveStreamingPriorToRequestingNetworkResources, -preferredForwardBufferDuration and the rest of the buffering surface - and its setter is not among them; 16.0's 563 is the first table that has all three",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller times a live item against the clock itself, reading -[AVPlayerItem currentTime] and comparing it with a reference it keeps; a CMTime returned here would have to be a number no 6.1.3 member computed from a playlist's live edge, and the release has no member that knows where that edge is",
+      "source": "iPhoneOS 26.2 AVFoundation/AVPlayerItem.h, the three declarations at 262, 267 and 278, @property CMTime configuredTimeOffsetFromLive, @property (readonly) CMTime recommendedTimeOffsetFromLive and @property (nonatomic) BOOL automaticallyPreservesTimeOffsetFromLive, each API_AVAILABLE(ios(13.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVPlayerItem.recommendedTimeOffsetFromLive",
@@ -3079,9 +3081,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the time offset from live is the distance between the playlist's live edge and the presentation clock, and 6.1.3's AVAsset carries 65 own instance selectors and 2 class selectors - -duration, -naturalSize, -naturalTimeScale, -isPlayable, -isExportable, -tracksWithMediaType: - and no live member at all; its only streaming member is the private -_isStreaming, which is a flag and not an offset. 6.1.3's AVPlayerItem carries 237 own instance selectors and 35 class selectors - -forwardPlaybackEndTime, -canUseNetworkResourcesForLiveStreamingPriorToRequestingNetworkResources, -preferredForwardBufferDuration and the rest of the buffering surface - and the server's own recommendation is not among them; 16.0's 563 is the first table that has all three",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller times a live item against the clock itself, reading -[AVPlayerItem currentTime] and comparing it with a reference it keeps; a CMTime returned here would have to be a number no 6.1.3 member computed from a playlist's live edge, and the release has no member that knows where that edge is",
+      "source": "iPhoneOS 26.2 AVFoundation/AVPlayerItem.h, the three declarations at 262, 267 and 278, @property CMTime configuredTimeOffsetFromLive, @property (readonly) CMTime recommendedTimeOffsetFromLive and @property (nonatomic) BOOL automaticallyPreservesTimeOffsetFromLive, each API_AVAILABLE(ios(13.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVSampleBufferDisplayLayer.preventsCapture",
@@ -3089,9 +3091,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it is a hint to the display server that this layer's content must not appear in a system capture - a screenshot, a screen recording - and 6.1.3's display server takes no such hint. AVSampleBufferDisplayLayer carries 20 own instance selectors and 0 class selectors, all of them the playback surface: -enqueueSampleBuffer:, -flush, -isReadyForMoreMediaData, -requestMediaDataWhenReadyOnQueue:usingBlock:, -stopRequestingMediaData, -setControlTimebase:, -setVideoGravity: and -videoGravity",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that must keep its frames out of a capture draws them itself into a CALayer it owns, which is where a draw is at the caller's discretion; a flag here could be recorded and nothing would read it, because the capture decision is the display server's and 6.1.3's has no per-layer switch",
+      "source": "iPhoneOS 26.2 AVFoundation/AVSampleBufferDisplayLayer.h:237, @property (nonatomic) BOOL preventsCapture API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), visionos(1.0)) API_UNAVAILABLE(watchos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVSampleBufferDisplayLayer.preventsDisplaySleepDuringVideoPlayback",
@@ -3099,9 +3101,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the flag keeps the display awake while this layer plays, and the mechanism 6.1.3 has is an application-wide one rather than a layer's: UIKit's idleTimerDisabled, which no member of this layer's 20 own selectors and no member of AVFoundation carries. The layer's own -requestMediaDataWhenReadyOnQueue:usingBlock:, -stopRequestingMediaData and -setControlTimebase: are about when it asks for media, not about the display's power state",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that keeps the screen on during playback sets the application-wide idle timer through UIKit, which is the only mechanism this release has and is not this layer's to set; a flag here would report the caller's own request back while the display slept or stayed awake for reasons the layer never heard about",
+      "source": "iPhoneOS 26.2 AVFoundation/AVSampleBufferDisplayLayer.h:252, @property (nonatomic) BOOL preventsDisplaySleepDuringVideoPlayback API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0)) API_UNAVAILABLE(watchos, visionos); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVSemanticSegmentationMatte",
@@ -3109,9 +3111,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "a matte is one detection's mask: a pixel buffer, the matting type it was made for and the metadata that came with it. 16.0's AVSemanticSegmentationMatte carries 15 own instance selectors and 4 class selectors, and every one of them is about producing or reading that mask - -semanticSegmentationMatteByApplyingExifOrientation:, -semanticSegmentationMatteByReplacingSemanticSegmentationMatteWithPixelBuffer:error:, +semanticSegmentationMatteFromImageSourceAuxiliaryDataType:dictionaryRepresentation:error:. The model that fills the mask is a neural network, and no AVFoundation member of 6.1.3 runs one: the class is NO CLASS at 6.1.3 and at 12.0",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller that needs a person mask on this release runs its own segmentation over the frames it receives from AVCaptureVideoDataOutput - 6.1.3's own capture path - and applies the mask in the graph; a class of this name that answered isKindOfClass: yes and then produced no matte would be the empty shape this port does not ship",
+      "source": "iPhoneOS 26.2 AVFoundation/AVSemanticSegmentationMatte.h:58, @interface AVSemanticSegmentationMatte : NSObject, API_AVAILABLE(macos(10.15), ios(13.0), tvos(13.0), visionos(1.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVVideoCompositionRenderHint",
@@ -3119,9 +3121,9 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it is four CMTime bounds handed to the video compositor: startCompositionTime, subsequentStartCompositionTime, subsequentEndCompositionTime and endCompositionTime, 16.0's 6 own instance selectors, and the compositor that reads them is VideoToolbox's video composition renderer of that release. 6.1.3's compositor is asked only for a composition's -videoCompositionWithPropertiesOfAsset:, -renderSize, -frameDuration and -instructions, and AVVideoCompositing is not among the classes AVFoundation carries there; the class is NO CLASS at 6.1.3 and at 12.0",
+      "effect": "the class is not there: NSClassFromString answers nil and an unchecked compile-time reference crashes. A caller that wants a render hint on this release has no route to the compositor that would honour one, so a class of this name could be made to hold four times and read them back while changing nothing about how any frame is rendered",
+      "source": "iPhoneOS 26.2 AVFoundation/AVVideoCompositing.h:92, @interface AVVideoCompositionRenderHint : NSObject, API_AVAILABLE(macos(10.15), ios(14.0), tvos(14.0)); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1); the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "AVPlayer.eligibleForHDRPlayback",
@@ -3129,9 +3131,9 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a property like it: it arrived in iOS 13",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it is a CLASS property - AVPlayer.h:641 declares @property (class, readonly) BOOL eligibleForHDRPlayback API_AVAILABLE(macos(10.15), ios(13.4), tvos(13.4), visionos(1.0)) - and it answers YES only when an HDR display is attached AND the device can decode HDR from an AVAsset. 6.1.3's AVPlayer carries 140 own instance selectors and 19 class selectors and 12.0's 251 and 26, and neither end has an HDR path: the first HDR member anywhere in the ladder is 12.0's +availableHDRModes, and the class-scoped read answers ABSENT for the instance spelling of this property even at 16.0, whose AVPlayer class table carries the accessor as +eligibleForHDRPlayback",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and the display this property asks about cannot be enumerated here either: the only 6.1.3 route to an attached display is the layer tree, which reports bounds and nothing about its colour capabilities. A caller plays on this release and reads -[AVPlayerItem status] and -[AVPlayer rate], which are its own members",
+      "source": "iPhoneOS 26.2 AVFoundation/AVPlayer.h:641, @property (class, readonly) BOOL eligibleForHDRPlayback NS_SWIFT_NONISOLATED API_AVAILABLE(macos(10.15), ios(13.4), tvos(13.4), visionos(1.0)) API_UNAVAILABLE(watchos); modules/apple/backports.lua's carried_by_release asks a property's getter, setter and is-getter, which for a class property is why absent is also what the gate reads here; the three releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, ~/.charon/dyld/12.0/dyld_shared_cache_arm64 and ~/.charon/dyld/16.0/dyld_shared_cache_arm64e, read through tools/corpus/class-scoped-rows.py with its three controls answered at all three ends (6.1.3-armv7 ABSENT 33, INHERITED 1, NO CLASS 13; 12.0-arm64 ABSENT 34, INHERITED 1, NO CLASS 12; 16.0-arm64e CARRIED 46, ABSENT 1)"
     },
     {
       "api": "-[AVAssetWriter flushSegment]",
