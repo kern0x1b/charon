@@ -702,3 +702,158 @@ shown are the 22 added and 1 flipped, which is 23.
 
 Both are in `coordination/`, which is not this band's to change. What the band can do is state them
 where the next reader of its rows will find them, which is here.
+
+## 10. The fifteen unavailable initializers, and why the header was not the reason
+
+Fifteen rows of `registry/Vision/ios11.json` name an initializer: `-[VNCoreMLModel init]`,
+`-[VNCoreMLRequest init]`, `-[VNCoreMLRequest initWithCompletionHandler:]`, `-[VNFaceLandmarkRegion init]`,
+`+[VNFaceLandmarkRegion new]`, `-[VNFaceLandmarks init]`, `-[VNImageRequestHandler init]`, and `init` /
+`initWithCompletionHandler:` on `VNTargetedImageRequest`, `VNTrackObjectRequest`, `VNTrackRectangleRequest`
+and `VNTrackingRequest`. Every one of them said the same thing, and the thing it said was wrong:
+
+```
+"reason": "the header marks the initializer unavailable, so a program written for the release does not send it"
+"source": "Vision of iOS 16.4, marked unavailable in the header"
+```
+
+**The header does mark all fifteen unavailable, and that is not the claim's problem.** The SDK surface
+this registry was read from carries it, `unavailable=yes` on all fifteen with `introduced=11.0`:
+
+```
+python3 - <<'PY'
+import csv
+want = ["+[VNFaceLandmarkRegion new]", "-[VNCoreMLModel init]", "-[VNCoreMLRequest initWithCompletionHandler:]",
+        "-[VNCoreMLRequest init]", "-[VNFaceLandmarkRegion init]", "-[VNFaceLandmarks init]",
+        "-[VNImageRequestHandler init]", "-[VNTargetedImageRequest initWithCompletionHandler:]",
+        "-[VNTargetedImageRequest init]", "-[VNTrackObjectRequest initWithCompletionHandler:]",
+        "-[VNTrackObjectRequest init]", "-[VNTrackRectangleRequest initWithCompletionHandler:]",
+        "-[VNTrackRectangleRequest init]", "-[VNTrackingRequest initWithCompletionHandler:]",
+        "-[VNTrackingRequest init]"]
+rows = {r["api"]: r for r in csv.DictReader(open("coordination/corpus/sdk-26.2-surface.tsv"), delimiter="\t")
+        if r["framework"] == "Vision"}
+for api in want:
+    print(api, rows[api]["introduced"], repr(rows[api]["unavailable"]))
+PY
+```
+
+```
++[VNFaceLandmarkRegion new]                             11.0 'yes'
+-[VNCoreMLModel init]                                   11.0 'yes'
+-[VNCoreMLRequest initWithCompletionHandler:]           11.0 'yes'
+-[VNCoreMLRequest init]                                 11.0 'yes'
+-[VNFaceLandmarkRegion init]                            11.0 'yes'
+-[VNFaceLandmarks init]                                 11.0 'yes'
+-[VNImageRequestHandler init]                           11.0 'yes'
+-[VNTargetedImageRequest initWithCompletionHandler:]    11.0 'yes'
+-[VNTargetedImageRequest init]                          11.0 'yes'
+-[VNTrackObjectRequest initWithCompletionHandler:]      11.0 'yes'
+-[VNTrackObjectRequest init]                            11.0 'yes'
+-[VNTrackRectangleRequest initWithCompletionHandler:]   11.0 'yes'
+-[VNTrackRectangleRequest init]                         11.0 'yes'
+-[VNTrackingRequest initWithCompletionHandler:]         11.0 'yes'
+-[VNTrackingRequest init]                               11.0 'yes'
+```
+
+`NS_UNAVAILABLE` is a promise about **source**, not about the runtime: it means a program compiled against
+that header cannot send the message, and it says nothing about what the class answers when a message
+arrives by some other route. A row that rests on it is answering the wrong question, and this host settles
+what the wrong answer looks like -- its own Vision is a generation past 11.0 and answers all of them:
+
+The same fifteen, asked of the **host's** Vision, from the second half of the same run:
+
+```
+VNNoClassOfThisName (the control) = nil class
+VNCoreMLModel              init                               host responds=YES defined-by=inherited from=Vision
+VNCoreMLRequest            init                               host responds=YES defined-by=inherited from=Vision
+VNCoreMLRequest            initWithCompletionHandler:         host responds=YES defined-by=inherited from=Vision
+VNFaceLandmarkRegion       init                               host responds=YES defined-by=inherited from=Vision
+VNFaceLandmarks            init                               host responds=YES defined-by=inherited from=Vision
+VNImageRequestHandler      init                               host responds=YES defined-by=inherited from=Vision
+VNTargetedImageRequest     init                               host responds=YES defined-by=inherited from=Vision
+VNTargetedImageRequest     initWithCompletionHandler:         host responds=YES defined-by=inherited from=Vision
+VNTrackObjectRequest       init                               host responds=YES defined-by=inherited from=Vision
+VNTrackObjectRequest       initWithCompletionHandler:         host responds=YES defined-by=inherited from=Vision
+VNTrackRectangleRequest    init                               host responds=YES defined-by=inherited from=Vision
+VNTrackRectangleRequest    initWithCompletionHandler:         host responds=YES defined-by=inherited from=Vision
+VNTrackingRequest          init                               host responds=YES defined-by=inherited from=Vision
+VNTrackingRequest          initWithCompletionHandler:         host responds=YES defined-by=inherited from=Vision
+VNFaceLandmarkRegion       new                                host responds=YES defined-by=inherited from=Vision
+```
+
+**All fifteen answer on the host, and Apple's own classes inherit every one of them just as the port's
+do** -- `defined-by=inherited` on all fifteen, from the `Vision` image. So the header is not what makes
+these rows `absent`, and the rows that said so were carrying a reason a measurement contradicts. What makes them absent is section 1: neither
+release this port deploys on carries a Vision at all, so nothing either of them has answers the name. That
+is the claim, and it is the one `backports.lua` checks -- `carried_by_release` at :1627 asks the band's own
+inventory, and the census answers it with a control in the same run.
+
+### What a caller gets instead, measured on the port's own classes
+
+`tools/vision/vn-init-answer.m` compiles this library's classes under names of their own and asks each of
+the fifteen what it answers and **which class writes the body**. The two questions are separate and the
+difference is the whole of the row: `class_getInstanceMethod` walks the superclass chain and answers YES
+for an inherited selector, while `class_copyMethodList` returns a class's own methods only. Asking the
+chain for the owner instead answers the leaf every time, and every inherited initializer then looks like
+the subclass's own -- a probe that made that mistake printed all fifteen as `defined-by=Charon<Class>` and
+was wrong about all fifteen. `class_copyMethodList` is what the row rests on.
+
+The port's classes are the ones being asked, so no answer can come from the Vision of this host:
+
+```
+sdk=$(xcrun --show-sdk-path)
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$sdk" \
+    -iframework "$sdk/System/iOSSupport/System/Library/Frameworks" -fobjc-arc -w \
+    -include rename.h -I packages/a/apple-backports/Vision \
+    -framework Foundation -framework Vision -framework CoreGraphics -framework CoreImage \
+    -framework CoreVideo -framework CoreML -framework ImageIO \
+    tools/vision/vn-init-answer.m packages/a/apple-backports/Vision/*.c \
+    packages/a/apple-backports/Vision/*.m -o vninit && ./vninit
+```
+
+`rename.h` is the header `tests/backports/host/vision/run.sh` writes from `registry/Vision/ios11.json`, and
+the probe's first comment carries the exact `python3` that writes it, so the run is one paste rather than
+something a reader has to reconstruct.
+
+The `from=` column of the run reads `vninit` on all fifteen, which is `dladdr` naming this probe's own
+binary: the answer is the port's and not this host's Vision. The `from=Vision` in the host table below is
+the same column for the unprefixed names.
+
+```
+VNFaceLandmarkRegion       new                                responds=YES defined-by=NSObject (inherited)               from=vninit
+VNCoreMLModel              init                               responds=YES defined-by=NSObject (inherited)               from=vninit
+VNCoreMLRequest            init                               responds=YES defined-by=CharonVNRequest (inherited)        from=vninit
+VNCoreMLRequest            initWithCompletionHandler:         responds=YES defined-by=CharonVNImageBasedRequest (inherited) from=vninit
+VNFaceLandmarkRegion       init                               responds=YES defined-by=NSObject (inherited)               from=vninit
+VNFaceLandmarks            init                               responds=YES defined-by=NSObject (inherited)               from=vninit
+VNImageRequestHandler      init                               responds=YES defined-by=NSObject (inherited)               from=vninit
+VNTargetedImageRequest     init                               responds=YES defined-by=CharonVNRequest (inherited)        from=vninit
+VNTargetedImageRequest     initWithCompletionHandler:         responds=YES defined-by=CharonVNImageBasedRequest (inherited) from=vninit
+VNTrackObjectRequest       init                               responds=YES defined-by=CharonVNRequest (inherited)        from=vninit
+VNTrackObjectRequest       initWithCompletionHandler:         responds=YES defined-by=CharonVNImageBasedRequest (inherited) from=vninit
+VNTrackRectangleRequest    init                               responds=YES defined-by=CharonVNRequest (inherited)        from=vninit
+VNTrackRectangleRequest    initWithCompletionHandler:         responds=YES defined-by=CharonVNImageBasedRequest (inherited) from=vninit
+VNTrackingRequest          init                               responds=YES defined-by=CharonVNRequest (inherited)        from=vninit
+VNTrackingRequest          initWithCompletionHandler:         responds=YES defined-by=CharonVNImageBasedRequest (inherited) from=vninit
+```
+
+The control class is a `nil class`, so the `responds=YES` beside it is the reader seeing a class.
+
+Three things fall out of that table, and none of them is "the class has no initializer":
+
+- **Not one of the fifteen is written by the class its row names.** Every `init` on a request class is
+  `VNRequest`'s (`VNRequests.m`, whose `-init` forwards to `-initWithCompletionHandler:` with a nil
+  handler), and every `initWithCompletionHandler:` is `VNImageBasedRequest`'s, which forwards to `[super
+  initWithCompletionHandler:]`. `init` and `new` on the three non-request classes -- `VNCoreMLModel`,
+  `VNFaceLandmarkRegion`, `VNFaceLandmarks` -- and on `VNImageRequestHandler` are `NSObject`'s.
+- **So the method is reachable, and it is reachable as inherited.** `responds=YES` on all fifteen. A caller
+  sending `-[VNTrackingRequest init]` gets `VNRequest`'s, which sets the completion handler to nil and the
+  revision to the class's default -- a usable request object, not a crash and not a nil.
+- **Which is why these rows are `absent` rather than `inert`.** `inert` is "the symbol loads and nothing
+  applies it"; nothing here needs applying, because the message a caller sends is answered by a class the
+  port defines and exports. The rows are `absent` because neither release the band deploys on has any Vision
+  to inherit from in the first place, and the port supplies the classes these selectors would have belonged
+  to. That is a fact about the two rungs, and section 1's census carries it with its control.
+
+The rows keep `minimum: 6.0` whatever status they carry. `minimums()` at :2014 reads `entry.minimum` and
+never `entry.status`, so each of the fifteen is the placement record for every band below 11.0 and is
+load-bearing even where it says the port has no such API.

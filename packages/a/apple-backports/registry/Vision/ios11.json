@@ -804,9 +804,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "+[VNFaceObservation faceObservationWithRequestRevision:boundingBox:roll:yaw:]",
@@ -845,9 +845,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNCoreMLRequest initWithCompletionHandler:]",
@@ -855,9 +855,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNCoreMLRequest initWithModel:]",
@@ -883,9 +883,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNFaceLandmarkRegion init]",
@@ -893,9 +893,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNFaceLandmarkRegion2D pointsInImageOfSize:]",
@@ -912,9 +912,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNImageRequestHandler initWithCGImage:options:]",
@@ -1012,9 +1012,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves to NSObject's, so a caller sending it gets a freshly allocated object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNImageRequestHandler performRequests:error:]",
@@ -1148,9 +1148,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTargetedImageRequest initWithTargetedCGImage:options:]",
@@ -1338,9 +1338,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackObjectRequest initWithCompletionHandler:]",
@@ -1348,9 +1348,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackObjectRequest initWithDetectedObjectObservation:]",
@@ -1376,9 +1376,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackRectangleRequest initWithCompletionHandler:]",
@@ -1386,9 +1386,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackRectangleRequest initWithRectangleObservation:]",
@@ -1414,9 +1414,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackingRequest initWithCompletionHandler:]",
@@ -1424,9 +1424,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "-[VNTrackingRequest init]",
@@ -1434,9 +1434,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the header marks the initializer unavailable, so a program written for the release does not send it",
-      "effect": "the method is not there of its own; the class answers what its superclass does",
-      "source": "Vision of iOS 16.4, marked unavailable in the header"
+      "reason": "neither release this port deploys on carries a Vision at all, so nothing either of them has answers the name; the header's NS_UNAVAILABLE is a promise about source and is not what makes the row absent, because this host's own Vision answers the selector anyway",
+      "effect": "the method is not there of its own: on this port's class it resolves up the chain to the request base's initializer, so a caller sending it gets a usable request object rather than an error",
+      "source": "the VN census of 6.1.3 and 4.3 with 11.0 and 12.0 as the control, and the probe of the port's own classes for what each of the fifteen answers and which class writes the body. facts/Vision/Absence.md sections 1 and 10"
     },
     {
       "api": "VNBarcodeObservation.barcodeDescriptor",
