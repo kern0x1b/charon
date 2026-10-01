@@ -2635,9 +2635,9 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "inert",
-      "reason": "the release has no sleep member to read the value from: 6.1.3's AVPlayer carries 140 own instance methods and 19 own class methods, and its playback vocabulary is -rate, -setRate:, -play, -pause, -currentItem and the external-playback pair -allowsAirPlayVideo and -allowsExternalPlayback, none of which touches the idle timer. There is no member of this release the flag would switch",
-      "effect": "the value is stored on the player and read back, so a caller that sets YES and reads it gets YES and a caller that reads it from a fresh player gets NO, but nothing on 6.1.3 applies it: the screen goes to sleep on the system's own timer whatever this says. A caller that needs the screen kept awake on this release sets -[UIApplication sharedApplication] idleTimerDisabled itself, which is the application's member and not the player's",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
+      "reason": "the release has no sleep member to read the value from: 6.1.3's AVPlayer carries 140 own instance methods and 19 own class methods, and its playback vocabulary is -rate, -setRate:, -play, -pause, -currentItem and the external-playback pair -allowsAirPlayVideo and -allowsExternalPlayback, none of which touches the idle timer. AVPlayer.h:860 gives the default as YES on iOS, so that is what an unset player answers",
+      "effect": "the value is stored on the player and read back, so a caller that sets NO and reads it gets NO and a caller that reads it from a fresh player gets YES, which is the default AVPlayer.h:860 states, but nothing on 6.1.3 applies it: the screen goes to sleep on the system's own timer whatever this says. A caller that needs the screen kept awake on this release sets -[UIApplication sharedApplication] idleTimerDisabled itself, which is the application's member and not the player's",
+      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration and :860 for the default; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation120.md"
     },
     {

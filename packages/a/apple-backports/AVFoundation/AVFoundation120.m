@@ -10,6 +10,8 @@
 // sleep member of any kind: its playback vocabulary is -rate, -setRate:, -play, -pause, -currentItem
 // and the external-playback pair, and none of them touches the idle timer. The port therefore stores
 // and returns the value, and the row is inert for that reason and not because the call is missing.
+//
+// The default is AVPlayer.h:860's: YES on iOS, so a player nobody has set answers YES.
 
 static const char charon_prevents_display_sleep_key;
 
@@ -18,7 +20,7 @@ static const char charon_prevents_display_sleep_key;
 - (BOOL)preventsDisplaySleepDuringVideoPlayback
 {
     NSNumber *stored = objc_getAssociatedObject(self, &charon_prevents_display_sleep_key);
-    return stored ? stored.boolValue : NO;
+    return stored ? stored.boolValue : YES;
 }
 
 - (void)setPreventsDisplaySleepDuringVideoPlayback:(BOOL)preventsDisplaySleepDuringVideoPlayback

@@ -30,7 +30,8 @@ One row, and it is `inert`: `AVPlayer.preventsDisplaySleepDuringVideoPlayback`. 
 carries 140 own instance methods and 19 own class methods and no sleep member of any kind - its
 playback vocabulary is `-rate`, `-setRate:`, `-play`, `-pause`, `-currentItem` and the
 external-playback pair, and none of them touches the idle timer. The port stores and returns the
-value, which is the whole of the row.
+value, which is the whole of the row, and an unset player answers `AVPlayer.h:860`'s default: **YES**
+on iOS.
 
 ## The 15 absent rows, in four families
 
