@@ -12,7 +12,15 @@ Source: the host's own UIKit under Mac Catalyst (macOS 27.0), held against the b
 - A fresh recogniser is possible, enabled, without a view, with no touches, `cancelsTouchesInView` YES, `delaysTouchesBegan` NO,
   `delaysTouchesEnded` YES and without a delegate; `-locationInView:` answers the origin. It is made with `-initWithTarget:action:` or `-init`.
 - Added to a view it knows the view, and the view lists it in `gestureRecognizers`; it can be disabled and removed.
-- It answers none of the members of iOS 16 and 17 (`zOffset`, the azimuth and altitude angles, `rollAngle`).
+- It answers every member that arrived after the class did: `zOffset` (16.1), `altitudeAngle`,
+  `azimuthAngleInView:` and `azimuthUnitVectorInView:` (16.4) and `rollAngle` (17.5) are all there, and
+  on a device that cannot hover each answers what the header of 16.4 documents - 0 for the three, and
+  an empty vector for `azimuthUnitVectorInView:`. Measured on 2026-10-01, all five of them, by the
+  `hover16` group of `tests/backports/host/uikit2` and the recording beside it
+  (`facts/UIKit/HoverAndTextInput16.md`). An earlier revision of this page said the class answered
+  none of them: it had read the port's side of a one-sided check as a statement about the system, and
+  the measurement says otherwise. `zOffset` and `altitudeAngle` are the port's own, in
+  `UIHoverGestureRecognizer+Hover16.m`; `rollAngle` is the release's.
 
 ## What the port does
 

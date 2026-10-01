@@ -381,6 +381,13 @@ windowed pointer "UIPointerRegion.m UIPointerStyle.m UIPointerInteraction.m UIHo
 
 windowed pointercategories "UIEvent+Pointer.m UIGestureRecognizer+Pointer.m UIButton+Pointer.m" pointercategories_test.m
 
+# The names of iOS 16.1 and 16.4 this band carries: the four members UIHoverGestureRecognizer gained,
+# and UITextInputContext with the three flags it declares. UIHoverGestureRecognizer.m is main's 13.0
+# object and is here because the four members belong to the class it defines; the two files beside it
+# are this band's own. UISearchBar's enabled of 16.4 is in this group too, measured here and left to
+# the release's own UIView accessors - see facts/UIKit/HoverAndTextInput16.md.
+windowed_expected hover16 "UIHoverGestureRecognizer.m UIHoverGestureRecognizer+Hover16.m UITextInputContext16.m" hover16_test.m hover16_system.m
+
 windowed search "UISearchToken.m UISearchTextField.m" search_test.m
 
 windowed searchcategories "UISearchBar+SearchTextField.m UISearchController+ScopeBar.m" searchcategories_test.m
