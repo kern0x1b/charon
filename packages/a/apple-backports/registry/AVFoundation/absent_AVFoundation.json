@@ -580,9 +580,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is not in 6.1.3: of the 301 classes naming AV in the 6.1.3 armv7 cache, with cache-census.lua's own control reading 558 names beginning AV across 6.1.3 and 4.3, this one is not among them, while 6.1.3 does carry the two classes it would hand settings to - AVAssetExportSession, AVAssetReader, AVAssetWriter and AVCaptureVideoPreviewLayer are all in that 301. What it adds at 7.0 is the advice: 7.0's AVOutputSettingsAssistant carries 15 own instance and 6 own class selectors, and the class methods are the reason a port could not fake it cheaply - +availableOutputSettingsPresets, +baseSettingsProviderForPreset: and +videoSettingsAdjusterForPreset: are Apple's own preset tables, and +videoEncoderCapabilities is a query about the encoders the release has",
+      "effect": "NSClassFromString answers nil and a compile-time class reference fails to link against the release, which is what absent means for a class. A caller on this release asks the release directly: -[AVAssetExportSession exportPresetsCompatibleWithAsset:] and -[AVAssetExportSession allExportPresets] for the presets, and -[AVAssetWriterInput outputSettings] plus -[AVAssetReaderTrackOutput outputSettings] for the settings themselves. Returning a hard-coded dictionary here would be a value Apple's own preset tables would have to be guessed at, and the port's rule forbids a hard-coded answer standing in for behaviour",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3, whose control in the same run reads 558 names beginning AV so that a zero on 6.1.3 is the release's; the 7.0 member set is code_map over ~/.charon/dyld/7.0/dyld_shared_cache_armv7, which answers 15 own instance and 6 own class selectors for the class; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, where it reads super NSObject, with its three controls answered on both ends"
     },
     {
       "api": "AVPlayer.appliesMediaSelectionCriteriaAutomatically",
