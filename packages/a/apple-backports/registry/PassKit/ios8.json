@@ -92,11 +92,11 @@
     "kind": "property",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "Apple's own pass relay, a system service this device has no part in: a remote pass is a pass on another device, updated by Apple's service",
-    "effect": "the device name is not there: Apple's own answers it for a pass on another device, which needs the relay, and for a pass on this one the name is the device's own setting",
+    "status": "implemented",
+    "reason": "a device name is the name of the device a pass is bound to, and this device has neither of the two things that bind one: no Secure Element to provision a payment pass into, and no pass relay in the release to bring a pass down from another device",
+    "effect": "-deviceName answers nil, as a category on the release's own PKPass: a caller asking which device this pass is bound to is told it is bound to none, which is the truth here. Apple's header declares the property nonnull (PKPass.h:51 in iPhoneOS26.2.sdk, the same text at PKPass.h:56 in the 16.4 SDK this package builds against) and that promise holds only where a device was there to name -- no name is invented to satisfy it",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, one run reading 11378 classes of which 66 begin PK: PKPass carries 90 instance methods and -deviceName is not among them, so the member is this port's over the release's class and not a second PKPass; the release's own -dictionaryRepresentation, which PKPass14.m already reads, is what the wallet members are answered from"
   },
   {
     "api": "PKPassLibrary.remoteSecureElementPasses",
@@ -136,33 +136,33 @@
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "the issuer's own encrypted payload, and every property of it is NSData the caller filled in: a class of data needs no Secure Element to exist, so carrying it stands in for nothing",
+    "effect": "the class is there and holds the caller's own bytes: -init leaves encryptedPassData, activationData, ephemeralPublicKey and wrappedKey nil, and each reads back what the caller set. It adds nothing to a Secure Element -- provisioning a pass is the hardware's work and no program on this device can stand in for it, which is why the class that would report the result, PKPaymentPass, is absent",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, one run reading 11378 classes of which 66 begin PK: PKAddPaymentPassRequest is not one of them, so the release has no class of this name and this port defines it; python3 tools/cache-index/first-rung.py PKAddPaymentPassRequest reads 9.0, the row's own introduced; its members are PKAddPaymentPassRequest.h:69-84 in iPhoneOS26.2.sdk"
   },
   {
     "api": "PKAddPaymentPassRequestConfiguration",
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "the issuer's display fields and Pass Library filters, every one of them an NSString or a PKPaymentNetwork the caller supplied, and -initWithEncryptionScheme: stores the caller's own scheme: nothing here reads the hardware",
+    "effect": "the class is there and holds the caller's own values: -initWithEncryptionScheme: reads back the scheme it was given, and cardholderName, primaryAccountSuffix, localizedDescription, primaryAccountIdentifier and paymentNetwork each read back what the caller set. The iOS 10.1, 12.0 and 12.3 members of this class -- cardDetails, requiresFelicaSecureElement, style and productIdentifiers -- are deliberately not answered here, so that a 9.0 object carries no other release's API",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, one run reading 11378 classes of which 66 begin PK: PKAddPaymentPassRequestConfiguration is not one of them; python3 tools/cache-index/first-rung.py PKAddPaymentPassRequestConfiguration reads 9.0. The four members left unanswerable are @dynamic in PKPaymentPass9.m, and their own API_AVAILABLE lines are cardDetails and requiresFelicaSecureElement at ios(10.1), style at ios(12.0) and productIdentifiers at ios(12.3) in iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKAddPaymentPassRequest.h"
   },
   {
     "api": "PKAddPaymentPassViewController",
     "kind": "class",
     "introduced": "9.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "the class exists on a device without the hardware -- it is a UIViewController that presents Apple's add-pass sheet, and a caller asks whether a payment pass can be added at all before presenting anything. This is the same correction the 6.1.3 gate forced on the two payment controllers, where the registry said the class was absent while its members said implemented",
+    "effect": "the class is there and +canAddPaymentPass answers NO, which is Apple's own documented answer for a device with no Secure Element. -initWithRequestConfiguration:delegate: keeps the caller's delegate weakly and takes the configuration without storing it, because a configuration's five fields are read only by Apple's own sheet, which this device does not present. No delegate callback fires: didFinishAddingPaymentPass:error: would report a pass the release cannot hold, since PKPaymentPass is absent, so nothing is called rather than something called with a lie",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, one run reading 11378 classes of which 66 begin PK: PKAddPaymentPassViewController is not among them and neither is PKPaymentPass, while PKAddPassesViewController is present with superclass UIViewController; python3 tools/cache-index/first-rung.py PKAddPaymentPassViewController reads 9.0"
   },
   {
     "api": "PKIdentityAuthorizationController",
