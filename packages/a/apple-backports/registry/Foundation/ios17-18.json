@@ -160,7 +160,8 @@
       "kind": "property",
       "minimum": "6.0",
       "source": "the SDK 26.2 NSLocale.h declaration and its comment, which state both the availability and the en_US@rg=gbzzzz -> en-US example, and the 6.0 armv7 cache read class-scoped with python3 over ~/.charon/dyld/6.0/classes_armv7.json: NSLocale carries -localeIdentifier and -objectForKey: and no class in the 11284 read in that run carries languageIdentifier, so the value is computed from what the release does have. The ladder and its control are in facts/Foundation/NSLocaleIdentifiers.md",
-      "status": "implemented"
+      "status": "implemented",
+      "facts": "facts/Foundation/NSLocaleIdentifiers.md"
     },
     {
       "api": "NSLocale.regionCode",
@@ -169,7 +170,8 @@
       "kind": "property",
       "minimum": "6.0",
       "source": "the SDK 26.2 NSLocale.h declaration and its comment, which state the rg-precedence, the GB example and the nil case, and the 6.0 armv7 cache read class-scoped with python3 over ~/.charon/dyld/6.0/classes_armv7.json: the regionCode selector string is in the 6.0 and 4.3 selector dumps but the only class owning it in either release is the private -[AADeviceInfo regionCode], while NSLocale carries -localeIdentifier and -objectForKey: with NSLocaleCountryCode, so the value is computed here rather than asked of the dictionary; the rg extension is a BCP-47 subtag CoreFoundation on 6.0 does not know. The ladder and its control are in facts/Foundation/NSLocaleIdentifiers.md",
-      "status": "implemented"
+      "status": "implemented",
+      "facts": "facts/Foundation/NSLocaleIdentifiers.md"
     },
     {
       "api": "NSMorphologyPronoun",
