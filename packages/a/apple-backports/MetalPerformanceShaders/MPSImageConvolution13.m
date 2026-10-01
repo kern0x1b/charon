@@ -104,6 +104,50 @@ static void CharonMPSConvolveRegion(MPSImage *source, MPSImage *destination, MTL
     CharonMPSConsumeReadCount(source);
 }
 
+// The walk above, reached as a METHOD so that another object's kernel can share it. MPSImageLaplacian
+// (10.0, MPSImageElements10.m) is the arithmetic MPSImageConvolution.h:109-116 says this file already
+// has - the fixed [0 1 0; 1 -4 1; 0 1 0] kernel - so writing that walk again there would be a second
+// answer for a later author to choose between, and CharonMPSConvolveRegion itself cannot be the thing
+// shared: it is a static in this file, and a C function called across objects is Undefined symbols in
+// the bands where this file is not carried, because an object is placed by the release whose API it
+// defines (charon/AGENTS.md). A method on MPSUnaryImageKernel travels with the class instead.
+//
+// The edge mode is checked here rather than by each caller, because it is the one thing a caller of
+// this seam could get wrong silently: a Clamp border would answer different numbers and the header's
+// own default is Zero.
+@interface MPSUnaryImageKernel (CharonMPSConvolution)
+- (void)charon_mps_convolveRegionWithSource:(MPSImage *)source
+                                destination:(MPSImage *)destination
+                                 kernelWidth:(NSUInteger)kernelWidth
+                                kernelHeight:(NSUInteger)kernelHeight
+                                    weights:(const float *)weights
+                                        bias:(double)bias
+                                        what:(NSString *)what;
+@end
+
+@implementation MPSUnaryImageKernel (CharonMPSConvolution)
+
+- (void)charon_mps_convolveRegionWithSource:(MPSImage *)source
+                                destination:(MPSImage *)destination
+                                 kernelWidth:(NSUInteger)kernelWidth
+                                kernelHeight:(NSUInteger)kernelHeight
+                                    weights:(const float *)weights
+                                        bias:(double)bias
+                                        what:(NSString *)what
+{
+    if (self.edgeMode != MPSImageEdgeModeZero) {
+        CharonMPSRefuse(@"%@: edgeMode %lu is not MPSImageEdgeModeZero, the only mode this port implements"
+                        @" - a Clamp or Mirror answer would be a different kernel - so nothing was written",
+                        what, (unsigned long)self.edgeMode);
+        return;
+    }
+    CharonMPSConvolveRegion(source, destination,
+                            CharonMPSImageResolvedRegion(destination, self.clipRect),
+                            kernelWidth, kernelHeight, weights, bias, what);
+}
+
+@end
+
 @implementation MPSImageConvolution {
     NSUInteger _kernelWidth, _kernelHeight;
     NSMutableData *_weights;
