@@ -213,12 +213,12 @@ static char CharonDeferredElementIdentifierKey;
     }];
 }
 
+// GETTER ONLY, and that is the SDK's shape: UIDeferredMenuElement.h:19 declares
+// `@property (nonatomic, copy, readonly) UIDeferredMenuElementIdentifier identifier`, so the release has
+// no way to write it and neither does the port.  This file defined a setIdentifier: here, which answered a
+// setter no Apple header declares; its type is a typedef of NSString * (UIDeferredMenuElement.h:13), so
+// the getter keeps NSString * and reads back what any producer stored.
 - (NSString *)identifier { return objc_getAssociatedObject(self, &CharonDeferredElementIdentifierKey); }
-- (void)setIdentifier:(NSString *)identifier
-{
-    objc_setAssociatedObject(self, &CharonDeferredElementIdentifierKey, [identifier copy],
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
 @end
 
 @implementation UIScene (CharonUIKit26)
@@ -599,12 +599,33 @@ static char CharonTextInputTraitsAllowsNumberPadPopoverKey;
 }
 @end
 
-// UIViewPropertyAnimator's flushUpdates:.  The 16.4 SDK's UIViewPropertyAnimator declares NO flush, so
-// there is nothing to forward to - measured, updateEverything is in no header under it.  The port's answer
-// is therefore the honest nothing, and the row says the forwarding it wanted was not available rather than
-// naming a method the release cannot answer.
+// UIViewPropertyAnimator's flushUpdates.  The SDK 26.2 header declares it a PROPERTY and a readwrite
+// one -- `@property(nonatomic) BOOL flushUpdates API_AVAILABLE(ios(26.0), ...)` at
+// UIViewPropertyAnimator.h:49 -- so it is an accessor PAIR and its getter answers BOOL.  This file used
+// to define `- (void)flushUpdates`, which is neither: an application that wrote `animator.flushUpdates =
+// YES` raised unrecognized selector `setFlushUpdates:` against this library, and one that read it got
+// whatever was in the return register.  A property's NAME is not always a selector and a BOOL property is
+// never a void method; both halves are what check_registry's member list reads, and the missing setter
+// would also have been a member the object carried with no row.
+//
+// The 16.4 SDK's UIViewPropertyAnimator declares no flush at all - measured, updateEverything is in no
+// header under it - so there is nothing to forward to and the flag is the honest nothing: the getter
+// returns what the setter stored and NO until something stores otherwise.  Same shape as the BOOL
+// properties above, and the same cost: a 6.1.3 animator runs its animations without the 26.0
+// flush-on-every-context-change, which the row says rather than implying the behaviour exists.
 @implementation UIViewPropertyAnimator (CharonUIKit26)
-- (void)flushUpdates { }
+
+static char CharonAnimatorFlushUpdatesKey;
+
+- (BOOL)flushUpdates
+{
+    return [(NSNumber *)objc_getAssociatedObject(self, &CharonAnimatorFlushUpdatesKey) boolValue];
+}
+- (void)setFlushUpdates:(BOOL)flushUpdates
+{
+    objc_setAssociatedObject(self, &CharonAnimatorFlushUpdatesKey, [NSNumber numberWithBool:flushUpdates],
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 @end
 
 // --- (b) FORWARDING ---------------------------------------------------------------------------

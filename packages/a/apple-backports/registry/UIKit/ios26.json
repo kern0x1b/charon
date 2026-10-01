@@ -980,9 +980,9 @@
    "introduced": "26.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the member is exported and the getter returns what the setter stored, which is the whole of what a property on a class the port already carries can honestly do on a 6.1.3 release",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
-   "facts": "facts/UIKit/UIContentUnavailable26.md"
+   "effect": "the getter is exported and answers with the identifier the element was created with; the SDK declares the property READONLY (UIDeferredMenuElement.h:19), so there is no setter and an application that wrote this property against the release would not compile - the object defined one until this commit, which answered a setter no Apple header declares. Its type is a typedef of NSString * (UIDeferredMenuElement.h:13), so the getter's NSString * is the SDK's own pointer and reads back whatever the association holds",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version, and the SDK 26.2 headers UIKit.framework/Headers/UIDeferredMenuElement.h:13 and :19 for the typedef and the readonly declaration; the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
+   "facts": "facts/UIKit/UISelectorArity26.md"
   },
   {
    "api": "UIDeferredMenuElementProvider",
@@ -1490,9 +1490,9 @@
    "introduced": "26.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the selector is exported and the body is the honest nothing: the 16.4 SDK's UIViewPropertyAnimator declares no flush and no updateEverything, so there is nothing to forward to",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
-   "facts": "facts/UIKit/UIContentUnavailable26.md"
+   "effect": "BOTH ACCESSORS ARE EXPORTED and the getter answers BOOL, because the SDK declares this a readwrite property and not a method: UIViewPropertyAnimator.h:49 reads `@property(nonatomic) BOOL flushUpdates`, so an application that writes `animator.flushUpdates = YES` sends setFlushUpdates: and one that reads it sends flushUpdates. The object defined `- (void)flushUpdates` before this commit, which answered neither -- the write raised unrecognized selector setFlushUpdates: and the read returned whatever was in the return register. What the pair holds is the honest nothing: the 16.4 SDK's UIViewPropertyAnimator declares no flush and no updateEverything, so there is nothing to forward to, the getter returns NO until a setter stores otherwise, and a 6.1.3 animator runs its animations without the 26.0 flush-on-every-context-change",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version, and the SDK 26.2 header UIKit.framework/Headers/UIViewPropertyAnimator.h:49 for the declaration that makes this an accessor pair returning BOOL; the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_methname, which prints flushUpdates and setFlushUpdates: - the same count the registry check makes, and the one that caught this",
+   "facts": "facts/UIKit/UISelectorArity26.md"
   },
   {
    "api": "+[UIColorEffect effectWithColor:]",

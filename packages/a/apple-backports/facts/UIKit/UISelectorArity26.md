@@ -102,8 +102,42 @@
 // its SDK declaration implies.  Every other row is present under its own spelling, and the 92
 // implemented method rows' return types were compared with the SDK's declarations the same way: the
 // only disagreement is UIViewPropertyAnimator.flushUpdates, which the SDK declares a readwrite BOOL
-// property and the object defined as `- (void)flushUpdates`.  facts/UIKit/UIContentUnavailable26.md
-// carries that one.
+// property and the object defined as `- (void)flushUpdates`.  That one is fixed here too, and it is the
+// same family of mistake with a different face: a BOOL property is never a void method.  The SDK line is
+//
+//   grep -n 'flushUpdates' $SDK/System/Library/Frameworks/UIKit.framework/Headers/UIViewPropertyAnimator.h
+//   49:@property(nonatomic) BOOL flushUpdates API_AVAILABLE(ios(26.0), macos(26.0), tvos(26.0), visionos(26.0)) API_UNAVAILABLE(watchos);
+//
+// so an application that wrote `animator.flushUpdates = YES` sent `setFlushUpdates:`, which the object did
+// not define at all, and one that read it got whatever was in the return register of a void method.  Both
+// accessors are defined now, over the same associated-object shape the file's other BOOL properties use.
+//
+//   otool -v -s __TEXT __objc_methname /tmp/UIKit26_0.o | sed -n 's/^[0-9a-f]*  //p' | grep -n 'FlushUpdates'
+//   103:flushUpdates
+//   104:setFlushUpdates:
+//
+// The object carries 161 selectors where it carried 160, which is that one setter.  __objc_methname is a
+// STRING TABLE keyed by selector name, so a selector two categories define appears once: the
+// -[UIDeferredMenuElement setIdentifier:] removed below cost the count nothing, because
+// -[UIBarButtonItem setIdentifier:] is still there under the same name.
+//
+// THE OTHER HALF OF THE SAME AUDIT: AN ACCESSOR THE SDK DOES NOT DECLARE.  UIDeferredMenuElement.h:19 reads
+// `@property (nonatomic, copy, readonly) UIDeferredMenuElementIdentifier identifier`, so the release cannot
+// write that property and the object must not either - and it defined a setIdentifier: there.  Removed.  Its
+// type is a typedef of NSString * (UIDeferredMenuElement.h:13), so the getter keeps NSString * and the
+// association it reads is written by whatever creates the element.  Nothing in the tree called it:
+//   grep -rn 'setIdentifier:' packages/a/apple-backports/UIKit/
+// names UIBarButtonItem (whose identifier the SDK declares readwrite, UIBarButtonItem.h:180, and whose pair
+// is unchanged) and three respondsToSelector: guards that ask an NSLayoutConstraint.
+//
+// TWO THINGS THIS AUDIT FOUND THAT ARE NOT DEFECTS, so a later reader does not re-open them.  First,
+// `-[UIResponder providerForDeferredMenuElement:]` returns `id` where UIResponder.h:135 declares
+// `UIDeferredMenuElementProvider *`; the two are the same pointer on armv7 and the object answers nil, so
+// no caller can tell, and the port declares that class itself in CharonUIKit26.h.  Second,
+// `-[UIBarButtonItem identifier]` returns `NSString *` and that is the SDK's own type - UIBarButtonItem.h:180
+// declares `@property (nonatomic, copy, nullable) NSString *identifier`, no typedef involved.  A first pass
+// at this audit matched the name against NSLayoutConstraint.h's `identifier` and reported a disagreement
+// that was not there; the row to read is the one in the class's own header.
 //
 // THE SEVEN EDIT ACTIONS ARE MEMBERS OF A PROTOCOL, so what this fix does NOT change is where they live.
 // UIResponderStandardEditActions is a @protocol in every release the port stages, and A CATEGORY CANNOT
