@@ -25,8 +25,8 @@ Four releases were read directly, and they are the four that matter:
 
 | release | architecture | why it is here |
 |---|---|---|
-| **4.3** | armv7 | the oldest release the package deploys on |
-| **6.1.3** | armv7 | the other one, and the default of `cache-census.lua` |
+| **4.3** | armv7 | one of the two `cache-census.lua` names as "the two the package deploys on", and the older of them |
+| **6.1.3** | armv7 | the other, and the tool's own default |
 | **12.0** | arm64 | the newest held rung below 13.0, where a 13.0 API would most plausibly have leaked in |
 | **16.0** | arm64e | **the control** — see the hole below |
 
@@ -115,8 +115,9 @@ one of them is a different thing: `MPServerObject`, `MPStoreOfferArtworkImageCac
 `MPShuffledItemGroup`, `MPSwipableView`, `MPSwipeGestureRecognizer`,
 `MPSystemNowPlayingController`. They are MailStore, the shuffle controller and the system Now
 Playing controller, and they share three letters with the framework and nothing else. **Zero images
-in either cache name `MPS` at all**: Metal Performance Shaders does not exist below iOS 9, so on
-the two releases this package deploys on there is no substrate for any of these rows — which is the
+in either cache name `MPS` at all**, and the earliest MPS names the index places are at 9.0
+(`MPSImageIntegral`, `MPSImageGaussianBlur`, `MPSImageBox` all read 9.0 above) — so on the two
+releases this package deploys on there is no substrate at all for any of these rows, which is the
 `reason` these rows already carried, now measured instead of asserted.
 
 ### The exact, name-by-name answer
@@ -222,6 +223,38 @@ descriptors at 14.0 and 16.3, which is another slice's business.
 `introduced` the cache does not corroborate, nothing here needed correcting — 16.0 is the oldest
 held rung above the hole, so it cannot contradict a 13.0 declaration, only be consistent with it.
 
+## A third source: the SDK's own availability macros
+
+The surface table is the registry's source and the caches are the releases' own answer. The headers
+are a third, independent witness, and they are on this machine inside the SDK digest the package
+compiles against:
+
+```
+$HOME/.xmake/cache/packages/2609/i/iphoneos-sdk/26.2/resources/markers/iPhoneOS16.5.sdk.tar.xz.dir/iPhoneOS16.5.sdk/\
+System/Library/Frameworks/MetalPerformanceShaders.framework
+```
+
+All **55 of 55** are declared there — 52 classes, 2 protocols and the owner of the member — and every
+one of the 54 class and protocol declarations carries an availability macro on the line above it.
+Read backwards from each `@interface`/`@protocol`:
+
+| the SDK's own annotation | rows |
+|---|---|
+| `ios(13.0)` | 46 |
+| `ios(13)` | 7 |
+| `ios(13.4)` | 1 (`MPSImageEDLines`, `MPSImageEDLines.h:37`) |
+| **disagreeing with the registry's `introduced`** | **0** |
+
+The member row agrees in the same way, from its own line: `MPSCNNConvolution.h:833` annotates
+`weightsLayout` with `MPS_AVAILABLE_STARTING(macos(10.15), ios(13.0), macCatalyst(13.0), tvos(13.0))`,
+which is the registry's 13.0 read off the declaration rather than off a table. The reader for this
+self-checks on a case that can be read by eye — `MPSNNGridSample.h` line 26 is
+`MPS_CLASS_AVAILABLE_STARTING( macos(10.15), ios(13.0), macCatalyst(13.0), tvos(13.0))` and line 27 is
+`@interface MPSNNGridSample : MPSCNNBinaryKernel`.
+
+Three sources now agree on `introduced`: the surface table, the headers, and — for the names rather
+than the versions — the caches, where all 54 read 16.0.
+
 ## The port side: it exports none of them either
 
 ```
@@ -250,19 +283,75 @@ besides the substrate:
 - **So the reference would have to come from the header, and these headers do not give one.** This is
   the line that separates this slice from the MPS 9.0 rows that *are* implemented:
   `MPSImageIntegral.h:19-20` states its rectangle exactly — `sumRect.origin =
-  MPSUnaryImageKernel.offset`, `sumRect.size = dest_position - clipRect.origin` — which is a formula
-  a plain C reference can be written from, and `MPSImageIntegral` is `implemented` against it.
-  `MPSNDArray.h`, `MPSNDArrayDescriptor.h`, the `MPSNDArrayGradientKernels.h` family,
-  `MPSNNGramMatrixCalculation.h`, `MPSSVGF.h` and `MPSImageEdge.h` describe **compute kernels and
-  their buffers**, not the arithmetic a value must have. Writing a class that satisfies the name and
-  guessing the contents would be a crutch under §9, and a registry row asserting it would be worse
-  than an honest `absent`.
+  MPSUnaryImageKernel.offset`, `sumRect.size = dest_position - MPSUnaryImageKernel.clipRect.origin` —
+  which is a formula a plain C reference can be written from, and `MPSImageIntegral` is `implemented`
+  against it. Read against the 16.5 SDK (`$HOME/.xmake/cache/packages/2609/i/iphoneos-sdk/26.2/
+  resources/markers/iPhoneOS16.5.sdk.tar.xz.dir/iPhoneOS16.5.sdk/System/Library/Frameworks/
+  MetalPerformanceShaders.framework`), the headers of this slice describe **compute kernels and
+  their buffers**: `MPSCore/Headers/MPSNDArray.h:27` gives `MPSNDArrayDescriptor` a `dataType`, a
+  `numberOfDimensions`, `lengthOfDimension:`, a per-dimension `sliceRangeForDimension:` and a
+  `dimensionOrder` — the shape of the container, not the arithmetic of a kernel. `MPSCNNConvolution.h:2196`
+  declares `MPSNNGramMatrixCalculation : MPSCNNKernel`, and a kernel class is named for the device to
+  run, not for a CPU to imitate. `MPSNNGridSample.h:21` says what it computes in one sentence — "Given
+  an input and a flow-field grid, computes the output using input values and pixel locations from the
+  grid" — and then hands the rest to a URL, `MPSNNGridSample.h:22`, "More details at
+  https://pytorch.org/docs/stable/nn.html#grid-sample". A PyTorch doc page is a reference to what a
+  library does on one framework, not a statement of what a value must be on this one. Writing a class that satisfies the name and guessing the contents would be
+  a crutch under §9, and a registry row asserting it would be worse than an honest `absent`.
 
-Three of these families are not merely undocumented but structurally GPU-shaped, and a CPU class
-could not answer them at all: `MPSPolygonBuffer`, `MPSPolygonAccelerationStructure` and
-`MPSQuadrilateralAccelerationStructure` exist to build and read **ray-tracing acceleration
-structures** on the device, and `MPSSVGF`/`MPSTemporalAA` are temporal filters whose inputs are a
-motion vector and a history buffer the release produces.
+### The one header in this slice that does state its algorithm, and why it still lands at absent
+
+This has to be said plainly, because the opposite was claimed in an earlier commit of this series
+and it was wrong: **`MPSImageEDLines.h` is not one of the headers that state nothing.** Its
+`@discussion` gives the EDLines algorithm in five numbered steps and two formulas — `G = sqrt(Sx^2 +
+Sy^2)`, `G_ang = arctan(Sy / Sx)` for the Sobel gradient, then anchor points, then tracing along the
+gradient direction, then fitting and extending lines — and its annotation is
+`MPS_CLASS_AVAILABLE_STARTING( macos(10.15.4), ios(13.4), macCatalyst(13.4), tvos(13.4))` at
+`MPSImageEDLines.h:37`, which is the registry's 13.4 read from the header itself.
+
+It is still `absent`, and the reason is the difference between an algorithm and a value. Steps 1 and 2
+are arithmetic a reference can be written from. Steps 3 to 5 are **decisions** the header describes at
+paper level and does not pin down: which local maximum counts as an anchor point, the exact order in
+which forward and backward tracing stops, how a line is fitted to the traced points, and what
+"extended along the edge" means when the error crosses `lineErrorThreshold`. Two implementations that
+both follow this text can label different line segments, so a CPU port of it could be graded only
+against a reference this port itself wrote — which is exactly the claim `implemented` makes and the
+one thing here that cannot be checked. There is still no oracle: this host's MPS does not run (above),
+and no held release below 16.0 carries `MPSImageEDLines`, so there is nothing to compare a port's
+answer with. **What is specified is recorded below; what is decided is what cannot be claimed.**
+
+The eight rows of `MPSRayIntersector.framework` are a step further and are not merely unspecified.
+Measured from the SDK, `MPSPolygonBuffer`, `MPSPolygonAccelerationStructure` and
+`MPSQuadrilateralAccelerationStructure` are declared in that framework — `MPSPolygonBuffer : NSObject`,
+`MPSPolygonAccelerationStructure : MPSAccelerationStructure`, `MPSQuadrilateralAccelerationStructure :
+MPSPolygonAccelerationStructure` — and `MPSSVGF`, `MPSSVGFDenoiser`, `MPSSVGFDefaultTextureAllocator`,
+`MPSSVGFTextureAllocator` and `MPSTemporalAA` sit beside them in the same framework. They exist to
+build and read **ray-tracing acceleration structures** on the device, so a host object with the same
+name and a CPU walk inside it is a different capability wearing the row's name.
+
+### The MPSNDArray family is one chain, and the chain is broken at its root
+
+Read off the SDK's own superclasses, which is why a partial host object could not answer these rows
+even if someone wrote one:
+
+```
+MPSNDArrayUnaryKernel        : MPSNDArrayMultiaryGradientKernel
+MPSNDArrayUnaryGradientKernel: MPSNDArrayMultiaryGradientKernel
+MPSNDArrayMultiaryGradientKernel : MPSNDArrayMultiaryBase
+MPSNDArrayMultiaryBase       : MPSKernel
+MPSNDArrayMultiaryKernel     : MPSNDArrayMultiaryBase
+MPSNDArrayBinaryKernel       : MPSNDArrayMultiaryKernel
+MPSNDArrayGather             : MPSNDArrayBinaryKernel
+MPSNDArrayGatherGradient     : MPSNDArrayBinaryPrimaryGradientKernel
+MPSNDArrayStridedSlice       : MPSNDArrayUnaryKernel
+MPSNDArrayStridedSliceGradient : MPSNDArrayUnaryGradientKernel
+MPSNDArrayMatrixMultiplication : MPSNDArrayMultiaryKernel
+MPSTemporaryNDArray          : MPSNDArray
+MPSNDArray                   : NSObject          <- the root, and it is itself a row of this slice
+```
+
+Every one of these rows is absent for the same measured reason and they are absent **together**: the
+deepest ones inherit from `MPSNDArray`, which is one of the 55 and which 0 of 54 held rungs carry.
 
 ## What a caller gets
 
@@ -274,13 +363,21 @@ motion vector and a history buffer the release produces.
   a header the port installs.
 - **The method row**: a caller can still write `-weightsLayout` in its own `MPSCNNConvolutionDataSource`
   conformer — nothing rejects that — and nothing will ever call it, because the framework that would
-  call it is absent from every release the port runs on and the port does not supply one.
+  call it is absent from every release the port runs on and the port does not supply one. Its answer
+  is fully pinned down, which is worth recording: `MPSCNNConvolution.h:832` declares it
+  `-(MPSCNNConvolutionWeightsLayout) weightsLayout` with `MPS_AVAILABLE_STARTING(macos(10.15),
+  ios(13.0), macCatalyst(13.0), tvos(13.0))`, the doc comment says "Currently only OHWI layout is
+  supported which is default", and the enum it returns (`MPSCNNConvolution.h:399`) has exactly one
+  case, `MPSCNNConvolutionWeightsLayoutOHWI = 0`. So on a release that had the protocol the only
+  answer was 0, and a conformer written today can return 0 and be correct — it simply is never asked.
 
 ## What a reader should take from this
 
 Every row of the file at release 13 says `absent`, and that is now a measurement rather than a queue
 entry: **0/54 carried at 4.3, 0/54 at 6.1.3, 0/54 at 12.0, 54/54 at 16.0; the owner of the one
 member row declares it in 16.0 and not in 12.0; 6/6 class controls and 1504 MPS names in the same
-run; 0 files in the package name any of the 55.** No status here is wrong, and none of these rows
-should be read as work not started — the substrate is absent at every band end, and the oracle that
-an `implemented` row would need does not exist on this machine or in any cache the port holds.
+run; 0 files in the package name any of the 55; and all 54 declarations carry an SDK availability
+macro that agrees with their registry `introduced` — 46 at `ios(13.0)`, 7 at `ios(13)`, 1 at
+`ios(13.4)`, none disagreeing.** No status here is wrong, and none of these rows should be read as
+work not started: the substrate is absent at every band end, and the oracle that an `implemented` row
+would need does not exist on this machine or in any cache the port holds.
