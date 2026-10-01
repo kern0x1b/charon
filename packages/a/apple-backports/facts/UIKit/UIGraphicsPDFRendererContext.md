@@ -37,10 +37,18 @@ It keeps three members of its own, `objc.code_map`'s ivar list giving their name
    into a `-mutableCopy` of the caller's dictionary, which has an edge worth naming: a caller who
    passes no dictionary gets none, because `-[nil mutableCopy]` is nil and `-setObject:forKey:` on nil
    does nothing. That is the release's behaviour at `0x20985652`, and it is carried as it is.
-6. the y axis is flipped once for the page: `CGContextTranslateCTM(context, 0, 0)`,
-   `CGContextScaleCTM(context, 1, -1)`, and `CGContextSetBaseCTM(context, CGAffineTransformMakeScale(1, -1))`.
-   The base matrix is what keeps that flip on the second and later pages of one document, and is the
-   only private call in the family (first-rung 3.0, no header declares it).
+6. the y axis is flipped once for the page, about the page's own height:
+   `CGContextTranslateCTM(context, 0, box.size.height)` - at `0x20985684` the instruction loads the
+   FOURTH float of the page rectangle into the second argument, which is its height and not a zero -
+   then `CGContextScaleCTM(context, 1, -1)` and
+   `CGContextSetBaseCTM(context, CGAffineTransformMakeScale(1, -1))`. The base matrix is what keeps
+   that flip on the second and later pages of one document, and is the only private call in the family
+   (first-rung 3.0, no header declares it).
+
+   The height, not a zero, is what `tests/backports/host/pdf/run.sh` settled: a first version read
+   that instruction as a zero and every page came out blank, because a flip about the origin puts the
+   whole drawing below the paper. The test compares the rasterised pixels of every page against the
+   host's own renderer, so it is not a reading of the listing that decides it.
 
 There is no fourth step: the release calls a private `-updateAuxInfo:` after the flip, which
 re-reads the page dictionary of the document, and nothing reaches it from any header.

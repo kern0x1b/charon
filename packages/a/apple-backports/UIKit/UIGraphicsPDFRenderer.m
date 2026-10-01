@@ -185,7 +185,12 @@ static NSData *charon_pdf_media_box(CGRect box)
     }
 
     CGPDFContextBeginPage(context, (CFDictionaryRef)pageInfo);
-    CGContextTranslateCTM(context, 0, 0);
+    // 0x20985684 of the cache loads the FOURTH float of the page rectangle (its height) into the
+    // second argument, not a zero: the flip is about the top edge of the page, so a caller draws
+    // from the top down the way it does everywhere else in UIKit. Reading that instruction as a
+    // zero is what made the first version of this file draw every page off the paper, and the
+    // differential host test is what said so.
+    CGContextTranslateCTM(context, 0, box.size.height);
     CGContextScaleCTM(context, 1, -1);
     CGContextSetBaseCTM(context, CGAffineTransformMakeScale(1, -1));
 }
