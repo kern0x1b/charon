@@ -1586,60 +1586,60 @@
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a generator of the class the factory was called on, bound to the view so it hands back what it was given; a nil view does not raise, which is the host's measured answer",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UIImpactFeedbackGenerator feedbackGeneratorWithStyle:forView:]",
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a UIImpactFeedbackGenerator of the style asked for, bound to the view; measured, the host answers a UIImpactFeedbackGenerator here, so the factory builds the class it was called on",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImpactFeedbackGenerator impactOccurredAtLocation:]",
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the haptic its own style asks for, at the same strength wherever on the screen it happened: this release's haptics are one motor driven by AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and NO position, so the point is accepted and ignored rather than pretended to be weighted",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImpactFeedbackGenerator impactOccurredWithIntensity:atLocation:]",
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImpactFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the style's impact scaled by the intensity given - which IS honoured, since the motor takes one - at the same strength wherever the point was",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UINotificationFeedbackGenerator notificationOccurred:atLocation:]",
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UINotificationFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the notification's own haptic, with the point accepted and ignored: this release's haptics are one motor driven by AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and NO position, so the point is accepted and ignored rather than pretended to be weighted",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UISelectionFeedbackGenerator selectionChangedAtLocation:]",
    "kind": "method",
    "introduced": "17.5",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISelectionFeedbackGenerator a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the selection's own haptic, with the point accepted and ignored: this release's haptics are one motor driven by AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and NO position, so the point is accepted and ignored rather than pretended to be weighted",
+   "source": "UIKit/UIFeedbackGenerator+Location17.m; the host's answers measured on the host's own UIKit - a nil view returns a usable generator rather than raising, and feedbackGeneratorWithStyle:forView: answers a UIImpactFeedbackGenerator - and the location is NOT honoured because this release's haptics go through AudioServicesPlaySystemSoundWithVibration, which takes an intensity and a duration and no position at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UICanvasFeedbackGenerator",

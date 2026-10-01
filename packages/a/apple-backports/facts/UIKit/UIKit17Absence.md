@@ -286,3 +286,86 @@ clamp would be the port answering something the system does not.
 
 `initialVelocity` passes through **exactly**: a velocity of `(2,0)` reads back `(2,0)`, and every zero
 velocity reads back `(0,0)`. So it goes to the 13.0 initialiser untouched, unscaled.
+
+## M7. iOS 6.1.3, read without waiting for the whole inventory
+
+`objc-inventory.lua` over the 6.1.3 armv7 cache is a heavy job and this batch's run sat behind other
+batches' readers of the same cache for 26 minutes at 0% CPU. Two things were already on disk, so the
+6.1.3 answers below come from those and are labelled for what they are:
+
+- `~/.charon/dyld/6.1.3/selectors_armv7.txt` — 113981 distinct selectors of that release, pre-extracted.
+- `~/.charon/dyld/4.3/classes_armv7.json` — the 4.3 class-scoped inventory, used below to
+  class-scope the six names 6.1.3 answers somewhere.
+
+**The control, in the same file: 8 of 8.** `setFrame:`, `reloadData`, `tintColor`, `title`,
+`imageNamed:`, `isHidden`, `text` and `value` are all present, so the reader is looking at the right
+thing and a zero on another name is the release's.
+
+### The 54 method rows: 0 present, anywhere
+
+Not one of this slice's 54 method selectors appears in 6.1.3's selector list at all — 0 hits over all
+113981 names. That is a stronger statement than the class-scoped one, because it does not depend on
+which class carries the name.
+
+### The 61 property rows: 6 names appear somewhere, and class-scoping kills every one
+
+This is the rulebook's own trap, live: *a selector's rung says nothing about its owner*. Six property
+rows have an accessor name that 6.1.3 carries **somewhere**:
+
+| row | accessor found in 6.1.3 | class-scoped: is it on THIS class? |
+|---|---|---|
+| `UIImageConfiguration.locale` | `locale`, `setLocale:` | owner is not even a 4.3 class — another class's selector |
+| `UIPageControl.progress` | `progress`, `setProgress:` | **no** on `UIPageControl` in 4.3 |
+| `UITextView.borderStyle` | `borderStyle`, `setBorderStyle:` | **no** on `UITextView` in 4.3 |
+| `UITextSelectionRect.transform` | `transform`, `setTransform:` | owner is not even a 4.3 class |
+| `UIHoverGestureRecognizer.rollAngle` | `rollAngle`, `setRollAngle:` | owner is not even a 4.3 class |
+| `UITouch.rollAngle` | `rollAngle`, `setRollAngle:` | **no** on `UITouch` in 4.3 |
+
+Three are a selector belonging to a different class, and three are a name the owner does not answer even
+in the release where its owner exists. So all six are `absent`, and had this been read as a bare name
+match it would have produced six false claims.
+
+### What is NOT yet measured, and is not claimed
+
+The **44 class and protocol rows** need a class list for 6.1.3, which the flat selector file does not
+carry, and the class-scoped 6.1.3 inventory had not returned when this batch's turn ended. The
+statement for those 44 rows is therefore only the 4.3 one (**0 present, control 8/8**) plus the host's.
+No 6.1.3 claim is made for them here, and the rows stay `absent` on the 4.3 measurement alone.
+
+## M8. The 17.5 feedback generators, and the limit that shapes them
+
+Asked of the host's own UIKit:
+
+| member | host | measured |
+|---|---|---|
+| `+[UIFeedbackGenerator feedbackGeneratorForView:]` | yes | returns a non-nil **UIFeedbackGenerator**; `isKindOfClass:` YES; **a nil view does not raise** |
+| `+[UIImpactFeedbackGenerator feedbackGeneratorWithStyle:forView:]` | yes | returns a non-nil **UIImpactFeedbackGenerator** |
+| `-[UIImpactFeedbackGenerator impactOccurredAtLocation:]` | yes | returns |
+| `-[UIImpactFeedbackGenerator impactOccurredWithIntensity:atLocation:]` | yes | returns |
+| `-[UISelectionFeedbackGenerator selectionChangedAtLocation:]` | yes | returns |
+| `-[UINotificationFeedbackGenerator notificationOccurred:atLocation:]` | yes | returns |
+
+Two of those decided the code:
+
+- **A factory builds the class it is called on.** `feedbackGeneratorWithStyle:forView:` answers a
+  `UIImpactFeedbackGenerator`, so it is `[[self alloc] initWithStyle:]` and not a hard-coded
+  `[[UIImpactFeedbackGenerator alloc] …]`.
+- **A nil view is not an error.** The host returns a usable generator, so this file adds no precondition
+  of its own.
+
+### What the location does NOT get, stated plainly
+
+This release's haptics are the Taptic Engine's one motor, driven by the port's own
+`charon_feedback_play(intensity, milliseconds, count)` → `AudioServicesPlaySystemSoundWithVibration`.
+**That call takes an intensity and a duration and nothing else.** There is no position parameter, and
+no public mechanism on iOS 6.1.3 to say "vibrate harder on the left of the screen".
+
+So the four location methods **accept the point and ignore it**, and say so in the source. What a caller
+gets is the haptic its style asks for, at the same strength wherever on the screen it happened. The
+alternative — refusing the point, or pretending to weight it — would be the port answering something the
+system cannot. The **intensity** argument *is* honoured, because it maps onto a real parameter: it calls
+the port's existing 13.0 `-impactOccurredWithIntensity:` rather than repeating that arithmetic.
+
+The bound view is stored so a factory hands back what it was given. Nothing in this release routes
+feedback by view, so the view is **recorded, not obeyed** — which is the honest limit of 17.5's location
+API on a motor that takes no position.
