@@ -1413,7 +1413,7 @@ end
 
 
 function surface(binaries, architecture)
-    local found = {classes = {}, members = {}, symbols = {}, defined = {}, registered = {}, answered = {}}
+    local found = {classes = {}, members = {}, symbols = {}, defined = {}, registered = {}, answered = {}, protocols = {}}
     for _, binary in ipairs(binaries) do
         local ours = {}
         if macho.imported_symbols(binary, architecture)["objc_allocateClassPair"] then
@@ -1432,8 +1432,23 @@ function surface(binaries, architecture)
             end
         end
         local inventory = objc.binary_inventory(binary, architecture)
+        -- A protocol the port defines and emits is carried, whatever its inventory entry lacks. Found
+        -- 2026-10-01: six UIKit rows (UIDragSession, UIDragSessionDelegate-ish names, UITextDragRequest and
+        -- friends) sat `absent` with "the name is not there" while the build emitted _OBJC_PROTOCOL_$_X for
+        -- each - found.classes only takes a name whose class.image is set, and a protocol the port
+        -- declares carries no image, so the branch below never saw them. Recorded here rather than in the
+        -- row, because the row was right and the CHECK was blind.
+        for symbol in pairs(found.defined) do
+            local proto = symbol:match("^_OBJC_PROTOCOL_%$_(.+)$") or symbol:match("^_OBJC_LABEL_PROTOCOL_%$_(.+)$")
+            if proto and not proto:startswith("Charon") then
+                found.protocols[proto] = true
+            end
+        end
         for name, class in pairs(inventory and inventory.classes or {}) do
             if class.image and not name:startswith("Charon") then
+                found.classes[name] = true
+            end
+            if (class.image or (found.protocols or {})[name]) and not name:startswith("Charon") then
                 found.classes[name] = true
             end
             if not name:startswith("Charon") then
@@ -1865,12 +1880,7 @@ function check_registry(root, found, complete, deployment, exports, inventory, s
         for name in pairs(carried) do
             -- the protocol metadata symbols answer for the protocol rows and are not API of their own
             local protocol_metadata = name:startswith("_OBJC_PROTOCOL_$_") or name:startswith("_OBJC_LABEL_PROTOCOL_$_")
-            -- A port-internal object is not API and can never appear in a release inventory, so an SDK ledger
-            -- row had nothing for entry_of to compare it against, and listing one only suppressed this check
-            -- for its neighbours. The prefix rule is release-split.lua:100's own; it is not a new one.
-            local bare_name = name:match("^_OBJC_%u*CLASS_%$_(.+)$") or name:match("^_(.+)$") or name
-            local port_internal = bare_name:startswith("charon_") or bare_name:startswith("Charon")
-            if not protocol_metadata and not port_internal and not entry_of(listed, name, inventory) then
+            if not protocol_metadata and not entry_of(listed, name, inventory) then
                 table.insert(unlisted, name)
             end
         end
