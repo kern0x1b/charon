@@ -177,9 +177,9 @@
       "introduced": "16",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "the class arrived in iOS 16, and the claim is about the release: the family it belongs to answers one question, what changed in the photo library since a moment the caller can name, and iOS 6 keeps no account of its library as of any past time. The whole of the release's library is ALAssetsLibrary and its 26 selectors, and not one of them names a moment, a revision, a count or a change: it adds an image or a video, makes an album, enumerates albums, reads an asset by URL or by group and answers the authorization (measured, the inventory printed in facts/Photos/PersistentChange.md). What the release does say when the library changes is a broadcast, ALAssetsLibraryChangedNotification at first held rung 4.0 with ALAssetLibraryUpdatedAssetsKey at 6.0, posted once per write by the library that wrote and never queued for a listener that was not there, so nothing in it can pin a moment and nothing can ask it since. The older family of iOS 8 is a different class, PHChange, whose -changeDetailsForObject: PHChange8.m already carries against that notification; the method the 16.4 header declares for this class, -changeDetailsForObjectType:error:, is of 16.0 and answers a span of time, which is what the release has no record of",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. It is also unreachable on this port from the other side: its only producers are -[PHPhotoLibrary currentChangeToken] and -[PHPhotoLibrary fetchPersistentChangesSinceToken:error:], which are absent rows in registry/Photos/ios8.json, so a caller that got one could not ask the library anything with it",
+      "source": "the headers of the iOS 16.4 SDK (PHPersistentChange.h, PHPersistentChangeFetchResult.h, PHPersistentChangeToken.h, PHPersistentObjectChangeDetails.h) for the declarations and their availability; CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua PHPersistent 6.1.3 4.3 12.0 16.0 for the class census and its control in the same run; CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 for the 26 selectors of the release's ALAssetsLibrary; tools/cache-index/first-rung.py for every first rung named here; facts/Photos/PersistentChange.md for the commands with their output"
     },
     {
       "api": "PHPersistentChangeFetchResult",
@@ -187,9 +187,9 @@
       "introduced": "16",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "the class arrived in iOS 16, and the claim is about the release: it enumerates the changes made to the photo library since a token the library handed out, -enumerateChangesWithBlock: and nothing else, and iOS 6 keeps no account of its library as of any past time. The whole of the release's library is ALAssetsLibrary and its 26 selectors, none of which names a moment, a revision, a count or a change (measured, facts/Photos/PersistentChange.md), and the one account it gives of a change, ALAssetsLibraryChangedNotification, is a broadcast to whoever is listening at that moment with no handle to keep and nothing queued for a listener that was not there. There is therefore no span of time this release can name the changes of, which is the whole content of the object this class enumerates",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes, and the only call that makes one is -[PHPhotoLibrary fetchPersistentChangesSinceToken:error:], which is an absent row in registry/Photos/ios8.json and so answers nothing on this port",
+      "source": "the headers of the iOS 16.4 SDK for the declaration of the class and of -enumerateChangesWithBlock:; CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua PHPersistent 6.1.3 4.3 12.0 16.0 for the class census and its control; CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 for the 26 selectors of the release's ALAssetsLibrary; tools/cache-index/first-rung.py for every first rung named here; facts/Photos/PersistentChange.md for the commands with their output"
     },
     {
       "api": "PHPersistentChangeToken",
@@ -197,9 +197,9 @@
       "introduced": "16",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "the class arrived in iOS 16, and the claim is about the release: a token of this class has no member at all -- NSObject with NSCopying and NSSecureCoding, +new and -init unavailable (PHPersistentChangeToken.h of the 16.4 SDK) -- because the class IS the moment, and its meaning is what the library later does with it. iOS 6 has no moment to give one: the whole of its photo library is ALAssetsLibrary and its 26 selectors, and none of them names a moment, a revision or a history (measured, facts/Photos/PersistentChange.md); the library's one account of a change, ALAssetsLibraryChangedNotification at first held rung 4.0, is posted per write to whoever is listening and is never queued, so it cannot be held, dated or asked since. A snapshot the port took itself would answer a different question under this name, and a caller cannot tell the two apart from the API",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes, and nothing on this port can produce one: -[PHPhotoLibrary currentChangeToken] and -[PHPhotoLibrary fetchPersistentChangesSinceToken:error:] are absent rows in registry/Photos/ios8.json",
+      "source": "the header PHPersistentChangeToken.h of the iOS 16.4 SDK for the declaration and its availability; CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua PHPersistent 6.1.3 4.3 12.0 16.0 for the class census and its control in the same run; CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 for the 26 selectors of the release's ALAssetsLibrary; tools/cache-index/first-rung.py for every first rung named here; facts/Photos/PersistentChange.md for the commands with their output"
     },
     {
       "api": "PHPersistentObjectChangeDetails",
@@ -207,9 +207,9 @@
       "introduced": "16",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Photos"
+      "reason": "the class arrived in iOS 16, and the claim is about the release: it names what happened to one object type across a span of time -- objectType, and the inserted, the updated and the deleted local identifiers, three sets measured against each other -- and iOS 6 has no span of time of its library to measure. The arithmetic is not what is missing: the port already computes the inserted, the changed and the removed of a fetch result in PHChange8.m's -changeDetailsForFetchResult:, and it already listens to the release's own ALAssetsLibraryChangedNotification (first held rung 4.0) to do it. What the release does not have is a record of a span of time: its whole library is ALAssetsLibrary and its 26 selectors, none naming a moment, a revision, a count or a history, and the notification it posts per write is never queued for a listener that was not there (measured, facts/Photos/PersistentChange.md)",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. Nothing on this port makes one: it is the return of -[PHPersistentChange changeDetailsForObjectType:error:], which is the class above, itself reachable only from a change result that -[PHPhotoLibrary fetchPersistentChangesSinceToken:error:] makes, an absent row in registry/Photos/ios8.json",
+      "source": "the header PHPersistentObjectChangeDetails.h of the iOS 16.4 SDK for the four declarations and their availability; CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua PHPersistent 6.1.3 4.3 12.0 16.0 for the class census and its control in the same run; CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 for the 26 selectors of the release's ALAssetsLibrary; tools/cache-index/first-rung.py for every first rung named here; facts/Photos/PersistentChange.md for the commands with their output"
     },
     {
       "api": "PHAdjustmentData",
