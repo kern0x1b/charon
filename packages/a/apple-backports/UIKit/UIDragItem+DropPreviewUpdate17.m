@@ -39,13 +39,25 @@ static const char CharonDropPreviewUpdateCountKey;
 
 - (void)setNeedsDropPreviewUpdate
 {
-    // Recorded, not ignored: the count is how a caller - or a later drop implementation that DOES have
-    // an animation - can tell that a preview was asked to be refreshed, which is the one thing this
-    // method can honestly do on a release with no drop animation. It is not a registry API and cannot be
-    // mistaken for one: the name is charon_-prefixed, and the row this file carries is the 17.4 method.
+    // Recorded, and READABLE, which is what makes it state rather than a write into nowhere: the count
+    // is how a caller - or a later drop implementation that DOES have an animation - can tell that a
+    // preview was asked to be refreshed, which is the one thing this method can honestly do on a release
+    // with no drop animation. -charon_dropPreviewUpdateCount below is the reader; an earlier version
+    // wrote the count with nothing reading it, which is a write into nowhere and not worth shipping.
+    //
+    // It is not a registry API and cannot be mistaken for one: the name is charon_-prefixed, and the row
+    // this file carries is the 17.4 method.
     NSUInteger asked = [objc_getAssociatedObject(self, &CharonDropPreviewUpdateCountKey) unsignedIntegerValue];
     objc_setAssociatedObject(self, &CharonDropPreviewUpdateCountKey,
                             @(asked + 1), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+// How many times -setNeedsDropPreviewUpdate has been called on this item. Zero on a fresh item, which
+// is the honest answer: no preview has been asked to be refreshed because there is no drop animation to
+// refresh one in.
+- (NSUInteger)charon_dropPreviewUpdateCount
+{
+    return [objc_getAssociatedObject(self, &CharonDropPreviewUpdateCountKey) unsignedIntegerValue];
 }
 
 @end
