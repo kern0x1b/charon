@@ -3524,10 +3524,10 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers, as for initWithAttributedName:target:selector: of iOS 11",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "status": "inert",
+   "reason": "VoiceOver of the release lists no custom actions, so nothing calls the handler this member stores, the same reason the plain initWithName:actionHandler: beside it carries",
+   "effect": "an action whose name is the attributed string and whose attributedName is not nil and keeps the attributes it was given, and whose actionHandler is kept and never called; a nil attributed name and a nil handler each still make an action",
+   "source": "the host own UIKit under Mac Catalyst (macOS 27.0), recorded by .agent-work/runs/gb04uikit13/probe/host-action.m (name is the attributed string, attributedName is not nil and keeps the attributes it was given, a nil attributed name and a nil handler each still make an action); the port body is run verbatim against a stand-in class by port-action.m, 13 checks, all agreeing; the body is the composition of UIAccessibilityCustomAction+AttributedName11.m and UIAccessibilityCustomAction+Handler13.m, which is the 13.0 object of this class"
   },
   {
    "api": "-[UIAccessibilityCustomAction initWithAttributedName:image:actionHandler:]",
