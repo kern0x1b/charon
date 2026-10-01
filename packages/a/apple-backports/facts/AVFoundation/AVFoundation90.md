@@ -59,7 +59,10 @@ the same missing class.
 and for `_NSURLSession`, which is what a download URL session would be built on. `AVAsset.compatibleWithAirPlayVideo`
 is the same shape from the other side - it asks whether an asset is fit for AirPlay video, and 6.1.3's
 `AVAsset` has no member that would answer it while `AVPlayer` has its own, `-allowsAirPlayVideo`, which
-is a different class asking about the player.
+is a different class asking about the player. `AVRouteDetector` is the awkward one in this family and
+is written up in its own row: 6.1.3's `AVAudioSession` *does* carry
+`-overrideOutputAudioPort:error:` among its 64 own instance methods, so a caller can choose a route,
+and what this release has no member for is the report of which route the user chose.
 
 **Content keys and metadata (4 rows).** `-[AVAssetResourceLoadingRequest
 persistentContentKeyFromKeyVendorResponse:options:error:]` - 6.1.3's `AVAssetResourceLoadingRequest`
