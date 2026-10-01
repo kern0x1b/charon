@@ -164,4 +164,52 @@ void uikitrotor_run(UIKitConstantsRecorder record)
     attributed.name = @"Renamed";
     record(@"action.attributedInitNameAfterSet", attributed.name ?: @"(nil)");
     record(@"action.attributedInitStringAfterNameSet", attributed.attributedName ? attributed.attributedName.string : @"(nil)");
+
+    // The two iOS 14 initialisers that take an ATTRIBUTED name AND an image: the ones the header
+    // declares beside the 11.0 attributed form and the 14.0 plain forms. What they add over the 11.0
+    // form is the image, and what they answer for the target and the handler is what the plain forms
+    // answer, so both are read against those here in the same run.
+    UIImage *badge = [UIImage new];
+    UIAccessibilityCustomActionHandler handler = ^BOOL(UIAccessibilityCustomAction *a) { return NO; };
+
+    UIAccessibilityCustomAction *attributedImage =
+        [[UIAccessibilityCustomAction alloc] initWithAttributedName:styled
+                                                              image:badge
+                                                             target:actionTarget
+                                                           selector:@selector(description)];
+    record(@"action.attributedImage.name", attributedImage.name ?: @"(nil)");
+    record(@"action.attributedImage.attributedString", attributedImage.attributedName ? attributedImage.attributedName.string : @"(nil)");
+    record(@"action.attributedImage.keepsAttributes",
+           [attributedImage.attributedName attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:NULL] != nil ? @"keeps" : @"drops");
+    record(@"action.attributedImage.imageIsSame", attributedImage.image == badge ? @"same" : @"other");
+    record(@"action.attributedImage.targetIsSame", attributedImage.target == actionTarget ? @"same" : @"other");
+    record(@"action.attributedImage.selector", NSStringFromSelector(attributedImage.selector));
+    record(@"action.attributedImage.actionHandlerIsNil", attributedImage.actionHandler ? @"set" : @"nil");
+    // the two names are one name in two spellings here too, so setting the plain one moves the string
+    attributedImage.name = @"Renamed";
+    record(@"action.attributedImage.attributedStringAfterNameSet", attributedImage.attributedName ? attributedImage.attributedName.string : @"(nil)");
+    record(@"action.attributedImage.keepsAttributesAfterNameSet",
+           [attributedImage.attributedName attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:NULL] != nil ? @"keeps" : @"drops");
+
+    UIAccessibilityCustomAction *attributedImageHandler =
+        [[UIAccessibilityCustomAction alloc] initWithAttributedName:styled
+                                                              image:badge
+                                                     actionHandler:handler];
+    record(@"action.attributedImageHandler.name", attributedImageHandler.name ?: @"(nil)");
+    record(@"action.attributedImageHandler.attributedString", attributedImageHandler.attributedName ? attributedImageHandler.attributedName.string : @"(nil)");
+    record(@"action.attributedImageHandler.keepsAttributes",
+           [attributedImageHandler.attributedName attribute:NSForegroundColorAttributeName atIndex:0 effectiveRange:NULL] != nil ? @"keeps" : @"drops");
+    record(@"action.attributedImageHandler.imageIsSame", attributedImageHandler.image == badge ? @"same" : @"other");
+    record(@"action.attributedImageHandler.actionHandlerIsSet", attributedImageHandler.actionHandler ? @"set" : @"nil");
+    // the host carries no target and no selector on a handler form, and this records that the plain
+    // handler form does not either, so the port's two handler forms agree with each other
+    record(@"action.attributedImageHandler.targetIsNil", attributedImageHandler.target ? @"set" : @"nil");
+    record(@"action.attributedImageHandler.selectorIsNull", attributedImageHandler.selector ? @"set" : @"null");
+    UIAccessibilityCustomAction *plainImageHandler =
+        [[UIAccessibilityCustomAction alloc] initWithName:@"Links" image:badge actionHandler:handler];
+    record(@"action.plainImageHandler.targetIsNil", plainImageHandler.target ? @"set" : @"nil");
+    record(@"action.plainImageHandler.selectorIsNull", plainImageHandler.selector ? @"set" : @"null");
+    // and the 11.0 form `attributed` above answers no image, which is what these two add and nothing else
+    record(@"action.attributedOnly.imageIsNil", attributed.image ? @"set" : @"nil");
+    record(@"action.attributedOnly.actionHandlerIsNil", attributed.actionHandler ? @"set" : @"nil");
 }

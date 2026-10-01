@@ -3534,20 +3534,20 @@
    "kind": "method",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers, as for initWithAttributedName:target:selector: of iOS 11",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "status": "implemented",
+   "effect": "an action made with the styled name and the image: its plain name is that name's string, the style is kept whole, the handler is kept with it, and as the host answers for a handler form there is no target and no selector. Nothing VoiceOver of this release ever performs the action, so what a caller gets is the class's inert shape with the 11.0 form's styled name and the 14.0 form's image",
+   "facts": "facts/UIKit/UIAccessibility13.md",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7): UIAccessibilityCustomAction is a class in neither cache and a protocol in neither, the port builds it in UIKit/UIAccessibilityCustomAction.m, and neither release's own carries the 14.0 member. What it does is the host's, recorded under Mac Catalyst (macOS 27.0) by tests/backports/host/uikitconst/run.sh over the twenty action.* cases in tests/backports/device/uikitconst-cases.m, which the device test reads out of tests/backports/device/UIKitConstants-expectations.h; the port's own object is UIKit/UIAccessibilityCustomAction+AttributedNameImage14.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK, composing the 11.0 attributed form and the 14.0 image property"
   },
   {
    "api": "-[UIAccessibilityCustomAction initWithAttributedName:image:target:selector:]",
    "kind": "method",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "this release's VoiceOver never asks the question the member answers, as for initWithAttributedName:target:selector: of iOS 11",
-   "effect": "the member is not there; VoiceOver reads what the plain accessibility properties say",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "status": "implemented",
+   "effect": "an action made with the styled name, the image and the target and selector passed: its plain name is that name's string, the style is kept whole, and the image, the target and the selector are the ones passed. Nothing VoiceOver of this release ever performs the action, so what a caller gets is the class's inert shape with the 11.0 form's styled name and the 14.0 form's image",
+   "facts": "facts/UIKit/UIAccessibility13.md",
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7): UIAccessibilityCustomAction is a class in neither cache and a protocol in neither, the port builds it in UIKit/UIAccessibilityCustomAction.m, and neither release's own carries the 14.0 member. What it does is the host's, recorded under Mac Catalyst (macOS 27.0) by tests/backports/host/uikitconst/run.sh over the twenty action.* cases in tests/backports/device/uikitconst-cases.m, which the device test reads out of tests/backports/device/UIKitConstants-expectations.h; the port's own object is UIKit/UIAccessibilityCustomAction+AttributedNameImage14.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK, composing the 11.0 attributed form and the 14.0 image property"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedUserInputLabelsForComponent:]",
