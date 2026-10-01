@@ -57,9 +57,13 @@ echo "system: $(grep -c 'port  ' "$build/system.txt" || echo 0) cases, $(grep -c
 objects=""
 for source in "$mps"/*.m; do
     name=$(basename "$source" .m)
+    # NOT `|| true` and NOT `2>/dev/null`: a source that does not compile would leave its classes out
+    # of the rename header, and every case that names one would then reach the RELEASE's class - which
+    # is the defect mpsimage/image-cases.m:425-433 records, where a string literal was not rewritten by
+    # the header and the case measured the release twice. A failure here stops the run.
     xcrun clang -fobjc-arc -fvisibility=hidden $target $quiet -I"$mps" -include "$build/rename.h" \
-        -c "$source" -o "$build/$name.o" 2>/dev/null || true
-    [ -f "$build/$name.o" ] && objects="$objects $build/$name.o"
+        -c "$source" -o "$build/$name.o"
+    objects="$objects $build/$name.o"
 done
 echo "compiled: $(echo "$objects" | wc -w) objects"
 xcrun clang -fobjc-arc $target $quiet "$here/mpsnn-cases.m" -I"$here" -I"$mps" \
