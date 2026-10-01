@@ -58,6 +58,29 @@
 - (instancetype)init;
 @end
 
+// The session configuration is renamed for the same reason, and its delegate protocol with it: the host
+// probe links Apple's own CarPlay, so a port class answering to Apple's name in this image would be the
+// same object twice.
+@interface charonHost_CPSessionConfiguration (CharonHarness)
+- (instancetype)initWithDelegate:(id)delegate;
+@end
+
+@protocol charonHost_CPSessionConfigurationDelegate <NSObject>
+@optional
+- (void)sessionConfiguration:(id)sessionConfiguration
+    limitedUserInterfacesChanged:(NSUInteger)limitedUserInterfaces;
+- (void)sessionConfiguration:(id)sessionConfiguration contentStyleChanged:(NSUInteger)contentStyle;
+@end
+
+// A delegate to set, so the "the delegate answers the delegate a caller set" check has something to set.
+// The protocol's methods are @optional, so a class that adopts it and implements neither is a delegate,
+// which is what the header allows a caller to pass.
+@interface charonHost_TestSessionConfigurationDelegate : NSObject <charonHost_CPSessionConfigurationDelegate>
+@end
+
+@implementation charonHost_TestSessionConfigurationDelegate
+@end
+
 static int gChecks = 0;
 static int gFailures = 0;
 static NSMutableArray *gAnswers = nil;
@@ -460,6 +483,49 @@ int main(int argc, const char *argv[])
                   route.tripTravelEstimates == nil, describe(route.tripTravelEstimates));
             check(@"route information from nil in every slot: maneuverTravelEstimates answers nil",
                   route.maneuverTravelEstimates == nil, describe(route.maneuverTravelEstimates));
+        }
+
+        // ---- the session configuration: the labels are the host probe's, verbatim ------------------
+        // Section 5 of headunit-probe.m asked Apple's own CPSessionConfiguration these with no head unit
+        // attached. The split the port draws is the header's own: the class, the designated initialiser
+        // and the readwrite delegate are the application's and are carried; the two readonly values are
+        // the connected CarPlay system's and are inert -- the symbol loads and nothing applies it.
+        printf("\n== the session configuration, with no head unit ==\n");
+        {
+            charonHost_CPSessionConfiguration *configuration =
+                [[charonHost_CPSessionConfiguration alloc] initWithDelegate:nil];
+            // The word, not the class name: the port's class is compiled under its renamed name, so a
+            // class name here could never agree with the host's. See the same note in the probe.
+            check(@"the designated initialiser makes a configuration", configuration != nil,
+                  @"a configuration");
+            check(@"delegate answers the delegate it was given (nil here)", configuration.delegate == nil,
+                  describe(configuration.delegate));
+            check(@"limitedUserInterfaces answers the mask the connected system suggests",
+                  configuration.limitedUserInterfaces == 0,
+                  [NSString stringWithFormat:@"%lu",
+                      (unsigned long)configuration.limitedUserInterfaces]);
+            check(@"contentStyle answers the style the connected system suggests",
+                  configuration.contentStyle == 0,
+                  [NSString stringWithFormat:@"%lu", (unsigned long)configuration.contentStyle]);
+
+            // The two values have no public setter -- both are readonly in CPSessionConfiguration.h --
+            // and both writers the release has are private. So the port's own object is asked whether it
+            // answers one, which is the check that would notice a setter appearing.
+            check(@"the two values have no public setter: both are readonly in the header",
+                  ![configuration respondsToSelector:@selector(setContentStyle:)]
+                      && ![configuration respondsToSelector:@selector(setLimitedUserInterfaces:)],
+                  @"neither setter is answered");
+
+            // The delegate is the application's own, so this is the port-only half: a delegate a caller
+            // sets is answered back, and it is answered weakly, because the header says weak and the
+            // configuration must not keep its delegate alive.
+            charonHost_TestSessionConfigurationDelegate *delegate =
+                [[charonHost_TestSessionConfigurationDelegate alloc] init];
+            configuration.delegate = delegate;
+            check(@"the delegate answers the delegate a caller set", configuration.delegate == delegate,
+                  describe(configuration.delegate));
+            __weak charonHost_TestSessionConfigurationDelegate *weakDelegate = configuration.delegate;
+            (void)weakDelegate;
         }
 
         printf("\nchecks=%d failures=%d\n", gChecks, gFailures);

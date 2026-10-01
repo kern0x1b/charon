@@ -375,8 +375,14 @@ int main(int argc, const char *argv[])
         printf("== 5. CPSessionConfiguration, with no head unit ==\n");
         {
             CPSessionConfiguration *configuration = [[CPSessionConfiguration alloc] initWithDelegate:nil];
+            // The detail is a word and not the class name, because the two sides cannot agree on a class
+            // name: this binary links Apple's CarPlay AND the port's sources are compiled with
+            // -DCPSessionConfiguration=charonHost_CPSessionConfiguration, so the host prints
+            // CPSessionConfiguration and the port prints charonHost_CPSessionConfiguration. Printing the
+            // name made the diff red over a rename that is the harness working, which is the same reason
+            // the delegate check below answers identity rather than a class name.
             check(@"the designated initialiser makes a configuration", configuration != nil,
-                  describe(configuration));
+                  @"a configuration");
             check(@"delegate answers the delegate it was given (nil here)", configuration.delegate == nil,
                   describe(configuration.delegate));
             check(@"limitedUserInterfaces answers the mask the connected system suggests",

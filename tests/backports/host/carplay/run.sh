@@ -35,7 +35,9 @@ RENAME="-DCPTemplate=charonHost_CPTemplate \
     -DCPNavigationSession=charonHost_CPNavigationSession \
     -DCPMapTemplate=charonHost_CPMapTemplate \
     -DCPTrip=charonHost_CPTrip \
-        -DCPLane=charonHost_CPLane \
+        -DCPSessionConfiguration=charonHost_CPSessionConfiguration \
+    -DCPSessionConfigurationDelegate=charonHost_CPSessionConfigurationDelegate \
+    -DCPLane=charonHost_CPLane \
     -DCPLaneGuidance=charonHost_CPLaneGuidance \
     -DCPRouteInformation=charonHost_CPRouteInformation \
     -DCPVoiceControlTemplate=charonHost_CPVoiceControlTemplate \
@@ -99,6 +101,7 @@ build_runner() {
         "$port/CarPlayNavigationSession12.m" "$port/CarPlayNavigationSession154.m" \
         "$port/CarPlayNavigationSession174.m" "$port/CarPlayLane174.m" "$port/CarPlayLane18.m" \
         "$port/CarPlayLaneGuidance174.m" "$port/CarPlayRouteInformation174.m" \
+        "$port/CarPlaySessionConfiguration12.m" "$port/CarPlaySessionConfiguration13.m" \
         -o "$out" 2> "$build/cc.log" || {
             grep -m5 ': error:' "$build/cc.log" || true
             exit 1
