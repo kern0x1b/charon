@@ -151,6 +151,41 @@ bites rather than passing by construction.
 `NFCReaderSession` carries `-isReady` and no `-ready`, the property's own
 getter. The row keeps the SDK's spelling.
 
+### What the five members would have to answer, and why they are absent rather than stubs
+
+The host's `NFCReaderSession` carries all five, and a stub that implemented them
+could have been written from its own method list. It is not written, and the
+reason is measured rather than a matter of taste: **every one of the five needs a
+session, and the host's initializer answers `nil`** (the section above), so on
+this hardware there is no object on which `-beginSession` could do anything.
+`-beginSession` on a stub would be a method that begins nothing and reports
+`ready` as never true; `ready` on a stub would answer a question about a radio
+that does not exist. That is the trap the tree calls a fabricated seam, and it is
+why these rows say the accessor is undeclared instead.
+
+The member list below is what the port's own library does NOT answer, printed from
+the host's class so the comparison is against a real one:
+
+```
+host NFCReaderSession carries: -isReady -sessionId -isInvalidated -delegate
+  -sessionQueue -sessionType -invalidateSession -alertMessage -setAlertMessage:
+  -beginSession ... (58 instance methods, 2 class methods: +featureAvailable: +readingAvailable)
+responds: ready=0 isReady=1 delegate=1 setDelegate=0 sessionQueue=1 alertMessage=1 begin=1 invalidate=1
+```
+
+Two things in that are load-bearing for the rows:
+
+- **`ready=0` and `isReady=1`** — the property's getter is `-isReady`, and the port
+  declares neither, so the row's `effect` says the accessor is not declared and a
+  caller that checks `respondsToSelector:` first is told the truth.
+- **`setDelegate=0`** — the host has `-delegate` but **no** `-setDelegate:`, so the
+  delegate is set at initialization and never afterwards. A port that added
+  `-setDelegate:` would be adding API the framework does not have.
+
+The command is `class_copyMethodList` over the host's class through Mac Catalyst,
+which is the same reader the run above uses; the port's own half of each comparison
+is the six `ok` lines the probes run prints.
+
 `NSUserActivity.ndefMessagePayload` is absent for a different reason and is not
 one of the session's own rows: `Foundation/NSUserActivity.m` of this package
 **implements NSUserActivity itself**, and its declared surface has no
