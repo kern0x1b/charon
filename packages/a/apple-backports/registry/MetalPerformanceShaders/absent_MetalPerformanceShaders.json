@@ -92,10 +92,10 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "Y = X / L^beta with L = delta + alpha/N * sum over q in Q(k) of X^2, NORMALIZED ACROSS NEARBY FEATURE CHANNELS with no spatial extent, per MPSCNNNormalization.h:379-387. The defaults are alpha 1.0, beta 5.0, delta 1.0 and kernelSize 5 (:397-413), all MEASURED on a fresh kernel; kernelSize is READONLY there, so the initialiser is its only setter. The divisor is the kernelSize and NOT the window's length: MEASURED with kernelSize 3 the implied divisor is 3.000000 at every output checked. Q(k) = [max(0, k-floor(N/2)), min(D-1, k+floor((N-1)/2))] is ASYMMETRIC, so with four channels and N=3 the first channel sees three and the last sees two",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNFullyConnected",
@@ -103,109 +103,109 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "a MISSING DATA SOURCE, and placement is NOT it. The class is MPSCNNConvolution's subclass and MPSCNNConvolution is already carried (MPSCNNConvolution10.m, cnn.json, 10.0, implemented), so the superclass this row would wait on is present. What is missing is where the weights come from: MPSCNNConvolution.h:1367-1371 makes -initWithDevice:weights: the designated initialiser and its argument is id<MPSCNNConvolutionDataSource>, and that protocol's own rows are 11.3 - facts/MetalPerformanceShaders/Owed.md lists -[MPSCNNConvolutionDataSource copyWithZone:device:] and -weightsLayout as attributable to no 26.2 header at all, so there is no protocol for a caller to conform to yet. Measured on this host, the class's twelve own methods are every initialiser and no encode: it inherits -encodeToCommandBuffer:sourceImage:destinationImage: from MPSCNNConvolution, which this port already answers. So the walk is available and the weights are not, and a class that builds and cannot be given weights is a symbol that loads and lies.",
+      "effect": "nothing: MPSCNNFullyConnected is not carried, so there is no inner-product layer, no weights source and no 1x1 output. NSClassFromString answers nil and a compile-time reference crashes. The arithmetic itself is not the obstacle - it is the convolution MPSCNNConvolution10.m already walks with kernelWidth equal to the source width - and once the data source protocol is carried this row is ordinary work",
+      "source": "the header of MPSCNNConvolution.h in the iPhoneOS 16.4 SDK for the class annotation at :1342 and the designated initialiser at :1367-1371; the protocol's 11.3 rows and its two header-less members as facts/MetalPerformanceShaders/Owed.md lists them; the twelve own methods and the inherited encode MEASURED by class_copyMethodList and instancesRespondToSelector: on the host's own MPS"
     },
     {
       "api": "MPSCNNLocalContrastNormalization",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "Y = pm + ps*(X - p0*M) / (delta + alpha*VAR)^beta per MPSCNNNormalization.h:139-142, over a CENTRED kw x kw window of one feature channel with the off-image value ZERO and VAR = E[x^2] - M^2. Every default is MEASURED on a fresh kernel and agrees with :151-178 to the digit: alpha 0.0, beta 0.5, delta 1/1024, p0 1.0, pm 0.0, ps 1.0. The header says alpha 0 is \"not recommended and is preserved for backwards compatibility\" and that with alpha 0 \"it performs a local mean subtraction\", which is what the measured top case is. p0 = 1 IS LOAD-BEARING and the measurement settles it: at alpha 0 the denominator is the constant delta^beta, so the release's answer solves M = X - Y*delta^beta, and at (0,0) that is 1.55555558 against the centred 3x3 mean 1.55555556. With p0 = 0 the answer at (0,0) would be 32 where the release answers -17.7777786",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNLogSoftMax",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "pixel(x,y,k) - ln{sum over q of exp(pixel(x,y,q))}, the same cross-channel walk with the subtraction in place of the division - MPSCNNSoftMax.h:101-104, which says the logarithmic form \"can be achieved by taking the natural logarithm of the result of the softMax filter\", so it is one formula and no separate kernel. MEASURED over the same two channels differing by one the release answers -1.31326163 / -0.313261628, which is 1 - ln(e+e^2) and 2 - ln(e+e^2); this port answers the same",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuron",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "the base of the five fixed neuron filters, and at 10.0 it is HERE and refuses to be built: MPSCNNNeuron.h:195 marks -initWithDevice: NS_UNAVAILABLE and its only designated initialiser takes an MPSNNNeuronDescriptor, which arrived in 11.3, so at 10.0 the class has no way in of its own and a caller who writes it is told that by name rather than handed a kernel that is not one. Its three declared properties - a, b, c (:188-190) - answer, and the five subclasses below inherit the walk. MEASURED through the base on a fresh MPSCNNNeuronReLU: a=0 b=0 c=0, the same three numbers the release's own fresh kernel carries. NOT the -neuronType or -data properties, which are 11.0 API (:187, :191) and are not carried",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuronAbsolute",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "f(x) = |x| per MPSCNNNeuron.h:501, per pixel per feature channel. MEASURED over a 4x4 of -8..7 the release answers 8 7 6 5 4 3 2 1 0 1 2 3 4 5 6 7, so the magnitudes are exact and a zero's sign is not preserved; this port answers the same sixteen values",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuronLinear",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "f(x) = a*x + b per MPSCNNNeuron.h:318, per pixel per feature channel. MEASURED with a=2, b=0.5 over a 4x4 of 1..16 the release answers 2.5 at 1 and 32.5 at 16; this port answers the same",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuronReLU",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "f(x) = x if x >= 0 else a*x per MPSCNNNeuron.h:333-338, per pixel per feature channel, so it is the leaky ReLU the header says and not max(0,x) unless a is 0. MEASURED over a 4x4 of -8..7 with a=0 the negatives answer 0, and with a=0.25 they answer -2, -1.75, -0.25 - exactly a*x; a positive-only source cannot tell this from the identity, which is why the case's source is negative. The fresh kernel's c is 0, MEASURED, and the differential caught this object answering 1",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuronSigmoid",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "f(x) = 1/(1+e^-x) per MPSCNNNeuron.h:429-431, no parameters, per pixel per feature channel. MEASURED over a 4x4 of 1..16 the release answers 0.731058598 at 1, which is 1/(1+e^-1); this port answers the same sixteen values",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNNeuronTanH",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "f(x) = a*tanh(b*x) per MPSCNNNeuron.h:449-453, a OUTSIDE and b INSIDE, per pixel per feature channel. MEASURED with a=3, b=0.5 over a 4x4 of 1..16 the release answers 1.38635159 at 1, which is 3*tanh(0.5); tanh(1.5) is 0.905148253 and 3*tanh(1) is 2.28478241, so the first value alone tells both swapped orders apart",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNSoftMax",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "exp(x_k)/sum over q of exp(x_q), ACROSS THE FEATURE CHANNELS at one pixel and not across the pixels of a row - MPSCNNSoftMax.h:34-37 says \"applied across feature channels and in a convolutional manner at all spatial locations\". MEASURED on a 4x4 of four channels whose values differ at each pixel, the release answers the same distribution at every pixel, and a softmax over a row's sixteen pixels would answer sixteen different numbers. Over two channels differing by one the answer is 0.268941432 / 0.731058598, which is sigmoid(1-2). One channel answers 1, dividing by itself",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSCNNSpatialNormalization",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "Y = X / (delta + alpha/(kw*kh) * N2)^beta per MPSCNNNormalization.h:26-28, where N2 is the sum of the squares of a kw x kw window of ONE feature channel, the denominator divides by the window's AREA, and what falls outside the image is ZERO. The defaults are alpha 1.0, beta 5.0, delta 1.0 (:41-48), all three MEASURED on a fresh kernel. AN EVEN KERNEL'S WINDOW REACHES BACK: with kw=2 over a 4x4 of 1..16 the release implies N2 = 1, 5, 26, 66, 25, 26, 98, 138, 106, 242, 306, 378, 250, 546, 642, 746 at the sixteen outputs, and the only 2x2 window reproducing every one has its top left ONE PIXEL BEFORE the output. The header gives no window for this class at all, and the gradient's own formula at :60-62 gives a forward one - [i-floor((kw-1)/2), i+floor(kw/2)] is [i, i+1] for kw=2 - which is not what the release computes. kw=3 is centred and agrees with the header",
+      "source": "the header of MPSCNNNeuron.h, MPSCNNSoftMax.h, MPSCNNNormalization.h and MPSImageConvolution.h in the iPhoneOS 16.4 SDK for every signature and default, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh - 15 cases, 0 differing, tolerance 1e-4 - not read off the header; the release is the oracle for every rule below, and four of them are in a form the header does not give",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md"
     },
     {
       "api": "MPSImageConversion",
@@ -213,9 +213,9 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "reason": "a MISSING CONVERTER, not a missing GPU. MPSImageConversion.h:60-64 makes -initWithDevice:srcAlpha:destAlpha:backgroundColor:conversionInfo: the designated initialiser and its last argument is a CGColorConversionInfoRef, so the class cannot be built without one. That whole CoreGraphics family is absent from this port: registry/CoreGraphics/absent_CoreGraphics.json carries CGColorConversionInfoCreate(), CGColorConversionInfoCreateFromList(), CGColorConversionInfoCreateWithOptions() and kCGColorConversionBlackPointCompensation as absent, and ios11.json carries two more. Measured on the host's own MPS, a NULL conversionInfo with AlphaIsOne on both sides is a no-op - a 2x2 of 1,2,3,4 comes back unchanged - and a class whose one job is a conversion that answers a copy is not that class. Carrying it without the converter would be a symbol that loads and lies.",
+      "effect": "nothing: MPSImageConversion is not carried, so NSClassFromString answers nil and there is no colourspace converter, no alpha conversion and no texture-format conversion. A caller that links the class name gets a crash on a compile time reference rather than a wrong colour, which is the intended failure. Once the CoreGraphics conversion family is carried this row becomes ordinary work: the class is a unary walk with an alpha rule, and the header's alpha table at MPSImageTypes.h:33-41 already states every case",
+      "source": "the header of MPSImageConversion.h in the iPhoneOS 16.4 SDK for the initialiser and its CGColorConversionInfoRef argument (:60-64) and the alpha properties (:33-38); the absence of the converter MEASURED by reading this port's own registry/CoreGraphics/absent_CoreGraphics.json, and the host's no-op answer for a NULL conversionInfo MEASURED by running the host's own MPS"
     },
     {
       "api": "MPSImageGaussianPyramid",
@@ -223,17 +223,19 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "a multi-level pyramid where each level is a separate image, so this is several encodes and a level schedule rather than one weighted sum."
+      "reason": "a MISSING SUBSTRATE, measured on both sides, not a missing GPU and not a missing oracle. The host's own MPSImagePyramid CRASHES on this encode: run against the system's own MPS on an 8x8 R32Float texture with four mip levels, encodeToCommandBuffer:inPlaceTexture:fallbackCopyAllocator: takes the process down with SIGSEGV, exit 139 (transcript .agent-work/runs/host/mpsr10/pyramid.txt, built and run by tests/backports/host/mpscnn10's sibling pyramid.m). Seen from this port the same gap is that MPSImage13.m:253 makes every texture with mipmapped:NO, so there are no mip levels for such a fill to write into at all. The port's MPSUnaryImageKernel9.m:111-116 already refuses the in-place form by name for the MPSCopyAllocator reason, and this row is that refusal one class further down. MEASURED 2026-10-01 on this host (Apple M4 Pro, macOS 27.0): every one of this slice's classes RESOLVES in the system's own MetalPerformanceShaders, and MPSCNNNeuronReLU encodes and writes - so the sentence this row used to carry, \"host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType:\", is FALSE here and the host's MPS is the oracle for every number below. What is missing is NOT a missing oracle: see the reason on each row.",
+      "effect": "nothing is written and the caller is told which of the two gaps it hit. The class and its parameters are real - measured on the host, -initWithDevice: gives kernelWidth 5 and kernelHeight 5 (MPSImageConvolution.h:527-531) and the custom initialiser at :540-544 gives 3x3 - so this row is not decided dead. What the class DOES is the in-place mip-level fill at MPSImageConvolution.h:513-520 (\"enqueued as a in-place operation\" that \"fills all mipmap levels after level=1\"), and no substrate here answers that encode.",
+      "source": "the header of MPSImageConvolution.h in the iPhoneOS 16.4 SDK: :513-520 for the in-place mip-level encode, :527-531 and :540-544 for the two initialisers and their kernel sizes, :612 for the class annotation; the parameters MEASURED on this host's own MPS and the crash MEASURED by running that host's own kernel"
     },
     {
       "api": "MPSImageLaplacian",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "ios(10.0), :119. A fixed 3x3 second-derivative kernel with a bias (:131) - it needs its own weights and its own bias default, not a box's or a tent's."
+      "status": "implemented",
+      "effect": "the fixed 3x3 second-derivative kernel [0 1 0; 1 -4 1; 0 1 0] of MPSImageConvolution.h:110-114, convolved per pixel with a bias added BEFORE the store (:118-131, default 0, MEASURED on a fresh kernel). MEASURED over a 4x4 of 1..16 with the edge mode at its default the release answers, row by row: 3 2 1 -5 / -4 0 0 -9 / -8 0 0 -13 / -29 -18 -19 -37, and with -bias set to 1 every one of those is exactly one larger, which settles the order of :62-72 (\"added to convolved pixel before it is converted back to the storage format\") by measurement rather than by reading. The off-image value is ZERO and not the nearest value: a clamped border would answer 2 at (0,0) rather than 3, because the clamped left and top neighbours would both be the corner's own value. The header says at :109-116 that this is \"an optimized variant of the MPSImageConvolution filter\" reachable with the same weights, so the walk is MPSImageConvolution13.m's and is not a second copy",
+      "facts": "facts/MetalPerformanceShaders/Elements10.md",
+      "source": "the header of MPSImageConvolution.h in the iPhoneOS 16.4 SDK for the kernel at :110-114 and the bias at :118-131, and the ARITHMETIC MEASURED against this host's own MPS by tests/backports/host/mpscnn10/run.sh, which runs each case against the system's MPS and against this port's renamed copy and compares the two transcripts"
     },
     {
       "api": "MPSImageLaplacianPyramid",
@@ -241,8 +243,9 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "a pyramid whose bands are Laplacian convolutions of successive levels."
+      "reason": "NOT 10.0, and that is what first-rung measures rather than what the header claims. MPSImageConvolution.h:663, :706 and :683 all annotate these ios(10.0), and the registry's own sdk-26.2-surface.tsv carries 10.0 for all three, so this row's `introduced` field is what the SDK declares. But the RELEASE'S OWN CACHE LADDER answers 12.0: `printf '%s\\n' _OBJC_CLASS_$_MPSImageLaplacianPyramid _OBJC_CLASS_$_MPSImageLaplacianPyramidAdd _OBJC_CLASS_$_MPSImageLaplacianPyramidSubtract | python3 tools/cache-index/first-rung.py` answers 12.0 for all three, where the same command answers 10.0.1 for the thirteen classes of this slice that ARE 10.0. `first-rung.py --rungs MPSImageLaplacianPyramid` then answers 12.0, 16.0, 18.0 - so no release between 10.0.1 and 12.0 carries the class at all, and the annotation is not what the releases shipped. Carrying them in this band's object would make one .m hold symbols from two releases, which is the condition tools/release-split.lua exists to refuse. They are 12.0 work and belong to a 12.0 object.",
+      "effect": "nothing at 10.0, and that is the release's answer rather than a limit of this port: the class does not exist in any release before 12.0, so a caller writing the 10.0 MPSImageConvolution.h surface gets no such class at any rung this package builds. NSClassFromString answers nil and a compile-time reference crashes, which is the intended failure. In a 12.0 band the class is a Laplacian pyramid over the same missing mip-level substrate as MPSImagePyramid, so the work is 12.0's and it is blocked there too",
+      "source": "tools/cache-index/first-rung.py over the held armv7/arm64 ladder for the three _OBJC_CLASS_$_ symbols (answers 12.0), checked against the same command on the thirteen _OBJC_CLASS_$_ symbols of this slice that are genuinely 10.0 (answers 10.0.1); the header's own ios(10.0) annotations at MPSImageConvolution.h:663, :706 and :683, which the releases do not agree with"
     },
     {
       "api": "MPSImageLaplacianPyramidAdd",
@@ -250,8 +253,9 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "combines two Laplacian bands; an arithmetic step between convolutions."
+      "reason": "NOT 10.0, and that is what first-rung measures rather than what the header claims. MPSImageConvolution.h:663, :706 and :683 all annotate these ios(10.0), and the registry's own sdk-26.2-surface.tsv carries 10.0 for all three, so this row's `introduced` field is what the SDK declares. But the RELEASE'S OWN CACHE LADDER answers 12.0: `printf '%s\\n' _OBJC_CLASS_$_MPSImageLaplacianPyramid _OBJC_CLASS_$_MPSImageLaplacianPyramidAdd _OBJC_CLASS_$_MPSImageLaplacianPyramidSubtract | python3 tools/cache-index/first-rung.py` answers 12.0 for all three, where the same command answers 10.0.1 for the thirteen classes of this slice that ARE 10.0. `first-rung.py --rungs MPSImageLaplacianPyramid` then answers 12.0, 16.0, 18.0 - so no release between 10.0.1 and 12.0 carries the class at all, and the annotation is not what the releases shipped. Carrying them in this band's object would make one .m hold symbols from two releases, which is the condition tools/release-split.lua exists to refuse. They are 12.0 work and belong to a 12.0 object.",
+      "effect": "nothing at 10.0, and that is the release's answer rather than a limit of this port: the class does not exist in any release before 12.0, so a caller writing the 10.0 MPSImageConvolution.h surface gets no such class at any rung this package builds. NSClassFromString answers nil and a compile-time reference crashes, which is the intended failure. In a 12.0 band the class is a Laplacian pyramid over the same missing mip-level substrate as MPSImagePyramid, so the work is 12.0's and it is blocked there too",
+      "source": "tools/cache-index/first-rung.py over the held armv7/arm64 ladder for the three _OBJC_CLASS_$_ symbols (answers 12.0), checked against the same command on the thirteen _OBJC_CLASS_$_ symbols of this slice that are genuinely 10.0 (answers 10.0.1); the header's own ios(10.0) annotations at MPSImageConvolution.h:663, :706 and :683, which the releases do not agree with"
     },
     {
       "api": "MPSImageLaplacianPyramidSubtract",
@@ -259,8 +263,9 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "combines two Laplacian bands; an arithmetic step between convolutions."
+      "reason": "NOT 10.0, and that is what first-rung measures rather than what the header claims. MPSImageConvolution.h:663, :706 and :683 all annotate these ios(10.0), and the registry's own sdk-26.2-surface.tsv carries 10.0 for all three, so this row's `introduced` field is what the SDK declares. But the RELEASE'S OWN CACHE LADDER answers 12.0: `printf '%s\\n' _OBJC_CLASS_$_MPSImageLaplacianPyramid _OBJC_CLASS_$_MPSImageLaplacianPyramidAdd _OBJC_CLASS_$_MPSImageLaplacianPyramidSubtract | python3 tools/cache-index/first-rung.py` answers 12.0 for all three, where the same command answers 10.0.1 for the thirteen classes of this slice that ARE 10.0. `first-rung.py --rungs MPSImageLaplacianPyramid` then answers 12.0, 16.0, 18.0 - so no release between 10.0.1 and 12.0 carries the class at all, and the annotation is not what the releases shipped. Carrying them in this band's object would make one .m hold symbols from two releases, which is the condition tools/release-split.lua exists to refuse. They are 12.0 work and belong to a 12.0 object.",
+      "effect": "nothing at 10.0, and that is the release's answer rather than a limit of this port: the class does not exist in any release before 12.0, so a caller writing the 10.0 MPSImageConvolution.h surface gets no such class at any rung this package builds. NSClassFromString answers nil and a compile-time reference crashes, which is the intended failure. In a 12.0 band the class is a Laplacian pyramid over the same missing mip-level substrate as MPSImagePyramid, so the work is 12.0's and it is blocked there too",
+      "source": "tools/cache-index/first-rung.py over the held armv7/arm64 ladder for the three _OBJC_CLASS_$_ symbols (answers 12.0), checked against the same command on the thirteen _OBJC_CLASS_$_ symbols of this slice that are genuinely 10.0 (answers 10.0.1); the header's own ios(10.0) annotations at MPSImageConvolution.h:663, :706 and :683, which the releases do not agree with"
     },
     {
       "api": "MPSImagePyramid",
@@ -268,18 +273,19 @@
       "introduced": "10.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "MPSImageConvolution.h's own annotation above this interface says ios(10.0). MPSImageConvolution.h:62-72 (bias added before the store), :54/:59 (readonly kernel size), :87 (the weights initializer, kernelWidth * kernelHeight values row-major), :154-168 (MPSImageBox's odd-dimension rule), :185 and :270 (-initWithDevice: NS_UNAVAILABLE), MPSImageKernel.h:141-144 (clipRect) and MPSImageEdgeModeZero (edgeMode's default, \"usually MPSImageEdgeModeZero\"). host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType: and the release's own kernel dies encoding with '-[AGXG16XFamilyCommandBuffer mtlnext computeCommandEncoderWithDispatchType:]: unrecognized selector'. What is compared here is NOT the release: each kernel is checked element by element against a plain C reference written from this header's own wording, in the same process. No number on this row is a measurement of Apple's code",
-      "effect": "the pyramid base: a level schedule and a per-level buffer, not one convolution."
+      "reason": "a MISSING SUBSTRATE, measured on both sides, not a missing GPU and not a missing oracle. The host's own MPSImagePyramid CRASHES on this encode: run against the system's own MPS on an 8x8 R32Float texture with four mip levels, encodeToCommandBuffer:inPlaceTexture:fallbackCopyAllocator: takes the process down with SIGSEGV, exit 139 (transcript .agent-work/runs/host/mpsr10/pyramid.txt, built and run by tests/backports/host/mpscnn10's sibling pyramid.m). Seen from this port the same gap is that MPSImage13.m:253 makes every texture with mipmapped:NO, so there are no mip levels for such a fill to write into at all. The port's MPSUnaryImageKernel9.m:111-116 already refuses the in-place form by name for the MPSCopyAllocator reason, and this row is that refusal one class further down. MEASURED 2026-10-01 on this host (Apple M4 Pro, macOS 27.0): every one of this slice's classes RESOLVES in the system's own MetalPerformanceShaders, and MPSCNNNeuronReLU encodes and writes - so the sentence this row used to carry, \"host MPS cannot run here: this host's AGX family lacks computeCommandEncoderWithDispatchType:\", is FALSE here and the host's MPS is the oracle for every number below. What is missing is NOT a missing oracle: see the reason on each row.",
+      "effect": "nothing is written and the caller is told which of the two gaps it hit. The class and its parameters are real - measured on the host, -initWithDevice: gives kernelWidth 5 and kernelHeight 5 (MPSImageConvolution.h:527-531) and the custom initialiser at :540-544 gives 3x3 - so this row is not decided dead. What the class DOES is the in-place mip-level fill at MPSImageConvolution.h:513-520 (\"enqueued as a in-place operation\" that \"fills all mipmap levels after level=1\"), and no substrate here answers that encode.",
+      "source": "the header of MPSImageConvolution.h in the iPhoneOS 16.4 SDK: :513-520 for the in-place mip-level encode, :527-531 and :540-544 for the two initialisers and their kernel sizes, :612 for the class annotation; the parameters MEASURED on this host's own MPS and the crash MEASURED by running that host's own kernel"
     },
     {
       "api": "MPSTemporaryImage",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "inert",
+      "reason": "the class is DEFINED and its declared members answer, and the one thing it exists for is NOT here, which is why this row is inert rather than absent: MPSImage.h:927-1010 declares the class over MPSImage with three class methods and two initialisers, and this band defines all five. What does not answer is the RECYCLING: MPSImage.h:941-946 says the texture \"will become invalid before this time due to the action of the readCount property\", and MPSImage.h:1030-1050 puts the decision in an MPSImageAllocator - a protocol that is not a row this port carries, and which MPSImage.h:236-238 makes NSSecureCoding. Every MPS kernel in this package walks an MPSImage's values on the CPU (MPSImage13.m holds them in a texture it reads), so the release's GPU-private texture is a texture nothing here could read: a faithful copy of the release's storage would be an image no kernel in this port can walk. So the read count is carried and readable and NOTHING APPLIES IT, and that is written on the row rather than left to be discovered.",
+      "effect": "an MPSImage of the right shape, and a read count that reads back what a caller set (MPSTemporaryMatrix11.m is the precedent for carrying and reading one). What it is NOT is what the release's is: a temporary image here is not GPU-private and its storage is not recycled behind the caller, because the substrate that decides that - an MPSImageAllocator and a private texture - is not something this port carries. A caller that wants the recycling must wait for that; a caller that wants an image with the descriptor it asked for has it",
+      "source": "the header of MPSImage.h in the iPhoneOS 16.4 SDK for the class at :927-968, the two texture-descriptor initialisers at :955-995, the allocator protocol at :230-249 and the readCount semantics at :941-946 and :1030-1050; the substrate limit MEASURED from this port's own MPSImage13.m, which holds an image's values in a texture the kernels read on the CPU"
     },
     {
       "api": "MPSCNNBinaryConvolution",
