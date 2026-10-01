@@ -2,16 +2,6 @@
  "framework": "MediaPlayer",
  "entries": [
   {
-   "api": "MPVolumeView.volumeWarningSliderImage",
-   "kind": "property",
-   "introduced": "7.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPVolumeView a property like it: it arrived in iOS 7",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPVolumeView.isWirelessRouteActive",
    "kind": "property",
    "introduced": "7.0",
