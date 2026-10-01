@@ -450,15 +450,15 @@
       "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:1127 for the declaration, its getter and API_UNAVAILABLE(macos, tvos); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
-      "api": "AVCaptureDeviceFormat.isVideoBinned",
+      "api": "AVCaptureDeviceFormat.videoBinned",
       "kind": "property",
       "introduced": "7.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "this row is named by its getter, which is the selector the port defines: the header declares videoBinned with getter=isVideoBinned at AVCaptureDevice.h:2590, so the property name is not a selector and the getter is what is implemented - the same shape registry/MediaPlayer/ios10_3mpitem.json settles for MPediaItem.isPreorder. And 7.0's spelling is a rename of a member this release has, which reading both bodies settles: 6.1.3's -[AVCaptureDeviceFormat isBinned] and 7.0's -[AVCaptureDeviceFormat isVideoBinned] do the same three things, each loading the ivar at offset 4 of the receiver, each sending -objectForKey: on the object it loaded, and each turning the answer into a BOOL. The only difference is the key, and the key is a string in the same image on both sides: 6.1.3's AVFoundation __cstring holds \"Binned\" and holds no \"videoBinned\" at all, 7.0's holds \"videoBinned\" next to its type encoding \"Tc,R,N,GisVideoBinned\" and its only other Binned key is the unrelated session-level \"LiveSourceOptions.Binned\". So the release answers this property under the old name and the port defines the getter the header declares, forwarding to the release's own answer rather than computing a second one",
-      "effect": "reading it answers the release's own binned flag for the format, through the selector isVideoBinned; the property is readonly, so there is no setter to define. Both spellings now answer the same BOOL for the same format, which is what the rename means, and the answer is the release's: nothing in the port reads the dictionary itself",
+      "status": "absent",
+      "reason": "7.0's spelling is a rename of a member this release has: the header declares getter=isVideoBinned at AVCaptureDevice.h:2590, and 6.1.3's AVCaptureDeviceFormat carries -isBinned and -hasBinned among its 11 own instance methods where 7.0's 39 carry -isVideoBinned and neither of those two. So the release has a boolean under the old name and not the accessor this property is spelled as - the property has no other spelling, since the getter is the is-form and the setter does not exist on a readonly property",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The number itself is on the release: -[AVCaptureDeviceFormat isBinned] answers on the same object and -hasBinned says whether the device has a binned format at all. Whether Apple's two names ask the same question is NOT established here - this machine has no camera and so no format to ask, and the header documents 7.0's as indicating whether the format is a binned format without saying what the old one meant. A caller that reads the older name gets the release's own answer; a caller that reads this one gets nothing",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:2590 for the property and its getter; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both; and the two bodies, code_map over the same two caches for the IMPs and a THUMB disassembly of each, with each literal-pool load resolved - the two selectors named in each body are objectForKey: and the ivar offset 4, and the key strings were read out of each image's own __cstring, where 6.1.3 answers 2 strings naming Binned and 0 naming videoBinned while 7.0 answers 3, which is the control that the reader was looking"
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:2590 for the property and its getter; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
     },
     {
       "api": "AVCaptureDeviceFormat.videoFieldOfView",
@@ -1560,17 +1560,6 @@
       "source": "iPhoneOS 16.4 AVFoundation/AVCaptureFileOutput.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureMovieFileOutput and AVCaptureConnection read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 25 and 56 own instance methods, controls answered as wanted"
     },
     {
-      "api": "-[AVComposition setURLAssetInitializationOptions:]",
-      "kind": "method",
-      "introduced": "9.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the setter half of AVComposition.URLAssetInitializationOptions, which the surface names as the property alone, so the selector the port defines is registered here by its own name. The dictionary is what AVComposition.h documents for +[AVURLAsset URLAssetWithURL:options:], and 6.1.3 has that factory - AVURLAsset carries -initWithURL:options: among its 37 own instance methods and +URLAssetWithURL:options: among its 7 own class methods. What the release's AVComposition has is no place to remember it: its own table is 15 instance methods, of which the public ones are -description, -naturalSize, -tracks and -mutableCopyWithZone: and the rest are the private asset-inspector and mutable-composition bookkeeping, none of them for this. So the port copies the value onto the composition under an associated-object key and the pair reads it back",
-      "effect": "the dictionary is copied onto the composition when it is set and -URLAssetInitializationOptions answers that copy, so a caller that sets and reads the pair gets the same options and a caller that mutates the dictionary afterwards does not see the mutation; the value is what a later +[AVURLAsset URLAssetWithURL:options:] is to be given, and nothing on 6.1.3 reads it off a composition by itself",
-      "source": "iPhoneOS 16.4 AVFoundation/AVComposition.h for the declaration; the 6.1.3 armv7 class tables of AVComposition and AVURLAsset read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 15 own instance methods and 37 with 7 own class methods, controls answered as wanted",
-      "facts": "facts/AVFoundation/AVFoundation90.md"
-    },
-    {
       "api": "AVAsset.canContainFragments",
       "kind": "property",
       "introduced": "9.0",
@@ -1979,13 +1968,14 @@
     },
     {
       "api": "AVPlayer.timeControlStatus",
-      "kind": "property",
+      "effect": "Paused with an item to play and a zero rate; Playing with a non-zero rate while -[AVPlayerItem isPlaybackLikelyToKeepUp] is YES; WaitingToPlayAtSpecifiedRate when currentItem is nil, which is the header's own third condition, or when a non-zero rate has not enough buffered media to start. The value is right on every read, and NO KVO notification is sent for it: the release's rate, currentItem and isPlaybackLikelyToKeepUp carry the changes, so a caller that observes this property observes those three",
+      "facts": "facts/AVFoundation/AVFoundation10.md",
       "introduced": "10.0",
+      "kind": "property",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the property answers in terms of AVPlayerTimeControlStatus and 6.1.3 has no such enumeration: first-rung answers NONE for _AVPlayerTimeControlStatusPlaying and for _AVPlayerTimeControlStatusPaused, so no held release exports the cases. The release's own state vocabulary is -rate, -isPlaying-by-way-of-rate and the item's -status and -playbackLikelyToKeepUp, and 6.1.3 has no member that reduces them to one of the three cases",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVPlayer rate] and -[AVPlayer currentItem].status and -[AVPlayerItem playbackLikelyToKeepUp], which between them are the three states; the port defines no accessor, and it does not export the enumeration either, because a value a band produced and no caller could compare against its own copy would answer nothing",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration; first-rung.py answers NONE for _AVPlayerTimeControlStatusPlaying, and for _AVPlayerItemStatusReadyToPlay with it; the 6.1.3 armv7 class tables of AVPlayer and AVPlayerItem read from objc-inventory.lua, 140 and 237 own instance methods, controls answered as wanted"
+      "reason": "the three conditions of the header's own AVPlayerTimeControlStatus discussion, read against members both ends carry: currentItem and rate on AVPlayer, and isPlaybackLikelyToKeepUp on AVPlayerItem, a (readonly, getter=isPlaybackLikelyToKeepUp) the release carries. The enum is a header-only NS_ENUM and defines no symbol, so nothing is exported for it. The KVO limit is stated in the effect, not papered over",
+      "source": "SDK 16.4, AVFoundation/AVPlayer.h timeControlStatus",
+      "status": "implemented"
     },
     {
       "api": "AVPlayerItem.preferredForwardBufferDuration",
@@ -4603,6 +4593,28 @@
       "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no centre-stage member; the release's own rectangle of interest is the exposure and focus one, -exposurePointOfInterest and -focusPointOfInterest, which are the only two AVCaptureDevice carries, and neither is the centre-stage rectangle a stage-framing camera reports. 4.3 cannot be asked either: it has no AVCaptureDevice either",
       "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release frames with -focusPointOfInterest and -exposurePointOfInterest, the release's own two rectangles of interest in the device's coordinate space, and isExposurePointOfInterestSupported is the release's own way of asking whether the device takes one; the port defines no accessor",
       "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
+    },
+    {
+      "api": "AVCaptureDeviceFormat.isVideoBinned",
+      "kind": "property",
+      "introduced": "7.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "this row is named by its getter, which is the selector the port defines: the header declares videoBinned with getter=isVideoBinned at AVCaptureDevice.h:2590, so the property name is not a selector and the getter is what is implemented - the same shape registry/MediaPlayer/ios10_3mpitem.json settles for MPediaItem.isPreorder. And 7.0's spelling is a rename of a member this release has, which reading both bodies settles: 6.1.3's -[AVCaptureDeviceFormat isBinned] and 7.0's -[AVCaptureDeviceFormat isVideoBinned] do the same three things, each loading the ivar at offset 4 of the receiver, each sending -objectForKey: on the object it loaded, and each turning the answer into a BOOL. The only difference is the key, and the key is a string in the same image on both sides: 6.1.3's AVFoundation __cstring holds \"Binned\" and holds no \"videoBinned\" at all, 7.0's holds \"videoBinned\" next to its type encoding \"Tc,R,N,GisVideoBinned\" and its only other Binned key is the unrelated session-level \"LiveSourceOptions.Binned\". So the release answers this property under the old name and the port defines the getter the header declares, forwarding to the release's own answer rather than computing a second one",
+      "effect": "reading it answers the release's own binned flag for the format, through the selector isVideoBinned; the property is readonly, so there is no setter to define. Both spellings now answer the same BOOL for the same format, which is what the rename means, and the answer is the release's: nothing in the port reads the dictionary itself",
+      "facts": "facts/AVFoundation/AVFoundation70.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:2590 for the property and its getter; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both; and the two bodies, code_map over the same two caches for the IMPs and a THUMB disassembly of each, with each literal-pool load resolved - the two selectors named in each body are objectForKey: and the ivar offset 4, and the key strings were read out of each image's own __cstring, where 6.1.3 answers 2 strings naming Binned and 0 naming videoBinned while 7.0 answers 3, which is the control that the reader was looking"
+    },
+    {
+      "api": "-[AVComposition setURLAssetInitializationOptions:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the setter half of AVComposition.URLAssetInitializationOptions, which the surface names as the property alone, so the selector the port defines is registered here by its own name. The dictionary is what AVComposition.h documents for +[AVURLAsset URLAssetWithURL:options:], and 6.1.3 has that factory - AVURLAsset carries -initWithURL:options: among its 37 own instance methods and +URLAssetWithURL:options: among its 7 own class methods. What the release's AVComposition has is no place to remember it: its own table is 15 instance methods, of which the public ones are -description, -naturalSize, -tracks and -mutableCopyWithZone: and the rest are the private asset-inspector and mutable-composition bookkeeping, none of them for this. So the port copies the value onto the composition under an associated-object key and the pair reads it back",
+      "effect": "the dictionary is copied onto the composition when it is set and -URLAssetInitializationOptions answers that copy, so a caller that sets and reads the pair gets the same options and a caller that mutates the dictionary afterwards does not see the mutation; the value is what a later +[AVURLAsset URLAssetWithURL:options:] is to be given, and nothing on 6.1.3 reads it off a composition by itself",
+      "source": "iPhoneOS 16.4 AVFoundation/AVComposition.h for the declaration; the 6.1.3 armv7 class tables of AVComposition and AVURLAsset read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 15 own instance methods and 37 with 7 own class methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation90.md"
     }
   ]
 }
