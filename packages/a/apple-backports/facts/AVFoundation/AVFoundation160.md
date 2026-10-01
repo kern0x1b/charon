@@ -121,8 +121,11 @@ The release's rate vocabulary is `-rate`, `-setRate:`, `-setRate:time:atHostTime
 `-maxRateForAudioPlayback` and `-play`, and `-play` sets the rate to 1.0 itself
 (`AVPlayer.h:196`, "For releases up to iOS version 16.0 ... this is equivalent to setting the value of
 rate to `1.0`"). So the value this property carries is exactly the behaviour the release already has and
-no member of it reads the value: the port stores and returns it, and that is the whole of the row. The
-one row that would consume it, `-playImmediatelyAtRate:`, is 10.0's and rides in `AVFoundation100.m`.
+no member of it reads the value: the port stores and returns it, and that is the whole of the row.
+`AVPlayer.h:184` gives the default as 1.0 and `AVPlayer.h:186` says `-setRate:` skips this value
+entirely, so both the stored default and the reason nothing applies it come from the header rather
+than from a value composed here. The one row that would consume it, `-playImmediatelyAtRate:`, is
+10.0's and rides in `AVFoundation100.m`.
 
 ## What was not verified here
 

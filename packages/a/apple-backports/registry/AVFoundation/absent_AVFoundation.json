@@ -4481,9 +4481,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "inert",
-      "reason": "the release's rate vocabulary is -rate, -setRate:, -setRate:time:atHostTime:, -minRateForAudioPlayback, -maxRateForAudioPlayback and -play, and -play sets the rate to 1.0 itself - AVPlayer.h:196 says so for every release up to 16.0 - so the release already has the one behaviour this property selects between and no member of it reads the value",
-      "effect": "the value is stored on the player and read back, so a caller that sets 2.0 and reads 2.0 gets 2.0 and a caller that reads it from a fresh player gets 1.0, but nothing on 6.1.3 applies it: -play still starts at 1.0, which is what the header says this release does. The row that would consume it, -[AVPlayer playImmediatelyAtRate:], is 10.0's and carries that rate itself",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h:191 for the declaration and :196 for what -play does before 16.0; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
+      "reason": "the release's rate vocabulary is -rate, -setRate:, -setRate:time:atHostTime:, -minRateForAudioPlayback, -maxRateForAudioPlayback and -play, and -play sets the rate to 1.0 itself - AVPlayer.h:196 says so for every release up to 16.0 - so the release already has the one behaviour this property selects between and no member of it reads the value. AVPlayer.h:184 gives the default as 1.0, which is what an unset player therefore answers",
+      "effect": "the value is stored on the player and read back, so a caller that sets 2.0 and reads 2.0 gets 2.0 and a caller that reads it from a fresh player gets 1.0, which is AVPlayer.h:184's default and the rate -play uses on this release anyway, but nothing on 6.1.3 applies it: -play still starts at 1.0 and -setRate: skips this value, as AVPlayer.h:186 says it does. The row that would consume it, -[AVPlayer playImmediatelyAtRate:], is 10.0's and carries its rate itself",
+      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h:191 for the declaration, :184 for the default, :186 for what -setRate: does to this value and :196 for what -play does before 16.0; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
