@@ -381,13 +381,28 @@ The same run also answers for the update family and the image constructors, whic
 `responds=1` half of why those rows are the RELEASE's absence rather than the port's:
 
 ```
-MLTask: NSClassFromString -> a class        MLUpdateTask: NSClassFromString -> a class
+MLTask: NSClassFromString -> a class
+  superclass NSObject
+  +new     responds=1  answered <MLTask: 0x...>
+  -init    responds=1  answered <MLTask: 0x...>
+MLUpdateTask: NSClassFromString -> a class
+  superclass MLTask
+  +new     responds=1  answered updatableModelURL: (null)
+trainingData: (null)  count: 0
+progressHandlers: (null)
+state: Task Suspended
 MLUpdateContext: NSClassFromString -> a class
 MLUpdateProgressHandlers: NSClassFromString -> a class
 MLWritable: NSProtocolFromString -> a protocol
 MLFeatureValue +featureValueWithCGImage:constraint:options:error: responds=1
 MLFeatureValue +featureValueWithImageAtURL:constraint:options:error: responds=1
 ```
+
+The `0x...` stands for an address, which is a run's own and differs every run; what the lines show
+is that each name resolves and each initialiser answers. `MLUpdateContext` and
+`MLUpdateProgressHandlers` print their superclass and initialisers between the lines quoted here
+and are left out so the block stays short -- the run they come from is the one above and prints all
+of them.
 
 And the release side, from the two armv7 caches this package deploys on
 (`CHARON_ROOT="$PWD" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3`, the same reader
