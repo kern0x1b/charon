@@ -747,3 +747,33 @@ no effect to add.
 
 **Not claimed:** anything about how a symbol effect would animate here. There is no system side to compare
 against and no glyph to draw, so nothing is said about it.
+
+## M17. Symbol content transitions, and the dynamic-range family: what was measured and what was not
+
+Thirteen more rows, `setSymbolImage:withContentTransition…` on `UIBarButtonItem` and `UIImageView`,
+`NSSymbolContentTransition`, the two `symbolAnimationEnabled` flags, and the five dynamic-range rows.
+
+**The content transitions and the two flags** are the same substrate as M16 and are recorded for the same
+reason: the release carries no symbol before 13.0 and no content-transition type before 17.0, and the
+`symbolAnimationEnabled` flags govern the effect system, which is 17.0. 0 carried at all four band ends, control
+8/8 in each run.
+
+**The dynamic-range family is the one place in this slice where the reason is a limit of the release rather than
+a missing name, and it is worth being exact about what was actually measured**, because the obvious reason —
+"these devices have no HDR screen" — is a hardware claim this batch did **not** measure and does not make.
+
+What was measured:
+
+- 0 carried at 4.3, 6.1.3, 12.0 and 16.0, class-scoped, control 8/8 in each run (M9, M12, M13).
+- **The two SDKs on this machine, read side by side**: `iPhoneOS16.4.sdk` has no `UITrait.h` at all, and so
+  declares neither `UITraitImageDynamicRange` nor the `UIImageDynamicRange` enumeration, while the 26 headers
+  declare both. The 16.4 SDK *does* declare `UIImage.isHighDynamicRange` (17.0-gated), which is why the name
+  appears in the registry at all and why a reader must not mistake an SDK declaration for a release capability.
+
+What that establishes: the release expresses dynamic range **only** through a trait that arrived in 17.0, so
+`isHighDynamicRange`, `imageDynamicRange`, `preferredImageDynamicRange` and `supportsHighDynamicRange` have
+nothing to express on 6.1.3 or 4.3, and `imageRestrictedToStandardDynamicRange` has nothing to restrict away
+from. It is the release's vocabulary that is missing, not a claim about its screens.
+
+**Not claimed:** whether any device of 6.1.3 or 4.3 could display high dynamic range. That was not measured,
+and a reason built on it would be an assertion wearing a measurement's clothes.

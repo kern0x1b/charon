@@ -243,9 +243,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIBarButtonItem setSymbolImage:withContentTransition:options:]",
@@ -253,9 +254,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImage imageRestrictedToStandardDynamicRange]",
@@ -263,9 +265,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImage a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the method restricts an image to standard dynamic range, and dynamic range is only a question this release can be asked once the 17.0 trait exists; with nothing to restrict away from, the release declares no such method",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the two SDKs on this machine read side by side - iPhoneOS16.4.sdk has no UITrait.h and so declares no UIImageDynamicRange, while the 26.2 surface table the registry is generated from declares it",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImageConfiguration configurationWithLocale:]",
@@ -400,9 +403,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImageView setSymbolImage:withContentTransition:options:]",
@@ -410,9 +414,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImageView setSymbolImage:withContentTransition:options:completion:]",
@@ -420,9 +425,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageView a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the method is not declared, so instancesRespondToSelector: answers NO on this release and an unchecked call raises; a caller that guards with respondsToSelector: gets the same answer the release gives",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UISpringTimingParameters initWithDuration:bounce:]",
@@ -870,9 +876,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 17, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release carries no symbol at all before 13.0 and no content-transition type before 17.0, and the NSSymbolContentTransition these methods take is declared in 17.0; 6.1.3 and 4.3 answer the selector names with nothing",
+   "effect": "the class is not there: NSClassFromString answers nil, so a caller cannot build one and no instance of it can ever exist in a program running on this release",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSSymbolEffectOptions",
@@ -891,9 +898,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBarButtonItem a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the flag governs the symbol-effect system, which arrived in iOS 17.0: this release has no symbol effect to animate, so there is nothing for the flag to switch on or off",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UICollectionLayoutSectionOrthogonalScrollingProperties",
@@ -971,9 +979,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIControl a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the flag governs the symbol-effect system, which arrived in iOS 17.0: this release has no symbol effect to animate, so there is nothing for the flag to switch on or off",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the 16.4 SDK's own headers, which hold no NSSymbol* declaration in UIKit at all",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIDocumentViewController",
@@ -991,9 +1000,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIGraphicsImageRendererFormat a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the format asks whether its output may carry high dynamic range, which is a question about the 17.0 dynamic-range trait this release has not got, so the property has nothing to express here and the release declares no such member",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the two SDKs on this machine read side by side - iPhoneOS16.4.sdk has no UITrait.h and so declares no UIImageDynamicRange, while the 26.2 surface table the registry is generated from declares it",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIHoverAutomaticEffect",
@@ -1051,9 +1061,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImage a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release expresses dynamic range only through the UIImageDynamicRange trait, and that trait arrived with iOS 17.0: measured, the 16.4 SDK has no UITrait.h at all and so declares neither the trait nor the enumeration, while the 26 headers declare both. So 6.1.3 and 4.3 have no way to say what an image's range is, let alone to ask a view for one",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the two SDKs on this machine read side by side - iPhoneOS16.4.sdk has no UITrait.h and so declares no UIImageDynamicRange, while the 26.2 surface table the registry is generated from declares it",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIImageConfiguration.locale",
@@ -1101,9 +1112,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release expresses dynamic range only through the UIImageDynamicRange trait, and that trait arrived with iOS 17.0: measured, the 16.4 SDK has no UITrait.h at all and so declares neither the trait nor the enumeration, while the 26 headers declare both. So 6.1.3 and 4.3 have no way to say what an image's range is, let alone to ask a view for one",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the two SDKs on this machine read side by side - iPhoneOS16.4.sdk has no UITrait.h and so declares no UIImageDynamicRange, while the 26.2 surface table the registry is generated from declares it",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIImageView.preferredImageDynamicRange",
@@ -1111,9 +1123,10 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release expresses dynamic range only through the UIImageDynamicRange trait, and that trait arrived with iOS 17.0: measured, the 16.4 SDK has no UITrait.h at all and so declares neither the trait nor the enumeration, while the 26 headers declare both. So 6.1.3 and 4.3 have no way to say what an image's range is, let alone to ask a view for one",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO for it on this release and an unchecked call raises; reading it through KVC is what the release's own absence makes fail",
+   "source": "the release's own cache, class-scoped, at each of the four band ends 4.3, 6.1.3, 12.0 and 16.0, 0 carried with the same eight control selectors at 8/8 in the same run (facts/UIKit/UIKit17Absence.md M9, M12, M13); and the two SDKs on this machine read side by side - iPhoneOS16.4.sdk has no UITrait.h and so declares no UIImageDynamicRange, while the 26.2 surface table the registry is generated from declares it",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UILabel.preferredVibrancy",
