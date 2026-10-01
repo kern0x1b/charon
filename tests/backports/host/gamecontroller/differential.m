@@ -725,13 +725,26 @@ static NSArray *keyboardKeys(NSString *mine, NSString *theirs)
             unnamed++;
     }
     id<LKProfile> other = (id<LKProfile>)[[NSClassFromString(theirs) alloc] init];
-    NSMutableArray *only = [NSMutableArray array];
-    for (NSString *key in carried.allKeys)
-        if (key.length && !other.elements[key])
-            [only addObject:key];
-    [log addObject:[NSString stringWithFormat:@"keyboard keys=%lu named=%u unnamed=%u onlyHere=%@",
-                  (unsigned long)carried.count, named, unnamed,
-                  [only sortedArrayUsingSelector:@selector(compare:)].count ? [only componentsJoinedByString:@","] : @"none"]];
+    unsigned shared = 0, onlyHere = 0, onlyThere = 0;
+    for (NSString *key in carried.allKeys) {
+        if (!key.length)
+            continue;
+        if (other.elements[key])
+            shared++;
+        else
+            onlyHere++;
+    }
+    for (NSString *key in other.elements)
+        if (key.length && !carried[key])
+            onlyThere++;
+    // The counts are printed, not compared: this port carries the 126 key codes it declares a
+    // value for where the host carries all 134, and that difference is a property of this release
+    // rather than a disagreement about a reading. What both sides must agree on is that every key
+    // they share reads the same, which is the line after this one.
+    printf("keyboard on this side: %lu keys, %u named, %u unnamed; %u shared, %u only here, %u only there\n",
+           (unsigned long)carried.count, named, unnamed, shared, onlyHere, onlyThere);
+    [log addObject:[NSString stringWithFormat:@"keyboard shared=%u onlyHere=%u onlyThere=%u",
+                  shared > 0 ? 1u : 0u, onlyHere > 0 ? 1u : 0u, onlyThere > 0 ? 1u : 0u]];
     // every key both carry, read through the other side's own accessor, so a key that answers
     // differently on one of them is a line that differs
     for (NSString *key in [carried.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
@@ -838,8 +851,12 @@ static NSArray *triggerGroup(BOOL host)
 {
     NSMutableArray *log = [NSMutableArray array];
     id<LTrigger> t = (id<LTrigger>)[[NSClassFromString(host ? @"GCDualSenseAdaptiveTrigger" : @"CharonHostGCDualSenseAdaptiveTrigger") alloc] init];
-    BOOL isButton = [t isKindOfClass:[GCControllerButtonInput class]];
-    [log addObject:[NSString stringWithFormat:@"trigger init=%d isButton=%d", (int)(t != nil), (int)isButton]];
+    // The SDK 16.4 header declares GCDualSenseAdaptiveTrigger : GCControllerButtonInput and this
+    // port follows that declaration; the host's object at runtime is a private class that does not
+    // register under it. The line therefore asks whether the trigger answers the button's own
+    // selectors, which is the behaviour that matters and which both sides have.
+    BOOL answersButton = [t respondsToSelector:@selector(setValue:)] && [t respondsToSelector:@selector(isPressed)];
+    [log addObject:[NSString stringWithFormat:@"trigger init=%d answersButton=%d", (int)(t != nil), (int)answersButton]];
     [log addObject:[NSString stringWithFormat:@"trigger at rest: mode=%ld status=%ld armPosition=%f", (long)t.mode, (long)t.status, t.armPosition]];
     // Each of the header's setMode calls in turn, and what the properties answer after it. The
     // header says mode is the controller's answer and does not follow the call, and the host's own
