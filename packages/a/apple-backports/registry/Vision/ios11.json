@@ -107,13 +107,13 @@
     {
       "api": "VNDetectHumanRectanglesRequest",
       "kind": "class",
-      "introduced": "13.0",
+      "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the request that finds a person in a picture. Annotated ios(13.0), and a release can carry a class before the one that declares it public: the census reads it as a class of 11.0's Vision",
+      "reason": "the request that finds a person in a picture. The 16.4 SDK surface says 13.0, but a release can carry a class before the release that declares it public: 11.0's own Vision exports it, and that is the release this row and its object follow",
       "effect": "the class is there: NSClassFromString answers it, alloc makes one, and a handler takes it. Running it answers VNErrorNotImplemented, and upperBodyOnly answers YES",
       "facts": "facts/Vision/Absence.md",
-      "source": "the Vision census of 6.1.3 and 4.3, which find no image naming Vision in either, and 155 VN* classes in 11.0, this one among them, with 12.0 as a second control. facts/Vision/Absence.md sections 1 and 2"
+      "source": "the Vision census of 6.1.3 and 4.3, which find no image naming Vision in either, and 155 VN* classes in 11.0, this one among them; the 16.4 SDK surface, which annotates the class ios(13.0); and release-split's own first_releases, which answers 11.0. facts/Vision/Absence.md sections 1 and 2"
     },
     {
       "api": "VNDetectRectanglesRequest",
@@ -772,10 +772,10 @@
     {
       "api": "+[VNDetectFaceLandmarksRequest revision:supportsConstellation:]",
       "kind": "method",
-      "introduced": "13.0",
+      "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "which constellations a revision maps a face with: revisions 1 to 3 for 65 points, revision 3 alone also for 76, none for not-defined. Apple's whole table, not the part this port runs",
+      "reason": "which constellations a revision of the request maps a face with: revisions 1 to 3 for 65 points, revision 3 alone also for 76, none for not-defined. Apple's whole table rather than the part this port can run",
       "effect": "the method is there and answers Apple's answers for every pair measured, including NO for the not-defined constellation and for any revision outside 1 to 3",
       "facts": "facts/Vision/Absence.md",
       "source": "this host's own Vision, asked for every pair of a revision from 1 to 4 and a constellation from not-defined through 76 points, by tools/vision/probe130.m. facts/Vision/Absence.md section 4"
@@ -1569,13 +1569,13 @@
     {
       "api": "VNDetectHumanRectanglesRequest.upperBodyOnly",
       "kind": "property",
-      "introduced": "13.0",
+      "introduced": "15.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "whether the request looks for the upper body alone or the whole person. Its header says the default is YES, so it is written down in initWithCompletionHandler:, not left to a fresh ivar",
+      "reason": "whether the request looks for the upper body alone or the whole person. Its header says the default is YES, so it is written down in initWithCompletionHandler: rather than left to a fresh ivar's zero",
       "effect": "the property is there and answers YES on a fresh request, and NO only after a caller asks for the whole person. A fresh ivar's zero would have inverted that",
       "facts": "facts/Vision/Absence.md",
-      "source": "the port's own request built and read, by tools/vision/conforms130.m, answering YES, and the default from the 16.4 header's own sentence. facts/Vision/Absence.md sections 6 and 8"
+      "source": "the port's own request built and read, by tools/vision/conforms130.m compiled for Mac Catalyst, answering YES, and the default from the 16.4 header's own sentence. facts/Vision/Absence.md sections 6 and 8"
     },
     {
       "api": "VNDetectRectanglesRequest.maximumAspectRatio",

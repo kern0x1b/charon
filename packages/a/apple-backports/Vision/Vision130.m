@@ -10,9 +10,10 @@
  * the other file, and there is one definition of the method in this library. */
 #pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-/* Vision of iOS 13.0, and only that: the names this object carries are the ones the SDK of 16.4
- * annotates as arriving in 13, and every measurement behind them is in facts/Vision/Absence.md with
- * the command that produced it.
+/* Vision of iOS 13.0, and only that: the names this object carries are the ones no earlier release
+ * exports -- every symbol below first appears in the 16.0 arm64e cache, which is the first held rung
+ * after the hole where 13.0, 14.0 and 15.0 would sit -- and every measurement behind them is in
+ * facts/Vision/Absence.md with the command that produced it.
  *
  * A release that has Vision cannot be told what to do about any of it from a header, because the
  * recognisers behind these requests are Apple's own and Apple has published no source for Vision at
@@ -123,12 +124,16 @@ NSUInteger VNElementTypeSize(VNElementType elementType)
 @implementation VNRecognizeAnimalsRequest
 @end
 
-/* The other six requests of 13.0, each declared over VNImageBasedRequest by its own header and each
- * with exactly one revision in 13.0, so the port's own revision table places every one of them
- * without a revision of its own. The classifier, the face capture quality, the person, the two
- * saliency maps and the text are Apple's own models, and there is no source for any of them.
+/* The requests of 13.0, each declared over VNImageBasedRequest by its own header and each with
+ * exactly one revision in 13.0, so the port's own revision table places every one of them without a
+ * revision of its own. The classifier, the face capture quality, the two saliency maps, the animals,
+ * the text and the feature print are Apple's own models, and there is no source for any of them.
  *
- * Two of the six are declared conforming to a protocol by their own headers, and declaring a class
+ * Ten of them, and not the eleventh: VNDetectHumanRectanglesRequest is annotated ios(13.0) here too,
+ * but 11.0's Vision already exports the class, so it and its properties live in Vision110.m. A file
+ * whose symbols first appear in more than one release is refused by release-split, and this one was.
+ *
+ * Two of them are declared conforming to a protocol by their own headers, and declaring a class
  * whose header names a protocol puts that protocol in the class's own conformance list at run time:
  * -conformsToProtocol: and -instancesRespondToSelector: answer for it whether or not this port writes
  * the selector down. So each member those protocols declare is written down here, and a row is
@@ -144,22 +149,6 @@ NSUInteger VNElementTypeSize(VNElementType elementType)
     NSArray *_inputFaceObservations;
 }
 @synthesize inputFaceObservations = _inputFaceObservations;
-@end
-
-@implementation VNDetectHumanRectanglesRequest {
-    BOOL _upperBodyOnly;
-}
-
-/* The upper body alone, which is what the request looks for unless a caller asks for the whole
- * person. Zero is not that: the flag's own header says the default is YES, so it is written down
- * here rather than left to whatever a fresh ivar holds. */
-- (instancetype)initWithCompletionHandler:(VNRequestCompletionHandler)completionHandler
-{
-    if ((self = [super initWithCompletionHandler:completionHandler]))
-        _upperBodyOnly = YES;
-    return self;
-}
-
 @end
 
 @implementation VNGenerateAttentionBasedSaliencyImageRequest
