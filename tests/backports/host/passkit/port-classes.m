@@ -35,3 +35,27 @@
 
 @interface charonHost_PKPaymentAuthorizationViewController : UIViewController
 @end
+
+// The five value classes of iOS 11, the same arrangement: the port's own PKPaymentRequestStatus11.m
+// implements them, so they are DECLARED and NOT implemented here. They reach the runner through
+// -initWithStatus:errors:, -initWithPaymentSummaryItems:, -initWithErrors:paymentSummaryItems: and
+// -initWithErrors:paymentSummaryItems:shippingMethods:, all reached by NSSelectorFromString, because
+// the runner is compiled against the HOST's PassKit and those classes are the host's own too: spelling
+// the types here would measure Apple's class and not the port's. The three updates are declared as
+// subclasses of charonHost_PKPaymentRequestUpdate, so the runner's superclass case asks the port's
+// question -- and a renamed class that ignored the superclass would answer the members and still be a
+// class Apple's shape is not.
+@interface charonHost_PKPaymentAuthorizationResult : NSObject
+@end
+
+@interface charonHost_PKPaymentRequestUpdate : NSObject
+@end
+
+@interface charonHost_PKPaymentRequestShippingMethodUpdate : charonHost_PKPaymentRequestUpdate
+@end
+
+@interface charonHost_PKPaymentRequestPaymentMethodUpdate : charonHost_PKPaymentRequestUpdate
+@end
+
+@interface charonHost_PKPaymentRequestShippingContactUpdate : charonHost_PKPaymentRequestUpdate
+@end

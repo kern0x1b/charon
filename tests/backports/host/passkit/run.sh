@@ -31,7 +31,12 @@ TARGET="-target arm64-apple-ios17.0-macabi -isysroot $MACOSX_SDK -isystem $MACOS
 RENAME="-DPKPassLibrary=charonHost_PKPassLibrary \
     -DPKPaymentAuthorizationController=charonHost_PKPaymentAuthorizationController \
     -DPKPaymentAuthorizationViewController=charonHost_PKPaymentAuthorizationViewController \
-    -DPKAddPassesViewController=charonHost_PKAddPassesViewController"
+    -DPKAddPassesViewController=charonHost_PKAddPassesViewController \
+    -DPKPaymentAuthorizationResult=charonHost_PKPaymentAuthorizationResult \
+    -DPKPaymentRequestUpdate=charonHost_PKPaymentRequestUpdate \
+    -DPKPaymentRequestShippingMethodUpdate=charonHost_PKPaymentRequestShippingMethodUpdate \
+    -DPKPaymentRequestPaymentMethodUpdate=charonHost_PKPaymentRequestPaymentMethodUpdate \
+    -DPKPaymentRequestShippingContactUpdate=charonHost_PKPaymentRequestShippingContactUpdate"
 
 # The shim names the four classes literally, so it is compiled WITHOUT the -D renames -- the renames
 # exist to move the PORT's references, and the shim's whole job is to declare what they moved onto.
@@ -48,7 +53,7 @@ build_port() {
         -DCHARON_PASSKIT_STANDIN=1 \
         "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
         "$port/PKPaymentAuthorizationController10.m" "$port/PKPaymentAuthorizationViewController8.m" \
-        "$port/PKPaymentAuthorizationViewController9.m" -o "$out" 2> "$build/cc.log" || {
+        "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$out" 2> "$build/cc.log" || {
             grep -m5 ': error:' "$build/cc.log" || true; exit 1; }
 }
 build_port "$build/libport.dylib"
@@ -113,6 +118,31 @@ text = text.replace(old_comment, new_comment, 1)
 open(path, "w").write(text)
 PY3
 
+# THE FOURTH MUTANT, on the iOS 11 value classes' own object. The file it mutates is the newest one, and
+# the two changes must come out OPPOSITE ways again:
+#
+#   1. the update's DEFAULT status, PKPaymentAuthorizationStatusSuccess -> Failure. That is a value the
+#      transcript prints, so it must go RED and name the case.
+#   2. a comment's wording in the same file. That is bytes and not behaviour, and it must stay GREEN --
+#      a comparison that turned red on a reworded comment would be reading the file, not the answer.
+cp "$port/PKPaymentRequestStatus11.m" "$build/PKPaymentRequestStatus11.mutated.m"
+python3 - "$build/PKPaymentRequestStatus11.mutated.m" <<'PY4'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+flipped = """    _status = PKPaymentAuthorizationStatusSuccess;
+    _paymentSummaryItems = [paymentSummaryItems copy];"""
+flipped_to = """    _status = PKPaymentAuthorizationStatusFailure;
+    _paymentSummaryItems = [paymentSummaryItems copy];"""
+assert flipped in text, "the default the fourth mutant flips is not there: the mutant would be the real run"
+text = text.replace(flipped, flipped_to, 1)
+old_comment = "the object stores what the delegate put in it and hands the same values back"
+new_comment = "the object stores what the delegate put in it and hands back the same values"
+assert old_comment in text, "the comment the fourth mutant rewords is not there"
+text = text.replace(old_comment, new_comment, 1)
+open(path, "w").write(text)
+PY4
+
 cp "$port/CharonPassKit.m" "$build/CharonPassKit.mutated.m"
 python3 - "$build/CharonPassKit.mutated.m" <<'PY2'
 import sys
@@ -134,8 +164,17 @@ xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RE
     "$build/port-classes.o" "$port/CharonPassKit.m" "$build/PKSecureElement8.mutated.m" \
     "$port/PKWallet.m" "$port/PKPaymentAuthorizationController10.m" \
     "$port/PKPaymentAuthorizationViewController8.m" \
-    "$port/PKPaymentAuthorizationViewController9.m" -o "$build/libmutant3.dylib" 2> "$build/ccmut3.log" || {
+    "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$build/libmutant3.dylib" 2> "$build/ccmut3.log" || {
         grep -m5 ': error:' "$build/ccmut3.log" || true; exit 1; }
+
+xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
+    -I"$port" -framework Foundation -framework PassKit -framework UIKit \
+    -DCHARON_PASSKIT_STANDIN=1 \
+    "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
+    "$port/PKPaymentAuthorizationController10.m" "$port/PKPaymentAuthorizationViewController8.m" \
+    "$port/PKPaymentAuthorizationViewController9.m" "$build/PKPaymentRequestStatus11.mutated.m" \
+    -o "$build/libmutant4.dylib" 2> "$build/ccmut4.log" || {
+        grep -m5 ': error:' "$build/ccmut4.log" || true; exit 1; }
 
 xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
     -I"$port" -framework Foundation -framework PassKit -framework UIKit \
@@ -143,14 +182,14 @@ xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RE
     "$build/port-classes.o" "$port/CharonPassKit.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
     "$build/PKPaymentAuthorizationController10.mutated.m" \
     "$port/PKPaymentAuthorizationViewController8.m" \
-    "$port/PKPaymentAuthorizationViewController9.m" -o "$build/libmutant.dylib" 2> "$build/ccmut.log" || {
+    "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$build/libmutant.dylib" 2> "$build/ccmut.log" || {
         grep -m5 ': error:' "$build/ccmut.log" || true; exit 1; }
 xcrun clang -fobjc-arc -Wall -fPIC -dynamiclib $TARGET -DCHARON_HOST_PROBE=1 $RENAME \
     -I"$port" -framework Foundation -framework PassKit -framework UIKit \
     -DCHARON_PASSKIT_STANDIN=1 \
     "$build/port-classes.o" "$build/CharonPassKit.mutated.m" "$port/PKSecureElement8.m" "$port/PKWallet.m" \
     "$port/PKPaymentAuthorizationController10.m" "$port/PKPaymentAuthorizationViewController8.m" \
-    "$port/PKPaymentAuthorizationViewController9.m" -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
+    "$port/PKPaymentAuthorizationViewController9.m" "$port/PKPaymentRequestStatus11.m" -o "$build/libmutant2.dylib" 2> "$build/ccmut2.log" || {
         grep -m5 ': error:' "$build/ccmut2.log" || true; exit 1; }
 
 xcrun clang -fobjc-arc -Wall $TARGET -ldl -framework Foundation -framework PassKit -framework UIKit \
@@ -165,7 +204,9 @@ DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libmutant2.dylib" "$build/runner" > "$build/mutant2.txt" 2>&1 && true
 DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
     CHARON_PORT_DYLIB="$build/libmutant3.dylib" "$build/runner" > "$build/mutant3.txt" 2>&1 && true
-cat "$build/real.txt"; cat "$build/mutant.txt"; cat "$build/mutant2.txt"; cat "$build/mutant3.txt"
+DYLD_FRAMEWORK_PATH="$MACOSX_SDK/System/iOSSupport/System/Library/Frameworks" \
+    CHARON_PORT_DYLIB="$build/libmutant4.dylib" "$build/runner" > "$build/mutant4.txt" 2>&1 && true
+cat "$build/real.txt"; cat "$build/mutant.txt"; cat "$build/mutant2.txt"; cat "$build/mutant3.txt"; cat "$build/mutant4.txt"
 
 # the member lines, and the continuation lines under them: an operation's error is checked in
 # a line of its own, and a filter that drops those checks six answers without a word
@@ -174,6 +215,20 @@ body "$build/real.txt" > "$build/real.body"
 body "$build/mutant.txt" > "$build/mutant.body"
 body "$build/mutant2.txt" > "$build/mutant2.body"
 body "$build/mutant3.txt" > "$build/mutant3.body"
+body "$build/mutant4.txt" > "$build/mutant4.body"
+# EVERY TRANSCRIPT MUST REACH THE RUNNER'S OWN SUMMARY LINE. Found by this run: the `errors:` case
+# type-punned its argument, the runner raised on the next line, and every transcript stopped there --
+# with no FAIL in it, because the cases after the crash never ran. A crashed runner reads as a green
+# run for every case it did not reach, so the check is that it reached the end.
+for name in real mutant mutant2 mutant3 mutant4; do
+  if ! tail -1 "$build/$name.txt" | grep -qE '^# [0-9]+ check\(s\)'; then
+    echo "FAIL the $name transcript does not end with the runner's own summary line, so that runner"
+    echo "     did not finish -- a crash reads as a green run for every case after it"
+    tail -3 "$build/$name.txt"
+    exit 1
+  fi
+done
+echo "ok every transcript reached the runner's own summary line"
 lines=$(wc -l < "$build/real.body" | tr -d ' ')
 # one case line per member, plus one extra for each operation, which reports its ok flag and then the
 # error's own shape on a continuation line, plus the six CLASS cases the two payment controllers add.
@@ -228,6 +283,29 @@ if grep -q 'FAIL$' "$build/mutant3.body"; then
     grep 'FAIL$' "$build/mutant3.body" | sed 's/^/   /'
 else
     echo "FAIL the third mutant differs but its transcript reports no failing case, so the difference"
+    echo "     is not visible in the transcript a reader would read"
+    exit 1
+fi
+
+# AND THE FOURTH, on the iOS 11 value classes. Same two verdicts, same reason: a flipped value must go
+# red and name its case, and the reworded comment in the SAME file must not move the transcript at all.
+if diff -q "$build/real.body" "$build/mutant4.body" >/dev/null 2>&1; then
+    echo "FAIL the fourth mutant does not differ: PKPaymentRequestStatus11.m's own answers are not read"
+    exit 1
+fi
+echo "ok the fourth mutant differs, so PKPaymentRequestStatus11.m's answers are read"
+diff -u "$build/real.body" "$build/mutant4.body" | sed -n '1,10p'
+if ! grep -q 'PKPaymentRequestUpdate.status defaults to Success' "$build/mutant4.body"; then
+    echo "FAIL the fourth mutant's difference is not the case it flipped: the update's default status is"
+    echo "     not in its transcript, so something else moved and the naming below would be a guess"
+    exit 1
+fi
+echo "ok the fourth mutant's difference is the case it names"
+if grep -q 'FAIL$' "$build/mutant4.body"; then
+    echo "ok the fourth mutant's transcript says which case is wrong, not merely that it is:"
+    grep 'FAIL$' "$build/mutant4.body" | sed 's/^/   /'
+else
+    echo "FAIL the fourth mutant differs but its transcript reports no failing case, so the difference"
     echo "     is not visible in the transcript a reader would read"
     exit 1
 fi

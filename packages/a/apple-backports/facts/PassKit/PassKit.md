@@ -223,10 +223,13 @@ the name as a duplicate symbol, and the probe would then measure Apple's class. 
 declares both classes as the SDK declares them and carries `PKMerchantCapability`, which the release's
 own headers do not declare and which the members are spelled with.
 
-**The probe asks whether the class is there, not only whether a member answers**: 52 check lines over
-40 member cases, 0 failures, both mutants red. Six of the lines are these two classes, and one of them
-checks the *superclass* — a renamed subclass of the host's class would answer all five questions
-correctly while being a class the release never had.
+**The probe asks whether the class is there, not only whether a member answers**: 86 check lines over
+54 member cases, 0 failures, all four mutants red. Six of the lines are the two controllers, and one of
+them checks the *superclass* — a renamed subclass of the host's class would answer all five questions
+correctly while being a class the release never had. The five value classes below add their own class,
+superclass and member cases, and the fourth mutant is theirs (the update's default status,
+`PKPaymentAuthorizationStatusSuccess` → `Failure`, which turns exactly the three status cases red and
+leaves a reworded comment in the same file green).
 
 ## The five value classes of iOS 11, and why they are carried rather than absent
 
@@ -319,13 +322,16 @@ no row for a coding method of these classes.
 
 ### What a caller gets on this release, which is the honest half
 
-The object stores what the delegate put in it and hands the same values back: `-initWithStatus:errors:`
-keeps a **copy** of the errors in the order they were passed (the header says they are ordered most
-serious first, `PKPaymentRequestStatus.h:31-33`), and `status` starts at
-`PKPaymentAuthorizationStatusSuccess` -- the header's own stated default for the property (`:48-50`) and
-the enumeration's own zero, since `PKConstants.h:65` declares `PKPaymentAuthorizationStatus` with no
-explicit values. The three `null_resettable` error properties answer the **empty list**, never `nil`,
-because `null_resettable` is Apple's own promise that the getter does not.
+The object stores what the delegate put in it and hands the same values back. `-initWithStatus:errors:`
+keeps a **copy** of the errors in the order they were passed -- the header says they are ordered most
+serious first (`PKPaymentRequestStatus.h:31-33`) -- and the status is the one the delegate passed,
+because that initializer takes it. The one `status` this port CHOOSES is the update's:
+`-initWithPaymentSummaryItems:` sets `PKPaymentAuthorizationStatusSuccess`, which is the header's own
+stated default for that property (`PKPaymentRequestStatus.h:49-51`, "PKPaymentAuthorizationStatusSuccess
+by default") and the enumeration's own zero, since `PKConstants.h:65` declares
+`PKPaymentAuthorizationStatus` with no explicit values. The three `null_resettable` error properties
+answer the **empty list**, never `nil`, because `null_resettable` is Apple's own promise that the getter
+does not.
 
 What a caller **cannot** fill on this device is the other two lists, and the object does not paper over
 it: there is no `PKPaymentSummaryItem` in 6.1.3 at all (registry row, 8.0, absent) and no
@@ -358,3 +364,62 @@ class | PKPaymentRequestShippingContactUpdate  | PKPaymentRequestUpdate | -.cxx_
 
 Every name in that list is one the SDK's own header declares for **11.0**, and `PKPaymentRequestShippingMethodUpdate`
 is empty in the same way Apple's own is.
+
+And the gate's own check, run over that object compiled to a scratch folder beside a record of the SDK it
+was compiled against (`.agent-work/runs/d10-passkit-r11/objects/`), which is what release-split reads:
+
+```
+$ xmake l tools/release-split.lua .agent-work/runs/d10-passkit-r11/objects
+release-split: clean, every object file's symbols first-appear in one release (1 files, 10 symbols, 50 releases checked)
+PKPaymentRequestStatus11.o	_OBJC_CLASS_$_PKPaymentAuthorizationResult	11.0
+PKPaymentRequestStatus11.o	_OBJC_CLASS_$_PKPaymentRequestPaymentMethodUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_CLASS_$_PKPaymentRequestShippingContactUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_CLASS_$_PKPaymentRequestShippingMethodUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_CLASS_$_PKPaymentRequestUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_METACLASS_$_PKPaymentAuthorizationResult	11.0
+PKPaymentRequestStatus11.o	_OBJC_METACLASS_$_PKPaymentRequestPaymentMethodUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_METACLASS_$_PKPaymentRequestShippingContactUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_METACLASS_$_PKPaymentRequestShippingMethodUpdate	11.0
+PKPaymentRequestStatus11.o	_OBJC_METACLASS_$_PKPaymentRequestUpdate	11.0
+```
+
+Ten symbols, every one of them 11.0, and no `@dynamic` property among them -- which is the mixed-release
+defect this file's shape exists to prevent, measured rather than asserted.
+
+### The probe, and two things it found
+
+`tests/backports/host/passkit/run.sh`, transcript in `.agent-work/runs/d10-passkit-r11/probe-run.txt`:
+
+```
+ok every transcript reached the runner's own summary line
+--- the real run made 54 member case(s) over 86 check line(s):
+ok the real run's every case matches the row it checks
+ok the mutant differs, so the comparison does see the value it is checking
+ok the second mutant differs too, so the error's code is checked and not just its presence
+ok the third mutant differs, so PKSecureElement8.m's answers are read
+ok the third mutant's difference is the case it names
+ok the third mutant's transcript says which case is wrong, not merely that it is
+ok the fourth mutant differs, so PKPaymentRequestStatus11.m's answers are read
+ok the fourth mutant's difference is the case it names
+ok the fourth mutant's transcript says which case is wrong, not merely that it is
+    PKPaymentRequestUpdate.status defaults to Success        1                          FAIL
+      ... and PKPaymentRequestPaymentMethodUpdate inherits Success for status 1    FAIL
+      ... and PKPaymentRequestShippingContactUpdate inherits Success for status 1   FAIL
+```
+
+**Two defects the probe found, both in the probe, and both worth naming because either would have read
+as a pass.** The first run's `errors:` case passed an `NSError` where the SDK declares an `NSArray` of
+them: `[NSError copy]` answers the error, not a list of one, so the case measured nothing. And a runner
+that dies mid-transcript leaves **no** `FAIL` in it, because the cases after the crash never ran -- the
+first run of that defect ended in an exception, and the only reason it was not green is that the fourth
+mutant still differed. So `run.sh` now checks that **every** transcript ends with the runner's own
+`# N check(s), N failure(s)` line, before it compares anything.
+
+What the cases measure, and where each answer comes from: the five classes exist (the host has all five,
+so a member answering would prove nothing on its own), the superclass chain is Apple's own as 11.0
+measures it, `status` reads back what was passed and the update's own default is `Success`, the error
+lists keep the order they were given and are **copies** -- proved by emptying the array the delegate
+passed and reading the count again -- and the three `null_resettable` lists answer a list, never `nil`.
+The last three cases are the negative ones: `PKPaymentRequestUpdate` must carry **no** `shippingMethods`
+(15.0), **no** `multiTokenContexts` (16.0) and `PKPaymentAuthorizationResult` **no** `orderDetails`
+(16.0), because `@dynamic` is what keeps an 11.0 object from shipping a later release's member.

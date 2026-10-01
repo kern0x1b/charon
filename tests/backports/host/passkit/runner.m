@@ -290,6 +290,176 @@ int main(void)
         check(@"PKPassKitErrorDomain is the host framework's own",
               [PKPassKitErrorDomain isEqualToString:@"PKPassKitErrorDomain"]);
 
+        // THE FIVE VALUE CLASSES OF iOS 11, and the case that matters for each is again that the class
+        // EXISTS. These five were `absent` with the Secure Element's reason until this band, and the
+        // reason that reason was wrong is that they are the completion blocks' own value types: the
+        // port already exports the two controllers whose delegate handlers take them.
+        {
+            Class result = PORT_CLASS(@"PKPaymentAuthorizationResult");
+            Class update = PORT_CLASS(@"PKPaymentRequestUpdate");
+            Class method = PORT_CLASS(@"PKPaymentRequestShippingMethodUpdate");
+            Class paymentMethod = PORT_CLASS(@"PKPaymentRequestPaymentMethodUpdate");
+            Class contact = PORT_CLASS(@"PKPaymentRequestShippingContactUpdate");
+            for (NSString *name in @[@"PKPaymentAuthorizationResult", @"PKPaymentRequestUpdate",
+                                     @"PKPaymentRequestShippingMethodUpdate",
+                                     @"PKPaymentRequestPaymentMethodUpdate",
+                                     @"PKPaymentRequestShippingContactUpdate"]) {
+                check([@"the " stringByAppendingString:[name stringByAppendingString:@" class is carried"]],
+                      PORT_CLASS(name) != Nil);
+            }
+            // The two roots descend from NSObject and the three updates from the port's own update
+            // class, which is Apple's own chain as 11.0 measures it. A renamed class that got the
+            // superclass wrong would answer every member below and still not be the class.
+            check(@"  ... and the result descends from NSObject",
+                  result != Nil && class_getSuperclass(result) == [NSObject class]);
+            check(@"  ... and the update descends from NSObject",
+                  update != Nil && class_getSuperclass(update) == [NSObject class]);
+            for (Class c in @[method ?: [NSObject class], paymentMethod ?: [NSObject class],
+                              contact ?: [NSObject class]]) {
+                check([NSString stringWithFormat:@"  ... and %@ descends from the update",
+                       NSStringFromClass(c)], c != Nil && class_getSuperclass(c) == update);
+            }
+
+            // The result: the status the delegate passed, and the errors in the order it passed them,
+            // copied -- and the empty list rather than nil when there are none.
+            __block id builtResult = nil;
+            __block NSArray *readBack = nil;
+            __block NSInteger readStatus = -99;
+            NSError *first = [NSError errorWithDomain:@"probe.one" code:1 userInfo:nil];
+            NSError *second = [NSError errorWithDomain:@"probe.two" code:2 userInfo:nil];
+            NSMutableArray *passed = [NSMutableArray arrayWithObjects:first, second, nil];
+            builtResult = ((id (*)(id, SEL, NSInteger, id))objc_msgSend)([result alloc],
+                NSSelectorFromString(@"initWithStatus:errors:"), 1, passed);
+            readStatus = ((NSInteger (*)(id, SEL))objc_msgSend)(builtResult,
+                NSSelectorFromString(@"status"));
+            say(@"PKPaymentAuthorizationResult.status is what the delegate passed",
+                [NSNumber numberWithInteger:readStatus], @"1");
+            readBack = ((id (*)(id, SEL))objc_msgSend)(builtResult, NSSelectorFromString(@"errors"));
+            check(@"  ... its errors are the two, in order",
+                  [readBack isEqual:@[first, second]]);
+            // The COPY, measured: mutating the array the delegate passed cannot change what the result
+            // already reported. Without the copy this reads 1 instead of 2.
+            [passed removeObjectAtIndex:0];
+            readBack = ((id (*)(id, SEL))objc_msgSend)(builtResult, NSSelectorFromString(@"errors"));
+            check(@"  ... and the copy is not the array the delegate mutated",
+                  [readBack isEqual:@[first, second]]);
+            builtResult = ((id (*)(id, SEL, NSInteger, id))objc_msgSend)([result alloc],
+                NSSelectorFromString(@"initWithStatus:errors:"), 1, nil);
+            readBack = ((id (*)(id, SEL))objc_msgSend)(builtResult, NSSelectorFromString(@"errors"));
+            check(@"  ... and null errors answer a list, not nil", readBack != nil);
+            say(@"  ... whose count is a number and not a nil to test for",
+                [NSNumber numberWithUnsignedInteger:[readBack count]], @"0");
+
+            // The base update: status starts at Success, which is the enumeration's own zero, and the
+            // summary items read back as given.
+            __block id builtUpdate = nil;
+            __block NSInteger updateStatus = -99;
+            __block id items = nil;
+            builtUpdate = ((id (*)(id, SEL, id))objc_msgSend)([update alloc],
+                NSSelectorFromString(@"initWithPaymentSummaryItems:"), @[]);
+            updateStatus = ((NSInteger (*)(id, SEL))objc_msgSend)(builtUpdate,
+                NSSelectorFromString(@"status"));
+            say(@"PKPaymentRequestUpdate.status defaults to Success", [NSNumber numberWithInteger:updateStatus], @"0");
+            items = ((id (*)(id, SEL))objc_msgSend)(builtUpdate,
+                NSSelectorFromString(@"paymentSummaryItems"));
+            check(@"  ... its summary items are a list, not nil", items != nil);
+            say(@"  ... whose count is what it was given",
+                [NSNumber numberWithUnsignedInteger:[items count]], @"0");
+
+            // The two updates with errors of their own, over the base's storage.
+            for (NSString *name in @[@"PKPaymentRequestPaymentMethodUpdate",
+                                     @"PKPaymentRequestShippingContactUpdate"]) {
+                // @[first] and NOT first: `errors:` is an NSArray of errors, and passing the error
+                // itself type-puns the declaration -- [NSError copy] answers the error rather than a
+                // list of one, which is what an earlier run of this case measured.
+                NSArray *arguments = [name isEqualToString:@"PKPaymentRequestShippingContactUpdate"]
+                    ? @[@[first], @[], @[]] : @[@[first], @[]];
+                NSString *initializer = [name isEqualToString:@"PKPaymentRequestShippingContactUpdate"]
+                    ? @"initWithErrors:paymentSummaryItems:shippingMethods:" : @"initWithErrors:paymentSummaryItems:";
+                Class c = PORT_CLASS(name);
+                __block id instance = nil;
+                __block id itsErrors = nil;
+                // The initializer is spelled by hand rather than cast from a variadic type, so the
+                // run does not depend on which arguments each one takes beyond the three and two the
+                // SDK's header declares.
+                if (arguments.count == 3) {
+                    instance = ((id (*)(id, SEL, id, id, id))objc_msgSend)([c alloc],
+                        NSSelectorFromString(initializer), arguments[0], arguments[1], arguments[2]);
+                } else {
+                    instance = ((id (*)(id, SEL, id, id))objc_msgSend)([c alloc],
+                        NSSelectorFromString(initializer), arguments[0], arguments[1]);
+                }
+                itsErrors = ((id (*)(id, SEL))objc_msgSend)(instance, NSSelectorFromString(@"errors"));
+                // What came back, and not only whether it matched: a transcript a reader reads has to
+                // show the answer. The error's own DOMAIN is the part a caller can verify on a device
+                // that has no PKPaymentRequest at all, since an NSError is one thing this release
+                // does have.
+                say([NSString stringWithFormat:@"%@ keeps the error it was given", name],
+                    [NSString stringWithFormat:@"%lu of %@", (unsigned long)[itsErrors count],
+                        [(NSError *)[itsErrors objectAtIndex:0] domain] ?: @"nil"],
+                    @"1 of probe.one");
+                updateStatus = ((NSInteger (*)(id, SEL))objc_msgSend)(instance,
+                    NSSelectorFromString(@"status"));
+                say([NSString stringWithFormat:@"  ... and %@ inherits Success for status", name],
+                    [NSNumber numberWithInteger:updateStatus], @"0");
+            }
+            // The contact update's own shipping methods, which the base class has no member for.
+            contact = PORT_CLASS(@"PKPaymentRequestShippingContactUpdate");
+            id withMethods = ((id (*)(id, SEL, id, id, id))objc_msgSend)([contact alloc],
+                NSSelectorFromString(@"initWithErrors:paymentSummaryItems:shippingMethods:"),
+                nil, @[], @[probeArg()]);
+            id methodsRead = ((id (*)(id, SEL))objc_msgSend)(withMethods,
+                NSSelectorFromString(@"shippingMethods"));
+            check(@"PKPaymentRequestShippingContactUpdate.shippingMethods is a list, not nil",
+                  methodsRead != nil);
+            say(@"  ... whose count is what it was given",
+                [NSNumber numberWithUnsignedInteger:[methodsRead count]], @"1");
+            // The list holds what was passed, and the pass was an NSString -- the point is that the
+            // array is COPIED and handed back whole, and the only kind of object this release has to
+            // put in a shipping-method list is one a caller already holds. So the element's class is
+            // what a caller can verify on a device that has no PKShippingMethod at all.
+            say(@"  ... and its one element is the object that was passed",
+                NSStringFromClass([[methodsRead objectAtIndex:0] class]), @"__NSCFConstantString");
+            // The copy, measured the way the result's error list measures it: an NSMutableArray the
+            // delegate empties afterwards cannot change what the update already reported.
+            NSMutableArray *mutableMethods = [NSMutableArray arrayWithObject:probeArg()];
+            id withMutable = ((id (*)(id, SEL, id, id, id))objc_msgSend)([contact alloc],
+                NSSelectorFromString(@"initWithErrors:paymentSummaryItems:shippingMethods:"),
+                nil, @[], mutableMethods);
+            [mutableMethods removeAllObjects];
+            say(@"  ... and the copy is not the array the delegate emptied",
+                [NSNumber numberWithUnsignedInteger:[((id (*)(id, SEL))objc_msgSend)(withMutable,
+                    NSSelectorFromString(@"shippingMethods")) count]], @"1");
+            id withNullErrors = ((id (*)(id, SEL))objc_msgSend)(withMethods,
+                NSSelectorFromString(@"errors"));
+            check(@"  ... and null errors answer a list, not nil", withNullErrors != nil);
+            say(@"  ... whose count is 0",
+                [NSNumber numberWithUnsignedInteger:[withNullErrors count]], @"0");
+            // The shipping-method update is the class alone, measured the way Apple's own 11.0 is: it
+            // declares no member of its own, and it inherits the base's storage.
+            method = PORT_CLASS(@"PKPaymentRequestShippingMethodUpdate");
+            id builtMethod = ((id (*)(id, SEL, id))objc_msgSend)([method alloc],
+                NSSelectorFromString(@"initWithPaymentSummaryItems:"), @[]);
+            id methodItems = ((id (*)(id, SEL))objc_msgSend)(builtMethod,
+                NSSelectorFromString(@"paymentSummaryItems"));
+            check(@"PKPaymentRequestShippingMethodUpdate carries the base update's summary items",
+                  methodItems != nil);
+            say(@"  ... whose count is what it was given",
+                [NSNumber numberWithUnsignedInteger:[methodItems count]], @"0");
+            check(@"  ... and the class alone declares no instance selector of its own",
+                  class_getInstanceMethod(method, NSSelectorFromString(@"shippingMethods")) ==
+                      class_getInstanceMethod(update, NSSelectorFromString(@"shippingMethods")));
+
+            // The 15.0 and 16.x properties are NOT this object's: @dynamic keeps them out, so the
+            // class does not carry them. That is what makes this an 11.0 object and not a 16.4 one.
+            check(@"PKPaymentRequestUpdate ships no shippingMethods of 15.0",
+                  class_getInstanceMethod(update, NSSelectorFromString(@"shippingMethods")) == NULL);
+            check(@"PKPaymentRequestUpdate ships no multiTokenContexts of 16.0",
+                  class_getInstanceMethod(update, NSSelectorFromString(@"multiTokenContexts")) == NULL);
+            check(@"PKPaymentAuthorizationResult ships no orderDetails of 16.0",
+                  class_getInstanceMethod(result, NSSelectorFromString(@"orderDetails")) == NULL);
+        }
+
         printf("# %lu check(s), %lu failure(s)\n", (unsigned long)gChecks, (unsigned long)gFailures);
         return gFailures == 0 ? 0 : 1;
     }
