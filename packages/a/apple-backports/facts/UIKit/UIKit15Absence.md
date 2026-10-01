@@ -1,10 +1,13 @@
-# The 15.0 rows of `registry/UIKit/ios15-16.json`: what each band end carries
+# The 15.0 rows of `registry/UIKit/ios15-16.json`: what each band end carries, and what was built
 
 104 of the 105 rows of release **15.0** sat at `absent` with the SDK's own declaration as their
 only `source`, which is an assertion and not a measurement. This page holds the measurement, the
-commands that reproduce it, and their output, so a reviewer can settle any row here without a
-second tool. (The 105th, `UIButtonConfiguration`, was already `implemented` and measured by its own
-case; it is not touched by this page.)
+commands that reproduce it, their output, and the four objects the band delivered off the back of
+it. (The 105th, `UIButtonConfiguration`, was already `implemented` and measured by its own case;
+it is not touched by this page.)
+
+**Where the release landed: 12 `implemented`, 4 `inert`, 89 `absent`, and 0 rows still citing
+only the SDK.** Four objects, four facts pages, one release.
 
 **The claim, in one line:** no release the 15.0 band's registry check reads — the **deployment**,
 6.1.3 — carries any of the 104 names, so `absent` is the correct verdict for all 104 and the gate's
@@ -245,28 +248,59 @@ and the split is measurable, not a judgement call:
   `UIViewConfigurationState.pinned`, `UIWindowScene.activityItemsConfigurationSource`,
   `UIWindowScene.focusSystem`. `backports.lua:1673` (`entry_of`) says a class row answers for the
   members of a class the port defines wholly, so these are the rows where an object is the answer.
-- **Every one of the 19 is still blocked on a capability the release does not have**, and that is
-  the part that decides the status. `UIPointerStyle.accessories` and `UIPointerStyle.systemPointerStyle`
-  need a pointer device; `UIWindowScene.focusSystem` needs a focus engine; the `UIScene` and
-  `UIWindowScene` members need a scene lifecycle; `UIAction`'s camera action needs live text
-  recognition. The port's owning class existing is necessary and not sufficient — `implemented`
-  additionally needs **a definition the band exports** (`backports.lua:1952`, `unbuilt`), and a
-  property that returns a fabricated pointer device, a fabricated focus system or a fabricated
-  scene would be a stub standing in for behaviour, which §9 of the workspace contract forbids.
-- The 14.0 rows on the same port-owned classes that *were* implemented
-  (`UICollectionViewCell.configurationUpdateHandler` and its two siblings) took the other path,
-  and the difference is visible in what they had: a **behaviour the release can already perform**,
-  delivered through a category that calls a C seam (`UICollectionViewCell+Configuration.m` →
-  `CharonConfigurationHost.m`), so the object exports real symbols and the effect is a
-  configuration update that happens. A 15.0 property with no behaviour behind it has no such seam
-  to call.
+- **8 of the 19 turned out to be buildable, and are.** The first draft of this page concluded that
+  every one of them was blocked on a missing capability. Reading the port's own objects showed
+  otherwise for the eight that name a thing the release *can* do once something holds it:
+  `UIButton.configuration`, `.configurationUpdateHandler`, `.automaticallyUpdatesConfiguration`,
+  `-[UIButton setNeedsUpdateConfiguration]`, `-[UIButton updateConfiguration]`,
+  `+[UIButton buttonWithConfiguration:primaryAction:]`, `-[NSDiffableDataSourceSnapshot
+  reconfigureItemsWithIdentifiers:]` and `NSDiffableDataSourceSnapshot.reconfiguredItemIdentifiers`
+  are delivered by `UIButton+Configuration15.m` and `UIDiffableDataSource+Reconfigure15.m`, and
+  `UITableView.prefetchingEnabled` by `UITableView+PrefetchingEnabled15.m`. The test each one
+  passed is the one the 14.0 cell rows passed: a behaviour the release can already perform,
+  reached through a seam the tree already has. The lesson for the next band is the shape of the
+  test, not the list — "the release cannot do this" and "the port has nowhere to put it" are
+  different questions, and only the second one blocks a row.
+- **11 of the 19 are still `absent`,** and each names the capability it waits on.
+  `UIPointerStyle.accessories` and `UIPointerStyle.systemPointerStyle` need a pointer device;
+  `UIWindowScene.focusSystem` needs a focus engine; the `UIScene` and `UIWindowScene` members need
+  a scene lifecycle; `UIAction`'s camera action needs live text recognition;
+  `UIImageSymbolConfiguration`'s three palette constructors need an SF Symbols renderer, and 6.1.3
+  has none; `UIBackgroundConfiguration.image` needs storage the port's own class does not hold;
+  `UIMenuElement.subtitle` and `UIMenu.selectedElements` are `@dynamic` and have no subtitle or
+  selection on this release to report. `implemented` needs **a definition the band exports**
+  (`backports.lua:1952`, `unbuilt`), and a property returning a fabricated pointer, focus system
+  or scene is the stub §9 of the workspace contract forbids.
+- The 14.0 rows on the same port-owned classes that were implemented
+  (`UICollectionViewCell.configurationUpdateHandler` and its two siblings) are the precedent every
+  one of the eight above followed, down to the mechanism: a category that calls a C seam
+  (`UICollectionViewCell+Configuration.m` → `CharonConfigurationHost.m`), so the effect is a
+  configuration update that actually happens.
 
-The honest landing state for all 104 is `absent`, and it is now a measurement rather than a queue
-entry: **0 carried at 6.1.3 (the deployment the `held` branch reads), 0 at 4.3, 6 at 12.0 and
-accounted for, 8/8 selector controls on 6.1.3 and on 12.0, 18/18 and 20/20 positive controls
-through the property path, and the `is`-getter form checked on all 50 properties.** The 19 rows
-whose substrate the port owns are named above with the capability each one waits on, so the next
-band to pick any of them up starts from the specific thing to build rather than from the row.
+The landing state for the release is now **12 `implemented`, 4 `inert`, 89 `absent`**, and every
+one of the 105 rows names a measurement rather than the SDK's declaration.
+
+| state | rows | what it means here |
+|---|---|---|
+| `implemented` | 12 | a definition this band exports, through a seam the tree already had |
+| `inert` | 4 | the accessor is carried and answers, and nothing applies it |
+| `absent` | 89 | no cache this band's registry check reads carries the name |
+
+**The four objects this band delivered**, each for release 15 only, each with its own facts page:
+
+| object | rows | facts |
+|---|---|---|
+| `NSParagraphStyle+Text15.m` | 2 (`inert`) | `NSParagraphStyleDefaultHyphenation15.md` |
+| `UIButton+Configuration15.m` | 8 (6 `implemented`, 2 `inert`) | `UIButtonConfiguration15Wiring.md` |
+| `UIDiffableDataSource+Reconfigure15.m` | 4 (`implemented`) | `UIDiffableReconfigure15.md` |
+| `UITableView+PrefetchingEnabled15.m` | 1 (`implemented`) | `UITableViewPrefetchingEnabled15.md` |
+
+What they have in common is that each one reused something the tree already had rather than
+adding a mechanism: the cells' `charon_host_update_handler` seam for the button, the diffable data
+sources' own reload for the reconfigure pass, the collection view's prefetch gate for the table's,
+and the 13.0 layout manager's associated-object storage for the paragraph style's. None of the four
+defines a C function, which is what keeps each of them safe in a band that does not keep its
+sibling.
 
 ### One row the port's own object already answers, and it is not in this slice
 
