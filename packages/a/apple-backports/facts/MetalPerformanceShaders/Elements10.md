@@ -61,7 +61,7 @@ comparison is text: the numbers are unchanged and only the declared default is w
 was **not** caught until `spatial-norm-k3` existed — which is the correction above, found by the campaign
 rather than by reading.
 
-**The fresh-kernel property lines are compared as text, not with a tolerance.** Nine lines, and they
+**The fresh-kernel property lines are compared as text, not with a tolerance.** Ten lines, and they
 agree exactly:
 
 ```
