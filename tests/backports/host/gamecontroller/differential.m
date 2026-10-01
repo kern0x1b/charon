@@ -395,6 +395,25 @@ static NSArray *drive(Class controllerClass, BOOL micro)
 
 #import <GameController/GameController.h>
 
+// The keyboard profile, mirrored the way the others are: isAnyKeyPressed under the getter the
+// header spells it with, the handler block, and the header's own subscript/accessor pair.
+// A controller, mirrored the way the rest are: the three hardware accessors an application asks
+// it for, each nullable in the SDK 16.4 header.
+@protocol LController <NSObject>
+@property (nonatomic, copy, readonly, nullable) id battery;
+@property (nonatomic, retain, readonly, nullable) id light;
+@property (nonatomic, retain, readonly, nullable) id haptics;
+@end
+
+@protocol LKProfile <NSObject>
+@property (readonly) NSDictionary *elements;
+@property (readonly) NSDictionary *buttons;
+@property (readonly, getter=isAnyKeyPressed) BOOL anyKeyPressed;
+@property (nonatomic, copy, nullable) void (^keyChangedHandler)(id, id, GCKeyCode, BOOL);
+- (GCDeviceButtonInput *)buttonForKeyCode:(GCKeyCode)code;
+@end
+
+
 extern BOOL charonHost_GCGamepadSnapShotDataV100FromNSData(GCGamepadSnapShotDataV100 *, NSData *);
 extern NSData *charonHost_NSDataFromGCGamepadSnapShotDataV100(GCGamepadSnapShotDataV100 *);
 extern BOOL charonHost_GCExtendedGamepadSnapShotDataV100FromNSData(GCExtendedGamepadSnapShotDataV100 *, NSData *);
@@ -665,6 +684,95 @@ static NSArray *touchpadElements(void)
     return log;
 }
 
+// The keyboard input and the three hardware descriptions, held against the host's own the way
+// the touchpad is: a keyboard profile an application builds itself, and a battery, a light and a
+// haptics engine asked for the only way an application can ask - off a controller.
+//
+// The battery, the light and the haptics are the comparison that has a nil on both sides and a
+// count behind it: the header marks -init NS_UNAVAILABLE on all three, so an application cannot
+// make one, and both copies answer nil for controller.battery, .light and .haptics. That nil is
+// the measured answer, not an absence of one, and the lines that check it are here so a port that
+// started answering a made-up battery would be noticed.
+static NSArray *keyboardGroup(BOOL port)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    Class c = port ? NSClassFromString(@"CharonHostGCKeyboardInput") : NSClassFromString(@"GCKeyboardInput");
+    id<LKProfile> k = (id<LKProfile>)[[c alloc] init];
+    [log addObject:[NSString stringWithFormat:@"keyboard init=%d", k != nil]];
+    [log addObject:[NSString stringWithFormat:@"keyboard elements=%lu buttons=%lu", (unsigned long)k.elements.count, (unsigned long)k.buttons.count]];
+    [log addObject:[NSString stringWithFormat:@"keyboard anyKeyPressed=%d handler=%d", k.isAnyKeyPressed != 0, k.keyChangedHandler != nil]];
+    return log;
+}
+
+// Every key, compared by NAME rather than by position: the host's profile carries eight keys
+// this port declares no value for (GCKeyCodeF13 through GCKeyCodeF20) and one entry with an
+// empty name, so the two lists have different lengths and a positional comparison reports the
+// same key under two lines forever. The host's list is what both sides are held to and the
+// port's list is what the host's is compared against, so a line reads the same on both sides
+// and a key only one of them carries is a line the other answers "absent" to.
+static NSArray *keyboardKeys(NSString *mine, NSString *theirs)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LKProfile> from = (id<LKProfile>)[[NSClassFromString(mine) alloc] init];
+    NSMutableDictionary *carried = [NSMutableDictionary dictionary];
+    for (NSString *key in from.elements)
+        carried[key] = from.elements[key];
+    unsigned named = 0, unnamed = 0;
+    for (NSString *key in carried.allKeys) {
+        if (key.length)
+            named++;
+        else
+            unnamed++;
+    }
+    id<LKProfile> other = (id<LKProfile>)[[NSClassFromString(theirs) alloc] init];
+    NSMutableArray *only = [NSMutableArray array];
+    for (NSString *key in carried.allKeys)
+        if (key.length && !other.elements[key])
+            [only addObject:key];
+    [log addObject:[NSString stringWithFormat:@"keyboard keys=%lu named=%u unnamed=%u onlyHere=%@",
+                  (unsigned long)carried.count, named, unnamed,
+                  [only sortedArrayUsingSelector:@selector(compare:)].count ? [only componentsJoinedByString:@","] : @"none"]];
+    // every key both carry, read through the other side's own accessor, so a key that answers
+    // differently on one of them is a line that differs
+    for (NSString *key in [carried.allKeys sortedArrayUsingSelector:@selector(compare:)]) {
+        if (!key.length || !other.elements[key])
+            continue;
+        [log addObject:[NSString stringWithFormat:@"keyboard key %@ -> %@", key, describeReading(other.elements[key])]];
+    }
+    return log;
+}
+
+// The accessor's own answers, for a code each side has and one neither has. The host answers nil
+// for code 0, which is not a key; both answer nil for a code past the end.
+static NSArray *keyCodeGroup(BOOL port)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LKProfile> k = (id<LKProfile>)[[NSClassFromString(port ? @"CharonHostGCKeyboardInput" : @"GCKeyboardInput") alloc] init];
+    for (NSNumber *code in @[@(21), @(0), @(9999)])
+        [log addObject:[NSString stringWithFormat:@"keyboard code %@ -> %@", code,
+                  [k buttonForKeyCode:(GCKeyCode)code.intValue] ? @"a key" : @"nil"]];
+    return log;
+}
+
+// The three hardware descriptions, off a controller: the only route an application has, since
+// the header marks -init NS_UNAVAILABLE on all three. Both copies answer nil for a controller
+// with no such hardware, and that nil is the measured answer rather than a missing one - which
+// is what the facts page records, and what a port that started answering a made-up battery would
+// be caught by here.
+static NSArray *hardwareGroup(BOOL port)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LController> c = (id<LController>)[NSClassFromString(port ? @"CharonHostGCController" : @"GCController") controllerWithExtendedGamepad];
+    [log addObject:[NSString stringWithFormat:@"hardware controller=%d", c != nil]];
+    [log addObject:[NSString stringWithFormat:@"hardware battery=%@", c.battery ? @"made" : @"nil"]];
+    [log addObject:[NSString stringWithFormat:@"hardware light=%@", c.light ? @"made" : @"nil"]];
+    [log addObject:[NSString stringWithFormat:@"hardware haptics=%@", c.haptics ? @"made" : @"nil"]];
+    // The keyboard is a device too, and +coalescedKeyboard is what reaches it.
+    [log addObject:[NSString stringWithFormat:@"hardware coalescedKeyboard=%@",
+                  [NSClassFromString(port ? @"CharonHostGCKeyboard" : @"GCKeyboard") coalescedKeyboard] ? @"made" : @"nil"]];
+    return log;
+}
+
 static NSArray *gamepadInfo(NSString *name)
 {
     NSMutableArray *log = [NSMutableArray array];
@@ -696,6 +804,33 @@ int main(void)
                     failures++;
                     if (shown++ < 12)
                         printf("DIFFERENT line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            NSArray *a = [keyboardKeys(@"GCKeyboardInput", @"CharonHostGCKeyboardInput") arrayByAddingObjectsFromArray:keyCodeGroup(false)],
+                     *b = [keyboardKeys(@"CharonHostGCKeyboardInput", @"GCKeyboardInput") arrayByAddingObjectsFromArray:keyCodeGroup(true)];
+            printf("keyboard: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            int shownKeyboard = 0;
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    if (shownKeyboard++ < 24)
+                        printf("DIFFERENT keyboard line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            NSArray *a = hardwareGroup(false), *b = hardwareGroup(true);
+            printf("hardware: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    printf("DIFFERENT hardware line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
                 }
             }
         }

@@ -36,20 +36,22 @@
    "kind": "protocol",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 14, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, GameController"
+   "status": "implemented",
+   "reason": "the protocol names what a device is, not what it does, and every one of its five members is a class's own member that this package already answers, so the protocol itself is all that was owed: it is written, and the objects carry it",
+   "effect": "NSProtocolFromString(\"GCDevice\") answers the protocol and conformsToProtocol: on a controller, a keyboard or a mouse answers YES, because the objects carry the protocol metadata - the band exports __OBJC_PROTOCOL_$_GCDevice, measured in the armv7/6.0 object. Its five members are each answered by the class that conforms: handlerQueue and setHandlerQueue:, vendorName and productCategory on a controller, a keyboard and a mouse, and physicalInputProfile on a controller and on a keyboard",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCKeyboard.keyboardInput",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external keyboard is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCKeyboard class is owed and not yet written",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, GameController"
+   "status": "implemented",
+   "reason": "a keyboard is a peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the profile is owed alongside the class and is now written, one key per key code the port carries",
+   "effect": "a real GCKeyboardInput: one GCControllerButtonInput per key code, built through the same spec pipeline every other profile in this package uses, so a key is a button that reads 0 and is not pressed until something sets it. It is a real instance rather than the header's nil because the port builds the keyboard rather than only naming it; the host's own keyboard answers 134 keys and this one 126, and the whole of that difference is the eight macOS-only function keys GCKeyCodeF13 through GCKeyCodeF20 whose values this port declares no constant for - the facts page carries the measured line",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCVirtualController",
@@ -454,80 +456,88 @@
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external controller is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDeviceBattery class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a float the class keeps, not hardware state iOS 6 lacks the values for: the header states the default and the range, so the port owes the accessor and not the hardware",
+   "effect": "0.0f, the header's own default, on a battery this port makes - a value in [0,1], and nothing on iOS 6 moves it off that default because no controller battery is ever attached. A caller asking controller.battery gets nil, which is the header's own answer for a controller that has no battery",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCDeviceBattery.batteryState",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external controller is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDeviceBattery class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "an enumeration value the class keeps; iOS 6 has no controller battery to report a state for, and the header's own default is the honest one",
+   "effect": "GCDeviceBatteryStateUnknown, the header's own default and the value the SDK's enum gives that case; the header marks -init NS_UNAVAILABLE so an application never makes one and asks a controller instead, and controller.battery is nil for the controller this port builds",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCDeviceLight.color",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external controller is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDeviceLight class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a colour the class keeps, not a light iOS 6 lacks the colour of: the property is owed with the class and is now written",
+   "effect": "nil until it is set, and a copy of the GCColor given after - the same GCColor this package already carries whole - so a later change to the caller's colour is not this light's colour",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCDeviceHaptics.supportedLocalities",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external controller is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDeviceHaptics class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a set of names the class keeps; no haptic engine is attached to iOS 6, and the header guarantees these two localities whatever the hardware is",
+   "effect": "a set of the two localities the header guarantees are supported, GCHapticsLocalityDefault and GCHapticsLocalityAll, which are themselves carried as constants by names14.json; the header's own note that they may be equivalent is why this is a set and not a count",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "-[GCDeviceHaptics createEngineWithLocality:]",
    "kind": "method",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external controller is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDeviceHaptics class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "the engine a haptic engine can be built for; CoreHaptics is a framework iOS 6 does not carry, so this release has nothing to answer with and the header allows nil",
+   "effect": "nil, which is what the header's own _Nullable return allows: a CHHapticEngine is CoreHaptics, a framework that arrived in iOS 13, so on this release there is no engine class to build and no haptics hardware to run one. Nothing stands in for it - the localities above are still the honest answer for what this controller could drive",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCKeyboardInput.keyChangedHandler",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external keyboard is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCKeyboardInput class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a handler an application registers for; nothing in iOS 6 sends it, and the port runs it off the key values the profile keeps",
+   "effect": "nil until it is set, and a copy of the block after. When a key's value changes the block runs once for that key - the header's own note is that multiple changed keys call it once each - on the device's handler queue, with the keyboard, the key, the key code and whether that key is pressed",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCKeyboardInput.anyKeyPressed",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external keyboard is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCKeyboardInput class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a property of the keyboard profile that keeps the state of its own keys; nothing in iOS 6 presses one, and the port answers it off the keys it builds",
+   "effect": "NO while no key is down and YES while one is, recomputed on every key change - not a stored constant, and not something an application has to maintain",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "-[GCKeyboardInput buttonForKeyCode:]",
    "kind": "method",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external keyboard is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCKeyboardInput class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "the header's own accessor for a key of the keyboard, answered from the table the profile is built from; iOS 6 has no keyboard attached and the port builds the profile for the caller that asks anyway",
+   "effect": "the same element the profile's subscript answers for that key's name, measured on the host as elements[@\"Eight\"] == buttonForKeyCode:GCKeyCodeEight; nil for a code the profile carries no key for, which is the eight macOS-only function keys F13 through F20 on this release and any code past the end",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the keyboard group builds a GCKeyboardInput on both and holds every key both carry to the same reading, and the hardware group asks a controller for its battery, light and haptics; the header of iOS 16.4 for the declarations, the NS_UNAVAILABLE initializers and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCDualSenseAdaptiveTrigger.mode",

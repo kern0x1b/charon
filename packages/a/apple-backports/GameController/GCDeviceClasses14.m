@@ -15,29 +15,5 @@
 
 @end
 
-@implementation GCDeviceBattery
-
-@dynamic batteryLevel, batteryState;
-
-@end
-
-@implementation GCDeviceLight
-
-@dynamic color;
-
-@end
-
-@implementation GCDeviceHaptics
-
-@dynamic supportedLocalities;
-
-@end
-
-@implementation GCKeyboardInput
-
-@dynamic keyChangedHandler, anyKeyPressed;
-
-@end
-
 @implementation GCDeviceCursor
 @end

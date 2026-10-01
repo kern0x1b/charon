@@ -4,7 +4,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 port=${PORT:-$here/../../../../packages/a/apple-backports/GameController}
 out=${BUILD:-$(mktemp -d)}
 renames=""
-for name in GCController GCControllerElement GCControllerTouchpad GCControllerButtonInput GCControllerAxisInput GCControllerDirectionPad GCGamepad GCExtendedGamepad GCMicroGamepad GCPhysicalInputProfile GCMotion GCGamepadSnapshot GCExtendedGamepadSnapshot GCMicroGamepadSnapshot; do
+for name in GCController GCControllerElement GCControllerTouchpad GCKeyboardInput GCKeyboard GCDeviceBattery GCDeviceLight GCDeviceHaptics GCControllerButtonInput GCControllerAxisInput GCControllerDirectionPad GCGamepad GCExtendedGamepad GCMicroGamepad GCPhysicalInputProfile GCMotion GCGamepadSnapshot GCExtendedGamepadSnapshot GCMicroGamepadSnapshot; do
     renames="$renames -D$name=CharonHost$name"
 done
 # the ten snapshot functions and the two version constants, so both copies link side by side
@@ -17,7 +17,7 @@ for name in GCGamepadSnapShotDataV100FromNSData NSDataFromGCGamepadSnapShotDataV
     renames="$renames -D$name=charonHost_$name"
 done
 objects=""
-for source in GCElements7 GCControllerTouchpad14 GCPhysicalInputProfile14 GCGamepads7 GCMicroGamepad9 GCMotion8 GCController CharonGCTables GCSnapshots7 GCSnapshots9 GCSnapshots16; do
+for source in GCElements7 GCControllerTouchpad14 GCKeyboardInput14 GCDeviceParts14 GCDeviceProtocol14 GCPhysicalInputProfile14 GCGamepads7 GCMicroGamepad9 GCMotion8 GCController CharonGCTables GCSnapshots7 GCSnapshots9 GCSnapshots16; do
     xcrun clang -fobjc-arc -w $renames -I"$port" -c "$port/$source.m" -o "$out/$source.o"
     objects="$objects $out/$source.o"
 done

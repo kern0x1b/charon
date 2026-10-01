@@ -36,6 +36,15 @@
 - (GCControllerElement *)charon_elementNamed:(NSString *)alias;
 @end
 
+@interface GCKeyboardInput (Charon)
+- (void)charon_setPressed:(BOOL)pressed forKeyCode:(GCKeyCode)code value:(float)value;
+@end
+
+@interface GCDeviceBattery (Charon)
+- (void)charon_setBatteryLevel:(float)batteryLevel;
+- (void)charon_setBatteryState:(GCDeviceBatteryState)batteryState;
+@end
+
 @interface GCGamepad (Charon)
 - (void)charon_setController:(GCController *)controller;
 @end
