@@ -3678,9 +3678,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetDownloadConfiguration is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVAssetVariant, AVAssetVariantQualifier and AVAssetDownloadContentConfiguration, all absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. It is what an application hands an AVAssetDownloadURLSession to say which renditions to keep offline, and the download session itself is not missing: 6.1.3 declares AVAssetDownloadSession with +assetDownloadSessionWithURL:destinationURL:options: and -start, -pause, -stop, -priority and -status. What is missing is what the configuration selects between. Its header names the dependencies - artworkData, primaryContentConfiguration, auxiliaryContentConfigurations, optimizesAuxiliaryContentConfigurations - and the content configurations hold variantQualifiers and mediaSelections, so a configuration here would have to choose renditions out of a variant list this release has no way to read.",
+      "effect": "the class is not defined, so NSClassFromString answers nil; a download task made without one on this release is the 6.1.3-shaped task the release already supports, which fetches the asset rather than a chosen set of renditions",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetDownloadContentConfiguration",
@@ -3688,9 +3688,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetDownloadContentConfiguration is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVAssetVariantQualifier, which is absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. One group of renditions inside a download configuration, holding exactly two properties by its header - variantQualifiers and mediaSelections - and both are about which variant to fetch.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetVariant",
@@ -3698,9 +3698,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetVariant is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. A variant is one rendition of an adaptive stream - a bitrate, a codec, a resolution - and reading one means parsing the variant playlist an HLS asset points at. The asset this release opens with AVURLAsset is a local file or a progressive stream: its 37 instance selectors at 6.1.3 include -URL, -assetCache, -resourceLoader, -tracks and -availableChapterLocales and no variant list, so there is no playlist on this release for a variant to be read out of.",
+      "effect": "the class is not defined, so NSClassFromString answers nil and a class reference raises doesNotRecognizeSelector; returning an empty array instead would be indistinguishable from an asset that genuinely has no variants, which is a different answer from \"this release cannot see variants\"",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetVariantAudioAttributes",
@@ -3708,9 +3708,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetVariantAudioAttributes is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVAssetVariant, which is absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The audio half of a variant: its bitrate, its channel count, its sample rate, and the media characteristics it carries. Every one of those is read from a variant, so this class has nothing to answer without AVAssetVariant.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetVariantAudioRenditionSpecificAttributes",
@@ -3718,9 +3718,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetVariantAudioRenditionSpecificAttributes is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVAssetVariant, which is absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The attributes specific to one audio rendition within a variant - the role and the group a rendition plays. They come from the variant playlist, so they do not exist without AVAssetVariant.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetVariantQualifier",
@@ -3728,9 +3728,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetVariantQualifier is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on the variant list it exists to filter, which no release this port builds has, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. A qualifier is what a download configuration matches against a variant list, and the SDK header says the evaluation runs the qualifiers in order \"until the qualifier matches one or more AVAssetVariants\", falling back to automatic selection when none matches. With no variants to match, every qualifier would either match everything or nothing, and which one it did would decide which rendition a download fetched.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVAssetVariantVideoAttributes",
@@ -3738,9 +3738,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVAssetVariantVideoAttributes is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVAssetVariant, which is absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The video half of a variant: dimensions, frame rate, the pixel format and the profile. Read from a variant playlist, so absent with it.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVCaptureDevice.activeMicrophoneMode",
@@ -3928,9 +3928,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVCoordinatedPlaybackParticipant is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlaybackCoordinator and the participant machinery beside it, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. One member of a coordinated session: a player, its current item, the rate it is playing at, and why it is suspended when it is not. It is what a coordinator negotiates with, and this release has the rate - AVPlayer declares -rate and -setRate: among its 140 instance selectors at 6.1.3 - but no notification that another participant changed theirs, and no way to ask one to change it.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVCoordinatedPlaybackSuspension",
@@ -3938,9 +3938,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVCoordinatedPlaybackSuspension is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The reasons one participant is not playing - interrupted audio session, stall recovery, the user scrubbing, an app going to the background - gathered into one object with a reason and a date. The six reason constants for it are among the 15.0 names this port already carries; the object that gathers them is not here.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinator",
@@ -3948,9 +3948,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinator is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The coordinator variant where the application decides: instead of the coordinator deciding a rate it hands the application a command object and takes back what the application answers. It is the same negotiation with the decision moved out, so it is absent for the same reason.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinatorBufferingCommand",
@@ -3958,9 +3958,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinatorBufferingCommand is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVDelegatingPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The command that asks the delegate to buffer, over the loadedTimeRanges and playbackLikelyToKeepUp that AVPlayerItem declares at 6.1.3 - the information is there and the object asking for it is not.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinatorPauseCommand",
@@ -3968,9 +3968,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinatorPauseCommand is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVDelegatingPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The command that asks the delegate to pause, with the reason it is pausing.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinatorPlayCommand",
@@ -3978,9 +3978,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinatorPlayCommand is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVDelegatingPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The command that asks the delegate to play, carrying the rate. -[AVPlayer play] and -setRate: are what it would ask for, and both exist at 6.1.3 - the command object that carries the request between two processes does not.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinatorPlaybackControlCommand",
@@ -3988,9 +3988,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinatorPlaybackControlCommand is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlaybackCoordinator and the five command subclasses, all absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The base class of the five commands beside it - play, pause, seek, buffering - a command the coordinator hands the delegate and the delegate answers. The base class exists to be subclassed, so with none of the five there is nothing for it to be.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVDelegatingPlaybackCoordinatorSeekCommand",
@@ -3998,9 +3998,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVDelegatingPlaybackCoordinatorSeekCommand is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVDelegatingPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The command that asks the delegate to seek, carrying the time and the tolerances. -[AVPlayer seekToTime:completionHandler:] is what it would ask for and it exists at 6.1.3; the object carrying the request between the coordinator and the delegate does not.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVMutableVideoComposition.sourceSampleDataTrackIDs",
@@ -4028,9 +4028,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVPlaybackCoordinator is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on the participant and rate-change machinery, none of which exists on this release, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. It is the object that holds a coordinated playback session together: participants join it, it decides the rate everybody plays at, and it tells the others when one of them changes. Its own constants are the ones this port already carries for 15.0 in AVFoundation/CoordinatedPlaybackReasons15.m - AVPlaybackCoordinatorOtherParticipantsDidChangeNotification and AVPlaybackCoordinatorSuspensionReasonsDidChangeNotification - so the names arrived and the object did not, and what is missing is the mechanism the names would be posted by: a participant list, a rate negotiation, and a suspension reason for each participant.",
+      "effect": "the class is not defined, so NSClassFromString answers nil; a coordinator posted to by the two notification names above has no observer behind it, which is why those two constants are values the port hands out and not behaviour it performs",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlaybackCoordinatorPlaybackControlDelegate",
@@ -4038,9 +4038,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the protocol is absent from both band ends: 6.1.3 declares 1171 protocols of which 16 name AV and 4.3 declares 564 of which 10, and neither set holds this one. It is what a coordinator talks to, and there is no coordinator here to talk to it about - AVPlaybackCoordinator and its five command classes are absent from both band ends too, so a conforming object would have methods no release would ever send",
+      "effect": "the protocol is not there, so NSProtocolFromString answers nil and a class declaring it would be declaring a conformance to nothing",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlayer.audiovisualBackgroundPlaybackPolicy",
@@ -4079,9 +4079,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVPlayerInterstitialEvent is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on the HLS interstitial playlist, which no release this port builds reads, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. An event the player should show at a point in the timeline - an advertisement, a slate, a \"coming back\" card - with the time range it occupies and the media to play in it. The timeline it refers to is an HLS interstitial list, so like the variant family it is read out of a playlist this release does not parse.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlayerInterstitialEventController",
@@ -4089,9 +4089,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVPlayerInterstitialEventController is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlayerInterstitialEvent, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The object an application asks whether an event should be shown, adds the events it accepts to a player queue and removes them when they have played. It is the mechanism that makes the other two classes do anything.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlayerInterstitialEventMonitor",
@@ -4099,9 +4099,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVPlayerInterstitialEventMonitor is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlayerInterstitialEvent and its controller, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. It is the delegate the controller calls as each event comes up, with a decision to show, skip or load another event - so it is the decision point of the whole interstitial path.",
+      "effect": "the class is not defined, so NSProtocolFromString/NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlayerItem.automaticallyHandlesInterstitialEvents",
@@ -4149,9 +4149,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 15, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "AVPlayerPlaybackCoordinator is absent from both band ends: the class is not among the 301 AV-named classes at 6.1.3 or the 231 at 4.3. It is blocked on AVPlaybackCoordinator, absent from both band ends, which is absent from both band ends too, so writing the class here would be a shell with nothing behind it. The concrete coordinator over AVPlayers, and the one AVPlayer.playbackCoordinator would return. This release has the players - AVPlayer, AVQueuePlayer, AVPlayerItem and the access log - and none of the coordination above them.",
+      "effect": "the class is not defined, so NSClassFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVPlayerPlaybackCoordinatorDelegate",
@@ -4159,9 +4159,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 15, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the protocol is absent from both band ends, out of the same 1171 protocols at 6.1.3 and 564 at 4.3. It is the delegate AVPlayerPlaybackCoordinator calls, and that coordinator is absent too",
+      "effect": "the protocol is not there, so NSProtocolFromString answers nil",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, one run, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3 and 1171 protocols of which 16 name AV, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3 and 564 protocols of which 10 name AV, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\" - a run in which no rung finds anything reports CONTROL FAILED instead, so a zero below is a measurement and not a broken reader; tools/corpus/objc-inventory.lua over the armv7 caches of both band ends, the name looked for among the classes and the protocols the cache declares, and not as a string somewhere in the image; python3 tools/cache-index/first-rung.py on the class name, which answers 16.0 for every name in this group - the first held rung above 12.0, so it bounds an arrival between 13.0 and 16.0 and dates nothing"
     },
     {
       "api": "AVURLAsset.variants",
