@@ -134,3 +134,61 @@ Source: the host's own GameController for every value in the two tables above, t
 `tests/backports/host/gamecontroller`; the SDK 16.4 headers for the declarations, the `NS_UNAVAILABLE`
 initializers and the header comment that contradicts the host's default; and the two band-end caches for the
 absence.
+
+## The touchpads, the paddles and the adaptive trigger
+
+The three profiles' extra parts, all held against the host's own by the `gamepad extras` and
+`adaptive trigger` groups of `tests/backports/host/gamecontroller`:
+
+| what | host | port |
+| --- | --- | --- |
+| `GCDualShockGamepad.touchpadButton` | a `GCControllerButtonInput` | a `GCControllerButtonInput` |
+| `GCDualShockGamepad.touchpadPrimary` / `Secondary` | a `GCControllerDirectionPad` each | the same |
+| `GCDualSenseGamepad.touchpadButton` / `Primary` / `Secondary` | the same | the same |
+| `GCDualSenseGamepad.leftTrigger` / `rightTrigger` | a `GCDualSenseAdaptiveTrigger` each | the same |
+| `GCXboxGamepad.paddleButton1` through `paddleButton4` | nil, nil, nil, nil | nil, nil, nil, nil |
+
+The touchpads are real elements, built from the same spec table and the same linking every other
+profile in this package uses, so a caller can poll the surface's axes and press the surface's button
+and both sides answer the same. The paddles are nil on both sides, which is what the host's own
+`GCXboxGamepad` answers and what the header's `nullable` and its own example code expect: the standard
+Bluetooth Xbox controller the profile describes has no paddles, and only the Elite does.
+
+`GCXboxGamepad.buttonShare` is not answered at all here - it arrived in iOS 15 and is not this iOS 14
+object's API, which is what `release-split` reads band points for.
+
+### The adaptive trigger: mode is the controller's answer, not the caller's
+
+The header is explicit about this and the host measures it:
+
+> "mode ... reflects the physical state of the triggers - and requires a response from the controller.
+> It does not update immediately after calling -[GCDualSenseAdaptiveTrigger setMode...]."
+
+Measured on the host's own trigger, built by the application with no controller behind it: `mode` is 0
+and `status` is 0 at rest, and each of the four `setMode` calls - off, feedback, weapon, vibration -
+leaves both at 0, with `armPosition` 0 whatever the button's own value is. The port answers the same
+way, and that is the point rather than a stub: a `mode` the port set from the caller's own argument
+would be a mode no controller ever entered, and the header's own sentence says the value is the
+controller's answer. What the port does answer is the part it can: the trigger is a real
+`GCControllerButtonInput` underneath, so its value, pressed and touched states and its handlers are
+this package's own button behaviour, and the four `setMode` calls record what was asked for through a
+seam (`-charon_requestedMode:`) for a profile with a controller attached to send.
+
+One difference, named: `isKindOfClass:[GCControllerButtonInput class]` answers **YES** here and **NO**
+on the host's own trigger, though the SDK 16.4 header declares
+`@interface GCDualSenseAdaptiveTrigger : GCControllerButtonInput`. This port follows the declaration;
+the host's object at runtime is a private class that does not register under the header's parent. A
+caller that tests for the header's own relationship gets the header's answer here.
+
+## What a caller gets from a controller that was never made
+
+`GCController.controllers` is `@[]` and `+startWirelessControllerDiscoveryWithCompletionHandler:`
+completes with nothing, both here and on the host with nothing attached, so `GCKeyboard`,
+`GCMouse`, `GCDeviceBattery`, `GCDeviceLight` and `GCDeviceHaptics` are reached only by allocating one
+- which the differential does, on both sides, and the `hardware` group asks a controller for the three
+hardware descriptions the only way an application can.
+
+Source: the host's own GameController for every value in the tables above, through
+`tests/backports/host/gamecontroller`; the SDK 16.4 headers for the declarations, the `nullable` and
+`NS_UNAVAILABLE` annotations, and the sentences quoted above; and the two band-end caches for the
+absence.

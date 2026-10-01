@@ -773,6 +773,91 @@ static NSArray *hardwareGroup(BOOL port)
     return log;
 }
 
+// The three profiles' extra parts, held against the host's own. Each is a class an application can
+// allocate, so each is asked the way an application asks: what comes back, and what the class does
+// with what it is given.
+@protocol LGamepadExtra <NSObject>
+@property (readonly, nullable) id touchpadButton;
+@property (readonly, nullable) id touchpadPrimary;
+@property (readonly, nullable) id touchpadSecondary;
+@end
+
+@protocol LPaddles <NSObject>
+@property (readonly, nullable) id paddleButton1;
+@property (readonly, nullable) id paddleButton2;
+@property (readonly, nullable) id paddleButton3;
+@property (readonly, nullable) id paddleButton4;
+@end
+
+@protocol LTrigger <LButton>
+@property (readonly) NSInteger mode;
+@property (readonly) NSInteger status;
+@property (readonly) float armPosition;
+- (void)setModeOff;
+- (void)setModeFeedbackWithStartPosition:(float)startPosition resistiveStrength:(float)resistiveStrength;
+- (void)setModeWeaponWithStartPosition:(float)startPosition endPosition:(float)endPosition resistiveStrength:(float)resistiveStrength;
+- (void)setModeVibrationWithStartPosition:(float)startPosition amplitude:(float)amplitude frequency:(float)frequency;
+@end
+
+@protocol LDualSenseGamepad <LGamepadExtra>
+@property (readonly, nullable) id leftTrigger;
+@property (readonly, nullable) id rightTrigger;
+@end
+
+static NSArray *paddlesGroup(BOOL host)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LPaddles> x = (id<LPaddles>)[[NSClassFromString(host ? @"GCXboxGamepad" : @"CharonHostGCXboxGamepad") alloc] init];
+    [log addObject:[NSString stringWithFormat:@"paddles %@ %@ %@ %@", x.paddleButton1 ? @"a button" : @"nil",
+                  x.paddleButton2 ? @"a button" : @"nil", x.paddleButton3 ? @"a button" : @"nil",
+                  x.paddleButton4 ? @"a button" : @"nil"]];
+    return log;
+}
+
+static NSArray *touchpadsGroup(BOOL host)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    for (NSString *name in @[@"GCDualShockGamepad", @"GCDualSenseGamepad"]) {
+        id<LGamepadExtra> g = (id<LGamepadExtra>)[[NSClassFromString(host ? name : [@"CharonHost" stringByAppendingString:name]) alloc] init];
+        [log addObject:[NSString stringWithFormat:@"%@ init=%d", name, g != nil]];
+        [log addObject:[NSString stringWithFormat:@"%@ touchpadButton=%@", name, describeReading(g.touchpadButton)]];
+        [log addObject:[NSString stringWithFormat:@"%@ touchpadPrimary=%@", name, describeReading(g.touchpadPrimary)]];
+        [log addObject:[NSString stringWithFormat:@"%@ touchpadSecondary=%@", name, describeReading(g.touchpadSecondary)]];
+        // The surfaces carry values: the touchpad button takes one, the two surfaces take an axis
+        // pair each, and that is what a caller polls.
+        [(id) g.touchpadButton setValue:0.6f];
+        [(id<LDpad>)g.touchpadPrimary setValueForXAxis:0.5f yAxis:-0.25f];
+        [(id<LDpad>)g.touchpadSecondary setValueForXAxis:-1.0f yAxis:1.0f];
+        [log addObject:[NSString stringWithFormat:@"%@ after values: button=%@ primary=%@ secondary=%@", name,
+                      describeReading(g.touchpadButton), describeReading(g.touchpadPrimary), describeReading(g.touchpadSecondary)]];
+    }
+    return log;
+}
+
+static NSArray *triggerGroup(BOOL host)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LTrigger> t = (id<LTrigger>)[[NSClassFromString(host ? @"GCDualSenseAdaptiveTrigger" : @"CharonHostGCDualSenseAdaptiveTrigger") alloc] init];
+    BOOL isButton = [t isKindOfClass:[GCControllerButtonInput class]];
+    [log addObject:[NSString stringWithFormat:@"trigger init=%d isButton=%d", (int)(t != nil), (int)isButton]];
+    [log addObject:[NSString stringWithFormat:@"trigger at rest: mode=%ld status=%ld armPosition=%f", (long)t.mode, (long)t.status, t.armPosition]];
+    // Each of the header's setMode calls in turn, and what the properties answer after it. The
+    // header says mode is the controller's answer and does not follow the call, and the host's own
+    // trigger agrees: mode stays 0 through all four.
+    [t setModeOff];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeOff: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
+    [t setModeFeedbackWithStartPosition:0.2f resistiveStrength:0.8f];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeFeedback: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
+    [t setModeWeaponWithStartPosition:0.1f endPosition:0.9f resistiveStrength:0.7f];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeWeapon: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
+    [t setModeVibrationWithStartPosition:0.2f amplitude:0.8f frequency:0.5f];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeVibration: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
+    // The button underneath is real on both sides, so its value is real too.
+    t.value = 0.6f;
+    [log addObject:[NSString stringWithFormat:@"trigger as a button: %@ armPosition=%f", describeReading(t), t.armPosition]];
+    return log;
+}
+
 static NSArray *gamepadInfo(NSString *name)
 {
     NSMutableArray *log = [NSMutableArray array];
@@ -831,6 +916,31 @@ int main(void)
                 if (![x isEqual:y]) {
                     failures++;
                     printf("DIFFERENT hardware line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            NSArray *a = [paddlesGroup(false) arrayByAddingObjectsFromArray:touchpadsGroup(false)],
+                     *b = [paddlesGroup(true) arrayByAddingObjectsFromArray:touchpadsGroup(true)];
+            printf("gamepad extras: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    printf("DIFFERENT gamepad extras line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
+            NSArray *a = triggerGroup(false), *b = triggerGroup(true);
+            printf("adaptive trigger: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    printf("DIFFERENT trigger line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
                 }
             }
         }

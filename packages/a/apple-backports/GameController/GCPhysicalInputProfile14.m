@@ -20,7 +20,19 @@
     NSMutableArray *ranked = [NSMutableArray array];
     for (NSDictionary *spec in specs) {
         NSString *kind = spec[@"kind"];
-        Class elementClass = [kind isEqual:@"dpad"] ? [GCControllerDirectionPad class] : [kind isEqual:@"cursor"] ? [GCDeviceCursor class] : [kind isEqual:@"axis"] ? [GCControllerAxisInput class] : [GCControllerButtonInput class];
+        Class elementClass;
+        if ([kind isEqual:@"dpad"])
+            elementClass = [GCControllerDirectionPad class];
+        else if ([kind isEqual:@"cursor"])
+            elementClass = [GCDeviceCursor class];
+        else if ([kind isEqual:@"axis"])
+            elementClass = [GCControllerAxisInput class];
+        else if ([kind isEqual:@"trigger"])
+            // the DualSense's adaptive trigger: a button the application commands a mode into, which
+            // is why it has a class of its own rather than being a plain button
+            elementClass = [GCDualSenseAdaptiveTrigger class];
+        else
+            elementClass = [GCControllerButtonInput class];
         GCControllerElement *element = [[elementClass alloc] initWithCharonSpec:spec];
         [element charon_attachToProfile:self];
         for (NSString *alias in spec[@"aliases"])
