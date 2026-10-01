@@ -4194,29 +4194,31 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the filters this method hands the composition are applied per requested time by a compositor of the release's choosing, and 6.1.3's AVVideoComposition carries no entry point for one: -customVideoCompositorClass is API_AVAILABLE(ios(7.0)) (AVVideoComposition.h:89), so the 26 own instance methods of 6.1.3's AVVideoComposition are -instructions, -setInstructions:, -renderSize, -frameDuration, -animationTool, -compositor, -setCompositor: and no member that names a class which renders frames. A filter chain with no compositor behind it would return the unfiltered frames, which is a value and not the capability",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release filters during composition by giving the composition -instructions built from -[AVMutableVideoCompositionInstruction alloc] init with -setLayerInstructions:, or exports the frames itself through AVAssetReader and AVAssetWriter, which is where 6.1.3 puts a filter; the object that would carry a compositor is not this release's API either",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:89 for the 7.0 entry point this release has no member for; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted"
     },
     {
       "api": "+[AVMutableVideoComposition videoCompositionWithPropertiesOfAsset:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "6.1.3's AVMutableVideoComposition carries +videoCompositionWithPropertiesOfAsset: and +videoCompositionWithPropertiesOfAsset:videoGravity: among its three own class methods (AVVideoComposition.h:301, ios(6.0)), so the mutable factory this method shadows already exists on the release under the synchronous spelling",
+      "effect": "the composition is built on a serial queue off the caller's thread from the release's own mutable properties-of-asset factory and handed to the handler with a nil error; it is mutable, so the caller may still set renderSize, frameDuration and instructions on it",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:323 for the declaration and :301 for the release's own factory; the 6.1.3 armv7 class table of AVMutableVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 3 own class methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "+[AVMutableVideoComposition videoCompositionWithPropertiesOfAsset:prototypeInstruction:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "the release builds the composition from the asset's own properties - +videoCompositionWithPropertiesOfAsset: on AVMutableVideoComposition, AVVideoComposition.h:301 - and 6.1.3 accepts into -setInstructions: an instance of the AVVideoCompositionInstruction class, which carries -mutableCopyWithZone: and -setTimeRange:. The prototype's type, id<AVVideoCompositionInstruction>, is a protocol this release does not have: of the 16 AV-named protocols in the 6.1.3 armv7 cache the composition instruction protocol is not one, so an instance of that class is the only prototype shape this release can put into a composition",
+      "effect": "the properties-of-asset composition is built on a serial queue off the caller's thread, a mutable copy of the prototype is given the asset's duration as its time range, and it becomes the composition's only instruction; a prototype that is not an AVVideoCompositionInstruction cannot be honoured on this release and is reported to the handler as nil with an error in the port's own domain org.charon.avf.composition, because the release's error vocabulary has no code for it - first-rung answers NONE for _AVErrorUnknown and for _AVErrorOperationNotSupportedForAsset",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:369 for the declaration, :301 for the release's factory and AVVideoCompositing.h:380 for the 7.0 protocol; the 16 AV-named protocols of the 6.1.3 armv7 cache from objc-inventory.lua and the AVVideoCompositionInstruction class table from the same dump; first-rung.py for the two missing error codes",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "+[AVVideoComposition videoCompositionWithAsset:applyingCIFiltersWithHandler:completionHandler:]",
@@ -4224,39 +4226,42 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same absence as +[AVMutableVideoComposition videoCompositionWithAsset:applyingCIFiltersWithHandler:completionHandler:], read on the superclass: -customVideoCompositorClass is API_AVAILABLE(ios(7.0)) (AVVideoComposition.h:89) and 6.1.3's AVVideoComposition carries 26 own instance methods and no member that names a class which renders a frame from the handler's filters",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release filters during composition by giving the composition -instructions built from -[AVMutableVideoCompositionInstruction alloc] init, or exports the frames itself through AVAssetReader and AVAssetWriter, which is where 6.1.3 puts a filter",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:89 for the 7.0 entry point this release has no member for; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted"
     },
     {
       "api": "+[AVVideoComposition videoCompositionWithPropertiesOfAsset:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "6.1.3's AVVideoComposition carries +videoCompositionWithPropertiesOfAsset: and +videoCompositionWithPropertiesOfAsset:videoGravity: among its three own class methods (AVVideoComposition.h:64, ios(6.0)); the first is this factory's whole body, and the second is the same construction with the gravity named, which this signature does not name",
+      "effect": "the composition is built on a serial queue off the caller's thread, from the release's own properties-of-asset factory, and handed to the handler with a nil error; the render size, frame duration and instructions in it are the release's reading of the asset's video track",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:85 for the declaration, :64 and :285 for the two factories the release carries; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 3 own class methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "+[NSValue valueWithCMVideoDimensions:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSValue a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "the pair needs nothing but a struct of two int32_t and Foundation's own boxing: 6.1.3's NSValue carries +valueWithBytes:objCType: and -getValue:, and CMVideoDimensions is CoreMedia's own since ios(4.0) (CMFormatDescription.h:669), so the encoding is the compiler's @encode and not a spelled-out one",
+      "effect": "the dimensions go into an NSValue the way every other struct goes in, through +valueWithBytes:objCType: with the encoding @encode(CMVideoDimensions) gives, and -CMVideoDimensionsValue reads them back with -getValue:; a value this pair did not make has no CMVideoDimensions encoding and answers zeroes",
+      "source": "iPhoneOS 16.4 AVFoundation/AVGeometry.h:50 and :60 for the declaration, which declares it on the NSValue category AVGeometry.h:33 opens; CMFormatDescription.h:669 for CMVideoDimensions; first-rung.py for the CoreMedia and Foundation members it calls, and the 6.1.3 armv7 class table of NSValue read from objc-inventory.lua, which carries neither accessor",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "-[AVAssetImageGenerator generateCGImageAsynchronouslyForTime:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetImageGenerator a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "6.1.3's AVAssetImageGenerator carries -generateCGImagesAsynchronouslyForTimes:completionHandler: among its 31 own instance methods (AVAssetImageGenerator.h:193, ios(6.0)), which is this method with a list where this one has one time; the two handlers carry the same five words in the same order - requestedTime, image, actualTime, a result or error code, and the error - so the batch call's answer is this one's answer for the one time it was asked about",
+      "effect": "one requested time goes to the release's own batch generator as a one-element array of NSValue-wrapped CMTime, and its handler drops the requested time and the result code and hands the caller's handler the image, the actual time and the error; the batch generator's decoding efficiencies, and its one callback per requested time, are the release's",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetImageGenerator.h:207 for the declaration and :179 for the batch handler typedef; the 6.1.3 armv7 class table of AVAssetImageGenerator read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 31 own instance methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "-[AVAssetTrack makeSampleCursorAtFirstSampleInDecodeOrder]",
@@ -4264,9 +4269,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "it returns an AVSampleCursor, and the release has nothing a cursor is made of: 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime:, and first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid, so no held release exports CoreMedia's cursor entry point",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release takes the first sample through AVAssetReader: -[AVAssetReaderOutput requestMediaDataWhenReadyOnQueue:usingBlock:] with -copyNextSampleBuffer is the release's own way of advancing one sample at a time",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetTrack.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
     },
     {
       "api": "-[AVAssetTrack makeSampleCursorAtLastSampleInDecodeOrder]",
@@ -4274,9 +4279,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same absence as -[AVAssetTrack makeSampleCursorAtFirstSampleInDecodeOrder]: the cursor it would return needs per-sample decode-order position, and 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime:, while first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release reads the last sample's time from -[AVAssetTrack samplePresentationTimeForTrackTime:] at the end of -[AVAssetTrack timeRange] and seeks there, which is the release's own answer for the last sample's time",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetTrack.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
     },
     {
       "api": "-[AVAssetTrack makeSampleCursorWithPresentationTimeStamp:]",
@@ -4284,19 +4289,20 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same absence as -[AVAssetTrack makeSampleCursorAtFirstSampleInDecodeOrder]: the cursor it would return needs per-sample presentation-order position, and 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime:, while first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVAssetTrack samplePresentationTimeForTrackTime:] for the track time of the presentation timestamp and seeks to that, which is the release's own mapping between the two timelines",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetTrack.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
     },
     {
       "api": "-[AVMutableComposition insertTimeRange:ofAsset:atTime:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "6.1.3's AVMutableComposition carries -insertTimeRange:ofAsset:atTime:error: among its 14 own instance methods (AVComposition.h:220, ios(4.0)), which is this method's whole body with the outcome in an out-parameter instead of in a handler; there is nothing else this one does that the release's does not",
+      "effect": "the insertion runs on a global queue so the caller's thread is not blocked by disk-backed track work, and the release's method is asked with an NSError* out-parameter whose value, nil on success, is what the handler is given",
+      "source": "iPhoneOS 16.4 AVFoundation/AVComposition.h:240 for the declaration and :220 for the release's own member; the 6.1.3 armv7 class table of AVMutableComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 14 own instance methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "-[AVPlayerLayer copyDisplayedPixelBuffer]",
@@ -4304,19 +4310,20 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerLayer a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the method asks the layer for the frame it is showing, and 6.1.3's AVPlayerLayer carries 37 own instance methods and none of them reports what is on the layer: -isReadyForDisplay, -videoRect, -videoGravity, -player and the private -_setItem:readyForDisplay: that feeds them. Its superclass CALayer has no pixel-buffer accessor either, and the release's own route to decoded frames, -[AVPlayerItemVideoOutput copyPixelBufferForItemTime:itemTimeForDisplay:], is a member of the item and of its output, not of a layer",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release attaches an AVPlayerItemVideoOutput to the item, asks -[AVPlayerItemVideoOutput copyPixelBufferForItemTime:itemTimeForDisplay:] and keeps its own copy of what comes back; -[AVPlayerLayer isReadyForDisplay] still answers whether the layer has a frame to show",
+      "source": "iPhoneOS 16.4 AVFoundation/AVPlayerLayer.h for the declaration; the 6.1.3 armv7 class tables of AVPlayerLayer and its superclass CALayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, controls answered as wanted"
     },
     {
       "api": "-[AVVideoComposition determineValidityForAsset:timeRange:validationDelegate:completionHandler:]",
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoComposition a method like it: it arrived in iOS 16",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "6.1.3's AVVideoComposition carries -isValidForAsset:timeRange:validationDelegate: among its 26 own instance methods (AVVideoComposition.h:968, ios(5.0)), which validates the same composition against the same asset, time range and validation delegate and answers the same question as a BOOL; this method is that question with the answer delivered to a handler",
+      "effect": "the release's own validator is asked on the caller's thread with the same asset, time range and validation delegate, and its BOOL answer plus a nil error go to the handler; the release reports the troublesome portions by calling the validation delegate itself, which is the delegate's one job",
+      "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:986 for the declaration and :968 for the release's own member; the 6.1.3 armv7 class table of AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "AVAssetExportSession.audioTrackGroupHandling",
@@ -4324,9 +4331,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the property's type is AVAssetTrackGroupOutputHandling, an NS_OPTIONS of AVAssetTrackGroupOutputHandlingNone and ...PreserveAlternateTracks (AVAssetExportSession.h:114), and 6.1.3's AVAssetExportSession carries 54 own instance methods and no member that speaks of a track group's alternate tracks at all - its audio vocabulary is -audioMix, -setAudioMix:, -setMetadata: and -setUsesHardwareVideoEncoderIfAvailable:. first-rung answers NONE for _AVAssetTrackGroupOutputHandlingPreserveAlternateTracks and for every other name of that type, so the values this property would return do not exist on this release either",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release chooses which alternate tracks survive an export by building the -[AVAudioMixInputParameters] it wants and giving it to -[AVAssetExportSession setAudioMix:]; -[AVMutableAudioMixInputParameters setTrackID:] is the release's own vocabulary for naming a track in a mix",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetExportSession.h:372 for the declaration and :114 for the option type; first-rung.py answers NONE for _AVAssetTrackGroupOutputHandlingPreserveAlternateTracks; the 6.1.3 armv7 class table of AVAssetExportSession read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 54 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVAssetPlaybackAssistant",
@@ -4334,9 +4341,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is not in the release: 6.1.3 has no AVAssetPlaybackAssistant at all, and the question it answers is whether an asset can render stereo or stereo-multiview video, which is a property of the asset's video format description - a format the release cannot decode and has no member that would name. There is no AVAssetPlaybackConfigurationOption either: first-rung answers NONE for a name no held release carries",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release reads the asset's own format vocabulary instead - -[AVAssetTrack formatDescriptions] and -[AVAssetTrack mediaCharacteristics] - and decides from the media subtypes there; the port defines no class of this name, so a linked program has one AVAssetPlaybackAssistant less than a program built for 16.0",
+      "source": "iPhoneOS 16.4 AVFoundation/AVAssetPlaybackAssistant.h for the declaration; tools/corpus/class-scoped-rows.py answers NO CLASS for this row on 6.1.3, 4.3 and 7.0, controls answered as wanted; first-rung.py for the option names"
     },
     {
       "api": "AVAssetTrack.canProvideSampleCursors",
@@ -4344,9 +4351,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the property answers whether this release could hand out a sample cursor for this track, and 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime: - none of them enumerates samples - while first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid. A getter that answered NO would be the same word on every track and every release, which is a constant standing in for behaviour and not an implementation",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks for samples rather than about them: an AVAssetReader over -[AVAssetReaderTrackOutput tracksWithMediaType:] answers whether there is anything to read at all",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCompositionTrack.h:313 and AVAssetTrack.h:405 for the two declarations of it; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, controls answered as wanted"
     },
     {
       "api": "AVCaptureDevice.companionDeskViewCamera",
@@ -4354,9 +4361,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and neither this accessor nor any member that names a companion camera: its device vocabulary is -uniqueID, -modelID, -localizedName, -position, -deviceType, -formats, -activeFormat and -hasMediaType:, all of which describe the device itself and none of which pairs it with another. A Continuity camera is named by the host it is paired with, and this release has no continuity-camera vocabulary",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release enumerates what is attached with +[AVCaptureDevice devicesWithMediaType:] and walks -[AVCaptureDevice uniqueID], which is how 6.1.3 finds a device at all; the port defines no accessor, so a compiled call site is an unrecognised selector at run time",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureDevice.continuityCamera",
@@ -4364,9 +4371,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no member of the continuity-camera family; the release's own device-type vocabulary is what AVCaptureDeviceType.m carries, and it names the back, front and external cameras this release has. There is no paired-device concept on this release for the property to report",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDevice deviceType] and -[AVCaptureDevice uniqueID] to tell the devices apart, which is the release's own answer for what kind of device this is; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureDevice.studioLightActive",
@@ -4374,9 +4381,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no studio-light member; the release's own lighting vocabulary is -flashMode, -isFlashAvailable, -torchMode, -isTorchAvailable, -torchLevel and -setTorchModeOnWithLevel:error:, all of which are the camera's own light and none of which is a studio light. There is no member on the release that a studio-light state could be read from",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release uses -[AVCaptureDevice torchMode] or -setTorchModeOnWithLevel:error: for the light this release can turn on, and reads -isTorchAvailable to ask whether the device has one; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureDevice.studioLightEnabled",
@@ -4384,9 +4391,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no studio-light member, and its configuration lock - -lockForConfiguration and -unlockForConfiguration - guards only the members it lists: -activeFormat, -activeInput, -exposureMode and its settings, -focusMode, -whiteBalanceMode, -imageControlMode, -flashMode and -torchMode. There is no member a studio-light enable flag could be read from or written to",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release sets -torchMode under -lockForConfiguration, which is the release's own guarded light setting; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureDeviceFormat.secondaryNativeResolutionZoomFactors",
@@ -4394,9 +4401,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods - -formatDescription, -mediaType, -videoSupportedFrameRateRanges, -isBinned, -supportedStabilizationMethod and -supportsLowLightBoost among them - and no member that names a second native resolution or a zoom factor; the format's own zoom vocabulary does not exist on this release at all. 4.3 cannot even be asked: its armv7 cache has no AVCaptureDeviceFormat at all",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDeviceFormat formatDescription] and asks the track for its own -nominalFrameRate and -naturalSize, which is where this release keeps the resolution of a format; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDeviceFormat read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 11 own instance methods, and NO CLASS on 4.3, controls answered as wanted"
     },
     {
       "api": "AVCaptureDeviceFormat.studioLightSupported",
@@ -4404,9 +4411,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and none of them is a support flag of any kind except -isBinned, -supportedStabilizationMethod and -supportsLowLightBoost; there is no studio-light flag and no device-type pair the format could answer it from. 4.3 cannot even be asked: its armv7 cache has no AVCaptureDeviceFormat",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVCaptureDeviceFormat supportsLowLightBoost] or -isBinned, which are the release's own two support flags on a format; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDeviceFormat read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 11 own instance methods, and NO CLASS on 4.3, controls answered as wanted"
     },
     {
       "api": "AVCaptureDeviceFormat.supportedMaxPhotoDimensions",
@@ -4414,9 +4421,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no member that names a photo dimension; the release's own resolution of a format is its -formatDescription, and there is no member that enumerates the photo resolutions a format supports. 4.3 cannot even be asked: its armv7 cache has no AVCaptureDeviceFormat",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDeviceFormat formatDescription] and takes the dimensions from the track that uses the format, through -[AVAssetTrack naturalSize] and -[AVAssetTrack dimensions]; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDeviceFormat read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 11 own instance methods, and NO CLASS on 4.3, controls answered as wanted"
     },
     {
       "api": "AVCaptureDeviceFormat.supportedVideoZoomFactorsForDepthDataDelivery",
@@ -4424,9 +4431,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no zoom member of any kind, so there is no zoom-factor vocabulary this property could return a subset of; 4.3 cannot even be asked: its armv7 cache has no AVCaptureDeviceFormat",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release crops rather than zooms: -[AVCaptureConnection videoScaleAndCropFactor] is the release's own factor and 6.1.3's still image output already holds it to min(width, height) * 0.0625 of what it captures; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDeviceFormat and AVCaptureConnection read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 11 and 56 own instance methods, and NO CLASS on 4.3, controls answered as wanted"
     },
     {
       "api": "AVCaptureDeviceFormat.videoFrameRateRangeForStudioLight",
@@ -4434,9 +4441,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and its only frame-rate member is -videoSupportedFrameRateRanges, an array over the format as a whole; there is no member that pairs a frame rate range with a studio light, and no studio-light member for it to be paired with. 4.3 cannot even be asked: its armv7 cache has no AVCaptureDeviceFormat",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDeviceFormat videoSupportedFrameRateRanges] and picks the range it wants, which is the release's own answer for what frame rates a format supports; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDeviceFormat read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 11 own instance methods, and NO CLASS on 4.3, controls answered as wanted"
     },
     {
       "api": "AVCaptureSession.hardwareCost",
@@ -4444,9 +4451,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods and no cost member: the session's own vocabulary is -sessionPreset, -inputs, -outputs, -connections, -beginConfiguration, -commitConfiguration, -startRunning, -stopRunning and -isRunning, which describe the graph and whether it is running and not what it costs the hardware. There is no member a cost figure could be read from",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release chooses the graph it can afford with -[AVCaptureSession canSetSessionPreset:] and -sessionPreset, which is the release's own way of asking whether a configuration is available on this hardware; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureSession.h for the declaration; the 6.1.3 armv7 class table of AVCaptureSession read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 84 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureSession.multitaskingCameraAccessEnabled",
@@ -4454,9 +4461,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods and no multitasking member, and its configuration lock guards only what this release added to it: -sessionPreset, -addInput:, -addOutput:, -addConnection: and the private -beginConfiguration/-commitConfiguration. There is no member a multitasking-access flag could be read from or written to",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads and writes the session's own graph under -beginConfiguration and -commitConfiguration, which is the release's guarded configuration; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureSession.h for the declaration; the 6.1.3 armv7 class table of AVCaptureSession read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 84 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVCaptureSession.multitaskingCameraAccessSupported",
@@ -4464,19 +4471,20 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods and no multitasking member and no support flag of any kind; the release's support questions are asked of the device and the connection instead - -[AVCaptureDevice hasMediaType:], -[AVCaptureConnection isVideoOrientationSupported], -[AVCaptureDevice supportsAVCaptureSessionPreset:] - and none of them is about multitasking",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVCaptureDevice supportsAVCaptureSessionPreset:] whether a preset the device claims to support can actually be set, which is the release's own support question; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureSession.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureSession and AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 84 and 100 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVPlayer.defaultRate",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "inert",
+      "reason": "the release's rate vocabulary is -rate, -setRate:, -setRate:time:atHostTime:, -minRateForAudioPlayback, -maxRateForAudioPlayback and -play, and -play sets the rate to 1.0 itself - AVPlayer.h:196 says so for every release up to 16.0 - so the release already has the one behaviour this property selects between and no member of it reads the value",
+      "effect": "the value is stored on the player and read back, so a caller that sets 2.0 and reads 2.0 gets 2.0 and a caller that reads it from a fresh player gets 1.0, but nothing on 6.1.3 applies it: -play still starts at 1.0, which is what the header says this release does. The row that would consume it, -[AVPlayer playImmediatelyAtRate:], is 10.0's and carries that rate itself",
+      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h:191 for the declaration and :196 for what -play does before 16.0; the 6.1.3 armv7 class table of AVPlayer read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance methods and 19 own class methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "AVSampleBufferGenerator",
@@ -4484,9 +4492,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class generates sample buffers out of a sample cursor, and the release has neither half: 6.1.3 has no AVSampleBufferGenerator at all, first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid, and 6.1.3's AVAssetTrack carries no member that enumerates samples. There is no CMBlockBuffer-based fetch it could be built on either: -[AVAssetTrack totalSampleDataLength] gives a length and nothing that yields the bytes at an offset",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release reads sample bytes through AVAssetReader, whose -[AVAssetReaderOutput copyNextSampleBuffer] is the release's own way of getting the next sample's bytes, and re-creates CMSampleBuffers from them with the CoreMedia functions; the port defines no class of this name",
+      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferGenerator.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, controls answered as wanted"
     },
     {
       "api": "AVSampleBufferGeneratorBatch",
@@ -4494,9 +4502,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class batches what an AVSampleBufferGenerator produced, and neither exists on this release: 6.1.3 has no AVSampleBufferGeneratorBatch and no AVSampleBufferGenerator, first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid, and 6.1.3's AVAssetTrack carries no member that enumerates samples",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release holds the samples it has read itself: an array of the CMSampleBuffers an AVAssetReader returned is the batch, and each is handed on or kept as the caller likes; the port defines no class of this name",
+      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferGenerator.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, controls answered as wanted"
     },
     {
       "api": "AVSampleBufferRequest",
@@ -4504,9 +4512,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is what an AVSampleBufferGenerator is asked for, and the request names a sample cursor and a completion handler this release cannot serve: 6.1.3 has no AVSampleBufferRequest at all, first-rung answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid, and 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime:",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release asks AVAssetReader for what it wants instead: -[AVAssetReaderOutput requestMediaDataWhenReadyOnQueue:usingBlock:] with -copyNextSampleBuffer is the release's own request-and-handler shape, and the release's own object for the same job is AVAssetReaderOutput; the port defines no class of this name",
+      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferGenerator.h for the declaration; first-rung.py answers NONE for the two CoreMedia cursor symbols; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, controls answered as wanted"
     },
     {
       "api": "AVSampleCursor",
@@ -4514,9 +4522,9 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "a cursor needs indexed per-sample access and the release has none: 6.1.3's AVAssetTrack carries 52 own instance methods whose only position members are -segments, -segmentForTrackTime: and -samplePresentationTimeForTrackTime:, none of which enumerates samples, and CoreMedia's cursor entry points read NONE on every held release - first-rung answers NONE for _CMSampleBufferGetSampleCursor and for _CMSampleBufferIsSampleCursorValid. The class also steps in both decode and presentation order and reports chunk and storage ranges per sample, all of which is per-sample bookkeeping the release cannot produce",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release walks samples itself through AVAssetReader, whose -copyNextSampleBuffer is the release's own way of advancing one sample at a time, and reads each sample's timing from the CMSampleBuffer it returns",
+      "source": "iPhoneOS 16.4 AVFoundation/AVSampleCursor.h for the declaration; first-rung.py answers NONE for _CMSampleBufferGetSampleCursor and _CMSampleBufferIsSampleCursorValid; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
     },
     {
       "api": "AVURLAsset.httpSessionIdentifier",
@@ -4524,19 +4532,20 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVURLAsset a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVURLAsset carries 37 own instance methods and no session identifier; its network vocabulary is -URL, -URLAssetWithURL:options:, -resourceLoader, -shouldMatchDataInCacheByURLPathComponentOnly, -shouldOptimizeAccessForLinearMoviePlayback and -availableChapterLocales, none of which names the HTTP session a request goes through. The release has no NSURLSession either - first-rung answers NONE for _NSURLSession - so there is no session to name",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release makes its own sessions for the requests it makes: -[AVAssetResourceLoader setDelegate:queue:] and -[AVURLAssetResourceLoadingRequest request] is the release's own way of asking for bytes, and the session that fetches them is the caller's own, as it is on every iOS 6 release",
+      "source": "iPhoneOS 16.4 AVFoundation/AVURLAsset.h for the declaration; first-rung.py answers NONE for _NSURLSession; the 6.1.3 armv7 class table of AVURLAsset read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 37 own instance methods, controls answered as wanted"
     },
     {
       "api": "NSValue.CMVideoDimensionsValue",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give NSValue a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "the getter half of +[NSValue valueWithCMVideoDimensions:]; 6.1.3's NSValue carries -getValue:, which is what reads an NSValue's bytes back into a caller of the right type, and CMVideoDimensions is CoreMedia's own since ios(4.0)",
+      "effect": "reads the boxed struct back with -getValue: into a CMVideoDimensions on the stack, so the caller gets width and height by value; a value boxed with some other encoding reads as zeroes rather than as this struct",
+      "source": "iPhoneOS 16.4 AVFoundation/AVGeometry.h:60 for the declaration; CMFormatDescription.h:669 for CMVideoDimensions; first-rung.py for the Foundation member it calls, and the 6.1.3 armv7 class table of NSValue read from objc-inventory.lua, which carries no CMVideoDimensionsValue",
+      "facts": "facts/AVFoundation/AVFoundation160.md"
     },
     {
       "api": "AVCaptureDevice.centerStageRectOfInterest",
@@ -4544,9 +4553,9 @@
       "introduced": "16.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 16",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no centre-stage member; the release's own rectangle of interest is the exposure and focus one, -exposurePointOfInterest and -focusPointOfInterest, which are the only two AVCaptureDevice carries, and neither is the centre-stage rectangle a stage-framing camera reports. 4.3 cannot be asked either: it has no AVCaptureDevice either",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release frames with -focusPointOfInterest and -exposurePointOfInterest, the release's own two rectangles of interest in the device's coordinate space, and isExposurePointOfInterestSupported is the release's own way of asking whether the device takes one; the port defines no accessor",
+      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
     }
   ]
 }
