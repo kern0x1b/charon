@@ -66,8 +66,9 @@ Every record of the host is held on the device except three that differ for a st
   request before it is made and never about the response, so `decidePolicyForNavigationResponse` is never sent
   (`WKNavigationResponse` is a class nothing hands out); a redirect, an authentication challenge and the death of the
   web content process are not reported; a JavaScript `alert`, `confirm` or `prompt` shows the release's own panel
-  and a link that asks for a new window loads in the view, which is how `UIWebView` behaves and was not measured
-  here. The registry lists each.
+  and a link that asks for a new window loads in the view, which is how `UIWebView` behaves. What each release
+  carries for the seven of these it does hook, and which object the hook is addressed to, is measured at the end of
+  this page; the registry lists each.
 - **Settings the release cannot honour.** `allowsBackForwardNavigationGestures`, `customUserAgent`,
   `allowsLinkPreview`, `javaScriptEnabled`, `minimumFontSize`, `javaScriptCanOpenWindowsAutomatically`,
   `applicationNameForUserAgent`, `ignoresViewportScaleLimits`, `selectionGranularity` and
@@ -84,3 +85,106 @@ Every record of the host is held on the device except three that differ for a st
 - **A load can fail at the release's own limits**: a `file:` URL is read wherever the sandbox lets it, whatever
   `allowingReadAccessToURL:` says, and a message posted from a page travels in a URL, so a body of many hundreds of
   kilobytes is not delivered.
+
+## What the two band ends carry for the nine delegate messages the port never sends
+
+The registry lists nine `WKNavigationDelegate` and `WKUIDelegate` methods as `absent`. The text those rows carried
+until 2026-10-01 said the release "does not report a redirect" and "does not ask its delegate" for a JavaScript
+panel, and both sentences are wrong about the release: the hooks are in it, on `UIWebView` and on the private object
+behind it, at both band ends. What is true is narrower and is what the rows now say: the hooks are addressed to
+UIKit's own delegate objects, and neither WebKit delegate protocol exists for them to name.
+
+Neither `WKUIDelegate` nor `WKNavigationDelegate` is a protocol at either band end, and the only `WK` name on either
+rung is `WKQuadObject`, which belongs to the private `WebCore.framework` and not to WebKit's public surface:
+
+```
+$ for r in 6.1.3 4.3; do echo "== $r"; \
+    CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/$r/dyld_shared_cache_armv7 | \
+    awk -F'\t' '$1=="class" && $2 ~ /^WK/ {print "  " $2 "  " $4}'; done
+== 6.1.3
+  WKQuadObject  /System/Library/PrivateFrameworks/WebCore.framework/WebCore
+== 4.3
+  WKQuadObject  /System/Library/PrivateFrameworks/WebCore.framework/WebCore
+```
+
+```
+$ CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua WK 6.1.3 4.3
+6.1.3     ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+         images 524, of which naming WK 0
+         classes 11378, of which WK* 1 (WKQuadObject)
+         protocols 1171, of which WK* 0
+4.3       ~/.charon/dyld/4.3/dyld_shared_cache_armv7
+         images 354, of which naming WK 0
+         classes 7187, of which WK* 1 (WKQuadObject)
+         protocols 564, of which WK* 0
+control: 2 name(s) beginning WK found in this run, so a zero on another rung is the release's and not the reader's
+```
+
+`WKQuadObject` is the control. A run that found nothing would be the reader being wrong and would certify no row.
+
+Five of the seven hooks the rows need are in the release's UIKit image at both band ends, and every one of them is
+defined by `UIWebViewWebViewDelegate` -- the private object that sits between the WebView and `UIWebView` -- and by
+`UIWebView` itself, alongside WebKit's own default delegates:
+
+```
+$ for r in 6.1.3 4.3; do echo "== $r"; \
+    CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/$r/dyld_shared_cache_armv7 | \
+    awk -F'\t' '$1=="class" && ($5 ~ /runJavaScript(Alert|Confirm|TextInput)Panel|didReceiveServerRedirectForProvisionalLoadForFrame|decidePolicyFor(MIMEType|NewWindowAction)|resource:didReceiveAuthenticationChallenge/){print "  " $2}'; done
+== 6.1.3
+  NSHTMLWebDelegate
+  WebUIBrowserLoadingController
+  SUWebViewManager
+  UIWebView
+  WebDefaultUIDelegate
+  WebDefaultResourceLoadDelegate
+  WebDefaultPolicyDelegate
+  WebDefaultFrameLoadDelegate
+  QLWebViewDisplayBundle
+  UIWebViewWebViewDelegate
+  MFMessageWebLayer
+== 4.3
+  QLWebViewDisplayBundle
+  WebDefaultFrameLoadDelegate
+  MFMessageWebLayer
+  SUWebViewDelegate
+  SUWebViewController
+  ADStoryboardController
+  AdSheetWebView
+  UIWebViewWebViewDelegate
+  WebDefaultResourceLoadDelegate
+  UIWebView
+  WebDefaultUIDelegate
+  ADSRVBannerView
+  WebDefaultPolicyDelegate
+```
+
+Which hook answers which row: `decidePolicyForMIMEType:request:frame:decisionListener:` is the response-stage policy
+hook, `decidePolicyForNewWindowAction:request:newFrameName:decisionListener:` the new-window one,
+`resource:didReceiveAuthenticationChallenge:fromDataSource:` the challenge one,
+`didReceiveServerRedirectForProvisionalLoadForFrame:` the redirect one, and the three
+`runJavaScript*PanelWith…:initiatedByFrame:` the panels. `WebPolicyDecisionListener` (which answers `-use` and
+`-ignore`) and `WebFrame` (which answers `-isMainFrame`) are classes of the 6.1.3 image, so the argument types are
+named too.
+
+The two rows the release carries nothing for at all, at either rung:
+
+```
+$ for r in 6.1.3 4.3; do printf '%s  selector webViewDidClose: %s  selectors naming a web content process: %s\n' \
+    "$r" "$(grep -cxF 'webViewDidClose:' ~/.charon/dyld/$r/selectors_armv7.txt)" \
+                "$(grep -c WebContentProcess ~/.charon/dyld/$r/selectors_armv7.txt)"; done
+6.1.3  selector webViewDidClose: 0  selectors naming a web content process: 0
+4.3    selector webViewDidClose: 0  selectors naming a web content process: 0
+```
+
+No rung names a window closing itself and no rung has a web content process to lose, so
+`webViewDidClose:` and `webViewWebContentProcessDidTerminate:` have nothing to be sent from. The window messages
+that do exist at both ends are on other objects: `webView:willCloseFrame:` is on `UIWebBrowserView`,
+`WebDefaultFrameLoadDelegate` and `WebDefaultUIKitDelegate`, and not on `UIWebView`.
+
+**The open question, and it is the owner's.** `UIWebView` implements all seven hooks, so a `WKWebView` subclass is
+the object WebKit addresses -- that last step is an argument from how a message is dispatched, not a measurement,
+and no device run in this repository has seen it happen. This port does not do it, and the measurement above is why
+the rows are `absent` rather than `inert` or `implemented`: nothing in the release sends those names to an object an
+application holds, and a port that reaches them does it by overriding WebKit's private `WebUIDelegate`, whose
+contract (`WebPolicyDecisionListener`, `WebFrame`, the `decisionListener` handshake) is read here from two caches
+and not from a device. Nothing in the tree does that anywhere, so it is a decision, not a gap to close quietly.

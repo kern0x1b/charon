@@ -16,8 +16,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView reports a navigation before it is loaded and never the response that answers it",
-    "effect": "the message is never sent, so a page that the application would have refused by its response is shown"
+    "reason": "the release does ask about a response, with -[UIWebView webView:decidePolicyForMIMEType:request:frame:decisionListener:], and that method is on UIWebView and on UIKit's private UIWebViewWebViewDelegate at 6.1.3 and 4.3, so the object an application sets as delegate is never the one asked",
+    "effect": "the message is never sent, so a page that the application would have refused by its response is shown",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKNavigationDelegate webView:didReceiveAuthenticationChallenge:completionHandler:]",
@@ -25,8 +27,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView answers an authentication challenge with its own panel",
-    "effect": "the message is never sent"
+    "reason": "a challenge is asked of -[UIWebView webView:resource:didReceiveAuthenticationChallenge:fromDataSource:], which both band ends put on UIWebView and on UIKit's private UIWebViewWebViewDelegate, so no application object is asked and no completion handler is ever built",
+    "effect": "the message is never sent, so a credential the caller would have supplied is never offered",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKNavigationDelegate webView:didReceiveServerRedirectForProvisionalNavigation:]",
@@ -34,8 +38,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView does not report a redirect",
-    "effect": "the message is never sent"
+    "reason": "the release does report a redirect, with -[UIWebView webView:didReceiveServerRedirectForProvisionalLoadForFrame:], and both band ends put that method on UIWebView and on UIKit's private UIWebViewWebViewDelegate, so the report reaches UIKit's own object and no application delegate is asked",
+    "effect": "the message is never sent, so a delegate that follows or counts the redirects of a load sees none of them",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKNavigationDelegate webViewWebContentProcessDidTerminate:]",
@@ -43,8 +49,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the page of UIWebView lives in the process of the application, which is not terminated on its own",
-    "effect": "the message is never sent"
+    "reason": "the release has no web content process to lose: no selector of either band end names one (grep -c WebContentProcess over both selector tables answers 0), so there is nothing a message could be sent from",
+    "effect": "the message is never sent, and the page of UIWebView lives in the process of the application, which is never told to reload",
+    "source": "the selector tables of the armv7 caches of iOS 6.1.3 and iOS 4.3 (command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKPreferences javaScriptCanOpenWindowsAutomatically]",
