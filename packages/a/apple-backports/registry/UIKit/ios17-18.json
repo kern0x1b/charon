@@ -907,9 +907,9 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class's button and secondaryButton are UIButtonConfiguration, which this library does not carry, and the view is built over this one",
+   "reason": "16.0 introduced this class, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 33 instance methods and 6 class methods. Nothing in 6.1.3 or 4.3 has it, and the port cannot carry it either because it has a button and a secondaryButton of type UIButtonConfiguration, which this library does not carry.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "the 4.3, 6.1.3 and 12.0 caches, 0 carried with an 8/8 control in the same run (facts/UIKit/UIKit17Absence.md M9, M12); the 16.0 arm64e cache is the exception and is recorded in M13 rather than smoothed over"
   },
   {
    "api": "UIContentUnavailableConfigurationState",
@@ -947,9 +947,9 @@
    "introduced": "17.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "it is built over UIContentUnavailableConfiguration, whose button properties are UIButtonConfiguration, which this library does not carry",
+   "reason": "16.0 introduced this view, not 17.0: the SDK's annotation says 17.0 but the 16.0 arm64e cache carries it with 36 instance methods. Nothing in 6.1.3 or 4.3 has it, and the port cannot carry it either because it is built over UIContentUnavailableConfiguration, which needs UIButtonConfiguration.",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "source": "the 4.3, 6.1.3 and 12.0 caches, 0 carried with an 8/8 control in the same run (facts/UIKit/UIKit17Absence.md M9, M12); the 16.0 arm64e cache is the exception and is recorded in M13 rather than smoothed over"
   },
   {
    "api": "UIControl.symbolAnimationEnabled",

@@ -526,3 +526,46 @@ The **16.0 arm64e** read started at 15:35 and had not returned. That cache is sp
 the slowest of the four. So the honest statement for it today is **not yet measured**, and no row in this
 file rests on it. Everything above is reproducible from the three commands in M1 and M9 with the
 `CHARON_ROOT` prefix each one prints.
+
+## M13. The 16.0 arm64e band end, and TWO ROWS THE SDK MIS-DATES
+
+The last band end arrived (168686 lines, 143137 classes, 25549 protocols). Control 8/8 as at every other
+rung — and the run also carries **negative** controls, which is what makes the two hits below real:
+
+```
+band end   arch     classes   protocols   checkable   carried   control
+4.3        armv7    7187      -           96          0         8/8
+6.1.3      armv7    11378     1171        96          0         8/8
+12.0       arm64    63192     11426       93          0         8/8
+16.0       arm64e   143137    25549       93          2         8/8
+```
+
+**Negative controls, in the same file:** `UIPencilHoverPose`, `UICanvasFeedbackGenerator`,
+`NSSymbolContentTransition`, `UIPageControlTimerProgress`, `UITextSelectionDisplayInteraction`,
+`UIWindowSceneProminentPlacement`, `UITextItemMenuPreview` are all **absent** from 16.0. So the reader
+discriminates: it finds the two it reports and misses the seven it should.
+
+### `UIContentUnavailableConfiguration` and `UIContentUnavailableView` are in iOS 16.0
+
+Both rows say `introduced: 17.0`, and the SDK agrees:
+`UIContentUnavailableConfiguration.h:23` and `UIContentUnavailableView.h:16` both carry
+`API_AVAILABLE(ios(17.0), tvos(17.0))`. **The cache of the release that introduced them disagrees**, and
+they are not stubs:
+
+| class | class methods | instance methods |
+|---|---|---|
+| `UIContentUnavailableConfiguration` | 6 (`emptyConfiguration`, `loadingConfiguration`, `searchConfiguration`, `emptyProminentConfiguration`, `emptyExtraProminentConfiguration`, `supportsSecureCoding`) | **33** |
+| `UIContentUnavailableView` | 0 | **36** (`_applyConfiguration:`, `_button`, `_activityIndicator`, …) |
+| `UIContentUnavailableTextProperties` (already `implemented`) | 1 | **26** |
+
+This is the same shape the 16.0 batch recorded for `UICalendarViewDelegate` and `UISceneWindowingBehaviors`
+(UIKit16Absence.md): the SDK's `introduced` is not corroborated by the cache of the release that
+introduced it. **The row is not smoothed over** — what each row claims is the RELEASE it is checked
+against, and 16.0 is not one this package deploys on, so the verdict stays `absent` and the
+discrepancy is recorded here instead of being hidden by editing a date.
+
+What it costs: on a deployment at or above 16.0 these two names are already answered by the release, which
+is precisely what the gate's `held` check exists to notice. The port does not carry them (the earlier
+band's facts page, M3, says why: `UIContentUnavailableConfiguration` needs `UIButtonConfiguration`, which
+this library does not carry, and `UIContentUnavailableView` is built over it). So a 16.0-or-later band
+must not link the port's copies — and because neither is `implemented`, there is nothing for it to link.
