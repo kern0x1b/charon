@@ -800,9 +800,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoPreviewLayer a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureVideoPreviewLayer carries 54 own instance methods and 2 own class methods, and its session pair is -initWithSession: and -setSession:, which connect as they are given, beside -connection, -connections, -addConnection:error:, -removeConnection:, -videoGravity/-setVideoGravity:, -pointForCaptureDevicePointOfInterest:, -captureDevicePointOfInterestForPoint:, -rectForMetadataObject: and -transformedMetadataObjectForMetadataObject:. The difference from the factory that does exist is WHEN the connection is made: -initWithSession: connects as it is handed the session, and this one defers, so a caller can configure the layer first. 6.1.3 has no deferred form",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. What the release offers is +layerWithSession: and -initWithSession:, which attach and connect at once; a caller that wants to configure the layer before it connects can do it in the same run loop turn - -setVideoGravity:, -setOrientation:, -automaticallyAdjustsMirroring/-setAutomaticallyAdjustsMirroring: and the connection members all take effect on the connection the release makes",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureVideoPreviewLayer.h:73, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetReaderOutput markConfigurationAsFinal]",
@@ -810,9 +811,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderOutput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderOutput carries 25 own instance methods and 1 own class method, and it reads forward: -copyNextSampleBuffer, -addTrack:outputSettings:, -removeAllTracks, -tracks, -mediaType, -alwaysCopiesSampleData/-setAlwaysCopiesSampleData:, -requestMediaDataWhenReadyOnQueue:usingBlock: and -markAsFinished, with the rest private -_cancelReading, -_prepareForReadingReturningError:, -_enableTrackExtractionReturningError: and -_trimsSampleDurations. Nothing in the 25 can seek. The call says the track configuration will not change, which is advice about a multi-pass decode; there is no second pass here and no member for it",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. It costs nothing to omit here, because the release reads and decodes in one pass whatever the caller says; a caller appending into an AVAssetWriter alongside does have -markAsFinished on the input, and that is the end-of-input signal this release knows",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetReaderOutput.h:149, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetReaderOutput resetForReadingTimeRanges:]",
@@ -820,9 +822,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderOutput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderOutput carries 25 own instance methods and 1 own class method, and it reads forward: -copyNextSampleBuffer, -addTrack:outputSettings:, -removeAllTracks, -tracks, -mediaType, -alwaysCopiesSampleData/-setAlwaysCopiesSampleData:, -requestMediaDataWhenReadyOnQueue:usingBlock: and -markAsFinished, with the rest private -_cancelReading, -_prepareForReadingReturningError:, -_enableTrackExtractionReturningError: and -_trimsSampleDurations. Nothing in the 25 can seek, so there is no place to reset to: the output has one cursor and -copyNextSampleBuffer advances it",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that wants media from a given time names the range BEFORE reading, not after: 6.1.3's AVAssetReader carries -timeRange and -setTimeRange:, over -initWithAsset:error: and -addOutput:, and that is the only place a range can be chosen here. An output that has already delivered samples cannot be rewound on this release, and that is the whole of what this row asks",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetReaderOutput.h:135, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetResourceLoaderDelegate resourceLoader:didCancelAuthenticationChallenge:]",
@@ -970,9 +973,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureStillImageOutput carries 33 own instance methods and 5 own class methods, and they capture ONE picture: -captureStillImageAsynchronouslyFromConnection:completionHandler:, -captureStillImageSurfaceAsynchronouslyFromConnection:completionHandler:, -isCapturingStillImage, -maxStillImageDataSize, -previewImageSize, -availableImageDataCVPixelFormatTypes, -availableImageDataCodecTypes, -imageDataFormatType, -outputSettings/-setOutputSettings:, -previewImageSize/-setPreviewImageSize:, -isRawCaptureSupported/-isRawCaptureEnabled/-setRawCaptureEnabled:, -isEV0CaptureEnabled/-setEV0CaptureEnabled:, -isHDRCaptureEnabled/-setHDRCaptureEnabled: and -isChromaNoiseReductionEnabled/-setChromaNoiseReductionEnabled:. Nothing in the 33 names a bracket, and the settings the argument array would hold are the port's OWN: registry/AVFoundation/avfdescriptorbracket8.json carries AVCaptureBracketedStillImageSettings, AVCaptureAutoExposureBracketedStillImageSettings and AVCaptureManualExposureBracketedStillImageSettings as implemented at 8.0. So the half of bracketing the port holds is the settings, and the half the release does not hold is the capture: one call, one picture, one completion handler",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and what a caller gets instead is one picture per call: -captureStillImageAsynchronouslyFromConnection:completionHandler:, with the exposure written per shot through the device's -setExposureDuration:/-setExposureGain: under -lockForConfiguration:. Nothing on this release joins those pictures into a bracket. A caller that wants one has to take N stills itself and combine them, which is an implementation over the port's own settings classes and needs a camera to be measured at all",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureStillImageOutput.h:330, API_AVAILABLE(ios(8.0), macCatalyst(14.0)); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVCaptureStillImageOutput prepareToCaptureStillImageBracketFromConnection:withSettingsArray:completionHandler:]",
@@ -980,9 +984,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureStillImageOutput carries 33 own instance methods and 5 own class methods, and they capture ONE picture: -captureStillImageAsynchronouslyFromConnection:completionHandler:, -captureStillImageSurfaceAsynchronouslyFromConnection:completionHandler:, -isCapturingStillImage, -maxStillImageDataSize, -previewImageSize, -availableImageDataCVPixelFormatTypes, -availableImageDataCodecTypes, -imageDataFormatType, -outputSettings/-setOutputSettings:, -previewImageSize/-setPreviewImageSize:, -isRawCaptureSupported/-isRawCaptureEnabled/-setRawCaptureEnabled:, -isEV0CaptureEnabled/-setEV0CaptureEnabled:, -isHDRCaptureEnabled/-setHDRCaptureEnabled: and -isChromaNoiseReductionEnabled/-setChromaNoiseReductionEnabled:. Nothing in the 33 names a bracket, so there is no preparation step: nothing is analysed, warmed up or dialled in before a capture, because a capture on this release is the one call",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. The release's own preparation is -configureAndInitiateCopyStillImageForRequest:, which is private and is what the single-still path uses; a caller with the port's bracket settings has no preparation step to invoke, so each of the stills it takes starts cold",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureStillImageOutput.h:313, API_AVAILABLE(ios(8.0), macCatalyst(14.0)); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVCaptureVideoPreviewLayer initWithSessionWithNoConnection:]",
@@ -990,9 +995,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoPreviewLayer a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureVideoPreviewLayer carries 54 own instance methods and 2 own class methods, and its session pair is -initWithSession: and -setSession:, which connect as they are given, beside -connection, -connections, -addConnection:error:, -removeConnection:, -videoGravity/-setVideoGravity:, -pointForCaptureDevicePointOfInterest:, -captureDevicePointOfInterestForPoint:, -rectForMetadataObject: and -transformedMetadataObjectForMetadataObject:, and it is the initializer of the factory above: same deferral, no connection until the caller is ready",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. -initWithSession: is carried and is the same constructor with the connection made eagerly, so a caller that does not need the deferral loses nothing but the ordering, and one that does configure the layer before the session is attached",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureVideoPreviewLayer.h:85, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVCaptureVideoPreviewLayer setSessionWithNoConnection:]",
@@ -1000,9 +1006,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoPreviewLayer a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureVideoPreviewLayer carries 54 own instance methods and 2 own class methods, and its session pair is -initWithSession: and -setSession:, which connect as they are given, beside -connection, -connections, -addConnection:error:, -removeConnection:, -videoGravity/-setVideoGravity:, -pointForCaptureDevicePointOfInterest:, -captureDevicePointOfInterestForPoint:, -rectForMetadataObject: and -transformedMetadataObjectForMetadataObject:. This is the re-attachment half of the pair, so a layer built without a session can take one later; 6.1.3's -setSession: attaches and connects in the same call and the layer is never session-less",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and the release's -setSession: attaches the session and connects at once. A caller that must configure the layer first and add the session afterwards has no order to choose from on this release: -[AVCaptureVideoPreviewLayer initWithLayer:] makes a layer with no session and -setSession: then fills it, which is as close as this release comes and is not this row",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureVideoPreviewLayer.h:105, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVPlayerItemMetadataOutputPushDelegate metadataOutput:didOutputTimedMetadataGroups:fromPlayerItemTrack:]",
@@ -1050,9 +1057,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderOutput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderOutput carries 25 own instance methods and 1 own class method, and it reads forward: -copyNextSampleBuffer, -addTrack:outputSettings:, -removeAllTracks, -tracks, -mediaType, -alwaysCopiesSampleData/-setAlwaysCopiesSampleData:, -requestMediaDataWhenReadyOnQueue:usingBlock: and -markAsFinished, with the rest private -_cancelReading, -_prepareForReadingReturningError:, -_enableTrackExtractionReturningError: and -_trimsSampleDurations. Nothing in the 25 can seek, so a reader here reads from the start of the media and forwards, and there is no flag because there is no random access to enable",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and nothing on this release records it: the reader runs forward through -copyNextSampleBuffer from wherever -startReading left it. The private -_enableTrackExtractionReturningError: is the release's own one-pass extraction setup, not a random-access mode a caller can ask for",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetReaderOutput.h:104, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetReaderOutputMetadataAdaptor",
@@ -1060,9 +1068,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is NO CLASS in 6.1.3's inventory of 12549 classes and 1171 protocols, and it is the class that pulls timed metadata out of an output instead of samples: its own six instance selectors at 8.0 are the track, the queue, the identifiers and the copy. 6.1.3's AVAssetReader carries no adaptor at all, and AVAssetReaderTrackOutput has nothing to do with metadata",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference to it does not link. A caller reading metadata on this release reads it from the asset - -[AVAssetTrack commonMetadata] and -metadataForFormat: are 6.1.3's own - and gets no timed delivery from a reader",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetReaderOutput.h:531 for the declaration; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetReaderSampleReferenceOutput",
@@ -1070,9 +1079,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is NO CLASS in 6.1.3's inventory, and it is the reader half of the sample-reference mode: its 10 own instance selectors at 8.0 read files that a writer with -sampleReferenceBaseURL wrote. Neither half exists here - the writer's property is absent on the same band, which is why the two rows close together",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference to it does not link. A caller that stores samples as files on this release reads them with AVAssetReader itself, over the files it wrote, because the reader has no output that takes a base URL",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetReaderOutput.h:738 for the declaration; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetTrack.metadata",
@@ -1408,9 +1418,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureStillImageOutput carries 33 own instance methods and 5 own class methods, and they capture ONE picture: -captureStillImageAsynchronouslyFromConnection:completionHandler:, -captureStillImageSurfaceAsynchronouslyFromConnection:completionHandler:, -isCapturingStillImage, -maxStillImageDataSize, -previewImageSize, -availableImageDataCVPixelFormatTypes, -availableImageDataCodecTypes, -imageDataFormatType, -outputSettings/-setOutputSettings:, -previewImageSize/-setPreviewImageSize:, -isRawCaptureSupported/-isRawCaptureEnabled/-setRawCaptureEnabled:, -isEV0CaptureEnabled/-setEV0CaptureEnabled:, -isHDRCaptureEnabled/-setHDRCaptureEnabled: and -isChromaNoiseReductionEnabled/-setChromaNoiseReductionEnabled:. Nothing in the 33 names a bracket, and the size this switch would govern IS answerable without it: -maxStillImageDataSize and -previewImageSize are 6.1.3's own members. What is missing is the switch that chooses between them, and the 8.0 class adding -isHighResolutionStillImageOutputEnabled with -setHighResolutionStillImageOutputEnabled: is that switch",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and the value is not lost - the release publishes the sizes, through -maxStillImageDataSize for the largest still and -previewImageSize for the previewed one, and -setPreviewImageSize: sets the second. A caller that wants the large frame names the pixel format at -setOutputSettings: and reads the size the release reports, and nothing here records which of the two it chose",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureStillImageOutput.h:109, declared getter=isHighResolutionStillImageOutputEnabled; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureStillImageOutput.maxBracketedCaptureStillImageCount",
@@ -1418,9 +1429,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureStillImageOutput carries 33 own instance methods and 5 own class methods, and they capture ONE picture: -captureStillImageAsynchronouslyFromConnection:completionHandler:, -captureStillImageSurfaceAsynchronouslyFromConnection:completionHandler:, -isCapturingStillImage, -maxStillImageDataSize, -previewImageSize, -availableImageDataCVPixelFormatTypes, -availableImageDataCodecTypes, -imageDataFormatType, -outputSettings/-setOutputSettings:, -previewImageSize/-setPreviewImageSize:, -isRawCaptureSupported/-isRawCaptureEnabled/-setRawCaptureEnabled:, -isEV0CaptureEnabled/-setEV0CaptureEnabled:, -isHDRCaptureEnabled/-setHDRCaptureEnabled: and -isChromaNoiseReductionEnabled/-setChromaNoiseReductionEnabled:. Nothing in the 33 names a bracket. The count is how many stills one bracket may take, and this release takes one still, so there is no maximum to publish",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that asks how many exposures it may bracket gets nothing here; the release's whole range is the one exposure -captureStillImageAsynchronouslyFromConnection:completionHandler: takes. The header deprecates this in favour of AVCapturePhotoOutput's bracketed capture, which is 10.0 and later",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureStillImageOutput.h:276, API_DEPRECATED; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVMediaSelectionGroup.defaultOption",
