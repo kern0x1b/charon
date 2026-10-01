@@ -105,30 +105,30 @@
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+      "status": "implemented",
+      "effect": "the class is declared and exported, so NSClassFromString answers for it: -PDFDataWithActions: draws the block into a PDF context CoreGraphics makes from the format's bounds - a page of US Letter when those are empty - and answers a copy of the bytes, or an empty NSData rather than nil when there was no context to draw into and the block did not run; -writePDFToURL:withActions:error: draws the same document into the file the URL names. What lands in the file is the release's own PDF writer, not a re-implementation of one",
+      "facts": "facts/UIKit/UIGraphicsPDFRenderer.md",
+      "source": "the method bodies of UIKit in the armv7s cache of iOS 10.3.4, read with objc.code_map and annotated against the image's own selrefs and indirect symbol table; cache-census.lua finds the three classes in that cache and none in 6.1.3 or 4.3, and first-rung puts every symbol the family calls at 3.0, below this row's minimum"
     },
     {
       "api": "UIGraphicsPDFRendererFormat",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+      "status": "implemented",
+      "effect": "the class is declared and exported, so a format can be built and given its documentInfo, which is copied on the way in as the release's setter copies it and carried by a copy of the format. The two members that say where the document goes keep the release's own private names, and nothing outside the renderer reads them",
+      "facts": "facts/UIKit/UIGraphicsPDFRendererFormat.md",
+      "source": "the method bodies of UIKit in the armv7s cache of iOS 10.3.4, read with objc.code_map, which also gives the ivar names; cache-census.lua finds the three classes in that cache and none in 6.1.3 or 4.3"
     },
     {
       "api": "UIGraphicsPDFRendererContext",
       "kind": "class",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the PDF half of the renderer family is not in this batch; iOS 6 has the PDF context functions it would need, so it is postponed rather than refused",
-      "effect": "the class is not declared, so respondsToSelector: and NSClassFromString answer honestly",
-      "source": "UIKit of the armv7s cache of iOS 10.3.4"
+      "status": "implemented",
+      "effect": "the class is declared and exported, so a drawing block is handed one: -pdfContextBounds answers the document's page until the first -beginPage and that page after it, -beginPage and -beginPageWithBounds:pageInfo: end an open page and begin the next with the rectangle travelling in the page dictionary, and -setURL:forRect:, -addDestinationWithName:atPoint: and -setDestinationWithName:forRect: reach CoreGraphics's own link and destination calls",
+      "facts": "facts/UIKit/UIGraphicsPDFRendererContext.md",
+      "source": "the method bodies of UIKit in the armv7s cache of iOS 10.3.4, read with objc.code_map and annotated against the image's own selrefs and indirect symbol table; cache-census.lua finds the three classes in that cache and none in 6.1.3 or 4.3, and first-rung puts every symbol the family calls at 3.0"
     },
     {
       "api": "UICubicTimingParameters",
