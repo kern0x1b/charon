@@ -394,36 +394,6 @@
    "source": "SDK 16.4, MediaPlayer"
   },
   {
-   "api": "MPMusicPlayerMediaItemQueueDescriptor",
-   "kind": "class",
-   "introduced": "10.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerQueueDescriptor",
-   "kind": "class",
-   "introduced": "10.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerStoreQueueDescriptor",
-   "kind": "class",
-   "introduced": "10.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "NSUserActivity.externalMediaContentIdentifier",
    "kind": "property",
    "introduced": "10.1",
@@ -433,66 +403,6 @@
    "effect": "the class and the accessor are both not there: NSClassFromString answers nil for each, so the property is not a name anything can be sent",
    "source": "SDK 26.2, NSUserActivity+MediaPlayerAdditions.h, @property (nonatomic, copy, nullable) NSString *externalMediaContentIdentifier MP_API(ios(10.1))",
    "facts": "facts/MediaPlayer/AbsentRows.md"
-  },
-  {
-   "api": "-[MPMusicPlayerController appendQueueDescriptor:]",
-   "kind": "method",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "-[MPMusicPlayerController prependQueueDescriptor:]",
-   "kind": "method",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerApplicationController",
-   "kind": "class",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerController.applicationQueuePlayer",
-   "kind": "property",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a property like it: it arrived in iOS 10",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerControllerMutableQueue",
-   "kind": "class",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerControllerQueue",
-   "kind": "class",
-   "introduced": "10.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
   },
   {
    "api": "MPMusicPlayerControllerQueueDidChangeNotification",
@@ -515,36 +425,6 @@
    "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is plain data - a caller compares or passes a string - so the port answers it itself and the release is never asked",
    "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
-  },
-  {
-   "api": "-[MPSystemMusicPlayerController openToPlayQueueDescriptor:]",
-   "kind": "method",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPSystemMusicPlayerController a method like it: it arrived in iOS 11",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerPlayParameters",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPMusicPlayerPlayParametersQueueDescriptor",
-   "kind": "class",
-   "introduced": "11.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 11, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
   },
   {
    "api": "MPNowPlayingInfoPropertyServiceIdentifier",
