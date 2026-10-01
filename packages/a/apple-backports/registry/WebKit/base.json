@@ -93,8 +93,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView opens no windows of its own: a link that asks for a new one loads in the view",
-    "effect": "the message is never sent"
+    "reason": "the release does ask about a new window, with -[UIWebView webView:decidePolicyForNewWindowAction:request:newFrameName:decisionListener:], which both band ends put on UIWebView and on UIKit's private UIWebViewWebViewDelegate, and the view's own implementation of it answers, so no application object is asked for a view to open",
+    "effect": "the message is never sent, so no application object is asked for a view to open the link in",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKUIDelegate webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:completionHandler:]",
@@ -102,8 +104,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView puts up its own alert for a JavaScript alert and does not ask its delegate",
-    "effect": "the message is never sent and the page's alert shows the release's own panel"
+    "reason": "the panel is the release's own: -[UIWebView webView:runJavaScriptAlertPanelWithMessage:initiatedByFrame:] is on UIWebView and on UIKit's private UIWebViewWebViewDelegate at both band ends, so the alert a page gets comes out of that implementation and no application delegate is asked",
+    "effect": "the message is never sent and the page's alert shows the release's own panel",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKUIDelegate webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:completionHandler:]",
@@ -111,8 +115,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView puts up its own panel and does not ask its delegate",
-    "effect": "the message is never sent"
+    "reason": "the panel is the release's own: -[UIWebView webView:runJavaScriptConfirmPanelWithMessage:initiatedByFrame:] is on UIWebView and on UIKit's private UIWebViewWebViewDelegate at both band ends, so the confirmation a page gets comes out of that implementation and no application delegate is asked",
+    "effect": "the message is never sent and the page's confirmation shows the release's own panel",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKUIDelegate webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:completionHandler:]",
@@ -120,8 +126,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView puts up its own panel and does not ask its delegate",
-    "effect": "the message is never sent"
+    "reason": "the panel is the release's own: -[UIWebView webView:runJavaScriptTextInputPanelWithPrompt:defaultText:initiatedByFrame:] is on UIWebView and on UIKit's private UIWebViewWebViewDelegate at both band ends, so the prompt a page gets comes out of that implementation and no application delegate is asked",
+    "effect": "the message is never sent and the page's prompt shows the release's own panel",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3 (tools/corpus/objc-inventory.lua, command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKUIDelegate webViewDidClose:]",
@@ -129,8 +137,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "UIWebView opens no windows of its own",
-    "effect": "the message is never sent"
+    "reason": "no rung carries a message about a window closing itself: the selector webViewDidClose: is on neither the 6.1.3 nor the 4.3 image, and the window messages the release does have are on other objects (webView:willCloseFrame: is on UIWebBrowserView, WebDefaultFrameLoadDelegate and WebDefaultUIKitDelegate, and not on UIWebView)",
+    "effect": "the message is never sent: neither band end carries the selector, and no application object is asked",
+    "source": "UIKit of the armv7 caches of iOS 6.1.3 and iOS 4.3, class scoped with tools/corpus/objc-inventory.lua (command and output in facts/WebKit/WKWebView.md)",
+    "facts": "facts/WebKit/WKWebView.md"
   },
   {
     "api": "-[WKWebExtensionAction closePopup]",

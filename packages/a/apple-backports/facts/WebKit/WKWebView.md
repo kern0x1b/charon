@@ -122,6 +122,10 @@ control: 2 name(s) beginning WK found in this run, so a zero on another rung is 
 
 `WKQuadObject` is the control. A run that found nothing would be the reader being wrong and would certify no row.
 
+What is below measures where each hook lives. It does not measure what the release does when a page asks for a new
+window -- the bullet above says it loads in the view, and that sentence is still the tree's own belief, held from
+the `javaScriptCanOpenWindowsAutomatically` row and not re-measured here.
+
 Five of the seven hooks the rows need are in the release's UIKit image at both band ends, and every one of them is
 defined by `UIWebViewWebViewDelegate` -- the private object that sits between the WebView and `UIWebView` -- and by
 `UIWebView` itself, alongside WebKit's own default delegates:
