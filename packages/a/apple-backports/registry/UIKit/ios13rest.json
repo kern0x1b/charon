@@ -3720,10 +3720,10 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the release's NSTextAttachment holds no image and its text views draw no attachment",
-   "effect": "the method is not there",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "status": "implemented",
+   "reason": "iOS 6 does draw it: -image is iOS 7.0 in the SDK and in the 6.1.3 cache, and -attachmentCell is what NSLayoutManager renders, so an attachment made this way draws where one made from file data draws",
+   "effect": "an attachment holding the image, made through the release own -initWithData:ofType: with neither argument, which is the case the SDK header describes as an attachment without document contents; the image reads back and the release lays the attachment out at the size of that image",
+   "source": "the host own UIKit under Mac Catalyst (macOS 27.0), recorded by .agent-work/runs/gb04uikit13/probe/host-attachment.m (+textAttachmentWithImage: answers an attachment whose -image is the one passed, contents and fileType nil, bounds CGRectZero until the text system lays it out) and port-attachment.m, which runs the port body verbatim against a stand-in class and agrees on all four; the release reading is 6.1.3, whose NSTextAttachment selector table in UIFoundation carries -image, -setImage:, -initWithData:ofType: and -attachmentCell (objc.inventory)"
   },
   {
    "api": "-[UIPasteboard detectPatternsForPatterns:completionHandler:]",

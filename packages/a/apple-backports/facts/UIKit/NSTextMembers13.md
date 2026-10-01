@@ -48,10 +48,31 @@ now-redundant definition, if the exact release boundary this port checks against
 own object file, `NSAttributedString+Constants9.m`, so it drops out cleanly - reexported, not redefined - once the deployment
 target reaches 9.0.
 
-## Not carried
+## `+[NSTextAttachment textAttachmentWithImage:]`
 
-`+[NSTextAttachment textAttachmentWithImage:]` is absent: the release's `NSTextAttachment` holds no image, and its text views draw no
-attachment.
+The release's own `NSTextAttachment` holds an image. Its selector table on 6.1.3, in
+`UIFoundation`, carries `-image`, `-setImage:`, `-initWithData:ofType:`, `-attachmentCell`,
+`-contentView` and `-drawingBounds`, and the SDK's header dates `image` and `bounds` to iOS 7.0
+(`NSTextAttachment.h:74,77`) - the header is not what decided this, the class-scoped read of the
+6.1.3 cache is, and the earlier claim on this page that "the release's NSTextAttachment holds no
+image, and its text views draw no attachment" was false of the release in both halves.
+
+The host's own `+[NSTextAttachment textAttachmentWithImage:]` under Mac Catalyst answers an
+attachment whose `image` is the object passed, whose `contents` and `fileType` are nil, and whose
+`bounds` are `CGRectZero` - it sets the image and leaves the size to the text system, which derives
+the layout bounds from the image when `bounds` is zero. A nil image gives an attachment, not nil.
+Measured in `.agent-work/runs/gb04uikit13/probe/host-attachment.m`, and the layout half in
+`host-attachment2.m`: an image-backed, a data-backed and a fresh attachment all lay out at the
+same advance, which is what "the text system derives the bounds" looks like on the host.
+
+`UIKit/NSTextAttachment+Image13.m` is that: the release's own designated initializer with neither
+argument - the case the SDK header describes as "an attachment without document contents" - and one
+`setImage:`. It is a category because `NSTextAttachment` is the release's class, not the port's, and
+the port's 7.0 file already adds to it. The setter is a send and not `attachment.image = image`
+because `-image` is `NS_NONATOMIC_IOSONLY` and the dot syntax does not compile on iOS. The port's
+body is run verbatim against a stand-in class in `port-attachment.m`: four of four agree with the
+host, and the control is the defect the arrangement exists to prevent - a setter that keeps the
+last image, which turns the fourth check red.
 
 ## `-[NSTextList initWithMarkerFormat:options:startingItemNumber:]`, iOS 16.0
 

@@ -18,7 +18,6 @@ Each of these was weighed for a substitute that would work on iOS 6; the reason 
   left rather than shipped unproved.
 - **`UIColor.accessibilityName`.** A table of localised colour names that the release does not have.
 - **`initWithAttributedName:...` of `UIAccessibilityCustomAction`.** As iOS 11's, since VoiceOver of the release never asks.
-- **`+[NSTextAttachment textAttachmentWithImage:]`** (see `NSTextMembers13.md`).
 - **`-[UIFontDescriptor fontDescriptorWithDesign:]`** with `UIFontDescriptor` (`UIFontDescriptor.md`).
 
 ## Ignored: declared, and never sent
