@@ -1656,10 +1656,10 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "asked before a new configuration is set on a content view that already exists, to reuse it; the port carries UIContentView and the cells' contentConfiguration (facts/UIKit/UIConfigurationState.md), so it could ask here before replacing the view - not built for lack of demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "effect": "YES when the configuration would install this kind of view, which is the header's own rule for a view that does not implement the method, and the test the port's install path already makes (CharonConfigurationHost.m reuses the installed view when the new configuration makes the same kind); in this port that is YES for every UIListContentConfiguration and NO for a configuration of any other kind",
+      "source": "SDK 16.4, UIKit; UIView, the protocol's only implementer, carries none of supportsConfiguration's spellings in the 6.1.3 and 12.0 caches (0 of 663 and 2156 selectors) while the 16.0 cache's own UIListContentView carries -supportsConfiguration:, read class-scoped by xmake l tools/corpus/objc-inventory.lua over each cache - facts/UIKit/ContentViewSupportsConfiguration16.md",
+      "facts": "facts/UIKit/ContentViewSupportsConfiguration16.md"
     },
     {
       "api": "-[UIContextMenuInteractionDelegate contextMenuInteraction:configuration:dismissalPreviewForItemWithIdentifier:]",
@@ -2033,14 +2033,14 @@
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },
     {
-      "api": "NSTextList.ordered",
+      "api": "NSTextList.isOrdered",
       "kind": "property",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "whether the list is numbered rather than bulleted; the release's own NSTextList (UIFoundation) has the marker format this follows from, though no isOrdered of its own (objc.inventory on 6.1.3) - not built for lack of demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "effect": "the release's own answer for whether the list's marker format is an ordered one, through the -_isOrdered its NSTextList has carried since before this band; NO on a release whose NSTextList lacks it, which is not the case on any release this port runs",
+      "source": "SDK 16.4, UIKit; NSTextList carries no public spelling of the property at 6.1.3 or 12.0 (0 of 24 and 25 selectors, each row holding -markerFormat, -startingItemNumber and -initWithMarkerFormat:options:) and -isOrdered at 16.0, read class-scoped by xmake l tools/corpus/objc-inventory.lua over each cache; the header declares it getter=isOrdered, so the selector is isOrdered and the property name is not one - facts/UIKit/TextListOrdered16.md",
+      "facts": "facts/UIKit/TextListOrdered16.md"
     },
     {
       "api": "UIAlertController.severity",
