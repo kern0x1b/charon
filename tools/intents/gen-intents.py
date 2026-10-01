@@ -347,6 +347,56 @@ EXTRA_METHODS = {
         "    return shared;",
         "}",
     ],
+    # The three classes of this group whose header marks +new unavailable. NS_UNAVAILABLE is a
+    # compile-time attribute and the runtime never sees it, so the class keeps the +new it
+    # inherits, and the release answers it: measured on the host's own Intents, all three are
+    # answered, all three return an object with no exception, and all three are answered by
+    # NSObject's own +new - their metaclass chain declares the selector there and nowhere else
+    # (tools/intents/probe-host-absent.sh against registry/Intents/ios12.json, control 100 rows
+    # found and 55 answered in the same process). So the answer is NSObject's and not a new one,
+    # and it is reached through its IMP for the same reason the -init of each of these three
+    # classes is: the header forbids naming the selector.
+    ("INShortcut", "new"): [
+        "+ (instancetype)new",
+        "{",
+        "    // The header marks this class's +new unavailable, which the runtime never sees:",
+        "    // measured, +[INShortcut new] is answered and returns an object, and what answers",
+        "    // it is NSObject's own +new. So the method is defined here and that one is reached",
+        "    // through its IMP, because the header forbids naming the selector.",
+        "    Class parent = [NSObject class];",
+        "    SEL selector = @selector(new);",
+        "    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;",
+        "    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;",
+        "}",
+    ],
+    ("INVoiceShortcut", "new"): [
+        "+ (instancetype)new",
+        "{",
+        "    // The header marks this class's +new unavailable, which the runtime never sees:",
+        "    // measured, +[INVoiceShortcut new] is answered and returns an object, and what",
+        "    // answers it is NSObject's own +new. So the method is defined here and that one is",
+        "    // reached through its IMP, because the header forbids naming the selector.",
+        "    Class parent = [NSObject class];",
+        "    SEL selector = @selector(new);",
+        "    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;",
+        "    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;",
+        "}",
+    ],
+    ("INVoiceShortcutCenter", "new"): [
+        "+ (instancetype)new",
+        "{",
+        "    // The header marks this class's +new unavailable, which the runtime never sees:",
+        "    // measured, +[INVoiceShortcutCenter new] is answered and returns an object, and",
+        "    // what answers it is NSObject's own +new. So the method is defined here and that one",
+        "    // is reached through its IMP, because the header forbids naming the selector. The",
+        "    // header's note is to use +sharedCenter; +new is answered anyway, and this answers",
+        "    // it the way the release does.",
+        "    Class parent = [NSObject class];",
+        "    SEL selector = @selector(new);",
+        "    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;",
+        "    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;",
+        "}",
+    ],
     ("INFocusStatusCenter", "defaultCenter"): [
         "+ (INFocusStatusCenter *)defaultCenter",
         "{",

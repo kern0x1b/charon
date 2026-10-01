@@ -942,6 +942,18 @@
     return self;
 }
 
++ (instancetype)new
+{
+    // The header marks this class's +new unavailable, which the runtime never sees:
+    // measured, +[INShortcut new] is answered and returns an object, and what answers
+    // it is NSObject's own +new. So the method is defined here and that one is reached
+    // through its IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(new);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -1088,6 +1100,18 @@
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }
 
++ (instancetype)new
+{
+    // The header marks this class's +new unavailable, which the runtime never sees:
+    // measured, +[INVoiceShortcut new] is answered and returns an object, and what
+    // answers it is NSObject's own +new. So the method is defined here and that one is
+    // reached through its IMP, because the header forbids naming the selector.
+    Class parent = [NSObject class];
+    SEL selector = @selector(new);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
 + (BOOL)supportsSecureCoding
 {
     return YES;
@@ -1132,6 +1156,20 @@
     // IMP, because the header forbids naming the selector.
     Class parent = [NSObject class];
     SEL selector = @selector(init);
+    IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
+    return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
+}
+
++ (instancetype)new
+{
+    // The header marks this class's +new unavailable, which the runtime never sees:
+    // measured, +[INVoiceShortcutCenter new] is answered and returns an object, and
+    // what answers it is NSObject's own +new. So the method is defined here and that one
+    // is reached through its IMP, because the header forbids naming the selector. The
+    // header's note is to use +sharedCenter; +new is answered anyway, and this answers
+    // it the way the release does.
+    Class parent = [NSObject class];
+    SEL selector = @selector(new);
     IMP forward = parent ? class_getMethodImplementation(parent, selector) : NULL;
     return forward ? ((id (*)(id, SEL))forward)(self, selector) : nil;
 }

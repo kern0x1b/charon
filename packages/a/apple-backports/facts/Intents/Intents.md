@@ -389,6 +389,38 @@ true of a compile-time call and false of the class: leaving the method undefined
 asks for it to a NULL IMP, which is worse than answering with an object whose properties are nil. The
 marker forbids *naming* the selector at compile time, and that is the only thing it forbids.
 
+## The three `+[X new]` of the 12.0 group, the same marker one call up
+
+`INShortcut`, `INVoiceShortcut` and `INVoiceShortcutCenter` each mark **both** initialisers
+unavailable, so the same argument that moved the 110 `-init` rows moves these three `+new` rows, and
+they were `absent` for the same wrong reason before. What was measured, and how:
+
+    sh tools/intents/probe-host-absent.sh packages/a/apple-backports/registry/Intents/ios12.json
+
+    ios12.json  +[INShortcut new]            found=yes answers=yes declared-by=NSObject
+    ios12.json  +[INVoiceShortcut new]       found=yes answers=yes declared-by=NSObject
+    ios12.json  +[INVoiceShortcutCenter new] found=yes answers=yes declared-by=NSObject
+    # absent rows: 3, control rows: 97 implemented rows of the same files
+    # rows=100 parsed=100 unparsed=0 found=100 answered=55 inherited-from-NSObject=9
+
+`answers=yes` is the release's own answer and `declared-by=NSObject` is whose body it is: the
+metaclass chain declares `new` at `NSObject` and nowhere else. The 97 control rows of the same file
+were probed in the same process and 100 of 100 names were found, so a zero elsewhere would have been
+the release's and not this reader's.
+
+That `answers=yes` and a returned object are two claims, so the second was measured separately, by a
+probe that asks the selector's declaring class and then calls it. It is not in the tree and this is
+its whole output (arm64-apple-macos14.0 against `/System/Library/Frameworks/Intents.framework`):
+
+    INShortcut             declares=NSObject  returns=object  respondsToSelector:new=1
+    INVoiceShortcut        declares=NSObject  returns=object  respondsToSelector:new=1
+    INVoiceShortcutCenter  declares=NSObject  returns=object  respondsToSelector:new=1
+    INObject               declares=NSObject  returns=object  respondsToSelector:new=1   <- control
+
+So the port answers each `+new` with NSObject's own `+new`, reached through its IMP for the same
+reason the `-init` above is: the header forbids naming the selector. `INObject` is in that table as
+the control, and it is the one class of the four whose header marks nothing.
+
 ## What is NOT proven here, and is owed
 
 - **The per-class harness is owed and is not in the tree.** The eight classes above are the
