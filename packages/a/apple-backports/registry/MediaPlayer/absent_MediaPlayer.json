@@ -56,46 +56,6 @@
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
-   "api": "MPContentItem",
-   "kind": "class",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPPlayableContentDataSource",
-   "kind": "protocol",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPPlayableContentDelegate",
-   "kind": "protocol",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
-   "api": "MPPlayableContentManager",
-   "kind": "class",
-   "introduced": "7.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMediaPlaylist.seedItems",
    "kind": "property",
    "introduced": "8.0",
@@ -115,16 +75,6 @@
    "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is plain data - a caller compares or passes a string - so the port answers it itself and the release is never asked",
    "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
-  },
-  {
-   "api": "MPPlayableContentManagerContext",
-   "kind": "class",
-   "introduced": "8.4",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
   },
   {
    "api": "MPLanguageOptionCharacteristicContainsOnlyForcedSubtitles",
