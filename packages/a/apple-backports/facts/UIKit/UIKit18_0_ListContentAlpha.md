@@ -25,12 +25,12 @@ compared, described and **applied to the drawing**:
 | what | where |
 |---|---|
 | the ivar `CGFloat _alpha` | `UIListContentConfiguration.m:58` |
-| the default: `0` for a bare configuration, `1` otherwise | `UIListContentConfiguration.m:135` |
-| decoded from the coder under the key `alpha` | `UIListContentConfiguration.m:216` |
-| encoded under the same key | `UIListContentConfiguration.m:242` |
-| carried by `-copyWithZone:` | `UIListContentConfiguration.m:269` |
-| compared by `-isEqual:` | `UIListContentConfiguration.m:491` |
-| printed by `-description` | `UIListContentConfiguration.m:509` |
+| the default: `0` for a bare configuration, `1` otherwise | `UIListContentConfiguration.m:151` |
+| decoded from the coder under the key `alpha` | `UIListContentConfiguration.m:232` |
+| encoded under the same key | `UIListContentConfiguration.m:258` |
+| carried by `-copyWithZone:` | `UIListContentConfiguration.m:285` |
+| compared by `-isEqual:` | `UIListContentConfiguration.m:525` |
+| printed by `-description` | `UIListContentConfiguration.m:544` |
 | read and applied to three views' `alpha` | `UIListContentView.m:187-190` |
 
 `UIListContentView.m:187` is the load-bearing line: the drawing path sets `_textLabel.alpha`,

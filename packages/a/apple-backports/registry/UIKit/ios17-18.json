@@ -1726,10 +1726,11 @@
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the port implements UIBackgroundConfiguration itself (UIBackgroundConfiguration.m:41, because neither band end carries the class) and ALREADY owns the style 18.0 names: CharonBackgroundStyleListCell is in the port's own style enum (CharonLists.h:30), -initCharonWithStyle: gives it the same systemBackground colour as CharonBackgroundStyleListPlainCell (UIBackgroundConfiguration.m:144-145), -charon_styleColor: returns that colour for it (:366-367) and -updatedConfigurationForState: counts it plain (:382), and UICollectionViewListCell.m:40 and :52 already build it. The 18.0 name is new rather than a rename: the 16.4 SDK's UIBackgroundConfiguration.h declares +listPlainCellConfiguration and does NOT declare +listCellConfiguration. So the style exists and is in use and what 18.0 added is the public door",
+   "effect": "the class method is EXPORTED, so an application that names it links and a guarded call finds it. It returns the same configuration UICollectionViewListCell already builds for a list cell - the same style, so the same background colour, the same stroke defaults and the same state updates - and it round-trips through -copyWithZone:, the coder and -isEqual: because it is the port's own _style. 6.1.3 has no background configuration of its own, so nothing on this release reads it back",
+   "source": "read out of the port's own sources, the line numbers above being that reading; the object's selector table confirms the definition rather than the source, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK: otool -v -s __TEXT __objc_methname on UIBackgroundConfiguration.o lists listCellConfiguration and listHeaderConfiguration. The SDK's own declaration read from ~/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIBackgroundConfiguration.h",
+   "facts": "facts/UIKit/UIKit18_0_ListStyles.md"
   },
   {
    "api": "+[UIBackgroundConfiguration listFooterConfiguration]",
@@ -1737,39 +1738,43 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "this port's nine background styles name headers but no footer at all - CharonLists.h:21-31 holds ListPlainHeaderFooter, ListGroupedHeaderFooter and ListSidebarHeader, and nothing that is a footer alone - so there is no style for the name to select and a method would have to answer with a header's colours under a footer's name. +listHeaderConfiguration is carried instead and names the combined style honestly; see the facts page",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; what a caller gets instead is the port's own +listHeaderConfiguration, which returns the combined header/footer background, and a header and a footer that therefore do not differ in colour on this port",
+   "source": "read out of the port's own style enum, CharonLists.h:21-31, which is the whole of the claim and is enumerable by reading; the class and the 16.4 SDK's own declaration of it read from ~.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIBackgroundConfiguration.h, which declares +listPlainHeaderFooterConfiguration and not +listFooterConfiguration",
+   "facts": "facts/UIKit/UIKit18_0_ListStyles.md"
   },
   {
    "api": "+[UIBackgroundConfiguration listHeaderConfiguration]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIBackgroundConfiguration a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the port implements UIBackgroundConfiguration itself and already carries a header style: CharonBackgroundStyleListPlainHeaderFooter (CharonLists.h:23) is set up in -initCharonWithStyle: (UIBackgroundConfiguration.m:151-152) and counted as a header by -updatedConfigurationForState: (:385), and the 16.4 SDK declares +listPlainHeaderFooterConfiguration and not +listHeaderConfiguration, so the 18.0 name is new rather than a rename. IT NAMES THE PLAIN HEADER/FOOTER STYLE, and that is a stated limit rather than an exact match: this port's nine background styles name headers but no footer alone, so the style the name denotes is the combined one and nothing here distinguishes a header from a footer by colour",
+   "effect": "the class method is EXPORTED, so an application that names it links and a guarded call finds it. It returns the port's own plain header/footer background - the same style +listPlainHeaderFooterConfiguration returns, so the same colours, stroke defaults and state updates - and it round-trips through -copyWithZone:, the coder and -isEqual:. A caller that needs a footer to look different from a header gets no such difference on this port, because the port has no footer-only style to give it; see the reason",
+   "source": "read out of the port's own sources, the line numbers above being that reading; the object's selector table confirms the definition, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK: otool -v -s __TEXT __objc_methname on UIBackgroundConfiguration.o lists listHeaderConfiguration. The SDK's own declaration read from ~.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIBackgroundConfiguration.h",
+   "facts": "facts/UIKit/UIKit18_0_ListStyles.md"
   },
   {
    "api": "+[UIListContentConfiguration footerConfiguration]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the port implements UIListContentConfiguration itself and already owns the style 18.0 names: CharonListStyleFooter is in the port's style enum, gets its own margins in -initCharonWithStyle: (UIListContentConfiguration.m:180-184) and is answered as a header-footer style by -charon_isHeaderFooterStyle: (:294-297). The 16.4 SDK declares +plainFooterConfiguration and +groupedFooterConfiguration and does NOT declare +footerConfiguration, so the 18.0 name is new rather than a rename. It is a genuinely distinct style from CharonListStyleHeader and this row does not borrow the header's values: the footer style sets its own top/leading/bottom/trailing margins of 8, 8, 6, 8 against the header's 10, 8, 10, 8",
+   "effect": "the class method is EXPORTED, so an application that names it links and a guarded call finds it. It returns the port's own footer content configuration, drawn with the footer's own margins rather than the header's, and it round-trips through -copyWithZone:, the coder and -isEqual: like every other configuration this port builds",
+   "source": "read out of the port's own sources, the line numbers above being that reading; the object's selector table confirms the definition, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK: otool -v -s __TEXT __objc_methname on UIListContentConfiguration.o lists footerConfiguration. The SDK's own declaration read from ~.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIListContentConfiguration.h",
+   "facts": "facts/UIKit/UIKit18_0_ListStyles.md"
   },
   {
    "api": "+[UIListContentConfiguration headerConfiguration]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIListContentConfiguration a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "the port implements UIListContentConfiguration itself (UIListContentConfiguration.m:41, because neither band end carries the class) and already owns the style 18.0 names: CharonListStyleHeader is in the port's style enum, gets its margins in -initCharonWithStyle: (UIListContentConfiguration.m:176-179) and is answered as a header-footer style by -charon_isHeaderFooterStyle: (:294-297), which the drawing path reads. The 18.0 name is new rather than a rename: the 16.4 SDK's UIListContentConfiguration.h declares +plainHeaderConfiguration and +groupedHeaderConfiguration and does NOT declare +headerConfiguration. So the style exists and what 18.0 added is the public door",
+   "effect": "the class method is EXPORTED, so an application that names it links and a guarded call finds it. It returns the port's own header content configuration - the style the margins, alpha default, coder key and -isEqual: already handle - so it behaves as the header it names, and a caller may then set text, the image properties and alpha on it exactly as on any other configuration this port builds",
+   "source": "read out of the port's own sources, the line numbers above being that reading; the object's selector table confirms the definition, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK: otool -v -s __TEXT __objc_methname on UIListContentConfiguration.o lists headerConfiguration and footerConfiguration. The SDK's own declaration read from ~.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIListContentConfiguration.h",
+   "facts": "facts/UIKit/UIKit18_0_ListStyles.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithListEnvironment:]",
@@ -2238,7 +2243,7 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "implemented",
-   "reason": "the port implements UIListContentConfiguration itself - UIListContentConfiguration.m:41, because neither band end carries the class - and that implementation ALREADY owns the value 18.0 published as a property: the _alpha ivar (UIListContentConfiguration.m:58), the -initCharonWithStyle: default of 0 for a bare configuration and 1 otherwise (:135), the NSCoding round trip under the key \"alpha\" (:216, :242), -copyWithZone: (:269), -isEqual: (:491) and the -description text (:509). UIListContentView.m:187 already reads it and sets the alpha on the text, secondary text and image views. So the storage 18.0's accessor writes is the storage the drawing path already reads, and the only thing 18.0 added is that a caller can reach the value; -alpha and -setAlpha: are written in the same shape as the -image/-setImage:/ -textProperties pair this file already defines, and -charon_alpha is left beside them because UIListContentView.m:187 reads it. A property's NAME is not always its selector, so the spelling was checked before the row was written: the 16.4 SDK's own UIListContentConfiguration.h declares the whole class and 18 properties and ZERO occurrences of \"alpha\", and every one of those properties uses the plain spelling, and the registry's own source sdk-26.2-surface.tsv:123512 records UIListContentConfiguration.alpha at 18.0 as a plain property - so the selector is alpha, not isAlpha",
+   "reason": "the port implements UIListContentConfiguration itself - UIListContentConfiguration.m:41, because neither band end carries the class - and that implementation ALREADY owns the value 18.0 published as a property: the _alpha ivar (UIListContentConfiguration.m:58), the -initCharonWithStyle: default of 0 for a bare configuration and 1 otherwise (:151), the NSCoding round trip under the key \"alpha\" (:232, :258), -copyWithZone: (:285), -isEqual: (:525) and the -description text (:544). UIListContentView.m:187 already reads it and sets the alpha on the text, secondary text and image views. So the storage 18.0's accessor writes is the storage the drawing path already reads, and the only thing 18.0 added is that a caller can reach the value; -alpha and -setAlpha: are written in the same shape as the -image/-setImage:/ -textProperties pair this file already defines, and -charon_alpha is left beside them because UIListContentView.m:187 reads it. A property's NAME is not always its selector, so the spelling was checked before the row was written: the 16.4 SDK's own UIListContentConfiguration.h declares the whole class and 18 properties and ZERO occurrences of \"alpha\", and every one of those properties uses the plain spelling, and the registry's own source sdk-26.2-surface.tsv:123512 records UIListContentConfiguration.alpha at 18.0 as a plain property - so the selector is alpha, not isAlpha",
    "effect": "the accessors are EXPORTED, so an application that names them links and a guarded call finds them. The value is the port's own, not a stand-in: what a caller sets is what UIListContentView.m applies to the three views it draws, and it round-trips through -copyWithZone:, -isEqual: and the coder, exactly as the ivar the object already had. A configuration built by +cellConfiguration and friends reads back the alpha its style gave it (1, or 0 for a bare one), so leaving the property alone preserves the value rather than resetting it. 6.1.3 has no list configuration of its own to compare against, so nothing on this release reads the accessor back",
    "source": "read out of the port's own sources, the line numbers above being that reading; the object's selector table confirms the definition rather than the source, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK: otool -v -s __TEXT __objc_methname lists alpha and setAlpha: beside charon_alpha. The SDK's own declaration of the class and of alpha's absence read from ~/.xmake/packages/i/iphoneos-sdk/16.4/*/iPhoneOS16.4.sdk/System/Library/Frameworks/UIKit.framework/Headers/UIListContentConfiguration.h, and the introduced version from coordination/corpus/sdk-26.2-surface.tsv:123512",
    "facts": "facts/UIKit/UIKit18_0_ListContentAlpha.md"

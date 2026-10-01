@@ -73,6 +73,22 @@ static UIConfigurationColorTransformer charon_thirty_percent(void)
     return [self charon_configurationWithStyle:CharonListStyleCell];
 }
 
+// The 18.0 spelling of the two header/footer styles this file already has.  Measured: the 16.4 SDK's own
+// UIListContentConfiguration.h declares plainHeaderConfiguration and plainFooterConfiguration and does NOT
+// declare headerConfiguration or footerConfiguration, so these are new names and not renames - and the port
+// already carries the two styles they name, CharonListStyleHeader and CharonListStyleFooter, in the
+// -initCharonWithStyle: switch above and in the coder, -copyWithZone: and -isEqual: below.  What 18.0 added
+// is the door, not the style, so each is the one-line shape every other class method in this file is.
++ (instancetype)headerConfiguration
+{
+    return [self charon_configurationWithStyle:CharonListStyleHeader];
+}
+
++ (instancetype)footerConfiguration
+{
+    return [self charon_configurationWithStyle:CharonListStyleFooter];
+}
+
 + (instancetype)subtitleCellConfiguration
 {
     return [self charon_configurationWithStyle:CharonListStyleSubtitle];
