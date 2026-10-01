@@ -121,6 +121,7 @@ control: 2 name(s) beginning WK found in this run, so a zero on another rung is 
 ```
 
 `WKQuadObject` is the control. A run that found nothing would be the reader being wrong and would certify no row.
+(The census prints each cache path in full; the two above are the same paths with `$HOME` written out.)
 
 What is below measures where each hook lives. It does not measure what the release does when a page asks for a new
 window -- the bullet above says it loads in the view, and that sentence is still the tree's own belief, held from
