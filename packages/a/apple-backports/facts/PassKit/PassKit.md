@@ -16,7 +16,7 @@ the reader in the same run:
 ```
 $ CHARON_ROOT=<worktree> xmake l tools/corpus/objc-inventory.lua \
       $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 > inv-6.1.3.tsv
-12549 rows (class and protocol)
+12549 rows: 11378 class and 1171 protocol
 
 $ awk -F'\t' '$1=="class" && $2 ~ /^PK/ {print $2}' inv-6.1.3.tsv | wc -l
 64
@@ -28,18 +28,30 @@ $ awk -F'\t' '$1=="class" && $2 ~ /^PKA/ {n++} END{print n+0}' inv-6.1.3.tsv
 1        # PKAddPassesViewController
 ```
 
-So the release carries 64 classes beginning `PK` and **zero** beginning `PKPayment`, in a run that
+So the release carries 66 classes beginning `PK` and **zero** beginning `PKPayment`, in a run that
 finds 590 beginning `NS` and the one `PKA` there is: the zero is the release's and not the reader's.
 `tools/cache-index/first-rung.py` agrees and gives the version each arrived: `PKPayment`,
 `PKPaymentPass`, `PKPaymentRequest`, `PKPaymentSummaryItem` and `PKPaymentToken` all read **8.0**, and
 `PKPaymentButton` reads **8.3**. Presence, not version -- the held ladder has a hole at 13.0/14.0/15.0,
 so a name first seen at 8.0 here is 8.0 and not 12.0.
 
-The release's own `PKPass` has **90** instance methods and they do not include `-paymentPass` (the
-list is in the run's output: `-initWithData:error:`, `-initWithCoder:`, `-encodeWithCoder:`,
-`-copyWithZone:`, `-passTypeIdentifier`, `-serialNumber`, `-organizationName`, `-expirationDate`,
-`-logoImage` and the rest, and no payment member), which is why `PKPass.paymentPass` is `absent` on a
-measured ground rather than on the hardware's.
+The release's own `PKPass` has **90** instance methods and they do not include `-paymentPass`. Checked
+one at a time against that row of the run's output: `-initWithData:error:`, `-initWithCoder:`,
+`-encodeWithCoder:`, `-copyWithZone:`, `-passTypeIdentifier`, `-serialNumber`, `-organizationName`,
+`-expirationDate`, `-logoRect` and `-relevantDate` are in the release, and `-paymentPass` is not.
+That is why `PKPass.paymentPass` is `absent` on a measured ground rather than on the hardware's.
+
+**One of the neighbouring rows needs a word of care, and it is not this slice's row.** `-logoImage` is
+*not* among those 90 either, and neither is `-dictionaryRepresentation` — yet the selector
+`dictionaryRepresentation` **is** in the release, in a run of its own: it is one exact line in
+`$HOME/.charon/dyld/6.1.3/selectors_armv7.txt`, and **224** classes carry it in the inventory
+(`MKMapItem`, `GEOPlace`, `GEORoute` and the rest). It is absent from `PKPass`'s *method list* because Apple's
+PassKit adds it in a **category** on `PKPass`, and `apple.objc.inventory` reads a cache's class method
+lists without merging a category compiled into one image onto a class defined in another — the same
+blind spot `tools/release-split.lua` names in its own header. So `PKPass14.m`'s `CharonReleaseJSON`
+category declaring it is right, and a row that read "PKPass has 90 methods, therefore
+`dictionaryRepresentation` is not among them" would be wrong. The distinction matters only for
+category methods, which is why the check above was run one selector at a time instead of by count.
 
 `apple.dyld`'s `first_releases` for the 75 classes the SDK 26.2 declares and this port does not
 have: 8.0 ×7, 8.1 ×1, 9.0 ×6, 10.0.1 ×1, 10.1.1 ×2, 11.0 ×5, 12.0 ×1, 16.0 ×39, 18.0 ×9, and 3 in
@@ -98,7 +110,7 @@ COORDINATION §9 forbids.
 ## The payment request family: two carried, four declined, and the line between them
 
 The 8.0 payment request is five classes and the release has none of them (measured above: zero class
-rows beginning `PKPayment` in a run of 12549 that finds 64 classes beginning `PK`). What separates
+rows beginning `PKPayment` in a run of 12549 that finds 66 classes beginning `PK`). What separates
 them is not the release — it has none of all five — but **what a member can answer on a device with no
 Secure Element**, and that is read off the SDK 26.2 headers rather than assumed:
 
