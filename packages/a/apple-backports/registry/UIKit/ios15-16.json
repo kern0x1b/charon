@@ -507,7 +507,7 @@
       "status": "absent",
       "reason": "lets an attachment be drawn by a view from its NSTextAttachmentViewProvider (absent here); the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is no view to allow",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextAttachment.lineLayoutPadding",
@@ -517,7 +517,7 @@
       "status": "absent",
       "reason": "the space laid out on either side of an attachment in its line; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so no line makes room for one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextAttachment.usesTextAttachmentView",
@@ -1189,7 +1189,7 @@
       "status": "absent",
       "reason": "the text and region of a tool tip; the release has no pointer, so nothing rests over a control to show a tip - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIToolTipInteraction",
@@ -1199,7 +1199,7 @@
       "status": "absent",
       "reason": "shows a tool tip while a pointer rests on a view; the release has no pointer, so nothing rests over a control to show a tip - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIToolTipInteractionDelegate",
@@ -1209,7 +1209,7 @@
       "status": "absent",
       "reason": "asked for the tool tip at a point under the pointer; the release has no pointer, so nothing rests over a control to show a tip, so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UITrackingLayoutGuide",
@@ -1219,7 +1219,7 @@
       "status": "absent",
       "reason": "a layout guide that switches its constraints by the edge a tracked view is near, the base of UIKeyboardLayoutGuide; the port carries UILayoutGuide (base.json), over which it could be built - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit; neither band end carries the class: 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3), and first-rung reads 11.0 or 16.0 for this name, which is presence and not ownership - facts/UIKit/UIKit15Absence.md"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.appliedContentSizeCategoryLimitsDescription",
@@ -1359,7 +1359,7 @@
       "status": "absent",
       "reason": "an action that opens content in a new window; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIWindowSceneActivationConfiguration",
@@ -1369,7 +1369,7 @@
       "status": "absent",
       "reason": "what a new window opens with, from an action or a pinch; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to configure",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIWindowSceneActivationInteraction",
@@ -1379,7 +1379,7 @@
       "status": "absent",
       "reason": "opens a view's content in a new window when it is pinched out; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIWindowSceneActivationRequestOptions",
@@ -1389,7 +1389,7 @@
       "status": "absent",
       "reason": "options for asking the system to show a new scene; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so a request is refused before any option is read",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIActivityViewController.allowsProminentActivity",
