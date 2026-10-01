@@ -14,11 +14,13 @@
  * releases this port deploys on carry no Vision image whatever, so a name here is a name the release
  * has never heard of, and the question each row answers is what this port does with it.
  *
- * Of the answers, three are the port's own work and the rest are the framework's structure:
+ * What each answer below is:
  *   - VNElementTypeSize and the two animal identifiers answer with values measured out of a Vision
  *     image and not out of a name (the name of a constant is never its value);
  *   - +revision:supportsConstellation: answers the truth table Apple's own answers, for the pairs
  *     Apple's own Vision was asked about;
+ *   - the precision and recall addition answers NO, which is what the gate its own header describes
+ *     says a caller must read before sending the two methods beside it;
  *   - a request class is declared and its revision table answers from the port's own, and running it
  *     comes back from the request handler as VNErrorNotImplemented -- the refusal every request of
  *     iOS 11 and 12 this port cannot run already answers with, so a caller tests an error rather
@@ -139,11 +141,12 @@ NSUInteger VNElementTypeSize(VNElementType elementType)
 @implementation VNRecognizeTextRequest
 @end
 
-/* The observations those requests answer with. Each is the superclass its own header names, so an
- * answer is a kind of the observation this port already answers for and a caller reading one through
- * VNDetectedObjectObservation, VNObservation or VNPixelBufferObservation reads it as that kind. The
- * port fills none of them: there is no model behind any of these requests, so a handler refuses the
- * request and no observation of this port's making appears. */
+/* The observations those requests answer with. Each is declared over the superclass its own header
+ * names -- NSObject for the text itself, VNRectangleObservation for the area it was read from,
+ * VNObservation for the feature print and VNPixelBufferObservation for the saliency map -- so an
+ * answer is a kind of the observation this port already answers for. The port fills none of them:
+ * there is no model behind any of these requests, so a handler refuses the request and no
+ * observation of this port's making appears. */
 @implementation VNRecognizedText
 @end
 
