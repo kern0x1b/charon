@@ -35,7 +35,10 @@ RENAME="-DCPTemplate=charonHost_CPTemplate \
     -DCPNavigationSession=charonHost_CPNavigationSession \
     -DCPMapTemplate=charonHost_CPMapTemplate \
     -DCPTrip=charonHost_CPTrip \
-        -DCPVoiceControlTemplate=charonHost_CPVoiceControlTemplate \
+        -DCPLane=charonHost_CPLane \
+    -DCPLaneGuidance=charonHost_CPLaneGuidance \
+    -DCPRouteInformation=charonHost_CPRouteInformation \
+    -DCPVoiceControlTemplate=charonHost_CPVoiceControlTemplate \
     -DCPVoiceControlState=charonHost_CPVoiceControlState \
     -DCPManeuver=charonHost_CPManeuver \
     -DCPTravelEstimates=charonHost_CPTravelEstimates \
@@ -93,7 +96,10 @@ build_runner() {
     source=$2
     xcrun clang -fobjc-arc -Wall $TARGET $FRAMEWORKS -I"$port" $RENAME \
         "$here/runner.m" "$build/port-classes.o" "$source" \
-        "$port/CarPlayNavigationSession12.m" "$port/CarPlayNavigationSession154.m" -o "$out" 2> "$build/cc.log" || {
+        "$port/CarPlayNavigationSession12.m" "$port/CarPlayNavigationSession154.m" \
+        "$port/CarPlayNavigationSession174.m" "$port/CarPlayLane174.m" "$port/CarPlayLane18.m" \
+        "$port/CarPlayLaneGuidance174.m" "$port/CarPlayRouteInformation174.m" \
+        -o "$out" 2> "$build/cc.log" || {
             grep -m5 ': error:' "$build/cc.log" || true
             exit 1
         }

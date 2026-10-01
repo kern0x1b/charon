@@ -47,6 +47,17 @@
 - (instancetype)initCharonWithTimeRemaining:(NSTimeInterval)time;
 @end
 
+// The 17.4 classes are also renamed, and they have to be: the host probe asks Apple's own
+// CPLaneGuidance and CPRouteInformation by name, and if the port's two answered to the same names in
+// this image the comparison would be between an object and itself.
+@interface charonHost_CPLane (CharonHarness)
+- (instancetype)init;
+@end
+
+@interface charonHost_CPLaneGuidance (CharonHarness)
+- (instancetype)init;
+@end
+
 static int gChecks = 0;
 static int gFailures = 0;
 static NSMutableArray *gAnswers = nil;
@@ -384,6 +395,72 @@ int main(int argc, const char *argv[])
         check(@"guidance asked for before the template is pushed draws nothing and loses nothing",
               pending != nil && unpushed.charon_mapView == nil,
               describe(pending));
+
+        // ---- the 17.4 members: the labels are the host probe's, verbatim -----------------------
+        // Section 8 of tests/backports/host/carplay/headunit-probe.m asked Apple's own CarPlay the same
+        // questions with no head unit attached, and run.sh compares only the labels BOTH sides carry. So
+        // every label below is the host's own string: if the port answers differently the run is red,
+        // and the rows' effects are what was measured rather than what was intended.
+        printf("\n== the 17.4 members, on a session the program holds ==\n");
+        {
+            charonHost_CPMapTemplate *laneMap = [[charonHost_CPMapTemplate alloc] init];
+            UIView *laneCanvas = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 800.0, 480.0)];
+            [laneMap charon_setMapView:laneCanvas];
+            charonHost_CPNavigationSession *held =
+                [laneMap startNavigationSessionForTrip:[[charonHost_CPTrip alloc] initCharonTrip]];
+
+            // The port's own label, and deliberately NOT the host's: the host's "the PRIVATE -maneuvers
+            // ..." reads a private getter with no registry row, while this reads the public 12.0 property,
+            // whose default is an empty array rather than nil (CarPlayNavigationSession12.m sets it in
+            // -charon_takeTrip:mapTemplate:). Sharing one label across a private getter and a public
+            // property is how a diff compares two different questions and calls it agreement.
+            check(@"the port's own upcomingManeuvers with nothing set is an empty array",
+                  held.upcomingManeuvers != nil && held.upcomingManeuvers.count == 0,
+                  describe(held.upcomingManeuvers));
+            check(@"currentRoadNameVariants answers nil before anything is set",
+                  held.currentRoadNameVariants == nil, describe(held.currentRoadNameVariants));
+            check(@"currentLaneGuidance answers nil before anything is set",
+                  held.currentLaneGuidance == nil, describe(held.currentLaneGuidance));
+            check(@"maneuverState answers 0 before anything is set",
+                  held.maneuverState == 0, [NSString stringWithFormat:@"%lu", (unsigned long)held.maneuverState]);
+            // Class presence, asked the same way the host asks it, so the two labels are comparable:
+            // both sides answer "present" for a class the port or Apple's framework carries.
+            check(@"CPLaneGuidance is the class currentLaneGuidance's value is",
+                  NSClassFromString(@"charonHost_CPLaneGuidance") != nil, @"present");
+            check(@"CPRouteInformation is the class resumeTrip takes",
+                  NSClassFromString(@"charonHost_CPRouteInformation") != nil, @"present");
+
+            // A fresh lane guidance answers nil for both of its array properties, which is what Apple's
+            // own object answers -- see facts/CarPlay/NavigationSession174.md. The default for a
+            // collection property would be @[]; the port keeps nil because the framework does.
+            charonHost_CPLaneGuidance *guidance = [[charonHost_CPLaneGuidance alloc] init];
+            check(@"a fresh lane guidance's lanes answer nil, not an empty array (measured)",
+                  guidance.lanes == nil, describe(guidance.lanes));
+            check(@"a fresh lane guidance's instructionVariants answer nil, not an empty array (measured)",
+                  guidance.instructionVariants == nil, describe(guidance.instructionVariants));
+            check(@"+supportsSecureCoding is YES (NSSecureCoding is in the header, CPLaneGuidance.h:17)",
+                  [charonHost_CPLaneGuidance supportsSecureCoding] ? @"YES" : @"NO",
+                  [charonHost_CPLaneGuidance supportsSecureCoding] ? @"YES" : @"NO");
+
+            // nil in every one of the six slots, and nil out for all six, which is what the host measured
+            // on Apple's own object. The port's initialiser takes them in the header's order.
+            charonHost_CPRouteInformation *route =
+                [[charonHost_CPRouteInformation alloc] initWithManeuvers:nil laneGuidances:nil
+                                                        currentManeuvers:nil currentLaneGuidance:nil
+                                                  tripTravelEstimates:nil maneuverTravelEstimates:nil];
+            check(@"route information from nil in every slot: maneuvers answers nil",
+                  route.maneuvers == nil, describe(route.maneuvers));
+            check(@"route information from nil in every slot: laneGuidances answers nil",
+                  route.laneGuidances == nil, describe(route.laneGuidances));
+            check(@"route information from nil in every slot: currentManeuvers answers nil",
+                  route.currentManeuvers == nil, describe(route.currentManeuvers));
+            check(@"route information from nil in every slot: currentLaneGuidance answers nil",
+                  route.currentLaneGuidance == nil, describe(route.currentLaneGuidance));
+            check(@"route information from nil in every slot: tripTravelEstimates answers nil",
+                  route.tripTravelEstimates == nil, describe(route.tripTravelEstimates));
+            check(@"route information from nil in every slot: maneuverTravelEstimates answers nil",
+                  route.maneuverTravelEstimates == nil, describe(route.maneuverTravelEstimates));
+        }
 
         printf("\nchecks=%d failures=%d\n", gChecks, gFailures);
         if (gAnswers != nil) {

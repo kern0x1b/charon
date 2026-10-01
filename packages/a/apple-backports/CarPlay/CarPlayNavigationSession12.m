@@ -56,10 +56,43 @@
     UIColor *_turnCardColor;
     BOOL _finished;
     BOOL _cancelled;
+    // The storage the 17.4 object's category reaches (CarPlayNavigationSession174.m). A category cannot
+    // add an ivar, and the class's @implementation is this file, so the values the 17.4 members keep
+    // live here behind Charon-prefixed accessors -- the same shape the 15.4 object already uses for
+    // `_turnCardColor` through -charon_pauseWithReason:description:turnCardColor: above. Every name is
+    // Charon-prefixed, so none of it is API and none of it appears in this object's exports: this file
+    // is 12.0 and stays 12.0, and the 17.4 selectors live in their own object.
+    NSMutableArray<CPManeuver *> *_charonChronologicalManeuvers;
+    NSMutableArray<CPLaneGuidance *> *_charonChronologicalLaneGuidances;
+    CPLaneGuidance *_charonCurrentLaneGuidance;
+    NSArray<NSString *> *_charonCurrentRoadNameVariants;
+    CPManeuverState _charonManeuverState;
+    // What -resumeTripWithUpdatedRouteInformation: was last given, kept as its own fields rather than
+    // as the object, because a CPRouteInformation is a value the program builds and the session's own
+    // state is what it resumed with. CPRouteInformation.h:30-55 makes every one of its properties
+    // `copy`, so each is copied once here and the copy is what the session answers.
+    NSArray<CPManeuver *> *_charonRouteManeuvers;
+    NSArray<CPLaneGuidance *> *_charonRouteLaneGuidances;
+    NSArray<CPManeuver *> *_charonRouteCurrentManeuvers;
+    CPLaneGuidance *_charonRouteCurrentLaneGuidance;
+    CPTravelEstimates *_charonRouteTripEstimates;
+    CPTravelEstimates *_charonRouteManeuverEstimates;
 }
 
 @synthesize trip = _trip;
 @synthesize upcomingManeuvers = _upcomingManeuvers;
+
+// The three 17.4 properties are @dynamic and NOT @synthesize, and the reason is measured rather than
+// stylistic. `@synthesize` emits the getter into THIS object, and this object is 12.0: a getter for a
+// 17.4 property emitted by the 12.0 object puts 17.4 API in a 12.0 band, which is the defect commit
+// 329b2b23c found and fixed for PHPhotoLibrary's availability property and for
+// CPSessionConfiguration's contentStyle -- the compiler auto-synthesises every property an SDK header
+// declares, and an object does not implement. The ivars above are declared and kept; the accessors
+// come from the 17.4 object's category (CarPlayNavigationSession174.m), which is where those three
+// rows' API belongs. `@dynamic` is what says "the storage is here, the methods are not".
+@dynamic currentLaneGuidance;
+@dynamic currentRoadNameVariants;
+@dynamic maneuverState;
 
 // The port's own way in, called by the map template's own -startNavigationSessionForTrip:. It is a
 // class method and not an initialiser because the 26.2 header forbids -init and +new
@@ -141,15 +174,175 @@
     [self charon_tellTemplate];
 }
 
+// ---- The storage the 17.4 object's category reaches -----------------------------------------------
+// Each of these is called by CarPlayNavigationSession174.m and none of them is API. The behaviour is
+// the header's, and where the header is silent the measured answer from Apple's own object is followed
+// rather than a value invented -- see facts/CarPlay/NavigationSession174.md.
+
+// :83-86 "add CPManeuvers in chronological order ... The application must provide as many maneuvers as
+// possible, as soon as they are available." So each call APPENDS and the order is the order the
+// program called in, which is what "chronological" means for a program feeding guidance as it computes
+// it. The list is what the card reads for its guidance text, so an addition shows at once.
+- (void)charon_addManeuvers:(NSArray<CPManeuver *> *)maneuvers
+{
+    if (maneuvers.count == 0) {
+        return;
+    }
+    if (_charonChronologicalManeuvers == nil) {
+        _charonChronologicalManeuvers = [NSMutableArray array];
+    }
+    [_charonChronologicalManeuvers addObjectsFromArray:maneuvers];
+    [self charon_tellTemplate];
+}
+
+// :90-91 "add CPLaneGuidances in chronological order ... added as soon as they are available." The same
+// accumulation as the maneuvers, kept beside them and in the same order, because the header describes
+// both as chronological and a program's lane guidance arrives alongside its maneuvers.
+- (void)charon_addLaneGuidances:(NSArray<CPLaneGuidance *> *)laneGuidances
+{
+    if (laneGuidances.count == 0) {
+        return;
+    }
+    if (_charonChronologicalLaneGuidances == nil) {
+        _charonChronologicalLaneGuidances = [NSMutableArray array];
+    }
+    [_charonChronologicalLaneGuidances addObjectsFromArray:laneGuidances];
+    [self charon_tellTemplate];
+}
+
+// :78 "Must be set to nil if there is no current lane guidance." So nil is stored and answered as nil,
+// and the value is kept as it was given rather than copied: the header says `copy`, and a
+// CPLaneGuidance is itself an NSCopying value (:17 of its own header), so the copy is the same value.
+- (void)charon_setCurrentLaneGuidance:(CPLaneGuidance *)currentLaneGuidance
+{
+    _charonCurrentLaneGuidance = [currentLaneGuidance copy];
+    [self charon_tellTemplate];
+}
+
+// :96-97 "variants of the current road name. From most to least verbose." The header says `copy` and
+// the order is the program's, so the array is copied and kept as given -- first is the most verbose,
+// and the guidance text asks for the first one it can use.
+- (void)charon_setCurrentRoadNameVariants:(NSArray<NSString *> *)currentRoadNameVariants
+{
+    _charonCurrentRoadNameVariants = [currentRoadNameVariants copy];
+    [self charon_tellTemplate];
+}
+
+// :101-102 "the current maneuver state based on how close the maneuver is." A plain value kept as given;
+// 0 is `CPManeuverStateContinue` in this SDK's enumeration and is what a session with nothing set
+// answers, measured on Apple's own object above.
+- (void)charon_setManeuverState:(CPManeuverState)maneuverState
+{
+    _charonManeuverState = maneuverState;
+    [self charon_tellTemplate];
+}
+
+// :54-57 "Resume the current trip with updated route information." The information is the program's own
+// object (CPRouteInformation.h:14 "information pertaining to a route that is necessary for
+// rerouting"), every one of its properties is `copy` (:30-55), and each is copied once here. The
+// maneuvers it carries become what the session's guidance draws, because a resumed trip's maneuvers are
+// the new route's, and the trip is no longer paused -- this is a resume, which is what the header says
+// the method is, and leaving the session showing a pause card after a resume would be a second answer.
+- (void)charon_resumeWithRouteInformation:(CPRouteInformation *)routeInformation
+{
+    if (routeInformation == nil) {
+        return;
+    }
+    _charonRouteManeuvers = [routeInformation.maneuvers copy];
+    _charonRouteLaneGuidances = [routeInformation.laneGuidances copy];
+    _charonRouteCurrentManeuvers = [routeInformation.currentManeuvers copy];
+    _charonRouteCurrentLaneGuidance = [routeInformation.currentLaneGuidance copy];
+    _charonRouteTripEstimates = [routeInformation.tripTravelEstimates copy];
+    _charonRouteManeuverEstimates = [routeInformation.maneuverTravelEstimates copy];
+    if (_charonRouteManeuvers.count > 0) {
+        self.upcomingManeuvers = _charonRouteManeuvers;
+    }
+    if (_charonRouteCurrentLaneGuidance != nil) {
+        [self charon_setCurrentLaneGuidance:_charonRouteCurrentLaneGuidance];
+    }
+    if (_charonRouteManeuverEstimates != nil && _charonRouteCurrentManeuvers.count > 0) {
+        [self updateTravelEstimates:_charonRouteManeuverEstimates
+                      forManeuver:_charonRouteCurrentManeuvers.firstObject];
+    }
+    _pauseReason = 0;
+    _pauseDescription = nil;
+    _finished = NO;
+    _cancelled = NO;
+    [self charon_tellTemplate];
+}
+
+// What the 12.0 guidance card reads for the 17.4 values, so the card shows the road the program named
+// and the state it set. Charon's own, so the card does not reach into the session's storage.
+- (NSString *)charon_roadNameText
+{
+    for (NSString *variant in _charonCurrentRoadNameVariants) {
+        if (variant.length > 0) {
+            return variant;
+        }
+    }
+    return nil;
+}
+
+// What the map template's guidance card draws under the estimates: the lane the program named at 17.4
+// (currentLaneGuidance, :80) and how many of them it has added (:93). Charon's own, so the card reads
+// the session's storage through one accessor instead of reaching into it.
+- (NSArray<CPLaneGuidance *> *)charon_laneGuidances
+{
+    return _charonChronologicalLaneGuidances != nil ? [_charonChronologicalLaneGuidances copy] : nil;
+}
+
+- (CPLaneGuidance *)charon_currentLaneGuidance
+{
+    return _charonCurrentLaneGuidance;
+}
+
+// The readers for the other two 17.4 values, in the same Charon-prefixed shape. `copy` on the way in
+// means the getter hands back the session's own copy and a caller cannot change it through the getter.
+- (NSArray<NSString *> *)charon_currentRoadNameVariants
+{
+    return _charonCurrentRoadNameVariants;
+}
+
+- (CPManeuverState)charon_maneuverStateValue
+{
+    return _charonManeuverState;
+}
+
 // The estimates and the state of the trip, as the map template's guidance card needs them. Charon's
 // own, so the card does not reach into the session's storage.
 - (CPTravelEstimates *)charon_latestEstimates
 {
+    // The route information a 17.4 resume carried answers for the maneuver being performed first:
+    // CPRouteInformation.h:53-55 calls maneuverTravelEstimates the estimates "for the first maneuver
+    // in the list of current maneuvers", which is the one a driver is arriving at.
+    for (CPManeuver *maneuver in _charonRouteCurrentManeuvers) {
+        CPTravelEstimates *estimates = _estimatesByManeuver[[self charon_keyForManeuver:maneuver]];
+        if (estimates != nil) {
+            return estimates;
+        }
+    }
+    if (_charonRouteManeuverEstimates != nil) {
+        return _charonRouteManeuverEstimates;
+    }
+    // The maneuver a 17.4 program added LAST is the one being performed: :83-85 says the application
+    // adds maneuvers "in chronological order ... as soon as they are available", so the newest is the
+    // current one, and its estimates are what the card shows. That is also what gives the accumulated
+    // list a reader -- without this the list would be a store nothing read.
+    CPManeuver *current = _charonChronologicalManeuvers.lastObject;
+    if (current != nil) {
+        CPTravelEstimates *estimates = _estimatesByManeuver[[self charon_keyForManeuver:current]];
+        if (estimates != nil) {
+            return estimates;
+        }
+    }
     for (CPManeuver *maneuver in _upcomingManeuvers) {
         CPTravelEstimates *estimates = _estimatesByManeuver[[self charon_keyForManeuver:maneuver]];
         if (estimates != nil) {
             return estimates;
         }
+    }
+    if (_charonRouteTripEstimates != nil) {
+        return _charonRouteTripEstimates;
     }
     return _estimatesByManeuver[@"charon.last"];
 }
@@ -164,6 +357,13 @@
     }
     if (_pauseReason != 0) {
         return _pauseDescription.length > 0 ? _pauseDescription : @"Trip paused";
+    }
+    // The road name 17.4 added leads the card when a program set one, because it is the most precise
+    // thing the program has told the session: "From most to least verbose" (:96-97), so the first
+    // variant it gave is the one a driver reads.
+    NSString *road = [self charon_roadNameText];
+    if (road != nil) {
+        return road;
     }
     CPTravelEstimates *estimates = [self charon_latestEstimates];
     if (estimates == nil) {
@@ -254,6 +454,41 @@
     label.textColor = [UIColor whiteColor];
     label.textAlignment = NSTextAlignmentCenter;
     [card addSubview:label];
+    // The lane guidance a 17.4 program added, drawn as one plate per lane under the estimates -- which
+    // is what CPLaneGuidance.h:14 says it is ("guidance to give the user which lane or lanes are
+    // preferred") and what :22's "each describes a single lane" says a CPLane is. A lane is drawn from
+    // its own status (CPLane.h:10-15: NotGood, Good, Preferred), so a program that marks one preferred
+    // sees the difference, and the plate is the card's own touch target so a tap reaches the program
+    // through the session rather than being swallowed here.
+    NSArray<CPLaneGuidance *> *laneGuidances = [session charon_laneGuidances];
+    CPLaneGuidance *current = [session charon_currentLaneGuidance];
+    CGFloat plateY = 8.0;
+    for (CPLaneGuidance *guidance in laneGuidances) {
+        for (CPLane *lane in guidance.lanes) {
+            UIView *plate = [[UIView alloc] initWithFrame:CGRectMake(plateY, 12.0, 24.0, 16.0)];
+            plate.backgroundColor = lane.status == CPLaneStatusNotGood
+                ? [UIColor colorWithWhite:0.4 alpha:1.0]
+                : [UIColor whiteColor];
+            plate.layer.cornerRadius = 3.0;
+            // The lane guidance the session says is current is the one whose plates the card outlines,
+            // because :78's "Must be set to nil if there is no current lane guidance" makes nil a real
+            // answer and an outlined plate is how a caller sees which of them it is. The border goes on
+            // the PLATE the card drew, never on the lane's own layer: a lane is the program's value and
+            // the port does not restyle what a program built.
+            if (guidance == current) {
+                plate.layer.borderWidth = 2.0;
+                plate.layer.borderColor = [UIColor whiteColor].CGColor;
+            }
+            [card addSubview:plate];
+            plateY += 28.0;
+        }
+    }
+    if (plateY > 8.0) {
+        // The plates make the card taller than one line of text, so the card's own height follows what
+        // is in it rather than the label being drawn over the first row of lanes.
+        card.frame = CGRectMake(card.frame.origin.x, card.frame.origin.y, size.width, plateY + 24.0);
+        label.frame = CGRectMake(12.0, 12.0, size.width - 24.0, 32.0);
+    }
     [map addSubview:card];
 }
 

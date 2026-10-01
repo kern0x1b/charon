@@ -86,6 +86,66 @@ static id sendUnavailable(id target, SEL selector, ...)
     return nil;
 }
 
+// An INSTANCE initialiser of a class whose `-init` the header marks NS_UNAVAILABLE, called at runtime.
+// Two things this has to get right, both measured 2026-10-01 the hard way:
+//   - the signature comes from `-instanceMethodSignatureForSelector:` on the CLASS. `sendUnavailable`
+//     asks `methodSignatureForSelector:` of its target, and a Class object answers that from its
+//     METACLASS, where no instance method lives -- so the first version of this found no signature and
+//     printed "not in this SDK's CarPlay" for a method the class declares.
+//   - the receiver is an ALLOCATED INSTANCE, not the class. An NSInvocation's target is the receiver,
+//     and sending an instance method to a Class object is a metaclass lookup that finds nothing and
+//     traps: the second version aborted (exit 134) at exactly this line.
+// `-[NSInvocation invoke]` reads its arguments out of the target's own frame, so every slot past self
+// and _cmd is written first; a nil slot is written as a NULL pointer, which is the nil a caller passing
+// nil would send for an object argument.
+static id sendInstanceInitializer(Class target, SEL selector, ...)
+{
+    NSMethodSignature *signature = [target instanceMethodSignatureForSelector:selector];
+    if (signature == nil) {
+        return nil;
+    }
+    id allocated = ((id (*)(id, SEL))objc_msgSend)((id)target, @selector(alloc));
+    if (allocated == nil) {
+        return nil;
+    }
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    invocation.selector = selector;
+    invocation.target = allocated;
+    NSUInteger count = signature.numberOfArguments;
+    for (NSUInteger i = 2; i < count; i++) {
+        void *slot = NULL;
+        [invocation setArgument:&slot atIndex:(NSInteger)i];
+    }
+    [invocation invoke];
+    void *raw = NULL;
+    [invocation getReturnValue:&raw];
+    return (__bridge id)raw;
+}
+
+// The same, for a method whose answer is NOT an object. `-maneuverState` returns a `CPManeuverState`,
+// an `NS_ENUM` over `NSInteger` (CPLane.h:10 is the sibling and is an NS_ENUM over NSInteger), so a
+// helper that only knows about object returns answers nil for it and a nil there reads as "the value
+// is nil" when the value is a number. Measured 2026-10-01: the first run of section 8 printed
+// `FAIL maneuverState answers 0 before anything is set  nil`, which is this helper's blind spot and not
+// anything the framework said -- so the scalar path is here rather than the expectation weakened.
+static BOOL sendUnavailableScalar(id target, SEL selector, long long *out)
+{
+    NSMethodSignature *signature = [target methodSignatureForSelector:selector];
+    if (signature == nil) {
+        return NO;
+    }
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+    invocation.selector = selector;
+    invocation.target = target;
+    [invocation invoke];
+    long long value = 0;
+    [invocation getReturnValue:&value];
+    if (out != NULL) {
+        *out = value;
+    }
+    return YES;
+}
+
 int main(int argc, const char *argv[])
 {
     @autoreleasepool {
@@ -385,6 +445,132 @@ int main(int argc, const char *argv[])
             check(@"a new route choice has no user info",
                   sendUnavailable(made, @selector(userInfo)) == nil,
                   describe(sendUnavailable(made, @selector(userInfo))));
+        }
+
+        // ---- 8. The 17.4 members of the navigation session: stored values, not messages to a car --
+        // `CPNavigationSession.h:58-103` declares five of them `API_AVAILABLE(ios(17.4))` and they are
+        // the rows the registry carries as `owed`. The question this asks is the one the disposition
+        // turns on: does a session a program holds answer them itself, or does it need a connected car
+        // to answer at all? A session is made with the runtime here because the header marks -init and
+        // +new NS_UNAVAILABLE (CPNavigationSession.h:33-34), and `toolscorpus/objc-inventory.lua` over
+        // the arm64e caches is what says the private setters exist at 18.0 and not at 16.0.
+        printf("== 8. the 17.4 members, on a session the program holds ==\n");
+        {
+            Class session = NSClassFromString(@"CPNavigationSession");
+            id held = sendUnavailable((id)session, @selector(new));
+            if (held == nil) {
+                check(@"a session the program holds can be made through the runtime", NO,
+                      @"no object to ask");
+            } else {
+                // -addManeuvers: is "Use this method to add CPManeuvers in chronological order to the
+                // navigation session" (:83-86): the session ACCUMULATES what the program adds, and what
+                // it accumulated is readable, which is a stored value and not a message to a car.
+                SEL addManeuvers = NSSelectorFromString(@"addManeuvers:");
+                // `-maneuvers` is the PRIVATE getter the 18.0 cache carries alongside -setManeuvers: (see
+                // objc.code_map above), and it has no registry row, so this label says so and stays on
+                // this side of the diff. The port has no -maneuvers to compare, and its public
+                // `upcomingManeuvers` is a different name answering a different question -- which is why
+                // this label names the private one and the port's public check is labelled separately.
+                id maneuvers = sendUnavailable(held, NSSelectorFromString(@"maneuvers"));
+                check(@"the PRIVATE -maneuvers a session with nothing added has is empty",
+                      maneuvers == nil || [(NSArray *)maneuvers count] == 0, describe(maneuvers));
+                printf("     [CPNavigationSession addManeuvers:] %s\n",
+                       [session instancesRespondToSelector:addManeuvers] ? "present" : "ABSENT");
+                printf("     [CPNavigationSession addLaneGuidances:] %s\n",
+                       [session instancesRespondToSelector:NSSelectorFromString(@"addLaneGuidances:")]
+                           ? "present" : "ABSENT");
+                printf("     [CPNavigationSession currentLaneGuidance] %s\n",
+                       [session instancesRespondToSelector:NSSelectorFromString(@"currentLaneGuidance")]
+                           ? "present" : "ABSENT");
+                printf("     [CPNavigationSession currentRoadNameVariants] %s\n",
+                       [session instancesRespondToSelector:NSSelectorFromString(@"currentRoadNameVariants")]
+                           ? "present" : "ABSENT");
+                printf("     [CPNavigationSession maneuverState] %s\n",
+                       [session instancesRespondToSelector:NSSelectorFromString(@"maneuverState")]
+                           ? "present" : "ABSENT");
+                printf("     [CPNavigationSession resumeTripWithUpdatedRouteInformation:] %s\n",
+                       [session instancesRespondToSelector:
+                           NSSelectorFromString(@"resumeTripWithUpdatedRouteInformation:")]
+                           ? "present" : "ABSENT");
+                // The three values that need no argument: a session with no car attached answers each of
+                // them from its own storage, and that is what `inert` would be if nothing applied them.
+                id road = sendUnavailable(held, NSSelectorFromString(@"currentRoadNameVariants"));
+                check(@"currentRoadNameVariants answers nil before anything is set",
+                      road == nil, describe(road));
+                id lane = sendUnavailable(held, NSSelectorFromString(@"currentLaneGuidance"));
+                check(@"currentLaneGuidance answers nil before anything is set",
+                      lane == nil, describe(lane));
+                long long stateValue = -1;
+                BOOL stateAnswered = sendUnavailableScalar(held, NSSelectorFromString(@"maneuverState"),
+                                                           &stateValue);
+                check(@"maneuverState answers 0 before anything is set",
+                      stateAnswered && stateValue == 0,
+                      [NSString stringWithFormat:@"%lld", stateAnswered ? stateValue : -1]);
+                // The setter the header does NOT declare, asked through the runtime: if the class
+                // answers one, the value is the program's own and the port's is not a stub for a car.
+                printf("     [CPNavigationSession setCurrentRoadNameVariants:] %s\n",
+                       [session instancesRespondToSelector:
+                           NSSelectorFromString(@"setCurrentRoadNameVariants:")] ? "present" : "ABSENT");
+                printf("     [CPNavigationSession setManeuverState:] %s\n",
+                       [session instancesRespondToSelector:NSSelectorFromString(@"setManeuverState:")]
+                           ? "present" : "ABSENT");
+                // And the round trip, which is the whole disposition: set a value the header declares
+                // readwrite, read it back, with no head unit anywhere in the run.
+                Class laneGuidance = NSClassFromString(@"CPLaneGuidance");
+                Class routeInformation = NSClassFromString(@"CPRouteInformation");
+                check(@"CPLaneGuidance is the class currentLaneGuidance's value is",
+                      laneGuidance != nil, laneGuidance ? @"present" : @"ABSENT");
+                check(@"CPRouteInformation is the class resumeTrip takes",
+                      routeInformation != nil, routeInformation ? @"present" : @"ABSENT");
+                (void)laneGuidance;
+                (void)routeInformation;
+                // The round trip the header describes, on Apple's own objects, with no car attached.
+                // `CPLaneGuidance.h:22-28`: lanes is "an array of CPLane objects, each describes a
+                // single lane" and instructionVariants "an array of NSString representing the
+                // instruction for this lane guidance, arranged from most to least preferred".
+                id guidance = [[NSClassFromString(@"CPLaneGuidance") alloc] init];
+                // Measured 2026-10-01 on Apple's own object with no head unit: a fresh CPLaneGuidance
+                // answers NIL for both properties, not an empty array. This is the honest line of this
+                // family -- a first reading of the header says an array, and the framework says nil --
+                // and the port follows the framework. `-setLanes:` with an empty array then keeps an
+                // empty array, so nil-in and array-in are two different answers and the port keeps them
+                // apart rather than defaulting one to the other.
+                id lanes = sendUnavailable(guidance, NSSelectorFromString(@"lanes"));
+                check(@"a fresh lane guidance's lanes answer nil, not an empty array (measured)",
+                      lanes == nil, describe(lanes));
+                id variants = sendUnavailable(guidance, NSSelectorFromString(@"instructionVariants"));
+                check(@"a fresh lane guidance's instructionVariants answer nil, not an empty array (measured)",
+                      variants == nil, describe(variants));
+                check(@"+supportsSecureCoding is YES (NSSecureCoding is in the header, CPLaneGuidance.h:17)",
+                      [NSClassFromString(@"CPLaneGuidance") supportsSecureCoding] ? @"YES" : @"NO",
+                      [NSClassFromString(@"CPLaneGuidance") supportsSecureCoding] ? @"YES" : @"NO");
+                // `CPRouteInformation.h:23` is the designated initialiser and :25 marks -init
+                // NS_UNAVAILABLE, so the object is made through it or not at all.
+                id route = sendInstanceInitializer(routeInformation,
+                                                  NSSelectorFromString(@"initWithManeuvers:laneGuidances:"
+                                                                       "currentManeuvers:currentLaneGuidance:"
+                                                                       "tripTravelEstimates:maneuverTravelEstimates:"));
+                if (route != nil) {
+                    // Every argument of :23 is nonnull in the header and every property is `copy`
+                    // (:30-55), so nil in every slot is what a caller with nothing for a slot sends, and
+                    // nil out is the answer that follows. Each slot is asked by name so a row can be
+                    // written from the answer rather than from the header's prose.
+                    static NSString *const slots[] = {
+                        @"maneuvers", @"laneGuidances", @"currentManeuvers", @"currentLaneGuidance",
+                        @"tripTravelEstimates", @"maneuverTravelEstimates"
+                    };
+                    for (size_t i = 0; i < sizeof(slots) / sizeof(slots[0]); i++) {
+                        id value = sendUnavailable(route, NSSelectorFromString(slots[i]));
+                        check(([NSString stringWithFormat:@"route information from nil in every slot: %@ answers nil",
+                                    slots[i]]),
+                              value == nil, describe(value));
+                    }
+                } else {
+                    printf("     [CPRouteInformation initWithManeuvers:...] no instance method signature\n");
+                    check(@"the designated initialiser is declared on the class", NO,
+                          @"no instance method signature for it");
+                }
+            }
         }
 
         printf("\nchecks=%d failures=%d\n", gChecks, gFailures);
