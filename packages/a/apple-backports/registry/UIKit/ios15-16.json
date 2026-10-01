@@ -537,7 +537,7 @@
       "status": "absent",
       "reason": "makes the view that stands in the text for an attachment; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is nothing to host a view in",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextContainer.textLayoutManager",
@@ -558,7 +558,7 @@
       "status": "absent",
       "reason": "the laid-out form of one Text Kit 2 element, holding its line fragments; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), which lays text out in lines of its own, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to make fragments - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextLayoutManager",
@@ -568,7 +568,7 @@
       "status": "absent",
       "reason": "the Text Kit 2 layout manager; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), over whose layout a Text Kit 2 manager could be built, and the release's UITextView lays its text out in a WebKit body with neither - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextLayoutManagerDelegate",
@@ -578,7 +578,7 @@
       "status": "absent",
       "reason": "the delegate of the Text Kit 2 layout manager, asked for the fragments it makes; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextLineFragment",
@@ -588,7 +588,7 @@
       "status": "absent",
       "reason": "one laid-out line of a Text Kit 2 layout fragment; the release carries Text Kit 1 in its private UIFoundation - NSTextStorage, NSLayoutManager, NSTextContainer (objc.inventory on 6.1.3), which lays out lines of its own, but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent) to make these - real work, no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextStorage.textStorageObserver",
@@ -608,7 +608,7 @@
       "status": "absent",
       "reason": "lays out only the part of a Text Kit 2 document in view; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so there is no layout to limit to a viewport",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextViewportLayoutControllerDelegate",
@@ -618,7 +618,7 @@
       "status": "absent",
       "reason": "the delegate of the Text Kit 2 viewport controller, asked to place the fragments in view; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so nothing would ask",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIActivityItemsConfigurationProviding",
@@ -628,7 +628,7 @@
       "status": "absent",
       "reason": "adopted by a responder that offers items to share when the whole scene is shared; the release has no system surface that shares a scene, and UIResponder.activityItemsConfiguration is inert here for the same want of a reader (ios13rest.json), so nothing would ask - no demand",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads declares the protocol: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache> (1171 protocols on 6.1.3, 564 on 4.3, 11426 on 12.0), whose own run certifies the reader - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIBackgroundConfiguration.image",
@@ -658,7 +658,7 @@
       "status": "absent",
       "reason": "selects items by dragging a rectangle over them with a pointer; the 4S and iPad 2 have no pointer to drag one with - no demand",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIBarButtonItem.changesSelectionAsPrimaryAction",
@@ -768,7 +768,7 @@
       "status": "implemented",
       "reason": "",
       "effect": "the port's own copy of the class, and the case in tests/backports/host/uikit2/buttonconfig_test.m holds the eight constructors, the twenty-five properties, -copy and the archive against the system's",
-      "source": "the host's own UIKit under Mac Catalyst, measured by that case",
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md",
       "facts": "facts/UIKit/UIButtonConfiguration15.md"
     },
     {
@@ -879,7 +879,7 @@
       "status": "absent",
       "reason": "the effect a focused item shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item is ever focused to show one",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIFocusHaloEffect",
@@ -889,7 +889,7 @@
       "status": "absent",
       "reason": "the halo drawn around a focused item; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item is ever focused to draw it around",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIFocusItem.focusEffect",
@@ -929,7 +929,7 @@
       "status": "absent",
       "reason": "a layout guide that follows the keyboard's frame; the port carries UILayoutGuide (base.json) and the release posts the keyboard frame notifications, so the guide could be built on the two - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIListSeparatorConfiguration.visualEffect",
@@ -979,7 +979,7 @@
       "status": "absent",
       "reason": "an arrow or shape drawn next to the pointer; the port draws no pointer (facts/UIKit/UIPointerStyle.md) and the 4S and iPad 2 have none, so there is nothing to draw it next to",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIPointerStyle.accessories",
@@ -1219,7 +1219,7 @@
       "status": "absent",
       "reason": "a layout guide that switches its constraints by the edge a tracked view is near, the base of UIKeyboardLayoutGuide; the port carries UILayoutGuide (base.json), over which it could be built - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; neither band end carries the class: 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3), and first-rung reads 11.0 or 16.0 for this name, which is presence and not ownership - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.appliedContentSizeCategoryLimitsDescription",
@@ -1419,7 +1419,7 @@
       "status": "absent",
       "reason": "the info button accessory of a list cell; the port lays out the other accessories of a list cell itself (facts/UIKit/UICellAccessory.md), and a detail button would be one more - not built for lack of demand, not a wall",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; no cache this band's registry check reads carries the class - 6.1.3 and 4.3 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, whose own run certifies the reader (11378 classes of which UI* 705 on 6.1.3, 7187 of which UI* 597 on 4.3); 12.0 was read too and carries six of this release's rows, named in the facts page - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIPrintFormatter.requiresMainThread",
