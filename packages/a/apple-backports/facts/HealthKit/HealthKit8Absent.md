@@ -321,6 +321,45 @@ one object carrying the refusal for every class of the 8.0 image that refuses tu
 `implemented` with a measured effect, and this section becomes a record of a closed difference rather
 than an open one.
 
+### Where the refusal would go, and the release-split verdict for that object set
+
+The refusal belongs in the objects that carry the eight classes, and those objects are 8.0's alone. All
+46 files of `packages/a/apple-backports/HealthKit` compiled for the deployment
+(`-target armv7s-apple-ios6.0 -isysroot <the 26.2 SDK> -miphoneos-version-min=6.0 -fobjc-arc`, 46 objects,
+0 failures) and `tools/release-split.lua` read them against the 50-release ladder:
+
+```
+release-split: clean, every object file's symbols first-appear in one release (46 files, 305 symbols, 50 releases checked)
+```
+
+and the eight classes of these rows sit in objects whose every symbol reads **8.0**:
+
+```
+HKObject.o	_OBJC_CLASS_$_HKObject	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKObjectType	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKSampleType	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKCategoryType	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKCharacteristicType	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKCorrelationType	8.0
+HKObjectType.o	_OBJC_CLASS_$_HKWorkoutType	8.0
+HKQuantity.o	_OBJC_CLASS_$_HKQuantity	8.0
+HKSource.o	_OBJC_CLASS_$_HKSource	8.0
+HKStatistics.o	_OBJC_CLASS_$_HKStatistics	8.0
+HKStatistics.o	_OBJC_CLASS_$_HKStatisticsCollection	8.0
+HKSamples.o	_OBJC_CLASS_$_HKCategorySample	8.0
+HKWorkout.o	_OBJC_CLASS_$_HKWorkoutEvent	8.0
+```
+
+So the placement is settled and nothing has to be moved to carry the refusal: a `-init` added to these
+objects exports the selector, whose first holding rung is 3.0 — at or below the 6.0 deployment, so it
+does not split an object, and that is the same arrangement `HKQuery.m` and `HKUnit.m` already have.
+`HKDevice9.m` reads 9.0, `HKConstants90.o` reads 9.0, `HKConstants100.o` reads 10.0.1 and
+`HKCumulativeQuantitySample130.o` reads 16.0, which is the note the run prints about the 12.0-to-16.0
+hole: that one is after 12.0 and by 16.0, not a measured 13.0.
+
+What is not settled is the blast radius, and it is the only thing standing between this file and a
+closed difference.
+
 ## What a caller gets, all sixteen together
 
 Twelve of the sixteen are methods no iOS release may call, or only from 9.0 and 10.0.1 onwards: the port
