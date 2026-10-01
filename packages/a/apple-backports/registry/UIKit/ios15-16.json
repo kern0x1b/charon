@@ -116,10 +116,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "marks items whose cells are to be configured again in place rather than replaced; the snapshot already records reloaded items (UIKit/NSDiffableDataSourceSnapshot.m), but applying a reconfigure needs reconfigureItemsAtIndexPaths:, which the release's collection and table views do not have (see those rows) - no demand",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
+      "effect": "the identifiers are added to the set reconfiguredItemIdentifiers answers, so a caller can read back what it asked to reconfigure; the identifiers are kept, and an empty array does nothing",
+      "source": "SDK 16.4, UIKit; not in the owner's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it); delivered by packages/a/apple-backports/UIKit/UIDiffableDataSource+Reconfigure15.m, which reuses the reload the port's own diffable data sources already call - the storage is an associated object, which does not survive -copyWithZone: - measured on the host - so a copied snapshot reports none while the original reports its set; the port's own _reloadedItems is an ivar in a 13.0 object, and a 15.0 ivar there is the mixed-release object band() refuses",
+      "facts": "facts/UIKit/UIDiffableReconfigure15.md"
     },
     {
       "api": "-[NSTextAttachmentLayout attachmentBoundsForAttributes:location:textContainer:proposedLineFragment:position:]",
@@ -198,10 +199,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's collection view can only reload an item, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
+      "effect": "the index paths are reloaded inside one -performBatchUpdates:, so the cells build themselves again and keep their positions: 6.1.3 has no -reconfigureItemsAtIndexPaths:, and a reload is what the port's own UICollectionViewDiffableDataSource already does for the same request",
+      "source": "SDK 16.4, UIKit; not in the owner's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it); delivered by packages/a/apple-backports/UIKit/UIDiffableDataSource+Reconfigure15.m, which reuses the reload the port's own diffable data sources already call - -[UICollectionView reloadItemsAtIndexPaths:], measured present in the 6.1.3 cache and already called from UICollectionViewDiffableDataSource.m",
+      "facts": "facts/UIKit/UIDiffableReconfigure15.md"
     },
     {
       "api": "-[UICollectionViewDelegate collectionView:sceneActivationConfigurationForItemAtIndexPath:point:]",
@@ -377,10 +379,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's table can only reload a row, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
+      "effect": "the index paths are reloaded with UITableViewRowAnimationNone inside one -performBatchUpdates:, so the rows build themselves again and keep their positions: 6.1.3 has no -reconfigureRowsAtIndexPaths:, and this is the reload UITableViewDiffableDataSource.m already uses",
+      "source": "SDK 16.4, UIKit; not in the owner's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it); delivered by packages/a/apple-backports/UIKit/UIDiffableDataSource+Reconfigure15.m, which reuses the reload the port's own diffable data sources already call - -[UITableView reloadRowsAtIndexPaths:withRowAnimation:], measured present in the 6.1.3 cache and already called from UITableViewDiffableDataSource.m",
+      "facts": "facts/UIKit/UIDiffableReconfigure15.md"
     },
     {
       "api": "-[UITableViewDelegate tableView:selectionFollowsFocusForRowAtIndexPath:]",
@@ -457,10 +460,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "the items marked with reconfigureItemsWithIdentifiers:, which is not carried (see its row), so there would never be any to answer",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port defines NSDiffableDataSourceSnapshot, so the class row would answer for this member (backports.lua:1673); the snapshot it would report is the set of identifiers a reconfigure pass touched, and the release's diffable apply has no reconfigure step to record one - facts/UIKit/UIKit15Absence.md"
+      "effect": "the identifiers reconfigureItemsWithIdentifiers: was given, in order, and an empty array when none was; a COPIED snapshot answers empty, because the set is an associated object and does not survive the copy - the port's own reloadedItemIdentifiers does survive, and the difference is named in the facts page rather than papered over",
+      "source": "SDK 16.4, UIKit; not in the owner's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it); delivered by packages/a/apple-backports/UIKit/UIDiffableDataSource+Reconfigure15.m, which reuses the reload the port's own diffable data sources already call - the same associated-object storage, and the copy behaviour measured rather than assumed",
+      "facts": "facts/UIKit/UIDiffableReconfigure15.md"
     },
     {
       "api": "NSDiffableDataSourceSnapshot.reloadedItemIdentifiers",
