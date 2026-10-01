@@ -456,3 +456,39 @@ Two traps in that reader, both hit while writing it, because both make a real de
 The remaining 20 rows of the 48 are `absent` (18) and `inert` (2), and each carries the measurement its
 status rests on: the scenes in `facts/CarPlay/Scenes.md`, the session configuration and the two factory
 rows in `facts/CarPlay/SessionConfiguration.md` and in this batch's `+[CPRouteChoice new]` row itself.
+
+## `+[CPRouteChoice new]`: what the release carries, and why the row does not say `ignored`
+
+This belongs here and not only in the row, because it is the one row of the batch where the release's
+answer and the port's answer come out differently at different rungs, and a reader who sees only the row
+cannot tell which end was measured.
+
+Measured per class with `tools/corpus/objc-inventory.lua`:
+
+```
+6.1.3  armv7   no CPRouteChoice at all -- apple.objc.inventory finds no CarPlay class of any name
+16.0   arm64e  CPRouteChoice carries +new in its own class-method list
+18.0   arm64e  CPRouteChoice carries +new in its own class-method list
+```
+
+So at the row's `minimum` of 6.0 the release has nothing under the name, and at 16.0 and 18.0 Apple's own
+framework carries it. `absent` is the status that is true at every rung the row is placed at, and the
+row's reason says so in those terms. `ignored` -- whose meaning is "the release carries the name and the
+port declines to" -- is true at 16.0 and 18.0 and **false at 6.1.3**, and
+`modules/apple/backports.lua:1907` fires for an ignored row wherever the band's own cache does not carry
+the name:
+
+```lua
+elseif entry.status == "ignored" and in_range(entry, deployment) and carried_by_release(entry, inventory) == false then
+    table.insert(missing, name)
+```
+
+The 6.1.3 band has no CPRouteChoice, so `ignored` on this row would put the row in `missing` and fail
+that gate. That is the mechanical reason the status is what it is, and it is why the row's own text does
+not claim the release is empty at 16.0: that claim would be false there.
+
+**OPEN FOR THE OWNER.** The two rules genuinely disagree for this row, and one of them is a fact about
+the release while the other is a fact about the band. Either the registry accepts a status that is true at
+the floor and says in its text what the release carries at 16.0 -- which is what this row does -- or
+`backports.lua`'s `ignored` branch should ask a rung that carries the name rather than the band's own.
+The first is a registry decision and the second is a change to the check, and neither is a band's to make.
