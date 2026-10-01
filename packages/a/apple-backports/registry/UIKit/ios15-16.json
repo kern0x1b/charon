@@ -208,7 +208,7 @@
       "status": "absent",
       "reason": "asks for the scene an item opens in when it is pinched or dragged out into a window of its own; the port runs one scene and refuses a second (requestSceneSessionActivation answers multiple scenes not supported, facts/UIKit/UIScene.md), so there is no window to open and nothing would ask - no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UICollectionViewDelegate collectionView:selectionFollowsFocusForItemAtIndexPath:]",
@@ -218,7 +218,7 @@
       "status": "absent",
       "reason": "a per-item override of selectionFollowsFocus, which moves the selection with keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json) and UICollectionView.selectionFollowsFocus is absent for the same reason, so focus never lands on an item and there is nothing for the selection to follow",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UICollectionViewDelegate collectionView:targetIndexPathForMoveOfItemFromOriginalIndexPath:atCurrentIndexPath:toProposedIndexPath:]",
@@ -228,7 +228,7 @@
       "status": "absent",
       "reason": "the iOS 15 form of targetIndexPathForMoveFromItemAtIndexPath:toProposedIndexPath:, which adds the path the item started from; the port's interactive movement sends only the iOS 9 form (UICollectionView+InteractiveMovement.m) and could ask this one first - not done for lack of demand, not a wall",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UICollectionViewDiffableDataSource applySnapshotUsingReloadData:]",
@@ -327,7 +327,7 @@
       "status": "absent",
       "reason": "the responder action behind captureTextFromCameraActionForResponder:; the camera is there, but recognising text in its frames needs VNRecognizeTextRequest, absent in the port's Vision, so there is nothing to read the text with - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions pasteAndGo:]",
@@ -337,7 +337,7 @@
       "status": "absent",
       "reason": "the \"Paste and Go\" edit-menu command; our menu-building path (UIMenuController via the responder chain) has no command-name table for it, and no app implementing it has been seen - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions pasteAndMatchStyle:]",
@@ -347,7 +347,7 @@
       "status": "absent",
       "reason": "the \"Paste and Match Style\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions pasteAndSearch:]",
@@ -357,7 +357,7 @@
       "status": "absent",
       "reason": "the \"Paste and Search\" edit-menu command; same missing command-name table as the rest of this protocol - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIResponderStandardEditActions print:]",
@@ -367,7 +367,7 @@
       "status": "absent",
       "reason": "the \"Print\" edit-menu command; nothing in this port's responder chain offers it, and there is no print pipeline behind it either - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UITableView reconfigureRowsAtIndexPaths:]",
@@ -377,7 +377,7 @@
       "status": "absent",
       "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's table can only reload a row, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UITableViewDelegate tableView:selectionFollowsFocusForRowAtIndexPath:]",
@@ -387,7 +387,7 @@
       "status": "absent",
       "reason": "a per-row override of selectionFollowsFocus, which moves the selection with keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never lands on a row and there is nothing for the selection to follow",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UITableViewDiffableDataSource applySnapshotUsingReloadData:]",
@@ -437,7 +437,7 @@
       "status": "absent",
       "reason": "answers the scroll view a bar at that edge watches for its scroll-edge appearance; the port finds that scroll view itself, breadth first in the controller's view (facts/UIKit/BarAppearanceApplication.md), and could answer it or an override here - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIViewController setContentScrollView:forEdge:]",
@@ -447,7 +447,7 @@
       "status": "absent",
       "reason": "overrides the scroll view a bar at that edge watches for its scroll-edge appearance; the port finds that scroll view itself, breadth first in the controller's view (facts/UIKit/BarAppearanceApplication.md), and could take an override first - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSDiffableDataSourceSnapshot.reconfiguredItemIdentifiers",
