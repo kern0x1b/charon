@@ -729,22 +729,22 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the picker of iOS 6 lists no font to pick",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "status": "inert",
+   "reason": "iOS 6 has no UIFontDescriptor for the picker to hand back, so it lists no font and there is nothing for a pick to name",
+   "effect": "never sent by anything in the port, so an application implementing it is never called back; it is the port own missing half, and the reason is the picker lists no font to choose",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the port own UIFontPickerViewController.m:158-159 sends fontPickerViewControllerDidCancel: from its Cancel button, guarded by respondsToSelector:, and nothing anywhere sends fontPickerViewControllerDidPickFont:; neither body is in the port, they are points an application implements; the release end is neither 6.1.3 nor 4.3 carries a class or protocol beginning UIFontPickerViewController (cache-census.lua, control 3 names on 16.0)"
   },
   {
    "api": "-[UIFontPickerViewControllerDelegate fontPickerViewControllerDidCancel:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "nothing of the release sends it",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "status": "inert",
+   "reason": "the picker the port own is a message and a Cancel button, so the one delegate member it can reach is the one Cancel sends",
+   "effect": "sent by the port own Cancel button to the delegate when a responderToSelector: answers yes, and to nothing else; the application implements it, and iOS 6 asks no question that would reach it",
    "facts": "facts/UIKit/UIFontPickerViewController.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the port own UIFontPickerViewController.m:158-159 sends fontPickerViewControllerDidCancel: from its Cancel button, guarded by respondsToSelector:, and nothing anywhere sends fontPickerViewControllerDidPickFont:; neither body is in the port, they are points an application implements; the release end is neither 6.1.3 nor 4.3 carries a class or protocol beginning UIFontPickerViewController (cache-census.lua, control 3 names on 16.0)"
   },
   {
    "api": "+[UIFont monospacedSystemFontOfSize:weight:]",
