@@ -9,7 +9,7 @@
       "status": "absent",
       "reason": "registers the NSTextAttachmentViewProvider (absent here) that puts a view in the text for an attachment of a file type; the release's NSTextAttachment holds no image and its text views draw no attachment (facts/UIKit/NSTextMembers13.md), so there is nothing to host a view in",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[NSTextAttachment textAttachmentViewProviderClassForFileType:]",
@@ -19,7 +19,7 @@
       "status": "absent",
       "reason": "answers the NSTextAttachmentViewProvider class (absent here) registered for a file type; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md) and nothing registers one, so there is no class to answer",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIAction captureTextFromCameraActionForResponder:identifier:]",
@@ -39,7 +39,7 @@
       "status": "absent",
       "reason": "it builds a button from a UIButtonConfiguration, and UIButtonConfiguration (the declarative style engine iOS 15 replaced the button property surface with) is itself absent from this port - no demand for it, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIDeferredMenuElement elementWithUncachedProvider:]",
@@ -128,7 +128,7 @@
       "status": "absent",
       "reason": "asked by Text Kit 2 for the bounds of an attachment in a line; the port carries no NSTextLayoutManager (absent) and the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing lays an attachment out to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[NSTextAttachmentLayout imageForBounds:attributes:location:textContainer:]",
@@ -138,7 +138,7 @@
       "status": "absent",
       "reason": "asked by Text Kit 2 for the image an attachment draws; the port carries no NSTextLayoutManager (absent) and the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing draws one to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[NSTextAttachmentLayout viewProviderForParentView:location:textContainer:]",
@@ -148,7 +148,7 @@
       "status": "absent",
       "reason": "asked by Text Kit 2 for the NSTextAttachmentViewProvider (absent here) that puts a view in the text; the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so nothing hosts a view to ask",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIAdaptivePresentationControllerDelegate presentationController:prepareAdaptivePresentationController:]",
@@ -158,7 +158,7 @@
       "status": "absent",
       "reason": "sent before a presentation adapts to a compact size, with the controller it adapts to; the port keeps adaptivePresentationStyle and never adapts (facts/UIKit/UIPresentationController.md), so no adaptation happens to prepare for",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIApplicationDelegate applicationShouldAutomaticallyLocalizeKeyCommands:]",
@@ -168,7 +168,7 @@
       "status": "absent",
       "reason": "asks whether the key commands of the application are remapped to the keys of the keyboard layout in use; the port carries UIKeyCommand (facts/UIKit/KeyCommands.md) and matches its input as given, with no remapping to ask about - no demand",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIButton setNeedsUpdateConfiguration]",
@@ -178,7 +178,7 @@
       "status": "absent",
       "reason": "it schedules the next -updateConfiguration call, and that method only exists to read the button's UIButtonConfiguration, which this port does not carry - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIButton updateConfiguration]",
@@ -188,7 +188,7 @@
       "status": "absent",
       "reason": "the point where a subclass reapplies its UIButtonConfiguration; nothing to override when the configuration this method exists to serve is not carried - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UICollectionView reconfigureItemsAtIndexPaths:]",
@@ -198,7 +198,7 @@
       "status": "absent",
       "reason": "reruns the configuration of the cells already on screen, keeping the cell objects; the release's collection view can only reload an item, which replaces its cell - the very difference reconfigure exists for - and handing the old cell back needs the release's private dequeue, which the port does not reach into; no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UICollectionViewDelegate collectionView:sceneActivationConfigurationForItemAtIndexPath:point:]",
