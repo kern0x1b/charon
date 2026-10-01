@@ -62,14 +62,14 @@ static const char charon_waitsToMinimizeStallingKey;
 
 // 6.1.3's capture stack has no color space selection of any kind - every format it reports captures
 // in sRGB, which is what the release's own AVCaptureColorSpace enumeration calls
-// AVCaptureColorSpaceSRGB (0). There being exactly one, and no way for a format to answer otherwise,
+// AVCaptureColorSpace_sRGB (0). There being exactly one, and no way for a format to answer otherwise,
 // is the real state of 6.1.3's camera stack, not a placeholder.
 
 @implementation AVCaptureDeviceFormat (CharonSupportedColorSpaces10)
 
 - (NSArray<NSNumber *> *)supportedColorSpaces
 {
-    return @[@(AVCaptureColorSpaceSRGB)];
+    return @[@(AVCaptureColorSpace_sRGB)];
 }
 
 @end
