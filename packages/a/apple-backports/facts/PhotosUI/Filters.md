@@ -51,12 +51,13 @@ read `4.0`). So of the eight kind filters:
   `ImageAnimated`, `LivePhoto` and `VideoLooping`, name what the release keeps no record of:
   an animated image, a live photo and a looping video are all of iOS 9.1 or later and none of
   them is in the library this port reads, so the filter built for one matches nothing.
-- the other ten match nothing, because a panorama, a screenshot, a screen recording, a slow
+- the other eight match nothing, because a panorama, a screenshot, a screen recording, a slow
   motion clip, a time lapse, a depth effect photo, a burst and a cinematic video are all one
-  and the same to this release. The filter that says so is `+livePhotosFilter`, and the
-  picker then presents nothing and calls the delegate with no results once it has appeared -
-  the answer `facts/Photos/PHPicker.md` already gives for a live photo, and the reason that
-  path exists.
+  and the same to this release. The two free compositions are not in that count: each computes
+  a set out of what it is given, which is the section below. The filter that says so is
+  `+livePhotosFilter`, and the picker then presents nothing and calls the delegate with no
+  results once it has appeared - the answer `facts/Photos/PHPicker.md` already gives for a
+  live photo, and the reason that path exists.
 
 A filter of nothing is not the port declining to answer. It is the filter the release's own
 library can be asked for, and `-[PHPickerFilter charon_mediaTypes]`, the seam the 14.0 picker
