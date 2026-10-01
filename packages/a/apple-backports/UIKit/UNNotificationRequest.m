@@ -32,7 +32,8 @@
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    NSSet *triggers = [NSSet setWithObjects:[UNTimeIntervalNotificationTrigger class], [UNCalendarNotificationTrigger class], nil];
+    NSSet *triggers = [NSSet setWithObjects:[UNTimeIntervalNotificationTrigger class], [UNCalendarNotificationTrigger class],
+                                              [UNLocationNotificationTrigger class], nil];
     return [self initCharonWithIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:@"identifier"] ?: @""
                                    content:[coder decodeObjectOfClass:[UNNotificationContent class] forKey:@"content"]
                                    trigger:[coder decodeObjectOfClasses:triggers forKey:@"trigger"]];

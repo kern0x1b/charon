@@ -233,11 +233,10 @@
   "kind": "class",
   "introduced": "10.0",
   "minimum": "6.0",
-  "status": "absent",
-  "reason": "iOS 6 has no region trigger for a local notification",
-  "effect": "the class is not there, so NSClassFromString answers nil and respondsToSelector: answers honestly",
-  "facts": "facts/UserNotifications/UNUserNotificationCenter.md",
-  "source": "UserNotifications of the armv7s cache of iOS 10.3.4, the host's own UserNotifications measured beside the port, and UIKit of iOS 6.0 and of an iPhone4,1 running 6.1.3"
+  "status": "implemented",
+  "effect": "the class is there, +triggerWithRegion:repeats: keeps the region and the repeats it is given, and a request carrying it is watched with CoreLocation's own region monitoring and its notification presented when the device enters or leaves that region",
+  "facts": "facts/UserNotifications/UNLocationNotificationTrigger.md",
+  "source": "UserNotifications of the armv7s cache of iOS 10.3.4 (the trigger's own header of the iPhoneOS 16.4 SDK for the one sentence that says when it fires), CoreLocation and UIKit of the armv7 cache of iOS 4.3, the selector set of the armv7 cache of iOS 6.1.3 and the name index of all 50 held rungs"
  },
  {
   "api": "UNPushNotificationTrigger",

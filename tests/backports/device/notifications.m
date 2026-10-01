@@ -1,4 +1,5 @@
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
 #import <UserNotifications/UserNotifications.h>
 #import "check.h"
 
@@ -94,8 +95,13 @@ static UNNotificationRequest *request_named(NSString *identifier, NSString *body
                               @"setBadgeCount:withCompletionHandler:"])
         charon_check(![center respondsToSelector:NSSelectorFromString(later)],
                      [later stringByAppendingString:@" is not there, since iOS 6 cannot do it"].UTF8String, @"it is");
-    CHECK(NSClassFromString(@"UNNotificationAttachment") == Nil
-          && NSClassFromString(@"UNLocationNotificationTrigger") == Nil, "the classes iOS 6 cannot carry are not there");
+    CHECK(NSClassFromString(@"UNNotificationAttachment") == Nil,
+          "the class iOS 6 cannot carry is not there, since a notification of this release shows no image or film");
+    CLRegion *region = [[CLRegion alloc] initCircularRegionWithCenter:CLLocationCoordinate2DMake(0, 0) radius:100000
+                                                           identifier:@"charon-notifications"];
+    UNLocationNotificationTrigger *arriving = [UNLocationNotificationTrigger triggerWithRegion:region repeats:NO];
+    CHECK([arriving isKindOfClass:[UNNotificationTrigger class]] && arriving.region == region && !arriving.repeats,
+          "a location trigger is there and keeps the region and the repeats it was given");
 
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"org.charon.apple-backports.UIUserNotificationTypes"];
     CHECK(settings().authorizationStatus == UNAuthorizationStatusNotDetermined, "before asking, nothing is determined");
@@ -164,6 +170,20 @@ static UNNotificationRequest *request_named(NSString *identifier, NSString *body
     NSError *never = added(request_named(@"never", @"in 2001", [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:past repeats:NO]));
     CHECK([never.domain isEqual:UNErrorDomain] && never.code == UNErrorCodeNotificationInvalidNoDate,
           "a date that will not come again is refused as iOS 10 refuses it");
+
+    CHECK(added(request_named(@"where", @"on arriving", [UNLocationNotificationTrigger triggerWithRegion:region repeats:NO])) == nil,
+          "a request whose trigger is a region is added");
+    UNNotificationRequest *under = nil;
+    for (UNNotificationRequest *request in pending())
+        if ([request.identifier isEqual:@"where"])
+            under = request;
+    CHECK(under && [under.trigger isKindOfClass:[UNLocationNotificationTrigger class]]
+          && [((UNLocationNotificationTrigger *)under.trigger).region.identifier isEqual:@"charon-notifications"]
+          && [under.content.body isEqual:@"on arriving"],
+          "and comes back pending, with the region and the content it was added with");
+    CHECK(![UIApplication sharedApplication].scheduledLocalNotifications
+          || ![[[UIApplication sharedApplication].scheduledLocalNotifications valueForKey:@"alertBody"] containsObject:@"on arriving"],
+          "and iOS 6 is given nothing to schedule for it, since a region has no date");
 
     [center removePendingNotificationRequestsWithIdentifiers:@[@"hourly"]];
     CHECK(![[pending() valueForKey:@"identifier"] containsObject:@"hourly"], "a pending request is removed by identifier");

@@ -151,7 +151,7 @@ static dispatch_queue_t charon_center_queue(void)
     return queue;
 }
 
-static void charon_on_main(void (^work)(void))
+void charon_on_main(void (^work)(void))
 {
     if ([NSThread isMainThread])
         work();
@@ -164,7 +164,7 @@ static void charon_say_once(NSString *key, NSString *text)
     charon_say_once_for(key, text);
 }
 
-static NSError *charon_unsupported(NSString *reason)
+NSError *charon_unsupported(NSString *reason)
 {
     return [NSError errorWithDomain:NSCocoaErrorDomain code:NSFeatureUnsupportedError
                            userInfo:@{NSLocalizedDescriptionKey: reason}];
@@ -259,7 +259,7 @@ static BOOL charon_schedule_repeat(UILocalNotification *notification, UNNotifica
     return YES;
 }
 
-static UILocalNotification *charon_local_notification(UNNotificationRequest *request, NSError **error)
+static UILocalNotification *charon_local_notification(UNNotificationRequest *request)
 {
     UNNotificationContent *content = request.content;
     UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -281,8 +281,6 @@ static UILocalNotification *charon_local_notification(UNNotificationRequest *req
     NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithDictionary:content.userInfo ?: @{}];
     userInfo[CharonRequestKey] = [NSKeyedArchiver archivedDataWithRootObject:request];
     notification.userInfo = userInfo;
-    if (request.trigger && !charon_schedule_repeat(notification, request.trigger, error))
-        return nil;
     return notification;
 }
 
@@ -349,6 +347,11 @@ static void charon_hook_delegate(void)
     return [super init];
 }
 
+- (UILocalNotification *)charon_localNotificationForRequest:(UNNotificationRequest *)request
+{
+    return charon_local_notification(request);
+}
+
 - (id <UNUserNotificationCenterDelegate>)delegate
 {
     return _delegate;
@@ -397,9 +400,14 @@ static void charon_hook_delegate(void)
     __block NSError *failure = nil;
     if (!request.content) {
         failure = [NSError errorWithDomain:UNErrorDomain code:UNErrorCodeNotificationInvalidNoContent userInfo:nil];
+    } else if ([request.trigger isKindOfClass:[UNLocationNotificationTrigger class]]) {
+        // A location trigger has no date: the release watches the region and the notification is
+        // presented when CoreLocation reports a crossing, so there is nothing to schedule.
+        failure = [[CharonRegionMonitor charon_sharedMonitor] charon_monitorRequest:request];
     } else {
-        UILocalNotification *notification = charon_local_notification(request, &failure);
-        if (notification)
+        UILocalNotification *notification = charon_local_notification(request);
+        BOOL keep = !request.trigger || charon_schedule_repeat(notification, request.trigger, &failure);
+        if (keep)
             charon_on_main(^{
                 UIApplication *application = [UIApplication sharedApplication];
                 for (UILocalNotification *pending in application.scheduledLocalNotifications)
@@ -451,6 +459,8 @@ static void charon_hook_delegate(void)
                 [requests addObject:request];
         }
     });
+    // A request under a region is pending as well: it has no date and iOS 6 holds it nowhere but here.
+    [requests addObjectsFromArray:[[CharonRegionMonitor charon_sharedMonitor] charon_requests]];
     void (^done)(NSArray *) = [completionHandler copy];
     dispatch_async(charon_center_queue(), ^{
         done([requests copy]);
@@ -468,6 +478,7 @@ static void charon_hook_delegate(void)
                 [application cancelLocalNotification:pending];
         }
     });
+    [[CharonRegionMonitor charon_sharedMonitor] charon_removeRequestsWithIdentifiers:wanted];
 }
 
 - (void)removeAllPendingNotificationRequests
@@ -478,11 +489,18 @@ static void charon_hook_delegate(void)
             if (charon_request_of(pending))
                 [application cancelLocalNotification:pending];
     });
+    [[CharonRegionMonitor charon_sharedMonitor] charon_removeRequestsWithIdentifiers:nil];
 }
 
 - (void)charon_deliver:(UILocalNotification *)local state:(UIApplicationState)state
 {
-    UNNotificationRequest *request = charon_request_of(local);
+    [self charon_deliverRequest:charon_request_of(local) state:state];
+}
+
+- (void)charon_deliverRequest:(UNNotificationRequest *)request state:(UIApplicationState)state
+{
+    if (!request)
+        return;
     UNNotification *notification = [UNNotification notificationWithRequest:request date:[NSDate date]];
     id <UNUserNotificationCenterDelegate> delegate = _delegate;
     if (state == UIApplicationStateActive) {
