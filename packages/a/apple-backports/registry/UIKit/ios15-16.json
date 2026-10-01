@@ -1003,7 +1003,7 @@
       "status": "absent",
       "reason": "the arrows and shapes drawn around the pointer, UIPointerAccessory objects (absent here); the port draws no pointer (facts/UIKit/UIPointerStyle.md), so there is nothing to put them around",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). There is no pointer on 6.1.3 - UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer all absent - and the port's own UIPointerStyle declares accessories @dynamic (UIPointerStyle.m:11) and stores a type, an effect, a shape and constrained axes - facts/UIKit/UIKit15Absence.md"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). There is no pointer on 6.1.3 - UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer all absent - and the port's own UIPointerStyle declares accessories @dynamic (UIPointerStyle.m:277) and stores a type, an effect, a shape and constrained axes - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIPrintInteractionController.showsPaperOrientation",

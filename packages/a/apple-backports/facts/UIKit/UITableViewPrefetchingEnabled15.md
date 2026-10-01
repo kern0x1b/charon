@@ -41,7 +41,7 @@ ivar and a check there would make one file carry API from two releases, which is
 Instead this file installs its own `layoutSubviews` replacement, exactly as the 10.0 file does,
 and `+load` is required because it runs before the library's categories are attached — a method
 added from a category would not be there yet, which is the reason
-`UITableView+Prefetching10.m:38` spells that out.
+`UITableView+Prefetching10.m:15` spells that out.
 
 **Two hooks on one selector compose, and that was measured rather than assumed.** Two classes
 each calling `class_replaceMethod` on `-layoutSubviews` in their `+load`, the second reading the
