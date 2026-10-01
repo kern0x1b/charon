@@ -338,7 +338,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the other side of the pair above, and the same absence of a writing direction to put a side second. Mapping it onto Right would be quietly wrong wherever the writing direction is right to left, which this release does have",
+   "reason": "trailing means the side the writing direction puts second, and this release has no writing direction to put a side second: neither the 6.1.3 nor the 4.3 cache carries -semanticContentAttribute or -effectiveUserInterfaceLayoutDirection on UIView or UIControl, which the SDK declares from iOS 9, so there is no side for the word to name. Mapping it onto Right would be quietly wrong wherever the writing direction is right to left, which this release does have",
    "effect": "the constant is not declared, so an application that names it does not compile against the port",
    "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIControl is in both, its own selector table carries -contentHorizontalAlignment and -setContentHorizontalAlignment: and no -effectiveContentHorizontalAlignment, and neither cache's UIView nor UIControl carries -semanticContentAttribute or -effectiveUserInterfaceLayoutDirection, which the SDK declares from iOS 9. The value is therefore read from nothing on either release. Against the SDK: UIControl.h:55-56 declares the case, API_AVAILABLE(ios(11.0))"
   },
