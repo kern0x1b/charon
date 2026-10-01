@@ -301,6 +301,15 @@ and the registry's own source says the same, `coordination/corpus/sdk-26.2-surfa
 per name at 17.0. So the reason was false about the release and true about the port, and the six
 are now written by hand in `Intents/IN17_0.m`.
 
+The cause is one word in `tools/intents/generate.sh`: the 10.0.1 and 10.3 groups run with
+`newer: no`, so `gen-intents.py` reads only the port's own SDK for their classes, and a member
+only iPhoneOS 26.2 declares is invisible to them. The 12.0, 16.0 and 18.0 groups already run with
+`newer: yes`. Flipping it for the 10.0.1 group would generate these six where they belong - in
+`IN10_0_1.m`, beside the class, in the file's own `@implementation`, with the ivars the charon-coding
+walker reads - but it rewrites `registry/Intents/ios10.json` and `IN10_0_1.m` whole, and both belong
+to other slices of the same file. Until it is flipped the six are answered by the category, and
+`coordination/crutches.md` carries the entry.
+
 **What a release this port deploys on carries.** Neither band end carries the class at all, and
 the run carries its own control - the 10.0.1 rung is in it and does carry `INMessage`, so a zero on
 6.1.3 and 4.3 is the release's and not the reader's:

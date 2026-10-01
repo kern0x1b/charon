@@ -3315,10 +3315,12 @@
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:attachmentFiles:]",
       "kind": "method",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "every value the initialiser is given is kept, and the one that is new in 17.0 is kept beside the ten the class already had: a caller that builds a message with files and reads attachmentFiles back gets its own array back, and a message built by an initialiser of an earlier release answers nil",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:audioMessageFile:]",
@@ -3334,19 +3336,23 @@
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:linkMetadata:]",
       "kind": "method",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the metadata is kept, and the messageType this initialiser does not name is INMessageTypeUnspecified - the case the header's own enumeration numbers 0 - so a caller that reads messageType back on a message built this way gets that, and reads linkMetadata back as the copy of what it passed",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:numberOfAttachments:]",
       "kind": "method",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the count is kept as the NSNumber the header declares it to be, so a caller that passes @(3) reads 3 back and one that passes nil reads nil; it is not derived from attachmentFiles, which is what the header's two separate properties say, and a message can carry a count with no files behind it",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:reaction:]",
@@ -5805,10 +5811,12 @@
       "api": "INMessage.attachmentFiles",
       "kind": "property",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the accessor answers the array the initialiser stored, which is a copy of what the caller passed, and nil for a message built by an initialiser of an earlier release; the release carries no assistant daemon, so nothing reads the files but the caller that put them there, and what it gets back is what it gave",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "INMessage.audioMessageFile",
@@ -5874,10 +5882,12 @@
       "api": "INMessage.linkMetadata",
       "kind": "property",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the accessor answers the metadata the initialiser stored, a copy of what the caller passed, and nil for a message built without it; the class INMessageLinkMetadata behind it is this package's own and answers its own five properties the same way, so what a caller reads is what it wrote there",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "INMessage.messageType",
@@ -5893,10 +5903,12 @@
       "api": "INMessage.numberOfAttachments",
       "kind": "property",
       "introduced": "17.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the accessor answers the NSNumber the initialiser stored, unchanged - 3 comes back as 3, nil as nil - and is never computed from attachmentFiles, so a message carrying a count and no files answers the count, which is what a shortcut that says how many attachments a message holds needs",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "a member of INMessage that arrived after the SDK this package's generator reads, so Intents/IN17_0.m writes it by hand as a category on the class IN10_0_1.m owns and answers for itself",
+      "source": "the header of iPhoneOS 26.2 for the contract, INMessage.h marking this API_AVAILABLE(ios(17.0), watchos(10.0)); and the class census of the 6.1.3 and 4.3 armv7 caches with a control, and the held-ladder selector index, for what a release this port deploys on carries - both commands and their output are in the facts page, under 'The six members iOS 17.0 added to INMessage'"
     },
     {
       "api": "INMessage.reaction",
