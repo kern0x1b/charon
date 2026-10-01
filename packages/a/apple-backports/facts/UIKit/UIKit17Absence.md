@@ -624,3 +624,96 @@ is precisely what the gate's `held` check exists to notice. The port does not ca
 band's facts page, M3, says why: `UIContentUnavailableConfiguration` needs `UIButtonConfiguration`, which
 this library does not carry, and `UIContentUnavailableView` is built over it). So a 16.0-or-later band
 must not link the port's copies — and because neither is `implemented`, there is nothing for it to link.
+
+## M14. `UIImageConfiguration`'s locale (17.0), measured field by field
+
+Asked of the host's own UIKit under Mac Catalyst, `arm64-apple-ios15.0-macabi`, compiled with the same flags
+every other probe on this page used. The seven rows of this family were `absent` with the SDK's own declaration
+as their only `source`; these are the answers that decide what they are, and the object is
+`UIKit/UIImageConfiguration+Locale17.m`.
+
+```
++configurationWithLocale: fr_FR -> locale=fr_FR
+nil -> description unspecified, locale (null)
++configurationWithTraitCollection: dark -> traits=(UserInterfaceStyle = Dark) locale=(nil)
+nil traits -> unspecified
+a==b 1  hash same 1
+round trip locale=fr_FR equal? 1        (NSKeyedArchiver -> NSKeyedUnarchiver)
+fresh: locale=(nil) description=unspecified
+-configurationWithLocale: fr_FR -> locale=(...) same? 0
+locale then trait -> traits=(UserInterfaceStyle = Dark), locale=(...) locale=fr_FR
+fresh applying locale one -> locale=(...) locale=fr_FR same? 0
+```
+
+Four things in there decided the implementation rather than confirming it:
+
+- **The locale is a field, not a trait.** `+configurationWithTraitCollection:` prints `locale=(nil)` and reads
+  nil from the getter, while `+configurationWithLocale:` prints its locale and no traits. So the two are the
+  release's own two shapes, and each constructor keeps the other half rather than resetting it.
+- **Both constructors return a NEW object** (`same? 0` both ways), and the receiver is never mutated. A
+  configuration set to the locale it already holds is the receiver, which is the same comparison with nil on
+  both sides.
+- **The applying route takes the locale.** `fresh applying locale one -> locale=(...), same? 0`: the base
+  class's own `charon_isUnspecified` / `charon_applyFieldsOfConfiguration:` hooks are the seam, and the port
+  uses them rather than reimplementing `-configurationByApplyingConfiguration:`.
+- **The host's hash is per object, not per value.** Two equal configurations hashed differently (M14b in the
+  table above the file's own record of it). That breaks `NSSet` and `NSDictionary`, so the port keeps the
+  value-based hash every configuration type in this tree already uses, and says so in the file. Copying a
+  defect is not the same as being faithful.
+
+### Why the object is a subclass under a category, measured rather than chosen
+
+In `@implementation Base (Cat)`, `[super copyWithZone:]` resolves against **NSObject**, not against Base, and
+clang says so — `no visible @interface for 'NSObject' declares the selector 'copyWithZone:'`, plus
+`category is implementing a method which will also be implemented by its primary class`. So a category that
+overrode `-copyWithZone:` would answer NSObject's copy and **lose the traits**, which is worse than not
+carrying the locale at all. A subclass's `[super ...]` reaches the class it extends, so the five chaining
+methods live in `CharonLocaleConfiguration` — Charon-prefixed, so `internal_symbol` keeps it out of the
+exports and `carried_api` keeps its members out of the registry check — while the accessor pair and the two
+constructors, whose registry rows name `UIImageConfiguration` itself, are the category. The storage is one
+associated object, because a category cannot add an ivar to a class this port already defines wholesale.
+`UIImageSymbolConfiguration.m` is the shape this tree already uses for the same problem.
+
+One thing this file had to declare to compile at all: the base class's `-isEqualToConfiguration:` is defined
+in `UIImageConfiguration.m`, which no other file's compiler reads, and the only declaration of that name
+anywhere in the SDK is `UIImageSymbolConfiguration.h`'s, with the narrower parameter. So `[super ...]` is a
+type error until the base class's own spelling is declared. It is declared in a separate, empty category so
+that declaring it does not oblige this file to implement it.
+
+## M15. The three per-trait constructors of 17.0, measured
+
+Same probe, same target. The three rows were `absent` on the SDK's declaration alone.
+
+```
+imageDynamicRange high     -> <UITraitCollection: 0x…; ImageDynamicRange = 2>
+imageDynamicRange standard -> <UITraitCollection: 0x…; ImageDynamicRange = 0>
+sceneCaptureState active   -> <UITraitCollection: 0x…; SceneCaptureState = 1>
+typesettingLanguage @"fr-FR" -> stored, and objectForTrait: reads an __NSCFConstantString back, equal
+bogus NSString             -> no raise, stored as given
+NSNumber                   -> no raise, stored as an __NSCFNumber
+nil                        -> no raise, holds (null)
+dynamicRange 99            -> ImageDynamicRange = 99, no exception
+sceneCapture 99            -> SceneCaptureState = 99, no exception
+enum: unspecified=-1 standard=0 constrainedHigh=1 high=2
+fresh collection's sceneCaptureState = -1 (UISceneCaptureStateUnspecified)
+```
+
+**None of the three validates its argument, so neither does the port.** An out-of-range number is stored and
+read back; an NSNumber handed to the language constructor is stored as one. A precondition would be the port
+answering something the system does not. The single exception is the measured one: a **nil** language sets no
+trait at all, so the collection answers the trait class's own default rather than a stored nil — which is why
+the constructor passes its argument straight through to the store instead of special-casing nil.
+
+Each constructor is one call to the store this tree already has — `+traitCollectionWithNSIntegerValue:forTrait:`
+and `+traitCollectionWithObject:forTrait:` — so there is no second implementation of "put this value under that
+trait's name". The object is `UIKit/UITraitCollection+TraitConstructors17.m`.
+
+## A stale blocker in M3, corrected
+
+M3 says the `UIContentUnavailableConfiguration` and `UIContentUnavailableView` rows are absent because the
+configuration "needs `UIButtonConfiguration`, which this library does not carry". **That is no longer true**:
+`UIButtonConfiguration` is carried — `UIKit/UIButtonConfiguration.m` implements the eight 15.0 constructors and
+`registry/UIKit/ios15-16.json` carries its class row as `implemented`, and `UIBackgroundConfiguration` beside it
+is a category over the release's own. The two content-unavailable rows are therefore not blocked on substrate
+any more; they are blocked only on writing them, which is the next piece of work on this slice and is not part
+of this commit. Nothing is claimed for them here beyond removing the stale reason.

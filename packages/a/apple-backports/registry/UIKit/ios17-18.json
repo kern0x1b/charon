@@ -76,50 +76,50 @@
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a fresh configuration whose locale is the one given and whose traits are empty; a nil locale gives the unspecified configuration, the one that prints `unspecified` and reads nil from the getter; and the receiver is never mutated",
+   "source": "UIKit/UIImageConfiguration+Locale17.m, which defines +[UIImageConfiguration configurationWithLocale:] - measured on the host's own UIKit under Mac Catalyst: `+configurationWithLocale: fr_FR -> locale=fr_FR`, `nil -> description unspecified, locale (nil)`, `a==b 1` for two built from one locale. This object carries 17.0 only",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UIImageConfiguration configurationWithTraitCollection:]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a fresh configuration carrying the traits given and no locale, the release's own two shapes rather than one shape each; a nil collection gives the unspecified configuration",
+   "source": "UIKit/UIImageConfiguration+Locale17.m, which defines +[UIImageConfiguration configurationWithTraitCollection:] - measured: `+configurationWithTraitCollection: -> traits=(UserInterfaceStyle = Dark) locale=(nil)` and `nil traits -> unspecified`. It is the class-method counterpart of the 13.0 instance method of the same name, which the base class already defines and which keeps a locale the receiver held",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithImageDynamicRange:]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a collection that answers the dynamic range given and nothing else; the value is stored as given, so a caller passing a number the enumeration does not name gets that number back rather than an exception",
+   "source": "UIKit/UITraitCollection+TraitConstructors17.m, which defines +[UITraitCollection traitCollectionWithImageDynamicRange:] and routes it through the trait store the 17.0 traits object already keeps - measured: `imageDynamicRange high -> <UITraitCollection; ImageDynamicRange = 2>`, `imageDynamicRange standard -> ImageDynamicRange = 0`, and out of range `dynamicRange 99 -> ImageDynamicRange = 99` with no exception. No argument check, because the host has none",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithSceneCaptureState:]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a collection that answers the capture state given and nothing else; an unrecognised number is stored and read back rather than refused",
+   "source": "UIKit/UITraitCollection+TraitConstructors17.m, which defines +[UITraitCollection traitCollectionWithSceneCaptureState:] and routes it through the trait store the 17.0 traits object already keeps - measured: `sceneCaptureState active -> <UITraitCollection; SceneCaptureState = 1>` and out of range `sceneCapture 99 -> SceneCaptureState = 99` with no exception. A collection that sets neither answers the trait's own default, UISceneCaptureStateUnspecified, measured -1",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UITraitCollection traitCollectionWithTypesettingLanguage:]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITraitCollection a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a collection carrying the language given; a nil sets no trait at all, so the collection answers the trait's default rather than a stored nil",
+   "source": "UIKit/UITraitCollection+TraitConstructors17.m, which defines +[UITraitCollection traitCollectionWithTypesettingLanguage:] and routes it through the object half of the trait store - measured: an NSString is stored and read back equal, an NSNumber is stored as one without a word of complaint, a string naming no language is stored as given, and `nil -> holds (null)`, which is the trait class's own nil answer rather than a value of its own",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "+[UIView animateWithSpringDuration:bounce:initialSpringVelocity:delay:options:animations:completion:]",
@@ -266,10 +266,10 @@
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageConfiguration a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a new configuration carrying the locale and keeping whatever traits the receiver held; the receiver itself when the locale is the one it already has, so a caller that ignores the return value changes nothing",
+   "source": "UIKit/UIImageConfiguration+Locale17.m, which defines -[UIImageConfiguration configurationWithLocale:] - measured: on a fresh configuration `-configurationWithLocale: fr_FR -> locale=(...), same? 0`, and on one that already carries traits the traits survive (`traits=(UserInterfaceStyle = Dark), locale=(...)`)",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIImageView addSymbolEffect:]",
@@ -1046,10 +1046,10 @@
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIImageConfiguration a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the locale the configuration carries, or nil when it carries none; setting one is what the constructor does, and the value survives a copy, an equality test and an archive",
+   "source": "UIKit/UIImageConfiguration+Locale17.m, which defines -locale and -setLocale: on UIImageConfiguration and carries the value through -copyWithZone:, -isEqualToConfiguration:, -hash and the description - measured: `round trip locale=fr_FR equal? 1`, `a==b 1 hash same 1`, `locale=(nil)` on a configuration built from a trait collection alone. The storage is one associated object because a category cannot add an ivar to a class this port already defines wholesale, and the five methods that must chain to the base class's own code live in a Charon-prefixed subclass because a category's `[super ...]` resolves against NSObject - measured, not assumed",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIImageHEICRepresentation()",
