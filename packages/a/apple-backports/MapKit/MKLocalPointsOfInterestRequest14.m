@@ -84,9 +84,14 @@ static MKCoordinateRegion CharonRegionAroundCoordinate(CLLocationCoordinate2D co
 //     off it is 0 -- which is what an earlier version of this file answered for every region.
 //   - the reading is the LARGER half-span and not the diagonal, because a circle and a region are two
 //     spellings of one place and the round trip has to be exact: a request made of a circle of 500 m
-//     answers a region whose half-spans are both 500 m, and that region answers 500 m back. The
-//     host's own class round trips exactly too (measured: 500.000 m in, 500.000 m out), and for a
-//     region of uneven sides it answers the larger half-span as well.
+//     answers a region whose half-spans are both 500 m, and that region answers 500 m back, which is
+//     what this file measures. For a region of uneven sides the larger half-span is also what the
+//     HOST'S OWN class answers (measured in the same probe: a region taller than it is wide reads
+//     69,394 m there and 69,538 m here, and a region wider than it is tall reads 43,192 m and
+//     43,278 m) -- and the host's own round trip does NOT close, because its radius comes from an
+//     earth model of Apple's own rather than from MapKit's projection: 500.000 m at the equator reads
+//     back as 503.378 m there. So the two differ by at most 0.671% on that one member and not at all
+//     on the coordinate or the region, and the probe's mutant (the diagonal) is 41% out.
 static CLLocationDistance CharonRadiusAroundRegion(MKCoordinateRegion region)
 {
     double perMetre = MKMapPointsPerMeterAtLatitude(region.center.latitude);
