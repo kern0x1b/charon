@@ -199,3 +199,143 @@ bodies were read through `apple.objc`'s slide-resolving reader instead.
 
 The tool prints three controls per release and writes no row if any of them is wrong, because `ABSENT` is
 what a reader that read nothing produces.
+## The two ends of the port's floor, read together (2026-10-01, band w02-avf-r7)
+
+The run above compares 6.1.3 with 7.0, which settles what the header annotation means. What a row's
+`status` needs is the other question: does any band end carry the substrate? `backports.lua:2578` holds a
+band against the FIRST and LAST release of its range, and the port's floor is 4.3 on one side and 6.1.3
+on the other, so both ends were read in one run, from the two `objc-inventory.lua` dumps those two
+caches produce:
+
+    CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld_shared_cache_armv7 \
+        > 4.3.armv7.inventory.tsv
+    CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
+        > 6.1.3.armv7.inventory.tsv
+    python3 tools/corpus/class-scoped-rows.py \
+        $HOME/Git/projects/ios/coordination/corpus/queue/SLICE-AVFoundation-absent_AVFoundation-7.tsv \
+        4.3=4.3.armv7.inventory.tsv 6.1.3=6.1.3.armv7.inventory.tsv
+
+Its output, the control lines and the tallies verbatim and nothing else:
+
+    # 79 rows x 2 releases: 4.3, 6.1.3
+    # control 4.3          -[AVPlayerItem duration]                           method  want CARRIED   got CARRIED
+    # control 4.3          -[AVPlayerItem aSelectorNoFrameworkHas]            method  want ABSENT    got ABSENT
+    # control 4.3          -[AVCompositionTrack mediaType]                    method  want INHERITED got INHERITED
+    # control 6.1.3        -[AVPlayerItem duration]                           method  want CARRIED   got CARRIED
+    # control 6.1.3        -[AVPlayerItem aSelectorNoFrameworkHas]            method  want ABSENT    got ABSENT
+    # control 6.1.3        -[AVCompositionTrack mediaType]                    method  want INHERITED got INHERITED
+    # --- per release ---
+    # 4.3          {'ABSENT': 56, 'NO CLASS': 21, 'NO PROTOCOL': 2}
+    # 6.1.3        {'ABSENT': 68, 'NO CLASS': 9, 'NO PROTOCOL': 2}
+
+**Zero CARRIED and zero INHERITED at either end, for all 79.** Three controls answer per release and all
+six are right, including the one that fails when the reader is blind: a nonsense selector is ABSENT while a
+real one is CARRIED and an inherited one is INHERITED. So no row of this file can be `implemented`, and
+the object that would implement one would export a symbol no band end ever reaches — the outcome
+`AVFoundation70.md`'s sibling for UIKit 16.0 measured on the same day.
+
+The 21 `NO CLASS` at 4.3 against 9 at 6.1.3 are the twelve owner classes that arrive with iOS 6 itself,
+which is what these rows' `minimum: 6.0` records. The nine absent at 6.1.3 too:
+
+    AVAssetResourceLoadingContentInformationRequest   AVPlayerItemLegibleOutput
+    AVAssetResourceLoadingDataRequest                  AVPlayerItemLegibleOutputPushDelegate
+    AVAsynchronousVideoCompositionRequest              AVPlayerMediaSelectionCriteria
+    AVOutputSettingsAssistant                          AVVideoCompositing
+    AVVideoCompositionRenderContext                    AVAssetResourceLoaderDelegate
+
+Eight of the nine are absent at BOTH ends, so no band of the port's ladder has them. `AVAssetResourceLoaderDelegate`
+is the exception and the shape matters: it is a PROTOCOL, and `class-scoped-rows.py` answers `NO CLASS`
+for it because it looks the name up among classes and the release has no class by that name. 6.1.3 has no
+such protocol either - it is one of the two `NO PROTOCOL` verdicts below.
+
+## What each owner DOES carry at 6.1.3, for the rows that are not buildable
+
+A row that says only "it arrived in iOS 7" is a queue entry. These are the release's own members, read
+from each class's own line, and they are what a caller has instead.
+
+- **`AVVideoCompositionLayerInstruction` carries opacity and transform and nothing else.** All 21 own
+  instance methods at 6.1.3, with `-setTrackID:`/`-trackID`, `-getOpacityRampForTime:startOpacity:endOpacity:timeRange:`,
+  `-getTransformRampForTime:startTransform:endTransform:timeRange:` and their setters, plus
+  `-dictionaryRepresentationWithTimeRange:` and the NSCoding pair. There is no crop member of any kind to
+  store a rectangle in, so `setCropRectangle:atTime:` and its ramp twin are 7.0's and
+  `getCropRectangleRampForTime:...` has nothing on this release to read out of.
+- **`AVMutableVideoComposition.customVideoCompositorClass` and its twin**: 6.1.3 has `-compositor` and
+  `-setCompositor:` on `AVVideoComposition` and on the mutable subclass - it has a compositor object - but
+  the object it takes is Apple's own `AVVideoCompositingVideoCompositor`, and `AVVideoCompositing`, the
+  PROTOCOL a caller implements to be one, is one of the two `NO PROTOCOL` verdicts. So the release has
+  where a compositor goes and no way to name a class for it, and `AVAsynchronousVideoCompositionRequest`
+  and `AVVideoCompositionRenderContext` - the two objects such a compositor is handed - are `NO CLASS` at
+  both ends. That is why the whole custom-compositing family is absent and not merely unimplemented.
+- **`AVVideoCompositionInstruction` is a CLASS on both band ends, and carries 18 own instance methods**:
+  `-timeRange`/`-setTimeRange:`, `-layerInstructions`/`-setLayerInstructions:`,
+  `-backgroundColor`/`-setBackgroundColor:`, `-enablePostProcessing`/`-setEnablePostProcessing:`,
+  `-dictionaryRepresentation`, `-init`, `-copyWithZone:`, `-mutableCopyWithZone:`, `-encodeWithCoder:`,
+  `-initWithCoder:`, `-description`, `-dealloc`, `-finalize`, `-_setValuesFromDictionary:`. At 4.3 the 18
+  are the same 18. So the NAME is on the floor at both ends and it is not a protocol there: 7.0 turned the
+  class into a protocol, and of the five members that protocol requires, this release's class answers
+  `-timeRange` and `-enablePostProcessing` by name and has no `-passthroughTrackID`, no
+  `-requiredSourceTrackIDs` and no `-containsTweening`.
+- **`AVPlayer` keeps its volume private.** All 140 own instance methods at 6.1.3 include `-_volume`,
+  `-_setVolume:`, `-_setWantsVolumeChangesWhenPausedOrInactive:` and not one of `-volume`, `-setVolume:`,
+  `-muted` or `-setMuted:`. The same 140 include `-masterClock`/`-setMasterClock:` - which is
+  `AVPlayer`'s clock and not `AVCaptureSession`'s, the difference the `AVCaptureSession.masterClock` row
+  has to make and `first-rung.py` alone cannot.
+- **`AVAssetTrack` answers `-preferredVolume` and has no `-minFrameDuration`.** 52 own instance methods at
+  6.1.3: `-nominalFrameRate`, `-naturalTimeScale`, `-estimatedDataRate`, `-preferredVolume`,
+  `-extendedLanguageTag`, `-loadValuesAsynchronouslyForKeys:completionHandler:`,
+  `-statusOfValueForKey:error:`, `-trackID`, `-segments`, `-samplePresentationTimeForTrackTime:`. And
+  `-extendedLanguageTag` is here, on a track, while `AVMediaSelectionOption.extendedLanguageTag` - a row
+  of this file - has no such member on the same release: the name belongs to another class, which is the
+  trap the ladder's `first rung` cannot see. Track association is on the WRITER at this release and not on
+  the track: `AVAssetWriterInput` carries `-addTrackAssociationWithTrackOfInput:type:` and
+  `-canAddTrackAssociationWithTrackOfInput:type:` (52 own methods at 6.1.3), while `AVAssetTrack` and
+  `AVCompositionTrack` carry no association member at all - `AVCompositionTrack` has 6 own methods, all of
+  them `-segments`, `-description`, `-dealloc`, `-finalize` and two private initialisers.
+- **`AVAssetResourceLoadingRequest` exists at 6.1.3 and its 11 own methods are the LOADER's side.**
+  `-finishLoadingWithResponse:data:redirect:`, `-finishLoadingWithError:`, `-finished`, `-request`,
+  `-serializableRepresentation`, `-streamingContentKeyRequestDataForApp:contentIdentifier:options:error:`,
+  `-initWithResourceLoader:requestDictionary:`. There is no `-finishLoading`, no `-cancelled`, no
+  `-response`, `-redirect`, `-dataRequest` or `-contentInformationRequest`, and the protocol a caller
+  implements to be asked is `NO PROTOCOL` at both ends - so on this release the object that fills a request
+  in does not exist and the two request objects it would fill are `NO CLASS` at both ends too.
+- **`AVPlayerItemAccessLogEvent` carries 20 own members and they are all aggregates**:
+  `-indicatedBitrate`, `-observedBitrate`, `-numberOfBytesTransferred`, `-numberOfSegmentsDownloaded`,
+  `-segmentsDownloadedDuration`, `-numberOfMediaRequests`, `-numberOfServerAddressChanges`,
+  `-numberOfStalls`, `-numberOfDroppedVideoFrames`, `-durationWatched`, `-URI`, `-serverAddress`,
+  `-playbackSessionID`, `-playbackStartDate`, `-playbackStartOffset`, `-initWithDictionary:`, `-init`,
+  `-copyWithZone:`, `-dealloc`, `-finalize`. Not one of the nine per-segment detail rows of this file is
+  among them, so there is no member to read and no member to store one in.
+- **`AVMediaSelectionOption` at 6.1.3 (24 own methods) has `-locale`, `-optionID`, `-_title`,
+  `-propertyList`, `-dictionary`, `-group`, `-associatedMediaSelectionOptionInMediaSelectionGroup:`,
+  `-hasMediaCharacteristic:`, `-mediaSubTypes`, `-metadataForFormat:` and no `-displayName`, no
+  `-displayNameWithLocale:` and no `-extendedLanguageTag`.** It is `NO CLASS` at 4.3, which is one of the
+  twelve owner classes iOS 6 brought.
+- **`AVCaptureVideoDataOutput` keeps its settings and not the recommendation.** 26 own methods at 6.1.3
+  include `-videoSettings`/`-setVideoSettings:`, `-availableVideoCodecTypes`,
+  `-availableVideoCVPixelFormatTypes`, `-vettedVideoSettingsForSettingsDictionary:` and
+  `-minFrameDuration`/`-setMinFrameDuration:` - so the dictionary this call would recommend is reachable
+  on the release - and no `recommendedVideoSettingsForAssetWriterWithOutputFileType:`.
+  `AVCaptureAudioDataOutput` has 13 own methods and not one of them is a setting: `-sampleBufferDelegate`,
+  `-setSampleBufferDelegate:queue:`, `-sampleBufferCallbackQueue`, `-connectionMediaTypes` and the graph
+  hooks. There is nothing on it to recommend audio settings out of.
+- **`AVCaptureStillImageOutput` has 33 own methods at 6.1.3 and no stabilisation member of any kind.**
+  `-isHDRCaptureSupported`, `-isRawCaptureSupported`, `-setSuspendsVideoProcessingDuringStillImageCapture:`
+  and `-suspendsVideoProcessingDuringStillImageCapture` are there; the two `is...Stabilization...` members
+  and the switch that drives them are 7.0's.
+- **`AVPlayerItemTrack` has 18 own methods at 6.1.3 - `-assetTrack`, `-trackID`, `-isEnabled`,
+  `-setEnabled:`, `-fallbackTrack` and the private Fig plumbing - and no frame rate.**
+  `-nominalFrameRate` is on the `AVAssetTrack` it wraps, not on the track the player hands a caller.
+- **`AVAssetExportSession` has 54 own methods at 6.1.3**: `-audioMix`/`-setAudioMix:`,
+  `-videoComposition`/`-setVideoComposition:`, `-metadata`/`-setMetadata:`, `-timeRange`/`-setTimeRange:`,
+  `-determineCompatibleFileTypesWithCompletionHandler:`, `-setShouldOptimizeForNetworkUse:`,
+  `-usesHardwareVideoEncoderIfAvailable`. No `-audioTimePitchAlgorithm`, no `-customVideoCompositor`, no
+  `-metadataItemFilter` - and the port DOES define `AVMetadataItemFilter` itself, in
+  `AVMetadataItemFilter.m`, so what is missing is the member that would attach it to an export.
+- **The reader outputs**: `AVAssetReaderTrackOutput` has 12 own methods, `AVAssetReaderAudioMixOutput` 16
+  and `AVAssetReaderVideoCompositionOutput` 14, and none of the three has an audio-time-pitch or custom
+  compositor member - each carries its media type, its settings and its tracks, which is the whole of
+  `AVAssetReaderOutput` on this release.
+- **`AVAudioMixInputParameters` has 17 own methods at 6.1.3 and its whole surface is volume**:
+  `-setVolume:atTime:`, `-setVolumeRampFromStartVolume:toEndVolume:timeRange:`,
+  `-getVolumeRampForTime:startVolume:endVolume:timeRange:`, `-trackID`/`-setTrackID:`,
+  `-audioTapProcessor`/`-setAudioTapProcessor:`. There is no rate and no pitch control to pitch.

@@ -17,9 +17,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVVideoCompositionCoreAnimationTool carries 11 own instance methods where 7.0's 12 carry this factory, and the release's factory is the two-argument one: +[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:] and its sibling without post-processing are 6.1.3 members. 7.0 adds the variant that takes a CALayer as well, so the post-processed video layers can be handed to a layer the caller owns rather than a layer the tool creates",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller builds the tool with +[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:], which is the release's own factory, and the tool's -layer is the layer the post-processed frames land in; there is no release member that would take a caller's layer instead",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "this is a PLURAL of a factory the release has: 6.1.3 carries +videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayer:inLayer: and +videoCompositionCoreAnimationToolWithAdditionalLayer:asTrackID: as its only two class methods, and 4.3 carries the same two. The tool's 9 own instance methods are -initWithMagicTrackID:animationLayer:videoLayer: with -dealloc, -finalize and four private layer members (-_auxiliaryTrackID, -_auxiliaryTrackLayer, -_hasLayerAsAuxiliaryTrack, -_postProcessingRootLayer, -_postProcessingVideoLayer), so the release keeps a post-processing VIDEO LAYER and gives no way to name a second one",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. The release builds its tool from ONE animation layer, through the singular factory it does carry, or through -initWithMagicTrackID:animationLayer:videoLayer:; a caller wanting a second layer adds it as an additional layer, which the other factory takes",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVAssetResourceLoaderDelegate resourceLoader:didCancelLoadingRequest:]",
@@ -141,9 +142,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the writer of the row above's field, and 6.1.3's AVMutableVideoCompositionLayerInstruction carries 8 own instance methods where 7.0's 10 carry it. The release's 8 are the opacity and transform setters - -setOpacity:atTime:, -setOpacityRampFromStartOpacity:toEndOpacity:timeRange:, -setTransform:atTime:, -setTransformRampFromStartTransform:toEndTransform:timeRange: - with the constructors and -dealloc, and there is no crop member among them: a rectangle set here would have nowhere to live, and no release member would read it back",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller crops with -[AVMutableVideoCompositionLayerInstruction setTransform:atTime:] or its ramp twin, which is where 6.1.3 keeps the geometry; a CGRect stored on the instruction here would be a value the release's own compositor never applies, so the crop would silently not happen",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the release has no crop member to store a rectangle in: all 6 own instance methods of AVMutableVideoCompositionLayerInstruction at 6.1.3 are -setTrackID:/-trackID, -setOpacity:atTime:, -setTransform:atTime:, -setOpacityRampFromStartOpacity:toEndOpacity:timeRange: and -setTransformRampFromStartTransform:toEndTransform:timeRange:, and its superclass's 21 carry the matching getters. No crop rectangle is stored on either",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and there is no member to read a rectangle back from either. A caller that wants a sub-rectangle on this release sizes the render through -renderSize and -renderScale on the composition and crops by cropping the layer it draws into",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVMutableVideoCompositionLayerInstruction setCropRectangleRampFromStartCropRectangle:toEndCropRectangle:timeRange:]",
@@ -151,9 +153,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the ramp writer beside the row above, from the same two selectors 7.0 adds to AVMutableVideoCompositionLayerInstruction's 10 own instance methods where 6.1.3's carry 8. The release's ramp writer is the transform one, -setTransformRampFromStartTransform:toEndTransform:timeRange:, which takes the same timeRange and a pair of values the release does hold; the crop ramp's two CGRect arguments have no member on 6.1.3 to store them in",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller ramps the geometry with -[AVMutableVideoCompositionLayerInstruction setTransformRampFromStartTransform:toEndTransform:timeRange:], which is the release's own spelling of the same operation; the crop ramp is 7.0's and a pair of rectangles written here would be read by nothing",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the ramp twin of the setter above and it arrived with it: the release stores an opacity ramp and a transform ramp on this instruction, and a crop ramp needs the crop rectangle the release has no member for. The two ramps it does keep are readable through -getOpacityRampForTime:startOpacity:endOpacity:timeRange: and -getTransformRampForTime:startTransform:endTransform:timeRange:",
+      "effect": "setting it raises an unrecognised selector, which is what absent means. A caller ramping over time uses the opacity or transform ramp, which is the same idea over a property the release stores, and reads it back with the getter of that ramp",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVPlayer mediaSelectionCriteriaForMediaCharacteristic:]",
@@ -211,9 +214,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVVideoCompositionLayerInstruction carries 22 own instance methods where 7.0's carry 29, and the crop ramp is not among the 22. What the release does carry is the other two ramps: -getOpacityRampForTime:startOpacity:endOpacity:timeRange: and -getTransformRampForTime:startTransform:endTransform:timeRange: are both 6.1.3 members, and 7.0 adds the crop pair beside them. There is no crop member to read from - 6.1.3's layer instruction stores a transform, an opacity and a mask, and nothing rectangular",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller gets the ramp the release holds with -getOpacityRampForTime:startOpacity:endOpacity:timeRange: or -getTransformRampForTime:startTransform:endTransform:timeRange:; the crop is expressed on this release as a transform, which is the route -[AVMutableVideoCompositionLayerInstruction setTransformRampFromStartTransform:toEndTransform:timeRange:] writes",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the getter twin of the two above, on the class that carries 21 own instance methods at 6.1.3 and 21 at 4.3 - the same count - all of them track, opacity and transform: -getOpacityRampForTime:startOpacity:endOpacity:timeRange: and -getTransformRampForTime:startTransform:endTransform:timeRange: are the two ramp getters the release does have",
+      "effect": "calling it raises an unrecognised selector, which is what absent means; the two getters above are the release's answer to the same question about opacity and about a transform, and they fill the four out parameters this one would",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetExportSession.audioTimePitchAlgorithm",
@@ -231,9 +235,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetExportSession carries 77 own instance methods and no -customVideoCompositor among them, where 7.0's 105 carry it. The release's own compositor is reached through -videoComposition and -setVideoComposition:, and 7.0's addition is the compositor INSTANCE the release builds for a composition - beside the class-based -customVideoCompositorClass that 6.1.3 also lacks. Neither has a class or instance to install on this release, and AVVideoCompositing is not a 6.1.3 protocol for a custom one to conform to",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller sets an AVVideoComposition and the release composites the export with its own compositor; a compositor instance stored here would never be sent -startVideoCompositionRequest:, because no 6.1.3 member would reach it",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the export composes through a video composition on this release and has no member naming a compositor class: 6.1.3's AVAssetExportSession carries 54 own instance methods, -videoComposition/-setVideoComposition: and -audioMix/-setAudioMix: among them, and -customVideoCompositor is not among them. Setting a compositor object here would be stored by the port and used by nothing: the export is Apple's, and its compositing runs off -videoComposition",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and a caller that sets it and reads it back reads nothing. The export's own compositor is named by the composition it holds, through -videoComposition",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetExportSession.metadataItemFilter",
@@ -241,9 +246,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetExportSession carries 77 own instance methods and no -metadataItemFilter nor -setMetadataItemFilter: among them, where 7.0's 105 carry both. The release's own metadata member is -metadata and -setMetadata:, which is the list the export writes, and it has no filter between what the asset holds and what that list is. The filter class itself is not missing from the port - the port's own AVMetadataItemFilter7.m implements AVMetadataItemFilter's -identifiers and its two constructors, and the registry row for that class is implemented - what 6.1.3 lacks is the member on the session that would consult it",
-      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller filters by building the metadata list itself and passing it to -[AVAssetExportSession setMetadata:], which is the release's own route and the only one it consults; a filter stored here would drop nothing, because no 6.1.3 member would read it",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the port provides the filter and the export has no member to attach it to: 6.1.3's AVAssetExportSession carries 54 own instance methods, and -metadata/-setMetadata: is the whole of its metadata surface - no filter, with -determineCompatibleFileTypesWithCompletionHandler: being how a caller inspects what the export will produce. The port defines AVMetadataItemFilter itself, in AVMetadataItemFilter.m, so the object is reachable; what is missing is the member that would apply one to an export",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and there is no member to read it back from. A caller filters metadata itself, through -metadata on the export and -metadataForFormat: on a track, both of which the release carries",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetImageGenerator.customVideoCompositor",
@@ -251,9 +257,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetImageGenerator carries 32 own instance methods where 7.0's 33 carry -customVideoCompositor, and the release's 32 are the generation surface - -generateCGImagesAsynchronouslyForTimes:completionHandler:, -copyCGImageAtTime:actualTime:error:, -maximumSize, -appliesPreferredTrackTransform, -requestedTimeToleranceBefore, -requestedTimeToleranceAfter - with no compositor member. The single selector 7.0 adds is the compositor instance, and 6.1.3 has nothing to install one into: the generator composites with the release's own path, and AVVideoCompositing is not a protocol on this release",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller asks for a frame with -copyCGImageAtTime:actualTime:error: and gets the release's own composited result; a compositor stored here would never be sent a request, because no 6.1.3 member would reach it",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetImageGenerator.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the generator holds a video composition and not a compositor class: all 31 own instance methods of AVAssetImageGenerator at 6.1.3 include -videoComposition/-setVideoComposition:, -maximumSize/-setMaximumSize:, -appliesPreferredTrackTransform, -requestedTimeToleranceBefore and -copyCGImageAtTime:actualTime:error:, and no compositor member of any kind",
+      "effect": "setting it raises an unrecognised selector, which is what absent means. The generator's own video composition is -videoComposition, and a caller that wants a frame drawn through a CA layer passes an AVVideoCompositionCoreAnimationTool as that composition's -animationTool",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetReaderAudioMixOutput.audioTimePitchAlgorithm",
@@ -281,9 +288,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetReaderVideoCompositionOutput carries 15 own instance methods where 7.0's 19 carry -customVideoCompositor, and the release's 15 are -videoComposition, -setVideoComposition:, -sourceTrackIDForTrack:, -tracks plus constructors. 7.0 adds the accessor, the private -_setVideoComposition:customVideoCompositorSession: and the private -_errorForOSStatus: - the session is what a custom compositor would run in, and 6.1.3 has no such object: AVVideoCompositing is not one of the 16 AV-named protocols in the 6.1.3 armv7 cache, and AVAsynchronousVideoCompositionRequest, the request a custom compositor is handed, is not one of the 301 AV-named classes",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller sets an AVVideoComposition and the release composites with its own compositor; a compositor stored here would be inert, since no 6.1.3 member would send it a request and no protocol on this release would let a class conform to the role",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetReaderVideoCompositionOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends; the class and protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, whose control in the same run reads 558 names beginning AV"
+      "reason": "the output carries the composition it reads through and not a compositor class: 14 own instance methods at 6.1.3 - -videoTracks, -videoSettings, -alwaysCopiesSampleData, -mediaType and, from AVAssetReaderOutput, the reader - and -videoComposition/-setVideoComposition: among them, with no compositor member",
+      "effect": "setting it raises an unrecognised selector, which is what absent means. The output reads through the composition it holds, through -videoComposition",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingContentInformationRequest",
@@ -391,9 +399,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is not in 6.1.3: the 6.1.3 armv7 cache holds 301 classes naming AV and this is not among them, with the run's control reading 558 names beginning AV across 6.1.3 and 4.3. It is 7.0's object for a custom compositor to ask the release to finish one frame, and 6.1.3's composition pipeline is synchronous: the compositor classes it has are its own, and the port's -[AVVideoCompositing protocol row] has no counterpart to answer on this release either",
-      "effect": "NSClassFromString returns nil and a class reference fails to link against the release, which is what absent means for a class. 6.1.3 composites with the release's own compositor reached through -[AVVideoComposition instructions]; a caller wanting a custom compositor has neither the protocol nor the request object on this release",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control of 558 names beginning AV; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, where it reads super NSObject with 14 own instance selectors, and with its three controls answered on both ends"
+      "reason": "the request a custom compositor is handed arrived with the protocol that hands it, and there is neither here: no band end declares AVVideoCompositing, and no band end has a class to carry a request, so nothing on this release produces one. This release's video composition is driven by the instructions a composition holds, through -instructions and -frameDuration, both of which AVVideoComposition carries at 6.1.3",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes; nothing on this release produces one, so a caller waiting on a completion handler for it waits for nothing",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAudioMixInputParameters.audioTimePitchAlgorithm",
@@ -570,9 +579,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the same pair on the mutable subclass, and 6.1.3's AVMutableVideoComposition carries 15 own instance methods where 7.0's 17 carry -customVideoCompositorClass, -setCustomVideoCompositorClass: and the two built-in-compositor members -builtInCompositorName and -setBuiltInCompositorName:. The release's 15 are the instruction and property edits - -mutableVideoCompositionInstructionForTrackID:, -setInstructions:, -addMutableInstruction: and the renderSize and renderScale setters - and none of them names a compositor",
-      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller edits the composition's instructions and hands it to a session or an export session and the release composites with its own compositor; a class set here would never be sent a request, since AVVideoCompositing is not a protocol on this release and the release's compositor is the only one it knows",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the same row on the mutable subclass, and the same release: AVMutableVideoComposition has 12 own instance methods at 6.1.3 - -instructions, -frameDuration, -renderSize, -renderScale, -animationTool and their setters, -copyWithZone: and -mutableCopyWithZone: - and -compositor/-setCompositor: are inherited from AVVideoComposition, whose 26 are measured above. Neither carries a member that takes a CLASS",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and there is no member to read the class back from. The subclass's own -mutableCopyWithZone: gives an independent composition to set -animationTool: on, which is the release's post-processing route",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVOutputSettingsAssistant",
@@ -760,9 +770,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol is not in 6.1.3. tools/corpus/cache-census.lua over the 6.1.3 armv7 cache answers 1171 protocols of which 16 name AV, and prints all 16: AVAssetWriterFigAssetWriterNotificationHandlerDelegate, AVAssetWriterFinishWritingHelperDelegate, AVAsynchronousKeyValueLoading, AVAudioPlayerDelegate, AVAudioSessionDelegate, AVAudioSessionDelegateMediaPlayerOnly, AVCaptureFileOutputPauseResumeDelegate, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVConferenceDelegate, AVDecodedAudioSettingsForFig, AVDecodedVideoSettingsForFig, AVOutputSettingsValidation, AVRecorderImpl, AVReencodedAudioSettingsForFig, AVReencodedVideoSettingsForFig. This one is not among them, and the run's control reads 558 names beginning AV across 6.1.3 and 4.3, so the zero is the release's",
-      "effect": "a class written to conform to it would compile against the SDK header and gain nothing at run time, which is what absent means for a protocol: 6.1.3's compositor is the release's own and no public mechanism would ever send it -startVideoCompositionRequest: or -renderContextChanged:. The port's own CharonAVFoundationProtocols.h declares only AVCaptureDataOutputSynchronizerDelegate, so nothing here collides with a protocol the port already forward-declares",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its 16-of-1171 count and its control of 558 names; class-scoped-rows.py returns NO PROTOCOL for this row on 6.1.3 and CARRIED at 7.0, where it reads 5 own instance selectors"
+      "reason": "the protocol a caller implements to BE a custom compositor is 7.0's, and this release has where a compositor goes but not the protocol: AVVideoComposition carries -compositor and -setCompositor: at 6.1.3 and AVMutableVideoComposition carries them too, taking the compositor object this release knows. A caller cannot adopt a protocol the release does not declare, and cannot hand in a class of its own through a property the release does not carry",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and -setCompositor: takes the compositor this release knows, so a caller that writes one has nothing to conform to and nothing to submit it as",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVVideoComposition.customVideoCompositorClass",
@@ -770,9 +781,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVVideoComposition carries 29 own instance methods where 7.0's 33 carry -customVideoCompositorClass and -setCustomVideoCompositorClass:, and the release's 29 are the built-in compositor's surface - -instructions, -frameDuration, -setFrameDuration:, -sourceTrackIDForSegmentInstruction:, -requiredSourceTrackIDs - with no class to install. The class it would take is a conformer of AVVideoCompositing, and 6.1.3 has no such protocol: of the 16 AV-named protocols in the 6.1.3 armv7 cache, none is AVVideoCompositing, so there is nothing on this release for a custom compositor to conform to and nothing that would call it",
-      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller supplies instructions and a frame duration and the release composites them with its own compositor; installing a class here would be inert, because no 6.1.3 member would ever send -startVideoCompositionRequest: to it",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends; the protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its count and its control of 558 names"
+      "reason": "the release has a compositor member and no way to NAME a class for it: 6.1.3's AVVideoComposition carries 26 own instance methods, and -compositor/-setCompositor: are among them, taking the compositor object this release knows; this property, whose value is a CLASS the caller supplies, arrived in 7.0 with the protocol to implement. An accessor that stored a class nothing would ever instantiate would answer a caller's set with the value back and draw with none of it",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and because there is no member to store it, a caller that sets it and reads it back reads nothing. The release's own compositor is reached through -compositor, and post-processing through -animationTool/-setAnimationTool:",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVVideoCompositionInstruction",
@@ -780,9 +792,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "this row is a PROTOCOL and 6.1.3 has no such protocol, while it does have a CLASS of that name - the two are different declarations and the tool tells them apart: of the 16 AV-named protocols in the 6.1.3 armv7 cache none is this one, and of the 301 AV-named classes AVVideoCompositionInstruction and AVVideoCompositionInstructionInternal are both there, the latter with 19 own instance methods. So the release has the instruction object and not the protocol a custom instruction would conform to",
-      "effect": "a class written to conform to it would compile against the SDK header and gain nothing at run time, which is what absent means for a protocol. A caller builds instructions with -[AVMutableVideoCompositionInstruction instruction] and the release's own compositor consumes them through its private path; the port's CharonAVFoundationProtocols.h does not declare this one, so nothing collides",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the class and protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named classes and the AV-named protocols of each rung beside both counts and its control of 558 names; class-scoped-rows.py returns NO PROTOCOL for this row on 6.1.3 and CARRIED at 7.0, where it reads 5 own instance and 1 own class selector"
+      "reason": "the PROTOCOL is 7.0's, and the name itself is not new: on 6.1.3 and on 4.3 it is a CLASS of 18 own instance methods carrying -timeRange/-setTimeRange:, -layerInstructions/-setLayerInstructions:, -backgroundColor, -enablePostProcessing/-setEnablePostProcessing:, -dictionaryRepresentation, -init, -copyWithZone:, -mutableCopyWithZone: and the NSCoding pair, and the 18 at 4.3 are the same 18. What arrived in 7.0 is the change of KIND, from a class a caller instantiates to a protocol a caller adopts. Of the five members that protocol requires, this release's class answers -timeRange and -enablePostProcessing by name and has no -passthroughTrackID, no -requiredSourceTrackIDs and no -containsTweening",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. The NAME is not absent though - NSClassFromString answers the release's own class - so conformsToProtocol: answers NO for the very object the release hands a caller, while -timeRange and -enablePostProcessing are reachable on that object as plain selectors. A caller that needs the other three reads the instructions the composition holds, through -instructions on the composition, which the release does carry",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVVideoCompositionRenderContext",
@@ -790,9 +803,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is not in 6.1.3: of the 301 classes naming AV in the 6.1.3 armv7 cache, with the run's control reading 558 names beginning AV across 6.1.3 and 4.3, this one is not among them. It is the object 7.0 hands a custom compositor each time its render context changes, and 6.1.3 has no custom compositor to hand it to - the release's compositor takes its context from the session's own -addVideoPreviewLayer: and -videoPreviewLayer members",
-      "effect": "NSClassFromString returns nil and a class reference fails to link against the release, which is what absent means for a class. A caller on this release never receives one: the release composites with its own compositor and exposes no context object, and the port's own objects declare no conformer that would expect it",
-      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control of 558 names beginning AV; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, where it reads super NSObject with 14 own instance selectors, and with its three controls answered on both ends"
+      "reason": "the context a custom compositor draws into is 7.0's, and there is no compositor on this release to be handed one: the protocol that would hand it over is NO PROTOCOL at both band ends, and the only way to ask for a compositor by class name is AVMutableVideoComposition.customVideoCompositorClass, which is absent too. A caller post-processing a frame on this release drives a CA layer through -animationTool, which the release does carry",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "+[AVCaptureVideoPreviewLayer layerWithSessionWithNoConnection:]",
