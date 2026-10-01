@@ -381,3 +381,63 @@ row is a `nil` class that conforms to nothing. Three things come out of it:
 - **`VNRecognizedText` conforms to three protocols** and answers all of them: `supportsSecureCoding`
   is `YES`, and `string`, `confidence` and `requestRevision` read nil, 0 and 0 because nothing of
   this port makes one.
+
+## 9. Why registry-coherence.py could not judge three of these rows, and it is not their length
+
+`coordination/registry-coherence.py` reported, twice, `no sample answered for` the three rows this
+band added rather than flipped:
+
+```
+FAIL  registry coherence: no sample answered for VNDetectHumanRectanglesRequest.upperBodyOnly
+FAIL  registry coherence: no sample answered for VNGenerateImageFeaturePrintRequest.imageCropAndScaleOption
+FAIL  registry coherence: no sample answered for VNRecognizeTextRequest.usesLanguageCorrection
+```
+
+It is not the length of those rows, and the earlier theory that it was -- that a long row crowds out
+the ones around it -- is wrong and was retracted in the commit that shortened them. Asking the tool's
+own two functions over the same range is what settles it:
+
+```
+python3 - <<'PY'
+import importlib.util, os
+spec = importlib.util.spec_from_file_location("rc", os.path.expanduser("~/Git/projects/ios/coordination/registry-coherence.py"))
+rc = importlib.util.module_from_spec(spec); spec.loader.exec_module(rc)
+rows = rc.changed_rows(".", BASE, "HEAD")
+prompt = rc.build_prompt(rows, rc.definitions(".", BASE, "HEAD"))
+print([a["api"] for _, b, a in rows if b is None and a["api"] not in prompt])
+PY
+```
+
+```
+collected: 42 | new at the tip: 22 | removed: 19 | flipped: 1
+  flipped   1 rows,  0 of their apis absent from the prompt
+  NEW      22 rows,  3 of their apis absent from the prompt
+      absent: VNDetectHumanRectanglesRequest.upperBodyOnly
+      absent: VNGenerateImageFeaturePrintRequest.imageCropAndScaleOption
+      absent: VNRecognizeTextRequest.usesLanguageCorrection
+```
+
+**22 new rows, and 19 of their api strings are in the prompt anyway.** Those 19 are in it as
+`REMOVED by this patch` lines -- `changed_rows` also collects the 19 rows this band took out of
+`absent_Vision.json`, and `build_prompt` prints a removal's api. The three that are absent are the
+three this band *added*, and the cause is in `build_prompt`:
+
+```python
+if before is None or isinstance(before, str):
+    parts.append(f"  {path}: file is {'added' if before is None else 'unreadable at the base'}")
+    continue
+```
+
+`before is None` is meant to mean *this file did not exist at the base*. `changed_rows` also produces
+it for *this row did not exist at the base*, and the two are not told apart, so every row a patch adds
+is answered with `ios11.json: file is added` -- printed 22 times, once per added row -- and the row's
+own fields never reach the model. The tool then reports the consequence as its own failure, which is
+the right thing to do and the wrong reason to report it: the rows are not unanswerable, they are
+unasked.
+
+The 40-row cap fails on the same range for a related reason: it counts 42, of which 19 are removals,
+and a removal has no fields that can disagree with anything. The rows a reviewer would actually be
+shown are the 22 added and 1 flipped, which is 23.
+
+Both are in `coordination/`, which is not this band's to change. What the band can do is state them
+where the next reader of its rows will find them, which is here.
