@@ -271,6 +271,92 @@ already answers for a request class it has never heard of -- so no request of th
 revision of its own to be placed correctly. Copying the host's counts would have put a 16.0 release's
 revisions into a 13.0 row, which is the way a modern answer becomes a wrong one.
 
+### 4.1 One class of these will not instantiate here, and nil answers every question
+
+The same probe asks what a fresh instance of each of the observation classes answers for the methods
+their own headers declare. Read the `alloc/init` lines FIRST, because they decide what the rest of
+the block means:
+
+```
+alloc/init VNRecognizedText                   gave an object
+alloc/init VNRecognizedTextObservation        gave an object
+alloc/init VNFeaturePrintObservation          GAVE NIL
+alloc/init VNSaliencyImageObservation         gave an object
+alloc/init VNRecognizeTextRequest             gave an object
+alloc/init VNNoClassOfThisName (the control)  no class, nil either way
+
+fresh VNRecognizedText boundingBoxForRange:{0,0} = nil, error = none
+fresh VNRecognizedText boundingBoxForRange responds: responds
+fresh VNRecognizedTextObservation topCandidates:10 = 0 candidates, topCandidates:0 = 0, responds: responds
+fresh VNFeaturePrintObservation computeDistance to itself = NO, distance = -1.000000, error = none
+fresh VNFeaturePrintObservation elementType = 0 elementCount = 0 data = nil, responds: no selector
+VNRecognizedText carries 14 method(s): string requestRevision hash initWithCoder: confidence .cxx_destruct isEqual: copyWithZone: debugDescription encodeWithCoder: boundingBoxForRange:error: crOutput initWithRequestRevision:CRImageReaderOutput: setRequestRevision:
+VNRecognizedTextObservation carries 13 method(s): vn_cloneObject hash initWithCoder: .cxx_destruct isEqual: text setText: encodeWithCoder: isTitle setTextObjects: setIsTitle: textObjects topCandidates:
+VNFeaturePrintObservation carries 5 method(s): elementType elementCount data computeDistance:toFeaturePrintObservation:error: computeDistanceToFeaturePrintObservation:error:
+```
+
+**The three `computeDistance` lines and the `elementType` line are a measurement of nil and are not
+measurements of Vision.** `[[VNFeaturePrintObservation alloc] init]` gives nil on this host, so the
+call answered `NO`, left the caller's `-1.0f` where it was, and set no error -- which is precisely
+what messaging nil does, and what a reader would have written down as Apple's answer if the `alloc/init`
+line had not been beside it. It was caught here by asking `respondsToSelector:` on the same object and
+being told `no selector` while `class_copyMethodList` on its class listed the method in the same run:
+`instancesRespondToSelector:` said yes and the instance said no, and the only thing that reconciles
+those two is an object that is not an instance of that class. **The `alloc/init` line is now in the
+probe, above the questions, and the control beside it is a name that is no class at all**, so that
+this reading cannot be mistaken for an answer again.
+
+What is left of that block is Apple's own, and it is what the port answers:
+
+- **`boundingBoxForRange:error:` on a `VNRecognizedText` with nothing in it is `nil` with no error.**
+  The class does instantiate here, so this is Apple's answer and not nil's.
+- **`topCandidates:` on a `VNRecognizedTextObservation` with nothing in it is an empty array**, for a
+  count of 10 and for a count of 0 alike.
+- **`computeDistance:toFeaturePrintObservation:error:` cannot be measured against Apple's own Vision
+  on this host at all**, and the reason is the one line above. `-computeDistance` is still defined and
+  the port's answer is written down beside the reason (section 7).
+
+The three `carries` lines are the runtime's own method lists, and they are here for two reasons: they
+name the selector spellings the runtime holds (`crOutput` and
+`computeDistanceToFeaturePrintObservation:error:` on the first and third, neither of which any 13.0
+header declares, are this host's own later additions), and `class_copyMethodList` is the measurement
+that settled the nil question above. `VNRecognizedTextObservation`'s `text`, `textObjects` and
+`isTitle` are likewise 14.0 and 16.0 and are not 13.0.
+
+### 4.2 The three catalogue methods, and the one of them the port can answer
+
+```
+knownClassificationsForRevision:1 = 1303 name(s), error = none
+    the first is "abacus" and the last is "zucchini"
+knownAnimalIdentifiersForRevision:1 = 2 identifier(s), error = none
+    they are Cat,Dog
+supportedRecognitionLanguagesForTextRecognitionLevel:accurate revision:1 = 1 language(s), error = none
+knownClassificationsForRevision:2 = 1303 name(s), error = none
+    the first is "abacus" and the last is "zucchini"
+knownAnimalIdentifiersForRevision:2 = 2 identifier(s), error = none
+    they are Cat,Dog
+supportedRecognitionLanguagesForTextRecognitionLevel:accurate revision:2 = 8 language(s), error = none
+knownClassificationsForRevision:3 = 0 name(s), error = com.apple.Vision 16
+knownAnimalIdentifiersForRevision:3 = 0 identifier(s), error = com.apple.Vision 16
+supportedRecognitionLanguagesForTextRecognitionLevel:accurate revision:3 = 33 language(s), error = none
+```
+
+Three class methods, each deprecated in 15.0 and each annotated `ios(13.0, 15.0)` in the header, so
+all three are 13.0 API. **They are not printed in full** -- the classification catalogue is 1303 names
+-- because the count is the whole of what a port that carries no such catalogue can be compared
+against, and a reader who wants the names asks Vision for them.
+
+- **`knownAnimalIdentifiersForRevision:` answers `Cat,Dog`, two of two, for every revision it carries.**
+  That is the whole of the list and not a narrowing of it, and the port's answer is the two
+  identifiers `Vision130.m` exports, whose own values section 3 read out of the 16.0 image. A revision
+  it does not carry answers nothing and `com.apple.Vision` **16**, which is `VNErrorUnsupportedRevision`
+  and the same code the port's request path already refuses an uncarrried revision with.
+- **`knownClassificationsForRevision:` answers 1303 names and `supportedRecognitionLanguages…:` answers
+  1, 8 and 33 language codes.** These are catalogues of models this port has not got: there is no
+  classifier behind `VNClassifyImageRequest` and no text recogniser behind `VNRecognizeTextRequest`, and
+  a list of another release's copied in would be a wrong list rather than a missing one. Section 7 says
+  what a caller gets instead.
+
 ## 5. What this port does with a request whose work it cannot do
 
 `VNHandlers.m`'s `charon_vision_failure` answers `VNErrorNotImplemented` for every request it cannot
