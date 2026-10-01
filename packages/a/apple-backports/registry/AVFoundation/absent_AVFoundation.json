@@ -3748,9 +3748,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. A microphone mode is a processing mode of the microphone path, and the audio session on this release carries a category and a route - AVAudioSession declares 60 instance selectors at 6.1.3 - and no mode to select; measured on the owning class, none of AVCaptureDevice's 100 instance selectors is this",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; the release has no mode to report, so an answer of \"none\" would be a value the port invented rather than one the system read",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.activePrimaryConstituentDevice",
@@ -3758,9 +3758,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it, and the feature it names does not exist on this hardware: a constituent device is one camera of a device built with more than one - AVCaptureDevice declares 100 instance selectors at 6.1.3 and none of them is a constituent device, and the dual-camera device type itself (AVCaptureDeviceTypeBuiltInDualCamera) reads 10.2 as its first rung. An iPad 2 and an iPhone 4S have one camera each",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises unrecognized selector; there is no second camera for it to name, which is a hardware fact rather than a gap in the port",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.activePrimaryConstituentDeviceRestrictedSwitchingBehaviorConditions",
@@ -3768,9 +3768,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0 for both halves of the name. It reports when the switch may be restricted, which is a question about a multi-camera device this hardware is not",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.activePrimaryConstituentDeviceSwitchingBehavior",
@@ -3778,9 +3778,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, which bounds an arrival between 13.0 and 16.0 rather than dating it. It is the read side of the same multi-camera switch as -activePrimaryConstituentDevice, and the same measurement answers it - nothing on a single-camera device switches between cameras",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; a caller reaching for it gets the honest no rather than a behaviour default that would hide the missing switch",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.fallbackPrimaryConstituentDevices",
@@ -3788,9 +3788,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0. It lists the devices to fall back to when the current one is unavailable - a multi-camera fallback, and the device list this release has is the one camera it has",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.minimumFocusDistance",
@@ -3798,9 +3798,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. It reports how close the lens can focus, a property of the optics; the lens information this release has is on AVCaptureDeviceFormat, which declares 11 instance selectors at 6.1.3 - formatDescription, mediaType, isBinned, videoSupportedFrameRateRanges, supportedStabilizationMethod, supportsLowLightBoost - and none of them is a focus distance, so there is nothing to read it from",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; answering 0 would be a value about infinity focus that no measurement on this device supports",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.portraitEffectActive",
@@ -3808,9 +3808,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0 for both halves of the name, bounding an arrival between 13.0 and 16.0. The read side of the portrait effect, which is absent on this class for the same measured reason",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.portraitEffectEnabled",
@@ -3818,9 +3818,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it on this class: AVCaptureDevice declares 100 instance selectors at 6.1.3 and none is this. Worth naming because first-rung DOES answer the bare name, at 10.1.1 - and that rung belongs to another class: the 10.1.1 armv7s cache holds the name only inside initWithHDREnabled:portraitEffectEnabled: and _portraitEffectEnabled beside a \"Tc,R,N,GisPortraitEffectEnabled,V_portraitEffectEnabled\" type encoding, which is CaptureKit's, and no class in that cache declares -portraitEffectEnabled. A selector's rung says nothing about its owner",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; the portrait effect needs the depth hardware this release's camera does not have",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.preferredMicrophoneMode",
@@ -3828,9 +3828,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. It sets the microphone mode the same release has none of to set",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.primaryConstituentDeviceRestrictedSwitchingBehaviorConditions",
@@ -3838,9 +3838,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0 for both halves. It restricts when the multi-camera switch may happen, which presupposes the switch",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.primaryConstituentDeviceSwitchingBehavior",
@@ -3848,9 +3848,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. The setter half of the same switch as -activePrimaryConstituentDeviceSwitchingBehavior, and measured on the same class with the same answer",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; there is no switch to configure",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.supportedFallbackPrimaryConstituentDevices",
@@ -3858,9 +3858,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. The read side of the same fallback list, measured on the same class",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDeviceFormat.highPhotoQualitySupported",
@@ -3868,9 +3868,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. It reports HEVC still capture from a format, and AVCaptureDeviceFormat declares 11 instance selectors at 6.1.3 - the list in the minimumFocusDistance row - none of which is this; the still-capture path here is AVCaptureStillImageOutput, which has no quality flag",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDeviceFormat.portraitEffectSupported",
@@ -3878,9 +3878,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. The depth hardware behind the portrait effect, asked of a format; measured on AVCaptureDeviceFormat's 11 instance selectors at 6.1.3, absent",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDeviceFormat.videoFrameRateRangeForPortraitEffect",
@@ -3888,9 +3888,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDeviceFormat a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. It answers an AVFrameRateRange for the portrait effect; the format carries -videoSupportedFrameRateRanges, measured present at 6.1.3, but that is the range the format supports for normal capture and there is no portrait-effect range to report - the two are not interchangeable and answering one as the other would be a substitution",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureMovieFileOutput.primaryConstituentDeviceRestrictedSwitchingBehaviorConditionsForRecording",
@@ -3898,9 +3898,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureMovieFileOutput a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0 for both halves of the name, bounding an arrival between 13.0 and 16.0. It restricts the same recording switch",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureMovieFileOutput.primaryConstituentDeviceSwitchingBehaviorForRecording",
@@ -3908,9 +3908,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureMovieFileOutput a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0. It sets the switching behaviour for a recording, so it needs both the multi-camera device and the recording to follow it; AVCaptureMovieFileOutput declares 25 instance selectors at 6.1.3 and none is this",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; a recording on this release runs from one camera",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureMovieFileOutput.primaryConstituentDeviceSwitchingBehaviorForRecordingEnabled",
@@ -3918,9 +3918,9 @@
       "introduced": "15.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureMovieFileOutput a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. The enable flag of the same recording switch",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCoordinatedPlaybackParticipant",
@@ -4189,9 +4189,9 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. The automatic half of the face-driven exposure, which is itself absent",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.automaticallyAdjustsFaceDrivenAutoFocusEnabled",
@@ -4199,9 +4199,9 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: first-rung answers 16.0, bounding an arrival between 13.0 and 16.0. It is the automatic half of the face-driven autofocus, which is itself absent",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.faceDrivenAutoExposureEnabled",
@@ -4209,9 +4209,9 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it, and the substrate is missing the same way as its autofocus sibling: no face-driven exposure mode on this capture stack, measured on AVCaptureDevice's 100 instance selectors at 6.1.3",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureDevice.faceDrivenAutoFocusEnabled",
@@ -4219,9 +4219,9 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries it: absent from both caches, and first-rung answers NONE for the bare name - a genuine zero, and one to be careful with, because first-rung is an exact index and the ladder has a hole above 12.0. The capture stack on this release has no face detection: the classes it declares are AVCaptureMetadataOutput with face objects in AVCaptureMetadataOutput's own output, not a face-driven mode of the camera's autofocus. AVCaptureDevice declares 100 instance selectors at 6.1.3 and none is this",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; enabling face-driven focus would need a camera pipeline that watches faces, which this release does not have",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "AVCaptureSession.synchronizationClock",
@@ -4229,9 +4229,9 @@
       "introduced": "15.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureSession a property like it: it arrived in iOS 15",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no release this port builds carries the clock on this class, and this is a case where the rename pattern does not rescue it: it is the replacement spelling of AVCaptureSession.masterClock - the SDK surface carries AVCaptureSession.masterClock introduced 7.0 and deprecated 15.4 against synchronizationClock introduced 15.4, and the host answers both names on an AVCaptureSession - but AVCaptureSession declares 84 instance selectors at 6.1.3 and NEITHER -masterClock nor -setMasterClock: is among them, so there is no clock property here to forward to. Compare AVPlayer.sourceClock, which is the same rename and is implemented because AVPlayer does declare masterClock at 6.1.3",
+      "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises; a session with one camera has nothing to synchronize against",
+      "source": "tools/corpus/cache-census.lua AV 6.1.3 4.3, which printed images 524 of which 16 name AV and 11378 classes of which 301 name AV at 6.1.3, images 354 of which 15 name AV and 7187 classes of which 231 name AV at 4.3, closing \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; tools/corpus/objc-inventory.lua over the armv7 cache of each band end, the accessor looked up on the class that declares it; and python3 tools/cache-index/first-rung.py on the bare name, whose 16.0 is the first held rung above 12.0 and so bounds an arrival between 13.0 and 16.0 rather than dating it"
     },
     {
       "api": "+[AVMutableVideoComposition videoCompositionWithAsset:applyingCIFiltersWithHandler:completionHandler:]",
