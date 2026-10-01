@@ -96,9 +96,77 @@ rather than ignored: a view that ignored it would answer a request the header de
 that aliases. It is a port-only case, in `export-cases.m`, because the release cannot reach it on this
 host.
 
-## What is NOT claimed
+## The three kernels, and what is NOT claimed about them
 
-The three kernels' encode paths are not measured against the release. They encode into a command
-buffer this host cannot commit, which is the same limitation the image family records, so each of
-their rows says that the numbers on it are the port's own against a plain C reference written from the
-header's own wording and in the same process, and that no number on those rows measures Apple's code.
+`MPSNDArrayGather` and its gradient, `MPSNDArrayStridedSlice` and its gradient, and
+`MPSNDArrayMatrixMultiplication` are the three classes of the family whose bodies the header specifies
+well enough to write from. **Their encode paths are not measured against the release.** They encode
+into a command buffer this host cannot commit, which is the same limitation the image family records,
+so `kernel-cases.m` compares them against a plain C reference written from the header's own wording and
+computed in the same process: **69 elements compared, 0 mismatches**, and both planted builds fail it.
+
+So every row for these five classes says, in its own `effect`, that its numbers are the port's own
+against that reference and that no number on it measures Apple's code.
+
+**Dimension 0 is the COLUMNS, which three separate things turned on.**
+
+- the matrix multiplication. A matrix is "stored in the two most major dimensions" of the array
+  (`MPSNDArrayMatrixMultiplication.h:33-35`) and the major row - the dimension whose elements are
+  adjacent in memory - is the 0th, so a `[2,3]` array is **three rows of two**, not two rows of three.
+  The first version had dimension 0 as the row and answered 76 100 103 136 where the correct product of
+  the same twelve numbers is 27 30 33 61 68 75 95 106 117.
+- the gather's own expectation, and here **the case file was wrong twice and the port was right**,
+  which is the part worth recording: a `[3,2]` source gathered on axis 0 was expected to be
+  `5 6 1 2 5 6`, which reads the source as three rows of two. With dimension 0 fastest the source is
+  two rows of three and the answer is `3 1 3 6 4 6`. The second version of that reference had the
+  result's four columns and three rows the other way round. An expectation written from a misreading
+  cannot fail the right thing, and the harness saying so twice is the case for writing the derivation
+  next to the numbers.
+- a strided slice's count, which is a **ceiling**: a stride of 2 over a dimension of 5 holds three
+  elements, not two, or the last element of every odd dimension is dropped.
+
+**Two things a gradient pass must take from the STATE, and both were wrong first.**
+
+`MPSNDArrayUnaryGradientKernel`'s RFC comment says it outright: "There is currently no way to manually
+set this information for the gradient. This may not be viewed as a problem as this information is
+automatically set by the gradient state" (`MPSNDArrayKernel.h:318-321`). The two things are:
+
+- the gather's **axis**, which is a property of the forward kernel and of nothing in the data. It
+  cannot be recovered from the two arrays' shapes: a gather on axis 0 of a `[3,2]` source by *three*
+  indices has a result of the same `[3,2]` shape, so a shape-difference derivation refuses the one case
+  where the index count happens to equal the axis length. The state records it, read from the kernel
+  through the `axis` selector the release declares for it.
+- the strided slice's **strides**, which `MPSNDArrayStridedSliceGradient` does not declare a property
+  for. Reading the gradient kernel's own filter - all ones, the default - scattered the incoming
+  gradient PACKED: a stride of 2 over 5 landed on 0 1 2 where the forward pass had read 0 2 4, and the
+  harness reported `7 8 9 0 0` against the reference's `7 0 8 0 9`.
+
+And the corollary, which was the same bug from the other side: **a gradient pass must not record the
+state over the forward pass's.** The state's whole content is the FORWARD filter, and an encode that
+re-recorded it from the gradient kernel replaced the forward strides and offsets with the defaults -
+the strided-slice defect above, caused from the other end.
+
+**A gather's gradient is a scatter-ACCUMULATE over the RESULT's positions.** The forward pass read
+`source[indices[r], rest]` into `result[r, rest]`, so the incoming gradient at `result[r, rest]` belongs
+at `source[indices[r], rest]`, and two result positions naming the same index sum. The first version
+walked the INDEX array and took one gradient element per index, which is right only when the gradient
+has exactly as many elements as there are indices; for the measured case it wrote `0 0 60 0 0 0` where
+the answer is `20 0 40 50 0 100`.
+
+## Three defects the harness found that are not about any of the above
+
+They are recorded because none of them is visible in the source and all three would have shipped.
+
+- **An over-release of a singleton.** `+[MPSNDArray defaultAllocator]` answers the same object every
+  time, and the kernel's `-dealloc` releases its allocator. Storing it in `-init` without a retain made
+  the *second* kernel ever built take the singleton's own retain count down: a SIGSEGV inside
+  `objc_release` at the end of the first case that built one and released it.
+- **Two pairs of declared encodes that were missing**, each found by its name in the report rather
+  than by anything a reader would notice: the binary gradients' `primarySourceArray:` /
+  `secondarySourceArray:` pair (`MPSNDArrayKernel.h:532-539`) and the unary gradient's `sourceArray:`
+  pair (`:344-353`). Only the multiary spellings existed, so a caller of the header's own signature
+  got `unrecognized selector`.
+- **An odometer that never advanced its last dimension**, which overran a short cycle: a `[2,3,4]`
+  array's walk visited 24 positions through 6 distinct addresses and wrote every fourth element. It is
+  the sort of defect that reads as correct in a two-dimensional case, which is why every case here is
+  at least two dimensional and the batch case is four.

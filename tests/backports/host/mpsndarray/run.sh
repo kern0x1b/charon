@@ -42,7 +42,7 @@ mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness"
-sources="MPSNDArray13"
+sources="MPSNDArray13 MPSNDArrayKernel13 MPSNDArrayOps13"
 
 # ---- pass one: the objects unrenamed, and the rename header from what THEY define. This pass's only
 # job is to name the classes; nothing links against it.
@@ -83,8 +83,9 @@ build_one() {
     done
     xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$_cases" $_objects \
         -framework Foundation -framework Metal -framework MetalPerformanceShaders -o "$build/$_name" || return 1
-    "$build/$_name" > "$build/$_name.txt" 2> "$build/$_name.err" || true
-    echo "  $_name: $(wc -l < "$build/$_name.txt" | tr -d ' ') lines"
+    "$build/$_name" > "$build/$_name.txt" 2> "$build/$_name.err" && _status=0 || _status=$?
+    echo "$_status" > "$build/$_name.status"
+    echo "  $_name: $(wc -l < "$build/$_name.txt" | tr -d ' ') lines, exit $_status"
 }
 
 # ---- build one: the system's own MPS. Nothing of the port's is linked in, so every answer is Apple's.
@@ -138,5 +139,26 @@ done
 build_one 0 export "$here/export-cases.m" || { echo "mpsndarray: the export build FAILED"; exit 1; }
 echo "export cases (port only: the release dies on this host, see the header of export-cases.m):"
 sed 's/^/  /' "$build/export.txt"
+
+# ---- the three kernels, against the plain C reference IN kernel-cases.m. There is no release build of
+# these, and the header of that file says why: this host cannot commit the command buffer a kernel
+# encodes into, so the reference is the header's own wording computed in the same process.
+build_one 0 kernel "$here/kernel-cases.m" || { echo "mpsndarray: the kernel build FAILED"; exit 1; }
+echo "kernel cases (port only: the release cannot commit a command buffer on this host):"
+sed 's/^/  /' "$build/kernel.txt"
+# The kernels' verdict is the CASE FILE'S OWN exit status, because it is what compared its numbers.
+if [ "$(cat "$build/kernel.status" 2>/dev/null || echo missing)" != "0" ]; then
+    echo "verdict: FAIL"
+    exit 1
+fi
+# And the plants must reach the kernels too, or the comparison above is not looking at them.
+for plant in 1 2; do
+    build_one $plant kernel-plant$plant "$here/kernel-cases.m"
+    if [ "$(cat "$build/kernel-plant$plant.status" 2>/dev/null || echo 0)" = "0" ]; then
+        echo "PLANT $plant SURVIVED the kernels: the kernel comparison cannot see a port that computes the wrong value"
+        exit 1
+    fi
+    echo "  plant $plant caught by the kernels as well"
+done
 
 echo "verdict: PASS"

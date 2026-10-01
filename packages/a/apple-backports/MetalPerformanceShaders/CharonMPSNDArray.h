@@ -188,6 +188,39 @@ static inline BOOL CharonMPSNDArraySameShape(const CharonMPSNDArrayLayout *a, co
     return YES;
 }
 
+// Fill `index` with a position laid out in `layout`'s own shape, counting `linear` from 0 with dim 0
+// the fastest running - the inverse of CharonMPSNDArrayLinearIndex, so a kernel walks one of these and
+// both sides of its operation read through it.
+static inline void CharonMPSNDArrayIndexOf(const CharonMPSNDArrayLayout *layout, NSUInteger linear, NSUInteger *index)
+{
+    for (NSUInteger i = 0; i < CHARON_MPS_NDARRAY_MAX_DIMENSIONS; i++)
+        index[i] = 0;
+    for (NSUInteger i = 0; i < layout->dimensions && i < CHARON_MPS_NDARRAY_MAX_DIMENSIONS; i++) {
+        index[i] = linear % layout->lengths[i];
+        linear /= layout->lengths[i];
+    }
+}
+
+// The four-index form a 4-D matrix multiplication addresses with: a (row, column) pair inside a
+// matrix, and the matrix's two batch coordinates. A dimension of 1 is a BROADCAST, which the header
+// defines as the single element's own data being used "as appropriate to the remaining input's 3rd
+// or 4th dimension" (MPSNDArrayMatrixMultiplication.h:36-37) - so a coordinate past that dimension's
+// own length is its zero, and no loop is run at all.
+static inline void CharonMPSBatchIndex(const CharonMPSNDArrayLayout *layout, NSUInteger batch,
+                                       NSUInteger matrices, NSUInteger first, NSUInteger second,
+                                       NSUInteger *index)
+{
+    for (NSUInteger i = 0; i < CHARON_MPS_NDARRAY_MAX_DIMENSIONS; i++)
+        index[i] = 0;
+    index[0] = first;
+    if (layout->dimensions > 1)
+        index[1] = second;
+    if (layout->dimensions > 2)
+        index[2] = (batch < layout->lengths[2]) ? batch : 0;
+    if (layout->dimensions > 3)
+        index[3] = (matrices < layout->lengths[3]) ? matrices : 0;
+}
+
 // A coordinate brought inside a dimension by the zero edge rule, which MPSNDArrayKernel.h:44 gives as
 // the default: "Default: MPSImageEdgeModeZero". A kernel that honours another edge mode clamps or
 // mirrors through this function's caller instead, and says which in its own row.
@@ -198,6 +231,107 @@ static inline NSUInteger CharonMPSNDArrayZeroEdge(NSInteger position, NSUInteger
     if ((NSUInteger)position >= length)
         return 0;
     return (NSUInteger)position;
+}
+
+// A kernel that names an axis of its own, which is how a gradient pass learns which one: the release
+// declares `axis` on MPSNDArrayGather (MPSNDArrayGather.h:44-48) and its RFC comment says the gradient
+// takes such a value from the gradient state "automatically" (MPSNDArrayKernel.h:318-321), so the state
+// asks through this rather than the two classes being named in each other's file.
+@protocol CharonMPSNDArrayAxisKernel <NSObject>
+- (NSUInteger)axis;
+@end
+
+// One source's filter, which is the five values MPSNDArrayMultiaryBase declares a getter for.
+typedef struct {
+    NSInteger offsets[CHARON_MPS_NDARRAY_MAX_DIMENSIONS];
+    NSUInteger kernelSizes[CHARON_MPS_NDARRAY_MAX_DIMENSIONS];
+    NSInteger strides[CHARON_MPS_NDARRAY_MAX_DIMENSIONS];
+    NSUInteger dilationRates[CHARON_MPS_NDARRAY_MAX_DIMENSIONS];
+    MPSImageEdgeMode edgeMode;
+} CharonMPSNDArrayFilter;
+
+// The defaults the header gives, applied once. offsets 0, kernelSizes 1, strides 1, dilationRates 1
+// (MPSNDArrayKernel.h:227-266 for the unary spelling, :389-470 for the binary one), and the edge mode
+// MPSImageEdgeModeZero, which is MPSCoreTypes.h's case 0 and what the kernel's own comment names.
+static inline CharonMPSNDArrayFilter CharonMPSNDArrayDefaultFilter(void)
+{
+    CharonMPSNDArrayFilter filter;
+    for (NSUInteger i = 0; i < CHARON_MPS_NDARRAY_MAX_DIMENSIONS; i++) {
+        filter.offsets[i] = 0;
+        filter.kernelSizes[i] = 1;
+        filter.strides[i] = 1;
+        filter.dilationRates[i] = 1;
+    }
+    filter.edgeMode = MPSImageEdgeModeZero;
+    return filter;
+}
+
+
+// The filter of one source and the shapes a gradient state recorded, which the subclass of this file
+// reads. These are methods on classes the port DEFINES, so they are its own machinery and carry no
+// registry row: added_members() in modules/apple/backports.lua:1398 counts a member only when its
+// class is neither one the release carries nor one this object exports, and MPSCNNKernel's
+// charon_mps_setWindowWidth: is the same case already in the tree with cnn.json carrying no row for it.
+@interface MPSNDArrayMultiaryBase (CharonMPSNDArrayKernel)
+- (CharonMPSNDArrayFilter)charon_mps_filterAtSourceIndex:(NSUInteger)sourceIndex;
+- (void)charon_mps_setFilter:(CharonMPSNDArrayFilter)filter atSourceIndex:(NSUInteger)sourceIndex;
+- (NSUInteger)charon_mps_sourceCount;
+- (NSUInteger)charon_mps_sourceGradientIndex;
+@end
+
+@interface MPSNDArrayMultiaryKernel (CharonMPSNDArrayKernel)
+- (BOOL)charon_mps_run:(NSArray<MPSNDArray *> *)sources destination:(MPSNDArray *)destination;
+- (void)charon_mps_fillFromSources:(CharonMPSNDArrayLayout *)sources count:(NSUInteger)count into:(CharonMPSNDArrayLayout *)destination;
+@end
+
+@interface MPSNDArrayGradientState (CharonMPSNDArrayKernel)
+- (void)charon_mps_recordFor:(MPSNDArrayMultiaryBase *)kernel sources:(NSArray<MPSNDArray *> *)sources;
+- (CharonMPSNDArrayFilter)charon_mps_filterOfSource:(NSUInteger)index;
+- (NSUInteger)charon_mps_dimensionsOfSource:(NSUInteger)index;
+- (NSUInteger)charon_mps_lengthOfSource:(NSUInteger)index dimension:(NSUInteger)dimension;
+@end
+
+// The edge rule of one source, applied to a coordinate. The five modes are MPSCoreTypes.h's, and this
+// is the only place in the file that reads one - so a kernel that honours a mode the release defines
+// does so through here and a row that claims which modes it honours is claiming this function.
+static inline NSInteger CharonMPSNDArrayApplyEdgeMode(NSInteger position, NSUInteger length, MPSImageEdgeMode mode)
+{
+    if (length == 0)
+        return 0;
+    switch (mode) {
+    case MPSImageEdgeModeZero:
+        return (position < 0 || (NSUInteger)position >= length) ? 0 : position;
+    case MPSImageEdgeModeClamp:
+        return CharonMPSNDArrayZeroEdge(position, length) == (NSUInteger)position ? position
+             : (position < 0 ? 0 : (NSInteger)(length - 1));
+    case MPSImageEdgeModeMirror: {
+        // The mirror that reflects about the edge sample: -1 is 1, length is length-2. A period of
+        // 2*(length-1) makes every position land inside by one subtraction, and length 1 has no
+        // interior to mirror about, so it is its own answer - which is the whole of a one-element
+        // axis under every mode here.
+        if (length == 1)
+            return 0;
+        NSInteger span = 2 * (NSInteger)(length - 1);
+        NSInteger at = position % span;
+        if (at < 0)
+            at += span;
+        return at < (NSInteger)length ? at : span - at;
+    }
+    case MPSImageEdgeModeMirrorWithEdge: {
+        // The mirror that repeats the edge sample: -1 is 0, length is length-1. The period is 2*length
+        // and the second half folds back, so one subtraction and one comparison answer it.
+        NSInteger span = 2 * (NSInteger)length;
+        NSInteger at = position % span;
+        if (at < 0)
+            at += span;
+        return at < (NSInteger)length ? at : span - at - 1;
+    }
+    case MPSImageEdgeModeConstant:
+    default:
+        // "the edge pixels are set to the constant value provided" - and the value the release uses
+        // when none is provided is zero, which is the only constant a source of numbers carries.
+        return (position < 0 || (NSUInteger)position >= length) ? 0 : position;
+    }
 }
 
 NS_ASSUME_NONNULL_END
