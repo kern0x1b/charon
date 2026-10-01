@@ -31,6 +31,17 @@
 #import <Foundation/Foundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
+// The base's one initializer, DECLARED BEFORE THE FIRST @implementation that uses it. That order is not
+// tidiness: MPMusicPlayerPlayParameters11.m calls -charonInitAbstractQueueDescriptor from its own
+// initializer, and when this declaration sat after the base's @implementation a file compiled on its own
+// answered "no visible @interface for 'MPMusicPlayerPlayParametersQueueDescriptor' declares the selector",
+// measured. Declared once and implemented once - restating the category in the 11.0 file was tried and
+// produced "duplicate definition of category 'CharonSubclassInit' on interface
+// 'MPMusicPlayerQueueDescriptor'".
+@interface MPMusicPlayerQueueDescriptor (CharonSubclassInit)
+- (instancetype)charonInitAbstractQueueDescriptor;
+@end
+
 @implementation MPMusicPlayerQueueDescriptor
 
 // MP_INIT_UNAVAILABLE, which MediaPlayerDefines.h:70-73 expands to:
@@ -65,14 +76,6 @@
     return [self charonInitAbstractQueueDescriptor];
 }
 
-@end
-
-@interface MPMusicPlayerQueueDescriptor (CharonSubclassInit)
-// The base's one initializer, declared here so a subclass can call it in ANY object - MPMediaPlayer's
-// own MPMusicPlayerPlayParametersQueueDescriptor subclasses this base from a different file, and without
-// this declaration that call is "no visible @interface ... declares the selector". The implementation
-// stays in the base's @implementation above.
-- (instancetype)charonInitAbstractQueueDescriptor;
 @end
 
 @implementation MPMusicPlayerMediaItemQueueDescriptor

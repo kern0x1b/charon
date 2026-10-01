@@ -56,16 +56,6 @@
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
-   "api": "MPMediaPlaylist.seedItems",
-   "kind": "property",
-   "introduced": "8.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMediaPlaylist a property like it: it arrived in iOS 8",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPNowPlayingInfoPropertyDefaultPlaybackRate",
    "kind": "constant",
    "introduced": "8.0",
@@ -286,16 +276,6 @@
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
   },
   {
-   "api": "MPMediaPlaylistCreationMetadata",
-   "kind": "class",
-   "introduced": "9.3",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 9, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, MediaPlayer"
-  },
-  {
    "api": "MPMediaPlaylistPropertyAuthorDisplayName",
    "kind": "constant",
    "introduced": "9.3",
@@ -382,16 +362,6 @@
    "effect": "the string Apple's own MediaPlayer holds, which the port carries because this release exports no such symbol. It is plain data - a caller compares or passes a string - so the port answers it itself and the release is never asked",
    "source": "the string Apple's own MediaPlayer holds on this Mac, read with dlsym and printed as text and as bytes by tests/backports/host/mediaplayer-constants, which fails the moment a name is missing there; and 0 of the 36 MediaPlayer constants are exported by iOS 6.1.3, read from that release's own armv7 cache with the tools in charon/tools",
    "facts": "facts/MediaPlayer/MediaPlayerConstants.md"
-  },
-  {
-   "api": "-[MPMusicPlayerController setQueueWithDescriptor:]",
-   "kind": "method",
-   "introduced": "10.1",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give MPMusicPlayerController a method like it: it arrived in iOS 10",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 16.4, MediaPlayer"
   },
   {
    "api": "NSUserActivity.externalMediaContentIdentifier",

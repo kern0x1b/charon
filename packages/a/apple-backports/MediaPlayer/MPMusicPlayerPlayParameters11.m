@@ -39,12 +39,28 @@
 // declaration the call below is rejected with "no visible @interface for
 // 'MPMusicPlayerPlayParametersQueueDescriptor' declares the selector", which is measured, not assumed.
 //
-// It is declared ONCE, in MPMusicPlayerQueueDescriptor101.m, which also implements it, and this file only
-// USES it. A first draft RESTATED the declaration here so this object would not depend on the 10.1 file's
-// include order, and when both objects were compiled into one check clang answered "duplicate definition
-// of category 'CharonSubclassInit' on interface 'MPMusicPlayerQueueDescriptor'". The two objects are
-// always compiled into the same library, so one declaration is both sufficient and correct - a category is
-// declared once and implemented once.
+// THE DECLARATION IS RESTATED HERE, AND THAT IS WHAT THE LAST MEASUREMENT FORCED. Two attempts are
+// recorded because both failed and the failures are different:
+//
+//   Declared ONLY in MPMusicPlayerQueueDescriptor101.m - correct as a category, since it is declared once
+//   and implemented once - but this file calls the selector from its own initializer, and a file compiled
+//   on its own then answers "no visible @interface for 'MPMusicPlayerPlayParametersQueueDescriptor'
+//   declares the selector", measured. Every object in this library is compiled on its own by the
+//   syntax pass and included individually by the stand-in checks, so a declaration that only exists in
+//   another file is not enough.
+//
+//   Restated here under the SAME category name - which was the second attempt - and when both objects were
+//   compiled into one check clang answered "duplicate definition of category 'CharonSubclassInit' on
+//   interface 'MPMusicPlayerQueueDescriptor'", measured.
+//
+// So it is restated under a name of its own. A CATEGORY DECLARATION MAY APPEAR IN MORE THAN ONE FILE -
+// that is what a header is - and only the IMPLEMENTATION must be unique, which it is: it lives in
+// MPMusicPlayerQueueDescriptor101.m alone. Two declarations of the same selector under different category
+// names is the ordinary shape for a method a subclass in another object needs.
+
+@interface MPMusicPlayerQueueDescriptor (CharonSubclassInit11)
+- (instancetype)charonInitAbstractQueueDescriptor;
+@end
 
 @implementation MPMusicPlayerPlayParameters
 
