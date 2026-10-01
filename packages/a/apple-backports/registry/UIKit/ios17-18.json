@@ -1797,9 +1797,10 @@
    "introduced": "18.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "reason": "the release's NSObject carries the point-and-event hit test under a private spelling only - -_accessibilityHitTest:withEvent: is present on both band ends and the public accessibilityHitTest:withEvent: is present on neither, so what the release lacks is the public spelling an application sends",
+   "effect": "the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises; what a caller gets instead is the release's own public -accessibilityHitTest:, which takes the point alone, and the element surface beside it (-accessibilityFrame, -accessibilityLabel, -accessibilityValue, -accessibilityTraits, -accessibilityCenterPoint, -accessibilityZoomInAtPoint:, -accessibilityZoomOutAtPoint:), all measured present on both band ends",
+   "source": "class-scoped objc-inventory over both armv7 band ends, read with tools/corpus/objc-inventory.lua over the 4.3 and 6.1.3 caches; the control is 8/8 on both rungs (UITextView text, UIColor blackColor and clearColor, UITableView reloadData, UIViewController viewDidLoad, UITabBarController selectedViewController and setViewControllers:animated:, and NSObject accessibilityHitTest:), so the zero on the public spelling is the release's and not the reader's. THREE READER DEFECTS are recorded in the facts page, each of which answered absent first: a class method's selector is stored under '-', NSObject is both a class and a protocol so a name-only key lets the protocol's 19 selectors mask the class's 489, and the per-cache selectors_armv7.txt lists the PRIVATE spelling under a name that reads like the row's own",
+   "facts": "facts/UIKit/UIKit18_0_NSHitTest.md"
   },
   {
    "api": "-[UIActivityItemSource activityViewControllerShareRecipients:]",
