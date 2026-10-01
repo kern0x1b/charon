@@ -873,7 +873,7 @@
       "status": "absent",
       "reason": "answers the UIToolTipInteraction (absent here) that shows the tip when a pointer rests on the control; the release has no pointer to rest, so there is no tip to show and no interaction carried - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It is the interaction the tooltip above belongs to, and there is no pointer on this release - UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer are all absent from the 6.1.3 cache, so there is nothing to show a tooltip for - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIDatePicker.roundsToMinuteInterval",
@@ -883,7 +883,7 @@
       "status": "absent",
       "reason": "whether the date picker rounds its date to minuteInterval; the release's UIDatePicker applies minuteInterval itself, in private code the port does not reach into, so turning the rounding off would mean replacing it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It snaps a date picker to whole minutes; the release's UIDatePicker has minute wheels and no rounding step, and the port rounds nothing - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIFocusEffect",
@@ -913,7 +913,7 @@
       "status": "absent",
       "reason": "the effect a focused item shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json) and UIFocusEffect is absent, so no item is ever focused to show one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update, so there is no effect for a focus item to carry - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIFocusItem.focusGroupPriority",
@@ -923,7 +923,7 @@
       "status": "absent",
       "reason": "ranks an item inside its focus group when focus enters the group; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never enters a group",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). Priority orders items inside a focus group, and the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIFocusItem.isTransparentFocusItem",
@@ -933,7 +933,7 @@
       "status": "absent",
       "reason": "lets focus pass through an item to what is under it; the port has no focus engine (UIFocusSystem absent, ios11.json), so focus never moves to pass through anything",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It marks an item the focus engine moves through without resting on, which is a statement about that engine's traversal, and the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIKeyboardLayoutGuide",
@@ -953,7 +953,7 @@
       "status": "absent",
       "reason": "the vibrancy effect a list separator is drawn with; the port does not carry UIListSeparatorConfiguration or the list's separatorConfiguration (facts/UIKit/UICollectionLayoutListConfiguration.md), so there is no separator configuration to hold it",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The separator configuration is a 15.0 class this release does not have, and a visual effect on it would be a blur the release's list layout has no separator to draw behind - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIMenu.selectedElements",
@@ -1013,7 +1013,7 @@
       "status": "absent",
       "reason": "adds a portrait and landscape choice to the print panel; the release's UIPrintInteractionController shows a print panel of its own, in private code the port does not reach into, so adding a choice to it would mean replacing it - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The class itself IS present - 6.1.3's UIPrintInteractionController carries 58 instance selectors and -printInfo among them - so this is a member the release's own print controller does not have, not a missing framework: the paper-orientation control is a later addition to a panel that exists. The port implements no print controller of its own, so there is no paper orientation for it to show - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIScene.subtitle",
@@ -1123,7 +1123,7 @@
       "status": "absent",
       "reason": "lets the rows of a table take keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so no row can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UITableView.allowsFocusDuringEditing",
@@ -1133,7 +1133,7 @@
       "status": "absent",
       "reason": "lets the rows of a table take keyboard focus while it edits; the port has no focus engine (UIFocusSystem absent, ios11.json), so no row can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The editing variant of the flag above, and the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UITableView.fillerRowHeight",
@@ -1143,7 +1143,7 @@
       "status": "absent",
       "reason": "sets the height of the empty rows a plain table draws under its last one; the release draws that filler itself, in private code the port does not reach into, so another height would mean replacing that drawing - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). A filler row is the blank row a grouped table shows under its last section, which is a layout the release's grouped tables do not have - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UITableView.prefetchingEnabled",
@@ -1184,7 +1184,7 @@
       "status": "absent",
       "reason": "an opaque object that saves and restores the text field's selection and scroll position; the release's text field answers selectedTextRange through UITextInput, so such an object could be made of it - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It reports the text input interaction in progress - the floating callout, the dictation, the editing state - and the release's UITextField has no such state object; the sibling UIPageControl.interactionState is carried as inert at 14.0 for the same reason - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UITextView.interactionState",
@@ -1194,7 +1194,7 @@
       "status": "absent",
       "reason": "an opaque object that saves and restores the text view's selection and scroll position; the release's text view answers selectedRange and contentOffset, so such an object could be made of them - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). As above, for the text view; the port's UITextView lays its text out in a WebKit body and has no input-interaction state of its own - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIToolTipConfiguration",
@@ -1244,7 +1244,7 @@
       "status": "absent",
       "reason": "a debugging description of the minimum and maximum content size categories that bound the view's traits; those two limits are not carried (see their own rows), so there is nothing applied to describe - no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It describes the category limits a view is actually under, which are the two rows below; with neither limit carried there is nothing to describe, and the port's own dynamic-type work is UIContentSizeCategoryAdjusting - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.focusEffect",
@@ -1254,7 +1254,7 @@
       "status": "absent",
       "reason": "the effect a focused view shows, a halo or a lift; the port has no focus engine (UIFocusSystem absent, ios11.json) and UIFocusEffect is absent, so no view is ever focused to show one",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update, so a view has no effect to carry - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.focusGroupPriority",
@@ -1264,7 +1264,7 @@
       "status": "absent",
       "reason": "ranks a view inside its focus group when focus enters the group; the port has no focus engine (UIFocusSystem absent, ios11.json) and focusGroupIdentifier is inert, so focus never enters a group",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update; the sibling UIFocusEnvironment.focusGroupIdentifier is carried as inert at 14.0 on the same grounds - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.keyboardLayoutGuide",
@@ -1274,7 +1274,7 @@
       "status": "absent",
       "reason": "a layout guide that tracks the keyboard's frame; the port carries UILayoutGuide (base.json) and the release posts the keyboard frame notifications, so a UIKeyboardLayoutGuide could be built on the two - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It is the guide that follows the keyboard, and the release's keyboard arrives as a notification the port already handles (UIKeyboardLayoutGuide's base class UILayoutGuide is carried, per this row's own reason) but there is no guide object tracking the frame - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.maximumContentSizeCategory",
@@ -1284,7 +1284,7 @@
       "status": "absent",
       "reason": "caps the content size category in the traits of the view and its subviews; the port's traits carry one - Large for the screen, the one the release has (facts/UIKit/UITraitCollectionTraits10.md) - which a cap below it would lower, so it has a definable answer - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It clamps a view's largest Dynamic Type size; 6.1.3 has Dynamic Type and the port scales text for it, but a per-view clamp is a layout feature rather than something the release's text sizing has a place for - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIView.minimumContentSizeCategory",
@@ -1294,7 +1294,7 @@
       "status": "absent",
       "reason": "sets a floor under the content size category in the traits of the view and its subviews; the port's traits carry one - Large for the screen, the one the release has (facts/UIKit/UITraitCollectionTraits10.md) - which a floor above it would raise, so it has a definable answer - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The smallest-size half of the pair above, and the same measurement - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIViewConfigurationState.pinned",
@@ -1314,7 +1314,7 @@
       "status": "absent",
       "reason": "the view controller's own focus group; UIFocusEnvironment.focusGroupIdentifier is inert (ios13rest.json) because the port has no focus engine, and this override of it is not built - focus never enters a group to use it",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). the release has no focus engine: UIFocusEffect and UIFocusHaloEffect are absent rows of this same release, UICollectionView.allowsFocus and UITableView.allowsFocus are absent rows of it too, and nothing in the port ever begins a focus update, so there is no focus group for a controller to name a place in - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIViewController.sheetPresentationController",
@@ -1334,7 +1334,7 @@
       "status": "absent",
       "reason": "lets a window refuse to become key; the release's UIWindow makes itself key without asking, so honouring a NO would mean hooking makeKeyWindow and makeKeyAndVisible - not built for lack of demand, not a wall",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It answers whether a window may take key, which on this release is the window's existing -canBecomeKeyWindow behaviour and not a settable property: there is nothing for a 15.0 flag to change, and the release's UIWindow is present on 6.1.3 while carrying no such accessor - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIWindowScene.activityItemsConfigurationSource",
