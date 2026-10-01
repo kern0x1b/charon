@@ -278,6 +278,99 @@ this package does not link and which the Intents header of iPhoneOS 16.4 names w
 an `INRecurrenceRule`. That initialiser is not given a body and its entry says why; the property
 of the same name, whose type *is* carried, is implemented.
 
+### The six members iOS 17.0 added to INMessage
+
+`INMessage` is a class of the 10.0.1 group, so `IN10_0_1.m` defines it. The six members iOS
+17.0 added to it were sitting `absent` with the reason "the SDK's own headers do not declare this
+member, so there is nothing to answer" - a claim about the SDK **of 16.4**, which this package
+compiles against, and not about any release. All six are declared by the header of iPhoneOS 26.2,
+each `API_AVAILABLE(ios(17.0), watchos(10.0))`:
+
+```
+$ grep -n "attachmentFiles\|linkMetadata\|numberOfAttachments" \
+    ~/.xmake/packages/i/iphoneos-sdk/26.2/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk/System/Library/Frameworks/Intents.framework/Headers/INMessage.h
+72:                   attachmentFiles:(nullable NSArray<INFile *> *)attachmentFiles API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macos);
+126:                      linkMetadata:(nullable INMessageLinkMetadata *)linkMetadata API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macos);
+137:               numberOfAttachments:(nullable NSNumber *)numberOfAttachments API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macos);
+198:@property (readonly, copy, nullable, NS_NONATOMIC_IOSONLY)  NSArray<INFile *> *attachmentFiles API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macosx);
+200:@property (readonly, copy, nullable, NS_NONATOMIC_IOSONLY) NSNumber *numberOfAttachments API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macosx);
+204:@property (readonly, copy, nullable, NS_NONATOMIC_IOSONLY) INMessageLinkMetadata *linkMetadata API_AVAILABLE(ios(17.0), watchos(10.0)) API_UNAVAILABLE(macosx);
+```
+
+and the registry's own source says the same, `coordination/corpus/sdk-26.2-surface.tsv`, one row
+per name at 17.0. So the reason was false about the release and true about the port, and the six
+are now written by hand in `Intents/IN17_0.m`.
+
+**What a release this port deploys on carries.** Neither band end carries the class at all, and
+the run carries its own control - the 10.0.1 rung is in it and does carry `INMessage`, so a zero on
+6.1.3 and 4.3 is the release's and not the reader's:
+
+```
+$ CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua INMessage 6.1.3 4.3 10.0.1
+# (cache paths below abbreviated to ~; the tool prints them absolute)
+6.1.3     ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+         images 524, of which naming INMessage 0
+         classes 11378, of which INMessage* 0
+         protocols 1171, of which INMessage* 0
+4.3       ~/.charon/dyld/4.3/dyld_shared_cache_armv7
+         images 354, of which naming INMessage 0
+         classes 7187, of which INMessage* 0
+         protocols 564, of which INMessage* 0
+10.0.1    ~/.charon/dyld/10.0.1/dyld_shared_cache_armv7s
+         images 1082, of which naming INMessage 0
+         classes 39319, of which INMessage* 3 (INMessage INMessageAttributeOptionsResolutionResult INMessageAttributeResolutionResult)
+         protocols 6111, of which INMessage* 1 (INMessageExport)
+control: 4 name(s) beginning INMessage found in this run, so a zero on another rung is the release's and not the reader's
+```
+
+**Which held release first carries each name.** `tools/cache-index/first-rung.py`, over the whole
+ladder, with a nonsense name in the same run as the negative control. Read it as PRESENCE and
+nothing else: `numberOfAttachments` reads 3.0 and `linkMetadata` reads 10.0.1, and neither is
+`INMessage`'s - they are other classes' selectors of the same name, which is the same trap
+`fileSystemRepresentation` sets, and it is why a selector's rung is never evidence about its owner.
+
+```
+$ printf '%s\n' 'initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:attachmentFiles:' \
+    'initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:linkMetadata:' \
+    'initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:numberOfAttachments:' \
+    attachmentFiles numberOfAttachments linkMetadata charonNoSuchSelector17Control \
+  | python3 tools/cache-index/first-rung.py
+initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:messageType:serviceName:attachmentFiles:	18.0
+initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:linkMetadata:	18.0
+initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:numberOfAttachments:	18.0
+attachmentFiles	18.0
+numberOfAttachments	3.0
+linkMetadata	10.0.1
+charonNoSuchSelector17Control	NONE
+```
+
+The armv7 ladder ends at 10.3.4 and the three initialisers and `attachmentFiles` first appear at
+18.0, so no release this package is gated against has any of the six, and none could: they are
+newer than every release an armv7 device runs. That is why the six are not answered by anything a
+release has, and it is not a reason to leave them out - `INFile` (13.0) and `INMessageLinkMetadata`
+(17.0) are both carried by this package, so the three values are objects the port already has and
+what a caller gets back is the copy of what it passed.
+
+**Where the three values are kept, and the three of the class's own methods this file answers.**
+A class extension may declare ivars in a translation unit that does not hold the `@implementation` -
+clang accepts it and the file compiles - and it does not link:
+
+```
+$ xcrun clang -fobjc-arc -framework Foundation -o t a.m b.m main.m
+Undefined symbols for architecture arm64:
+  "_OBJC_IVAR_$_Foo._lateIvar", referenced from:
+      -[Foo(Late) lateIvar] in b.o
+```
+
+So the three live in an associated object each, and `-copyWithZone:`, `-encodeWithCoder:` and
+`-initWithCoder:` - the class's own three, which walk its ivar list through the one helper in
+`packages/c/charon-coding` - are answered in `IN17_0.m` beside them, under the keys that helper
+itself uses (`INMessage.attachmentFiles` and so on, which are the keys the class of iOS 17.0
+occupies for the same three). Without that a copy and an archive of an `INMessage` would carry
+ten of its thirteen values and drop exactly the three of 17.0. Those three methods are not API of
+this release: the SDK's header declares none of them (the class takes them from `NSObject`'s
+protocols), no registry row names any of them, and so nothing this file carries is placed by them.
+
 ## The four, and what is not carried
 
 Four classes of this delivery are not implemented whole, and each says so in its own entry
