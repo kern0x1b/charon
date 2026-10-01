@@ -1,5 +1,4 @@
 {
-  "framework": "Intents",
   "entries": [
     {
       "api": "INDailyRoutineRelevanceProvider",
