@@ -277,3 +277,49 @@ revisions into a 13.0 row, which is the way a modern answer becomes a wrong one.
 run, and `VNErrorUnsupportedRevision` for a revision the port's own table does not carry. That is
 where a request of this slice ends when a handler runs one, and it is why a class row here says the
 class is there and answers what a caller can test, rather than that the request works.
+
+## 6. Three defaults a fresh ivar would have got wrong
+
+Opening a class whose SDK header declares a property makes clang synthesise that property's accessors
+onto a new ivar, and a new ivar holds zero. That is the right answer for most of what these classes
+declare -- `string`, `confidence`, `elementType`, `elementCount`, `data`, `salientObjects`,
+`customWords`, `recognitionLevel` (whose `VNRequestTextRecognitionLevelAccurate` is 0),
+`minimumTextHeight` (0.0) and `automaticallyDetectsLanguage` (NO) all start at the value their own
+headers document -- and it is the wrong answer for three, which `Vision130.m` writes down:
+
+| member | zero is | the documented default | where the default is written |
+| --- | --- | --- | --- |
+| `VNDetectHumanRectanglesRequest.upperBodyOnly` | NO | **YES**: "the request is setup to detect upper body only" | `initWithCompletionHandler:` |
+| `VNGenerateImageFeaturePrintRequest.imageCropAndScaleOption` | `CenterCrop` | **`ScaleFill`**, which is enumeration value **2** and not 0 | `initWithCompletionHandler:` |
+| `VNRecognizeTextRequest.usesLanguageCorrection` | NO | **not declared** by the 16.4 header this package compiles against, so it is left at NO and not guessed | the object, in a comment |
+
+The third is the one that is not fixed, and it is left unfixed on purpose: the header that ships in
+this SDK says nothing about it, and no release answers it here because no release this port deploys
+on carries Vision at all. A `YES` written in from memory would be an unmeasured value; a `NO` that
+the object says out loud is at least a stated one. Nothing can observe the difference either way,
+because the request cannot be run.
+
+That is also the whole of what the compile for armv7 is good for beyond the warnings: it is what found
+the three. A Mac Catalyst build of the same source is silent about all of it.
+
+## 7. The members these classes carry, and why none of them needs a row of its own
+
+`Vision130.m` defines 34 members, which `nm` on its armv7 object reads out one by one. None of them
+is named by a registry row of its own, and none of them needs to be: `entry_of` in
+`modules/apple/backports.lua` falls back to the row of the class a member belongs to, because a class
+row answers for the members of a class the port defines wholly, and none of these twelve classes is
+one a release carries. That is not an assumption -- it is the tree's own reader asked directly:
+
+```
+CHARON_ROOT=<worktree> REGISTRY_ROOT=<worktree>/packages/a/apple-backports \
+MEMBERS=<the nm output> xmake l tools/vision/check-rows.lua
+```
+
+```
+members checked: 34 | answered by a row of their own: 0 | answered by another row: 34 | UNANSWERED: 0
+```
+
+The same shape is already in the tree: `VNRequests.o` defines `-[VNDetectRectanglesRequest
+initWithCompletionHandler:]` and `-[VNImageBasedRequest initWithCompletionHandler:]`, and neither is a
+row, while `VNDetectRectanglesRequest.minimumAspectRatio` and its six siblings are. Both are answered
+by the class's own row.
