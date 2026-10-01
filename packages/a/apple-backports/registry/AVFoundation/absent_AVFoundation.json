@@ -2019,13 +2019,13 @@
     },
     {
       "api": "AVPlayerLooper",
-      "kind": "class",
-      "introduced": "10.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 10, and nothing in iOS 6 does its work or stands in for it",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "introduced": "10.0",
+      "kind": "class",
+      "minimum": "6.0",
+      "reason": "6.1.3 carries no class of that name (0 of 11378), and 4.3 neither. Its substrate IS here and measured - 6.1.3 carries AVQueuePlayer with items, insertItem:afterItem:, removeAllItems and initWithItems:, and _AVPlayerItemDidPlayToEndTimeNotification first exports at 4.0 - so this is a queue entry, not a capability the release lacks: a port-defined AVPlayerLooper brings -initWithPlayer:queueItems:, player, queueItems and disableLooping with it, each needing a registry row of its own, and those four rows are not in this batch's slice (facts/AVFoundation/AVFoundation10.md, 'The one row this batch did not touch')",
+      "source": "SDK 16.4, AVFoundation",
+      "status": "absent"
     },
     {
       "api": "AVVideoComposition.colorPrimaries",
