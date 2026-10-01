@@ -175,3 +175,78 @@ are not there rather than answer emptily, and the settings report what the
 application asked for, which is all the release lets it know.
 Proving it needs code running inside an application SpringBoard launched. The
 device check of this center is one, but it has not asked BulletinBoard yet.
+
+## The same absence, read out of the caches (2026-10-01)
+
+The section above measures BulletinBoard on the device. That measurement cannot be
+re-run from a bench, so the half of it that can is here, with the control in the same
+reading: the dump of 7187 classes in the armv7 cache of iPhone OS 4.3, the low band
+end.
+
+```
+$ python3 -c "import json; c=json.load(open('$HOME/.charon/dyld/4.3/classes_armv7.json'))['classes']; \
+    print('\n'.join(sorted(m for m in c['UIApplication']['instance'] \
+        if any(k in m.lower() for k in ('notification','remote','badge')))))"
+applicationIconBadgeNumber
+cancelAllLocalNotifications
+cancelLocalNotification:
+enabledRemoteNotificationTypes
+presentLocalNotificationNow:
+registerForRemoteNotificationTypes:
+scheduleLocalNotification:
+scheduledLocalNotifications
+unregisterForRemoteNotifications
+```
+
+Eight members, and they are the whole of what `UIApplication` does with a notification:
+schedule one, cancel one, cancel all, read what is **scheduled**, present one now, and
+the three of the remote pair. **There is no member that reads what has already been
+delivered**, and `-cancelAllLocalNotifications` cancels the scheduled ones, which is
+what the port's own `-removeAllPendingNotificationRequests` had to be careful about
+earlier in this page.
+
+The control for that negative is in the same dump: 7187 classes came out of it, and
+`UIApplication` and `UIConcreteLocalNotification` are two of them, so the reader finds
+the class it is looking in. The three delivered-notification selectors themselves are
+absent from every release before they existed - `first-rung.py
+getDeliveredNotificationsWithCompletionHandler: removeAllDeliveredNotifications
+removeDeliveredNotificationsWithIdentifiers:` answers `10.0.1` for each - and
+`$HOME/.charon/dyld/6.1.3/selectors_armv7.txt` holds 113981 selectors and none of them
+is one of those three (0 matches for each, `rg -c -x`).
+
+For the attachment, the same dump carries the concrete class a `UILocalNotification` is
+actually one:
+
+```
+$ python3 -c "import json; c=json.load(open('$HOME/.charon/dyld/4.3/classes_armv7.json'))['classes']; \
+    print(len(c['UIConcreteLocalNotification']['instance'])); \
+    print(', '.join(c['UIConcreteLocalNotification']['instance']))"
+47
+clearNonSystemProperties, compareFireDates:, copyWithZone:, _addCalendarUnits:toDateComponents:,
+_setUserInfoData:, alertAction, alertBody, alertLaunchImage, allowSnooze,
+applicationIconBadgeNumber, customLockSliderLabel, dealloc, description, encodeWithCoder:, fireDate,
+fireNotificationsWhenAppRunning, hasAction, hash, hideAlertTitle, init, initWithCoder:,
+interruptAudioAndLockDevice, isEqual:, isValid, nextFireDateAfterDate:localTimeZone:,
+nextFireDateForLastFireDate:, repeatCalendar, repeatInterval, resumeApplicationInBackground,
+setAlertAction:, setAlertBody:, setAlertLaunchImage:, setAllowSnooze:,
+setApplicationIconBadgeNumber:, setCustomLockSliderLabel:, setFireDate:,
+setFireNotificationsWhenAppRunning:, setHasAction:, setHideAlertTitle:,
+setInterruptAudioAndLockDevice:, setRepeatCalendar:, setRepeatInterval:,
+setResumeApplicationInBackground:, setShowAlarmStatusBarItem:, setSoundName:,
+setSoundNameIsARingtone:, setTimeZone:, setUserInfo:, showAlarmStatusBarItem, soundName,
+soundNameIsARingtone, timeZone, userInfo
+```
+
+Forty-seven members, and **not one of them renders an image, a sound or a film into the
+notification**: the alert is `alertBody`, `alertAction`, `alertLaunchImage` and
+`hasAction`, the sound is `soundName` and `soundNameIsARingtone`, the badge is
+`applicationIconBadgeNumber`, and the rest are the date, the repeat, snoozing, the lock
+slider, the audio interrupt and the system-alert flags SpringBoard refuses to an
+unentitled application. `alertLaunchImage` is a **launch** image - the picture the
+application's own icon is replaced with while it starts - not a picture in the
+notification, and setting it is what this port's own `-charon_local_notification` does
+with `content.launchImageName`.
+
+So both absences rest on a reading a reader can repeat, and `UNNotificationAttachment`
+and the three delivered-notification methods keep their status: what the release has
+does not answer those four names.
