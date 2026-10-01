@@ -24,6 +24,15 @@ Its three controls, on all three releases, from the first nine lines of that run
 Every row of the slice reads ABSENT, NO CLASS or NO PROTOCOL on 6.1.3, so none of the 35 is the
 release's own.
 
+## `AVRouteDetector`, where the blocker is narrower than it looks
+
+6.1.3's `AVAudioSession` carries 64 own instance methods and among them
+`-overrideOutputAudioPort:error:` and `-currentRoute`, so a caller on this release can choose a route
+and read the route in use. What this release has no member for is the report of which route the *user*
+chose, which is the one thing `AVRouteDetector`'s delegate is called with, and the class itself is not
+on the release: first-rung answers NONE for the class name and `class-scoped-rows.py` answers NO CLASS
+at 6.1.3, 4.3 and 7.0. The row is absent for that half only, and says so.
+
 ## The two carried rows
 
 Both spellings of `sourceTrackIDForFrameTiming` - on `AVVideoComposition` and on
@@ -67,8 +76,10 @@ and their few companions - and no depth member of any kind; `AVCaptureDevice`'s 
 **The classes that are not on this release (12 rows).** `AVCapturePhoto` (first-rung answers NONE for
 `_AVCapturePhoto`, and 6.1.3's cache carries no `AVCapturePhotoOutput` either), `AVRouteDetector`,
 `AVSampleBufferAudioRenderer`, `AVSampleBufferRenderSynchronizer`, `AVCaptureSystemPressureState`,
-`AVCaptureDevice.systemPressureState`, `AVPlayerItem.preferredMaximumResolution`,
-`AVPlayerItem.videoApertureMode`, `AVPlayerItemAccessLogEvent`'s two bitrates' owner and the rest.
+`AVCaptureDevice.systemPressureState`, `AVPlayerItem.preferredMaximumResolution` and
+`AVPlayerItem.videoApertureMode`. `AVRouteDetector` gets a paragraph of its own below, because
+6.1.3's `AVAudioSession` *does* carry `-overrideOutputAudioPort:error:` among its 64 own instance
+methods and the blocker is narrower than it looks.
 
 Two of those are worth naming, because they are the shape a reader would expect to be a forward:
 

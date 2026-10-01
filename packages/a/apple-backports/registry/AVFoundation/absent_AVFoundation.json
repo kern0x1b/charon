@@ -2424,9 +2424,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class watches and asks for the user's route choice, and 6.1.3 has no route-selection vocabulary: first-rung answers NONE for the class name, and 6.1.3's AVAudioSession carries no route picker - its own route member is -currentRoute, which reports the route in use and cannot change it. The AirPlay route picker that would be behind this arrived with the session's -[AVAudioSession useScreenSpeakerAudioSource] family, which is not on this release",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release reads -[AVAudioSession currentRoute] for where audio is going and changes what it can change with the category it sets; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAudioSession.h for the declaration; first-rung.py answers NONE for the class name; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the class watches and reports the user's ROUTE CHOICE, and 6.1.3 has half of that and not the other half: first-rung answers NONE for the class name, and while 6.1.3's AVAudioSession does carry -overrideOutputAudioPort:error: and -currentRoute among its 64 own instance methods - so a caller can name a port and read the route in use - nothing on this release reports which device the user has chosen, which is the one thing this class's delegate is told",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release chooses a route with -[AVAudioSession overrideOutputAudioPort:error:] and reads where audio went with -[AVAudioSession currentRoute], which are the release's own two answers; there is no member on this release that reports the user's choice between routes; the port defines no class of this name",
+      "source": "iPhoneOS 16.4 AVFoundation/AVRouteDetector.h for the declaration; first-rung.py answers NONE for the class name; the 6.1.3 armv7 class table of AVAudioSession read from objc-inventory.lua, 64 own instance methods including -overrideOutputAudioPort:error: and -currentRoute; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
     },
     {
       "api": "AVSampleBufferAudioRenderer",
@@ -2434,9 +2434,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the renderer enqueues CMSampleBuffers of audio and plays them, and 6.1.3's only sample-buffer consumer is video: first-rung answers NONE for the class name, 6.1.3's AVSampleBufferDisplayLayer is the sole class of that family on the release, and 6.1.3's AVAudioSession carries no member that accepts a CMSampleBuffer - its own members are -play, -playAndRecord, -setActive:withError:, -currentRoute, -inputNode and the record-permission pair",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release plays audio it holds with AVAudioPlayer or its own AVAudioQueue, both of which are on this release, and hands video buffers to -[AVSampleBufferDisplayLayer enqueueSampleBuffer:], which is the release's own enqueue shape; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferAudioRenderer.h for the declaration; first-rung.py answers NONE for the class name; the AVSampleBufferDisplayLayer class table from objc-inventory.lua, 20 own instance methods; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the renderer enqueues CMSampleBuffers of audio and plays them, and 6.1.3's only sample-buffer consumer is video: first-rung answers NONE for the class name, AVSampleBufferDisplayLayer is the sole class of that family on the release, and 6.1.3's AVAudioSession carries 64 own instance methods - -category, -setCategory:error:, -mode, -setMode:error:, -setActive:withError:, -currentRoute, -outputVolume and their setters - none of which accepts a CMSampleBuffer or plays buffers it is handed",
+      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release plays audio it holds with AVAudioPlayer, whose own 6.1.3 table carries -play, -pause and -numberOfChannels, and hands video buffers to -[AVSampleBufferDisplayLayer enqueueSampleBuffer:], which is the release's own enqueue shape; the port defines no class of this name",
+      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferAudioRenderer.h for the declaration; first-rung.py answers NONE for the class name; the 6.1.3 armv7 class tables of AVAudioSession and AVSampleBufferDisplayLayer read from objc-inventory.lua, 64 and 20 own instance methods; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
     },
     {
       "api": "AVSampleBufferRenderSynchronizer",
