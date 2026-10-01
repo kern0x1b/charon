@@ -2639,7 +2639,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol UIView and UIBarButtonItem take so a popover can hang from either through sourceItem; the port's UIPopoverPresentationController already hangs from a sourceView or a barButtonItem (facts/UIKit/UIPopoverPresentationController.md), so the protocol could be declared over those - not built for lack of demand, not a wall",
+      "reason": "the marker protocol UIView, UILayoutGuide, UIBarButtonItem and UITabBarItem take so a popover can hang from either through sourceItem; carrying it needs the protocol's object emitted, and the generated UIKitProtocols16.0.m can only name what CharonUIKitProtocols.h declares - this protocol is in no band of that header, so no object is emitted and attach.c's category-protocol loop, which resolves each name with objc_getProtocol, finds nothing to add a category's conformance with; sourceItem, the only API that consumes the protocol, has no registry row either, so a caller would have nothing to hand it to",
       "effect": "the protocol is not there: NSProtocolFromString answers nil",
       "source": "SDK 16.4, UIKit; no held release below 16.0 declares the protocol (first-rung over the 50-rung ladder), and neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader - facts/UIKit/UIKit16Absence.md"
     },
@@ -2899,7 +2899,7 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "a layout guide inside the safe area with the window's aspect ratio, for content that must not be cut; the port carries UILayoutGuide (base.json) and UIView.safeAreaLayoutGuide (ios11.json), so this guide could be solved from them - not built for lack of demand, not a wall",
+      "reason": "a layout guide inside the safe area holding width == height * the aspectRatio a caller sets (UILayoutGuideAspectFitting, UIWindow.h:77); the port carries UILayoutGuide with every anchor and UIView.safeAreaLayoutGuide, but UILayoutGuide has no addConstraint: of its own - grep finds none in UILayoutGuide.m, whose anchors reach the guide's backing view while the constraints themselves live on the view (UIView+SafeAreaGuide.m) - so the ratio has nowhere to be stated without adding that API to the iOS 9 object that owns the class first",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
       "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
     },

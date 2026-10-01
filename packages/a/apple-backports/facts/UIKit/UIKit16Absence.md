@@ -175,3 +175,76 @@ carried at 6.1.3, 0 carried at 12.0, control passed in the same run, 8/8 selecto
 release, and the `is`-getter form checked on all 41 properties.** No status in this file is wrong.
 The rows that could be implemented are the ones whose owner class a band end carries, and each of
 those is feature work with its own differential — not something a registry row can settle.
+
+## Two rows whose blocker is a missing declaration, measured rather than assumed
+
+Both of these sat at `absent` with "the port carries X, so this could be built - not
+built for lack of demand, not a wall". Reading the two declarations each row depends on
+turned both into a mechanical statement about what is missing, which is what a reviewer can
+check.
+
+### `UIPopoverPresentationControllerSourceItem`: the protocol object is not transcribed
+
+The row asks for the marker protocol `UIPopoverPresentationControllerSourceItem`. Carrying it is
+two things, and neither is written:
+
+```
+grep -c UIPopoverPresentationControllerSourceItem packages/a/apple-backports/UIKit/CharonUIKitProtocols.h
+grep -rn "UIPopoverPresentationController.sourceItem" packages/a/apple-backports/registry/
+```
+
+```
+0                       the protocol is in no band of CharonUIKitProtocols.h
+(no match)              no registry row names UIPopoverPresentationController.sourceItem
+```
+
+The first is why a category conformance would be dropped silently. A protocol row the port
+carries is emitted by the generated `UIKitProtocols<release>.m`, which names each protocol the
+registry lists for that band - and that file only names what `CharonUIKitProtocols.h` declares
+(`protocol_sources()` in `backports.lua:702` imports that header and writes `(void)@protocol(X)`
+per row). This protocol is not in it, so no protocol object is emitted and
+`attach.c:337` - which adds a category's protocols by resolving their names with
+`objc_getProtocol` - finds nothing and adds nothing, while the conformance looks present in the
+source. Transcribing it is a `tools/transcribe-protocols.py` run over a shared header other bands
+are also editing.
+
+The second is the reason the row is worth little on its own: `sourceItem` is the only API that
+consumes the protocol, and no registry row names it, so a caller that could declare a
+`UIPopoverPresentationControllerSourceItem` would have nothing to hand it to. The port's popover
+hangs from `sourceView` or `barButtonItem` (`UIPopoverPresentationController.md`).
+
+### `UIWindow.safeAreaAspectFitLayoutGuide`: the ratio has nowhere to be enforced
+
+`UIWindow.h:77` declares the protocol the guide exists for:
+
+```objc
+@protocol UILayoutGuideAspectFitting <NSObject>
+/// Update the aspect ratio (width / height) for the given content
+/// Defaults to 1.0. Must be > 0.0 ...
+@property (nonatomic, readwrite) CGFloat aspectRatio;
+@end
+```
+
+so the ratio is a caller's number and the guide's job is to hold `width == height * aspectRatio`
+inside the safe area. The port's `UILayoutGuide` has every anchor that job needs and none of the
+one it needs to state the relation:
+
+```
+grep -n "addConstraint" packages/a/apple-backports/UIKit/UILayoutGuide.m
+```
+
+```
+(no match)
+```
+
+`UILayoutGuide.m` implements `leadingAnchor` through `heightAnchor` and `centerXAnchor` through
+`centerYAnchor`, each anchored to the guide's own backing view, but the class carries no
+`addConstraint:` of its own - `UIView+SafeAreaGuide.m` reaches the backing view through its own
+`-[UILayoutGuide charon_view]` and adds the constraints to the *view*. Enforcing the ratio on the
+backing view would work and would not be the API a caller expects: the caller sets
+`aspectRatio` on the guide, and the constraint would have to live somewhere the port does not
+expose. Writing `-addConstraint:` on `UILayoutGuide` is the first step, and it is a change to the
+iOS 9 object that owns the class, not a 16.0 addition beside it.
+
+That is why the row is `absent` with this reason rather than "no demand": the substrate is
+`UILayoutGuide` and the safe area, and the missing step is a constraint API on the guide, named.
