@@ -53,10 +53,10 @@
 // WHAT IS REAL INSTEAD OF HELD FOR ITS OWN SAKE: the circle and the region answer each other through
 // the RELEASE'S OWN PROJECTION, not through a constant of this port's -- MKMapPointForCoordinate,
 // MKMapPointsPerMeterAtLatitude and MKCoordinateRegionForMapRect are all in the armv7 cache of 3.2
-// and later, and the region-to-map-rect direction is the port's own +[CharonMapKit
-// charon_mapRectForRegion:], which is the declared inverse of the release's own function. A request
-// made of a circle answers a region that encloses it, and a request made of a region answers the
-// circle that reaches its corners, so the two initialisers agree on the same place.
+// and later. A request made of a circle answers a region that encloses it, and a request made of a
+// region answers the circle that covers it, so the two initialisers agree on the same place -- and
+// they agree with the HOST'S OWN class of this name to the last printed digit, which is what
+// tests/backports/host/mapkit-poi-request measures and what its mutant shows can see a wrong value.
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
@@ -74,19 +74,34 @@ static MKCoordinateRegion CharonRegionAroundCoordinate(CLLocationCoordinate2D co
     return MKCoordinateRegionForMapRect(area);
 }
 
-// The circle that reaches the corners of a region: the diagonal of the region's map rect, halved,
-// turned back into metres at the region's own latitude. The inverse direction of the function above,
-// through the port's own inverse of the release's projection, so a region and the circle that
-// encloses it are two readings of one thing.
+// The circle that COVERS a region: the larger of the region's two half-spans, in the release's own
+// projection. Two details of that projection are what make it right, and both were measured against
+// the host's own class of the same name (tests/backports/host/mapkit-poi-request, whose transcripts
+// are compared value for value):
+//
+//   - MapKit's y grows SOUTHWARDS, so the half-height is the southern edge's y LESS the northern
+//     edge's y. Taking that difference the other way round gives a negative height, and a radius read
+//     off it is 0 -- which is what an earlier version of this file answered for every region.
+//   - the reading is the LARGER half-span and not the diagonal, because a circle and a region are two
+//     spellings of one place and the round trip has to be exact: a request made of a circle of 500 m
+//     answers a region whose half-spans are both 500 m, and that region answers 500 m back. The
+//     host's own class round trips exactly too (measured: 500.000 m in, 500.000 m out), and for a
+//     region of uneven sides it answers the larger half-span as well.
 static CLLocationDistance CharonRadiusAroundRegion(MKCoordinateRegion region)
 {
-    MKMapRect area = [CharonMapKit charon_mapRectForRegion:region];
-    if (area.size.width < 0.0 || area.size.height < 0.0) {
+    double perMetre = MKMapPointsPerMeterAtLatitude(region.center.latitude);
+    if (!(perMetre > 0.0) || !(region.span.latitudeDelta >= 0.0) || !(region.span.longitudeDelta >= 0.0)) {
+        // A span that is not a span, which MKCoordinateRegionMake cannot produce and a caller can:
+        // there is no circle to read out of it, and 0 is the answer that says so.
         return 0.0;
     }
-    double diagonal = sqrt(area.size.width * area.size.width + area.size.height * area.size.height) / 2.0;
-    double perMetre = MKMapPointsPerMeterAtLatitude(region.center.latitude);
-    return perMetre > 0.0 ? diagonal / perMetre : 0.0;
+    double halfWidth = (double)MKMapSizeWorld.width * region.span.longitudeDelta / 360.0 / 2.0 / perMetre;
+    CLLocationCoordinate2D north = region.center;
+    north.latitude += region.span.latitudeDelta / 2.0;
+    CLLocationCoordinate2D south = region.center;
+    south.latitude -= region.span.latitudeDelta / 2.0;
+    double halfHeight = fabs(MKMapPointForCoordinate(south).y - MKMapPointForCoordinate(north).y) / 2.0 / perMetre;
+    return halfWidth > halfHeight ? halfWidth : halfHeight;
 }
 
 @implementation MKLocalPointsOfInterestRequest {
@@ -132,7 +147,7 @@ static CLLocationDistance CharonRadiusAroundRegion(MKCoordinateRegion region)
 
 // The header's other designated initialiser, and the same request read the other way round: the
 // region is what the caller gave, and the centre and the radius are read back out of it, so a
-// request made of a region answers the circle that reaches its corners.
+// request made of a region answers the circle that covers it.
 - (instancetype)initWithCoordinateRegion:(MKCoordinateRegion)region
 {
     charon_sayOnce(@"[MKLocalPointsOfInterestRequest initWithCoordinateRegion:]",

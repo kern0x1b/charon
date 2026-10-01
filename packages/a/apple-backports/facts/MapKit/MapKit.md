@@ -527,6 +527,30 @@ it has no member for is the request that *describes* one. So the request is carr
 `MKLocalPointsOfInterestRequest14.m`, whose object is release 14's alone — and the search stays the
 release's.
 
+**The arithmetic, differentially checked against the host's own class of the same name.**
+`tests/backports/host/mapkit-poi-request` builds the port's object as a Catalyst dylib with its class
+renamed, builds the runner, and compares the four members' values on both over six cases (the equator,
+London twice with a region taller than it is wide and one wider than it is tall, Sydney, Cupertino,
+Reykjavik):
+
+```
+$ sh tests/backports/host/mapkit-poi-request/run.sh
+mapkit-poi-request: 18 comparisons agree with the host's own class, radius apart by at most 0.671%
+mapkit-poi-request: the mutant goes red, so the comparison above can see a wrong number
+```
+
+The circle-to-region direction agrees with the host's own **to the last printed digit in every case**
+(0.000% apart), and the port's round trip is exact — 500.000 m in, 500.000 m back. The radius read off
+a *region* is the one number that is not identical, and the difference is not a bug: the host's own
+radius comes from an earth model of Apple's own, and **the host's own two directions do not agree with
+each other either** — a circle of 500 m at the equator reads back as 503.378 m on the host, one of
+1999 m at Reykjavik as 1990.462 m — while the port answers the release's own projection. The probe's
+mutant (the diagonal reading, which the port's first version used) is 41% out and goes red, so the
+comparison can see a wrong number. Two details of the projection that the probe found the hard way are
+written into the object: MapKit's **y grows southwards** (so the half-height is the southern edge less
+the northern one; the other order gives a negative height and a radius of 0 for every region), and the
+reading is the **larger half-span**, not the diagonal, because that is what makes the round trip exact.
+
 **Why the rows are `inert` and not `implemented`:** nothing applies the request yet. The one caller a
 program has is `-[MKLocalSearch initWithPointsOfInterestRequest:]`, a 14.0 row that is not this
 object's, and its implementation in `MKLocalSearchRequest13.m` makes the release's own search with an
