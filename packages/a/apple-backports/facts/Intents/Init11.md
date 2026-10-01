@@ -129,11 +129,77 @@ head comment so the next reader does not pay for it again.
    SIGSEGV becomes a line. Before that, `INCancelRideIntentResponse` lost the fifteen classes after
    it, and the redirected output was block buffered so the lines before it went too.
 
+## Why the harness reads the host and cannot read the port
+
+The sixteen rows need two halves — the port has to carry a definition, and the system's own `-init`
+has to answer — and the first half is measured by `nm` above while the second can only be read on a
+host. That is a limit of this machine and it was measured rather than assumed, because "nothing runs
+the port's own code" is the kind of sentence that hides a step nobody took.
+
+The port's sources do not build for the host, and there are three separate reasons, each with the
+error it produces.
+
+**1. Unmodified, the port's own header collides with the host's framework.**
+
+```
+xcrun clang -fobjc-arc -target arm64-apple-macos13.0 \
+    -isysroot "$(xcrun --show-sdk-path --sdk macosx)" -fsyntax-only -w \
+    -I packages/c/charon-coding/files packages/a/apple-backports/Intents/IN11_0.m
+```
+
+```
+packages/a/apple-backports/Intents/CharonIntents262.h:39:1: error: duplicate interface definition for class 'INMessageLinkMetadata'
+packages/a/apple-backports/Intents/CharonIntents262.h:47:71: error: property has a previous declaration
+```
+
+`CharonIntents262.h` re-declares the classes the port's own SDK lacks, and `INMessageLinkMetadata` is
+one the macOS framework has. This is the error `tests/backports/host/intents/rename-intents.py`
+exists to answer, and its head comment carries the same command.
+
+**2. Renaming the classes fixes that and breaks the superclasses.** The port's `.m` files carry
+`@implementation` and no `@interface`: every class here gets its declaration from Apple's headers, and
+`rename-intents.py` rewrites the port's sources and not the SDK's. So a renamed implementation has no
+renamed declaration:
+
+```
+error: cannot find interface declaration for 'ccharonHost_INIntentResponse', superclass of 'ccharonHost_INUnsendMessagesIntentResponse'
+error: cannot find interface declaration for 'ccharonHost_INAddTasksIntent'; did you mean 'ccharonHost_INEditMessageIntent'?
+```
+
+The rename list is read off `_OBJC_CLASS_$_` symbols and carries classes and protocols only; the
+identifiers that collide and are not classes are the four `NS_ENUM` typedefs `CharonIntents262.h`
+declares — `INEditMessageIntentResponseCode`, `INMessageReactionType`, `INStickerType`,
+`INUnsendMessagesIntentResponseCode` — and their enumerators, thirty-six names in all, and adding
+them is a change to a tool every Intents slice shares. Fixing this properly means giving the harness
+a renamed copy of the SDK's own Intents headers as its umbrella, which is a port's worth of work and
+is not this slice's.
+
+**3. And the iOS-only types cannot be used on the host at all.**
+
+```
+error: 'INAccountType' is unavailable: not available on macOS
+error: 'INTaskPriority' is unavailable: not available on macOS
+error: no known class method for selector 'charon_resolutionWithStatus:resolvedValue:valuesToDisambiguate:valueToConfirm:'
+```
+
+Apple's macOS headers mark these `API_UNAVAILABLE(macos)`. An explicit `unavailable` is an error, not
+a warning, so no flag suppresses it and the only way past it is to not use Apple's headers.
+
+**4. And there is no target on this machine that would run the result.** The SDKs here are iPhoneOS
+device SDKs, 9.3 through 16.5, under `$HOME/Git/tools/sdks`; there is no iPhoneSimulator SDK at all,
+`xcrun --sdk iphonesimulator --show-sdk-path` answering `SDK "iphonesimulator" cannot be located`. An
+armv7 iOS 6.1.3 binary needs `xmake emulate` or a device, and neither ran for this slice.
+
+So the port's `-init` is proven to exist and to forward through its superclass's IMP, and its runtime
+answer is owed. That is the honest end of it here, and the harness above is deliberately built to
+measure only the half this machine can measure, rather than to report a port result it cannot get.
+
 ## What is not proven here, and is owed
 
-- **Nothing runs the port's own code.** Both halves above are host answers plus a symbol reading; the
-  objects are armv7 iOS 6.1.3 and no iOS runtime was involved in either. That the port's `-init`
-  returns an object at runtime is the link step's and a device's job, not this page's.
+- **The port's own `-init` has never been executed.** Both halves above are host answers plus a symbol
+  reading; the objects are armv7 iOS 6.1.3 and no iOS runtime was involved in either, and the section
+  above is the measurement of why. That the port's `-init` returns an object at runtime is the link
+  step's and a device's job, not this page's.
 - **The other ninety-four are not measured here.** They belong to the iOS 10.0, 12.0 and 16.0 slices
   and to the rest of 11.0's family in `Intents.md`. A run like this one for each of them is the
   harness that page still owes.
