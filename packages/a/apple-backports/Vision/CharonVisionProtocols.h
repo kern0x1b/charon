@@ -9,4 +9,6 @@
 
 @protocol VNFaceObservationAccepting;
 
+@protocol VNRequestProgressProviding;
+
 @protocol VNRequestRevisionProviding;
