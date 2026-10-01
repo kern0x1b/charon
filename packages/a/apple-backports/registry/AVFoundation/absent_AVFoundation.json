@@ -1180,9 +1180,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The number is the sensor's sensitivity, and nothing on this release keeps it: the manual exposure the device does expose is a DURATION and a MODE, and the gain that reaches that duration is not readable from the device",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. What the release answers is the pair it does have: -exposureDuration is the current manual exposure, -exposureMode says whether it is manual at all, -isExposureModeSupported: whether the device can be put there, and -setExposureDuration: (with -lockForConfiguration: around it) sets it. A caller that wants manual exposure writes a duration, and there is no number on this release that says which sensitivity that duration is",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1343, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.automaticallyAdjustsVideoHDREnabled",
@@ -1190,9 +1191,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The release does have an automatic adjustment and it is a different one: -automaticallyAdjustsImageControlMode with -setAutomaticallyAdjustsImageControlMode:, which is the release deciding the image control mode rather than deciding whether to widen the dynamic range",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release's own automatic decision is -automaticallyAdjustsImageControlMode, writable under -lockForConfiguration:, and it answers a different question: not whether HDR follows the scene but which image control mode applies. A caller asking this one gets nothing here, and gets the image control mode's answer if it asks for that",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1961, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.deviceWhiteBalanceGains",
@@ -1200,9 +1202,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The gains are the per-channel red, green and blue multipliers the sensor white balance is made of, and this release's white balance is one temperature and one mode - -whiteBalanceTemperature with -setWhiteBalanceTemperature: - so there is no gains triple anywhere on the device to read",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release's white balance is -whiteBalanceMode plus a single -whiteBalanceTemperature, and -isWhiteBalanceModeSupported: and -isAdjustingWhiteBalance say whether that mode can be set and whether it is settling. A caller that wants a colour temperature writes one number; the gains triple it is made of is 8.0's and nothing here produces it",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1576, API_UNAVAILABLE(macos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.exposureTargetBias",
@@ -1210,9 +1213,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The target bias is what the image processor works to, and the bias this release carries is the caller's own compensation - -autoExposureBias with -setAutoExposureBias: - which is a different quantity: it offsets what the release chooses, where this row reads the value it chose",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. What the release answers is -autoExposureBias, the EV offset the caller applies to the release's own automatic exposure, writable under -lockForConfiguration:. The meter's target - the value the release is actually driving the exposure to - is not exposed here in any form",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1392, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.exposureTargetOffset",
@@ -1220,9 +1224,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The offset is the per-frame nudge the image processor applies while it converges, and this release exposes no such member: its exposure surface is the caller's duration, gain, mode and compensation",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release converges silently - it exposes -exposureDuration and -exposureGain and nothing that says how far its own target has moved from one frame to the next, so the per-frame offset is not a number anything here produces or publishes",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1382, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.grayWorldDeviceWhiteBalanceGains",
@@ -1230,9 +1235,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The reading is what the sensor would need to make the scene's own average grey, and this release computes no grey world at all: it has no gains triple to express one in and no member whose name is that reading",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. Nothing on this release computes a grey-world white balance - the device's only white balance is the temperature a caller writes, through -setWhiteBalanceTemperature: under -lockForConfiguration: - and the release never derives one from the scene, so there is no answer to read and none to approximate",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1586, API_UNAVAILABLE(macos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.lensAperture",
@@ -1240,9 +1246,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. An aperture is the f-number the lens is at, and the release exposes the exposure as the two numbers it applies instead - a duration and a gain - with no aperture between them",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. What the release answers is -exposureDuration with -exposureGain beside it, set as a pair under -lockForConfiguration:; the aperture they correspond to is not a member here and not a function of them that anything on this release computes",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1323, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.lensPosition",
@@ -1250,9 +1257,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The value is where the lens sits between its two stops, and the release has no lens member of any kind to read it from - its focus surface is a MODE, a point of interest and a configuration lock",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release holds the lens wherever -focusMode left it and moves it only by changing that mode, under -lockForConfiguration:; 7.0's -setFocusModeLockedWithLensPosition:completionHandler: has no lens position on this release to store, so the lens is held or released and not placed",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1167, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.maxExposureTargetBias",
@@ -1260,9 +1268,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. A maximum is the other bound on the same value, and as with the minimum this release carries neither the value nor either bound; -exposureDuration and -exposureGain are the closest numbers and neither is a bias",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. Nothing here reports how far the meter's target may go; the caller writes -autoExposureBias under -lockForConfiguration: and the release's own metering answers with the exposure it chooses, which is not a bound a caller can read back",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1412, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.maxWhiteBalanceGain",
@@ -1270,9 +1279,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. A gain ceiling is a limit on the same triple there is no member for, so on this release there is neither a gain to bound nor a number that says how far the white balance may go",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release's ceiling on white balance is the range of -whiteBalanceTemperature, which the release accepts or refuses and does not publish as a number; a caller that needs to know how far it may push before the release stops it must try the value and read what the release does",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1596, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.minExposureTargetBias",
@@ -1280,9 +1290,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. A minimum is a bound on the same value, and this release carries neither the value nor its bounds: its -autoExposureBias is the caller's offset and is not clamped by anything published here",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. There is no floor on the release to report and no floor on the caller's own -autoExposureBias either; the release accepts what it is given and produces whatever image its own metering decides, so a caller that needs the achievable range has no number on this release to ask for",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1402, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.videoHDREnabled",
@@ -1290,9 +1301,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureDevice a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. The support question IS answerable on this release and the switch is not: -isHDRSupported is 6.1.3's own member and there is no member beside it that turns HDR on, the 8.0 class adding -isVideoHDREnabled and -setVideoHDREnabled: as a pair where 6.1.3 has one support flag and nothing to set",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the split is worth saying: whether the device can do HDR is answered by the release, through -isHDRSupported, and only the switch is missing. There is nothing on the device to set, and the release's own HDR-adjacent switches are on the output - AVCaptureStillImageOutput's -setEV0CaptureEnabled: and -setRawCaptureEnabled: - so a caller on this release selects a capture mode at the output and cannot ask the device whether HDR is on",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1973, declared getter=isVideoHDREnabled, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDeviceFormat.autoFocusSystem",
