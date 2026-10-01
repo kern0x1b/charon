@@ -2,14 +2,14 @@
  "framework": "UIKit",
  "entries": [
   {
-   "api": "-[UIColor colorByApplyingContentHeadroom]",
+   "api": "-[UIColor colorByApplyingContentHeadroom:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
-   "facts": "facts/UIKit/UIContentUnavailable26.md"
+   "effect": "the selector is exported and answers the release's own answer: the 26.0 argument is a value the release has no field for, so the port DROPS it rather than approximate a different colour. The argument is part of the name, so this row is spelled with the colon the SDK declares - UIColor.h:64 reads `- (UIColor *)colorByApplyingContentHeadroom:(CGFloat)contentHeadroom`, and a body without the argument would answer a selector no Apple SDK has ever declared while the one an application calls raised unrecognized selector",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version, and the SDK 26.2 header UIKit.framework/Headers/UIColor.h:64 for the argument that is part of the selector; the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_methname, which prints colorByApplyingContentHeadroom: - the same count the registry check makes",
+   "facts": "facts/UIKit/UISelectorArity26.md"
   },
   {
    "api": "NSObject.accessibilityTextInputResponder",
@@ -1837,7 +1837,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject alignLeft]",
+   "api": "-[NSObject alignLeft:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1849,7 +1849,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject alignCenter]",
+   "api": "-[NSObject alignCenter:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1861,7 +1861,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject alignRight]",
+   "api": "-[NSObject alignRight:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1873,7 +1873,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject alignJustified]",
+   "api": "-[NSObject alignJustified:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1885,7 +1885,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject newFromPasteboard]",
+   "api": "-[NSObject newFromPasteboard:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1897,7 +1897,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject performClose]",
+   "api": "-[NSObject performClose:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",
@@ -1909,7 +1909,7 @@
    "ledger": "missing"
   },
   {
-   "api": "-[NSObject toggleInspector]",
+   "api": "-[NSObject toggleInspector:]",
    "kind": "method",
    "introduced": "26.0",
    "minimum": "6.0",

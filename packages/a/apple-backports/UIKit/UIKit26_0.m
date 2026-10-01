@@ -700,6 +700,17 @@ static char CharonVCPrefersOrientationLockedKey, CharonVCChildForOrientationLock
 // the four-component constructor and the 26.0 ones are that PLUS an exposure the release has no field
 // for, so each drops the exposure and builds the colour the release can build.  The row names the drop:
 // a colour with the wrong exposure is a DIFFERENT colour, so saying so beats approximating it.
+//
+// colorByApplyingContentHeadroom: TAKES ITS CGFloat, and this file used to define it with none.  The
+// SDK 26.2 header declares exactly one method of the name and the argument is part of its selector:
+//   - (UIColor *)colorByApplyingContentHeadroom:(CGFloat)contentHeadroom API_AVAILABLE(ios(26.0), ...)
+// so `- (UIColor *)colorByApplyingContentHeadroom` was a selector NO APPLE SDK HAS EVER DECLARED, and an
+// application calling the declared one raised unrecognized selector against this library.  The old
+// commit message explained the difference away - "__objc_methname prints a no-argument selector WITHOUT
+// its trailing colon" - and that is false; see facts/UIKit/UISelectorArity26.md, where a three-method
+// probe prints `oneArgument:` WITH the colon.  The body is unchanged and still drops the headroom:
+// 6.1.3's CGColor has no content-headroom tag to store it in, so the components come back as they went
+// in and the row says so.
 @implementation UIColor (CharonUIKit26_Constructors)
 + (UIColor *)colorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue
                    alpha:(CGFloat)alpha exposure:(CGFloat)exposure
@@ -721,7 +732,7 @@ static char CharonVCPrefersOrientationLockedKey, CharonVCChildForOrientationLock
 {
     return [self initWithRed:red green:green blue:blue alpha:alpha];
 }
-- (UIColor *)colorByApplyingContentHeadroom { return self; }
+- (UIColor *)colorByApplyingContentHeadroom:(CGFloat)contentHeadroom { return self; }
 @end
 
 // UIImageSymbolConfiguration's two 26.0 constructors: the release has the palette form these two extend,
@@ -784,18 +795,28 @@ static char CharonVCPrefersOrientationLockedKey, CharonVCChildForOrientationLock
 // the cost is stated rather than hidden: an unrelated object also answers YES to -alignLeft:.  A row that
 // hides that would be claiming a conformance the port does not have.
 
+// SEVEN OF THESE TAKE A SENDER, and this file used to define all seven with none.  The SDK 26.2
+// declaration of each carries `(nullable id)sender`, and the argument is part of the selector, so the
+// definitions below answered `-alignLeft` and `-performClose` - names no Apple SDK has ever declared -
+// while `-alignLeft:` and `-performClose:`, the selectors the queue's rows name and an application
+// calls, raised unrecognized selector against this library.  The comment above already spelled them
+// with the colon while the bodies below did not.  The bodies are unchanged: these are the 26.0
+// standard-edit-action members, the release's own cut:/copy:/paste: are no-ops with a sender too, and a
+// 6.1.3 text view has no alignment action to forward to.  facts/UIKit/UISelectorArity26.md carries the
+// header lines and the probe that shows what otool prints.
+
 @implementation UIResponder (CharonUIKit26)
 - (id)providerForDeferredMenuElement:(id)element { return nil; }
 @end
 
 @implementation NSObject (CharonUIKit26_EditActions)
-- (void)alignLeft { }
-- (void)alignCenter { }
-- (void)alignRight { }
-- (void)alignJustified { }
-- (void)newFromPasteboard { }
-- (void)performClose { }
-- (void)toggleInspector { }
+- (void)alignLeft:(id)sender { }
+- (void)alignCenter:(id)sender { }
+- (void)alignRight:(id)sender { }
+- (void)alignJustified:(id)sender { }
+- (void)newFromPasteboard:(id)sender { }
+- (void)performClose:(id)sender { }
+- (void)toggleInspector:(id)sender { }
 @end
 
 @implementation NSObject (CharonUIKit26_SearchBarDelegate)
