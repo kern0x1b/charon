@@ -516,340 +516,340 @@
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityActivationPointBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityAttributedHintBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityAttributedLabelBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityAttributedUserInputLabelsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityAttributedValueBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityContainerTypeBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityCustomActionsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityCustomRotorsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityDecrementBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityDirectTouchOptions",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port answers the options the caller set and a fresh object None (0), which is what the host answers",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityElementsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityElementsHiddenBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityFrameBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityHeaderElementsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityHintBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityIdentifierBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityIncrementBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityLabelBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityLanguageBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityMagicTapBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityNavigationStyleBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityPathBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityPerformEscapeBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityRespondsToUserInteractionBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityShouldGroupAccessibilityChildrenBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityTextualContextBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityTraitsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityUserInputLabelsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityValueBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.accessibilityViewIsModalBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.automationElements",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.automationElementsBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSObject.isAccessibilityElementBlock",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the port stores the block per object and the getter hands it back, so a caller that sets one reads the same one; the plain property is unchanged, which is what the host does too (measured: a label of \"plain\" still reads \"plain\" after the setter takes a block)",
+   "source": "UIKit/UIAccessibilityBlocks17.m; measured on the 4.3 armv7 cache, 0 of this file's 159 17.x rows carried with an 8/8 control in the same run, and the object compiled against the 16.4 SDK for armv7-apple-ios6.0 defines all 68 accessors",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "NSSymbolContentTransition",
