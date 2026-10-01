@@ -322,7 +322,8 @@ The rest of Core ML's Objective-C surface is **not** in this delivery:
   reads a container and runs it -- and refuses the `mlProgram` form by name.
 - **The initialisers Core ML declares `NS_UNAVAILABLE`**: a key, a model asset and an image
   constraint have none, because a model builds them and an application only reads them. Not
-  implementing one is what `NS_UNAVAILABLE` means.
+  implementing one is what `NS_UNAVAILABLE` means -- and it is a COMPILE-time annotation, not a
+  run-time refusal, which is measured below rather than assumed.
 - **The image constructors** (`+featureValueWithCGImage:`, `+featureValueWithImageAtURL:` and
   their variants). `+featureValueWithPixelBuffer:` is carried and takes a 32-bit BGRA or ARGB
   buffer; a CGImage or a URL is a decode that belongs with the image handling, and the port
@@ -331,3 +332,77 @@ The rest of Core ML's Objective-C surface is **not** in this delivery:
   the kinds of model the interpreter refuses: support vector machines, k-nearest neighbours,
   item similarity, MIL (`mlProgram`) models, linked and custom models. Each is refused by name
   in `facts/CoreML/CoreML.md`.
+
+## `NS_UNAVAILABLE` is a compile-time annotation, not a run-time refusal
+
+Measured 2026-10-01 on this host's own Core ML, by `tests/backports/host/coreml/probe-unavailable.m`:
+
+```
+sdk=$(xcrun --show-sdk-path)
+xcrun clang -fobjc-arc -w -framework Foundation -framework CoreML \
+    -F"$sdk/System/Library/Frameworks" probe-unavailable.m -o probe-unavailable && ./probe-unavailable
+```
+
+The send goes through `objc_msgSend`, because a bracketed call does not compile against a header
+that declares the initialiser unavailable -- reproducing that refusal is what the annotation is,
+and the probe has to get past it to measure what the framework does at run time.
+
+```
+MLKey: NSClassFromString -> a class
+  superclass NSObject
+  +new     responds=1  answered *nil description* (name=(null) scope=(null))
+  -init    responds=1  answered *nil description* (name=(null) scope=(null))
+MLMetricKey: NSClassFromString -> a class
+  superclass MLKey
+  +new     responds=1  answered *nil description* (name=(null) scope=(null))
+  -init    responds=1  answered *nil description* (name=(null) scope=(null))
+MLParameterKey: NSClassFromString -> a class
+  superclass MLKey
+  +new     responds=1  answered *nil description* (name=(null) scope=(null))
+  -init    responds=1  answered *nil description* (name=(null) scope=(null))
+```
+
+Every one of them **answers**: `responds=1`, and the object that comes back is a real instance of
+the class, built by `NSObject`'s own implementation, which the class inherits and does not override.
+So a program that sends `+[MLKey new]` by name does **not** get `doesNotRecognizeSelector` -- the
+claim an earlier version of these rows made, and it was wrong.
+
+What it gets instead is the thing the annotation exists to warn about. The key answers `name` nil
+and `scope` nil, and a key is *only* a name and a scope: `MLKey`'s own `-isEqual:` compares those
+two, and a model's parameter dictionary is keyed by them, so a key with neither matches nothing and
+is equal to no key the framework or this port ever hands out. That is why Apple marks the
+initialiser unavailable -- not because the send fails, and the distinction is the whole difference
+between a compile error an author never sees and a nil-valued object an application cannot tell
+from a real one.
+
+So the rows are `absent`, and their effect names what a caller actually receives.
+
+The same run also answers for the update family and the image constructors, which is the
+`responds=1` half of why those rows are the RELEASE's absence rather than the port's:
+
+```
+MLTask: NSClassFromString -> a class        MLUpdateTask: NSClassFromString -> a class
+MLUpdateContext: NSClassFromString -> a class
+MLUpdateProgressHandlers: NSClassFromString -> a class
+MLWritable: NSProtocolFromString -> a protocol
+MLFeatureValue +featureValueWithCGImage:constraint:options:error: responds=1
+MLFeatureValue +featureValueWithImageAtURL:constraint:options:error: responds=1
+```
+
+And the release side, from the two armv7 caches this package deploys on
+(`CHARON_ROOT="$PWD" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3`, the same reader
+`registry/CoreNFC/ios11.json` cites):
+
+| release | images naming ML | classes | of which `ML*` | protocols | of which `ML*` |
+| --- | --- | --- | --- | --- | --- |
+| 6.1.3 armv7 | 0 of 524 | 11378 | 65 | 1171 | 3 |
+| 4.3 armv7 | 0 of 354 | 7187 | 76 | 564 | 2 |
+
+Every one of those 65 and 76 `ML*` names is MediaLibrary's (`ML3Album`, `ML3Track`,
+`MLMusicLibrary`, `MLSQLiteConnection`) or Photos' (`MLPhotoLibrary`), never Core ML's: **0 of 524
+and 0 of 354 images name ML at all**, so no Core ML framework is in either cache. The same reader
+finds 245 `ML*` classes and 23 `ML*` protocols in 12.0's arm64 cache, among them `MLArrayBatchProvider`,
+`MLFeatureValue` and `MLModel`, so a zero on the two armv7 rungs is the release's and not the
+reader's. `MLTask`, `MLUpdateTask`, `MLUpdateContext`, `MLUpdateProgressHandlers`, `MLWritable`,
+`MLKey`, `MLMetricKey` and `MLParameterKey` all read 16.0 from `tools/cache-index/first-rung.py`:
+the held ladder has a hole between 12.0 and 16.0, so a 13.0 name's first held rung is 16.0.
