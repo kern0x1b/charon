@@ -155,6 +155,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNGenerateImageFeaturePrintRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request whose answer is the feature print observation whose element type VNElementTypeSize answers for. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0, so the port's own revision table already places it. The descriptor behind it is Apple's own learned model and there is no source for it",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNHomographicImageRegistrationRequest",
       "kind": "class",
       "introduced": "11.0",
@@ -245,6 +256,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNRecognizeAnimalsRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request whose answer carries the two animal identifiers above. It is a VNImageBasedRequest, which is what its own header declares, and it had exactly one revision in 13.0, so the port's own revision table already places it. The recogniser behind it is Apple's own and Apple has published no source for Vision, so what the port carries is the class and its revision table",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path, which is a refusal a caller can test for rather than an unrecognised class",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNRecognizedObjectObservation",
       "kind": "class",
       "introduced": "12.0",
@@ -333,6 +355,28 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNAnimalIdentifierCat",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the text an animal recognition answer carries for a cat. It is Apple's own data in the framework image and not the name of the constant, which is why it is read out of the image rather than written as the name",
+      "effect": "the symbol is there and its value is the string Cat, so a comparison against an observation's identifier is a comparison of texts",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision image of the 16.0 arm64e cache, read through the exported symbol whose value is a CFString with tools/corpus/cache-value.lua, and read again through this host's own Vision; both read \"Cat\"; facts/Vision/Absence.md sections 3 and 4"
+    },
+    {
+      "api": "VNAnimalIdentifierDog",
+      "kind": "constant",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the text an animal recognition answer carries for a dog, read the same way and from the same two places as the cat's above",
+      "effect": "the symbol is there and its value is the string Dog",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision image of the 16.0 arm64e cache, read through the exported symbol whose value is a CFString with tools/corpus/cache-value.lua, and read again through this host's own Vision; both read \"Dog\"; facts/Vision/Absence.md sections 3 and 4"
     },
     {
       "api": "VNBarcodeSymbologyAztec",
@@ -542,6 +586,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNElementTypeSize()",
+      "kind": "function",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "how many bytes one element of a feature print's data takes: 4 for a float, 8 for a double, and 0 for the unknown case and for every argument the enumeration does not name. The widths are sizeof of the two types rather than written numbers, so the answer is the width on the release that asks",
+      "effect": "the function is there and answers 4, 8 and 0 for the arguments measured, and a caller reading elementCount can multiply by it",
+      "facts": "facts/Vision/Absence.md",
+      "source": "this host's own Vision, asked for the arguments 0 to 4 and answering 0, 4, 8, 0, 0, by tools/vision/probe130.m compiled for Mac Catalyst; facts/Vision/Absence.md section 4, with the command beside its output"
+    },
+    {
       "api": "VNImagePointForFaceLandmarkPoint()",
       "kind": "function",
       "introduced": "11.0",
@@ -609,10 +664,11 @@
       "kind": "method",
       "introduced": "13.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the method arrived in iOS 13 with the constellation of face landmarks, which the port does not detect",
-      "effect": "the method is not there",
-      "source": "Vision of the arm64 shared cache of iOS 12.0, which has no such method"
+      "status": "implemented",
+      "reason": "which constellations of face landmarks a revision of the request maps a face with: revisions 1 to 3 for the 65-point constellation, revision 3 alone also for the 76-point one, and not-defined for none of them. The port answers Apple's whole table rather than narrowing it to the revisions it carries, because a revision the port cannot run is refused by the request handler with VNErrorUnsupportedRevision, and that is a different question from the one this method asks",
+      "effect": "the method is there and answers Apple's answers for every pair measured, including NO for the not-defined constellation and for any revision outside 1 to 3",
+      "facts": "facts/Vision/Absence.md",
+      "source": "this host's own Vision, asked for every pair of a revision from 1 to 4 and a constellation from not-defined through 76 points, by tools/vision/probe130.m compiled for Mac Catalyst; facts/Vision/Absence.md section 4, with the command beside its output"
     },
     {
       "api": "+[VNDetectedObjectObservation observationWithBoundingBox:]",
@@ -650,6 +706,28 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "-[VNClassificationObservation hasMinimumPrecision:forRecall:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "whether the operation point chosen by a recall has a minimum precision. This port runs a Core ML classifier, which answers one score per class, and a precision and recall curve is those same scores swept across thresholds of themselves: there is no set of scores here and so no operation point to ask about",
+      "effect": "the method is there and answers NO, which is the answer to a question about a curve this port's classifications do not have",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the SDK header's own rule for the addition these three members belong to, which makes hasPrecisionRecallCurve the gate and says the other two must not be sent when it is NO, and this port's request path in VNHandlers.m, which builds one VNClassificationObservation per class from one score and keeps no scores of its own; facts/Vision/Absence.md section 5"
+    },
+    {
+      "api": "-[VNClassificationObservation hasMinimumRecall:forPrecision:]",
+      "kind": "method",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the same asked the other way round, and the same answer for the same reason: with one score per class there is no operation point",
+      "effect": "the method is there and answers NO",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the SDK header's own rule for the addition these three members belong to, which makes hasPrecisionRecallCurve the gate and says the other two must not be sent when it is NO, and this port's request path in VNHandlers.m, which builds one VNClassificationObservation per class from one score and keeps no scores of its own; facts/Vision/Absence.md section 5"
     },
     {
       "api": "-[VNCoreMLModel init]",
@@ -1278,6 +1356,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNClassificationObservation.hasPrecisionRecallCurve",
+      "kind": "property",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "whether the observation carries a precision and recall curve at all. The header makes this the gate for the two methods that read one, so answering it is what keeps a caller from sending them",
+      "effect": "the property is there and answers NO, so a caller reads that the curve is not there and does not send the two methods",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the SDK header's own rule for the addition these three members belong to, and this port's request path in VNHandlers.m, which builds one VNClassificationObservation per class from one score and keeps no scores of its own; facts/Vision/Absence.md section 5"
+    },
+    {
       "api": "VNClassificationObservation.identifier",
       "kind": "property",
       "introduced": "11.0",
@@ -1897,6 +1986,17 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRequestProgressProviding",
+      "kind": "protocol",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the progress a long request reports through. The build emits the protocol's metadata into the library, so the name resolves at run time; the port does not adopt the protocol on its own VNRecognizeTextRequest, because it cannot run a text recognition and so has no progress to report, and a progressHandler that is stored and never called would answer a caller exactly as no protocol at all would",
+      "effect": "the protocol is there: NSProtocolFromString answers it by name. The port's own VNRecognizeTextRequest does not conform to it, and its row says so",
+      "facts": "facts/Vision/Absence.md",
+      "source": "this host's own Vision, where NSProtocolFromString answers for the protocol and answers nil for a name it does not carry, by tools/vision/probe130.m compiled for Mac Catalyst; facts/Vision/Absence.md section 4, with the command beside its output"
     },
     {
       "api": "VNRequestRevisionProviding",
