@@ -32,8 +32,15 @@
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
-    NSSet *triggers = [NSSet setWithObjects:[UNTimeIntervalNotificationTrigger class], [UNCalendarNotificationTrigger class],
-                                              [UNLocationNotificationTrigger class], nil];
+    // A location trigger joins the two by name rather than by symbol: Apple's own header marks
+    // UNLocationNotificationTrigger unavailable on macOS and Mac Catalyst, so a source that named it
+    // would not compile for the host differential - and on the release the port deploys on, the
+    // class this finds is the port's own.
+    NSMutableSet *triggers = [NSMutableSet setWithObjects:[UNTimeIntervalNotificationTrigger class],
+                                                        [UNCalendarNotificationTrigger class], nil];
+    Class location = NSClassFromString(@"UNLocationNotificationTrigger");
+    if (location)
+        [triggers addObject:location];
     return [self initCharonWithIdentifier:[coder decodeObjectOfClass:[NSString class] forKey:@"identifier"] ?: @""
                                    content:[coder decodeObjectOfClass:[UNNotificationContent class] forKey:@"content"]
                                    trigger:[coder decodeObjectOfClasses:triggers forKey:@"trigger"]];

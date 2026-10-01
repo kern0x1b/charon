@@ -14,6 +14,10 @@ NSError *charon_unsupported(NSString *reason);
 - (instancetype)initCharonWithRepeats:(BOOL)repeats;
 @end
 
+@interface UNPushNotificationTrigger (CharonUserNotifications)
++ (instancetype)charon_pushTrigger;
+@end
+
 @interface UNNotification (CharonUserNotifications)
 + (instancetype)notificationWithRequest:(UNNotificationRequest *)request date:(NSDate *)date;
 @end

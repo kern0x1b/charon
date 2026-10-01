@@ -290,6 +290,35 @@ static UILocalNotification *charon_local_notification(UNNotificationRequest *req
 
 static UNUserNotificationCenter *charon_center;
 
+static UNNotificationRequest *charon_push_request(NSDictionary *userInfo)
+{
+    // The payload of a pushed notification, as the release hands it to the application delegate: the
+    // alert fields are under "aps" and whatever the server sent beside them is the notification's
+    // own data. The names are the ones APNS itself documents, the same ones CKNotifications8.m
+    // reads out of a CloudKit notification that arrived as a push.
+    NSDictionary *aps = [userInfo[@"aps"] isKindOfClass:[NSDictionary class]] ? userInfo[@"aps"] : nil;
+    NSString *alert = [aps[@"alert"] isKindOfClass:[NSString class]] ? aps[@"alert"] : nil;
+    NSDictionary *fields = [aps[@"alert"] isKindOfClass:[NSDictionary class]] ? aps[@"alert"] : nil;
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.title = fields[@"title"];
+    content.subtitle = fields[@"subtitle"];
+    content.body = alert ?: fields[@"body"];
+    content.badge = aps[@"badge"];
+    content.categoryIdentifier = aps[@"category"];
+    content.threadIdentifier = aps[@"thread-id"];
+    content.userInfo = userInfo;
+    // iOS 10 cannot play a critical alert on a release of this age, so the name is taken and the
+    // volume and the critical flag of a dict are not: there is nothing in UILocalNotification that
+    // would carry them.
+    NSString *sound = [aps[@"sound"] isKindOfClass:[NSString class]] ? aps[@"sound"] : nil;
+    if (sound)
+        content.sound = [sound isEqualToString:@"default"] ? [UNNotificationSound defaultSound] : [UNNotificationSound soundNamed:sound];
+    // iOS 10's own identifier for a request the application never added is made by the system, and
+    // nothing in iOS 6 names it, so the release's own UUID generator makes this one.
+    return [UNNotificationRequest requestWithIdentifier:[[NSUUID UUID] UUIDString] content:content
+                                                trigger:[UNPushNotificationTrigger charon_pushTrigger]];
+}
+
 static void charon_hook_delegate(void)
 {
     id delegate = [UIApplication sharedApplication].delegate;
@@ -313,6 +342,22 @@ static void charon_hook_delegate(void)
     });
     if (!class_addMethod(cls, selector, replacement, "v@:@@"))
         method_setImplementation(existing, replacement);
+
+    // A push of iOS 6 arrives here and nowhere else: there is no UserNotifications framework and no
+    // daemon to route it through, so this is what makes a request carrying a push trigger exist at
+    // all. The application delegate's own implementation is left in place and is called after the
+    // centre's, because a pushed notification belongs to the application as much as to the centre.
+    SEL pushed = @selector(application:didReceiveRemoteNotification:);
+    Method existing_push = class_getInstanceMethod(cls, pushed);
+    IMP original_push = existing_push ? method_getImplementation(existing_push) : NULL;
+    IMP replacement_push = imp_implementationWithBlock(^(id self, UIApplication *application, NSDictionary *userInfo) {
+        if ([userInfo isKindOfClass:[NSDictionary class]] && charon_center)
+            [charon_center charon_deliverRequest:charon_push_request(userInfo) state:application.applicationState];
+        if (original_push)
+            ((void (*)(id, SEL, UIApplication *, NSDictionary *))original_push)(self, pushed, application, userInfo);
+    });
+    if (!class_addMethod(cls, pushed, replacement_push, "v@:@@"))
+        method_setImplementation(existing_push, replacement_push);
 }
 
 @implementation UNUserNotificationCenter {

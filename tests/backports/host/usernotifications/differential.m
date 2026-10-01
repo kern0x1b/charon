@@ -459,6 +459,77 @@ static void compare_actions(void)
     compare_hidden_previews(ourCategory, theirCategory, ourActions, theirActions);
 }
 
+// Every method a class declares of its own, its metaclass's instance methods apart: what is inherited
+// is the superclass's business and is compared there.
+static NSArray *own_methods(Class cls)
+{
+    NSMutableArray *found = [NSMutableArray array];
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(cls, &count);
+    for (unsigned index = 0; index < count; index++)
+        [found addObject:NSStringFromSelector(method_getName(methods[index]))];
+    free(methods);
+    [found sortUsingSelector:@selector(compare:)];
+    return found;
+}
+
+// What a class adds over its superclass, which is what a caller can reach that the base does not.
+static NSArray *added_over_superclass(Class cls)
+{
+    Class parent = class_getSuperclass(cls);
+    NSMutableArray *found = [NSMutableArray array];
+    unsigned count = 0;
+    Method *methods = class_copyMethodList(cls, &count);
+    for (unsigned index = 0; index < count; index++) {
+        SEL selector = method_getName(methods[index]);
+        if (!class_getInstanceMethod(parent, selector))
+            [found addObject:NSStringFromSelector(selector)];
+    }
+    free(methods);
+    [found sortUsingSelector:@selector(compare:)];
+    return found;
+}
+
+// UNPushNotificationTrigger is a marker in both: no SDK this port is compiled against declares a
+// member on it, so what a caller reads off it comes from UNNotificationTrigger and nothing is added.
+// The system will not hand one over - only a request that arrived from a server carries one - so
+// this compares the shape of the two classes and what the port's own trigger answers.
+static void compare_push_triggers(void)
+{
+    Class theirClass = [UNPushNotificationTrigger class];
+    if (!theirClass) {
+        printf("FAIL this framework has no UNPushNotificationTrigger\n");
+        failures++;
+        return;
+    }
+    Class myClass = ours(theirClass);
+    if (!myClass) {
+        printf("FAIL the backport defines no UNPushNotificationTrigger\n");
+        failures++;
+        return;
+    }
+    same(plain(NSStringFromClass(myClass)), @"UNPushNotificationTrigger", @"the push trigger's name");
+    same(plain(NSStringFromClass(class_getSuperclass(myClass))), plain(NSStringFromClass(ours([UNNotificationTrigger class]))),
+         @"a push trigger is the backport's own notification trigger");
+    same(plain(NSStringFromClass(class_getSuperclass(theirClass))), plain(NSStringFromClass([UNNotificationTrigger class])),
+         @"a push trigger is a notification trigger");
+    // Nothing is added over the base, since no header declares a member. The framework's class does
+    // implement five of the base's members itself and, on the newest release, three more that no
+    // header declares; those are its own business, so they are named rather than compared.
+    same(added_over_superclass(myClass), @[], @"the backport's push trigger adds no member over its base");
+    printf("note: this framework's UNPushNotificationTrigger declares %s\n",
+           [[own_methods(theirClass) componentsJoinedByString:@" "] UTF8String]);
+
+    id mine = ((id (*)(id, SEL))objc_msgSend)(myClass, @selector(charon_pushTrigger));
+    checks++;
+    if (![mine isKindOfClass:myClass] || [mine repeats])
+        fail(@"a push trigger of the backport is a %@ that repeats %@", NSStringFromClass([mine class]), flag([mine repeats]));
+    same(round_trip(mine, myClass, @"UNPushNotificationTrigger"), mine, @"a push trigger archived");
+    checks++;
+    if ([[mine copy] isEqual:mine] != YES)
+        fail(@"a push trigger's copy is not equal to it");
+}
+
 int main(int argc, char *argv[])
 {
     @autoreleasepool {
@@ -475,6 +546,7 @@ int main(int argc, char *argv[])
         compare_content();
         compare_requests();
         compare_actions();
+        compare_push_triggers();
         printf("%d checks, %d failures\n", checks, failures);
     }
     return failures;

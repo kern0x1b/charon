@@ -102,6 +102,9 @@ static UNNotificationRequest *request_named(NSString *identifier, NSString *body
     UNLocationNotificationTrigger *arriving = [UNLocationNotificationTrigger triggerWithRegion:region repeats:NO];
     CHECK([arriving isKindOfClass:[UNNotificationTrigger class]] && arriving.region == region && !arriving.repeats,
           "a location trigger is there and keeps the region and the repeats it was given");
+    Class pushed = NSClassFromString(@"UNPushNotificationTrigger");
+    CHECK(pushed && [pushed isSubclassOfClass:[UNNotificationTrigger class]],
+          "and a push trigger is there, as the marker a pushed notification is delivered with");
 
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"org.charon.apple-backports.UIUserNotificationTypes"];
     CHECK(settings().authorizationStatus == UNAuthorizationStatusNotDetermined, "before asking, nothing is determined");
