@@ -1337,10 +1337,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIScribbleInteractionDelegate scribbleInteractionDidFinishWriting:]",
@@ -1348,10 +1348,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIScribbleInteractionDelegate scribbleInteractionShouldDelayFocus:]",
@@ -1359,10 +1359,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIScribbleInteractionDelegate scribbleInteractionWillBeginWriting:]",
@@ -1370,10 +1370,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "UIIndirectScribbleInteraction",
@@ -1458,10 +1458,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:focusElementIfNeeded:referencePoint:completion:]",
@@ -1469,10 +1469,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:frameForElement:]",
@@ -1480,10 +1480,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:isElementFocused:]",
@@ -1491,10 +1491,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:requestElementsInRect:completion:]",
@@ -1502,10 +1502,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:shouldDelayFocusForElement:]",
@@ -1513,10 +1513,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "-[UIIndirectScribbleInteractionDelegate indirectScribbleInteraction:willBeginWritingInElement:]",
@@ -1524,10 +1524,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "this release has no Apple Pencil",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the release carries neither protocol: read class-scoped over both band ends, UIScribbleInteractionDelegate and UIIndirectScribbleInteractionDelegate are neither a class nor a protocol in the 6.1.3 or the 4.3 cache, so there is no element, no frame, no focus and no writing for a delegate method to be asked about",
+   "effect": "the member is not there: the port's interaction keeps its delegate weakly and never sends it, so an application that implements the method is not called",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches (CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for 4.3): the run reads 11378 classes and 1171 protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control, and in both runs UIScribbleInteractionDelegate, UIIndirectScribbleInteractionDelegate, UIScribbleInteraction and UIIndirectScribbleInteraction are neither a class nor a protocol. The two interactions the port builds are in UIKit/UIScribbleInteraction.m and ask their delegate for nothing"
   },
   {
    "api": "UIPointerLockState",

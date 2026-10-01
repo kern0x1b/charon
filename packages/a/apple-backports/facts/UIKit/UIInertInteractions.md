@@ -35,6 +35,20 @@ A value with no rects, as the host answers for one made with `init`; a text inpu
 Handwriting with Apple Pencil is not on the release. Both interactions are made, with `-init` too as the host allows, keep their
 delegate weakly, never handle writing, and `+pencilInputExpected` is NO. The delegates' messages are never sent.
 
+The eleven members of `UIScribbleInteractionDelegate` and `UIIndirectScribbleInteractionDelegate` are `absent` rather than inert, and
+the difference is measured rather than assumed: **the release carries neither protocol.** `objc.inventory`, read with
+
+    CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+    CHARON_ROOT=<checkout> xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld_shared_cache_armv7
+
+finds `UIScribbleInteractionDelegate`, `UIIndirectScribbleInteractionDelegate`, `UIScribbleInteraction` and
+`UIIndirectScribbleInteraction` as neither a class nor a protocol in either cache. The same two runs read 11378 classes and 1171
+protocols on 6.1.3 and 7187 and 564 on 4.3, which is the control: the reader saw the whole of both caches, so the four zeros are the
+releases' and not the reader's. So there is nothing on the release for a delegate method to override, and no element, no frame, no
+focus and no writing to ask about; the two interactions the port builds (`UIKit/UIScribbleInteraction.m`) attach to a view, keep
+their delegate weakly, and say so once in the log. An application that implements any of the eleven is never called, which is the
+effect each row records.
+
 ## Pointer lock
 
 A scene answers one `UIPointerLockState`, always the same and never locked; `prefersPointerLocked` of a view controller is NO,
