@@ -1596,10 +1596,10 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the background configuration a cell starts from, by its list style; the port carries UIBackgroundConfiguration with the list cell styles (listPlainCellConfiguration and the rest), so the answer could be picked from them - not built for lack of demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "effect": "the list cell configuration of the list the cell is in, chosen by that list's appearance: listPlainCellConfiguration for plain and sidebar-plain, listGroupedCellConfiguration for grouped and inset-grouped, listSidebarCellConfiguration for sidebar; nil for a cell whose collection view carries no compositional list configuration, which is every cell outside a list",
+      "source": "SDK 16.4, UIKit; absent from UICollectionViewCell in the 6.1.3 and 12.0 caches (36 and 71 selectors, none of them defaultBackgroundConfiguration, the row holding -initWithFrame:reuseIdentifier:), read class-scoped by xmake l tools/corpus/objc-inventory.lua over each cache - facts/UIKit/CellBackgroundConfiguration16.md",
+      "facts": "facts/UIKit/CellBackgroundConfiguration16.md"
     },
     {
       "api": "-[UICollectionViewDelegate collectionView:canPerformPrimaryActionForItemAtIndexPath:]",
@@ -1836,10 +1836,10 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the background configuration a cell starts from, by its table's style; the port carries UIBackgroundConfiguration with the list cell styles (listPlainCellConfiguration, listGroupedCellConfiguration), so the answer could be picked from them - not built for lack of demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "effect": "listPlainCellConfiguration in a plain table, listGroupedCellConfiguration in a grouped or inset-grouped one, taken from the style of the table the cell is in; nil while the cell is in no table",
+      "source": "SDK 16.4, UIKit; absent from UITableViewCell in the 6.1.3 and 12.0 caches (291 and 476 selectors, none of them defaultBackgroundConfiguration, the row holding -initWithFrame:reuseIdentifier:, -contentView and -selectionStyle), read class-scoped by xmake l tools/corpus/objc-inventory.lua over each cache - facts/UIKit/CellBackgroundConfiguration16.md",
+      "facts": "facts/UIKit/CellBackgroundConfiguration16.md"
     },
     {
       "api": "-[UITableViewDelegate tableView:canPerformPrimaryActionForRowAtIndexPath:]",
@@ -1866,10 +1866,10 @@
       "kind": "method",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the background configuration a header or footer starts from, by its table's style; the port carries UIBackgroundConfiguration with the list header and footer styles, so the answer could be picked from them - not built for lack of demand, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; objc-inventory.lua over 6.1.3 and 12.0 read class-scoped, which is what backports.lua:1612 carried_by_release reads; neither band end carries it: 6.1.3 and 12.0 by xmake l tools/corpus/cache-census.lua UI 6.1.3 12.0, whose own control certifies the reader, with 8/8 selector controls on each release and the is-getter form checked on every property - facts/UIKit/UIKit16Absence.md"
+      "status": "implemented",
+      "effect": "listPlainHeaderFooterConfiguration in a plain table, listGroupedHeaderFooterConfiguration in a grouped or inset-grouped one, taken from the style of the table the header or footer is in; nil while it is in no table",
+      "source": "SDK 16.4, UIKit; absent from UITableViewHeaderFooterView in the 6.1.3 and 12.0 caches (51 and 87 selectors, none of them defaultBackgroundConfiguration, the row holding -initWithFrame:reuseIdentifier: and -contentView), read class-scoped by xmake l tools/corpus/objc-inventory.lua over each cache - facts/UIKit/CellBackgroundConfiguration16.md",
+      "facts": "facts/UIKit/CellBackgroundConfiguration16.md"
     },
     {
       "api": "-[UITextFieldDelegate textField:editMenuForCharactersInRange:suggestedActions:]",
