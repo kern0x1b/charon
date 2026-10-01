@@ -6,10 +6,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is a circle and nothing else: a centre, a radius, the diameter that is twice it, and the two membership tests the header declares. That is arithmetic over a VNPoint and a double, so the class is here in full",
+   "effect": "a VNCircle built with -initWithCenter:radius: or -initWithCenter:diameter: answers center, radius and diameter; -containsPoint: answers YES for a point on the boundary as well as inside, and -containsPoint:inCircumferentialRingOfWidth: answers YES for a point in the band of the given width about the boundary, which is the band the header describes as radius-delta to radius+delta with the width the argument names",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNContour",
@@ -17,9 +18,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: VNDetectContoursRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header's own +new and -init are unavailable (VNGeometry.h:243 and :244), so a caller cannot build one either. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNContoursObservation",
@@ -27,9 +28,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: VNDetectContoursRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header gives it no initializer of its own and no setter for the contours it would hold. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNDetectContoursRequest",
@@ -37,9 +38,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the boundary of every region of interest in the image, found by a network and returned as a hierarchy of VNContour. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNDetectDocumentSegmentationRequest",
@@ -57,9 +58,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the joints of a person in the image, found by a network and returned as VNHumanBodyPoseObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNDetectHumanHandPoseRequest",
@@ -67,9 +68,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the joints of a hand in the image, found by a network and returned as VNHumanHandPoseObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNDetectTrajectoriesRequest",
@@ -77,9 +78,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the path of a shape moving on a parabola across a sequence of frames, found by tracking it and fitting the equation, and returned as VNTrajectoryObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNDetectedPoint",
@@ -87,9 +88,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: any of the point-finding requests, as the point it found writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header marks every initializer unavailable (VNDetectedPoint.h:29 to :32). So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNGenerateOpticalFlowRequest",
@@ -97,9 +98,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class arrived in iOS 14 and its work is a model that release carries and iOS 6 does not: the change vector of every pixel between two images of the same size, computed over a dense field (revision 1 by a classical method, revision 2 by a network) and returned as a VNPixelBufferObservation. No public source for it exists - coordination/corpus/sources.md records that Vision has none, measured - and iOS 6 holds no second implementation of it to work from, so there is nothing to build it out of",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 for what the request computes, and coordination/corpus/sources.md for the measured absence of a public source for Vision; the header lines each row quotes are in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNGeneratePersonSegmentationRequest",
@@ -116,10 +117,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is one computation over a set of points: the smallest circle that holds them. It is found by the three cases its own name implies - a point on its own, two as a diameter, three as the circle through them - over the points shuffled by a constant-seeded generator, so the same points answer the same circle on every run",
+   "effect": "+boundingCircleForPoints:error: and +boundingCircleForSIMDPoints:pointCount:error: answer the smallest VNCircle holding every point given, and a point outside the circle is never the answer; no points, or a nil among them, answers nil with VNErrorInvalidArgument. The two contour overloads, +calculateArea:forContour:orientedArea:error: and +calculatePerimeter:forContour:error:, are NOT declared, because both take a VNContour and that class's row in this file is absent: respondsToSelector: answers honestly and an unchecked call raises",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNHumanBodyPoseObservation",
@@ -127,9 +129,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: VNDetectHumanBodyPoseRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the ones it inherits from VNRecognizedPointsObservation are unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNHumanHandPoseObservation",
@@ -137,9 +139,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: VNDetectHumanHandPoseRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the ones it inherits from VNRecognizedPointsObservation are unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNHumanObservation",
@@ -156,10 +158,11 @@
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is a point and nothing else: two coordinates, the distance between two of them, and a vector applied to one. Every part of that is a double, so it is here in full - the origin is the zero point, a vector translates, and a point copies and archives as NSSecureCoding, which its own header declares",
+   "effect": "a VNPoint built with -initWithX:y: or -initWithLocation: answers x, y and location, -distanceToPoint: answers the Euclidean distance, +pointByApplyingVector:toPoint: translates and +distanceBetweenPoint:point: asks two points, and -copyWithZone: and -initWithCoder: round trip it; no argument of nil is a distance and answers NaN, and zeroPoint is the origin",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNRecognizedPoint",
@@ -167,9 +170,9 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: any of the point-recognizing requests, as the point it recognized writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: it declares no initializer and the one it inherits from VNDetectedPoint is unavailable. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNRecognizedPointsObservation",
@@ -177,19 +180,20 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: any of the point-recognizing requests, as the set of points it found writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header's own +new and -init are unavailable (VNObservation.h:600 and :601). So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNStatefulRequest",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is the base of the requests that build evidence over time, and all it carries is how often the request may look at a buffer and how many frames it must see before it reports. That is a CMTime and an integer, and the CMTime is stored and handed back as it was given, so the class is here in full",
+   "effect": "a VNStatefulRequest built with -initWithFrameAnalysisSpacing:completionHandler: answers frameAnalysisSpacing and requestFrameAnalysisSpacing with the CMTime it was given, and minimumLatencyFrameCount with 0, which is the truth for a base class that waits for no frames; a request handler performs it as it performs every request this port cannot run, answering VNErrorNotImplemented rather than a result",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNTrajectoryObservation",
@@ -197,19 +201,20 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is a result and not an input: VNDetectTrajectoriesRequest writes it, and that request's row in this file is absent because its model is. Nothing else can fill it: the header gives it no initializer of its own and no setter for the points or the equation it would hold. So building the class would leave an object answering zero for the rest of the process, which is a facade and not an implementation",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVector",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is a vector and nothing else: its two projections, their length, their dot product, and the conversions between Cartesian and polar form. That is arithmetic over two doubles, which is all it is, so the class is here in full",
+   "effect": "a VNVector built with -initWithXComponent:yComponent:, -initWithR:theta: or -initWithVectorHead:tail: answers x, y, r, length, squaredLength and theta, and the class methods add, subtract, scale, take the dot product and normalize; theta of the zero vector is NaN, as the header states it is not defined, and normalizing the zero vector answers the zero vector rather than dividing by zero",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVideoProcessor",
@@ -217,49 +222,53 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "reason": "the class is the controller that pulls frames out of a video asset and performs requests over them, and both halves of it are missing here. The requests it would run are the requests this file marks absent, and the frame source is AVFoundation, which VisionBackports does not link. What would be left is an array of requests that each answer VNErrorNotImplemented once per frame, which is not what the class is",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "source": "the Vision headers of iOS 16.4 - the NS_UNAVAILABLE on the initialisers, and the row of the request that produces the value - with the header and line numbers in facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVideoProcessorCadence",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is the base of the two cadence values and declares nothing of its own: an object a request's options hold to say how often the request is performed, and both subclasses are immutable values, so the base carries no state either",
+   "effect": "a VNVideoProcessorCadence allocates, copies with -copyWithZone: as its header's NSCopying requires, and holds nothing: every answer a caller reads is on one of the two subclasses, which are rows of their own in this file",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVideoProcessorFrameRateCadence",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is one number: a cadence of so many frames of the video a second. The header leaves -initWithFrameRate: available and marks -init unavailable, so the class is here in full and is built only the way its own header says it is built",
+   "effect": "a VNVideoProcessorFrameRateCadence built with -initWithFrameRate: answers frameRate with that number, and -copyWithZone: copies it; nothing ever reads it back through a video processor, whose row in this file is absent",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVideoProcessorRequestProcessingOptions",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is what a video processor reads per request rather than once for the whole pipeline, and the only thing it carries in this release is the cadence. That is one immutable object held by value, so the class is here in full",
+   "effect": "the options answer the cadence that was set on them, a copy of it, and nil when none was; -setCadence: copies what it is given, as the header's copy attribute requires, and -copyWithZone: copies the options with it",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNVideoProcessorTimeIntervalCadence",
    "kind": "class",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
+   "status": "implemented",
+   "reason": "the class is one number: a cadence of so many seconds between analyses. The header leaves -initWithTimeInterval: available and marks -init unavailable, so the class is here in full and is built only the way its own header says it is built",
+   "effect": "a VNVideoProcessorTimeIntervalCadence built with -initWithTimeInterval: answers timeInterval with that interval, and -copyWithZone: copies it; nothing ever reads it back through a video processor, whose row in this file is absent",
+   "source": "the Vision headers of iOS 16.4 for what the class declares, and the port's own object for what it exports and what it needs: every run behind this row, its output beside it, is in facts/Vision/Vision14_0.md",
+   "facts": "facts/Vision/Vision14_0.md"
   },
   {
    "api": "VNBarcodeSymbologyCodabar",
