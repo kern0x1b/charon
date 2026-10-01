@@ -994,8 +994,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. Nothing in the release ever creates one - the focus engine that would hand it to a focus item is itself absent (UIFocusSystem, same file)",
+   "source": "read class-scoped with xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0, which is what backports.lua:1612 carried_by_release reads: the name is in none of the four runs, and each run's own control (661, 796, 2039, 2130 names beginning UI) certifies the reader, so the zero is the release's; objc-inventory.lua over the two armv7 caches finds no such class and no protocol of that name either - facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIFocusItemContainer",
@@ -1003,8 +1003,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the protocol is not there: NSProtocolFromString answers nil. An application that adopts it in a source file still compiles against the SDK header and carries its own metadata, and nothing in the release ever asks a container for its focus items",
+   "source": "read class-scoped with xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0, which is what backports.lua:1612 carried_by_release reads: the name is in none of the four runs, and each run's own control (661, 796, 2039, 2130 names beginning UI) certifies the reader, so the zero is the release's; objc-inventory.lua over the two armv7 caches finds no such class and no protocol of that name either - facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIFocusItemScrollableContainer",
@@ -1012,8 +1012,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine moves focus between views for a remote, a keyboard or a pointer, and it is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the protocol is not there: NSProtocolFromString answers nil. An application that adopts it in a source file still compiles against the SDK header and carries its own metadata, and nothing in the release ever scrolls one to a focus item",
+   "source": "read class-scoped with xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0, which is what backports.lua:1612 carried_by_release reads: the name is in none of the four runs, and each run's own control (661, 796, 2039, 2130 names beginning UI) certifies the reader, so the zero is the release's; objc-inventory.lua over the two armv7 caches finds no such class and no protocol of that name either - facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIDocumentBrowserAction",
@@ -1428,8 +1428,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises unrecognized selector. There is no parent to name: UIFocusSystem, the only thing that could begin a focus update on this release, is absent (same file), so a conformer's own parentFocusEnvironment is never read",
+   "source": "the focus engine is not on this release: xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0 finds no UIFocusSystem, UIFocusEnvironment, UIFocusItem, UIFocusMovementHint, UIFocusItemContainer or UIFocusItemScrollableContainer in either band end, and each of those runs certifies its own reader (661, 796, 2039 and 2130 names beginning UI in the same run); tools/corpus/objc-inventory.lua over the two armv7 caches finds no owner class and no protocol of those names, with six selector controls present on each release; the outputs are in facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIFocusEnvironment.focusItemContainer",
@@ -1437,8 +1437,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises unrecognized selector. There is no container to name: the focus engine that would ask one for its items is absent (UIFocusSystem, same file)",
+   "source": "the focus engine is not on this release: xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0 finds no UIFocusSystem, UIFocusEnvironment, UIFocusItem, UIFocusMovementHint, UIFocusItemContainer or UIFocusItemScrollableContainer in either band end, and each of those runs certifies its own reader (661, 796, 2039 and 2130 names beginning UI in the same run); tools/corpus/objc-inventory.lua over the two armv7 caches finds no owner class and no protocol of those names, with six selector controls present on each release; the outputs are in facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIFocusItem.frame",
@@ -1446,8 +1446,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "the protocol member is not declared, so a conformer is compiled against the SDK header and nothing in the release reads it; the coordinate space it is expressed in, a UIFocusItemContainer, is itself absent (same file)",
+   "source": "the focus engine is not on this release: xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0 finds no UIFocusSystem, UIFocusEnvironment, UIFocusItem, UIFocusMovementHint, UIFocusItemContainer or UIFocusItemScrollableContainer in either band end, and each of those runs certifies its own reader (661, 796, 2039 and 2130 names beginning UI in the same run); tools/corpus/objc-inventory.lua over the two armv7 caches finds no owner class and no protocol of those names, with six selector controls present on each release; the outputs are in facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "-[UIFocusItem didHintFocusMovement:]",
@@ -1455,8 +1455,8 @@
    "introduced": "12.0",
    "status": "absent",
    "reason": "the focus engine is part of UIKit's own event handling, which the port does not replace",
-   "effect": "the name is not there. An application that registers for this notification without checking for UIFocusSystem first passes a nil name, which observes every notification there is, so the check matters more here than usual",
-   "source": "UIKit of iOS 12.0 arm64"
+   "effect": "an application that implements it compiles against the SDK header and is never called: nothing on this release begins a focus update, so no hint is ever handed to an item",
+   "source": "the focus engine is not on this release: xmake l tools/corpus/cache-census.lua UI 6.1.3 4.3 11.0 12.0 finds no UIFocusSystem, UIFocusEnvironment, UIFocusItem, UIFocusMovementHint, UIFocusItemContainer or UIFocusItemScrollableContainer in either band end, and each of those runs certifies its own reader (661, 796, 2039 and 2130 names beginning UI in the same run); tools/corpus/objc-inventory.lua over the two armv7 caches finds no owner class and no protocol of those names, with six selector controls present on each release; the outputs are in facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIInputViewController.hasFullAccess",
@@ -1686,9 +1686,9 @@
    "minimum": "6.0",
    "status": "absent",
    "reason": "preferredRange chooses the colour range a bitmap is drawn in, and CoreGraphics of iOS 6 knows no extended space - among its colour spaces there is no ExtendedSRGB nor any other of extended range, and no context this port builds is of extended range. The property could only hold a value nobody would ever read: standard would be true, extended and automatic a promise the hardware does not keep. So the property is not there",
-   "effect": "the property is not declared, so respondsToSelector: answers NO; a format is drawn in a standard range whatever the application wanted",
-   "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md",
-   "source": "the exports of CoreGraphics of iOS 6.0 as read by the owner of the class (the iOS 10 range), whose words the reason keeps"
+   "effect": "the property is not declared (the class carries it dynamic), so respondsToSelector: answers NO and an unchecked call raises; a format is drawn in whatever range the release's colour space gives, which is never an extended one, whatever the application asked for",
+   "facts": "facts/UIKit/UIGraphicsRendererFormatPreferred.md; facts/UIKit/UIKit12Absence.md",
+   "source": "xmake l tools/corpus/dump-cache.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 filtered to CoreGraphics: 1673 exports of which 14 are kCGColorSpace names (SRGB, AdobeRGB, DisplayRGB, GenericRGB, GenericRGBLinear, GenericGray, GenericGrayGamma, GenericCMYK, UncalibratedRGB/Gray/CMYK, UserRGB/Gray/CMYK) and none is of extended range; the same read of the 4.3 cache gives 1942 CoreGraphics exports and 21 colour spaces, the fourteen plus DisplayGray, GenericHDR, GenericRGBHDR, SystemDefaultRGB/Gray/CMYK and Undo, none of extended range either - both lists and their commands are in facts/UIKit/UIKit12Absence.md"
   },
   {
    "api": "UIImagePickerController.imageExportPreset",
