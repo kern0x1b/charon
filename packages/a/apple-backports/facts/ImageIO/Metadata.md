@@ -175,3 +175,65 @@ answer NULL. The consequence for a caller is that the type id alone does not tel
 of its own: `CFGetTypeID` on an `NSDictionary` the caller made answers the same number. This is a
 limitation of the release's public CF surface, not a shortcut in the check, and it is written here so that a
 caller deciding between `CGImageMetadataTagGetTypeID` and the marker knows what the number is worth.
+
+## The image-property bridge: what the oracle can and cannot answer (2026-10-01)
+
+`CGImageMetadataCopyTagMatchingImageProperty` and `CGImageMetadataSetValueMatchingImageProperty` map a
+(kCGImageProperty dictionary, property) pair onto an XMP tag. Neither row is registered yet, and the
+measurement below is why: the oracle answers one direction and refuses the other.
+
+`tests/backports/host/imageio-metadata/mapping.sh`, with `property-mapping.m` and `property-pairs.h`
+beside it. `property-pairs.h` is generated from the header, so the pair list cannot drift from it:
+
+    python3 - <iOS 16.4 SDK>/System/Library/Frameworks/ImageIO.framework/Headers/CGImageProperties.h \
+        > tests/backports/host/imageio-metadata/property-pairs.h
+
+192 pairs: the seven dictionaries the header declares properties for (Exif, TIFF, GPS, IPTC, JFIF, 8BIM,
+MakerApple), each property asked against a container holding the property's own name in each of the nine
+public namespaces, so the answer *names* the namespace instead of guessing it.
+
+    LOOKUP: 192 pairs, 87 answered at the property's own name, 105 answered at no name
+        61 exif    15 tiff    7 photoshop    3 Iptc4xmpCore    1 xmpRights
+    CONTROL: a dictionary and a property no header declares answer NULL, and the pair the container holds is answered
+    SET: 192 pairs, 173 TRAP the host (SIGTRAP), 19 answer, 0 of those answer true
+    imageio-mapping: lookup 87/192 at the property's own name, set 173/192 trapped by the host
+
+**The lookup direction is measurable for 87 of 192 pairs, and not for the other 105.** Those 105 are the
+Metadata Working Group ones the header itself describes: `kCGImagePropertyExifDateTimeOriginal` is answered
+by `photoshop:DateCreated`, and a container holding `exif:DateTimeOriginal` is not what the host looks at.
+The tag's *name* is not the property's name for those, and the name is not in any header: the search that
+found it would be over strings I invent, not over a measurement. All 32 GPS properties and all 5 JFIF
+properties answer at no name in any of the nine namespaces, which is itself the measurement - Apple's
+metadata carries no XMP equivalent for either dictionary.
+
+**The set direction has no answer to compare.** 173 of 192 pairs TRAP the host inside
+`CGImageMetadataSetValueMatchingImageProperty` (SIGTRAP, exit 133), and the 19 that answer all answer
+`false` and write no tag. One process per pair, because a trap is an answer and only a process per pair
+records which. So a port implementation of that row could not be checked against this oracle at all: any
+behaviour I wrote would be my own invention with the host's silence as its only evidence.
+
+The raw outputs are beside the harness in `evidence/`, and `mapping.sh` asserts both counts, so a change in
+the host's own behaviour shows up instead of passing quietly.
+
+### The XMP pair is measurable, and here is the oracle
+
+`CGImageMetadataCreateXMPData` answers plain UTF-8 RDF/XML with no `<?xpacket?>` wrapper, and
+`evidence/xmp-flash.bin` (311 bytes) and `evidence/xmp-array.bin` (541 bytes) are what it produced for one
+string-valued tag and for an array plus a number:
+
+    <x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="XMP Core 6.0.0">
+     <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <rdf:Description rdf:about=""
+          xmlns:exif="http://ns.adobe.com/exif/1.0/"
+          ...
+    <tiff:Orientation>1</tiff:Orientation>
+
+Two more measured facts about it: `CGImageMetadataCreateXMPData` of an EMPTY metadata answers **NULL** (not
+an empty packet), and a tag is written in the *element* form even when its value is a string. The parse
+direction answers a hand-written packet with 3 tags - the two properties, plus one in
+`http://ns.apple.com/ImageIO/1.0/` that the host derives from the packet itself. `evidence/xmp-dump.txt` has
+all three.
+
+Both rows are therefore implementable and checkable in both directions - a writer that is compared byte for
+byte with the host's, and a reader compared on the tree it produces - and that is the next thing this
+family needs. It is not in this series.
