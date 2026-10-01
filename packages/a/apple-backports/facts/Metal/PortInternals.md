@@ -104,25 +104,31 @@ The object defines the class symbol as a global defined symbol either way, at th
 both objects are 35260 bytes.
 
 **What actually keeps it out, and what the built band says.** The rule is `internal_symbol()`
-(`modules/apple/backports.lua:183-186`): a name whose bare form begins `Charon` is not API, so it is
+(`modules/apple/backports.lua:169-190, the rule itself at :189`): a name whose bare form begins `Charon` is not API, so it is
 "neither weighed against a release nor exported" - the comment at :161-166 - and `exported_symbols()`
 drops it, which is the function `band()` and the registry check both ask. Over the **built 6.1.3 band**
 (`nm -gUj` on the `bands/6.1.3/libMetalBackports.dylib` of the tree's own canon package
 `org.charon.apple-backports_0.8.10+8cfbbe9d`):
 
-    control: 68 global defined names in this dylib
-    CharonMetalBlitEncoder 0     CharonMetalDevice      0     CharonMetalLibrary 0
-    CharonMetalBuffer      0     CharonMetalDrawable    0     CharonMetalPipeline 0
-    CharonMetalCommandBuffer 0   CharonMetalEncoder     0     CharonMetalQueue   0
-    CharonMetalComputeEncoder 0 CharonMetalFunction    0     CharonMetalSampler 0
-    CharonMetalComputePipeline 0 CharonMetalLayerState 0     CharonMetalTexture  0
-    CharonMetalDepthStencil 0
+    nm -gU over the twenty objects: 22 _OBJC_CLASS_$_ symbols, 19 of them CharonMetal*, and all
+                                    sixteen of these classes DEFINED among them
+    nm -gUj over the built band:    68 names, 32 _OBJC_CLASS_$_ of them, and none of the sixteen
+    nm -a over the built band:      32 _OBJC_CLASS_$_, 0 CharonMetal*
+    every Charon-named symbol in the band at all: _CharonMetalBindEpoch
 
-Sixteen zeros against a control of 68 real exports in the same dylib. The 68 are the MTL descriptor
-classes, `MTLCreateSystemDefaultDevice` and the two error strings - the API the file is the ledger of.
-And `nm -a` over that dylib, locals included, carries exactly one `CharonMetal` name:
-`_CharonMetalBindEpoch`, a C function. So the classes are not present-but-unexported; they are not in the
-band at all.
+Defined in the object, absent from the band, and no visibility flag stands between the two. The 68
+exports are the MTL descriptor classes, `MTLCreateSystemDefaultDevice` and the two error strings - the
+API this file is the ledger of - and the one Charon name the band carries at all is a C function. So the
+classes are not present-but-unexported; they are not in the band, not even as local symbols.
+
+**A grep that read zero for the wrong reason, and the control that caught it.** The first pass at this
+matched `_OBJC_CLASS_${NAME}$`, which is not a spelling `nm` ever emits - the symbol is
+`_OBJC_CLASS_$_NAME`, and the `_` before the `$` was missing. It answered 0 for all sixteen names, which
+looked exactly like the answer wanted. The control is what exposed it: the same run reported 19
+CharonMetal class symbols across the same twenty objects while every one of the sixteen read 0, which is
+impossible. Every name above comes from the corrected match, `_OBJC_CLASS_$_` + name, read in Python
+rather than through the shell's quoting. A count of zero is only a measurement next to a count that was
+not zero.
 
 **The same answer from the contract's own tool.** `tools/release-split.lua` applies "the same exclusions
 modules/apple/backports.lua's own internal_symbol()/exported_symbols() apply", so it is the third
