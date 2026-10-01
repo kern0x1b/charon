@@ -204,10 +204,10 @@
       "introduced": "13.4",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release asks a delegate about touches, never about an event",
-      "effect": "the method is a delegate method the port never sends: the delegate is never asked and every event reaches the recogniser",
+      "reason": "the release asks its delegate about touches and this is the one question it does not ask: UIGestureRecognizerDelegate holds three messages at 6.1.3 and at 4.3 - gestureRecognizer:shouldReceiveTouch:, gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer: and gestureRecognizerShouldBegin: - and UIKit carries neither this selector nor shouldReceiveEvent: at all, where the protocol's own method beside it is found 15 and 9 times",
+      "effect": "the method is a delegate method the port never sends: the port's own -shouldReceiveEvent: answers YES, so every event reaches the recogniser and no delegate is ever asked to keep one out",
       "facts": "facts/UIKit/UIPointerEvents.md",
-      "source": "the header of SDK 16.4; nothing of a release was read, since iOS 6 never sends the callback"
+      "source": "SDK 16.4, UIKit; apple.objc.inventory over the armv7 caches of 6.1.3 and 4.3 read class-scoped, which is what backports.lua:1627 carried_by_release reads - the owner protocol IS carried, so this was a real question and not a formality: three instance messages at both ends and none of them this one; the two selectors are 0 by grep -cxF over the same caches, beside the protocol's own method at 15 and 9 - facts/UIKit/UIPointerEvents.md"
     },
     {
       "api": "-[UIGestureRecognizer shouldReceiveEvent:]",
