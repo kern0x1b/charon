@@ -17,9 +17,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoCompositionCoreAnimationTool a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVVideoCompositionCoreAnimationTool carries 11 own instance methods where 7.0's 12 carry this factory, and the release's factory is the two-argument one: +[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:] and its sibling without post-processing are 6.1.3 members. 7.0 adds the variant that takes a CALayer as well, so the post-processed video layers can be handed to a layer the caller owns rather than a layer the tool creates",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller builds the tool with +[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:], which is the release's own factory, and the tool's -layer is the layer the post-processed frames land in; there is no release member that would take a caller's layer instead",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVAssetResourceLoaderDelegate resourceLoader:didCancelLoadingRequest:]",
@@ -57,9 +57,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureAudioDataOutput a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureAudioDataOutput carries 14 own instance methods where 7.0's 16 carry this method, and the release's 14 are the capture half - -setAudioSampleBufferDelegate:queue:, -audioSettings, -setAudioSettings: - plus constructors. The settings recommendation is a function of the file type the caller will write, and 6.1.3's release knows the file types without a member that recommends settings for one; its own -audioSettings is what the caller sets, not what the release advises",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller sets the format itself with -[AVCaptureAudioDataOutput setAudioSettings:] - a dictionary of AVFormatIDKey and its fields, which is the release's own route - and asks the writer what it accepts through -[AVAssetWriterInput outputSettings]; a recommendation returned here would be a dictionary nothing on 6.1.3 produced",
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVCaptureOutput metadataOutputRectOfInterestForRect:]",
@@ -89,9 +89,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureVideoDataOutput a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureVideoDataOutput carries 28 own instance methods where 7.0's 31 carry this method, and the release's 28 are the capture half - -setSampleBufferDelegate:queue:, -videoSettings, -setVideoSettings:, -availableVideoPixelFormatTypes, -alwaysDiscardsLateVideoFrames - plus constructors. The recommendation is 7.0's function of a file type, and 6.1.3's output has no member that asks the writer anything; the settings it does hold are the ones the caller set",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller sets -[AVCaptureVideoDataOutput setVideoSettings:] with a width, a height and a pixel format, which is the release's own route, and reads -availableVideoPixelFormatTypes for what the camera offers; a recommendation here would be a dictionary no 6.1.3 member produced",
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVCaptureVideoPreviewLayer metadataOutputRectOfInterestForRect:]",
@@ -221,9 +221,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 77 own instance methods where 7.0's carry 105, and the pair this property spells is not among the 77. The export's own audio members are -audioMix, -setAudioMix: and -videoComposition, -setVideoComposition:, and the pitch algorithm on 6.1.3 is per track: -[AVAssetTrack preferredVolume] and the time-pitch the item's private -[AVPlayerItem _quietlySetFigTimePitchAlgorithm:] set. A session-level algorithm to apply to every track of an export has no member on this release to hold it",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller sets the per-track level through the audio mix - -[AVMutableAudioMixInputParameters setVolume:atTime:] and -setVolumeRampFromStartVolume:toEndVolume:timeRange: - and hands the mix to -[AVAssetExportSession setAudioMix:]; an algorithm stored on the session here would be a value the 6.1.3 exporter never reads",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetExportSession.customVideoCompositor",
@@ -231,9 +231,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 77 own instance methods and no -customVideoCompositor among them, where 7.0's 105 carry it. The release's own compositor is reached through -videoComposition and -setVideoComposition:, and 7.0's addition is the compositor INSTANCE the release builds for a composition - beside the class-based -customVideoCompositorClass that 6.1.3 also lacks. Neither has a class or instance to install on this release, and AVVideoCompositing is not a 6.1.3 protocol for a custom one to conform to",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller sets an AVVideoComposition and the release composites the export with its own compositor; a compositor instance stored here would never be sent -startVideoCompositionRequest:, because no 6.1.3 member would reach it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetExportSession.metadataItemFilter",
@@ -241,9 +241,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 77 own instance methods and no -metadataItemFilter nor -setMetadataItemFilter: among them, where 7.0's 105 carry both. The release's own metadata member is -metadata and -setMetadata:, which is the list the export writes, and it has no filter between what the asset holds and what that list is. The filter class itself is not missing from the port - the port's own AVMetadataItemFilter7.m implements AVMetadataItemFilter's -identifiers and its two constructors, and the registry row for that class is implemented - what 6.1.3 lacks is the member on the session that would consult it",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller filters by building the metadata list itself and passing it to -[AVAssetExportSession setMetadata:], which is the release's own route and the only one it consults; a filter stored here would drop nothing, because no 6.1.3 member would read it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetExportSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetImageGenerator.customVideoCompositor",
@@ -251,9 +251,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetImageGenerator a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetImageGenerator carries 32 own instance methods where 7.0's 33 carry -customVideoCompositor, and the release's 32 are the generation surface - -generateCGImagesAsynchronouslyForTimes:completionHandler:, -copyCGImageAtTime:actualTime:error:, -maximumSize, -appliesPreferredTrackTransform, -requestedTimeToleranceBefore, -requestedTimeToleranceAfter - with no compositor member. The single selector 7.0 adds is the compositor instance, and 6.1.3 has nothing to install one into: the generator composites with the release's own path, and AVVideoCompositing is not a protocol on this release",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller asks for a frame with -copyCGImageAtTime:actualTime:error: and gets the release's own composited result; a compositor stored here would never be sent a request, because no 6.1.3 member would reach it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetImageGenerator.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetReaderAudioMixOutput.audioTimePitchAlgorithm",
@@ -261,9 +261,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderAudioMixOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderAudioMixOutput carries 17 own instance methods where 7.0's 21 carry -audioTimePitchAlgorithm and -setAudioTimePitchAlgorithm:, and the release's 17 are the mix's own: -audioMix, -setAudioMix:, -tracks, -sourceTrackIDForTrack: plus constructors. 7.0 adds the two accessors and the two private per-track helpers _audioTimePitchAlgorithmForTrack: and _setAudioTimePitchAlgorithm:forTrack:, and the last two are the shape of it: the release's mix level is per track, through -[AVMutableAudioMixInputParameters setVolume:atTime:] and -setVolumeRampFromStartVolume:toEndVolume:timeRange:, and the output carries no member of its own",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller sets the level on the mix's input parameters and hands the mix to the output; an algorithm stored on the output here would be a value the 6.1.3 reader never reads, since its own surface is the mix it was given",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetReaderAudioMixOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetReaderTrackOutput.audioTimePitchAlgorithm",
@@ -271,9 +271,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderTrackOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderTrackOutput carries 13 own instance methods where 7.0's 15 carry -audioTimePitchAlgorithm and -setAudioTimePitchAlgorithm:, and the release's 13 are -track, -outputSettings, -setOutputSettings:, -sourceFormatHint, -copyWithZone:, -dealloc, -finalize, -initWithTrack:outputSettings: and the rest. The rate the reader takes from a track on this release is that track's own -[AVAssetTrack preferredVolume], which is a 6.1.3 member, and the reader has no output-level member of its own to hold a pitch choice",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. The release's own level is per track and is read from -[AVAssetReaderTrackOutput track]; an algorithm stored on the output here would be a value the 6.1.3 reader never applies to the samples it copies",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetReaderTrackOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetReaderVideoCompositionOutput.customVideoCompositor",
@@ -281,9 +281,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetReaderVideoCompositionOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetReaderVideoCompositionOutput carries 15 own instance methods where 7.0's 19 carry -customVideoCompositor, and the release's 15 are -videoComposition, -setVideoComposition:, -sourceTrackIDForTrack:, -tracks plus constructors. 7.0 adds the accessor, the private -_setVideoComposition:customVideoCompositorSession: and the private -_errorForOSStatus: - the session is what a custom compositor would run in, and 6.1.3 has no such object: AVVideoCompositing is not one of the 16 AV-named protocols in the 6.1.3 armv7 cache, and AVAsynchronousVideoCompositionRequest, the request a custom compositor is handed, is not one of the 301 AV-named classes",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller sets an AVVideoComposition and the release composites with its own compositor; a compositor stored here would be inert, since no 6.1.3 member would send it a request and no protocol on this release would let a class conform to the role",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetReaderVideoCompositionOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends; the class and protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, whose control in the same run reads 558 names beginning AV"
     },
     {
       "api": "AVAssetResourceLoadingContentInformationRequest",
@@ -401,9 +401,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAudioMixInputParameters a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAudioMixInputParameters carries 17 own instance methods where 7.0's 21 carry -audioTimePitchAlgorithm and -setAudioTimePitchAlgorithm:, and the release's 17 are the volume surface - -setVolume:atTime:, -setVolumeRampFromStartVolume:toEndVolume:timeRange:, -getVolumeRampForTime:startVolume:endVolume:timeRange: - with -trackID, -audioTapProcessor and the private -_audioVolumeCurve and -_setRamps:. The object is immutable after construction on this release, which is the shape that has no setter to hang an algorithm on",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. The release's own per-track level is -[AVAudioMixInputParameters setVolume:atTime:] and its ramp twin, both 6.1.3 members; an algorithm stored here would be a value the 6.1.3 mixer never reads, since the mix reads the volume curve and nothing else off these parameters",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAudioMixing.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureDevice.autoFocusRangeRestriction",
@@ -560,9 +560,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableAudioMixInputParameters a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "this is the row the class-scoped tool's own-table warning is about, and it is the second of two in this file where the named class is not the one that carries the member: 6.1.3's AVMutableAudioMixInputParameters carries 8 own instance methods, exactly as many as 7.0's, and neither table holds -audioTimePitchAlgorithm. At 7.0 the verdict is INHERITED - the member arrives through AVAudioMixInputParameters, this class's superclass - and at 6.1.3 the whole chain up to NSObject answers nothing, so it is ABSENT. Read on the named class's own line alone, 7.0 would have been written absent as well",
+      "effect": "reading or writing it raises an unrecognised selector on this release, which is what absent means. A caller sets the level through the superclass's own -[AVMutableAudioMixInputParameters setVolume:atTime:] and -setVolumeRampFromStartVolume:toEndVolume:timeRange:, which are 6.1.3 members and which the class inherits; an algorithm set here would be stored where the 6.1.3 mixer looks only for the volume curve",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAudioMixing.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both ends, whose third control - -[AVCompositionTrack mediaType] wanting INHERITED - is this same own-table trap asked deliberately"
     },
     {
       "api": "AVMutableVideoComposition.customVideoCompositorClass",
