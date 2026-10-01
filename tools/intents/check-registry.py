@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 """Does a regeneration of the Intents registry move anything but a reason?
 
-The five counts are what the series has held since the first group — ios10 948, ios11 288,
-ios12 100, ios16 465, ios18 17 — and N3 is a change of *reasons only*. This regenerates the
+The five counts are what the series holds — ios10 1029, ios11 288, ios12 100, ios16 465,
+ios18 19 — and N3 is a change of *reasons only*.
+
+The counts include the 83 extern constant rows, because the run being checked now restores them:
+a regeneration that dropped them was measured dropping all 83 (716270c33), and the counts that
+excluded them are the counts of the defect. This regenerates the
 registry into a scratch folder and compares it with the committed one entry by entry: the same
 files, the same names, the same kinds, the same statuses, the same introduced versions, and the
 same set of fields apart from `reason` and `effect`. Anything else is a regression, and it is
@@ -21,11 +25,11 @@ import sys
 
 # What the series has held, and what a move of any count means.
 EXPECTED = {
-    "ios10.json": 948,
+    "ios10.json": 1029,
     "ios11.json": 288,
     "ios12.json": 100,
     "ios16.json": 465,
-    "ios18.json": 17,
+    "ios18.json": 19,
 }
 
 # The fields a reason-only change may touch. `effect` is the same sentence in a place a reader
@@ -45,7 +49,9 @@ def main():
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     here = os.path.dirname(os.path.abspath(__file__))
     root = os.path.abspath(os.path.join(here, "..", ".."))
-    parser.add_argument("--work", default="/tmp/intents-registry-check")
+    # Under build/ and not /tmp: the work area a run writes into belongs with the tree it checks
+    # (AGENTS.md §2), and /tmp is wiped out from under a second run.
+    parser.add_argument("--work", default=os.path.join(root, "build", "intents-registry-check"))
     parser.add_argument("--counts-only", action="store_true",
                         help="compare the counts and stop")
     options = parser.parse_args()
@@ -57,9 +63,13 @@ def main():
         shutil.rmtree(scratch)
     os.makedirs(scratch)
     # The committed files, kept beside the regenerated ones so the two are compared entry by entry.
+    # The manifest is copied under its own name and not with a .committed suffix: the run restores
+    # the constant rows from it, so a scratch without it is a run that cannot restore them and
+    # reports a difference that is the scratch's, not the generator's.
     for name in os.listdir(committed):
         if name.endswith(".json"):
             shutil.copy(os.path.join(committed, name), os.path.join(scratch, name + ".committed"))
+    shutil.copy(os.path.join(committed, "constants.json"), os.path.join(scratch, "constants.json"))
     result = subprocess.run(
         ["sh", os.path.join(here, "generate.sh")],
         env=dict(os.environ, WORK=options.work, REGISTRY_OUT=scratch),

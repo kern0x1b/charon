@@ -16,6 +16,9 @@
 #   CORPUS    the SDK 26.2 surface after iOS 6.1, one row per API, which the registry is written
 #             from: $HOME/Git/projects/ios/coordination/corpus/sdk-26.2-surface.tsv.
 #
+# A run also restores the 83 extern constant rows from registry/Intents/constants.json and exits
+# non-zero if any of them is missing, so a regeneration cannot quietly drop them again.
+#
 # The six groups are the releases the release caches measure the class symbols first exported in
 # (tools/intents/measure-intents.sh, and measure-group.lua for the one class that had to be an
 # object of its own). --carried is the **whole** delivery's class list, so a class of an earlier
@@ -118,4 +121,46 @@ for entry in 11_0:11.0:ios11 \
         --release "$release" --no-protocols --causes "$work/causes.json" $extra \
             --reason "a class of a later group of this same delivery"
 done
+
+# The 83 extern constants the package DEFINES and exports, put back by a second pass. A full
+# regeneration above rewrites each file whole, and it skips every row whose kind is "constant" -
+# right for an enum case, which is the header's own and the compiler writes it into the
+# application, and wrong for these 83, which the package compiles into IntentsConstants*.m
+# precisely because the built libraries and the 6.1.3 cache carry no such symbol. So the run that
+# wrote the manifest is asked again to add only those rows, bucketed by the band that exports
+# them: 18_0 writes ios18.json and everything earlier writes ios10.json. Measured: the gate on the
+# stack failed with "built, but no entry in registry/:" for all 83, because this pass was missing.
+[ -f "$registry/constants.json" ] || {
+    echo "no $registry/constants.json; run tools/intents/emit-intents-constants.py first" >&2
+    exit 1
+}
+for file in ios10.json ios18.json; do
+    release=10.0.1
+    [ "$file" = ios18.json ] && release=18.0
+    python3 "$here/gen-registry.py" --corpus "$CORPUS" --merge-into "$registry/$file" \
+        --constants "$registry/constants.json" --out "$registry/$file" --facts "$facts" \
+        --release "$release"
+done
+
+# And the run fails if any of them is still missing, because a run that loses rows and exits zero
+# is the defect this is here to close. The names are the manifest's, so the check asks the same
+# question the gate asks: is every constant the emitter compiled given an entry?
+python3 - "$registry" <<'PY' || exit 1
+import json, os, sys
+registry = sys.argv[1]
+manifest = json.load(open(os.path.join(registry, "constants.json"), encoding="utf-8"))["constants"]
+held = {}
+for name in sorted(os.listdir(registry)):
+    if not name.startswith("ios") or not name.endswith(".json"):
+        continue
+    document = json.load(open(os.path.join(registry, name), encoding="utf-8"))
+    for entry in (document["entries"] if isinstance(document, dict) else document):
+        if entry.get("kind") == "constant":
+            held[entry["api"]] = name
+missing = [name for name in sorted(manifest) if name not in held]
+if missing:
+    print("the run lost %d constant rows: %s" % (len(missing), " ".join(missing)), file=sys.stderr)
+    sys.exit(1)
+print("  %d constant rows, all of them present" % len(manifest))
+PY
 echo "regenerated: $(ls "$classes"/IN*.m | wc -l) object files, $(ls "$registry"/ios*.json | wc -l) registry files"
