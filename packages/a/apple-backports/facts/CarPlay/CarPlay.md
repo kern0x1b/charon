@@ -430,9 +430,16 @@ The reader, and the 28 of 48 the audit covers:
 xcrun otool -ov <object>.o | grep '^ *imp '      # one line per IMP the object defines
 ```
 
+and the whole audit, kept beside the numbers it produces so a reader can re-run it rather than take the
+count on trust, at `.agent-work/runs/carplay174/audit.py`:
+
+```
+python3 .agent-work/runs/carplay174/audit.py     # 28/28, none missing
+```
+
 A method counts when its own IMP is there; a class row and a property row count when the class's IMPs
 are. Read that way, all 28 `implemented` rows of the batch have a backing definition — **28/28, none
-missing** — and the objects that answer them are `CarPlayNavigationSession12.m` (the session, its 12.0
+missing**, out of **538 IMPs across 41 classes** in the 15 objects — and the objects that answer them are `CarPlayNavigationSession12.m` (the session, its 12.0
 members and the three 17.4 properties' storage), `CarPlayNavigationSession154.m` and
 `CarPlayNavigationSession174.m` (the categories), `CarPlayVoiceControl12.m` (both voice control classes)
 and `CarPlaySessionConfiguration12.m` / `CarPlaySessionConfiguration13.m`.
@@ -446,6 +453,6 @@ Two traps in that reader, both hit while writing it, because both make a real de
   and no IMP for them; the IMPs are in the 174 object's category. Reading only the class's own object
   would report three properties unimplemented.
 
-The remaining 20 rows of the 48 are `absent` (19) and `inert` (2), and each carries the measurement its
+The remaining 20 rows of the 48 are `absent` (18) and `inert` (2), and each carries the measurement its
 status rests on: the scenes in `facts/CarPlay/Scenes.md`, the session configuration and the two factory
 rows in `facts/CarPlay/SessionConfiguration.md` and in this batch's `+[CPRouteChoice new]` row itself.
