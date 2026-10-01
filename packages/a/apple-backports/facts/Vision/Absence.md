@@ -285,19 +285,24 @@ onto a new ivar, and a new ivar holds zero. That is the right answer for most of
 declare -- `string`, `confidence`, `elementType`, `elementCount`, `data`, `salientObjects`,
 `customWords`, `recognitionLevel` (whose `VNRequestTextRecognitionLevelAccurate` is 0),
 `minimumTextHeight` (0.0) and `automaticallyDetectsLanguage` (NO) all start at the value their own
-headers document -- and it is the wrong answer for three, which `Vision130.m` writes down:
+headers document -- and it is the wrong answer for three, which `Vision130.m` writes down. **Each of
+the three has a row of its own, and the row is where a reader of the property looks:**
 
-| member | zero is | the documented default | where the default is written |
+| member | row | zero is | what it answers instead |
 | --- | --- | --- | --- |
-| `VNDetectHumanRectanglesRequest.upperBodyOnly` | NO | **YES**: "the request is setup to detect upper body only" | `initWithCompletionHandler:` |
-| `VNGenerateImageFeaturePrintRequest.imageCropAndScaleOption` | `CenterCrop` | **`ScaleFill`**, which is enumeration value **2** and not 0 | `initWithCompletionHandler:` |
-| `VNRecognizeTextRequest.usesLanguageCorrection` | NO | **not declared** by the 16.4 header this package compiles against, so it is left at NO and not guessed | the object, in a comment |
+| `VNDetectHumanRectanglesRequest.upperBodyOnly` | `registry/Vision/ios11.json` | NO | **YES**: "the request is setup to detect upper body only" |
+| `VNGenerateImageFeaturePrintRequest.imageCropAndScaleOption` | `registry/Vision/ios11.json` | `CenterCrop` | **`ScaleFill`**, which is enumeration value **2** and not 0 |
+| `VNRecognizeTextRequest.usesLanguageCorrection` | `registry/Vision/ios11.json` | NO | NO, and the row says why NO is not Apple's default |
 
 The third is the one that is not fixed, and it is left unfixed on purpose: the header that ships in
-this SDK says nothing about it, and no release answers it here because no release this port deploys
-on carries Vision at all. A `YES` written in from memory would be an unmeasured value; a `NO` that
-the object says out loud is at least a stated one. Nothing can observe the difference either way,
-because the request cannot be run.
+this SDK says nothing about it, no release this port deploys on can be asked because none of them
+carries Vision at all, and nothing here runs a text recognition that would set it. A `YES` written in
+from memory would be an unmeasured value; a `NO` the row states out loud, together with the three
+things that are known and the one that is not, is at least an honest one. Nothing can observe the
+difference either way, because the request cannot be run.
+
+The two that are fixed are now **measured answers** rather than transcriptions: the port's own classes
+built under names of their own and read back, which is section 8.
 
 That is also the whole of what the compile for armv7 is good for beyond the warnings: it is what found
 the three. A Mac Catalyst build of the same source is silent about all of it.
@@ -323,3 +328,56 @@ The same shape is already in the tree: `VNRequests.o` defines `-[VNDetectRectang
 initWithCompletionHandler:]` and `-[VNImageBasedRequest initWithCompletionHandler:]`, and neither is a
 row, while `VNDetectRectanglesRequest.minimumAspectRatio` and its six siblings are. Both are answered
 by the class's own row.
+
+## 8. What a caller gets about the conformances, measured on the port's own classes
+
+A class whose SDK header names a protocol is put in that protocol's conformance list **by the
+declaration alone**. Nothing has to adopt it: declaring `@implementation VNRecognizeTextRequest` was
+enough, and no adoption appears anywhere in this library. So `-conformsToProtocol:` and
+`-instancesRespondToSelector:` answer for the protocol whether or not this port wants it to, and the
+members it declares have to exist or the class answers YES and then raises.
+
+Three of the twelve were in that position. The port's classes are built here under names of their own,
+so an answer cannot come from the Vision of this host, and a name that is no class at all is asked for
+as the control:
+
+```
+xcrun clang -target arm64-apple-ios15.0-macabi -isysroot "$(xcrun --show-sdk-path)" \
+    -iframework "$(xcrun --show-sdk-path)/System/iOSSupport/System/Library/Frameworks" \
+    -fobjc-arc -w -include rename.h -I packages/a/apple-backports/Vision \
+    -framework Foundation -framework Vision -framework CoreGraphics -framework CoreImage \
+    -framework CoreVideo -framework CoreML -framework ImageIO \
+    tools/vision/conforms130.m packages/a/apple-backports/Vision/*.c \
+    packages/a/apple-backports/Vision/*.m -o conforms130 && ./conforms130
+```
+
+`rename.h` is the header `tests/backports/host/vision/run.sh` writes from
+`registry/Vision/ios11.json`; the whole recipe is in the probe's own first comment.
+
+```
+CharonVNDetectFaceCaptureQualityRequest        conforms130            conforms:  VNFaceObservationAccepting  NSCopying
+CharonVNRecognizeTextRequest                   conforms130            conforms:  VNRequestProgressProviding  NSCopying
+CharonVNRecognizedText                         conforms130            conforms:  VNRequestRevisionProviding  NSSecureCoding  NSCopying
+CharonVNDetectFaceLandmarksRequest             conforms130            conforms:  VNFaceObservationAccepting  NSCopying
+VNNoClassOfThisName (the control)              nil class              conforms to nothing: no
+
+VNRecognizeTextRequest progressHandler responds: responds, indeterminate = NO, usesLanguageCorrection = NO
+VNRecognizedText supportsSecureCoding = YES, string = nil, confidence = 0.000000, requestRevision = 0
+VNDetectHumanRectanglesRequest upperBodyOnly = YES
+VNGenerateImageFeaturePrintRequest imageCropAndScaleOption = 2 (ScaleFill is 2, CenterCrop is 0)
+```
+
+Every answer says `conforms130`, which is the probe's own binary and not `Vision`, and the control
+row is a `nil` class that conforms to nothing. Three things come out of it:
+
+- **`VNRecognizeTextRequest` conforms to `VNRequestProgressProviding`, and its two members answer.**
+  `progressHandler` responds and `indeterminate` is `NO` -- the same `NO` this host's own Vision
+  answers for the class, which is section 4's measurement. The handler is never called, because the
+  request cannot be run here. Two registry rows used to say the port does not adopt the protocol on
+  this class; it did not adopt it, and it does not have to, because the header already conforms it.
+  Both rows now say what the probe measured.
+- **The two defaults of section 6 are answers, not transcriptions**: `upperBodyOnly` reads `YES` and
+  `imageCropAndScaleOption` reads `2`.
+- **`VNRecognizedText` conforms to three protocols** and answers all of them: `supportsSecureCoding`
+  is `YES`, and `string`, `confidence` and `requestRevision` read nil, 0 and 0 because nothing of
+  this port makes one.
