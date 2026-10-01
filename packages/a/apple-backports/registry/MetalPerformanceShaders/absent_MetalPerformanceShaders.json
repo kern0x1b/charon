@@ -2239,7 +2239,7 @@
       "introduced": "12",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "NOT blocked by a superclass: MPSCNNLoss.h:639 declares MPSCNNYOLOLossDescriptor : NSObject <NSCopying>, and NSObject is carried. This band simply did not write it - the descriptor is nineteen properties over four nested descriptor classes (MPSCNNXYLossDescriptor, MPSCNNWHLossDescriptor and the confidence and classes descriptors), which is a separate object, and the band's time ran out first. Stated as absent rather than claimed: nothing of the name is built, so NSClassFromString answers nil.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2249,7 +2249,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a MPSCNNConvolutionDataSource that sends anything like it: the message arrived in iOS 12",
+      "reason": "no object in packages/a/apple-backports defines MPSCNNConvolutionDataSource at all, so there is no @implementation that could carry the method: `grep -rn MPSCNNConvolutionDataSource packages/a/apple-backports` at origin/main 580d7e435 returns only this registry file's own rows for it and no source. The class itself has no row in registry/ anywhere, and the sibling rows for its iOS 11, 13 and 14 members sit in this same file with this same status. `python3 tools/cache-index/first-rung.py 'copyWithZone:device:'` answers 9.0, which is NSObject's own selector and says nothing about this owner - the rulebook's 'a selector's rung says nothing about its own owner' - so that number is deliberately NOT used as this row's evidence.",
       "effect": "the message is never sent, so a delegate that implements it is simply not called",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2259,7 +2259,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSTriangleAccelerationStructure.h declares MPSTriangleAccelerationStructure : MPSPolygonAccelerationStructure, MPSInstanceAccelerationStructure : MPSAccelerationStructure, and MPSAccelerationStructure : MPSKernel. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSPolygonAccelerationStructure's own row is in this registry file at iOS 13.0 with status absent, and it belongs to the release-13 object. The whole family is therefore not carried together: a structure with no way to be given geometry and an intersector with nothing to trace would be four exported symbols no caller can reach.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2269,7 +2269,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSTriangleAccelerationStructure.h declares MPSTriangleAccelerationStructure : MPSPolygonAccelerationStructure, MPSInstanceAccelerationStructure : MPSAccelerationStructure, and MPSAccelerationStructure : MPSKernel. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSPolygonAccelerationStructure's own row is in this registry file at iOS 13.0 with status absent, and it belongs to the release-13 object. The whole family is therefore not carried together: a structure with no way to be given geometry and an intersector with nothing to trace would be four exported symbols no caller can reach.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2279,7 +2279,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "NOT blocked by a superclass: MPSCNNBatchNormalization.h:103 declares it : MPSState, which the port carries. This band did not write it - a mean and a variance are two MTLBuffers plus one +temporaryStateWithCommandBuffer:numberOfFeatureChannels:, and the band's time ran out first. Stated as absent rather than claimed: nothing of the name is built.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2289,7 +2289,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSCNNLoss.h:783 declares MPSCNNYOLOLoss : MPSCNNKernel, and the port carries MPSCNNKernel - but the class also inherits MPSCNNLoss's own surface, and MPSCNNLoss's row is in this same registry file at iOS 11.3 with status absent. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2309,7 +2309,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSTriangleAccelerationStructure.h declares MPSTriangleAccelerationStructure : MPSPolygonAccelerationStructure, MPSInstanceAccelerationStructure : MPSAccelerationStructure, and MPSAccelerationStructure : MPSKernel. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSPolygonAccelerationStructure's own row is in this registry file at iOS 13.0 with status absent, and it belongs to the release-13 object. The whole family is therefore not carried together: a structure with no way to be given geometry and an intersector with nothing to trace would be four exported symbols no caller can reach.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2318,70 +2318,70 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "the matrix is walked element by element into the image's texture through the same read/write region pair every other kernel in this package uses, with the placement decided by dataLayout: MPSDataLayoutHeightxWidthxFeatureChannels puts a matrix ROW on an image row and a matrix COLUMN on a feature channel, MPSDataLayoutFeatureChannelsxHeightxWidth puts a matrix ROW on a channel - the two are the header's own enumeration and nothing else. sourceMatrixOrigin and sourceMatrixBatchIndex say which matrix and which element the copy starts at, both defaulting to zero as MPSImageCopy.h:139-155 states. MPSImageCopy.h of the iPhoneOS 16.4 SDK. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNCropAndResizeBilinear",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "each of numberOfRegions normalised regions is cropped out of the source, intersected with the source's extent, and resized with that same bilinear blend to resizeWidth by resizeHeight; the crops are stacked along the destination's height, so a destination of N regions is resizeWidth by (resizeHeight * N). The regions are read as MPSNNResize.h declares them - a const MPSRegion * of { MPSOrigin origin; MPSSize size; } doubles (MPSCoreTypes.h:321-338 and :355-359) - and the normalisation is the header's: 'The coordinates specified are normalized values.' MPSNNResize.h and MPSCoreTypes.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNOptimizer",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "the base carries the seven values every concrete optimizer reads, with the same defaults, and -setLearningRate: is the base's own (:265) because learningRate is readonly (:243). The gradient preprocessing every optimizer applies is this class's contract: clip to [gradientClipMin, gradientClipMax] when applyGradientClipping, multiply by gradientRescale, then add the regularization gradient - L1 the scale itself, L2 the scale times the weight - in that order. THE RULE IS THE HEADER'S, NOT A GUESS. MPSNNOptimizers.h writes each update out in full and each of the three formulas is transcribed here line for line: gradient descent at :250-268 (m[t] = momentumScale * m[t-1] + learningRate * g, variable -= m[t]; under Nesterov m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector variable -= learningRate * g), RMSProp at :430-432 (s[t] = decay * s[t-1] + (1 - decay) * g^2, variable -= learningRate * g / (sqrt(s[t]) + epsilon)), Adam at :436-438 (t += 1, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon)). The preprocessing is the header's order at :61-66 - clip, then gradientRescale, then the regularization gradient - and the two regularization gradients are its own at :33-41: L1 the scale itself, L2 the scale times the weight. Every default is the property's own doc: 1e-3 (:66), 1.0 (:72), NO (:78), 0.0 (:94), None (:100), momentum 0.0 (:253), decay 0.9 (:459), epsilon 1e-8 (:466), beta1 0.9 (:505), beta2 0.999 (:512), epsilon 1e-8 (:519). timeStep exists for the bias correction and the header increments it BEFORE lr[t] (:436), so the first update runs at t == 1. MPSNNOptimizers.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band, so every rule below is transcribed from the header and no number here is a comparison with a result.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNOptimizerAdam",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "MPSNNOptimizers.h's own update over the caller's MPSVectors, with the bias correction the header's timeStep exists for: t is incremented once per encode and not once per element, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon). Both moments are written back into the vectors they came from. A beta1 of exactly 1 makes 1 - beta1^t zero; that is refused by name and the step is not counted rather than answered with an infinity. The 13.0 matrix and the 13.0 AMSGrad encodes are NOT carried. THE RULE IS THE HEADER'S, NOT A GUESS. MPSNNOptimizers.h writes each update out in full and each of the three formulas is transcribed here line for line: gradient descent at :250-268 (m[t] = momentumScale * m[t-1] + learningRate * g, variable -= m[t]; under Nesterov m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector variable -= learningRate * g), RMSProp at :430-432 (s[t] = decay * s[t-1] + (1 - decay) * g^2, variable -= learningRate * g / (sqrt(s[t]) + epsilon)), Adam at :436-438 (t += 1, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon)). The preprocessing is the header's order at :61-66 - clip, then gradientRescale, then the regularization gradient - and the two regularization gradients are its own at :33-41: L1 the scale itself, L2 the scale times the weight. Every default is the property's own doc: 1e-3 (:66), 1.0 (:72), NO (:78), 0.0 (:94), None (:100), momentum 0.0 (:253), decay 0.9 (:459), epsilon 1e-8 (:466), beta1 0.9 (:505), beta2 0.999 (:512), epsilon 1e-8 (:519). timeStep exists for the bias correction and the header increments it BEFORE lr[t] (:436), so the first update runs at t == 1. MPSNNOptimizers.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band, so every rule below is transcribed from the header and no number here is a comparison with a result.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNOptimizerDescriptor",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "the descriptor carries MPSNNOptimizers.h's seven values with the defaults its own property docs give - learningRate 1e-3 (:66), gradientRescale 1.0 (:72), applyGradientClipping NO (:78), regularizationScale 0.0 (:94) and regularizationType MPSNNRegularizationTypeNone (:100) - so a descriptor made with -init is the header's descriptor and not a zeroed one. Both initialisers and both +optimizerDescriptorWith... factories answer, and the no-clipping initialiser leaves applyGradientClipping NO as :104-116 says it does. THE RULE IS THE HEADER'S, NOT A GUESS. MPSNNOptimizers.h writes each update out in full and each of the three formulas is transcribed here line for line: gradient descent at :250-268 (m[t] = momentumScale * m[t-1] + learningRate * g, variable -= m[t]; under Nesterov m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector variable -= learningRate * g), RMSProp at :430-432 (s[t] = decay * s[t-1] + (1 - decay) * g^2, variable -= learningRate * g / (sqrt(s[t]) + epsilon)), Adam at :436-438 (t += 1, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon)). The preprocessing is the header's order at :61-66 - clip, then gradientRescale, then the regularization gradient - and the two regularization gradients are its own at :33-41: L1 the scale itself, L2 the scale times the weight. Every default is the property's own doc: 1e-3 (:66), 1.0 (:72), NO (:78), 0.0 (:94), None (:100), momentum 0.0 (:253), decay 0.9 (:459), epsilon 1e-8 (:466), beta1 0.9 (:505), beta2 0.999 (:512), epsilon 1e-8 (:519). timeStep exists for the bias correction and the header increments it BEFORE lr[t] (:436), so the first update runs at t == 1. MPSNNOptimizers.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band, so every rule below is transcribed from the header and no number here is a comparison with a result.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNOptimizerRMSProp",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "MPSNNOptimizers.h's own update over the caller's MPSVectors: s[t] = decay * s[t-1] + (1 - decay) * g^2 and variable -= learningRate * g / (sqrt(s[t]) + epsilon), with s[t] written back into the sum-of-squares vector it came from. decay 0.9 and epsilon 1e-8 are the header's defaults. The 13.0 matrix encode is NOT carried. THE RULE IS THE HEADER'S, NOT A GUESS. MPSNNOptimizers.h writes each update out in full and each of the three formulas is transcribed here line for line: gradient descent at :250-268 (m[t] = momentumScale * m[t-1] + learningRate * g, variable -= m[t]; under Nesterov m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector variable -= learningRate * g), RMSProp at :430-432 (s[t] = decay * s[t-1] + (1 - decay) * g^2, variable -= learningRate * g / (sqrt(s[t]) + epsilon)), Adam at :436-438 (t += 1, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon)). The preprocessing is the header's order at :61-66 - clip, then gradientRescale, then the regularization gradient - and the two regularization gradients are its own at :33-41: L1 the scale itself, L2 the scale times the weight. Every default is the property's own doc: 1e-3 (:66), 1.0 (:72), NO (:78), 0.0 (:94), None (:100), momentum 0.0 (:253), decay 0.9 (:459), epsilon 1e-8 (:466), beta1 0.9 (:505), beta2 0.999 (:512), epsilon 1e-8 (:519). timeStep exists for the bias correction and the header increments it BEFORE lr[t] (:436), so the first update runs at t == 1. MPSNNOptimizers.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band, so every rule below is transcribed from the header and no number here is a comparison with a result.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNOptimizerStochasticGradientDescent",
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "MPSNNOptimizers.h's own update, applied element by element over the caller's MPSVectors: with a momentum vector, m[t] = momentumScale * m[t-1] + learningRate * g and variable -= m[t]; under useNestrovMomentum, m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector, variable -= learningRate * g. The momentum is written back into the vector it came from, because the next m[t-1] is what this run computed. The 13.0 matrix encode and the 14.0 useNesterovMomentum spelling are NOT carried. THE RULE IS THE HEADER'S, NOT A GUESS. MPSNNOptimizers.h writes each update out in full and each of the three formulas is transcribed here line for line: gradient descent at :250-268 (m[t] = momentumScale * m[t-1] + learningRate * g, variable -= m[t]; under Nesterov m[t] = momentumScale * m[t-1] + g and variable -= learningRate * (g + m[t] * momentumScale); with no momentum vector variable -= learningRate * g), RMSProp at :430-432 (s[t] = decay * s[t-1] + (1 - decay) * g^2, variable -= learningRate * g / (sqrt(s[t]) + epsilon)), Adam at :436-438 (t += 1, lr[t] = learningRate * sqrt(1 - beta2^t) / (1 - beta1^t), m[t] = beta1 * m[t-1] + (1 - beta1) * g, v[t] = beta2 * v[t-1] + (1 - beta2) * g^2, variable -= lr[t] * m[t] / (sqrt(v[t]) + epsilon)). The preprocessing is the header's order at :61-66 - clip, then gradientRescale, then the regularization gradient - and the two regularization gradients are its own at :33-41: L1 the scale itself, L2 the scale times the weight. Every default is the property's own doc: 1e-3 (:66), 1.0 (:72), NO (:78), 0.0 (:94), None (:100), momentum 0.0 (:253), decay 0.9 (:459), epsilon 1e-8 (:466), beta1 0.9 (:505), beta2 0.999 (:512), epsilon 1e-8 (:519). timeStep exists for the bias correction and the header increments it BEFORE lr[t] (:436), so the first update runs at t == 1. MPSNNOptimizers.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band, so every rule below is transcribed from the header and no number here is a comparison with a result.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSNNReduceFeatureChannelsArgumentMax",
@@ -2389,7 +2389,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNReduce.h:27 declares MPSNNReduceFeatureChannelsArgumentMin : MPSNNReduceUnary, and the Max class is its sibling. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNReduceUnary's own row is in this same registry file at iOS 11.3 with status absent. The work itself is one argument index per pixel over the feature channels and needs no Metal, so this row is blocked on that one base class.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2399,7 +2399,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNReduce.h:27 declares MPSNNReduceFeatureChannelsArgumentMin : MPSNNReduceUnary, and the Max class is its sibling. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNReduceUnary's own row is in this same registry file at iOS 11.3 with status absent. The work itself is one argument index per pixel over the feature channels and needs no Metal, so this row is blocked on that one base class.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2408,10 +2408,10 @@
       "kind": "class",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, MetalPerformanceShaders"
+      "status": "implemented",
+      "effect": "the source is resampled with a bilinear blend over the four pixels around each destination pixel, on the CPU, using MPSNNResize.h's own two conventions and no other: alignCorners == YES, which the header says preserves the values at the corner pixels, maps a destination pixel onto (source - 1) * x / (destination - 1); alignCorners == NO, the header's default, aligns the centres and maps them at (x + 0.5) * source / destination - 0.5. Both results are clamped into the source so no sample falls outside the image. The number of feature channels is unchanged, as the header requires, and a destination whose shape is not the one the kernel was asked for is refused rather than written at one shape and read at another. MPSNNResize.h and MPSCoreTypes.h of the iPhoneOS 16.4 SDK, read at $XMAKE/cache/packages/2610/i/iphoneos-sdk/16.4/source/System/Library/Frameworks/MetalPerformanceShaders.framework/Frameworks/MPSNeuralNetwork.framework/Headers. NOT MEASURED AGAINST ANYTHING: no build, no test program and no gate ran in this band.",
+      "source": "the SDK headers named in the effect; facts/MetalPerformanceShaders/Release12.md",
+      "facts": "facts/MetalPerformanceShaders/Release12.md"
     },
     {
       "api": "MPSRNNMatrixTrainingLayer",
@@ -2419,7 +2419,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSRNNLayer.h declares MPSRNNMatrixTrainingLayer : MPSKernel and MPSRNNMatrixTrainingState : MPSState, both carried, so this is not a superclass block either. What the layer needs is MPSRNNDescriptor - the gate style, the layer sequence direction, the input and output feature channels and the matrix ids - and A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSRNNDescriptor's own row is in this same registry file at iOS 11.0 with status absent, as is MPSRNNRecurrentMatrixState which the training state derives from. This band did not carry the descriptor and did not write a training layer against a guess of its gate style, so nothing of the name is built.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2429,7 +2429,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSRNNLayer.h declares MPSRNNMatrixTrainingLayer : MPSKernel and MPSRNNMatrixTrainingState : MPSState, both carried, so this is not a superclass block either. What the layer needs is MPSRNNDescriptor - the gate style, the layer sequence direction, the input and output feature channels and the matrix ids - and A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSRNNDescriptor's own row is in this same registry file at iOS 11.0 with status absent, as is MPSRNNRecurrentMatrixState which the training state derives from. This band did not carry the descriptor and did not write a training layer against a guess of its gate style, so nothing of the name is built.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2439,7 +2439,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSTriangleAccelerationStructure.h declares MPSTriangleAccelerationStructure : MPSPolygonAccelerationStructure, MPSInstanceAccelerationStructure : MPSAccelerationStructure, and MPSAccelerationStructure : MPSKernel. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSPolygonAccelerationStructure's own row is in this registry file at iOS 13.0 with status absent, and it belongs to the release-13 object. The whole family is therefore not carried together: a structure with no way to be given geometry and an intersector with nothing to trace would be four exported symbols no caller can reach.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2449,7 +2449,7 @@
       "introduced": "12.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSTriangleAccelerationStructure.h declares MPSTriangleAccelerationStructure : MPSPolygonAccelerationStructure, MPSInstanceAccelerationStructure : MPSAccelerationStructure, and MPSAccelerationStructure : MPSKernel. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSPolygonAccelerationStructure's own row is in this registry file at iOS 13.0 with status absent, and it belongs to the release-13 object. The whole family is therefore not carried together: a structure with no way to be given geometry and an intersector with nothing to trace would be four exported symbols no caller can reach.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2459,7 +2459,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNCompare.h declares MPSNNCompare : MPSCNNArithmetic and MPSNNComparisonNode derives from the graph's binary arithmetic node. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSCNNBinaryKernel and MPSCNNArithmetic are their own rows in this registry file, at iOS 11.0 with status absent. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNCompare` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2469,7 +2469,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNCompare.h declares MPSNNCompare : MPSCNNArithmetic and MPSNNComparisonNode derives from the graph's binary arithmetic node. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSCNNBinaryKernel and MPSCNNArithmetic are their own rows in this registry file, at iOS 11.0 with status absent. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNComparisonNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2479,7 +2479,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "NOT blocked by a superclass: MPSNNReshape.h declares MPSNNPad : MPSCNNKernel, which this package already carries, and the padding itself is a window copy over host memory with the header's own three edge modes (MPSImageEdgeModeConstant, Mirror, MirrorWithEdge). This band did not write it - the band's own time ran out before it - so it is stated as absent rather than claimed: nothing of the name is built and NSClassFromString answers nil. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNPad` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2489,7 +2489,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNReshape.h declares MPSNNReshapeGradient : MPSCNNGradientKernel and MPSNNPadGradient the same. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSCNNGradientKernel derives from MPSCNNBinaryKernel, and both are their own rows in this registry file at iOS 11.0 with status absent. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNPadGradient` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2499,7 +2499,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNPadGradientNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2509,7 +2509,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNPadNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2519,7 +2519,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionColumnMaxNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2529,7 +2529,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionColumnMeanNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2539,7 +2539,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionColumnMinNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2549,7 +2549,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionColumnSumNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2559,7 +2559,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsArgumentMaxNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2569,7 +2569,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsArgumentMinNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2579,7 +2579,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsMaxNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2589,7 +2589,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsMeanNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2599,7 +2599,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsMinNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2609,7 +2609,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionFeatureChannelsSumNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2619,7 +2619,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionRowMaxNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2629,7 +2629,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionRowMeanNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2639,7 +2639,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionRowMinNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2649,7 +2649,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionRowSumNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2659,7 +2659,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionSpatialMeanGradientNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2669,7 +2669,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReductionSpatialMeanNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2679,7 +2679,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNReshape.h declares MPSNNReshapeGradient : MPSCNNGradientKernel and MPSNNPadGradient the same. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSCNNGradientKernel derives from MPSCNNBinaryKernel, and both are their own rows in this registry file at iOS 11.0 with status absent. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReshapeGradient` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. ",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2689,7 +2689,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReshapeGradientNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2699,7 +2699,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNReshapeNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
@@ -2709,7 +2709,7 @@
       "introduced": "12.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 12, and nothing in iOS 6 does its work or stands in for it",
+      "reason": "MPSNNGraphNodes.h declares MPSNNUnaryReductionNode : MPSNNFilterNode, and this node derives from it. A class whose superclass the library does not carry CANNOT be defined: the runtime fails to create the class and the whole library stops loading, so this row is not written as implemented. MPSNNFilterNode's own row is in this same registry file, at iOS 11.0 with status absent, and it belongs to the release-11 object. The band point is measured, not read off the row: `python3 tools/cache-index/first-rung.py MPSNNUnaryReductionNode` answers 16.0, because no release is held between 12.0 and 16.0, so a name the SDK dates 12.1 reads 16.0 on the ladder and its object belongs to the 16.0 band rather than to a 12.0 one. The arithmetic itself needs no Metal - a reduction over one axis of the source is a walk over host memory, the same path every other MPS kernel in this package takes - so this row is blocked on the base class alone and nothing else.",
       "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
       "source": "SDK 16.4, MetalPerformanceShaders"
     },
