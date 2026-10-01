@@ -29,7 +29,7 @@
       "status": "absent",
       "reason": "an action that opens the camera and types the text it reads into the responder; the 4S and iPad 2 have a camera, but recognising text in its frames needs VNRecognizeTextRequest, absent in the port's Vision, so there is nothing to read the text with - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIButton buttonWithConfiguration:primaryAction:]",
@@ -58,7 +58,7 @@
       "status": "absent",
       "reason": "asks a symbol for the fixed colours its designer gave its parts; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no parts marked and no colours for them, and its configuration carries no colour (facts/UIKit/UIImageSymbolConfiguration.md) - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIImageSymbolConfiguration configurationWithHierarchicalColor:]",
@@ -68,7 +68,7 @@
       "status": "absent",
       "reason": "tints the primary, secondary and tertiary layers of a symbol at stepped opacities of one colour; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no layers marked, so there is nothing to step - marking them in 549 scripts is real work, no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIImageSymbolConfiguration configurationWithPaletteColors:]",
@@ -78,7 +78,7 @@
       "status": "absent",
       "reason": "gives the layers of a symbol a colour each; the port draws each symbol from a script of its own into one single-colour bitmap (facts/UIKit/UIImageSymbols.md) with no layers marked, so there is nothing to colour apart - marking them in 549 scripts is real work, no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIListContentConfiguration extraProminentInsetGroupedHeaderConfiguration]",
@@ -88,7 +88,7 @@
       "status": "absent",
       "reason": "a header style larger and bolder than prominentInsetGroupedHeaderConfiguration; the port carries the other list styles (UIListContentConfiguration implemented), each with fonts, colours and margins measured against the host under Catalyst, which is not on this machine now, so this style's values have no oracle to be taken from - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIListContentConfiguration prominentInsetGroupedHeaderConfiguration]",
@@ -98,7 +98,7 @@
       "status": "absent",
       "reason": "a larger, bolder header style for inset grouped lists; the port carries the other list styles (UIListContentConfiguration implemented), each with fonts, colours and margins measured against the host under Catalyst, which is not on this machine now, so this style's values have no oracle to be taken from - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "+[UIPointerStyle systemPointerStyle]",
@@ -108,7 +108,7 @@
       "status": "absent",
       "reason": "the style of the system's own pointer; the port carries UIPointerStyle, never applied since no pointer is drawn (facts/UIKit/UIPointerStyle.md), so this would be one more style of it that nothing shows - not built for lack of demand, not a wall",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[NSDiffableDataSourceSnapshot reconfigureItemsWithIdentifiers:]",
@@ -118,7 +118,7 @@
       "status": "absent",
       "reason": "marks items whose cells are to be configured again in place rather than replaced; the snapshot already records reloaded items (UIKit/NSDiffableDataSourceSnapshot.m), but applying a reconfigure needs reconfigureItemsAtIndexPaths:, which the release's collection and table views do not have (see those rows) - no demand",
       "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "SDK 16.4, UIKit; carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it). The port DEFINES its owner class, so entry_of (backports.lua:1673) would let a class row answer for this member - and the reason it still cannot is that the substrate the member names is absent from the release, measured in the same run: no SF Symbols at all on 6.1.3 (UIImageSymbolConfiguration, UIImageConfiguration and UIFontTextStyle all absent, UIImage carries no symbol or configuration selector), no pointer (UIPointerStyle, UIPointerInteraction, UIPointerRegion, UIHoverGestureRecognizer all absent) - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[NSTextAttachmentLayout attachmentBoundsForAttributes:location:textContainer:proposedLineFragment:position:]",
