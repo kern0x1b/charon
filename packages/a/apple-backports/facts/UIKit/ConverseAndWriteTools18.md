@@ -43,16 +43,22 @@
 //
 //    What it printed, release by release:
 //
-//      6.1.3   protocol  UISearchBarDelegate  UITextInput  UISearchBarDelegate  UITextFieldDelegate
-//               UITextViewDelegate  UITextInputTraits  NSObject
+//      6.1.3   protocol  UITextInput  UISearchBarDelegate  NSObject  UITextFieldDelegate
+//               UITextViewDelegate  UITextInputTraits
 //      12.0    protocol  UISearchBarDelegate  UITextViewDelegate  UITextFieldDelegate  UITextInputTraits
 //               UISplitViewControllerDelegate  UIResponderStandardEditActions  NSObject  UITextInput
 //      16.0    protocol  UITextInput  UITextFieldDelegate  UIMenuBuilder  UIResponderStandardEditActions
 //               UITextViewDelegate  UISplitViewControllerDelegate  UISearchBarDelegate  NSObject
 //               UITextInputTraits  UIWindowSceneDelegate
-//      18.0    protocol  UIWindowSceneDelegate  UITextInputTraits  UITextInput  UITextFieldDelegate
-//               UIMenuBuilder  UIResponderStandardEditActions  UISearchBarDelegate
-//               UISplitViewControllerDelegate  UITextViewDelegate  NSObject
+//      18.0    protocol  UIWindowSceneDelegate  UITextInput  UITextFieldDelegate  UIMenuBuilder
+//               UIResponderStandardEditActions  UISearchBarDelegate  UISplitViewControllerDelegate
+//               UITextViewDelegate  NSObject
+//
+//    ONE LINE OF THAT IS WORTH READING TWICE: UITextInputTraits is a `class` AND a `protocol` at 6.1.3,
+//    12.0 and 16.0, and at 18.0 only the `class` is left.  The class carries an image - public
+//    UIKit.framework at 6.1.3, private UIKitCore.framework from 12.0 on - and the protocol carries none,
+//    which is why a category cannot be written for the protocol member even where a class of the same name
+//    sits in the same inventory row set.
 //
 //    UIMenuBuilder and UIWindowSceneDelegate are in NO release below 16.0 at all - not as a class and not
 //    as a protocol - and UITextInput, UITextFieldDelegate, UITextViewDelegate, UISearchBarDelegate,
@@ -97,11 +103,14 @@
 //    answer: the tool's own header says a name that arrived after 18.0 looks exactly like this, and 18.0
 //    is the newest rung the ladder holds.
 //
-//    The four that did answer are the four whose SELECTOR belongs to another class in an older release -
-//    `alignLeft:`/`alignCenter:`/`alignRight:`/`alignJustified:` read 3.0, `removeActionForIdentifier:`
-//    reads 8.3, `toggleInspector:` reads 16.0, `conversationContext` reads 16.0 and
-//    `unobscuredContentRect` reads 8.0.  None of them is the member of the class this row names, and the
-//    inventories above are what settles that: no owner in any of the four releases carries any of them.
+//    What DID answer is the same trap in its other direction: these selectors belong to another class in an
+//    older release.  `alignLeft:`/`alignCenter:`/`alignRight:`/`alignJustified:` read 3.0,
+//    `removeActionForIdentifier:` reads 8.3, `toggleInspector:` reads 16.0, `conversationContext` reads 16.0
+//    and `unobscuredContentRect` reads 8.0 - where the owner is WebKit's WAKScrollView and WKContentView, never
+//    UITextInput.  The same run places those owners: WAKScrollView reads 3.0, WKContentView reads 8.0 and
+//    WKWebView reads 8.0, which is why the 6.1.3 inventory carries none of the three.  That is why the 26.4 row is an absence and not an accessor written from a remembered type.
+//    The inventories above are what settles the owner question, and they settle it the same way for every one
+//    of these: no owner in any of the four releases carries the member this row names.
 //
 // 4. NO APPLICATION IN THE CORPUS ASKS FOR THESE CLASSES.  This is the demand question, and it is
 //    measured on the binaries rather than inferred from the queue.
@@ -109,12 +118,13 @@
 //      nm -u coordination/corpus/<app>/extracted/Payload/<app>.app/<app> | grep -c '_OBJC_CLASS_\$_'
 //
 //    Provenance reads 316 undefined UIKit class references, UTM 146, PPSSPP 55 - and ZERO of them is any
-//    of the eighteen class symbols this band and the 26.0 band declare (UIGlassEffect, UIGlassContainerEffect,
+//    of the twenty-two class symbols checked - the 26.0 band's eighteen and four of this band's
+//    (UIGlassEffect, UIGlassContainerEffect,
 //    UICornerRadius, UICornerConfiguration, UIScrollEdgeEffect, UIScrollEdgeEffectStyle, UIBarButtonItemBadge,
 //    UIContextMenuSystem, UIColorWell, UIDeferredMenuElementProvider, UIMainMenuSystem,
 //    UISceneDestructionCondition, UISceneWindowingControlStyle, UIScrollEdgeElementContainerInteraction,
 //    UISliderTrackConfiguration, UISymbolContentTransition, UITabAccessory, UIViewLayoutRegion,
-//    UIWritingToolsCoordinator, UIConversationContext, UIInputSuggestion, UISmartReplySuggestion).
+//     UIWritingToolsCoordinator, UIConversationContext, UIInputSuggestion, UISmartReplySuggestion).
 //    So the classes are not here for a caller this corpus holds: they are here because a class whose
 //    requirement is that dyld resolve it has no other honest answer, and the count above is what says the
 //    empty class is not standing in for a demand we can measure but have not checked.

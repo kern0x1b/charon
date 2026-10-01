@@ -32,7 +32,8 @@
 // so the port builds the accessor on NSObject - the only class every conforming object inherits - under
 // a row of its own, -[NSObject conversationContext], exactly as the 26.0 band did for
 // -[NSObject allowsNumberPadPopover].  That is also the answer that works: the release's own
-// UITextInputTraits is a @protocol in 6.1.3, 12.0, 16.0 and 18.0 (measured, and the facts page carries
+// UITextInputTraits is a @protocol in 6.1.3, 12.0 and 16.0, and at 18.0 only the class of that name
+// survives (measured, and the facts page carries
 // the command), and declaring a class of that name in the port would shadow the class the release's own
 // dylib already carries under that name.
 //
