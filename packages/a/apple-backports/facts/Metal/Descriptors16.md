@@ -165,6 +165,24 @@ that member. The port matches Apple rather than being more faithful than the rel
 holds it there, and this paragraph is why: a port that copied the fourth member would hand a caller a
 different bound from the one the original carries.
 
+## The three arrays of 14.0 that this one does not share, and do not match
+
+`Metal/MTLDescriptors14.m` carries `MTLComputePassSampleBufferAttachmentDescriptorArray`,
+`MTLRenderPassSampleBufferAttachmentDescriptorArray` and
+`MTLResourceStatePassSampleBufferAttachmentDescriptorArray`, and the four classes here are the same
+shape as those. The code is not shared, for the reason this repository's contract names - a C helper
+defined in a file that exports a band's API is left out of a band that already has that API, and the
+call is `Undefined symbols` in later bands only, which one gate linking one band never sees - and the
+element types differ, so a shared body would still need three forwarders over the twenty lines it
+replaces.
+
+**They do not behave the same, and that is worth knowing rather than copying in either direction.** The
+three 14.0 arrays grow to whatever index is written, and the bound measurement above found Apple's own
+bound is **four** for the compute, render and resource-state arrays as well as for this one - so those
+three differ from Metal in exactly the way this one does not. Those are another band's rows and this
+band did not touch them; the difference is recorded here so the next band that reads the 14.0 file
+knows it is a measurement and not an oversight.
+
 ## The one difference from Metal, named
 
 **An index past the end raises here and stops the process there.** Apple's answer is a C assertion

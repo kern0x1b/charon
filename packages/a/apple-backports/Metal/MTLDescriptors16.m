@@ -100,6 +100,19 @@
 // nil write RESETS the slot to a fresh descriptor, which is what "safe to set the attachment state at
 // any legal index to nil, which resets that attachment descriptor state to default values" means -
 // measured: the slot reads a new object whose indices are MTLCounterDontSample again.
+//
+// THIS ARRAY IS NOT SHARED WITH THE THREE IN MTLDescriptors14.m, and it is worth saying why rather than
+// leaving a reviewer to find a near-copy. They are three classes of three other releases' objects, each
+// in the file that carries its own release's API, and a C helper shared between two of those files is the
+// undefined-symbol trap this repository's own contract names: a file whose exports a band's release
+// already has is left out of that band, so the call is `Undefined symbols` in later bands only - a gate
+// that links one band passes and only the all-band build of the canon shows it. The classes are also not
+// interchangeable: each holds its own attachment type, so a shared body would still need three thin
+// forwarders, which is more code than the twenty lines it replaces. AND THEY DO NOT AGREE: the three 14.0
+// arrays grow to whatever index is written, where Apple's own bound is four for every one of them -
+// measured on the host, one index per process, and it is in facts/Metal/Descriptors16.md. This one is
+// bounded because that is what Apple's own object does; the other three are another band's rows and
+// this file does not touch them.
 @interface MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray () {
     MTLAccelerationStructurePassSampleBufferAttachmentDescriptor *_slots[4];
 }
