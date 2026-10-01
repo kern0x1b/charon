@@ -131,9 +131,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMediaSelectionOption a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the method 7.0's -displayName forwards to, and the one that carries the work, so its body is the one that decides this row. At IMP 0x2c384d69 in the 7.0 armv7 cache it tests its second argument for nil, then loads the ivar at offset 4, loads a second pool word, and sends -localeIdentifier on the locale it was handed - it reads a stored display-name identifier off the option and matches it against the caller's locale. 6.1.3's AVMediaSelectionOption carries 25 own instance methods and holds no such ivar: its image's exports name AVAssetResourceLoadingRequest-style class and metaclass symbols and one ivar, _OBJC_IVAR_$_AVMediaSelectionOption._mediaSelectionOption, while 7.0's image adds _OBJC_IVAR_$_AVMediaSelectionOptionInternal._displayName and _._displayNameLocaleIdentifier",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and there is no stored identifier on this release to match a locale against. A caller shows -[AVMediaSelectionOption optionID], -locale or -mediaType, which are 6.1.3 members; the localized name is 7.0's, and returning -_title here would answer a different string under this name",
+      "source": "iPhoneOS 16.5 AVFoundation/AVMediaSelectionGroup.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both ends; the bodies are code_map over the same caches for the IMPs, and the ivar sets are tools/image-exports.lua over each cache's own AVFoundation export trie, which answers 5 symbols naming AVMediaSelectionOption on 6.1.3 and 6 on 7.0 out of 1731 and 2062 exports"
     },
     {
       "api": "-[AVMutableVideoCompositionLayerInstruction setCropRectangle:atTime:]",
@@ -141,9 +141,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoCompositionLayerInstruction a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the writer of the row above's field, and 6.1.3's AVMutableVideoCompositionLayerInstruction carries 8 own instance methods where 7.0's 10 carry it. The release's 8 are the opacity and transform setters - -setOpacity:atTime:, -setOpacityRampFromStartOpacity:toEndOpacity:timeRange:, -setTransform:atTime:, -setTransformRampFromStartTransform:toEndTransform:timeRange: - with the constructors and -dealloc, and there is no crop member among them: a rectangle set here would have nowhere to live, and no release member would read it back",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller crops with -[AVMutableVideoCompositionLayerInstruction setTransform:atTime:] or its ramp twin, which is where 6.1.3 keeps the geometry; a CGRect stored on the instruction here would be a value the release's own compositor never applies, so the crop would silently not happen",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVMutableVideoCompositionLayerInstruction setCropRectangleRampFromStartCropRectangle:toEndCropRectangle:timeRange:]",
@@ -151,9 +151,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoCompositionLayerInstruction a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the ramp writer beside the row above, from the same two selectors 7.0 adds to AVMutableVideoCompositionLayerInstruction's 10 own instance methods where 6.1.3's carry 8. The release's ramp writer is the transform one, -setTransformRampFromStartTransform:toEndTransform:timeRange:, which takes the same timeRange and a pair of values the release does hold; the crop ramp's two CGRect arguments have no member on 6.1.3 to store them in",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller ramps the geometry with -[AVMutableVideoCompositionLayerInstruction setTransformRampFromStartTransform:toEndTransform:timeRange:], which is the release's own spelling of the same operation; the crop ramp is 7.0's and a pair of rectangles written here would be read by nothing",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVPlayer mediaSelectionCriteriaForMediaCharacteristic:]",
@@ -211,9 +211,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoCompositionLayerInstruction a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVVideoCompositionLayerInstruction carries 22 own instance methods where 7.0's carry 29, and the crop ramp is not among the 22. What the release does carry is the other two ramps: -getOpacityRampForTime:startOpacity:endOpacity:timeRange: and -getTransformRampForTime:startTransform:endTransform:timeRange: are both 6.1.3 members, and 7.0 adds the crop pair beside them. There is no crop member to read from - 6.1.3's layer instruction stores a transform, an opacity and a mask, and nothing rectangular",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller gets the ramp the release holds with -getOpacityRampForTime:startOpacity:endOpacity:timeRange: or -getTransformRampForTime:startTransform:endTransform:timeRange:; the crop is expressed on this release as a transform, which is the route -[AVMutableVideoCompositionLayerInstruction setTransformRampFromStartTransform:toEndTransform:timeRange:] writes",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetExportSession.audioTimePitchAlgorithm",
@@ -540,9 +540,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMediaSelectionOption a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "7.0's own body is a forward, and reading it is what says whether 6.1.3 could answer: at IMP 0x2c385315 in the 7.0 armv7 cache it loads the pool word naming the selector currentLocale, sends it with no argument, moves the result into r2, loads the pool word naming displayNameWithLocale: and tail-calls it with self and that locale. So -displayName is -[self displayNameWithLocale:[NSLocale currentLocale]], and 6.1.3's AVMediaSelectionOption carries 25 own instance methods where 7.0's carry 31 - it has neither -displayName nor -displayNameWithLocale:",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The release's own display text is private and is not a substitute: -_title and -_ancillaryDescription are 6.1.3 members, but the first is the option's title and the second walks -mediaType and -group to find a subtitle's, so neither is the localized display name this property documents",
+      "source": "iPhoneOS 16.5 AVFoundation/AVMediaSelectionGroup.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both ends; and 7.0's body, code_map over the same cache for the IMP and a THUMB disassembly of it with every literal-pool load resolved, naming currentLocale at pool 0x38152714 and displayNameWithLocale: at 0x38152718"
     },
     {
       "api": "AVMediaSelectionOption.extendedLanguageTag",
@@ -550,9 +550,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMediaSelectionOption a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVMediaSelectionOption carries 25 own instance methods and no -extendedLanguageTag among them, where 7.0's 31 carry it. The release does carry the thing it is derived from and the derivation is already the port's own: -[AVMediaSelectionOption locale] is a 6.1.3 member, and -[AVAssetTrack extendedLanguageTag] is a 6.1.3 member of AVAssetTrack, and the port's AVMetadataItem+Identifiers8.m already implements -extendedLanguageTag for AVMetadataItem from its locale. The row is not that the derivation is unknown - it is that this release's option does not carry the field the 7.0 body reads",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -[AVMediaSelectionOption locale] is the release's own answer and it is an NSLocale, not a tag string; a caller that wants the tag formats it, which is what the port's own AVMetadataItem does. Note the trap this row sits on: extendedLanguageTag is one of these 79 AND a selector the port declares on AVMetadataItem, so a name search over the tree finds the wrong class and would have flipped this row to implemented",
+      "source": "iPhoneOS 16.5 AVFoundation/AVMediaSelectionGroup.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends, which looks the member up in its OWNER's line and nowhere else"
     },
     {
       "api": "AVMutableAudioMixInputParameters.audioTimePitchAlgorithm",
@@ -570,9 +570,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableVideoComposition a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same pair on the mutable subclass, and 6.1.3's AVMutableVideoComposition carries 15 own instance methods where 7.0's 17 carry -customVideoCompositorClass, -setCustomVideoCompositorClass: and the two built-in-compositor members -builtInCompositorName and -setBuiltInCompositorName:. The release's 15 are the instruction and property edits - -mutableVideoCompositionInstructionForTrackID:, -setInstructions:, -addMutableInstruction: and the renderSize and renderScale setters - and none of them names a compositor",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller edits the composition's instructions and hands it to a session or an export session and the release composites with its own compositor; a class set here would never be sent a request, since AVVideoCompositing is not a protocol on this release and the release's compositor is the only one it knows",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVOutputSettingsAssistant",
@@ -760,9 +760,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the protocol is not in 6.1.3. tools/corpus/cache-census.lua over the 6.1.3 armv7 cache answers 1171 protocols of which 16 name AV, and prints all 16: AVAssetWriterFigAssetWriterNotificationHandlerDelegate, AVAssetWriterFinishWritingHelperDelegate, AVAsynchronousKeyValueLoading, AVAudioPlayerDelegate, AVAudioSessionDelegate, AVAudioSessionDelegateMediaPlayerOnly, AVCaptureFileOutputPauseResumeDelegate, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVConferenceDelegate, AVDecodedAudioSettingsForFig, AVDecodedVideoSettingsForFig, AVOutputSettingsValidation, AVRecorderImpl, AVReencodedAudioSettingsForFig, AVReencodedVideoSettingsForFig. This one is not among them, and the run's control reads 558 names beginning AV across 6.1.3 and 4.3, so the zero is the release's",
+      "effect": "a class written to conform to it would compile against the SDK header and gain nothing at run time, which is what absent means for a protocol: 6.1.3's compositor is the release's own and no public mechanism would ever send it -startVideoCompositionRequest: or -renderContextChanged:. The port's own CharonAVFoundationProtocols.h declares only AVCaptureDataOutputSynchronizerDelegate, so nothing here collides with a protocol the port already forward-declares",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its 16-of-1171 count and its control of 558 names; class-scoped-rows.py returns NO PROTOCOL for this row on 6.1.3 and CARRIED at 7.0, where it reads 5 own instance selectors"
     },
     {
       "api": "AVVideoComposition.customVideoCompositorClass",
@@ -770,9 +770,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVVideoComposition a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVVideoComposition carries 29 own instance methods where 7.0's 33 carry -customVideoCompositorClass and -setCustomVideoCompositorClass:, and the release's 29 are the built-in compositor's surface - -instructions, -frameDuration, -setFrameDuration:, -sourceTrackIDForSegmentInstruction:, -requiredSourceTrackIDs - with no class to install. The class it would take is a conformer of AVVideoCompositing, and 6.1.3 has no such protocol: of the 16 AV-named protocols in the 6.1.3 armv7 cache, none is AVVideoCompositing, so there is nothing on this release for a custom compositor to conform to and nothing that would call it",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller supplies instructions and a frame duration and the release composites them with its own compositor; installing a class here would be inert, because no 6.1.3 member would ever send -startVideoCompositionRequest: to it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends; the protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its count and its control of 558 names"
     },
     {
       "api": "AVVideoCompositionInstruction",
@@ -780,9 +780,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 7, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "this row is a PROTOCOL and 6.1.3 has no such protocol, while it does have a CLASS of that name - the two are different declarations and the tool tells them apart: of the 16 AV-named protocols in the 6.1.3 armv7 cache none is this one, and of the 301 AV-named classes AVVideoCompositionInstruction and AVVideoCompositionInstructionInternal are both there, the latter with 19 own instance methods. So the release has the instruction object and not the protocol a custom instruction would conform to",
+      "effect": "a class written to conform to it would compile against the SDK header and gain nothing at run time, which is what absent means for a protocol. A caller builds instructions with -[AVMutableVideoCompositionInstruction instruction] and the release's own compositor consumes them through its private path; the port's CharonAVFoundationProtocols.h does not declare this one, so nothing collides",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the class and protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named classes and the AV-named protocols of each rung beside both counts and its control of 558 names; class-scoped-rows.py returns NO PROTOCOL for this row on 6.1.3 and CARRIED at 7.0, where it reads 5 own instance and 1 own class selector"
     },
     {
       "api": "AVVideoCompositionRenderContext",
@@ -790,9 +790,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 7, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is not in 6.1.3: of the 301 classes naming AV in the 6.1.3 armv7 cache, with the run's control reading 558 names beginning AV across 6.1.3 and 4.3, this one is not among them. It is the object 7.0 hands a custom compositor each time its render context changes, and 6.1.3 has no custom compositor to hand it to - the release's compositor takes its context from the session's own -addVideoPreviewLayer: and -videoPreviewLayer members",
+      "effect": "NSClassFromString returns nil and a class reference fails to link against the release, which is what absent means for a class. A caller on this release never receives one: the release composites with its own compositor and exposes no context object, and the port's own objects declare no conformer that would expect it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVVideoComposition.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control of 558 names beginning AV; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, where it reads super NSObject with 14 own instance selectors, and with its three controls answered on both ends"
     },
     {
       "api": "+[AVCaptureVideoPreviewLayer layerWithSessionWithNoConnection:]",
