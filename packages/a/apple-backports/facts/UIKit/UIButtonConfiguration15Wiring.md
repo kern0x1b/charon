@@ -89,12 +89,26 @@ band points, and a file mixing two releases passes it silently, so this was chec
 each row's `introduced` and `minimum` rather than by the tool — see
 `.agent-work/runs/release-split.md` for why the tool itself had nothing to read on this machine.
 
-## Not verified here, and said so
+## What was checked, and what was not
 
-No iPhoneOS SDK is installed on this machine, so **this file has not been compiled**. What was
-checked without a compiler: every selector it calls exists in the port or the SDK
-(`+buttonWithType:primaryAction:` in `UIButton+Actions14.m`, `-addAction:forControlEvents:` on
-`UIControl`, the three seams in `CharonConfigurationHost.m`); no other file in the tree defines
+**This file compiles.** It was checked with the same flags `review-mechanical.sh` uses - `xcrun clang -target armv7-apple-ios6.1.3 -isysroot <iPhoneOS16.4.sdk> -fobjc-arc -Os -g0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability -Werror=objc-missing-property-synthesis -fsyntax-only` - and it builds with zero errors and zero warnings. What has **not** happened is a link into a band or a run on a device, and that is the gate's.
+
+The first draft of this file was **refused by the armv7 compile** and the refusal is worth
+recording: `-updateConfiguration` called the handler block with `(self, configuration)` and clang
+said *"too many arguments to block call, expected 1, have 2"*. The SDK settles it —
+`UIButton.h:46` reads `typedef void (^UIButtonConfigurationUpdateHandler)(__kindof UIButton *button)`
+— so the handler takes the button alone, the configuration it needs is the one the button already
+holds, and the call is `handler(self)`. The row's effect was corrected with it, and the facts page
+for the reconfigure pass records the same lesson about Apple's headers being the authority.
+
+Also checked, without a compiler being enough: every selector the file calls exists in the port or
+the SDK (`+buttonWithType:primaryAction:` in `UIButton+Actions14.m`, `-addAction:forControlEvents:`
+on `UIControl`, the three seams in `CharonConfigurationHost.m`); no other file in the tree defines
 any of the eight selectors it defines, so nothing is shadowed; and the storage pattern is the one
-`UIConfigurationUpdateHandler15.m` and `NSLayoutManager+Text13.m` already use. What still wants a
-build is the compile itself, and the coordinator's gate is where that happens.
+`UIConfigurationUpdateHandler15.m` and `NSLayoutManager+Text13.m` already use.
+
+The category was then compiled to an object and read back with the tree's own reader
+(`modules/apple/objc.lua` `binary_inventory`), which reports **12 selectors on `UIButton`** — the
+eight this file adds plus the four the rows do not name (`-copy`-side storage accessors and the
+`-is`-form getters), every one attached to a class the 6.1.3 cache carries, which is what
+`check_categories` (`backports.lua:1308`) requires for a category to attach at all.

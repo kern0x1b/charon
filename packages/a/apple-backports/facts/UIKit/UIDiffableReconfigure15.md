@@ -69,10 +69,11 @@ set is correct there.
 | `-[NSDiffableDataSourceSnapshot reconfigureItemsWithIdentifiers:]` | the identifiers are kept, in order, and an empty array does nothing |
 | `NSDiffableDataSourceSnapshot.reconfiguredItemIdentifiers` | the identifiers that were given, in order; empty when none, **and empty on a copy** |
 
-## What was checked without a compiler, and what was not
+## What was checked, and what was not
 
-No iPhoneOS SDK is installed on this machine, so **this file has not been compiled**; the
-coordinator's gate is where that happens. Checked here:
+**This file compiles.** It was checked with the same flags `review-mechanical.sh` uses - `xcrun clang -target armv7-apple-ios6.1.3 -isysroot <iPhoneOS16.4.sdk> -fobjc-arc -Os -g0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability -Werror=objc-missing-property-synthesis -fsyntax-only` - and it builds with zero errors and zero warnings. What has **not** happened is a link into a band or a run on a device, and that is the gate's.
+
+Checked here, and then by the compiler:
 
 - every selector the file calls exists and is spelled as the port spells it —
   `-unionOrderedSet:`, `-performBatchUpdates:`, `-reloadItemsAtIndexPaths:` and

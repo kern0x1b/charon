@@ -52,9 +52,19 @@ symbol of its own**, which matters: a file that exported one would be a file ano
 band might also keep, and the call would be undefined symbols in the band that did not
 (`AGENTS.md`, "A C function shared between backport files").
 
-The accessors' semantics were checked by running that exact storage and those exact accessors on
-the host, in a file with the same shape and no UIKit in it, because no iPhoneOS SDK is installed
-on this machine and the port's own build could not be run here:
+**This file compiles.** Checked with the flags `review-mechanical.sh` uses —
+`xcrun clang -target armv7-apple-ios6.1.3 -isysroot <iPhoneOS16.4.sdk> -fobjc-arc -Os -g0 -Wall
+-Wno-unguarded-availability-new -Wno-unguarded-availability -Werror=objc-missing-property-synthesis`
+— with zero errors and zero warnings, and compiled to an object it reports **3 selectors**:
+`-usesDefaultHyphenation` and `-setUsesDefaultHyphenation:` on `NSParagraphStyle`, and
+`-setUsesDefaultHyphenation:` on `NSMutableParagraphStyle`, read back with the tree's own reader
+(`modules/apple/objc.lua` `binary_inventory`). Both classes are carried by the 6.1.3 cache, which
+is what `check_categories` requires for a category to attach. What has not happened is a link into
+a band or a run on a device.
+
+The accessors' *semantics* were checked by running that exact storage and those exact accessors on
+the host, in a file with the same shape and no UIKit in it, because the port's own build cannot be
+linked here without the package graph:
 
 | check | result |
 |---|---|

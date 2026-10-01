@@ -71,10 +71,20 @@ backport files"). This file defines no C function of its own for the same reason
 The storage is a `static const char` key local to this file, so the 10.0 object and the 15.0 one
 cannot read each other's state even when both are linked into one binary.
 
-## What was not verified here
+## What was checked, and what was not
 
-No iPhoneOS SDK is installed on this machine, so **this file has not been compiled**; the
-coordinator's gate is where that happens. What was checked without a compiler:
+**This file compiles.** It was checked with the same flags `review-mechanical.sh` uses - `xcrun clang -target armv7-apple-ios6.1.3 -isysroot <iPhoneOS16.4.sdk> -fobjc-arc -Os -g0 -Wall -Wno-unguarded-availability-new -Wno-unguarded-availability -Werror=objc-missing-property-synthesis -fsyntax-only` - and it builds with zero errors and zero warnings. What has **not** happened is a link into a band or a run on a device, and that is the gate's.
+
+This file is the one the review caught hardest: its `#import` lines and both category
+declarations had ended up **below** the `+load` installer that sends their messages, so it
+compiled against a `UITableView` that did not exist yet — *"cannot find interface declaration for
+'NSObject'"*, then *"use of undeclared identifier 'UITableView'"*, `'Method'`, `'IMP'`,
+`'class_replaceMethod'`, and finally *"property 'charon_prefetchingAllowed' not found"* and *"no
+visible `@interface` for 'UITableView' declares the selector 'charon_prefetchRows'"*. All of it
+was ordering, and the order is now: storage key, the two declarations, the installer, the category.
+Moving them also removed a duplicate definition of the storage key the reshuffle had introduced.
+
+Checked before the compiler, and worth keeping:
 
 - every selector the file calls exists in the port or the SDK — `-respondsToSelector:`,
   `-instancesRespondToSelector:`, `-class_getInstanceMethod`, `-method_getImplementation`,
