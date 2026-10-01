@@ -176,7 +176,34 @@ The header says at `:109-116` that this class is "an optimized variant of the MP
 filter" reachable by building an `MPSCNNConvolution` with the same weights, so the walk is
 `MPSImageConvolution13.m`'s and this object holds only the bias.
 
-The class is compared by `tests/backports/host/mpsimage10`, which the laplacian row names. It cannot be a shared **C** function:
+## The image side, in its own harness
+
+`tests/backports/host/mpsimage10/run.sh` is the harness for the image classes of this slice, and the
+laplacian's row names it. It runs the same two-transcript comparison:
+
+```
+defaults: 1 line(s) compared, agree exactly as text
+  laplacian bias=0 edgeMode=0
+cases: 3 compared, 1 expected absent, tolerance 0.0001 absolute or relative
+closest to the tolerance, as a fraction of it:
+  laplacian-bias1              0
+  laplacian-bias0              0
+  fresh-image-zeroes           0
+differing cases: 0
+```
+
+**Zero, exactly.** The laplacian agrees with the release bit for bit in both bias settings — a sum of
+small integers and one subtraction produces no rounding to disagree about, which is why the convolutional
+harness needs a tolerance at all (an exponential does) and this one does not.
+
+**One case is EXPECTED ABSENT and the run is green anyway.** `conversion-null-info` builds an
+`MPSImageConversion` with a NULL `conversionInfo` and the port refuses it by name, because the class is
+not carried — the row's claim, restated by the run. The harness checks the difference against the set of
+cases the port says it does not carry, so an expected absence is reported and a case that goes missing for
+any other reason is still red. The **system** side of that case is the measurement the row rests on: the
+release's own `MPSImageConversion` answers a NULL `conversionInfo` by returning the same four values it
+was given, which is a no-op, and a class whose one job is a conversion that answers a copy is not that
+class. It cannot be a shared **C** function:
 `CharonMPSConvolveRegion` is `static` in that file, and `charon/AGENTS.md` records that a C function
 called across objects is `Undefined symbols` in the bands where the exporting file is not carried,
 because an object is placed by the release whose API it defines. So one **method** on `MPSUnaryImageKernel`
