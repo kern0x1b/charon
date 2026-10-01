@@ -88,7 +88,7 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
         device = MTLCreateSystemDefaultDevice();
     if (!device || !descriptor)
         return nil;
-    return [[[MPSNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    return [[MPSNDArray alloc] initWithDevice:device descriptor:descriptor];
 }
 
 @end
@@ -314,9 +314,9 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
         return nil;
     }
     if ((self = [super init])) {
-        _device = [device retain];
-        _descriptor = [descriptor retain];
-        _shape = [[self charon_mps_wholeShapeOf:descriptor] retain];
+        _device = device;
+        _descriptor = descriptor;
+        _shape = [self charon_mps_wholeShapeOf:descriptor];
     }
     return self;
 }
@@ -331,10 +331,8 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
                                                                     dimensionCount:1
                                                                     dimensionSizes:&one];
     if (!(self = [self initWithDevice:device descriptor:descriptor])) {
-        [descriptor release];
         return nil;
     }
-    [descriptor release];
     float narrowed = (float)value;
     [self writeBytes:&narrowed strideBytes:NULL];
     return self;
@@ -366,7 +364,7 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
 - (NSUInteger)lengthOfDimension:(NSUInteger)dimensionIndex { return [_shape lengthOfDimension:dimensionIndex]; }
 - (MPSNDArray *)parent { return _parent; }
 - (NSString *)label { return _label; }
-- (void)setLabel:(NSString *)label { [_label release]; _label = [label copy]; }
+- (void)setLabel:(NSString *)label { _label = [label copy]; }
 
 // A NEW descriptor of this array's own shape, which the header promises is made each time "to allow
 // for further customization of the descriptor by the application" (MPSCore/MPSNDArray.h:243-251).
@@ -451,7 +449,7 @@ static void MPSNDArray_plantedCopy(void *destination, const void *source, size_t
                         (unsigned long)size, (unsigned long)_descriptor.numberOfDimensions);
         return nil;
     }
-    _buffer = [buffer retain];
+    _buffer = buffer;
     return _buffer;
 }
 
@@ -661,7 +659,7 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
     // descriptor's own shape, and hand that back. Not honouring it would answer a request the
     // header defines with a view that aliases.
     if (aliasing & MPSAliasingStrategyShallNotAlias) {
-        MPSNDArray *copy = [[[MPSNDArray alloc] initWithDevice:_device descriptor:descriptor] autorelease];
+        MPSNDArray *copy = [[MPSNDArray alloc] initWithDevice:_device descriptor:descriptor];
         size_t width = MPSSizeofMPSDataType(descriptor.dataType);
         NSUInteger count = 1;
         for (NSUInteger i = 0; i < descriptor.numberOfDimensions; i++)
@@ -677,18 +675,19 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
         free(packed);
         return copy;
     }
-    MPSNDArray *view = [[[MPSNDArray alloc] initWithDevice:_device descriptor:descriptor] autorelease];
-    [view retain];
-    view->_buffer = [_buffer retain];
+    // The view's four ivars below are strong, so each store retains the value it is given and
+    // releases the one it held, and the local owns the alloc/init pair until `return` autoreleases
+    // it into the caller's pool - which is what the retain/autorelease/release dance this replaced
+    // arranged by hand, to the same net ownership.
+    MPSNDArray *view = [[MPSNDArray alloc] initWithDevice:_device descriptor:descriptor];
+    view->_buffer = _buffer;
     view->_byteOffset = _byteOffset;
-    view->_parent = [self retain];
+    view->_parent = self;
     // The shape a view reports is its PARENT's, not its own descriptor's slice: a view of a [3,4,2]
     // array whose dimension 1 is sliced to 2 of 4 reports 3, 4 and 2, not 3, 2 and 2. Measured in cases
     // 6 and 8 of tests/backports/host/mpsndarray/run.sh, and permitted by MPSCore/MPSNDArray.h:235-237
     // - "The dimension length is at least as large as the existing slice length."
-    [view->_shape release];
-    view->_shape = [_shape retain];
-    [view release];
+    view->_shape = _shape;
     return view;
 }
 
@@ -788,15 +787,8 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
     free(destination);
 }
 
-- (void)dealloc
-{
-    [_buffer release];
-    [_descriptor release];
-    [_parent release];
-    [_device release];
-    [_label release];
-    [super dealloc];
-}
+// No -dealloc: every ivar above is strong, so ARC releases them and calls [super dealloc] itself.
+// Spelling either out is what ARC forbids, and there is nothing here for it to do that it does not.
 
 @end
 
@@ -823,7 +815,7 @@ static void MPSNDArrayViewLayout(MPSNDArrayDescriptor *view, MPSNDArrayDescripto
     // is what a view of this array is built from as well, so the temporary class inherits it rather
     // than refusing it: it is the one path a temporary array can be made without a private seam this
     // band would then have to carry a registry row for.
-    MPSTemporaryNDArray *array = [[[MPSTemporaryNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    MPSTemporaryNDArray *array = [[MPSTemporaryNDArray alloc] initWithDevice:device descriptor:descriptor];
     [array setReadCount:1];
     return array;
 }
