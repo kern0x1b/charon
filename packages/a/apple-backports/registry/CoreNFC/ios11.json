@@ -127,20 +127,22 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried, and it is not a gap in this series: it is the ISO15693 custom-command configuration, the subclass of NFCTagCommandConfiguration that the SDK's NFCISO15693Tag.h:55 declares, and it arrived with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives this name its first held rung at 11.0, where 11.0's own cache has it as a class",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "status": "implemented",
+      "reason": "a configuration is a value, not a session: the manufacturer code, the command code and the request bytes are set by an application, read back and copied, and none of that needs an NFC radio, so the subclass of the carried NFCTagCommandConfiguration is carried with it",
+      "effect": "the class exists with the three properties the header declares, its superclass is the port's NFCTagCommandConfiguration, and every field is kept exactly as it was given: a manufacturer code of 0x1FF stays 0x1FF and a command code of 0x5 stays 0x5, although the header calls 0x00 to 0xFF and 0xA0 to 0xDF the valid ranges. -init leaves every field zero and requestParameters nil; the three-field initialiser sets what it names and leaves the base's retries at zero, which is what the header says it does; the five-field one sets all five. -copy is the class's own, carries all three of its fields, and its requestParameters is its own",
+      "facts": "facts/CoreNFC/TagConfiguration.md",
+      "source": "the host's CoreNFC through Mac Catalyst, compared field by field with the port's own in one process: tests/backports/host/corenfc-tagconfig/run.sh, 116 checks, 0 failing, and --fail-first shows 7 of 116 failing; tools/corpus/cache-census.lua NFC certifies the deployment caches carry no CoreNFC (0 of 11378 and 0 of 7187 classes begin with NFC, against 34 in 11.0's arm64 cache)"
     },
     {
       "api": "NFCISO15693ReadMultipleBlocksConfiguration",
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried, and it is not a gap in this series: it is the ISO15693 read-multiple-blocks configuration, the subclass of NFCTagCommandConfiguration that the SDK's NFCISO15693Tag.h:107 declares, and it arrived with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives this name its first held rung at 11.0, where 11.0's own cache has it as a class",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "status": "implemented",
+      "reason": "a configuration is a value, not a session: the block range and the chunk size are set by an application, read back and copied, and none of that needs an NFC radio, so the subclass of the carried NFCTagCommandConfiguration is carried with it",
+      "effect": "the class exists with the two properties the header declares, its superclass is the port's NFCTagCommandConfiguration, and both are kept exactly as they were given: a zero-length range stays zero length and a start index of 1000 stays 1000, although the header calls 0x00 to 0xFF valid and says the length shall not be 0. -init leaves the range empty and the chunk size zero; the two-field initialiser sets what it names and leaves the base's retries at zero, which is what the header says it does; the four-field one sets all four. -copy is the class's own, carries its range and chunk size, and is a value the original's later changes do not reach",
+      "facts": "facts/CoreNFC/TagConfiguration.md",
+      "source": "the host's CoreNFC through Mac Catalyst, compared field by field with the port's own in one process: tests/backports/host/corenfc-tagconfig/run.sh, 116 checks, 0 failing, and --fail-first shows 7 of 116 failing; tools/corpus/cache-census.lua NFC certifies the deployment caches carry no CoreNFC (0 of 11378 and 0 of 7187 classes begin with NFC, against 34 in 11.0's arm64 cache)"
     },
     {
       "api": "NFCISO15693ReaderSession",
@@ -157,10 +159,11 @@
       "kind": "class",
       "introduced": "11.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "not carried, and it is not a gap in this series: it is the base class every tag command configuration is one of, declared at the SDK's NFCTag.h:110, and it arrived with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives this name its first held rung at 11.0, where 11.0's own cache has it as a class",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "status": "implemented",
+      "reason": "a configuration is a value, not a session: it is made from the fields an application sets, read back through its properties and copied, and none of that needs an NFC radio, which is the same line the NDEF payload is carried on",
+      "effect": "the class exists with the two properties the header declares, both kept exactly as they are given: maximumRetries of 1000 stays 1000 and a retryInterval of -5 stays -5, although the header calls 0 to 256 valid and does not say what happens outside it. -copyWithZone: is what answers, and a copy is a value of its own; -isEqual: is NSObject's, so two configurations of identical fields are not equal",
+      "facts": "facts/CoreNFC/TagConfiguration.md",
+      "source": "the host's CoreNFC through Mac Catalyst, which carries these three classes as it does not carry NFCNDEFPayload, compared field by field with the port's own in one process: tests/backports/host/corenfc-tagconfig/run.sh, 116 checks, 0 failing, and --fail-first shows 7 of 116 failing on the field it drops; tools/corpus/cache-census.lua NFC certifies the deployment caches carry no CoreNFC (0 of 11378 and 0 of 7187 classes begin with NFC, against 34 in 11.0's arm64 cache)"
     },
     {
       "api": "NFCISO15693Tag",
