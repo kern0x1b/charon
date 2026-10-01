@@ -47,9 +47,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetTrack carries 54 own instance methods where 7.0's carry 62, and the association walk is not among the 54. 7.0 adds -associatedTracksOfType: and -availableTrackAssociationTypes; what 6.1.3 has instead is the private pair -[AVAssetTrack _allReferencedTracksWithReferenceType:] and -[AVAssetTrack _firstReferencedTrackWithReferenceType:] plus -_mostCloselyAssociatedTrackAmongTracks: and -_followingTrackAmongTracks:, so the release walks associations by a reference type through private names and exposes no AVTrackAssociationType of them",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that knows the track's own group asks -[AVAssetTrack asset] and the asset's tracks, or -[AVAssetTrack languageCode] and -mediaType; the association type vocabulary this method takes is 7.0's, and forwarding to a private walker would need a type the release does not define",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetTrack.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVCaptureAudioDataOutput recommendedAudioSettingsForAssetWriterWithOutputFileType:]",
@@ -121,9 +121,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCompositionTrack a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "this is the row the class-scoped tool exists for: 6.1.3's AVCompositionTrack carries 6 own instance methods, exactly as many as 7.0's, and neither carries -associatedTracksOfType: in its own table. The method is CARRIED at 7.0 and INHERITED there - AVCompositionTrack answers it from AVAssetTrack, its superclass, whose own table has it. Read on the owner's own line alone the 7.0 end would have been written down as absent as well, and the row would have claimed the release never had the method anywhere",
+      "effect": "calling it raises an unrecognised selector on this release, which is what absent means, and the reason is the superclass's: 6.1.3's AVAssetTrack does not have it either, so the whole chain from AVCompositionTrack to NSObject answers nothing. A caller that needs a track out of a composition asks the composition's -[AVComposition tracksWithMediaType:]",
+      "source": "iPhoneOS 16.5 AVFoundation/AVComposition.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends - the third of those controls, -[AVCompositionTrack mediaType] wanting INHERITED, is the same trap this row is, asked deliberately"
     },
     {
       "api": "-[AVMediaSelectionOption displayNameWithLocale:]",
@@ -361,9 +361,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the companion of the row above, added by 7.0 to AVAssetTrack's 62 own instance methods where 6.1.3's 54 have no -availableTrackAssociationTypes. It reports which AVTrackAssociationType values the track can be associated under, and AVTrackAssociationType is 7.0's vocabulary: 6.1.3's own association members are the private -_allReferencedTracksWithReferenceType: and -_firstReferencedTrackWithReferenceType:, which take the release's own reference type and answer with tracks rather than with a set of types the track admits",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. There is no set of association types on this release to report, because the type is not a thing 6.1.3 names; a caller that wants a paired track reads the group's tracks from the asset",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetTrack.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetTrack.minFrameDuration",
@@ -371,9 +371,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetTrack carries 54 own instance methods and no -minFrameDuration nor -setMinFrameDuration: among them, where 7.0's 62 carry both. The rate members the release does have are -nominalFrameRate, a float read-only, and -naturalTimeScale, and neither is a frame duration: the property here is a CMTime the reader and the writer both pace against, and 6.1.3's AVAssetTrack has no member that stores one - its own state is -asset, -trackID, -segments, -formatDescriptions, -preferredVolume, -enabled",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller paces with -nominalFrameRate, which is the track's declared rate, or sets the composition's -[AVVideoComposition frameDuration], which is where 6.1.3 keeps a frame duration the compositor uses; a CMTime stored on the track here would be a value the 6.1.3 reader and writer never read, since nothing on the release consults it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetTrack.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAssetWriterInput.preferredVolume",
@@ -650,9 +650,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries no -downloadOverdue among its 20 own instance methods, where 7.0's 32 carry it. The flag says the download fell behind what playback needed, which 6.1.3 signals live on the item instead: -[AVPlayerItem playbackLikelyToKeepUpTrigger] and -[AVPlayerItem progressTowardsPlaybackLikelyToKeepUp] are 6.1.3 members and are where this release says the same thing while it happens",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller watches -[AVPlayerItem playbackLikelyToKeepUpTrigger] on the item, which is the live form of the same fact, and -[AVPlayerItem accessLog] for the totals; the retrospective flag on the event is 7.0's and the release keeps no record of it to reduce to a BOOL here",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.mediaRequestsWWAN",
@@ -660,9 +660,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries -numberOfMediaRequests among its 20 own instance methods and no -mediaRequestsWWAN, where 7.0's 32 carry both. The release counts the requests; it does not split them by the network they went over, so the WWAN half is not a member it holds and the carrier behind each request is not in anything this event exposes",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -numberOfMediaRequests is the release's own count over every network; a caller on a cellular radio reads it and attributes the traffic itself, which is the only place the carrier is knowable on this release",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.observedBitrateStandardDeviation",
@@ -670,9 +670,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "7.0 adds -observedBitrateStandardDeviation to AVPlayerItemAccessLogEvent's 20 own instance methods at 6.1.3, and it is a second moment over the same per-segment bitrate list as the two rows above. 6.1.3 keeps no accessor for that list: its own members are the aggregates and -initWithDictionary:, so there is nothing on the release to take the deviation of",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -observedBitrate gives the mean of what the release already reduced the segments to, and a deviation needs the terms it reduced, which 6.1.3 does not hand out",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.observedMaxBitrate",
@@ -680,9 +680,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the other end of the row above, from the same 12 selectors 7.0 adds to AVPlayerItemAccessLogEvent's 20-own-method 6.1.3 table, and blocked for the same reason: 6.1.3's own log surface is the aggregates -observedBitrate, -indicatedBitrate, -numberOfBytesTransferred, -numberOfSegmentsDownloaded, -segmentsDownloadedDuration, -numberOfStalls, -numberOfMediaRequests - plus -initWithDictionary:, and the per-segment bitrate list it would be a maximum over has no accessor on this release",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -observedBitrate is the event's own aggregate and is not this number; a caller that needs the peak of a stream reads what the release reports and cannot recover the peak from it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.observedMinBitrate",
@@ -690,9 +690,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries 20 own instance methods where 7.0's carry 32, and the 12 7.0 adds are the per-segment figures this row is one of: -observedMinBitrate, -observedMaxBitrate, -observedBitrateStandardDeviation, -startupTime, -transferDuration, -switchBitrate, -downloadOverdue, -mediaRequestsWWAN, -playbackType, -currentObservedBitrate, -entryReasonCode and -serviceIdentifier. What 6.1.3 keeps is the aggregates - -observedBitrate, -indicatedBitrate, -numberOfBytesTransferred, -numberOfSegmentsDownloaded, -segmentsDownloadedDuration, -numberOfStalls, -numberOfMediaRequests, -numberOfServerAddressChanges, -numberOfDroppedVideoFrames, -durationWatched - and the dictionary they were built from, -initWithDictionary:. A minimum over the segment bitrates is a walk of the per-segment list, and 6.1.3 exposes no accessor for that list: it keeps -observedBitrate for the whole event",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller reads -observedBitrate for the rate the event settled on and -indicatedBitrate for the rate the segments indicated; the spread across segments is 7.0's, and the aggregate is not a stand-in for it - a stream that ramps from 300k to 2M has one observedBitrate and a min and a max",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.playbackType",
@@ -700,9 +700,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries no -playbackType among its 20 own instance methods, where 7.0's 32 carry it. The property is a string the server sent in the log, and 6.1.3's event is built by -[AVPlayerItemAccessLogEvent initWithDictionary:] with no member that hands the raw entry back: the release keeps the fields it reduces to numbers and -URI, and a playback-type string it never stored cannot be recovered from them",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the answer would be nil on any port that did not store it. -serverAddress and -URI are the two strings this release does report, and neither is the playback type",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.startupTime",
@@ -710,9 +710,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries -playbackStartDate and -playbackStartOffset, and no -startupTime, among its 20 own instance methods where 7.0's 32 carry it. The two the release has are the wall-clock date and the offset the event started at; startupTime is the delay before the first segment, which is a property of the first segment's record rather than of the event's own start, and 6.1.3 exposes no per-segment accessor",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller times its own startup around -[AVPlayerItem accessLog] and the item's -playbackLikelyToKeepUpTrigger; the release reports when playback began, not how long the first segment took",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.switchBitrate",
@@ -720,9 +720,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries no -switchBitrate among its 20 own instance methods, where 7.0's 32 carry it. Whether the rate switched is a fact about the sequence of segments, and 6.1.3 reduces that sequence to -observedBitrate, -indicatedBitrate, -numberOfSegmentsDownloaded and -segmentsDownloadedDuration without keeping the per-segment rates a switch is a difference between",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller watches for rate changes through the item's -accessLog and its own observations of -observedBitrate across events; the release does not report the switch itself and a flag set from a single event could not be honest about one",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.transferDuration",
@@ -730,9 +730,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemAccessLogEvent a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemAccessLogEvent carries -segmentsDownloadedDuration among its 20 own instance methods, which is the summed duration of the segments it downloaded, and no -transferDuration, where 7.0's 32 carry it. The release's member is the wall time the downloaded segments covered; transferDuration is the time spent fetching them, and the two differ whenever the download outran playback",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -segmentsDownloadedDuration is what the release measured and it is not this number; a caller that needs the fetch time times the request itself",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemAccessLogEvent.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemLegibleOutput",
