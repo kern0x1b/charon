@@ -3358,19 +3358,23 @@
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:reaction:]",
       "kind": "method",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the 26.2 header's own 18.0 declaration, which the port's SDK (iPhoneOS 16.4) does not declare at all, so the contract is read from iPhoneOS 26.2 and CharonIntents180.m writes it for the class IN10_0_1.m implements: the initialiser chains to the class's own 13.2 initialiser, which keeps every value its parameters name, and stores the reaction through its own setter",
+      "source": "the contract from the header of iPhoneOS 26.2 (INMessage.h:139-149 for this initialiser); that a release answers the name is measured on the arm64e cache of iOS 18.0 and is absent from the armv7 cache of 6.1.3, by the literal selector search tools/release-split.lua names for a member no exported symbol answers - `strings -a ~/.charon/dyld/18.0/* | grep -x -c -F -e SELECTOR` reads 2 for this selector, 0 for the nonsense control charonNoSuchSelector18Probe:, and 0 on 6.1.3 for this selector and for the class's own earlier controls alike, because 6.1.3 carries no Intents; that the port's SDK lacks it is `grep -n 'sticker|reaction|referencedMessage|DESIGNATED' INMessage.h` over each of the three iPhoneOS 16.4 SDKs on this machine, which answers only the three NS_DESIGNATED_INITIALIZER lines of 11.0, 13.2 and 16.0 and no property at all. The output of all of it, with every control beside it, is in facts/Intents/Intents.md under 'INMessage of iOS 18'",
+      "effect": "a caller that builds a message with a reaction gets an object that keeps it: -reaction answers the value the setter was handed, as a copy, and the message's own values of 10.0 through 16.0 come from the class's designated initialiser this one chains to. A copy and a keyed archive of the message carry the reaction as well - CharonIntents180.m carries those three selectors because an ivar walk cannot see what a category holds beside the object"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:sticker:reaction:]",
       "kind": "method",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the 26.2 header's own 18.0 declaration, which the port's SDK (iPhoneOS 16.4) does not declare at all, so the contract is read from iPhoneOS 26.2 and CharonIntents180.m writes it for the class IN10_0_1.m implements: the initialiser chains to the class's own 13.2 initialiser and stores the sticker and the reaction through their own setters. The 26.2 header marks this one NS_DESIGNATED_INITIALIZER and the marking is not repeated, because this port's INMessage has the designated initialiser the 16.4 header names, the marking is a compile-time convention with no runtime effect, and a category cannot change which initialiser of a class is designated",
+      "source": "the contract from the header of iPhoneOS 26.2 (INMessage.h:167-178 for this initialiser, the doc comment above it naming all eleven parameters); that a release answers the name is measured on the arm64e cache of iOS 18.0 and is absent from the armv7 cache of 6.1.3, by the literal selector search tools/release-split.lua names for a member no exported symbol answers - `strings -a ~/.charon/dyld/18.0/* | grep -x -c -F -e SELECTOR` reads 2 for this selector, 0 for the nonsense control charonNoSuchSelector18Probe:, and 0 on 6.1.3 for this selector and for the class's own earlier controls alike, because 6.1.3 carries no Intents; that the port's SDK lacks it is `grep -n 'sticker|reaction|referencedMessage|DESIGNATED' INMessage.h` over each of the three iPhoneOS 16.4 SDKs on this machine, which answers only the three NS_DESIGNATED_INITIALIZER lines of 11.0, 13.2 and 16.0 and no property at all. The output of all of it, with every control beside it, is in facts/Intents/Intents.md under 'INMessage of iOS 18'",
+      "effect": "a caller that builds a message with a sticker and a reaction gets an object that keeps both, each readable through -sticker and -reaction as a copy of what it handed, with the message's own values of 10.0 through 16.0 from the class's designated initialiser this one chains to. The referenced message it also hands is kept, and nothing reads it back, because the header declares no accessor for it. A copy and a keyed archive carry the sticker and the reaction as well - CharonIntents180.m carries those three selectors because an ivar walk cannot see what a category holds beside the object"
     },
     {
       "api": "-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:messageType:]",
@@ -5914,10 +5918,12 @@
       "api": "INMessage.reaction",
       "kind": "property",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the 26.2 header's own 18.0 property, which the port's SDK (iPhoneOS 16.4) does not declare at all, so the contract is read from iPhoneOS 26.2 and CharonIntents180.m answers it for the class IN10_0_1.m implements: a getter that answers what the setter kept and a setter that copies, which is what the header's own readwrite, copy, nullable, NS_NONATOMIC_IOSONLY says. The value is held beside the object rather than in it, because a category cannot add an ivar to a class another object implements - the same arrangement Photos/PHPickerConfiguration15.m uses for PHPickerConfiguration's own iOS 15 properties",
+      "source": "the contract from the header of iPhoneOS 26.2 (INMessage.h:209-210 for this property); that a release answers the name is measured on the arm64e cache of iOS 18.0 and is absent from the armv7 cache of 6.1.3, by the literal selector search tools/release-split.lua names for a member no exported symbol answers - `strings -a ~/.charon/dyld/18.0/* | grep -x -c -F -e SELECTOR` reads 3 for setReaction: and 28 for reaction, 0 for the nonsense control charonNoSuchSelector18Probe:, and 0 on 6.1.3 for both and for the class's own earlier controls alike, because 6.1.3 carries no Intents; that the port's SDK lacks it is `grep -n 'sticker|reaction|referencedMessage|DESIGNATED' INMessage.h` over each of the three iPhoneOS 16.4 SDKs on this machine, which answers only the three NS_DESIGNATED_INITIALIZER lines of 11.0, 13.2 and 16.0 and no property at all. The output of all of it, with every control beside it, is in facts/Intents/Intents.md under 'INMessage of iOS 18'",
+      "effect": "-[INMessage reaction] answers nil until something sets it, and afterwards the value the setter was handed as a copy; both initialisers of iOS 18 store through this setter, and -initWithCoder: reads it back from a keyed archive. A copy and an archive carry it, which is why CharonIntents180.m carries -copyWithZone:, -encodeWithCoder: and -initWithCoder: for this class"
     },
     {
       "api": "INMessage.recipients",
@@ -5953,10 +5959,12 @@
       "api": "INMessage.sticker",
       "kind": "property",
       "introduced": "18.0",
-      "status": "absent",
-      "reason": "the SDK's own headers do not declare this member, so there is nothing to answer",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
-      "facts": "facts/Intents/Intents.md"
+      "minimum": "6.0",
+      "status": "implemented",
+      "facts": "facts/Intents/Intents.md",
+      "reason": "the 26.2 header's own 18.0 property, which the port's SDK (iPhoneOS 16.4) does not declare at all, so the contract is read from iPhoneOS 26.2 and CharonIntents180.m answers it for the class IN10_0_1.m implements: a getter that answers what the setter kept and a setter that copies, which is what the header's own readwrite, copy, nullable, NS_NONATOMIC_IOSONLY says. The value is held beside the object rather than in it, because a category cannot add an ivar to a class another object implements - the same arrangement Photos/PHPickerConfiguration15.m uses for PHPickerConfiguration's own iOS 15 properties",
+      "source": "the contract from the header of iPhoneOS 26.2 (INMessage.h:206-207 for this property); that a release answers the name is measured on the arm64e cache of iOS 18.0 and is absent from the armv7 cache of 6.1.3, by the literal selector search tools/release-split.lua names for a member no exported symbol answers - `strings -a ~/.charon/dyld/18.0/* | grep -x -c -F -e SELECTOR` reads 9 for setSticker: and 57 for sticker, 0 for the nonsense control charonNoSuchSelector18Probe:, and 0 on 6.1.3 for both and for the class's own earlier controls alike, because 6.1.3 carries no Intents; that the port's SDK lacks it is `grep -n 'sticker|reaction|referencedMessage|DESIGNATED' INMessage.h` over each of the three iPhoneOS 16.4 SDKs on this machine, which answers only the three NS_DESIGNATED_INITIALIZER lines of 11.0, 13.2 and 16.0 and no property at all. The output of all of it, with every control beside it, is in facts/Intents/Intents.md under 'INMessage of iOS 18'",
+      "effect": "-[INMessage sticker] answers nil until something sets it, and afterwards the value the setter was handed as a copy; both initialisers of iOS 18 store through this setter, and -initWithCoder: reads it back from a keyed archive. A copy and an archive carry it, which is why CharonIntents180.m carries -copyWithZone:, -encodeWithCoder: and -initWithCoder: for this class"
     },
     {
       "api": "INPauseWorkoutIntent.workoutName",

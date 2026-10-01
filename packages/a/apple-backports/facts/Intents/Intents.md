@@ -448,6 +448,114 @@ IntentsUI (58 rows, 43 of them entries, 15 absent with a reason each) is a libra
 `libIntentsUIBackports.dylib` over UIKit, and is in `facts/IntentsUI/IntentsUI.md`. AppIntents
 (2323 rows) is a `swift-runtime` deliverable and is not here.
 
+## INMessage of iOS 18: four rows that are `implemented`, and the measurement that moved them
+
+Four rows of `registry/Intents/ios10.json` and one object, `Intents/CharonIntents180.m`:
+
+| row | kind | what answers it |
+| --- | --- | --- |
+| `-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:reaction:]` | method | the category's initialiser, chaining to the class's own designated initialiser of 16.4 |
+| `-[INMessage initWithIdentifier:conversationIdentifier:content:dateSent:sender:recipients:groupName:serviceName:messageType:referencedMessage:sticker:reaction:]` | method | the category's initialiser, same chain |
+| `INMessage.sticker` | property | `-sticker` / `-setSticker:` in the same file |
+| `INMessage.reaction` | property | `-reaction` / `-setReaction:` in the same file |
+
+**What they were.** All four carried `absent` with the reason *"the SDK's own headers do not declare
+this member, so there is nothing to answer"*, which is the one of the tree's absent reasons that
+cites a declaration and names no measurement. It was also the wrong claim to make: it is a claim
+about **the port's own SDK**, and `absent` is a claim about **a release**. Two of these names are
+in the arm64e cache of iOS 18.0, so a release does answer them.
+
+**The measurement.** `tools/release-split.lua` names it in its blind-spot note, for exactly this
+case - a member that no exported symbol answers, which is every method of a category, because
+`nm -gU` on such a file returns nothing:
+
+    strings -a ~/.charon/dyld/18.0/* > strings-18.0.txt      # 22522030 lines, 552128265 bytes
+    strings -a ~/.charon/dyld/6.1.3/* > strings-6.1.3.txt    #  4134954 lines,  73318374 bytes
+    grep -x -c -F -e "$SELECTOR" strings-18.0.txt strings-6.1.3.txt
+
+Both rungs in one run, a nonsense selector as the negative control, and the class's own selectors
+of earlier releases as the positive controls:
+
+    18.0  2  6.1.3  0  initWithIdentifier:...groupName:serviceName:messageType:referencedMessage:sticker:reaction:
+    18.0  2  6.1.3  0  initWithIdentifier:...groupName:serviceName:messageType:referencedMessage:reaction:
+    18.0  9  6.1.3  0  setSticker:
+    18.0 57  6.1.3  0  sticker
+    18.0  3  6.1.3  0  setReaction:
+    18.0 28  6.1.3  0  reaction
+    18.0  4  6.1.3  0  initWithIdentifier:...groupName:messageType:serviceName:                 <- control
+    18.0  3  6.1.3  0  initWithIdentifier:...groupName:messageType:serviceName:attachmentFiles:   <- control
+    18.0  0  6.1.3  0  charonNoSuchSelector18Probe:                                                <- control
+
+The selectors are the whole lines of the strings pass, which is why the `strings` pass exists at
+all: a selector sits inside a binary blob in `__objc_methname`, and a raw `grep -x` over the cache
+matches nothing and reports CONTROL FAILED. That is what the first run of this measurement did, and
+it is why the controls are in it. The two positive controls were misspelled the first time too -
+the 18.0 cache spells that class's initialiser `...groupName:messageType:serviceName:`, not the
+order the 26.2 header writes for its own - and a misspelt control is indistinguishable from a
+blind reader, so it has to be read and not assumed.
+
+`6.1.3` answers 0 for all of them, including the positive controls, because it carries no Intents
+at all: Intents arrived with iOS 10.0. That zero is the band end and not evidence against the
+name, which is why the `18.0` rung above is the one that decides.
+
+**The other half: the port's own SDK really does lack all four.** `grep -n 'sticker\|reaction\|referencedMessage\|DESIGNATED' INMessage.h`
+over each of the three iPhoneOS 16.4 SDKs on this machine answers three lines - the
+`NS_DESIGNATED_INITIALIZER` of 11.0, of 13.2 and of 16.0 - and no property at all. So the
+generator, which reads that SDK's AST, had nothing to emit, and the four rows came out of it as
+`not_declared`. The contract is therefore read from **iPhoneOS 26.2's own `INMessage.h`** - lines
+139 to 178 for the two initialisers, 206 to 210 for the two properties, word for word - and
+`CharonIntents262.h` is where the port writes what its SDK does not have. Both types are already
+carried: `INSticker` and `INMessageReaction` are two of the four classes of the 18.0 group and
+`IN18_0.m` defines both.
+
+**Where the bodies are, and the one place this shape differs from the tree's.** A member does not
+have to arrive in its own object's release: `IN10_0_1.m` already carries `INMessage.serviceName`
+(13.2), `INMessage.groupName` (11.0) and `INMessage.audioMessageFile` (16.0), and
+`INIntent.donationMetadata` (15.0) was put beside its class in `CharonIntents100.m`. **By that
+shape these four belong in `IN10_0_1.m`,** with an ivar and a synthesised accessor each, and
+`charon_intents_copy`'s own ivar walk would then carry them with no further work.
+
+They are not there, and the reason is coordination and not architecture: this slice holds **one**
+object, the one for 18.0, and `IN10_0_1.m` is the 10.0 group's generated object, which another
+slice's rows also land in - putting these four there means changing `gen-intents.py` to emit
+members of a class the port SDK does not declare, and rewriting a generated file in flight. So
+`CharonIntents180.m` is a category on `INMessage` instead, the arrangement
+`Photos/PHPickerConfiguration15.m` already uses for `PHPickerConfiguration`'s own iOS 15
+properties. **What that costs, exactly:** the two values are held beside the object rather than in
+it, because a category cannot add an ivar to a class another object implements, and three of the
+class's own selectors have to be carried as well (below). Folding these four into `IN10_0_1.m`
+later is a clean move that removes all three, and nothing in this file depends on them staying.
+
+**The copy and the archive are the part that needs saying.** `INMessage` declares `NSCopying` and
+`NSSecureCoding`, and the class's own `-copyWithZone:` / `-encodeWithCoder:` / `-initWithCoder:`
+walk the ivar list, which cannot see what a category holds beside the object. Left alone they
+would carry the whole message except these values: a silent wrong answer rather than a crash.
+The category therefore carries those three selectors, each calling the package's own helper from
+`CharonCoding.h` (`charon_intents_copy`, `charon_intents_encode`, `charon_intents_decode`,
+`charon_intents_super_init`) and adding this file's three values, so none of them repeats the ivar
+walk and the copy stays true as the class grows. Clang's note that a category implements a method
+its primary class also implements is that arrangement and is silenced for the reason
+`PHPickerConfiguration15.m` gives. The archive keys are `CharonCoding.h`'s own spelling (the class
+that owns the value, then the value's own name), and none of the three collides with an ivar key:
+`INMessage`'s ivars are `audioMessageFile`, `content`, `conversationIdentifier`, `dateSent`,
+`groupName`, `identifier`, `messageType`, `recipients`, `sender` and `serviceName`.
+
+**Both initialisers chain to `IN10_0_1.m`'s 13.2 one**, not to the 16.4 designated initialiser:
+the 18.0 pair has no `audioMessageFile` parameter to hand it - the 26.2 header marks that property
+deprecated and unavailable on ios - so there is nothing to pass, and nothing of the class's own
+state is left unset.
+
+**`referencedMessage:` is kept and not readable.** It is a parameter and not a property - the 26.2
+header declares no accessor for it - so nothing on this port reads it back, and this file adds no
+accessor, because an accessor the SDK does not declare is not a backport. The value the caller
+handed is kept rather than dropped, so the object is whole.
+
+**What is not verified here.** The four selectors answer on the host's own Intents and are in the
+18.0 cache, and `CharonIntents180.m` compiles clean for `armv7-apple-ios6.0`, `arm64-apple-ios12.0`
+and `arm64e-apple-ios12.0` against the port's SDK. It has **not** been run: `INMessage` is a port
+class that needs the whole `libIntentsBackports` linked, and this framework is device-unverified as
+a whole (see above), so these four are device-unverified with it.
+
 ## Where the tables and the walker come from, and that nothing came from liblouis
 
 **The braille tables are written from the standard, not copied from an implementation.**
