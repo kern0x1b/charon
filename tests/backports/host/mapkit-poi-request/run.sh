@@ -36,7 +36,13 @@ xcrun clang -fobjc-arc -Wall -Wno-unguarded-availability-new $TARGET -framework 
     || { grep -m5 ': error:' "$build/runner.log" || true; exit 1; }
 
 CHARON_PORT_DYLIB="$build/libport.dylib" "$build/runner" > "$build/port.txt" 2>&1 && status=0 || status=$?
-CHARON_PORT_DYLIB="$build/libport.dylib" CHARON_MUTANT=1 "$build/runner" > "$build/mutant.txt" 2>&1 || true
+# The MUTANT run is EXPECTED to exit non-zero -- the mutant is what makes the comparison fail -- so its
+# status is read and reported rather than swallowed, and what the probe judges is its TRANSCRIPT.
+if CHARON_PORT_DYLIB="$build/libport.dylib" CHARON_MUTANT=1 "$build/runner" > "$build/mutant.txt" 2>&1; then
+    mutant_status=0
+else
+    mutant_status=$?
+fi
 
 if [ "$status" -ne 0 ]; then
     echo "mapkit-poi-request: FAILED, the port's request does not answer the host's own values:"
@@ -47,7 +53,7 @@ echo "mapkit-poi-request: $(grep -c '^compare .* ok' "$build/port.txt") comparis
      "radius apart by at most $(awk '/^compare .* ok/ { value = $(NF - 1); gsub(/%/, "", value); if (value + 0 > worst) worst = value + 0 } END { printf "%.3f", worst }' "$build/port.txt")%"
 
 if grep -q 'MISMATCH' "$build/mutant.txt"; then
-    echo "mapkit-poi-request: the mutant goes red, so the comparison above can see a wrong number"
+    echo "mapkit-poi-request: the mutant goes red (exit $mutant_status), so the comparison above can see a wrong number"
 else
     echo "mapkit-poi-request: FAILED, the mutant answered the host's own values, so this comparison cannot see a wrong number"
     exit 1
