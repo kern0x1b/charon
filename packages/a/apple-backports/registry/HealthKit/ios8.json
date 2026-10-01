@@ -1833,7 +1833,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class, protocol, category or enum it sits in - the corpus's via=class-floor - and that is not the method's own. No release from 8.0 to 10.0 carries it: the HealthKit image of the armv7 shared cache of 8.0, and of 8.2, 9.0 and 9.3, holds no such selector, and the type of its argument is of iOS 18",
+      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class it sits in - the corpus's via=class-floor - and that is not the method's own. The method is not on any release this port can run: `python3 tools/cache-index/first-rung.py 'predicateForStatesOfMindWithAssociation::'` answers 18.0, and the CONTROL in the same run is `first-rung.py 'predicateForSamplesWithStartDate:endDate:options:'`, a HealthKit selector the armv7 cache of 8.0 does carry, which answers 8.0 - so the 18.0 is the ladder's and not the reader's. The 16.4 SDK this package compiles against has no StatesOfMind family at all (`grep -rn StatesOfMind <sdk>/System/Library/Frameworks/HealthKit.framework/Headers` answers nothing), so neither the class the argument is typed as nor this method exists below the release that introduced them. Nothing in packages/a/apple-backports/HealthKit declares the selector either, so no object here could answer it",
       "effect": "the method is not there: respondsToSelector: answers NO. The group of the release that does carry it answers it there",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -1844,7 +1844,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class, protocol, category or enum it sits in - the corpus's via=class-floor - and that is not the method's own. No release from 8.0 to 10.0 carries it: the HealthKit image of the armv7 shared cache of 8.0, and of 8.2, 9.0 and 9.3, holds no such selector, and the type of its argument is of iOS 18",
+      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class it sits in - the corpus's via=class-floor - and that is not the method's own. The method is not on any release this port can run: `python3 tools/cache-index/first-rung.py 'predicateForStatesOfMindWithKind::'` answers 18.0, and the CONTROL in the same run is `first-rung.py 'predicateForSamplesWithStartDate:endDate:options:'`, a HealthKit selector the armv7 cache of 8.0 does carry, which answers 8.0 - so the 18.0 is the ladder's and not the reader's. The 16.4 SDK this package compiles against has no StatesOfMind family at all (`grep -rn StatesOfMind <sdk>/System/Library/Frameworks/HealthKit.framework/Headers` answers nothing), so neither the class the argument is typed as nor this method exists below the release that introduced them. Nothing in packages/a/apple-backports/HealthKit declares the selector either, so no object here could answer it",
       "effect": "the method is not there: respondsToSelector: answers NO. The group of the release that does carry it answers it there",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -1855,7 +1855,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class, protocol, category or enum it sits in - the corpus's via=class-floor - and that is not the method's own. No release from 8.0 to 10.0 carries it: the HealthKit image of the armv7 shared cache of 8.0, and of 8.2, 9.0 and 9.3, holds no such selector, and the type of its argument is of iOS 18",
+      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class it sits in - the corpus's via=class-floor - and that is not the method's own. The method is not on any release this port can run: `python3 tools/cache-index/first-rung.py 'predicateForStatesOfMindWithLabel::'` answers 18.0, and the CONTROL in the same run is `first-rung.py 'predicateForSamplesWithStartDate:endDate:options:'`, a HealthKit selector the armv7 cache of 8.0 does carry, which answers 8.0 - so the 18.0 is the ladder's and not the reader's. The 16.4 SDK this package compiles against has no StatesOfMind family at all (`grep -rn StatesOfMind <sdk>/System/Library/Frameworks/HealthKit.framework/Headers` answers nothing), so neither the class the argument is typed as nor this method exists below the release that introduced them. Nothing in packages/a/apple-backports/HealthKit declares the selector either, so no object here could answer it",
       "effect": "the method is not there: respondsToSelector: answers NO. The group of the release that does carry it answers it there",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -1866,7 +1866,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class, protocol, category or enum it sits in - the corpus's via=class-floor - and that is not the method's own. No release from 8.0 to 10.0 carries it: the HealthKit image of the armv7 shared cache of 8.0, and of 8.2, 9.0 and 9.3, holds no such selector, and the type of its argument is of iOS 18",
+      "reason": "the SDK header leaves this method unannotated, so the row took the version of the class it sits in - the corpus's via=class-floor - and that is not the method's own. The method is not on any release this port can run: `python3 tools/cache-index/first-rung.py 'predicateForStatesOfMindWithValence:operatorType::'` answers 18.0, and the CONTROL in the same run is `first-rung.py 'predicateForSamplesWithStartDate:endDate:options:'`, a HealthKit selector the armv7 cache of 8.0 does carry, which answers 8.0 - so the 18.0 is the ladder's and not the reader's. The 16.4 SDK this package compiles against has no StatesOfMind family at all (`grep -rn StatesOfMind <sdk>/System/Library/Frameworks/HealthKit.framework/Headers` answers nothing), so neither the class the argument is typed as nor this method exists below the release that introduced them. Nothing in packages/a/apple-backports/HealthKit declares the selector either, so no object here could answer it",
       "effect": "the method is not there: respondsToSelector: answers NO. The group of the release that does carry it answers it there",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2493,7 +2493,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKCategorySample.h:31 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKCategorySample.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2625,7 +2625,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release",
+      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKHealthStore.h:299 declares it API_UNAVAILABLE(ios) and API_DEPRECATED against watchOS, which is the header saying the method exists for the watch and not for this platform. Nothing on this release is a watch application or an app extension, so no caller can exist for it, and `grep -n 'endWorkoutSession:' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKHealthStore.h` answers the declaration and its four lines of discussion and nothing that would make it available on iOS.",
       "effect": "the method is not there: respondsToSelector: answers NO. Nothing on this release is a watch application or an app extension, so no caller can exist for it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2647,7 +2647,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release",
+      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKHealthStore.h:308 declares it API_UNAVAILABLE(ios) and API_DEPRECATED against watchOS, which is the header saying the method exists for the watch and not for this platform. Nothing on this release is a watch application or an app extension, so no caller can exist for it, and `grep -n 'pauseWorkoutSession:' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKHealthStore.h` answers the declaration and its four lines of discussion and nothing that would make it available on iOS.",
       "effect": "the method is not there: respondsToSelector: answers NO. Nothing on this release is a watch application or an app extension, so no caller can exist for it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2669,7 +2669,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release",
+      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKHealthStore.h:317 declares it API_UNAVAILABLE(ios) and API_DEPRECATED against watchOS, which is the header saying the method exists for the watch and not for this platform. Nothing on this release is a watch application or an app extension, so no caller can exist for it, and `grep -n 'resumeWorkoutSession:' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKHealthStore.h` answers the declaration and its four lines of discussion and nothing that would make it available on iOS.",
       "effect": "the method is not there: respondsToSelector: answers NO. Nothing on this release is a watch application or an app extension, so no caller can exist for it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2702,7 +2702,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release",
+      "reason": "the SDK header marks this method unavailable on iOS - it belongs to the watchOS surface of HKHealthStore, and the watch application and app extensions both arrived after this release. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKHealthStore.h:290 declares it API_UNAVAILABLE(ios, macCatalyst, macos) and API_DEPRECATED against watchOS, which is the header saying the method exists for the watch and not for this platform. Nothing on this release is a watch application or an app extension, so no caller can exist for it, and `grep -n 'startWorkoutSession:' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKHealthStore.h` answers the declaration and its four lines of discussion and nothing that would make it available on iOS.",
       "effect": "the method is not there: respondsToSelector: answers NO. Nothing on this release is a watch application or an app extension, so no caller can exist for it",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2724,7 +2724,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKObject.h:48 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKObject.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2735,7 +2735,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKObjectType.h:41 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKObjectType.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2779,7 +2779,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKQuantity.h:21 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKQuantity.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2834,7 +2834,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKSource.h:38 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKSource.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2878,7 +2878,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKStatistics.h:60 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKStatistics.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -2966,7 +2966,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKStatisticsCollectionQuery.h:18 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKStatisticsCollectionQuery.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"
@@ -3098,7 +3098,7 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either",
+      "reason": "the SDK header marks this -init unavailable for the class, so a caller cannot call it and the release declares no -init of its own either. Read in the iPhoneOS 16.4 SDK this package compiles against: HealthKit.framework/Headers/HKWorkout.h:164 is `- (instancetype)init NS_UNAVAILABLE;` with no argument, which is the whole of the contract. The class is made by the store and by the factory methods beside that declaration - `grep -n 'instancetype)init NS_UNAVAILABLE' <sdk>/System/Library/Frameworks/HealthKit.framework/Headers/HKWorkout.h` answers exactly that line and nothing else in the file, so there is no second initializer for a caller to reach instead.",
       "effect": "the method is not there: respondsToSelector: answers NO. The class is made by the store and by the factory methods of the header, and the -init NSObject gives an allocation is what an object without a constructor has",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the header of iOS 26.2 for the contract (coordination/corpus/sdk-26.2-surface.tsv)"

@@ -427,3 +427,60 @@ this port's is a SQLite database of its own, so a differential over the two woul
 programs. The behaviour of the store on a device - a sample saved by one launch and read by the next, a
 statistic over a set, a predicate that walks a correlation - is **device-unverified**, and the emulator
 call test is what this delivery still owes.
+
+## The sixteen absent rows of ios8.json, re-verified one at a time (2026-10-02)
+
+Every one of the sixteen was already `absent`, and each stays `absent`: this section re-ran the claim
+behind each one and put the command and the file and line it answers in the row, because a row that says
+"the SDK header marks it unavailable" without naming the header and the line is an assertion.
+
+**The four `+[HKQuery predicateForStatesOfMindWith...]` factories.** One reason, four rows. The method is
+not on any release this port can run, and now the row says so with the tool the rulebook names for
+exactly this question, and with a control:
+
+    $ python3 tools/cache-index/first-rung.py 'predicateForStatesOfMindWithKind:'
+    predicateForStatesOfMindWithKind:	18.0
+    $ python3 tools/cache-index/first-rung.py 'predicateForSamplesWithStartDate:endDate:options:'
+    predicateForSamplesWithStartDate:endDate:options:	8.0
+
+The second line is the control: the same reader, in the same run, finds a HealthKit selector the armv7
+cache of 8.0 does carry. So the 18.0 is the ladder's answer and not a blind one. The 16.4 SDK this
+package compiles against has no `StatesOfMind` family at all, so neither the type the argument is typed as
+nor the method exists below the release that introduced them. `grep -rn StatesOfMind` over that SDK's
+HealthKit headers answers nothing.
+
+**The eight `-init` rows.** Each is `NS_UNAVAILABLE` in the class's own header, and the row now names the
+header and the line, read in the iPhoneOS 16.4 SDK:
+
+| row | where |
+| --- | --- |
+| `-[HKCategorySample init]` | HealthKit.framework/Headers/HKCategorySample.h:31 |
+| `-[HKObject init]` | HKObject.h:48 |
+| `-[HKObjectType init]` | HKObjectType.h:41 |
+| `-[HKQuantity init]` | HKQuantity.h:21 |
+| `-[HKSource init]` | HKSource.h:38 |
+| `-[HKStatistics init]` | HKStatistics.h:60 |
+| `-[HKStatisticsCollection init]` | HKStatisticsCollectionQuery.h:18 |
+| `-[HKWorkoutEvent init]` | HKWorkout.h:164 (the class is declared there, not in a header of its own) |
+
+Each is `- (instancetype)init NS_UNAVAILABLE;` with no argument. The class is made by the store and by
+the factory methods beside that declaration, and `grep -n 'instancetype)init NS_UNAVAILABLE'` over each of
+those headers answers exactly that one line - there is no second initializer for a caller to reach instead.
+
+**The four `-[HKHealthStore ...WorkoutSession:]` methods.** The header marks all four unavailable on iOS,
+and the row now names the line and reads the annotation:
+
+| row | where | annotation |
+| --- | --- | --- |
+| `-[HKHealthStore startWorkoutSession:]` | HKHealthStore.h:290 | `API_UNAVAILABLE(ios, macCatalyst, macos)`, `API_DEPRECATED(... watchos(2.0, 5.0))` |
+| `-[HKHealthStore endWorkoutSession:]` | HKHealthStore.h:299 | `API_UNAVAILABLE(ios, macCatalyst, macos)`, `API_DEPRECATED(... watchos(2.0, 5.0))` |
+| `-[HKHealthStore pauseWorkoutSession:]` | HKHealthStore.h:308 | `API_UNAVAILABLE(ios)`, `API_DEPRECATED(... watchos(3.0, 5.0))` |
+| `-[HKHealthStore resumeWorkoutSession:]` | HKHealthStore.h:317 | `API_UNAVAILABLE(ios)`, `API_DEPRECATED(... watchos(3.0, 5.0))` |
+
+This is the header saying the method exists for the watch and not for this platform. Nothing on this
+release is a watch application or an app extension, so no caller can exist for it - which is the whole of
+the `effect`, and it is why implementing these four would be a class with a method nothing can reach.
+
+None of the sixteen changed status, and none changed `introduced` or `minimum`. What changed is sixteen
+`reason` values and nothing else: 16 insertions against 16 deletions, api, kind, introduced, minimum,
+status, effect, source and facts byte-identical to the base revision on every one of them.
