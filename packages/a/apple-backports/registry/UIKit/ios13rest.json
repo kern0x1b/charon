@@ -802,9 +802,9 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "UIFontDescriptor is not on iOS 6 (facts/UIKit/UIFontDescriptor.md), so it has no design to give",
-   "effect": "the method is not there",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "reason": "iOS 6 has no UIFontDescriptor, so it has no design to name; the port implements the class and carries no design attribute",
+   "effect": "a font descriptor for one of the four system designs, which this release has no descriptor to build on",
+   "source": "UIFontDescriptor is not in the 6.1.3 cache at all: the class-scoped read finds no such class among 11378 (first-rung.py answers 7.0, and the ladder holds no 6.0 read for it), so the release has no descriptor and no design to name; the port does implement the class (UIFontDescriptor.m) and it has no design attribute either"
   },
   {
    "api": "UILargeContentViewerInteraction",
@@ -887,33 +887,33 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "no large content viewer is ever shown",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "status": "inert",
+   "reason": "iOS 6 has no large content viewer: the port attaches the interaction with its recognizer disabled and +isEnabled is NO",
+   "effect": "that a large content view ended on an item, which nothing ever sends",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the port own UILargeContentViewer.m attaches the interaction with its recognizer disabled and its +isEnabled answering NO, so nothing ever asks the delegate; the members are points an application implements; the release end is neither 6.1.3 nor 4.3 carries a class or protocol beginning UILargeContentViewer: on 16.0 the same run finds UILargeContentViewerInteraction and three protocols, on 6.1.3 zero of 11378 classes and zero of 1171 protocols, on 4.3 zero of 7187 and zero of 564 (cache-census.lua over both band ends, with 16.0 in the same run as the control that proves the reader finds one)"
   },
   {
    "api": "-[UILargeContentViewerInteractionDelegate largeContentViewerInteraction:itemAtPoint:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "no large content viewer is ever shown",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "status": "inert",
+   "reason": "iOS 6 has no large content viewer: the port attaches the interaction with its recognizer disabled and +isEnabled is NO",
+   "effect": "the item under a point, which nothing ever asks for: the interaction is never shown on this release",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the port own UILargeContentViewer.m attaches the interaction with its recognizer disabled and its +isEnabled answering NO, so nothing ever asks the delegate; the members are points an application implements; the release end is neither 6.1.3 nor 4.3 carries a class or protocol beginning UILargeContentViewer: on 16.0 the same run finds UILargeContentViewerInteraction and three protocols, on 6.1.3 zero of 11378 classes and zero of 1171 protocols, on 4.3 zero of 7187 and zero of 564 (cache-census.lua over both band ends, with 16.0 in the same run as the control that proves the reader finds one)"
   },
   {
    "api": "-[UILargeContentViewerInteractionDelegate viewControllerForLargeContentViewerInteraction:]",
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "no large content viewer is ever shown",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "status": "inert",
+   "reason": "iOS 6 has no large content viewer: the port attaches the interaction with its recognizer disabled and +isEnabled is NO",
+   "effect": "the view controller a large content view presents, which nothing ever asks for",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the port own UILargeContentViewer.m attaches the interaction with its recognizer disabled and its +isEnabled answering NO, so nothing ever asks the delegate; the members are points an application implements; the release end is neither 6.1.3 nor 4.3 carries a class or protocol beginning UILargeContentViewer: on 16.0 the same run finds UILargeContentViewerInteraction and three protocols, on 6.1.3 zero of 11378 classes and zero of 1171 protocols, on 4.3 zero of 7187 and zero of 564 (cache-census.lua over both band ends, with 16.0 in the same run as the control that proves the reader finds one)"
   },
   {
    "api": "UILargeContentViewerItem",
@@ -1207,10 +1207,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the font panel belongs to Mac Catalyst",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the font panel is Mac Catalyst and the release has none: the port own coordinator answers +isFontPanelVisible NO",
+   "effect": "the attributes a conversion would produce, kept and never called: no font panel is ever shown on this release, so nothing asks a coordinator or a standard-edit responder for it",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the font panel belongs to Mac Catalyst: the port own UITextFormattingCoordinator.m answers +isFontPanelVisible NO and its delegate is never asked, so no panel is ever shown and nothing calls updateTextAttributesWithConversionHandler:; UITextFormattingCoordinatorDelegate is in no held release at all (first-rung.py answers NONE, against a nonsense name also NONE)"
   },
   {
    "api": "-[UIResponderStandardEditActions updateTextAttributesWithConversionHandler:]",
@@ -1218,10 +1218,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the font panel belongs to Mac Catalyst",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "the font panel is Mac Catalyst and the release has none: the port own coordinator answers +isFontPanelVisible NO",
+   "effect": "the attributes a conversion would produce, kept and never called: no font panel is ever shown on this release, so nothing asks a coordinator or a standard-edit responder for it",
    "facts": "facts/UIKit/UIInertInteractions.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "the font panel belongs to Mac Catalyst: the port own UITextFormattingCoordinator.m answers +isFontPanelVisible NO and its delegate is never asked, so no panel is ever shown and nothing calls updateTextAttributesWithConversionHandler:; UITextFormattingCoordinatorDelegate is in no held release at all (first-rung.py answers NONE, against a nonsense name also NONE)"
   },
   {
    "api": "UITextPlaceholder",
@@ -3555,10 +3555,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "iOS 6 has no Voice Control to ask",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "iOS 6 has no Voice Control, which is the only thing that asks a picker for the names of its components, and the port declares no protocol of that name for a caller to conform to",
+   "effect": "the same spoken names, styled, which nothing on this release asks for",
    "facts": "facts/UIKit/UIAccessibility13.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "neither 6.1.3 nor 4.3 declares a protocol beginning UIPickerViewAccessibility: 16.0 finds the one, 6.1.3 zero of 1171 protocols, 4.3 zero of 564 (cache-census.lua over both band ends, with 16.0 in the same run as the control that proves the reader finds one); the port declares no such protocol either, and iOS 6 has no Voice Control to ask"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityUserInputLabelsForComponent:]",
@@ -3566,10 +3566,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "iOS 6 has no Voice Control to ask",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "iOS 6 has no Voice Control, which is the only thing that asks a picker for the names of its components, and the port declares no protocol of that name for a caller to conform to",
+   "effect": "the spoken names of a picker component, which nothing on this release asks for",
    "facts": "facts/UIKit/UIAccessibility13.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "neither 6.1.3 nor 4.3 declares a protocol beginning UIPickerViewAccessibility: 16.0 finds the one, 6.1.3 zero of 1171 protocols, 4.3 zero of 564 (cache-census.lua over both band ends, with 16.0 in the same run as the control that proves the reader finds one); the port declares no such protocol either, and iOS 6 has no Voice Control to ask"
   },
   {
    "api": "NSLayoutManager.usesDefaultHyphenation",
@@ -3638,10 +3638,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "iOS 6 has no keyboard extension whose proxy could be asked",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "iOS 6 has no keyboard extension, so no UIInputViewController is ever handed the proxy these members are sent to",
+   "effect": "the marked range a typing session sets, on a proxy that no iOS 6 keyboard extension is ever given",
    "facts": "facts/UIKit/UIRestAbsent.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "UITextDocumentProxy is in no 6.1.3 class: the class-scoped read of the 6.1.3 cache finds no such class among 11378. The two selectors themselves ARE in 6.1.3 (selectors_armv7.txt answers 1 for each, and strings on the cache finds them), because UITextDocumentProxy adopts UIKeyInput in the SDK 16.4 header (UIInputViewController.h:20) and these are UIKeyInput own members -- the case the ladder rung of a selector says nothing about its own; UIKeyInput first-rungs at 3.2 and the proxy at 8.0"
   },
   {
    "api": "-[UITextDocumentProxy unmarkText]",
@@ -3649,10 +3649,10 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "iOS 6 has no keyboard extension whose proxy could be asked",
-   "effect": "the release does not carry it and sends nothing; it is a point an application overrides, and the port sends it only where its own facts say so",
+   "reason": "iOS 6 has no keyboard extension, so no UIInputViewController is ever handed the proxy these members are sent to",
+   "effect": "clearing the marked range, on a proxy that no iOS 6 keyboard extension is ever given",
    "facts": "facts/UIKit/UIRestAbsent.md",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "source": "UITextDocumentProxy is in no 6.1.3 class: the class-scoped read of the 6.1.3 cache finds no such class among 11378. The two selectors themselves ARE in 6.1.3 (selectors_armv7.txt answers 1 for each, and strings on the cache finds them), because UITextDocumentProxy adopts UIKeyInput in the SDK 16.4 header (UIInputViewController.h:20) and these are UIKeyInput own members -- the case the ladder rung of a selector says nothing about its own; UIKeyInput first-rungs at 3.2 and the proxy at 8.0"
   },
   {
    "api": "NSCocoaVersionDocumentAttribute",
@@ -4018,9 +4018,9 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the release's storyboard unarchives its controllers itself and hands application code no coder to build one from",
-   "effect": "the method is not there",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "reason": "the release storyboard unarchives its own controllers and has no entry point that gives application code the coder a creator block is called with, so there is nothing to pass the block",
+   "effect": "the release initial controller, or one the block makes from a coder -- the block needs the coder, and this release unarchives the controller itself and never hands one out",
+   "source": "UIStoryboard IS in the 6.1.3 cache (objc.inventory, UIKit image) with -instantiateInitialViewController and -instantiateViewControllerWithIdentifier:, and no creator-taking member: its whole selector table is those two plus -bundle, -containsNibNamed:, -identifierForStringsFile, -identifierToNibNameMap, -identifierToUINibMap, -nibForStoryboardNibNamed:, -nibForViewControllerWithIdentifier:, -storyboardFileName, -storyboardWithName:bundle: and -initWithBundle:storyboardFileName:identifierToNibNameMap:designatedEntryPointIdentifier:; the SDK 16.4 header declares both as ios(13.0), which is where introduced comes from"
   },
   {
    "api": "-[UIStoryboard instantiateViewControllerWithIdentifier:creator:]",
@@ -4028,9 +4028,9 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the release's storyboard unarchives its controllers itself and hands application code no coder to build one from",
-   "effect": "the method is not there",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "reason": "the release storyboard unarchives its own controllers and has no entry point that gives application code the coder a creator block is called with, so there is nothing to pass the block",
+   "effect": "the same for a named controller",
+   "source": "UIStoryboard IS in the 6.1.3 cache (objc.inventory, UIKit image) with -instantiateInitialViewController and -instantiateViewControllerWithIdentifier:, and no creator-taking member: its whole selector table is those two plus -bundle, -containsNibNamed:, -identifierForStringsFile, -identifierToNibNameMap, -identifierToUINibMap, -nibForStoryboardNibNamed:, -nibForViewControllerWithIdentifier:, -storyboardFileName, -storyboardWithName:bundle: and -initWithBundle:storyboardFileName:identifierToNibNameMap:designatedEntryPointIdentifier:; the SDK 16.4 header declares both as ios(13.0), which is where introduced comes from"
   },
   {
    "api": "UIConfigurationState",
@@ -4159,8 +4159,8 @@
    "minimum": "6.0",
    "status": "absent",
    "reason": "NSToolbar belongs to AppKit and to the Mac Catalyst bridge of UIKit, and iOS 6 has neither",
-   "effect": "the class is not there",
-   "source": "the public headers of SDK 26 and SDK 16.4; the host's UIKit for the defaults; nothing of a release was read"
+   "effect": "not on this release: NSToolbar is an AppKit class and the Mac Catalyst bridge, and neither is here",
+   "source": "NSToolbar is in no held release anywhere on the ladder: first-rung.py answers NONE for the name, and a nonsense name answers NONE in the same run, so the answer is the ladder own and not the reader failing to look; neither 6.1.3 nor 4.3 declares it either (objc.inventory over both)"
   },
   {
    "api": "NSToolbarPrimarySidebarTrackingSeparatorItemIdentifier",
