@@ -347,20 +347,22 @@
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the image is drawn only where an accessibility content size category is in force, and this release has no place that draws one: the bar item of this release has no such drawing, and the port does not stand in for a bar's layout. Carrying it as a stored value would be an image an application sets that nothing ever draws",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly; there is nothing that would draw the image",
-   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIBarItem is in both and its own selector table carries no such member. The image is drawn by a bar's layout at an accessibility content size category, and no bar of this release draws one"
+   "status": "inert",
+   "reason": "what draws a large content image is a context menu, and a context menu is the release's own UIContextMenuInteraction, which arrived with iOS 13 and which this port does not stand in for. The property has nothing to be looked at with",
+   "effect": "the property answers what was set and nothing else draws it, so a bar item set up for a large content image looks exactly as it would without one; an application that draws its own preview reads the property and gets the image it set",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIBarItem is in both and its own selector table carries no -largeContentSizeImage, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, holding the image under an associated object of its own and not through any accessor the release has",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIBarItem.largeContentSizeImageInsets",
    "kind": "property",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the insets belong to an image this release never draws, which is the same absence the image half above records",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly",
-   "source": "objc.inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped: UIBarItem is in both and its own selector table carries no such member. The image is drawn by a bar's layout at an accessibility content size category, and no bar of this release draws one"
+   "status": "inert",
+   "reason": "the insets place the image that a context menu shows, and there is no context menu on this release to place anything, for the same reason as the image beside it",
+   "effect": "the property answers what was set, and the zero it starts at is the release's own zero rather than a guessed inset: an application that reads it before setting it gets UIEdgeInsetsZero, and one that sets it reads back exactly what it set",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIBarItem is in both and its own selector table carries no -largeContentSizeImageInsets, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, holding an NSValue of the insets under an associated object of its own",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "-[UITableView performBatchUpdates:completion:]",
@@ -989,9 +991,10 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol describes the item focus is moving to and from, and there is no focus item here to move between: the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. Not carried by the port either, and the coordinator for an implemented protocol row is an object that adopts it",
-   "effect": "the name is not there: this release has no focused item to ask about",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the context is what a coordinated focus animation is told about the move it is part of, and the thing that builds it is the focus engine's own update pass. The port carries the coordinator, which runs two blocks, and no engine that would ever hand one of these to an animation",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A coordinated animation that wants to know about the move is given no context and runs on its own",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIFocus 6.1.3 4.3 16.0): images 524 of which naming UIFocus 0 at 6.1.3 and 354 of which naming UIFocus 0 at 4.3, classes 11378 and 7187 of which UIFocus* 0 at both ends, protocols 1171 and 564 of which UIFocus* 0 at both ends; the 16.0 rung reads 8 classes and 7 protocols at 16.0, of which UIFocusAnimationContext is one, and the run's own control line reads 'control: 15 name(s) beginning UIFocus found in this run', so a zero on either end is the release's and not the reader's",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIFocusMovementHint",
@@ -1034,36 +1037,40 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol exists so that VoiceOver can walk a table by rows and columns, and this release's VoiceOver never asks. It is also a protocol the port does not carry: nothing in the tree declares it and no object adopts it, so declaring it would put a name in the registry with nothing behind it. Not carried by the port either, and this is why: an implemented protocol row needs an object that adopts it",
-   "effect": "the protocol is not there, so a table is read out in the order its elements come",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the protocol is what an element adopts to expose a table of cells to VoiceOver, row by row and column by column, and the accessibility machinery that would read it is VoiceOver's own and runs in the system's process on a system this port does not replace. Emitting the protocol would let a class claim a conformance nothing ever asks about",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A table is exposed on this release as the elements it already is, one accessibility element per cell",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIAccessibilityContainerDataTable 6.1.3 4.3 16.0): images 524 of which naming UIAccessibilityContainerDataTable 0 at 6.1.3 and 354 of which naming UIAccessibilityContainerDataTable 0 at 4.3, classes 11378 and 7187 of which UIAccessibilityContainerDataTable* 0 at both ends, protocols 1171 and 564 of which UIAccessibilityContainerDataTable* 0 at both ends; the 16.0 rung reads 0 classes and 2 protocols (UIAccessibilityContainerDataTable UIAccessibilityContainerDataTableCell) at 16.0, and the run's own control line reads 'control: 2 name(s) beginning UIAccessibilityContainerDataTable found in this run', so a zero on either end is the release's and not the reader's. The 6.1.3, 4.3 and 12.0 rungs together read zero, which certifies nothing on its own, so 16.0 is the rung that carries the control; first-rung.py answers 16.0 for both names, which is the 12.0->16.0 hole in the held set and not a later introduction",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIAccessibilityContainerDataTableCell",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the cell half of the same conversation, which nothing here starts, and which the port does not carry for the same reason as the table half. Not carried by the port either",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the cell half of the same pair: an element adopting it describes one cell's row and column range, and the only thing that would read those ranges is the data-table reader of VoiceOver, which is in the system's process",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIAccessibilityContainerDataTable 6.1.3 4.3 16.0): images 524 of which naming UIAccessibilityContainerDataTable 0 at 6.1.3 and 354 of which naming UIAccessibilityContainerDataTable 0 at 4.3, classes 11378 and 7187 of which UIAccessibilityContainerDataTable* 0 at both ends, protocols 1171 and 564 of which UIAccessibilityContainerDataTable* 0 at both ends; the 16.0 rung reads 0 classes and 2 protocols (UIAccessibilityContainerDataTable UIAccessibilityContainerDataTableCell) at 16.0, and the run's own control line reads 'control: 2 name(s) beginning UIAccessibilityContainerDataTable found in this run', so a zero on either end is the release's and not the reader's. first-rung.py answers 16.0 for the name",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIAccessibilityContentSizeCategoryImageAdjusting",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol makes an image grow with an accessibility content size category. The port carries the categories themselves -- UIContentSizeCategoryAccessibilityLarge and its siblings are implemented rows of base.json, and UIContentSizeCategoryIsAccessibilityCategory() is one of this file's -- but nothing here draws an image at a size it was asked for, so a protocol that says an image adjusts would be believed and never consulted. Its sibling UIContentSizeCategoryAdjusting is inert, in ios7-10demand.json, which is the status the tree uses for a protocol the release's own machinery would ask and does not",
-   "effect": "the protocol is not there, and an image keeps the size the application gives it",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the flag asks that an image be scaled by the accessibility content size category, and this release has no measured scale to apply: the port's own UIFontMetrics (UIKit/UIFontMetrics.m) computes its scale by dividing [UIFont preferredFontForTextStyle:] by a call to the same method with the same argument, so scaledValueForValue: and scaledFontForFont: are the identity and the ratio is exactly 1. Scaling an image by a factor the port chose would be inventing the number the flag is about",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A caller draws its own image at the size it wants and sets it, which is what the release's own UIImageView does",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIAccessibilityContentSizeCategoryImageAdjusting 6.1.3 4.3 16.0) reads 0 classes and 0 protocols at both ends and 1 protocol at 16.0, with the run's own control line 'control: 1 name(s) beginning UIAccessibilityContentSizeCategoryImageAdjusting found in this run'. The identity scale is read out of UIKit/UIFontMetrics.m's own charon_scale_for_text_style, which assigns [UIFont preferredFontForTextStyle:textStyle] to both preferred and base",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIAccessibilityLocationDescriptor",
    "kind": "class",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the descriptor names a point of a view for an assistive technology to act on, and nothing in this release reads one: the VoiceOver of this era asks for a view and its attributes, never for a point. Not carried by the port either",
-   "effect": "the class is not there, so NSClassFromString answers nil and a compile-time reference to it is a link the port cannot satisfy",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
+   "status": "implemented",
+   "effect": "four values and nothing else: the point, the view it is in held weakly, the name, and the same name styled. The three initialisers are one shape with two ways of naming it, so a plain string becomes the attributed name's string and -name and -attributedName never disagree. A caller builds one to point VoiceOver at a word inside a drawing rather than at the drawing",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIAccessibilityLocationDescriptor 6.1.3 4.3 16.0): images 524 of which naming UIAccessibilityLocationDescriptor 0 at 6.1.3 and 354 of which naming UIAccessibilityLocationDescriptor 0 at 4.3, classes 11378 and 7187 of which UIAccessibilityLocationDescriptor* 0 at both ends, protocols 1171 and 564 of which UIAccessibilityLocationDescriptor* 0 at both ends; the 16.0 rung reads 1 class (UIAccessibilityLocationDescriptor) at 16.0, and the run's own control line reads 'control: 1 name(s) beginning UIAccessibilityLocationDescriptor found in this run', so a zero on either end is the release's and not the reader's. UIAccessibilityLocationDescriptor is in neither release, so the port builds the class whole and its members are answered by their own class row. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, exporting _OBJC_CLASS_$_UIAccessibilityLocationDescriptor and its metaclass and nothing else the tool weighs",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UICollectionViewFlowLayout.sectionInsetReference",
@@ -1205,46 +1212,51 @@
    "api": "-[UIAccessibilityReadingContent accessibilityAttributedContentForLineNumber:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the owner is UIAccessibilityReadingContent, and the port carries no such protocol: nothing here adopts one and nothing sends it, so the member is a question nobody asks. The attributed strings the port does carry are on the object every accessibility element is -- NSObject.accessibilityAttributedLabel, .accessibilityAttributedHint and .accessibilityAttributedValue, all implemented rows of this file. Not carried by the port either: no header of its own declares the protocol and no object adopts it",
-   "effect": "the member is not there, and so is the protocol that declares it; an application that conforms to it gets no protocol object and an override is never called. What VoiceOver reads is the plain accessibility properties",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIAccessibilityReadingContent is a protocol there and carries no such member"
+   "status": "implemented",
+   "effect": "the same string as the whole page. There is no line model on this release to answer a line number against, so a caller that paginates gets the whole page on every line: wrong for a book, and said here rather than answered with a line the port invented",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityAttributedContentForLineNumber:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, and it forwards to -accessibilityAttributedPageContent rather than computing a line",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md"
   },
   {
    "api": "-[UIAccessibilityReadingContent accessibilityAttributedPageContent]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "as accessibilityAttributedContentForLineNumber:, the owner protocol is not carried and this is the page half of the same question. Not carried by the port either: no header of its own declares the protocol and no object adopts it",
-   "effect": "the member is not there, and so is the protocol that declares it; VoiceOver reads the plain accessibility properties",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIAccessibilityReadingContent is a protocol there and carries no such member"
+   "status": "implemented",
+   "effect": "the element's own attributed label, which for anything this release builds is the plain accessibility label with no attributes dropped, because the release's label carries no styling. So the answer is what -accessibilityLabel already said and a caller that wants a word pronounced differently styles the attributed label and gets it here unchanged",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityAttributedPageContent, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, reading -accessibilityAttributedLabel, which NSObject+AccessibilityAttributedStrings.m already carries",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedLabelForComponent:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "UIPickerViewAccessibilityDelegate is a protocol the port does not carry, and its plain counterpart pickerView:accessibilityLabelForComponent: is a member the port already answers through the release's own picker accessibility. Not carried by the port either",
-   "effect": "the member is not there, and so is the protocol that declares it; the release reads the plain label",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIPickerViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
+   "status": "implemented",
+   "effect": "the empty styled string. A picker component on this release has no label of its own: -accessibilityLabel reads empty for a component view, so there is no name to style, and a name the port made up would be spoken by VoiceOver as though the application had said it",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -pickerView:accessibilityAttributedLabelForComponent:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's, and UIPickerViewAccessibilityDelegate is a protocol neither release carries either (cache-census.lua at prefix UIPickerViewAccessibilityDelegate reads 0 at 6.1.3, 4.3 and 12.0, so that run certified nothing and was re-run at 16.0, which reads 1 protocol with the run's own control line 'control: 1 name(s) beginning UIPickerViewAccessibilityDelegate found in this run'). The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md"
   },
   {
    "api": "-[UIPickerViewAccessibilityDelegate pickerView:accessibilityAttributedHintForComponent:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the hint half of the same pair, on a protocol the port does not carry. Not carried by the port either",
-   "effect": "the member is not there, and so is the protocol that declares it; the release reads the plain hint",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIPickerViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
+   "status": "implemented",
+   "effect": "the empty styled string, for the same reason as the label: a component view on this release has no hint of its own to style",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -pickerView:accessibilityAttributedHintForComponent:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's, and UIPickerViewAccessibilityDelegate is a protocol neither release carries (the census at prefix UIPickerViewAccessibilityDelegate reads 1 protocol at 16.0 and 0 at 6.1.3 and 4.3, with the run's own control line 'control: 1 name(s) beginning UIPickerViewAccessibilityDelegate found in this run'). The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md"
   },
   {
    "api": "-[UIScrollViewAccessibilityDelegate accessibilityAttributedScrollStatusForScrollView:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "UIScrollViewAccessibilityDelegate is a protocol the port does not carry, and this release's VoiceOver reads a scroll view's state from the release's own attributes rather than by asking a delegate for an attributed string. Not carried by the port either",
-   "effect": "the member is not there, and so is the protocol that declares it",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIScrollViewAccessibilityDelegate is in neither, so there is nothing there to carry the member on"
+   "status": "implemented",
+   "effect": "how far along the content the visible rect sits, as a whole number of per cent between 0 and 100, read off the release's own -contentOffset, -contentSize and -bounds and clamped, and attributed so a caller that hands it to a label keeps the styling it asked for. A scroll view shorter than its viewport reads 100, which is the truth about it: all of it is visible",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityAttributedScrollStatusForScrollView:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The three members it reads are in the same two dumps on UIScrollView and were read present there in the same run. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/NSObjectAccessibilityAttributedStrings.md"
   },
   {
    "api": "UICollectionView.dragDelegate",
@@ -1413,19 +1425,21 @@
    "api": "-[UIFocusAnimationCoordinator addCoordinatedFocusingAnimations:completion:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the coordinator class IS carried, ios7-10demand.json, and -addCoordinatedAnimations:completion: is an implemented row of the same class; this member is the focusing half of the same coordination, and there is nothing to focus, so there is no animation of the focus to add to a transaction. What it would coordinate is the focus engine, and the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. The coordinator's own members are carried and reachable, which is what an application that asks for the class itself still gets",
-   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIFocusAnimationCoordinator is in neither, so there is nothing there to carry the member on"
+   "status": "implemented",
+   "effect": "the animations block runs and then the completion block runs, which is what the coordinator the port already carries does for -addCoordinatedAnimations:completion: (UIKit/UIFocusAnimationCoordinator.m): there is no focus engine to coordinate with, so the coordinator is a pair of block calls. An application overriding this is called rather than left answering NO",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIFocusAnimationCoordinator is in both and its own selector table carries no -addCoordinatedFocusingAnimations:completion:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's, and UIFocusAnimationCoordinator is in neither release either, so the class itself is the port's (UIKit/UIFocusAnimationCoordinator.m, an implemented row of registry/UIKit/ios7-10demand.json at 9.0). The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, and it forwards to -addCoordinatedAnimations:completion: rather than repeating the blocks",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "-[UIFocusAnimationCoordinator addCoordinatedUnfocusingAnimations:completion:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the unfocusing half of the pair above, on a coordinator that is carried, and there is nothing to unfocus from: the focus engine moves focus between views for a remote, a keyboard or a pointer, and on this release it is not there: the caches hold no focus engine of UIKit's at all, the only Focus classes in either are GameKit's and PhotoLibrary's (GKFocusButton, PLCameraFocusView and their like), which is what the class-scoped read finds. The coordinator's own members are carried and reachable",
-   "effect": "the member is not declared, so respondsToSelector: answers honestly and an override is never called",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIFocusAnimationCoordinator is in neither, so there is nothing there to carry the member on"
+   "status": "implemented",
+   "effect": "the same as the focusing pair: the animations block runs and then the completion block runs, through the coordinator the port already carries. Focusing and unfocusing are the same two block calls because there is no focus engine under either of them",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIFocusAnimationCoordinator is in both and its own selector table carries no -addCoordinatedUnfocusingAnimations:completion:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, forwarding to -addCoordinatedAnimations:completion:",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIFocusEnvironment.parentFocusEnvironment",
