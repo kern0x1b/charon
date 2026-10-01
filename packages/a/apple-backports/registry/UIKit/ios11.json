@@ -790,18 +790,20 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol translates a data source's indexes into a view's, for a drag and a drop between them. The release has no drag and no drop between two data sources, so nothing asks either side to translate. Not carried by the port either, for the same reason",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the protocol turns a data source's own object into the thing a table or collection view identifies a row by, and a table's rows are identified by index paths the release's own data source produces. The port does not stand in for that data source: a table view's delegate and data source are the release's, so there is no translation step here to declare a protocol in",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A caller identifies its own rows by index path, which the release's data source gives it",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIDataSourceTranslating 6.1.3 4.3 16.0): images 524 of which naming UIDataSourceTranslating 0 at 6.1.3 and 354 of which naming UIDataSourceTranslating 0 at 4.3, classes 11378 and 7187 of which UIDataSourceTranslating* 0 at both ends, protocols 1171 and 564 of which UIDataSourceTranslating* 0 at both ends; the 16.0 rung reads 1 protocol (UIDataSourceTranslating) at 16.0, and the run's own control line reads 'control: 1 name(s) beginning UIDataSourceTranslating found in this run', so a zero on either end is the release's and not the reader's",
+   "facts": "facts/UIKit/UIViewInteractions.md"
   },
   {
    "api": "UIItemProviderPresentationSizeProviding",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol is how the object being dragged is asked for the size its preview should be, and the release asks nothing: it has no drag and no preview builder to ask. The port's drag builds the preview from the item's own view. Not carried by the port either: an implemented protocol row needs an object that adopts it",
-   "effect": "the protocol is not there, so nothing conforms to it and no delegate is ever handed to ask",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the protocol is what a view adopts to be asked the size of one item it offers, and the only thing that would ask is a system drag preview. This port's drag draws the release's own touch, so no view is ever asked, and an adopter would have a method nothing calls",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIItemProviderPresentationSizeProviding 6.1.3 4.3 16.0): images 524 of which naming UIItemProviderPresentationSizeProviding 0 at 6.1.3 and 354 of which naming UIItemProviderPresentationSizeProviding 0 at 4.3, classes 11378 and 7187 of which UIItemProviderPresentationSizeProviding* 0 at both ends, protocols 1171 and 564 of which UIItemProviderPresentationSizeProviding* 0 at both ends; the 16.0 rung reads 1 protocol (UIItemProviderPresentationSizeProviding) at 16.0, and the run's own control line reads 'control: 1 name(s) beginning UIItemProviderPresentationSizeProviding found in this run', so a zero on either end is the release's and not the reader's",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "-[UICollectionViewCell dragStateDidChange:]",
@@ -1036,9 +1038,10 @@
    "kind": "class",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the action is what a document browser's toolbar button is, and the browser is a view of the Files world: it shows what file providers offer and hands back documents through a daemon this release does not run. The port does carry a document browser -- UIDocumentBrowserViewController.m and its types header -- but a browser over an application's own container, which has no provider and so no actions to offer. The port's own browser names the type where it needs one, in CharonDocumentBrowserTypes.h, so nothing is missing from the port's build; what is missing is a Files daemon to make an action mean anything",
-   "effect": "the name is not there; an application picks documents with the picker this release has, inside its own container",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
+   "reason": "the action is a bar button in the navigation bar of a UIDocumentBrowserViewController, and this port's document browser is not one: UIKit/CharonDocumentBrowser.m is built over the release's own UIDocumentPickerViewController, so there is no browser chrome, no breadcrumb path and no per-location menu for an action to sit in. Building one would mean replacing the release's picker rather than extending it",
+   "effect": "the class is not there, so NSClassFromString answers nil and an application that instantiates it does not compile against the port. A caller that wants a location's actions opens the release's own picker",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIDocumentBrowser 6.1.3 4.3 16.0): images 524 of which naming UIDocumentBrowser 0 at 6.1.3 and 354 of which naming UIDocumentBrowser 0 at 4.3, classes 11378 and 7187 of which UIDocumentBrowser* 0 at both ends, protocols 1171 and 564 of which UIDocumentBrowser* 0 at both ends; the 16.0 rung reads 5 classes (UIDocumentBrowserAction UIDocumentBrowserActionBarButton UIDocumentBrowserBackToLocationButton UIDocumentBrowserTransitionController UIDocumentBrowserViewController) and 2 protocols at 16.0, and the run's own control line reads 'control: 7 name(s) beginning UIDocumentBrowser found in this run', so a zero on either end is the release's and not the reader's. Neither release has a UIDocumentBrowserViewController either, which is what CharonDocumentBrowser.m is built over the picker instead of",
+   "facts": "facts/UIKit/DocumentBrowser.md"
   },
   {
    "api": "UIAccessibilityContainerDataTable",
@@ -1145,56 +1148,62 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "dragging is begun and carried by a system service this release does not run, so nothing here is ever the source of a drag for an assistive technology to describe. The port does carry a drag, but only in-process, UIDragInteraction.m's header says so, so nothing this release reads the descriptors",
-   "effect": "the name is not there, and an application that asks for it before dragging keeps its own path",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member",
-   "minimum": "6.0"
+   "reason": "it is how an accessible drag announces its source to VoiceOver as a list of named points, and the reader of it is the system's accessibility machinery during a drag it is performing. This port's drag is its own in UIKit/CharonDragDrop.m and is never announced to VoiceOver, so a descriptor list would have no listener",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly, and a drag is not announced to VoiceOver on this release",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityDragSourceDescriptors, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's, and the two sibling descriptor rows read the same way in the same two dumps",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md"
   },
   {
    "api": "NSObject.accessibilityDropPointDescriptors",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the same for the receiving end, and it is the same service: there is no drop an assistive technology could be offered a point for. The port does carry an in-process drop, which an assistive technology is not offered",
-   "effect": "the name is not there, and an application that asks for it before dropping keeps its own path",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member",
-   "minimum": "6.0"
+   "reason": "it is how an accessible drop names the points it will accept, read by the system's accessibility machinery during a drop the system is performing. This port's drop routing is its own in UIKit/ViewDragDropRouting11.m and is never announced to VoiceOver",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly, and a drop is not announced to VoiceOver on this release",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityDropPointDescriptors, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's, and the two sibling descriptor rows read the same way in the same two dumps",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md"
   },
   {
    "api": "NSObject.accessibilityContainerType",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the container type tells an assistive technology how to group an element's children, and this release's VoiceOver groups them by the release's own rules and never reads the hint. Carrying it as a stored value would be a flag read and believed for nothing. The port's own accessible strings live beside it: UIAccessibility+Focus.m carries the notifications and UIAccessibilityQueries10.m the queries this release can answer",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly. An application that sets it has told an assistive technology nothing that changes",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: NSObject is in the cache and its own selector table carries no such member"
+   "reason": "it declares what kind of container a view is -- a semantic region, a landmark, a group -- and the only thing that reads it is VoiceOver's container navigation, which runs in the system's own process over the system's own accessibility tree. This port carries the attributed label, hint and value (UIKit/NSObject+AccessibilityAttributedStrings.m) and nothing that feeds that tree, so the flag would be a word no process on the device ever looks at",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly and a caller cannot mark a view as a container",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): NSObject is in both and its own selector table carries no -accessibilityContainerType, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. NSObject is in libobjc in both caches and carries none of the three accessibility descriptors, which is why all three rows below read the same way",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md"
   },
   {
    "api": "NSItemProvider.teamData",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "teamData is the payload two applications of the same team exchange when a drag is offered between them, which needs a drag that leaves the application. There is none: the release has no service, and the port's drag is in-process by its own header. Not carried as a stored value either: a dictionary the drag never reads would be a field believed and consulted for nothing",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly, and an application that asks for it before dragging keeps its own path",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
+   "reason": "team data is the identity of the team that wrote the application offering the item, and it is read by the system's own inter-application paste: two applications of one team are allowed to hand each other data they would not hand a stranger. There is no such exchange here. The port's pasteboard and its drag both stay inside the one process that began them (UIKit/CharonDragDrop.m), so there is no other application to recognise, and an identity invented here would be a claim about who wrote the application that no one can check",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. A caller that carries data between applications on this release has to do it over its own channel, which is what the port's drag does inside one process",
+   "source": "the 6.1.3 and 4.3 armv7 caches carry no NSItemProvider at all -- objc-inventory over both (12549 and 7751 lines) finds no class or protocol of that name in either, and the string teamData appears nowhere in either dump, while -hash on NSObject reads present in the same two dumps as the control. The class is the port's own, in packages/a/apple-backports/Foundation/NSItemProvider.m, and first-rung.py answers 11.0 for the bare name, which is the port's own object being read back and not the release's",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "NSItemProvider.preferredPresentationSize",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the size is read while a drag preview is built, by the session that carries the drag, and the release has no such session. The port does carry one, in-process only, UIDragInteraction.m's own header says so, and its drag builds the preview from the item's own view rather than from a size the provider suggests, so a size set here would be read by nothing. preferredPresentationStyle and teamData are absent for the same shape of reason and name each other",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly. An application that sets it gets a preview of its view, which is what the drag was always going to make",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
+   "reason": "it is the size a lifted item should be drawn at, and the size comes from the view that offered the item, which is what UIItemProviderPresentationSizeProviding is for. Nothing here asks a view: the port's drag lift is drawn over the release's own touch, at the touch's size, so there is no size to be told and no measurement behind one",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly and a drag is drawn at the release's own touch size",
+   "source": "the 6.1.3 and 4.3 armv7 caches carry no NSItemProvider, and the string preferredPresentationSize appears nowhere in either dump, with -hash on NSObject present in the same two dumps as the control; first-rung.py answers 11.0 for the bare name. The port's own NSItemProvider is in packages/a/apple-backports/Foundation/NSItemProvider.m and has no member of this name",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "NSItemProvider.preferredPresentationStyle",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the style is read while a drag preview is built, by the session that carries the drag, and there is none: the release has none and the port's own builds the preview from the item's view. preferredPresentationSize is absent for the same reason",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner NSItemProvider is in neither, so there is nothing there to carry the member on"
+   "reason": "the style is how a lifted item is drawn -- inline, beside the touch, or as the system's own preview -- and each of those is a system animation the release's own drag does not play. This port's drag is a long press and a pan with the release's own touch image, so there is no presentation for a style to choose between",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly, and a drag is lifted with the release's own touch image whatever an application would have preferred",
+   "source": "the 6.1.3 and 4.3 armv7 caches carry no NSItemProvider, and the string preferredPresentationStyle appears nowhere in either dump, with -hash on NSObject present in the same two dumps as the control; first-rung.py answers 11.0 for the bare name. UIKit/CharonDragDrop.m is where the drag is built and it draws the release's own touch",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "-[UIAccessibilityCustomAction initWithAttributedName:target:selector:]",
@@ -1494,18 +1503,20 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release has no extensions: there is no extension host, so no keyboard extension is ever loaded and nothing here ever instantiates the class an input view controller is, so nothing asks a controller whether the keyboard it hosts has full access. Answering NO would be a statement about a network permission nobody here grants; answering YES would be one about a permission nobody here asks for. Not carried by the port either",
-   "effect": "the member is not there, and neither is the class: UIInputViewController is itself absent, ios8presentation.json, for the same reason",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIInputViewController is in neither, so there is nothing there to carry the member on"
+   "reason": "it answers for a custom keyboard: whether the keyboard the user chose may reach the network and the shared container, which is a question only a keyboard extension can be asked and only because it is running in its own process on the user's behalf. iOS 6 has no extension point at all: UIInputViewController's own role as a controller is carried, and a controller in an application's own process is not a keyboard",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. An application that wants full access asks the user, which on this release means an application running in the foreground",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIInputViewController 6.1.3 4.3 16.0): images 524 of which naming UIInputViewController 0 at 6.1.3 and 354 of which naming UIInputViewController 0 at 4.3, classes 11378 and 7187 of which UIInputViewController* 0 at both ends, protocols 1171 and 564 of which UIInputViewController* 0 at both ends; the 16.0 rung reads 0 classes and 0 protocols beginning UIInputViewController at 6.1.3, 4.3 and 16.0, and the run's own control line reads 'control: 0 name(s) beginning UIInputViewController found in this run', so a zero on either end is the release's and not the reader's -- the census at that prefix reads zero on every rung including 16.0, so it certifies nothing and the member's absence rests on the class-scoped selector reading instead: objc-inventory over both caches finds no class named UIInputViewController in either, and the string hasFullAccess appears nowhere in either dump, while -hash on NSObject reads present in the same two dumps",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md"
   },
   {
    "api": "UIInputViewController.needsInputModeSwitchKey",
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "this release has no extensions: there is no extension host, so no keyboard extension is ever loaded and nothing here ever instantiates the class an input view controller is, so nothing asks whether the globe key should be shown. The release's own input switcher is UIKeyboardMenuView, which it draws itself. Not carried by the port either",
-   "effect": "the member is not there, and neither is the class",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: the owner UIInputViewController is in neither, so there is nothing there to carry the member on"
+   "reason": "the globe key on a custom keyboard is there because a keyboard may not be the only way to type, which is a statement about a keyboard extension on a system that has more than one keyboard installed. iOS 6 installs no keyboard extension, so there is no switch key for anything to show and no state to report",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. The release's own input view controllers draw no globe key, which is what a caller sees",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIInputViewController 6.1.3 4.3 16.0): images 524 of which naming UIInputViewController 0 at 6.1.3 and 354 of which naming UIInputViewController 0 at 4.3, classes 11378 and 7187 of which UIInputViewController* 0 at both ends, protocols 1171 and 564 of which UIInputViewController* 0 at both ends; the 16.0 rung reads 0 classes and 0 protocols beginning UIInputViewController at 6.1.3, 4.3 and 16.0, and the run's own control line reads 'control: 0 name(s) beginning UIInputViewController found in this run', so a zero on either end is the release's and not the reader's -- zero on every rung including 16.0, so the run certifies nothing and the absence rests on the class-scoped selector reading: no class named UIInputViewController in either dump and the string needsInputModeSwitchKey nowhere in either, with -hash on NSObject present in both as the control",
+   "facts": "facts/UIKit/KeyboardAndAccessibility.md"
   },
   {
    "api": "UITextDocumentProxy.selectedText",
@@ -1541,9 +1552,10 @@
    "kind": "property",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the edge says which side the primary column sits at, and the decision belongs to the split view controller's own layout as it presents on this release: the release lays its columns out itself and the port adds appearance and background to it, UISplitViewController+Background13.m among others, rather than standing in for that layout. The port does carry other members of the same class, eight of them, including the minimum and preferred column widths; this is the one whose value is decided by the release's own layout",
-   "effect": "the property is not declared, so respondsToSelector: answers honestly; the primary column stays where this release puts it",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UISplitViewController is in the cache and its own selector table carries no such member"
+   "reason": "the edge names which side of a split view is the master, and it matters because the popover has to be anchored to the side that collapsed. This release's split view has no master edge: UISplitViewControllerDelegate is asked -splitViewController:willHideViewController:withBarButtonItem:forPopoverController: and returns a bar button item, which is the release's own way of saying where the popover goes, and there is no stored edge for a caller to set that the release would then read",
+   "effect": "the property is not declared, so respondsToSelector: answers honestly. A caller anchors a popover by returning the bar button item from the release's own delegate method, which it has",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UISplitViewController is in both and its own selector table carries no -primaryEdge, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The same two dumps read -viewControllers on UISplitViewController present on both, so the zero is the release's and not the reader's",
+   "facts": "facts/UIKit/ScrollViewsAndNavigation.md"
   },
   {
    "api": "-[UIViewController viewLayoutMarginsDidChange]",
