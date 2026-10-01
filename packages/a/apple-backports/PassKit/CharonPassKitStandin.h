@@ -78,7 +78,7 @@ typedef NS_ENUM(NSInteger, PKPaymentAuthorizationStatus) {
 @property (nonatomic, copy) NSArray<PKPaymentSummaryItem *> *paymentSummaryItems;
 // 15.0 and the three 16.x, each @dynamic in the object: auto-synthesis would otherwise put all five
 // accessors in an 11.0 object.
-@property (nonatomic, copy) NSArray<PShippingMethod *> *shippingMethods;
+@property (nonatomic, copy) NSArray<PKShippingMethod *> *shippingMethods;
 @property (nonatomic, copy, nullable) NSArray<PKPaymentTokenContext *> *multiTokenContexts;
 @property (nonatomic, strong, nullable) PKRecurringPaymentRequest *recurringPaymentRequest;
 @property (nonatomic, strong, nullable) PKAutomaticReloadPaymentRequest *automaticReloadPaymentRequest;
@@ -88,8 +88,8 @@ typedef NS_ENUM(NSInteger, PKPaymentAuthorizationStatus) {
 @interface PKPaymentRequestShippingContactUpdate : PKPaymentRequestUpdate
 - (instancetype)initWithErrors:(nullable NSArray<NSError *> *)errors
            paymentSummaryItems:(NSArray<PKPaymentSummaryItem *> *)paymentSummaryItems
-               shippingMethods:(NSArray<PShippingMethod *> *)shippingMethods;
-@property (nonatomic, copy) NSArray<PShippingMethod *> *shippingMethods;
+               shippingMethods:(NSArray<PKShippingMethod *> *)shippingMethods;
+@property (nonatomic, copy) NSArray<PKShippingMethod *> *shippingMethods;
 @property (null_resettable, nonatomic, copy) NSArray<NSError *> *errors;
 @end
 

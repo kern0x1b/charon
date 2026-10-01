@@ -27,7 +27,8 @@
 // PKPaymentAuthorizationStatusSuccess and the two null_resettable error lists answer the EMPTY list
 // rather than nil. The lists of SUMMARY ITEMS and SHIPPING METHODS can only ever hold what a caller
 // can build here: there is no PKPaymentSummaryItem in this release at all (registry row, 8.0,
-// absent) and no PKShippingMethod (measured absent from the armv7 cache of 6.1.3), so in practice
+// absent) and no PKShippingMethod either (tools/cache-index/first-rung.py puts
+// _OBJC_CLASS_$_PKShippingMethod at 8.0, so no release this port deploys on has it), so in practice
 // they are the empty array on this device. That is the release's own limit and this object does not
 // paper over it: it copies what it is given, and it is given an empty array.
 //
