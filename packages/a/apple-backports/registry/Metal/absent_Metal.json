@@ -1141,30 +1141,33 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: the attachments an acceleration structure encoder is built from, asked of nothing - and member for member the same object as the compute pass descriptor this port already carries, without the dispatch type",
+      "effect": "the port vends MTLAccelerationStructurePassDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created: sampleBufferAttachments is there on a fresh descriptor on both sides, its four slots are four distinct attachment descriptors on both sides, and a copy gets its own array on both sides, so a write through the copy's array leaves the original's slot 2 as it was. NOT CARRIED: +accelerationStructurePassDescriptor, which no row of this band names and which Apple's own answers with a private subclass of the public class - [[MTLAccelerationStructurePassDescriptor alloc] init] answers on both sides and is what the case uses. NOT APPLIED: nothing in this port reads it, because the port vends no acceleration structure command encoder (facts/Metal/Descriptors16.md)",
+      "source": "SDK 16.4 MTLAccelerationStructureCommandEncoder.h:310-334 for the class and its one member, :276-308 for the attachment and its array; the values are Apple's own, measured by sh tests/backports/host/metal-census/descriptors16.sh, which renames the port's four classes for this host so that the two copies coexist in one binary and compares them property by property, and the slot bound out of process because Apple's own object stops on index 4 - facts/Metal/Descriptors16.md",
+      "facts": "facts/Metal/Descriptors16.md"
     },
     {
       "api": "MTLAccelerationStructurePassSampleBufferAttachmentDescriptor",
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: the sample buffer an acceleration structure pass writes its counters into, and the two indices saying where the sample taken at the start and the sample taken at the end of encoder processing go - asked of nothing",
+      "effect": "the port vends MTLAccelerationStructurePassSampleBufferAttachmentDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created: a fresh one answers MTLCounterDontSample for both indices on both sides, which is 18446744073709551615 and NOT zero, a set of 3 and 4 reads back 3 and 4 on both sides, and a copy carries all three members on both sides. NOT MEASURED: sampleBuffer, a device-made MTLCounterSampleBuffer that reads nil on both sides with no device, which is all a no-device comparison can say (facts/Metal/Descriptors16.md)",
+      "source": "SDK 16.4 MTLAccelerationStructureCommandEncoder.h:276-308 for the three members, and MTLCounter.h for MTLCounterDontSample; the values are Apple's own, measured by sh tests/backports/host/metal-census/descriptors16.sh - facts/Metal/Descriptors16.md",
+      "facts": "facts/Metal/Descriptors16.md"
     },
     {
       "api": "MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray",
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: the four slots of sample-buffer attachments one acceleration structure pass carries, a slot made on its first read and reset by a nil write",
+      "effect": "the port vends MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created: indices 0 to 3 each answer a distinct attachment on both sides, two reads of one index are the same object on both sides, a write copies on both sides - the attachment read back is not the one handed in - and a nil write resets the slot to a fresh default attachment on both sides. FOUR IS APPLE'S OWN BOUND and not the header's, which says nothing about how many slots there are, and index 4 is refused here with an NSInvalidArgumentException carrying Apple's own words where Metal stops the process on a C assertion: the one difference this file names, and the reason the case asks neither side of 4 (facts/Metal/Descriptors16.md)",
+      "source": "SDK 16.4 MTLAccelerationStructureCommandEncoder.h:310-322 for the two members; the bound of four and the refusal are Apple's own, measured by sh tests/backports/host/metal-census/descriptors16.sh and, for the index past the end, out of process one index per invocation because Apple's own object does not return from that call - facts/Metal/Descriptors16.md",
+      "facts": "facts/Metal/Descriptors16.md"
     },
     {
       "api": "MTLBinding",
@@ -1213,10 +1216,11 @@
       "kind": "class",
       "introduced": "16.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "status": "implemented",
+      "reason": "a plain data holder: how many command buffers an IO queue may have in flight, at what priority, serial or concurrent, how many IO commands at once, and the allocator the queue asks for scratch memory - asked of nothing",
+      "effect": "the port vends MTLIOCommandQueueDescriptor, and the case compares it PROPERTY BY PROPERTY against Apple's own object of the same class with no device created: a fresh one answers maxCommandBufferCount 64, priority MTLIOPriorityNormal, type MTLIOCommandQueueTypeConcurrent and maxCommandsInFlight 0 on both sides - three of the four are not what the enumeration's own zero would suggest, and 64 is in no header at all - a set of 7, Low, Serial and 9 reads back on both sides, and a copy carries THREE of the four on both sides because Apple's own -copyWithZone: does not carry maxCommandsInFlight. NOT MEASURED: scratchBufferAllocator, nil on both sides with no device and no object of this port conforming to MTLIOScratchBufferAllocator. NOT APPLIED: nothing in this port reads it, because the port vends no MTLIOCommandQueue and no factory that takes this descriptor, so a caller gets an object it can read and no queue to hand it to (facts/Metal/Descriptors16.md)",
+      "source": "SDK 16.4 MTLIOCommandQueue.h:20-31 for the two enumerations and :132-167 for the five members; 64 is Apple's own default and no header states it, measured by sh tests/backports/host/metal-census/descriptors16.sh - facts/Metal/Descriptors16.md",
+      "facts": "facts/Metal/Descriptors16.md"
     },
     {
       "api": "MTLIOCompressionContextAppendData()",
