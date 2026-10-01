@@ -1197,9 +1197,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "the commands themselves - load a file's bytes into a buffer the GPU reads, read one back out - each a bindless-storage operation; this release's GPU has no bindless resource path, and the queue that would vend one is absent, so nothing in this port encodes, commits or runs a single one of them",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLIOCommandQueue",
@@ -1207,9 +1208,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "a queue that schedules command buffers which read from file handles and write into MTLBuffers, and a load or a read of that kind is a bindless-storage operation; this release's GPU has no bindless resource path, so there is no queue for such commands to be scheduled on and a conformer here would be asked to load nothing",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLIOCommandQueueDescriptor",
@@ -1258,9 +1260,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "a file as the source of a load command, raw or compressed; the load command is what is missing: this port's own path from a file to the GPU is an ordinary MTLBuffer filled by the application plus a blit encoder (registry/Metal/ios8blit.json), which is not a load command, so a conformer here would be a label on a file nothing reads",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLIOFlushAndDestroyCompressionContext()",
@@ -1278,9 +1281,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "the scratch memory an IO command borrows while it runs and returns when it is done; there is no IO command, so nothing ever asks for one, and a conformer would be asked for memory nothing reads",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLIOScratchBufferAllocator",
@@ -1288,9 +1292,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the protocol arrived in iOS 16, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, Metal"
+      "reason": "the allocator a queue calls when a load command needs scratch space; there is no queue and no command that needs scratch, so nothing calls newScratchBufferWithMinimumSize: and a conformer is never asked",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and the port declares no such protocol - CharonMetalProtocols.h holds 32 @protocol declarations and this is not one of them (grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h, the header tools/transcribe-protocols.py writes). ON THIS HOST THE QUERY ANSWERS NON-NIL, because the host's own Metal registers Apple's protocol and class names: that measures the host and not the port, which is the trap the MTLArgumentEncoder row of this same file records, and the answer above is the one a binary linking the port's Metal objects gives on a release. - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLIOCommandQueue.h for the protocol. The port declares no such protocol: grep -n '@protocol' packages/a/apple-backports/Metal/CharonMetalProtocols.h reads 32 declarations and this is not one of them, and that header is what a caller compiles against, so NSProtocolFromString has nothing of this name to find. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the name, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it either - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLMeshRenderPipelineDescriptor",
@@ -1298,9 +1303,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 16, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "reason": "a mesh pipeline's descriptor, and its three MTLFunction members ARE that pipeline's object, mesh and fragment stages rather than values this port can hold: this port's rendering path is Metal over OpenGL ES 2.0 (facts/Metal/RenderPath.md), which has no mesh stage and no geometry or tessellation stage either, so there is no mesh pipeline for the descriptor to describe and no function it could carry that a mesh draw would run",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes - on this host the query answers Apple's own class, which measures the host and not the port - and what a caller gets is nothing at all - not an object that describes a pipeline, because this port has no pipeline of that kind; no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLRenderPipeline.h:518-685 for the class and its members, the three function members and the two threadgroup maxima at ios(16.0). python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for the class symbol _OBJC_CLASS_$_MTLMeshRenderPipelineDescriptor, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; and the port defines no class of that name - grep -rl '@implementation MTLMeshRenderPipelineDescriptor' over Metal/*.m answers none, where the same grep for MTLArgument and MTLHeapDescriptor answers MTLTypeReflection8.m and MTLHeap10.m and is the control that the grep reads the tree at all - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "MTLObjectPayloadBinding",
@@ -1383,9 +1389,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing; a heap's acceleration structures are absent with the acceleration structures themselves (facts/Metal/Heaps.md)",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "reason": "an acceleration structure is what a ray tracing encoder builds and what a ray tracing pass reads, and this release's GPU has no ray tracing unit: the port vends no MTLAccelerationStructure object at all - that row is a protocol DECLARATION with no class behind it - so a heap that handed one back would hand back a descriptor of geometry that no encoder here ever reads, because there is no encoder to read it with",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes, measured on the port's own device object (xcrun otool -oV over the port's own armv7 iOS 6.1.3 object of Metal/MTLHeap10.m, whose CharonMetalHeap lists 23 instance methods and none of the four is among them), and no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for all four, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLHeap.h:239-276 for the four members, all four at ios(16.0); the same two spellings on MTLDevice are MTLDevice.h:1080 at ios(14.0) and are a different method on a different owner, which is the selector trap this row sits in. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for newAccelerationStructureWithDescriptor and for the heap's own class symbol, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; the port's own device object does not implement it either - xcrun otool -oV over Metal/MTLHeap10.m compiled for armv7 iOS 6.1.3 lists CharonMetalHeap's 23 instance methods and this is not among them, which is the selector's own answer and not the protocol's declaration (the SDK's MTLHeap protocol puts the name in the object's methname section, which is why the method list is the measurement) - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "-[MTLHeap newAccelerationStructureWithDescriptor:offset:]",
@@ -1393,9 +1400,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "reason": "an acceleration structure is what a ray tracing encoder builds and what a ray tracing pass reads, and this release's GPU has no ray tracing unit: the port vends no MTLAccelerationStructure object at all - that row is a protocol DECLARATION with no class behind it - so a heap that handed one back would hand back the same descriptor's geometry placed at the offset the application chose, with no encoder here to read it",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes, measured on the port's own device object (xcrun otool -oV over the port's own armv7 iOS 6.1.3 object of Metal/MTLHeap10.m, whose CharonMetalHeap lists 23 instance methods and none of the four is among them), and no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for all four, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLHeap.h:239-276 for the four members, all four at ios(16.0); the same two spellings on MTLDevice are MTLDevice.h:1080 at ios(14.0) and are a different method on a different owner, which is the selector trap this row sits in. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for newAccelerationStructureWithDescriptor:offset and for the heap's own class symbol, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; the port's own device object does not implement it either - xcrun otool -oV over Metal/MTLHeap10.m compiled for armv7 iOS 6.1.3 lists CharonMetalHeap's 23 instance methods and this is not among them, which is the selector's own answer and not the protocol's declaration (the SDK's MTLHeap protocol puts the name in the object's methname section, which is why the method list is the measurement) - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "-[MTLHeap newAccelerationStructureWithSize:]",
@@ -1403,9 +1411,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "reason": "an acceleration structure is what a ray tracing encoder builds and what a ray tracing pass reads, and this release's GPU has no ray tracing unit: the port vends no MTLAccelerationStructure object at all - that row is a protocol DECLARATION with no class behind it - so a heap that handed one back would hand back a block of bytes of the size asked for and nothing else: no geometry descriptor says what it holds and no encoder here ever built one, so a caller holding it has a buffer no ray tracer reads",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes, measured on the port's own device object (xcrun otool -oV over the port's own armv7 iOS 6.1.3 object of Metal/MTLHeap10.m, whose CharonMetalHeap lists 23 instance methods and none of the four is among them), and no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for all four, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLHeap.h:239-276 for the four members, all four at ios(16.0); the same two spellings on MTLDevice are MTLDevice.h:1080 at ios(14.0) and are a different method on a different owner, which is the selector trap this row sits in. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for newAccelerationStructureWithSize and for the heap's own class symbol, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; the port's own device object does not implement it either - xcrun otool -oV over Metal/MTLHeap10.m compiled for armv7 iOS 6.1.3 lists CharonMetalHeap's 23 instance methods and this is not among them, which is the selector's own answer and not the protocol's declaration (the SDK's MTLHeap protocol puts the name in the object's methname section, which is why the method list is the measurement) - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "-[MTLHeap newAccelerationStructureWithSize:offset:]",
@@ -1413,9 +1422,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "an acceleration structure is a ray tracing resource, and this device has no ray tracing (facts/Metal/Heaps.md)",
-      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes",
-      "source": "SDK 16.4, Metal"
+      "reason": "an acceleration structure is what a ray tracing encoder builds and what a ray tracing pass reads, and this release's GPU has no ray tracing unit: the port vends no MTLAccelerationStructure object at all - that row is a protocol DECLARATION with no class behind it - so a heap that handed one back would hand back the same block placed at the offset the application chose, and the placement changes nothing about there being no ray tracer to read it",
+      "effect": "the selector is not there: respondsToSelector: answers NO and a call through a compile time reference crashes, measured on the port's own device object (xcrun otool -oV over the port's own armv7 iOS 6.1.3 object of Metal/MTLHeap10.m, whose CharonMetalHeap lists 23 instance methods and none of the four is among them), and no held release below 16.0 carries the name (python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for all four, with a nonsense name reading NONE for the control) - facts/Metal/Metal16Absence.md",
+      "source": "SDK 16.4 MTLHeap.h:239-276 for the four members, all four at ios(16.0); the same two spellings on MTLDevice are MTLDevice.h:1080 at ios(14.0) and are a different method on a different owner, which is the selector trap this row sits in. python3 tools/cache-index/first-rung.py over the 50-rung ladder reads 16.0 for newAccelerationStructureWithSize:offset and for the heap's own class symbol, with a nonsense name reading NONE for the control, so no held release below 16.0 carries it; the port's own device object does not implement it either - xcrun otool -oV over Metal/MTLHeap10.m compiled for armv7 iOS 6.1.3 lists CharonMetalHeap's 23 instance methods and this is not among them, which is the selector's own answer and not the protocol's declaration (the SDK's MTLHeap protocol puts the name in the object's methname section, which is why the method list is the measurement) - facts/Metal/Metal16Absence.md",
+      "facts": "facts/Metal/Metal16Absence.md"
     },
     {
       "api": "-[MTLDevice newCounterHeapWithDescriptor:error:]",
