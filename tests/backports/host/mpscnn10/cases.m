@@ -347,8 +347,9 @@ static void normalizationCases(void)
             dump("spatial-norm-defaults", d, 4, 4, 1);
         }
         {
-            // An EVEN kernel. The header's own forward window would answer the right numbers in a
-            // different place; this is the case that tells the two apart.
+            // An EVEN kernel. Kept because its defaults are a case of their own, but note that kw=2
+            // CANNOT tell a centred window from a backward one: -(2/2) = -1 and -2+1 = -1 are the same
+            // two pixels. The case that pins the rule is kw=3 below.
             MPSImage *s = make(4, 4, 1, k4x4), *d = make(4, 4, 1, NULL);
             MPSCNNSpatialNormalization *k = [[MPSCNNSpatialNormalization alloc] initWithDevice:gDevice
                                                                                    kernelWidth:2 kernelHeight:2];
@@ -357,6 +358,29 @@ static void normalizationCases(void)
             [k encodeToCommandBuffer:b sourceImage:s destinationImage:d];
             run(b);
             dump("spatial-norm-k2", d, 4, 4, 1);
+        }
+        {
+            // THE CASE THAT PINS THE WINDOW. kw=3 is where a centred window (first = -1) and a backward
+            // one (first = -2) are different windows, so this case tells them apart; kw=2 does not, and
+            // an earlier version of this harness leaned on kw=2 and so proved nothing. A 5-wide window
+            // is here too: -(5/2) = -2 against -5+1 = -4, which is four pixels of difference.
+            MPSImage *s = make(4, 4, 1, k4x4), *d = make(4, 4, 1, NULL);
+            MPSCNNSpatialNormalization *k = [[MPSCNNSpatialNormalization alloc] initWithDevice:gDevice
+                                                                                   kernelWidth:3 kernelHeight:3];
+            id<MTLCommandBuffer> b = buffer();
+            [k encodeToCommandBuffer:b sourceImage:s destinationImage:d];
+            run(b);
+            dump("spatial-norm-k3", d, 4, 4, 1);
+        }
+        {
+            MPSImage *s = make(4, 4, 1, k4x4), *d = make(4, 4, 1, NULL);
+            MPSCNNSpatialNormalization *k = [[MPSCNNSpatialNormalization alloc] initWithDevice:gDevice
+                                                                                   kernelWidth:5 kernelHeight:5];
+            printf("spatial-k5 kw=%lu kh=%lu\n", (unsigned long)k.kernelWidth, (unsigned long)k.kernelHeight);
+            id<MTLCommandBuffer> b = buffer();
+            [k encodeToCommandBuffer:b sourceImage:s destinationImage:d];
+            run(b);
+            dump("spatial-norm-k5", d, 4, 4, 1);
         }
     }
     if (!require("local-contrast", "MPSCNNLocalContrastNormalization")) {

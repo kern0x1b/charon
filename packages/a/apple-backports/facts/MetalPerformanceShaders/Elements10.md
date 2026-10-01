@@ -29,7 +29,7 @@ give**, and each was found by measuring the release rather than by reading it.
 The harness reports:
 
 ```
-cases: 15, tolerance 0.0001 absolute or relative
+cases: 17, tolerance 0.0001 absolute or relative
 closest to the tolerance, as a fraction of it:
   local-contrast-alpha1        0.00179
   neuron-tanh-a3-b0.5          0.000866
@@ -45,6 +45,22 @@ A case passes when every element differs by no more than `1e-4`, absolute or rel
 larger. The largest distance any case came to is **0.0018 of that bound** — `local-contrast-alpha1`, at
 `2.4e-7` absolute.
 
+**The mutation campaign, and why it is in this page.** "The case is green" says nothing about whether the
+case can be red. Four mutations, one per rule this band measured, each into a scratch copy so no tracked
+file is written, each re-copying the pristine sources rather than restoring from git:
+
+| mutation | what it breaks | caught by |
+| --- | --- | --- |
+| the window reaches back instead of being centred | the spatial normalisation's window rule | `differing cases: 3` |
+| `p0` defaulted to 0 | the local contrast normalisation's `p0` | the **defaults** check, which exits before a case count |
+| the divisor is the channel count, not the kernelSize | the cross-channel normalisation's divisor | `differing cases: 2` |
+| both softmaxes take the logarithmic branch | `MPSCNNSoftMax` stops being a softmax | `differing cases: 2` |
+
+The `p0` mutation is caught by the property-line comparison rather than by any case, which is why that
+comparison is text: the numbers are unchanged and only the declared default is wrong. The window mutation
+was **not** caught until `spatial-norm-k3` existed — which is the correction above, found by the campaign
+rather than by reading.
+
 **The fresh-kernel property lines are compared as text, not with a tolerance.** Nine lines, and they
 agree exactly:
 
@@ -58,32 +74,42 @@ crosschannel-defaults alpha=1 beta=5 delta=1 kernelSize=3
 That is stricter on purpose. A different default is a different kernel, not a rounding, and a tolerance
 would have hidden it — which it did, once: see below.
 
-## Four rules the header does not give, or gives in a form the release does not use
+## A claim this page made, and withdrew
 
-### The spatial normalisation's window of an EVEN kernel reaches BACK
+**This page first said the spatial normalisation's window of an EVEN kernel reaches BACK**, on the strength
+of a `kw = 2` measurement whose sixteen implied values all reproduced. **That was wrong, and the case
+could not have shown it.**
 
-`MPSCNNNormalization.h` gives **no window at all** for `MPSCNNSpatialNormalization`. The nearest thing is
-the gradient's own formula at `:60-62`:
+For a 2-wide kernel a centred window starts at `-(2/2) = -1` and a backward one at `-2+1 = -1`. **Those are
+the same two pixels.** Every one of the sixteen implied `N2` values was consistent with both rules, so
+the case distinguished nothing — and a run where a mutation went undetected is exactly how that happened:
+the mutation campaign's first version changed the window rule and the harness stayed **green**, because
+the one case that existed for the rule was the one case that could not see it.
 
-```
-L(i) = [i-floor((kw-1)/2), i+floor(kw/2]
-```
+Re-measured where the two rules actually differ, `kw = 3` (centred starts at `-1`, backward at `-2`):
 
-which for `kw = 2` is `[i, i+1]` — two pixels starting **at** the output.
+| rule | max relative difference from the host, `kw = 3` |
+| --- | ---: |
+| centred | **3.0e-06** |
+| backward | **7.7e+04** |
 
-Measured, with `kw = kh = 2` over a 4x4 of 1..16: solving `Y = X/(1 + N2/4)^5` for `N2` at each output
-gives
+So the release uses a **centred** window, which is what `MPSCNNNormalization.h:60-62` itself says
+(`L(i) = [i-floor((kw-1)/2), i+floor(kw/2]`, a `kw x kw` block centred on the output). The `back` flag is
+gone from the object rather than left as a second answer for a later author to choose between, and the
+harness now carries `spatial-norm-k3` and `spatial-norm-k5` — widths where the rules differ by one and by
+four pixels.
 
-```
-1, 5, 26, 66, 25, 26, 98, 138, 106, 242, 306, 378, 250, 546, 642, 746
-```
+`spatial-norm-k2` is kept, for its defaults, and its comment now says in as many words that it cannot pin
+the window. **A case that cannot fail is not evidence, and a measurement that cannot discriminate is not a
+measurement.**
 
-and the only 2x2 window that reproduces **every one** of the sixteen is the block whose **top left is one
-pixel before the output**. A forward window is not a near miss here; it puts the right numbers in the
-wrong places. `kw = 3` is centred and agrees with the header, so the rule is "even reaches back", not
-"always reaches back".
+## Three rules the header does not give, or gives in a form the release does not use
 
-This is why `CharonMPSCnnWindowSquares` takes a `back` flag rather than a half-width.
+### The spatial normalisation's window is centred, and the header does not say so
+
+`MPSCNNNormalization.h` gives **no window at all** for `MPSCNNSpatialNormalization`; the nearest thing is the
+gradient's own formula at `:60-62`, which as a block is centred. That it is centred is now **measured** at
+`kw = 3` and `kw = 5` rather than read off the header — see the table above and the case list below.
 
 ### The local contrast normalisation's `p0` default is load-bearing
 
@@ -148,7 +174,9 @@ rather than `3`, because the clamped left and top neighbours would both be the c
 
 The header says at `:109-116` that this class is "an optimized variant of the MPSImageConvolution
 filter" reachable by building an `MPSCNNConvolution` with the same weights, so the walk is
-`MPSImageConvolution13.m`'s and this object holds only the bias. It cannot be a shared **C** function:
+`MPSImageConvolution13.m`'s and this object holds only the bias.
+
+The class is compared by `tests/backports/host/mpsimage10`, which the laplacian row names. It cannot be a shared **C** function:
 `CharonMPSConvolveRegion` is `static` in that file, and `charon/AGENTS.md` records that a C function
 called across objects is `Undefined symbols` in the bands where the exporting file is not carried,
 because an object is placed by the release whose API it defines. So one **method** on `MPSUnaryImageKernel`

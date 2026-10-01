@@ -55,13 +55,19 @@
 // FOUR RULES THE HEADER DOES NOT GIVE, OR GIVES IN A FORM THE RELEASE DOESN'T USE. Each was solved
 // from the host's own answers:
 //
-//   SPATIAL, an EVEN kernel's window. The header gives no window for MPSCNNSpatialNormalization; the
-//   gradient's formula at MPSCNNNormalization.h:60-62 gives [i-floor((kw-1)/2), i+floor(kw/2)], which
-//   for kw=2 is [i, i+1] - two pixels starting AT the output. Measured with kw=2 over a 4x4 of 1..16,
-//   the N2 implied by the answer at the sixteen outputs is 1, 5, 26, 66, 25, 26, 98, 138, 106, 242,
-//   306, 378, 250, 546, 642, 746, and the only 2x2 window reproducing EVERY one of them has its top
-//   left one pixel BEFORE the output: the window reaches BACK. kw=3 is centred and agrees with the
-//   header. This is why CharonMPSCnnWindowSquares takes `back` and not a symmetric half-width.
+//   SPATIAL, the window. The header gives no window for MPSCNNSpatialNormalization itself; the
+//   gradient's formula at MPSCNNNormalization.h:60-62 gives L(i) = [i-floor((kw-1)/2), i+floor(kw/2],
+//   which as a kw x kw block is CENTRED on the output, and that is what the release computes.
+//   MEASURED at kw=3, where a centred window (first = -1) and a backward one (first = -2) are different
+//   windows: the host agrees with centred to 3.0e-06 and disagrees with backward by 7.7e+04.
+//
+//   AND A CASE THAT COULD NOT HAVE TOLD, recorded because it is the kind of measurement that looks like
+//   evidence and is not. An earlier version of this file claimed an EVEN kernel's window reaches BACK,
+//   on the strength of a kw=2 case over a 4x4 of 1..16 whose sixteen implied N2 values (1, 5, 26, 66,
+//   25, 26, 98, 138, 106, 242, 306, 378, 250, 546, 642, 746) were all reproduced. For a 2-wide kernel a
+//   centred window starts at -(2/2) = -1 and a backward one at -2+1 = -1: the SAME two pixels. Every one
+//   of the sixteen values was consistent with both rules and the case distinguished nothing. The claim
+//   and its flag are gone; the kw=3 measurement is what the row now rests on.
 //   LOCAL CONTRAST, p0's default. :151-153 says p0 defaults to 1.0, and the measurement needs it: at
 //   alpha 0 the denominator is the constant delta^beta, so the host's answer solves M = X - Y*delta^beta
 //   and at (0,0) that is 1.55555558 against the centred 3x3 mean 1.55555556. With p0 = 0 this file
@@ -195,13 +201,20 @@ static void CharonMPSCnnStore(CharonMPSCnnInterleaved *view, size_t x, size_t y,
                    MPSDataTypeFloat32, 0, value);
 }
 
-// The sum of the squares of a kw x kw window of one feature channel. `back` puts the window's top left
-// one pixel before the output, which is what an EVEN kernel does - see the note at the top of this
-// file, where the measurement for that rule is written down. An ODD kernel's window is centred.
+// The sum of the squares of a CENTRED kw x kw window of one feature channel, with the off-image value
+// zero. Centred is MPSCNNNormalization.h:60-62's own rule, and it is MEASURED rather than assumed - at
+// kw=3, where a centred window (first = -1) and a backward one (first = -2) are different windows, the
+// host agrees with centred to 3.0e-06 and disagrees with backward by 7.7e+04.
+//
+// This function carried a `back` flag and a comment claiming an even kernel's window reaches back. That
+// was WRONG, and the case that "proved" it could not have: for a 2-wide kernel a centred window starts
+// at -1 and a backward one at -2+1 = -1, so the two are the SAME two pixels and every implied N2 the
+// harness printed was reproduced by both rules. The flag is gone rather than left as a second answer a
+// later author could choose between.
 static double CharonMPSCnnWindowSquares(const CharonMPSCnnInterleaved *view, size_t channel,
-                                        size_t x, size_t y, NSUInteger kernel, BOOL back)
+                                        size_t x, size_t y, NSUInteger kernel)
 {
-    long first = back ? -(long)kernel + 1 : -(long)(kernel / 2);
+    long first = -(long)(kernel / 2);
     double total = 0.0;
     for (NSUInteger ky = 0; ky < kernel; ky++)
         for (NSUInteger kx = 0; kx < kernel; kx++) {
@@ -562,12 +575,11 @@ static void CharonMPSCnnSoftMaxWalk(MPSCNNKernel *owner, id<MTLCommandBuffer> co
     NSUInteger kernel = self.kernelWidth ? self.kernelWidth : 1;
     double area = (double)kernel * (double)(self.kernelHeight ? self.kernelHeight : kernel);
     double alpha = (double)_alpha, beta = (double)_beta, delta = (double)_delta;
-    BOOL back = (kernel % 2) == 0;
     for (size_t channel = 0; channel < outChannels; channel++) {
         size_t source = channel < inChannels ? channel : inChannels - 1;
         for (size_t y = 0; y < outHeight; y++)
             for (size_t x = 0; x < outWidth; x++) {
-                double n2 = CharonMPSCnnWindowSquares(&from, source, x, y, kernel, back);
+                double n2 = CharonMPSCnnWindowSquares(&from, source, x, y, kernel);
                 double value = CharonMPSCnnValue(&from, x, y, source);
                 double denominator = pow(delta + alpha / area * n2, beta);
                 double result = denominator == 0.0 ? 0.0 : value / denominator;
@@ -619,10 +631,10 @@ static void CharonMPSCnnSoftMaxWalk(MPSCNNKernel *owner, id<MTLCommandBuffer> co
 }
 
 // Y(i,j) = pm + ps * (X(i,j) - p0*M(i,j)) / (delta + alpha*VAR(i,j))^beta,
-// MPSCNNNormalization.h:139-142. VAR is the window's variance, E[x^2] - M^2, over the same centred
-// window with the same off-image zero. The squares come from the window helper with `back` NO, which
-// is what the measured answers need here: this walk's window is centred for every kernel width, and
-// only the spatial normalisation's sum of squares is the one that reaches back.
+// MPSCNNNormalization.h:139-142. VAR is the window's variance, E[x^2] - M^2, over the same CENTRED
+// window with the same off-image zero, and it is the same window helper the spatial normalisation
+// uses - which is the point of the correction above: there is one window rule in this file, measured
+// once, rather than two of them.
 - (void)encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
                   sourceImage:(MPSImage *)sourceImage
                destinationImage:(MPSImage *)destinationImage
@@ -651,7 +663,7 @@ static void CharonMPSCnnSoftMaxWalk(MPSCNNKernel *owner, id<MTLCommandBuffer> co
         for (size_t y = 0; y < outHeight; y++)
             for (size_t x = 0; x < outWidth; x++) {
                 double sum = CharonMPSCnnWindowSum(&from, source, x, y, kernel);
-                double squares = CharonMPSCnnWindowSquares(&from, source, x, y, kernel, NO);
+                double squares = CharonMPSCnnWindowSquares(&from, source, x, y, kernel);
                 double mean = sum / count;
                 double variance = squares / count - mean * mean;
                 double value = CharonMPSCnnValue(&from, x, y, source);
