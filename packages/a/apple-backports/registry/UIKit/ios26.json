@@ -16,20 +16,22 @@
    "kind": "property",
    "introduced": "18.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "built as a category on NSObject, which is a class every release this port targets carries. A CATEGORY HAS NO IVARS - the compiler says \"expected identifier or '('\" at the opening brace - so the storage is an associated object, the shape CADisplayLink+FrameRate.m and CAFrameRate.m already use for a property this port adds to a class the release owns. THE PORT DECLARES IT AS id AND NOT WITH THE PROPERTY'S OWN TYPE, and that is a stated cost: no header in this tree names that type, because the 26.2 sysroot is not in the store and the 16.4 SDK's 351 UIKit headers declare neither name - while a selector's argument and return types DO NOT ENTER ITS NAME, so the exported symbol is the SDK's whichever type is spelled here. The port never inspects the value, so holding an id round-trips whatever a caller stores",
+   "effect": "the accessor is EXPORTED, so an application that names it links and a guarded call finds it. Its body is honest storage: the getter returns the object the setter stored, and nil when nothing was ever stored, which is what an unboxed ivar would have returned too. A 6.1.3 release has no assistive technology asking a responder this, so nothing on this release reads it back",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the header absence measured on the 16.4 SDK in the store, and the accessor is a category method, which exports no symbol of its own - the registry check counts the selectors a category adds"
   },
   {
    "api": "NSObject.accessibilityTextInputResponderBlock",
    "kind": "property",
    "introduced": "18.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give NSObject a property like it: it arrived in iOS 18",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "built as a category on NSObject, for the same reason and in the same shape as -[NSObject accessibilityTextInputResponder]. THE COST OF THE PORT'S OWN DECLARATION IS STATED: it is typed id and not with the property's own block signature, because no declaration in this tree names that signature - the 26.2 sysroot is not in the store - and a selector's types are not part of its name, so the exported symbol is unchanged. The port never calls the block, so storing one it cannot type costs nothing",
+   "effect": "the accessor is EXPORTED, so an application that names it links and a guarded call finds it. Its body is honest storage: the getter returns the block the setter stored, and nil when none was stored. THE SETTER COPIES what it is given, because a block that outlives the frame it was made in has to be copied onto the heap or it is freed under the port's own feet, and a block answers -copy: by copying itself there",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the header absence measured on the 16.4 SDK in the store, and the accessor is a category method, which exports no symbol of its own"
   },
   {
    "api": "-[UIApplication defaultStatusForCategory:error:]",
@@ -37,9 +39,10 @@
    "introduced": "18.2",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIApplication a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "reason": "measured absent, and measured twice. FIRST: the selector is in no held release - first-rung answers NONE for defaultStatusForCategory:error:, and the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0 carry no such member on UIApplication, against controls that find UIApplication's 40-odd real members in the same rows. SECOND, and the reason no code is written for a class the port does own: a category on UIApplication spelled from a REMEMBERED SIGNATURE would be a guess with a symbol on it, and the signature is not readable from this tree - the SDK 26.2 surface names the row but carries no types, and only iPhoneOS16.4.sdk is in the store. What closes this row is a declaration of it: the 26.2 sysroot, or any header that names the method",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises - and the port does not answer it under this name for two measured reasons, both in the facts page: no release this port targets has the selector at all (first-rung answers NONE), and no declaration in this tree names its argument or return types, because the 26.2 sysroot is not in the store",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the ladder answer from tools/cache-index/first-rung.py with its self-test green, and the four release inventories from tools/corpus/objc-inventory.lua - commands and output in the facts page"
   },
   {
    "api": "-[UIResponderStandardEditActions showWritingTools:]",
@@ -47,59 +50,65 @@
    "introduced": "18.2",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIResponderStandardEditActions a method like it: it arrived in iOS 18",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "reason": "measured absent, not unbuilt. UIResponderStandardEditActions is a protocol and not a class in 12.0, 16.0 and 18.0 and is in no release below 12.0 (objc-inventory.lua over the four caches, with the controls named in the facts page), and the selector is in no held release at all - first-rung answers NONE. A protocol has no implementation for a port to extend, so the honest end for its member is what this row now says. The 26.0 siblings of this family are answered by the port on NSObject, each as a row of its own; this one is not, because no caller of this port has a Writing Tools action to send it",
+   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises. A CATEGORY CANNOT BE ON A PROTOCOL and UIResponderStandardEditActions is a @protocol in every release that has it, so nothing in this dylib answers the selector under this name",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the class-versus-protocol answer measured with tools/corpus/objc-inventory.lua over the four caches and the ladder answer with tools/cache-index/first-rung.py, commands and output in the facts page"
   },
   {
    "api": "UITextView.subclassForWritingToolsCoordinator",
    "kind": "property",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "built as a category on UITextView, for the same reason and in the same shape as UITextView.writingToolsCoordinator. The port's declaration says id and not Class, and it says why in the facts page: no declaration in this tree names the property's type, so a Class there would be a guess, and a selector's return type is not part of its name",
+   "effect": "the accessors are EXPORTED, so an application that names them links. The body is honest storage: the getter returns what the setter stored and nil when nothing was ever stored. Nothing on a 6.1.3 release asks a text view for a coordinator subclass, and the port does not invent one: a release with no Writing Tools has no subclass to name",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the header absence measured on the 16.4 SDK in the store, and the accessors are category methods, which export no symbol of their own"
   },
   {
    "api": "UITextView.writingToolsCoordinator",
    "kind": "property",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextView a property like it: it arrived in iOS 18",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "built as a category on UITextView, which is a class every release this port targets carries. A CATEGORY HAS NO IVARS, so the storage is an associated object, the shape the 26.0 object uses for interactiveContentPopGestureRecognizer on the same class. THE PORT DECLARES IT AS id AND NOT WITH THE PROPERTY'S OWN TYPE, and that is a stated cost: no header in this tree names that type, because the 26.2 sysroot is not in the store and the 16.4 SDK's 351 UIKit headers declare neither Writing Tools property - while a selector's types DO NOT ENTER ITS NAME, so the exported symbol is the SDK's whichever type is spelled here",
+   "effect": "the accessors are EXPORTED, so an application that names them links. The body is honest storage: the getter returns the coordinator the setter stored and nil when nothing was ever stored, and a 6.1.3 text view draws no writing-tools UI, so nothing on this release reads it back",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the header absence measured on the 16.4 SDK in the store, and the accessors are category methods, which export no symbol of their own"
   },
   {
    "api": "UIWritingToolsCoordinator",
    "kind": "class",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them (6.1.3, 12.0, 16.0 and 18.0: no class and no protocol of that name in any of the four Objective-C inventories, against controls that find UITextView, UIViewController and UIWindowScene in the same runs), and first-rung answers NONE for it, which is what a name that arrived after the ladder's last rung - 18.0 - looks like. The superclass is NSObject because no declaration in this tree names another: the 26.2 sysroot is not in the store",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members: a 6.1.3 release has no Writing Tools service, no revision-tracking model to rewrite a range in and no UI to present a suggestion in, so nothing on this release sends it a message that the port could answer",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the name's absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands and their output in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIWritingToolsCoordinator and _OBJC_METACLASS_$_UIWritingToolsCoordinator"
   },
   {
    "api": "UIWritingToolsCoordinatorAnimationParameters",
    "kind": "class",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, for the reason and with the measurements its sibling UIWritingToolsCoordinator names. The superclass is NSObject because no declaration in this tree names another",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members: the timings a text animation is driven with are read by a service this release does not have, so the port has nothing to fill them from",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); absence from all four release caches and the ladder answer measured as for UIWritingToolsCoordinator, commands and output in the facts page; the object read with nm -gU"
   },
   {
    "api": "UIWritingToolsCoordinatorContext",
    "kind": "class",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, for the reason and with the measurements its sibling UIWritingToolsCoordinator names: no release this port targets carries the class, and first-rung answers NONE. The superclass is NSObject because no declaration in this tree names another",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and nothing on a 6.1.3 release can produce one: a Writing Tools context is the range-and-revision state a service hands back while it rewrites text, and this release has no such service",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); absence from all four release caches and the ladder answer measured as for UIWritingToolsCoordinator, commands and output in the facts page; the object read with nm -gU"
   },
   {
    "api": "UIWritingToolsCoordinatorDelegate",
@@ -107,9 +116,10 @@
    "introduced": "18.2",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the protocol arrived in iOS 18, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "reason": "measured absent, and the port cannot transcribe it from this tree. A protocol row that is `implemented` needs a header that declares it WITH A BODY - the gate writes one source per release a library's protocol rows arrived in, naming the row as @protocol(<name>), and a row no header declares is a source that does not compile - and tools/transcribe-protocols.py reads BOTH the 26.2 and the 16.4 sysroots. Only iPhoneOS16.4.sdk is in the store, so transcribing is not possible here, and hand-writing the declaration would be a guess about thirteen members the port would then have to answer. No release this port targets carries the protocol either: first-rung answers NONE and no Objective-C inventory of 6.1.3, 12.0, 16.0 or 18.0 has it. What closes this row is the 26.2 sysroot, then the transcription",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil, and a caller's conforming object is asked for nothing",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the ladder answer and the four inventories measured with the commands named in the facts page, and the store's SDK list measured at ~/.xmake/packages/i/iphoneos-sdk/16.4/"
   },
   {
    "api": "UIWritingToolsCoordinatorTextAnimationDebugDescription()",
