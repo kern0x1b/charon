@@ -155,23 +155,21 @@
     },
     {
       "api": "NSLocale.languageIdentifier",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the identifier's language part with the POSIX underscore written as the BCP-47 hyphen and every extension dropped: en_US@rg=gbzzzz answers en-US, en_US answers en-US and en answers en; a locale whose identifier names no language answers nil",
       "introduced": "17.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSLocale a property like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the SDK 26.2 NSLocale.h declaration and its comment, which state both the availability and the en_US@rg=gbzzzz -> en-US example, and the 6.0 armv7 cache read class-scoped with python3 over ~/.charon/dyld/6.0/classes_armv7.json: NSLocale carries -localeIdentifier and -objectForKey: and no class in the 11284 read in that run carries languageIdentifier, so the value is computed from what the release does have. The ladder and its control are in facts/Foundation/NSLocaleIdentifiers.md",
+      "status": "implemented"
     },
     {
       "api": "NSLocale.regionCode",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "effect": "the rg subtag wins and its region is uppercased, so en_US@rg=gbzzzz answers GB; without an rg subtag the answer is the locale's country code, and a locale that names no region answers nil",
       "introduced": "17.0",
       "kind": "property",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSLocale a property like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
-      "status": "absent"
+      "source": "the SDK 26.2 NSLocale.h declaration and its comment, which state the rg-precedence, the GB example and the nil case, and the 6.0 armv7 cache read class-scoped with python3 over ~/.charon/dyld/6.0/classes_armv7.json: the regionCode selector string is in the 6.0 and 4.3 selector dumps but the only class owning it in either release is the private -[AADeviceInfo regionCode], while NSLocale carries -localeIdentifier and -objectForKey: with NSLocaleCountryCode, so the value is computed here rather than asked of the dictionary; the rg extension is a BCP-47 subtag CoreFoundation on 6.0 does not know. The ladder and its control are in facts/Foundation/NSLocaleIdentifiers.md",
+      "status": "implemented"
     },
     {
       "api": "NSMorphologyPronoun",
@@ -198,8 +196,8 @@
       "introduced": "17.4",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSFilePresenter a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the eviction conversation has no other end: no release this port builds carries the NSFilePresenter class at all, so there is nothing to hand the completion handler to and no way to ask a delegate it would be asking",
+      "source": "the SDK 26.2 NSFilePresenter.h declaration, which gives 17.4, and the class census over ~/.charon/dyld/6.0/classes_armv7.json and ~/.charon/dyld/4.3/classes_armv7.json with python3: no key matching FilePresenter is in either of the 11284 and 7187 classes those runs read, and the selector string is in neither the 6.0 nor the 4.3 dump (grep -cxF over each, with the 113981 and 70062 lines the dumps hold as the control). Apple's own NSFilePresenter arrived in iOS 8, later than every rung the ladder holds for this port's minimum",
       "status": "absent"
     },
     {
