@@ -70,6 +70,29 @@ dumps, and no `NSLocale` in either release owns it.
 `-localeIdentifier` is the string both accessors parse and `-objectForKey:` is what
 `regionCode` falls back to, so neither accessor needs anything iOS 6 lacks.
 
+## The 6.1.3 rung itself, which is the band the gate links
+
+The two censuses above are the prepared per-release ones. The band the 6.1.3 gate reads was
+also read directly, through `modules/apple/objc.lua`'s own `inventory` — the rungs' reader, not
+a re-implementation:
+
+```
+xmake l .agent-work/probe/inv.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 NSLocale NSFilePresenter
+  control: 11378 classes, 188523 instance selectors, 15334 class selectors read in this run
+  class NSLocale PRESENT  superclass=NSObject  image=/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation
+    inst -localeIdentifier, -objectForKey:, -identifier, -displayNameForKey:value:,
+         -initWithLocaleIdentifier:, -initWithCoder:, -hash, -isEqual:, -description
+    cls  +componentsFromLocaleIdentifier:, +canonicalLanguageIdentifierFromString:,
+         +localeIdentifierFromComponents:, +localeWithLocaleIdentifier:, +currentLocale, +systemLocale,
+         +autoupdatingCurrentLocale, +availableLocaleIdentifiers, +ISOLanguageCodes, +ISOCountryCodes
+```
+
+**The control is that first line**: 11378 classes and 203857 selectors read in the one run,
+and the reader then matched `NSLocale` and listed it. Neither `languageIdentifier` nor
+`regionCode` is in either list, so at the rung this port's minimum is actually gated on, the
+two accessors do not exist and the substrate they are built from does. `NSFilePresenter` came
+back ABSENT in the same run.
+
 ## What this does not claim
 
 `NSLocale+Identifiers17.m` defines release 17's two accessors and nothing else. The 15.0

@@ -92,6 +92,27 @@ So `cancelByProducingResumeData:` does exist by 7.0, on the **download** task's 
 subclasses, and reading the rung as the answer for `NSURLSessionUploadTask` would be wrong in
 the direction of claiming a capability that is not there.
 
+## The 6.1.3 rung itself, read through the rungs' own reader
+
+The prepared censuses above are 4.3, 4.3.5, 6.0 and 7.0. The band the 6.1.3 gate links was
+also read directly, through `modules/apple/objc.lua`'s `inventory` — the rungs' own reader:
+
+```
+xmake l .agent-work/probe/inv.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
+    NSFilePresenter NSAttributedString
+  control: 11378 classes, 188523 instance selectors, 15334 class selectors read in this run
+  class NSFilePresenter    ABSENT
+  class NSAttributedString PRESENT  superclass=NSObject  image=.../Foundation.framework/Foundation
+```
+
+**Control:** 11378 classes and 203857 selectors read in that one run, and the reader matched
+`NSAttributedString` in it while reporting `NSFilePresenter` absent — so the absent is the
+release's. `NSAttributedString`'s 96 instance methods on that rung contain no `initWithFormat:`
+and no format initializer of any public shape, and among its class methods the only
+format-shaped name is the private `-attributedStringWithFormatAndAttributes:`, exactly as on the
+6.0 rung. So both halves of the NSAttributedString claim, and the whole NSFilePresenter claim,
+hold at the rung this port's minimum is gated on.
+
 ## What this does not claim
 
 `Foundation/NSURLSession.m` is the port's own NSURLSession and it already implements
