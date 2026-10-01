@@ -417,3 +417,35 @@ would mean a new IPC surface plus a hook inside SpringBoard, the one thing only 
 The plate in the carplay port's `charon_apps.m` says the same, where the plate is drawn, and the two
 agree.
 
+
+## The 48 rows of this batch, audited against what the objects actually export
+
+`coordination/corpus/queue/UNIT-CarPlay-ios12.tsv` names 48 code rows of `registry/CarPlay/ios12.json`.
+Every one of them that carries `implemented` was read back off the built objects, because the check the
+gate runs at `modules/apple/backports.lua:1947` asks what the band BUILDS and not what a row says.
+
+The reader, and the 28 of 48 the audit covers:
+
+```
+xcrun otool -ov <object>.o | grep '^ *imp '      # one line per IMP the object defines
+```
+
+A method counts when its own IMP is there; a class row and a property row count when the class's IMPs
+are. Read that way, all 28 `implemented` rows of the batch have a backing definition — **28/28, none
+missing** — and the objects that answer them are `CarPlayNavigationSession12.m` (the session, its 12.0
+members and the three 17.4 properties' storage), `CarPlayNavigationSession154.m` and
+`CarPlayNavigationSession174.m` (the categories), `CarPlayVoiceControl12.m` (both voice control classes)
+and `CarPlaySessionConfiguration12.m` / `CarPlaySessionConfiguration13.m`.
+
+Two traps in that reader, both hit while writing it, because both make a real definition look missing:
+
+- A category's IMP prints as `-[CPNavigationSession(CharonRouteInformation174) addManeuvers:]`, not as
+  `-[CPNavigationSession addManeuvers:]`. A matcher that expects the bare spelling reports all four of
+  the session's category methods as having no definition.
+- The 17.4 properties of the session are `@dynamic` in the 12.0 object, so that object has their IVARS
+  and no IMP for them; the IMPs are in the 174 object's category. Reading only the class's own object
+  would report three properties unimplemented.
+
+The remaining 20 rows of the 48 are `absent` (19) and `inert` (2), and each carries the measurement its
+status rests on: the scenes in `facts/CarPlay/Scenes.md`, the session configuration and the two factory
+rows in `facts/CarPlay/SessionConfiguration.md` and in this batch's `+[CPRouteChoice new]` row itself.
