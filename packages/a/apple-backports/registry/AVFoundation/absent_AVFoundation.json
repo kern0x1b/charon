@@ -28,9 +28,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the row's owner is a protocol and 6.1.3 has no such protocol: of the 1171 protocols in the 6.1.3 armv7 cache, 16 name AV and they are AVAssetWriterFigAssetWriterNotificationHandlerDelegate, AVAssetWriterFinishWritingHelperDelegate, AVAsynchronousKeyValueLoading, AVAudioPlayerDelegate, AVAudioSessionDelegate, AVAudioSessionDelegateMediaPlayerOnly, AVCaptureFileOutputPauseResumeDelegate, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVConferenceDelegate, AVDecodedAudioSettingsForFig, AVDecodedVideoSettingsForFig, AVOutputSettingsValidation, AVRecorderImpl, AVReencodedAudioSettingsForFig and AVReencodedVideoSettingsForFig - this one is not among them. The release's own loading protocol is AVAsynchronousKeyValueLoading, which is what its AVAssetResourceLoader is built on and which declares no cancellation message",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called, which is what absent means. 6.1.3's resource loader tells a delegate nothing about a cancelled request: it has no protocol member for it and no AVAssetResourceLoadingRequest member that reports one, so a loader that is abandoned mid-request is not notified at all",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the protocol census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its 16-of-1171 count and its control of 558 names; class-scoped-rows.py returns NO CLASS for this row on 6.1.3, because a protocol row is asked of a protocol table and not of a class table, and CARRIED at 7.0"
+      "reason": "the PROTOCOL is 7.0's and it is NO PROTOCOL at both band ends, while the loading itself works on this release through an UNFORMAL delegate: 6.1.3's AVURLAsset carries -resourceLoader, and that loader carries -delegate, -delegateQueue and -setDelegate:queue: among its 11 own instance methods, along with -_attemptDelegateHandlingOfRequestWithDictionary:. So a caller on this release implements the methods it wants and the loader sends what it sends - there is no protocol to adopt, and no declared list of what it will send",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, so a caller cannot adopt it. A caller that implements the method implements a message no member of this release names: the request object it would be sent for carries -finished and -finishLoadingWithError: and no cancellation member at all. Loading still works here, through -setDelegate:queue: on the object -[AVURLAsset resourceLoader] answers",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVAssetResourceLoadingRequest finishLoading]",
@@ -38,9 +39,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetResourceLoadingRequest carries -finishLoadingWithError: and -finishLoadingWithResponse:data:redirect: among its 11 own instance methods, and no -finishLoading, where 7.0's 32 carry all three. Reading 7.0's body settles what the no-argument form is: at IMP 0x2c3a26d9 in the 7.0 armv7 cache it loads the ivar at offset 4, adds the second pool word, and calls a helper before it does anything else, so it is not a one-line forward to -finishLoadingWithError: with a nil argument. Forwarding to the release's method would be a guess at what the bookkeeping is for",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A loader ends a request with -[AVAssetResourceLoadingRequest finishLoadingWithError:], which is the release's own spelling and takes the error, and that is the call a caller on this release makes",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both ends; and the 7.0 body, code_map over the same cache for the IMP at 0x2c3a26d9 and a THUMB disassembly of it with every literal-pool load resolved, which is why this row is not a forward"
+      "reason": "the release's request object carries 11 own instance methods at 6.1.3 and the two that finish a load are -finishLoadingWithResponse:data:redirect: and -finishLoadingWithError:. There is no argument-free -finishLoading, which 7.0 added for a response already set on the request through -setResponse:/-response - and this release has no -response member either, so there is nothing for a no-argument call to finish",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller finishes a load on this release through -finishLoadingWithResponse:data:redirect:, passing the response, the bytes and the redirect URL in the one call, or through -finishLoadingWithError:",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVAssetTrack associatedTracksOfType:]",
@@ -204,9 +206,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the row's owner is a protocol and neither the protocol nor its class is in 6.1.3: of the 16 AV-named protocols in the 6.1.3 armv7 cache none is this one, and of the 301 AV-named classes AVPlayerItemLegibleOutput is not there either, so the push delegate has nothing to attach to. The release's own route for the same strings is the delegate protocol it does declare, AVCaptureFileOutputRecordingDelegate-shaped text styling through -[AVPlayerItem textStyleRules]",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called, which is what absent means. There is no AVPlayerItemLegibleOutput to push from on this release, so the delegate method has no caller and no argument values",
-      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the protocol and class census is tools/corpus/cache-census.lua AV 6.1.3 4.3, which prints the AV-named protocols of each rung beside its count and its control of 558 names; class-scoped-rows.py returns NO CLASS for this row on 6.1.3, because a protocol row is asked of a protocol table, and CARRIED at 7.0"
+      "reason": "the message belongs to the protocol of the class above, which no band end has: it names AVPlayerItemLegibleOutput in its first argument, and no member of this release's AVPlayerItem, of AVPlayerItemOutput or of AVPlayerItemOutputInternal names an attributed string or a legible output. The push this release declares is the timed-metadata one, and even that has no public output class at either end",
+      "effect": "the message is never sent, so a delegate that implements it is simply not called. A caller reading an item's legible data on this release reads the metadata the item itself carries, through -timedMetadata on AVPlayerItem and -copyCGImageAtTime:actualTime:error: on an AVAssetImageGenerator for timed stills",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "-[AVVideoCompositionLayerInstruction getCropRectangleRampForTime:startCropRectangle:endCropRectangle:timeRange:]",
@@ -299,9 +302,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is not in 6.1.3 either, and the census is the same one: of the 301 classes naming AV in the 6.1.3 armv7 cache, AVAssetResourceLoadingRequest and its Internal form are there and this is not, and the run's control reads 558 names beginning AV across 6.1.3 and 4.3. 7.0's AVAssetResourceLoadingRequest carries 32 own instance methods to 6.1.3's 11, and the split into a data request and a content-information request is most of the difference",
-      "effect": "NSClassFromString returns nil and a class reference fails to link against the release, which is what absent means for a class. A loader on this release is handed the one AVAssetResourceLoadingRequest and answers through -finishLoadingWithResponse:data:redirect:",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control, which answers 558 names beginning AV in the same run; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, with its three controls answered on both ends"
+      "reason": "the class holding a content type, a length and a byte range is 7.0's and is NO CLASS at both band ends. The release carries the same three facts in the dictionary -[AVAssetResourceLoadingRequest request] answers, and takes them by argument in -finishLoadingWithResponse:data:redirect:, which is the shape a caller fills a content request in here",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingDataRequest",
@@ -309,9 +313,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is not in 6.1.3. tools/corpus/cache-census.lua over the 6.1.3 armv7 cache answers 524 images of which 16 name AV and 11378 classes of which 301 name AV, and among those 301 are AVAssetResourceLoader, AVAssetResourceLoaderInternal, AVAssetResourceLoadingRequest and AVAssetResourceLoadingRequestInternal - not this one, and not its content-information twin. The run's own control reads 558 names beginning AV across 6.1.3 and 4.3, so the zero is the release's and not the reader's",
-      "effect": "NSClassFromString returns nil and any class reference to it fails to link against the release, which is what absent means for a class. 6.1.3's own AVAssetResourceLoadingRequest is the object a resource loader is handed, with -request and -serializableRepresentation on it, and this subclass has no counterpart to shadow",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control, which answers 558 names beginning AV in the same run so that a zero on 6.1.3 is the release's; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, with its three controls answered on both ends"
+      "reason": "the byte-range request object is 7.0's and is NO CLASS at both band ends. What the release reads instead is the request dictionary -[AVAssetResourceLoadingRequest request] answers, and its one content-reading member is -streamingContentKeyRequestDataForApp:contentIdentifier:options:error:, which is this release's shape of the same work for key data",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingRequest.cancelled",
@@ -319,9 +324,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the getter is isCancelled and not cancelled, because the header declares getter=isCancelled at AVAssetResourceLoader.h:216, and 6.1.3's AVAssetResourceLoadingRequest carries 11 own instance methods where 7.0's carry 32. Among the 11 is -finished, which is a different fact: it says the request has stopped, whether it completed or was cancelled, and 6.1.3 has no member that separates the two",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. -[AVAssetResourceLoadingRequest finished] is the release's own answer and it cannot distinguish a cancellation from a completion, so a delegate that needs to know which happened watches for -[AVAssetResourceLoaderDelegate resourceLoader:didCancelLoadingRequest:] - which is 7.0's message and which this release never sends either",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h:216 for the property and its getter; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the getter is isCancelled and it arrived with the protocol: the 11 own methods of AVAssetResourceLoadingRequest at 6.1.3 include -finished and -finishLoadingWithError: and name no cancellation at all, so the release has no flag to read. The class itself is NO CLASS at 4.3, arriving with iOS 6",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that wants to know whether a load is over asks -finished, which the release carries",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingRequest.contentInformationRequest",
@@ -329,9 +335,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property returns an AVAssetResourceLoadingContentInformationRequest, and 6.1.3 has no such class: cache-census.lua over the 6.1.3 armv7 cache answers 524 images of which 16 name AV, 11378 classes of which 301 name AV, and AVAssetResourceLoadingContentInformationRequest is not among them, while 6.1.3 does carry AVAssetResourceLoader, AVAssetResourceLoaderInternal, AVAssetResourceLoadingRequest and AVAssetResourceLoadingRequestInternal. The release's own design is one request object for both halves: its -request is an NSURLRequest and -serializableRepresentation is its own dictionary",
-      "effect": "reading it raises an unrecognised selector, which is what absent means, and there is no object of that class on this release to return. A custom resource loader reads the range and the content type out of -[AVAssetResourceLoadingRequest request] and answers with -finishLoadingWithResponse:data:redirect:, which are both 6.1.3 members",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3, whose control in the same run reads 558 names beginning AV across the two rungs, so the zero on 6.1.3 for this class is the release's; the per-member verdicts are class-scoped-rows.py with its three controls answered on both ends"
+      "reason": "the object holding the content type, the length and the byte range is 7.0's, and the CLASS is NO CLASS at both band ends, so there is nothing on this release for the member to answer with: the 11 own methods of AVAssetResourceLoadingRequest carry no request accessor of any kind",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the class it would return is not there either - NSClassFromString answers nil. A caller states the content in one call on this release, through -finishLoadingWithResponse:data:redirect:, which carries the response inline instead of asking a delegate to build one",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingRequest.dataRequest",
@@ -339,9 +346,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property returns an AVAssetResourceLoadingDataRequest, and like its content-information twin that class is not in 6.1.3: the same certified census of the 6.1.3 armv7 cache answers 301 classes naming AV and holds AVAssetResourceLoader, AVAssetResourceLoadingRequest and their Internal forms but neither request subclass. 7.0 splits the byte range and the content information into two objects; 6.1.3 keeps one and reaches the range through -[AVAssetResourceLoadingRequest request]",
-      "effect": "reading it raises an unrecognised selector, which is what absent means, and the object it would return does not exist on this release. A custom resource loader serves bytes by answering -[AVAssetResourceLoadingRequest finishLoadingWithResponse:data:redirect:], which is a 6.1.3 member, and reads what it needs from -request",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3, whose control in the same run reads 558 names beginning AV across the two rungs; the per-member verdicts are class-scoped-rows.py with its three controls answered on both ends"
+      "reason": "the byte-range request object is 7.0's and its CLASS is NO CLASS at both band ends; the 11 own methods of AVAssetResourceLoadingRequest name no data request, no offset and no requestsToFill",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the class it would return is not there: NSClassFromString answers nil. A caller reads what the loader asked for through -request, the dictionary the release's own -initWithResourceLoader:requestDictionary: was built with, and asks for key data through -streamingContentKeyRequestDataForApp:contentIdentifier:options:error:",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingRequest.redirect",
@@ -349,9 +357,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetResourceLoadingRequest carries 11 own instance methods where 7.0's carry 32, and the release's own -finishLoadingWithResponse:data:redirect: takes the redirect as its third argument. So the release carries the capability and not the property: 6.1.3 has no -redirect getter to read back what a previous -finishLoadingWithResponse:data:redirect: was given, and no member of the request records it",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A loader that redirects answers -[AVAssetResourceLoadingRequest finishLoadingWithResponse:data:redirect:] with the new URL and the request cannot be asked afterwards what it was told; the port's own -AVAssetResourceRenewalRequest adds a subclass and no members for the same reason",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the redirect URL is 7.0's, and on this release a redirect is an argument rather than a member: -finishLoadingWithResponse:data:redirect: takes the redirect in the same call that finishes the load, and the 11 own methods have no -redirect/-setRedirect: pair",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The redirect is the one the caller passed to -finishLoadingWithResponse:data:redirect:, which the release carries",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetResourceLoadingRequest.response",
@@ -359,9 +368,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetResourceLoadingRequest carries 11 own instance methods and no -response among them, where 7.0's 32 carry it. The release's own -finishLoadingWithResponse:data:redirect: takes the NSURLResponse as its first argument, so the capability to answer with one is there and the property to read it back is not: 6.1.3's request keeps no member that records the response it was finished with",
-      "effect": "reading it raises an unrecognised selector, which is what absent means, and it would be nil on any port that did not store it. A loader keeps its own NSURLResponse and answers with it; there is nothing on this release to read it from afterwards",
-      "source": "iPhoneOS 16.5 AVFoundation/AVAssetResourceLoader.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the response the release would store on the request is 7.0's: the 11 own methods include -finishLoadingWithResponse:data:redirect:, which takes the response AS an argument, and -serializableRepresentation, which writes what the object holds - there is no -response/-setResponse: pair to read one back",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that holds a response keeps it itself, having passed it to -finishLoadingWithResponse:data:redirect: rather than setting it here",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVAssetTrack.availableTrackAssociationTypes",
@@ -650,9 +660,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods and no -customVideoCompositor among them, where 7.0's 318 carry it. The release's own video composition is reached through -[AVPlayerItem videoComposition] and -setVideoComposition: and set from the private -[AVPlayerItem _setVideoCompositor:], which is the compositor instance rather than a class, and the AVVideoCompositing protocol that would type a custom one is not a 6.1.3 protocol at all",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller supplies an AVVideoComposition through -[AVPlayerItem setVideoComposition:], and the release composites that composition with its own compositor; naming a custom compositor class here would need the AVVideoCompositing protocol, which this release has no declaration of",
-      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
+      "reason": "the release stores a compositor on the item and does not name its class: 6.1.3's AVPlayerItem carries 237 own instance methods, among them -videoComposition/-setVideoComposition:, the PRIVATE -_setVideoCompositor:, -_setVideoCompositionInstructions:, -_setVideoCompositionFrameDuration:, -_setVideoCompositionRenderScale:, -_setVideoCompositionRenderSize: and -seekingWaitsForVideoCompositionRendering/-setSeekingWaitsForVideoCompositionRendering:. The protocol a caller implements to BE that compositor is NO PROTOCOL at both band ends",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and there is no member to read the class back from. The item's own compositing is -videoComposition, and the release sets its compositor through the private -_setVideoCompositor:",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.downloadOverdue",
@@ -750,9 +761,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is not in 6.1.3, and neither is its superclass's shape: the 6.1.3 armv7 cache holds 11378 classes of which 301 name AV, and among them AVPlayerItemOutput and AVPlayerItemVideoOutput are there while AVPlayerItemLegibleOutput is not. 6.1.3's AVPlayerItem keeps its legible output in a private form instead - the private -[AVPlayerItem _evaluateVideoOutputs] and -_evaluateSuppression and the public -[AVPlayerItem textStyleRules] and -setTextStyleRules: - so the release displays styled text without a legible-output object to attach",
-      "effect": "NSClassFromString returns nil and a class reference fails to link against the release, which is what absent means for a class. A caller that needs styled subtitles on this release sets -[AVPlayerItem textStyleRules] and the release renders them; there is no output object to add or to push from",
-      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the class census is tools/corpus/cache-census.lua AV 6.1.3 4.3 read with its control of 558 names beginning AV; class-scoped-rows.py returns NO CLASS for this row on 6.1.3 and CARRIED at 7.0, where it reads super AVPlayerItemOutput with 23 own instance selectors, and with its three controls answered on both ends"
+      "reason": "the output that receives an item's legible media is 7.0's and is NO CLASS at both band ends. The release has the base of that pipeline and not the class: AVPlayerItemOutput carries 11 own instance methods at 6.1.3 - -suppressesPlayerRendering/-setSuppressesPlayerRendering:, -itemTimeForHostTime:, -itemTimeForMachAbsoluteTime:, -init, -dealloc and the private attach, detach and timebase members - and none of them is a delivery method to override. AVPlayerItem carries -addOutput:/-removeOutput:/-outputs and -timedMetadata, so an output is attached; there is no public output class here to attach, and none of the 11 base members is the callback one would override",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes, and a caller writing its own output subclass has no declared delivery method to override on the base it would inherit from",
+      "source": "SDK 16.4, AVFoundation; neither band end carries it: class-scoped over the 4.3 and 6.1.3 armv7 caches with tools/corpus/class-scoped-rows.py, whose six controls answered - facts/AVFoundation/AVFoundation70.md",
+      "facts": "facts/AVFoundation/AVFoundation70.md"
     },
     {
       "api": "AVPlayerItemTrack.currentVideoFrameRate",
