@@ -7,9 +7,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods and no +playerItemWithAsset:automaticallyLoadedAssetKeys: among them, where 7.0's 318 carry it. The release's own factory is +[AVPlayerItem playerItemWithAsset:], which 6.1.3 has, and the second argument of this one is a key list the release has no member to apply: 6.1.3's AVPlayerItem does not carry -automaticallyLoadedAssetKeys either, so the keys would be stored where nothing reads them",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller builds the item with +[AVPlayerItem playerItemWithAsset:] and asks the asset for the keys it wants through -loadValuesAsynchronouslyForKeys:completionHandler:; a key list accepted here and dropped would be a value, not a capability",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "+[AVVideoCompositionCoreAnimationTool videoCompositionCoreAnimationToolWithPostProcessingAsVideoLayers:inLayer:]",
@@ -161,9 +161,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayer carries 159 own instance methods and neither this getter nor its setter -[AVPlayer setMediaSelectionCriteria:forMediaCharacteristic:], where 7.0's 207 carry both. The release's own media selection lives on the item and the group, not on the player: -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:] and -[AVPlayerItem selectedMediaOptionInMediaSelectionGroup:] are 6.1.3 members of AVPlayerItem, and AVMediaSelectionGroup and AVMediaSelectionOption are 6.1.3 classes",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller that wants the choice for a characteristic reads the option out of the group and asks -[AVPlayerItem selectedMediaOptionInMediaSelectionGroup:] for the one in force; the player answers nothing about a criteria table, and a getter here would have to return something it cannot compute on this release",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayer.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVPlayer setMediaSelectionCriteria:forMediaCharacteristic:]",
@@ -171,9 +171,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the setter of the row above, and it arrived with it: 6.1.3's AVPlayer carries neither this method nor its getter among its 159 own instance methods, where 7.0's 207 carry both. Storing a criteria table on the player means storing it somewhere, and 6.1.3's player has no member to store it in and no member that would read it back",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller selects the option for the characteristic directly on the item with -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:]; the round trip through a player-held criteria table is 7.0's and nothing on this release consumes one",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayer.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVPlayerItem initWithAsset:automaticallyLoadedAssetKeys:]",
@@ -181,9 +181,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the designated initialiser of the row above, and it arrived with it: 6.1.3's AVPlayerItem carries 272 own instance methods and neither -initWithAsset:automaticallyLoadedAssetKeys: nor +playerItemWithAsset:automaticallyLoadedAssetKeys: among them, where 7.0's 318 carry both. 6.1.3's own initialisers are -[AVPlayerItem initWithAsset:] and -[AVPlayerItem initWithURL:], and the key list has nowhere on this release to be applied",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller builds the item with -[AVPlayerItem initWithAsset:] and loads what it needs through the asset; the key list this initialiser takes would be accepted and discarded, so the object would answer as if the keys had been asked for and would not have asked for them",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVPlayerItem selectMediaOptionAutomaticallyInMediaSelectionGroup:]",
@@ -191,9 +191,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a method like it: it arrived in iOS 7",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods and no -selectMediaOptionAutomaticallyInMediaSelectionGroup: among them, where 7.0's 318 carry it. The release's own pair is explicit: -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:] and -[AVPlayerItem selectedMediaOptionInMediaSelectionGroup:]. Choosing automatically means consulting a criteria table against the group, and neither a player-held criteria table nor the AVPlayer.appliesMediaSelectionCriteriaAutomatically flag is a member of 6.1.3's player",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller picks the option itself and hands it to -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:]; the automatic pick needs a criteria table the release does not hold and a policy flag it does not expose, so there is no answer here to forward",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "-[AVPlayerItemLegibleOutputPushDelegate legibleOutput:didOutputAttributedStrings:nativeSampleBuffers:forItemTime:]",
@@ -381,9 +381,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 57 own instance methods and neither -preferredVolume nor -setPreferredVolume: among them, where 7.0's 62 carry both. The volume knob this release does have is on the track being written, -[AVAssetTrack preferredVolume] is a 6.1.3 member of AVAssetTrack, and 6.1.3's writer input scales by what the writer is handed: its own -mediaType, -outputSettings and -sourceFormatHint are where an audio level enters this release's writer",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and so does writing it. The release's own per-track level is -[AVAssetTrack preferredVolume]; a float stored on the input here would be a value the 6.1.3 writer never reads, since the input has no member that consults it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVAssetWriterInput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVAsynchronousVideoCompositionRequest",
@@ -590,9 +590,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayer carries 159 own instance methods and none of the three this property spells -appliesMediaSelectionCriteriaAutomatically, -setAppliesMediaSelectionCriteriaAutomatically: and the KVO declaration -automaticallyNotifiesObserversOfAppliesMediaSelectionCriteriaAutomatically - where 7.0's 207 carry all three. The release's own selection substrate is one level down, on the item: -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:] and -[AVPlayerItem selectedMediaOptionInMediaSelectionGroup:] are 6.1.3 members. A player-level criteria table and a flag that applies it is 7.0's shape",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller picks a track explicitly with -[AVPlayerItem selectMediaOption:inMediaSelectionGroup:] and reads the choice back with -selectedMediaOptionInMediaSelectionGroup:; the automatic pass over the criteria table has no release member to hook, and the port's own AVPlayerMediaSelectionCriteria class carries the table but nothing on this release consults it",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayer.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayer.muted",
@@ -600,9 +600,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same gap as AVPlayer.volume, one property over: 6.1.3's AVPlayer carries neither -isMuted nor -setMuted: among its 159 own instance methods, where 7.0's 207 carry both, and 7.0's image holds the KVO declarations -automaticallyNotifiesObserversOfMuted and -keyPathsForValuesAffectingMuted that 6.1.3 does not. The getter is isMuted and not muted, because the header declares getter=isMuted",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that wants silence mutes the audio session, which is the mechanism this release has, or sets the item's volumeAdjustment to zero; the player carries no mute of its own to answer",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayer.h for the declaration and its getter; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayer.volume",
@@ -610,9 +610,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayer a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayer carries 159 own instance methods where 7.0's carry 207, and the 48 7.0 adds include -volume and -setVolume:. 6.1.3 has neither, and it has nothing to read instead: its own KVO declarations name the key without the accessor, -automaticallyNotifiesObserversOfVolume is there and -volume is not, and its image's __cstring holds _AVPlayer_VolumeDidChangeNotification at 0x30343f1c but not _AVPlayer_Volume, which 7.0's holds at 0x2c3b2024. The per-item volume the release does carry is -[AVPlayerItem volumeAdjustment] on AVPlayerItem, which is a different question on a different object",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that wants the release's own volume knob reads -[AVPlayerItem volumeAdjustment] on the item it is playing; there is no player-level volume on this release to read, and a port that stored a float here would answer a number no output ever applied, which is a value and not a capability",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayer.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py, whose three controls per release all answered as wanted on this slice (-[AVPlayerItem duration] CARRIED, -[AVPlayerItem aSelectorNoFrameworkHas] ABSENT, -[AVCompositionTrack mediaType] INHERITED, on both ends), so its ABSENT is the release's and not the reader's; the two __cstring greps are tools/image-exports.lua's own image walk, where 6.1.3 answers 16 strings naming olume and 7.0 answers 18, the control being that 6.1.3's answer to videoBinned is 0"
     },
     {
       "api": "AVPlayerItem.audioTimePitchAlgorithm",
@@ -620,9 +620,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods where 7.0's carry 318, and the pair this property spells is not among the 272: 6.1.3 has no -audioTimePitchAlgorithm and no -setAudioTimePitchAlgorithm:. The release does carry the algorithm as a private setter, -[AVPlayerItem _quietlySetFigTimePitchAlgorithm:], plus the private -_variableSpeedAudioProcessor and the public -volumeAdjustment it scales through, so the pitch control exists below the spelling and not at it",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. The release's own time-pitch control is per item and private, and a public setter that stored an enum here would be a number no release member reads: 6.1.3's own audio path takes its pitch from the item's -volumeAdjustment, which is what a caller changes",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItem.automaticallyLoadedAssetKeys",
@@ -630,9 +630,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods and no -automaticallyLoadedAssetKeys among them, where 7.0's 318 carry it. The release decides for itself which keys it loads: -[AVPlayerItem loadValuesAsynchronouslyForKeys:completionHandler:] and -[AVPlayerItem statusOfValueForKey:error:] are AVAsset's on this release and AVPlayerItem keeps its own loading state, but the release's policy is not a caller-set list of keys",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that wants a key loaded asks for it through -loadValuesAsynchronouslyForKeys:completionHandler: on the asset; the list of keys the release chooses for itself is not exposed here and a stored copy of one would be a value the release never reads",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItem.customVideoCompositor",
@@ -640,9 +640,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItem carries 272 own instance methods and no -customVideoCompositor among them, where 7.0's 318 carry it. The release's own video composition is reached through -[AVPlayerItem videoComposition] and -setVideoComposition: and set from the private -[AVPlayerItem _setVideoCompositor:], which is the compositor instance rather than a class, and the AVVideoCompositing protocol that would type a custom one is not a 6.1.3 protocol at all",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller supplies an AVVideoComposition through -[AVPlayerItem setVideoComposition:], and the release composites that composition with its own compositor; naming a custom compositor class here would need the AVVideoCompositing protocol, which this release has no declaration of",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItem.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVPlayerItemAccessLogEvent.downloadOverdue",
@@ -750,9 +750,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItemTrack a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVPlayerItemTrack carries 19 own instance methods and no -currentVideoFrameRate among them, where 7.0's 23 carry it. The release has the rate the track declares but not the rate of the frame on screen: -[AVAssetTrack nominalFrameRate] is a 6.1.3 member of AVAssetTrack and is what AVPlayerItemTrack reaches through -[AVPlayerItemTrack assetTrack], and 6.1.3's item track keeps no per-frame state of its own - its whole public surface is -assetTrack, -trackID, -isEnabled, -setEnabled: and -fallbackTrack",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that wants the track's frame rate reads -[AVPlayerItemTrack assetTrack] and then -[AVAssetTrack nominalFrameRate], which is the declared rate; the rate of the frame currently being presented is 7.0's, and answering it from the declared rate would be a different number under the same name",
+      "source": "iPhoneOS 16.5 AVFoundation/AVPlayerItemTrack.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVVideoCompositing",
