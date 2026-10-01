@@ -5,9 +5,14 @@
 // startNavigationSessionForTrip: on CPMapTemplate", and CPMapTemplate.h:118 says to keep a reference to
 // it to perform guidance updates. The 16.0 arm64e cache agrees about who makes one: the class's only
 // initialiser is the private -initWithTrip:mapTemplate:, and the private protocol
-// CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:. So the way in is a
-// MAP TEMPLATE -- which this port carries and draws, and which is what this port has instead of a head
-// unit -- and what the session carries is the program's own trip, maneuvers and estimates.
+// CPNavigationSessionProviding declares -hostStartNavigationSessionForTrip:reply:. The 12.0 cache,
+// which is the band this object is carried from, agrees about the direction and spells the creator
+// differently: its only initialiser is -initWithTrip:provider:mapTemplate:, with -provider and
+// -setProvider: beside it, so a provider arrived between the two releases
+// (facts/CarPlay/CarPlay12BandEnd.md). What both say is the same and is what this rests on: the app is
+// handed the session and does not build one. So the way in is a MAP TEMPLATE -- which this port
+// carries and draws, and which is what this port has instead of a head unit -- and what the session
+// carries is the program's own trip, maneuvers and estimates.
 //
 // What is the wall, and it is not this: a car renders the guidance on its own screen and takes the
 // driver's input. There is no head unit on either fleet device, so what this object answers is the
@@ -124,8 +129,9 @@
 // class method and not an initialiser because the 26.2 header forbids -init and +new
 // (CPNavigationSession.h:33-34) and because a method outside the init family may not assign to self;
 // NSObject's own -init is used, which is the release's, and the two Charon methods below do the
-// configuring. The release's own name for this is the private -initWithTrip:mapTemplate:, read at 16.0
-// and 18.0, and a Charon name is both the port's own and out of the library's exports.
+// configuring. The release's own name for this is the private creator, -initWithTrip:mapTemplate: at
+// 16.0 and 18.0 and -initWithTrip:provider:mapTemplate: at 12.0, which is the band this object is
+// carried from; a Charon name is both the port's own and out of the library's exports.
 + (instancetype)charon_sessionForTrip:(CPTrip *)trip mapTemplate:(CPMapTemplate *)mapTemplate
 {
     CPNavigationSession *session = [[CPNavigationSession alloc] init];
