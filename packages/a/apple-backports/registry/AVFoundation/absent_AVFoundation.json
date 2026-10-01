@@ -2166,9 +2166,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class aggregates download tasks and 6.1.3 has neither it nor the task it aggregates: first-rung answers NONE for _AVAssetDownloadTask, and tools/corpus/class-scoped-rows.py answers NO CLASS for it on 6.1.3, 4.3 and 7.0. There is no download task on this release to aggregate",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release fetches an HLS asset itself over its own NSURLConnection and hands the segments to the release through -[AVAssetResourceLoader setDelegate:queue:], which is where 6.1.3 asks for bytes; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetDownloadTask.h for the declaration; first-rung.py answers NONE for _AVAssetDownloadTask; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the aggregate is a group of downloads over a session API, and neither 6.1.3 nor 4.3 has one: no class or protocol of either release is named NSURLSession, and the release's own download is the private AVAssetDownloadSession (initWithURL:destinationURL:options:, destinationURL, downloadToken, pause, start, stop), a session over one URL whose storage the application owns",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVAggregateAssetDownloadTask, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAsset.allMediaSelections",
@@ -2176,9 +2176,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property returns an array of AVMediaSelection and 6.1.3 has no AVMediaSelection class at all: its AVMediaSelection family is AVMediaSelectionGroup, AVMediaSelectionOption, AVMediaSelectionTrackOption, AVMediaSelectionTrackGroup, AVMediaSelectionKeyValueGroup, AVMediaSelectionKeyValueOption, AVMediaSelectionOptionInternal and AVMediaSelectionGroupInternal - eight classes, and AVMediaSelection is not one of them",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release works with the release's own two levels: -[AVAsset mediaSelectionGroups] names the groups and -[AVPlayerItem selectedMediaOptionInMediaSelectionGroup:] is the release's record of which option of a group is selected; the port defines no accessor and no class of that name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAsset.h for the declaration; the AVMediaSelection* class census is objc-inventory.lua's class table of the 6.1.3 armv7 cache, printed with its eight names; tools/corpus/class-scoped-rows.py reads NO CLASS for this row's type on 6.1.3, 4.3 and 7.0, controls answered on all three"
+      "reason": "the row is an array of AVMediaSelection, and iOS 6.1.3 has no AVMediaSelection class at all - not in the metadata, whose 1171 protocols and 11378 classes carry AVMediaSelectionGroup, AVMediaSelectionOption, AVMediaSelectionTrackOption and AVMediaSelectionKeyValueOption, and not in the bytes either: strings -a of the 6.1.3 cache with grep -xE has AVAsset, AVCaptureDevice and AVMutableComposition and no AVMediaSelection or AVMutableAsset. 4.3 carries none of the family",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py allMediaSelections, first held rung 11.0; the strings cross-check in facts/AVFoundation/Release11.md; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAssetDownloadStorageManagementPolicy",
@@ -2186,9 +2186,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is the read-only form of a storage policy for downloaded assets, and 6.1.3 has no downloaded assets and no storage manager for them: first-rung answers NONE for _AVAssetDownloadTask and for _AVAssetDownloadURLSession, and tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release manages its own downloaded bytes in its own container directory and enforces its own quota, and -[AVAssetResourceLoader setDelegate:queue:] is where 6.1.3 asks it for them; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetDownloadStorageManager.h for the declaration; first-rung.py answers NONE for the two download-task names; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the policy is the thing an NSURLSession storage manager is configured with, and neither 6.1.3 nor 4.3 has the session or a policy class of any kind: 0 of 11378 classes and 1171 protocols at 6.1.3, 0 of 7187 and 564 at 4.3, and the release's AVAssetDownloadSession is configured with an options dictionary, not a policy object",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVAssetDownloadStorageManagementPolicy, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAssetDownloadStorageManager",
@@ -2196,9 +2196,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class manages the storage of downloaded assets and 6.1.3 has no download task and no download URL session to manage storage for - first-rung answers NONE for _AVAssetDownloadTask, for _AVAssetDownloadURLSession and for _NSURLSession, which is what a download URL session would be built on - and tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release stores the bytes it fetched wherever it likes and hands them to the release through -[AVAssetResourceLoader setDelegate:queue:], which is the release's own path for bytes it does not have; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetDownloadStorageManager.h for the declaration; first-rung.py answers NONE for the three names; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the manager owns the storage of background download sessions, and neither 6.1.3 nor 4.3 has a session to own: no class or protocol name of either release is NSURLSession, and AVAssetDownloadSession at 6.1.3 takes a destination URL from the application and has no storage of its own to hand out or evict",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVAssetDownloadStorageManager, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAssetTrack.decodable",
@@ -2206,9 +2206,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVAssetTrack carries 52 own instance methods and no decodable member; its own vocabulary is -isPlayable, -isEnabled, -isSelfContained, -hasMediaCharacteristic:, -hasMediaCharacteristics:, -formatDescriptions and -mediaCharacteristics, which say whether the track plays and what is in it, and none of them separates a track that decodes to PCM or video from one that would have to be converted",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVAssetTrack isPlayable] and -[AVAssetTrack formatDescriptions] and takes the media subtypes there, which is where this release says what a track holds; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetTrack.h for the declaration; the 6.1.3 armv7 class table of AVAssetTrack read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
+      "reason": "6.1.3's AVAssetTrack carries 54 selectors, of which the ones that say whether a track can be used are -isPlayable, -hasMediaCharacteristic:, -hasMediaCharacteristics:, -isEnabled, -isSelfContained and -isExcludedFromAutoselectionInTrackGroup, and none of them is about decoding into samples; 4.3 carries 40 and has neither of the two. decodable is not isPlayable under another name - a track can be playable through a path that is not decodable - so a caller that needs the release's reading has -isPlayable",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py decodable, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAssetWriterInput.mediaDataLocation",
@@ -2216,9 +2216,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property's type is AVFileDataLocation and no held release exports its cases: first-rung answers NONE for _AVFileDataLocationNotSuitable, so a value this band could return would be one no caller could compare against its own copy of the enumeration. 6.1.3's AVAssetWriterInput carries 52 own instance methods and no location member either - its storage vocabulary is -outputSettings, -sourceFormatHint, -expectsMediaDataInRealTime and -mediaTimeScale",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release writes the file it wants and appends to the input with -[AVAssetWriterInput appendSampleBuffer:], and the location of the media is the output URL it gave -[AVAssetWriter initWithURL:fileType:error:]; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetWriter.h for the declaration; first-rung.py answers NONE for _AVFileDataLocationNotSuitable; the 6.1.3 armv7 class table of AVAssetWriterInput read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 52 own instance methods, controls answered as wanted"
+      "reason": "where a sample's data lands inside the output file is a thing the writer decides, and 6.1.3's AVAssetWriterInput is 57 selectors of input, not of file layout (expectsMediaDataInRealTime, sourceFormatHint, naturalSize, transform, mediaTimeScale, metadata, extendedLanguageTag, languageCode, marksOutputTrackAsEnabled, the track associations and the writer's own private _trackID); its writer appends what the application hands it and exposes no location",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py mediaDataLocation, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCameraCalibrationData",
@@ -2376,9 +2376,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is the mutable form of a policy for downloaded assets, and 6.1.3 has no downloaded assets and no storage manager for them: first-rung answers NONE for _AVAssetDownloadTask and for _AVAssetDownloadURLSession, and tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release sets its own quota where it keeps the bytes it fetched, and hands them to the release through -[AVAssetResourceLoader setDelegate:queue:]; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVAssetDownloadStorageManager.h for the declaration; first-rung.py answers NONE for the two download-task names; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the mutable spelling of the policy above, so the same absence: neither 6.1.3 nor 4.3 has NSURLSession, a storage manager, or a policy class to mutate - the release's own AVAssetDownloadSession is given an options dictionary and a destination URL by the application",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVMutableAssetDownloadStorageManagementPolicy, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVMutableVideoComposition.sourceTrackIDForFrameTiming",
