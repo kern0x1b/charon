@@ -1519,11 +1519,11 @@
    "kind": "property",
    "introduced": "26.4",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "owed: coordination/api-queue.md names this row, under 'UIKit 26.x - two rows owed because the surface predates them'. A 26.4 name cannot appear in the SDK 26.2 SURFACE by construction - the surface predates it - so there is no declaration in the tree to read the signature from, and carrying the property on a remembered signature would be a guess with a symbol on it. What closes it is a newer surface that declares the row, not a different implementation",
-   "effect": "NOT implemented while the row is owed: the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises - the same position an `absent` row is in, and the difference is why this one is owed rather than absent: the RELEASE carries the name and the PORT could carry it",
-   "source": "SDK 26.2 surface, UIKit (via=own); the band's object compiled for armv7-apple-ios6.1.3 and read with otool -v -s __TEXT __objc_classname and __objc_methname, which is the count the registry check makes",
-   "facts": "facts/UIKit/UIContentUnavailable26.md"
+   "status": "absent",
+   "reason": "measured absent, where the row sat `owed` - and owed is not a landing state, the queue's own rulebook says so. THE OWNER IS NOT A CLASS IN ANY RELEASE: UITextInput is a @protocol in 6.1.3, 12.0, 16.0 and 18.0, all four answering `protocol` and not `class` for it, so A CATEGORY CANNOT BE ON A PROTOCOL and there is no port class for this member to live on. THE SELECTOR IS OLD AND THAT IS A TRAP, NOT A REASON: first-rung answers 8.0 for unobscuredContentRect, and in every release that carries it the owner is WebKit's WAKScrollView or WKContentView - 12.0, 16.0 and 18.0 all list the pair, and 6.1.3 lists neither because WKWebView is 8.0 - while UITextInput itself carries the member in no held release. A selector's rung is not its owner's. WHAT THE OLD REASON SAID IS STILL TRUE AND NO LONGER DECIDES: the SDK 26.2 surface does not declare the name, because a 26.4 name cannot appear in a 26.2 surface by construction, so the property's type was never readable here - which is why the accessor this object once carried was a guess with a symbol on it, and why the port writes none. What closes this row is a surface that declares it, read against the same inventories",
+   "effect": "the accessor is not declared, so respondsToSelector: answers NO and an unchecked call raises. The row used to say it was `owed` while reading exactly like an `absent` one; it now says which of the two it is, and why",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name, and coordination/api-queue.md's note that this name predates the surface; the owner and the selector's real owners measured with tools/corpus/objc-inventory.lua over the four band-end caches and tools/cache-index/first-rung.py --rungs, commands, output and controls in the facts page",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md"
   },
   {
    "api": "-[NSObject providerForDeferredMenuElement:]",
