@@ -15,12 +15,6 @@
 
 @end
 
-@implementation GCControllerTouchpad
-
-@dynamic button, touchDown, touchMoved, touchUp, touchSurface, touchState, reportsAbsoluteTouchSurfaceValues;
-
-@end
-
 @implementation GCDeviceBattery
 
 @dynamic batteryLevel, batteryState;

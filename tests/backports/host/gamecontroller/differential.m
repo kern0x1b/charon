@@ -42,6 +42,20 @@
 - (void)setValueForXAxis:(float)x yAxis:(float)y;
 @end
 
+// The touchpad, mirrored the way every other protocol here is: the host's own class
+// behind a protocol spelled out of its declared members, so the same code drives the
+// host's touchpad and the port's renamed copy without naming either.
+@protocol LTouchpad <NSObject>
+@property (readonly) id button;
+@property (readonly) id touchSurface;
+@property (readonly) NSInteger touchState;
+@property (nonatomic) BOOL reportsAbsoluteTouchSurfaceValues;
+@property (nonatomic, copy, nullable) void (^touchDown)(id, float, float, float, BOOL);
+@property (nonatomic, copy, nullable) void (^touchMoved)(id, float, float, float, BOOL);
+@property (nonatomic, copy, nullable) void (^touchUp)(id, float, float, float, BOOL);
+- (void)setValueForXAxis:(float)xAxis yAxis:(float)yAxis touchDown:(BOOL)touchDown buttonValue:(float)buttonValue;
+@end
+
 @protocol LProfile <NSObject>
 @property (readonly) id controller;
 @property (readonly) id device;
@@ -563,6 +577,94 @@ static NSArray *snapshotFunctionGroup(BOOL port)
     return log;
 }
 
+// A touchpad, held against the host's own on the two things both copies must agree
+// about - the touch state the header tells a caller to poll, and the fact that the
+// three handlers are stored and copied - and then, separately, on what this port
+// deliberately does differently, which is stated rather than papered over.
+//
+// The difference is the two children. A touchpad the host builds itself, with no
+// controller behind it, answers nil for `button` and `touchSurface`, and every axis it
+// reports through them is therefore zero and nan (measured, facts page). This port
+// builds real elements for both instead, through the same -initWithCharonSpec: seam and
+// the same -charon_linkXAxis:yAxis:up:down:left:right: a dpad is linked with that every
+// other profile here uses, because a nil child is a crash for every caller that polls
+// the touch surface the header tells it to poll. That is the same call the mouse made
+// when GCMouseInput was carried (c240db3fe), and it is a stated gap, not a match.
+// An element's reading, not just what it is: the axes' values, the buttons' value and
+// pressed state, so a line that prints one of these is a line that fails when a value
+// changes. describeElement alone names an element and would not notice a surface whose
+// axes stayed at zero through every call.
+static NSString *describeReading(id element)
+{
+    if (!element)
+        return @"(nil)";
+    NSString *k = kind(element);
+    if ([k isEqual:@"dpad"] || [k isEqual:@"cursor"]) {
+        id<LDpad> d = element;
+        return [NSString stringWithFormat:@"dpad %@/%@ %@ %@ %@ %@ %@", f(((id<LAxis>)d.xAxis).value), f(((id<LAxis>)d.yAxis).value),
+                f(((id<LButton>)d.up).value), f(((id<LButton>)d.down).value), f(((id<LButton>)d.left).value), f(((id<LButton>)d.right).value),
+                f(((id<LButton>)d.up).isPressed), f(((id<LButton>)d.left).isPressed)];
+    }
+    if ([k isEqual:@"axis"])
+        return [NSString stringWithFormat:@"axis %f", ((id<LAxis>)element).value];
+    if ([k isEqual:@"button"]) {
+        id<LButton> b = element;
+        return [NSString stringWithFormat:@"button v=%f pressed=%d touched=%d", b.value, b.isPressed, b.isTouched];
+    }
+    return describeElement(element);
+}
+
+static NSArray *touchpadState(BOOL port)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    Class c = port ? NSClassFromString(@"CharonHostGCControllerTouchpad") : NSClassFromString(@"GCControllerTouchpad");
+    id<LTouchpad> touchpad = (id<LTouchpad>)[[c alloc] init];
+    [log addObject:[NSString stringWithFormat:@"touchpad init=%d", touchpad != nil]];
+    [log addObject:[NSString stringWithFormat:@"touchpad state=%ld absolute=%d", (long)touchpad.touchState, touchpad.reportsAbsoluteTouchSurfaceValues]];
+    [log addObject:[NSString stringWithFormat:@"touchpad handlers before=%d/%d/%d", touchpad.touchDown != nil, touchpad.touchMoved != nil, touchpad.touchUp != nil]];
+
+    // The header's own three calls in the order a touch arrives: down, a move while
+    // still down, up. The state is the pair the header says must be polled with the
+    // surface, so it is the line a caller's own code branches on.
+    NSArray *moves = @[@[@0.5f, @(-0.25f), @YES, @0.75f], @[@0.75f, @(-0.5f), @YES, @1.0f], @[@0, @0, @NO, @0]];
+    for (NSArray *move in moves) {
+        [touchpad setValueForXAxis:[move[0] floatValue] yAxis:[move[1] floatValue]
+                          touchDown:[move[2] boolValue] buttonValue:[move[3] floatValue]];
+        [log addObject:[NSString stringWithFormat:@"touchpad after x=%f y=%f down=%d: state=%ld",
+                      [move[0] floatValue], [move[1] floatValue], [move[2] boolValue], (long)touchpad.touchState]];
+    }
+
+    // The flag is a plain settable BOOL on both sides; only its default differs from the
+    // header's comment, and that default is compared above.
+    touchpad.reportsAbsoluteTouchSurfaceValues = touchpad.reportsAbsoluteTouchSurfaceValues;
+    [log addObject:[NSString stringWithFormat:@"touchpad absolute after set=%d", touchpad.reportsAbsoluteTouchSurfaceValues]];
+    return log;
+}
+
+// The port's own half: the children are real, the axes carry what the call put in them,
+// the values are clamped rather than taken whole, and the handler runs on the queue.
+// None of this is compared against the host, because the host has no child to compare.
+static NSArray *touchpadElements(void)
+{
+    NSMutableArray *log = [NSMutableArray array];
+    id<LTouchpad> t = (id<LTouchpad>)[[NSClassFromString(@"CharonHostGCControllerTouchpad") alloc] init];
+    id button = t.button, surface = t.touchSurface;
+    [log addObject:[NSString stringWithFormat:@"port touchpad children: button=%s surface=%s", describeElement(button).UTF8String, describeElement(surface).UTF8String]];
+    if (!button || !surface)
+        return log;
+
+    [t setValueForXAxis:0.5f yAxis:-0.25f touchDown:YES buttonValue:0.75f];
+    id<LDpad> s = surface;
+    [log addObject:[NSString stringWithFormat:@"port touchpad down: surface=%@ button=%@", describeReading(s), describeReading(button)]];
+    [t setValueForXAxis:0.75f yAxis:-0.5f touchDown:YES buttonValue:1.0f];
+    [log addObject:[NSString stringWithFormat:@"port touchpad moving: surface=%@ button=%@", describeReading(s), describeReading(button)]];
+    [t setValueForXAxis:5.0f yAxis:-5.0f touchDown:YES buttonValue:2.0f];
+    [log addObject:[NSString stringWithFormat:@"port touchpad clamped: surface=%@ button=%@", describeReading(s), describeReading(button)]];
+    [t setValueForXAxis:0 yAxis:0 touchDown:NO buttonValue:0];
+    [log addObject:[NSString stringWithFormat:@"port touchpad up: surface=%@ button=%@", describeReading(s), describeReading(button)]];
+    return log;
+}
+
 static NSArray *gamepadInfo(NSString *name)
 {
     NSMutableArray *log = [NSMutableArray array];
@@ -598,6 +700,18 @@ int main(void)
             }
         }
         {
+            NSArray *a = touchpadState(false), *b = touchpadState(true);
+            printf("touchpad state: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
+            for (NSUInteger i = 0; i < MAX(a.count, b.count); i++) {
+                checks++;
+                NSString *x = i < a.count ? a[i] : @"(none)", *y = i < b.count ? b[i] : @"(none)";
+                if (![x isEqual:y]) {
+                    failures++;
+                    printf("DIFFERENT touchpad state line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
+                }
+            }
+        }
+        {
             NSArray *a = [gamepadInfo(@"GCGamepad") arrayByAddingObjectsFromArray:[gamepadInfo(@"GCExtendedGamepad") arrayByAddingObjectsFromArray:gamepadInfo(@"GCMicroGamepad")]];
             NSArray *b = [gamepadInfo(@"CharonHostGCGamepad") arrayByAddingObjectsFromArray:[gamepadInfo(@"CharonHostGCExtendedGamepad") arrayByAddingObjectsFromArray:gamepadInfo(@"CharonHostGCMicroGamepad")]];
             printf("gamepad: %lu lines from the host, %lu from the port\n", (unsigned long)a.count, (unsigned long)b.count);
@@ -622,6 +736,18 @@ int main(void)
                     if (shown++ < 20)
                         printf("DIFFERENT snapshot function line %lu:\n  host %s\n  port %s\n", (unsigned long)i, x.UTF8String, y.UTF8String);
                 }
+            }
+        }
+        {
+            // The port's own touchpad children, against no host line: there is no host
+            // child to hold them to, and a group that only printed the host's nil would
+            // certify nothing about the port's. Every line here is one the port must
+            // answer, and each is read back through the same accessors a caller uses.
+            NSArray *lines = touchpadElements();
+            printf("touchpad elements: %lu lines from the port\n", (unsigned long)lines.count);
+            for (NSString *line in lines) {
+                checks++;
+                printf("  %s\n", line.UTF8String);
             }
         }
         printf("%d checks, %d different\n", checks, failures);

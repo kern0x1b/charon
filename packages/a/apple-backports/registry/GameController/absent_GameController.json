@@ -366,80 +366,88 @@
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a button that needs no device to exist and no device to answer it: iOS 6 has no touchpad, and the port answers the button off the state the touchpad itself keeps",
+   "effect": "a button the touch surface carries, not a name: it is the same GCControllerButtonInput this port builds for every button of every profile, and it reads 0 and is not pressed until a touch puts a value in it",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.touchDown",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a handler an application registers for; nothing in iOS 6 sends it, and the port runs it off the touch state the class keeps",
+   "effect": "nil until it is set, and a copy of the block after: the block runs on the device's handler queue when a touch begins, with the touchpad, the two values the call carried and the button's value and pressed state",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.touchMoved",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a handler an application registers for; nothing in iOS 6 sends it, and the port keeps it as set",
+   "effect": "nil until it is set, and a copy of the block after; it is stored and, like the host's own, it is the header's touchMoved - a move while the touch stays down is what moves the state to GCTouchStateMoving",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.touchUp",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a handler an application registers for; nothing in iOS 6 sends it, and the port keeps it as set",
+   "effect": "nil until it is set, and a copy of the block after; it runs when a touch ends, with the same five arguments the other two handlers take",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.touchSurface",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a touch surface is two axes and a state the class itself keeps, so there is nothing here iOS 6 lacks the values for: the class is carried and the surface is real, and only a finger is missing",
+   "effect": "a real GCControllerDirectionPad with its own X and Y axes and its four up/down/left/right buttons, linked the way every dpad in this port is linked, so it carries the normalized position of the last touch and reports 0,0 before any; where the host's own touchpad, built with no controller behind it, answers nil for this one, this port builds the element - a real, stated difference, and the same call the mouse made when GCMouseInput was carried",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.touchState",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "the touch state is a value the class keeps, so nothing in iOS 6 is the wall here: it is owed alongside the touchpad and now written, measured against the host",
+   "effect": "GCTouchStateUp before anything touches it, GCTouchStateDown on the first setValueForXAxis:... with touchDown YES, GCTouchStateMoving while a touch stays down and moves, and back to Up on touchDown NO - held line by line against the host's own touchpad, which walks the same four values",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCControllerTouchpad.reportsAbsoluteTouchSurfaceValues",
    "kind": "property",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "a flag on the class that says how the surface reports; iOS 6 has no touchpad, and the port keeps the flag as it is set",
+   "effect": "NO before anything is set and whatever it is set to after - the host's own touchpad answers NO here, while the SDK header's own comment claims the default is YES, and this port follows the measured default, not the comment",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "-[GCControllerTouchpad setValueForXAxis:yAxis:touchDown:buttonValue:]",
    "kind": "method",
    "introduced": "14.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad's touchpad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCControllerTouchpad class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "the one entry point a touch surface has, and it needs no device to be answered: iOS 6 has no touchpad, and the port writes the values into the state the class keeps",
+   "effect": "sets both axes and the button, each clamped to [-1,1] for the axes and [0,1] for the button rather than taken whole, moves the touch state between Up, Down and Moving from the touchDown flag, and runs the matching handler on the device's handler queue; the header's own note that the state must be polled with the surface is why the two are kept apart, and a caller that sends 5.0 reads 1.0 back",
+   "source": "the host's own GameController, held against the port by tests/backports/host/gamecontroller: the touchpad state group builds a GCControllerTouchpad on both and compares it line by line; the header of iOS 16.4 for the declarations and the release that added each member",
+   "facts": "facts/GameController/ControllerDevices14.md"
   },
   {
    "api": "GCDeviceBattery.batteryLevel",
