@@ -141,6 +141,40 @@ Two shapes of resolution result the iOS 11.0 group adds:
   to say why, which is a different answer from the one the method's name promises, so the reason
   is kept and read back through `-charon_unsupportedReason` beside the four other accessors.
 
+### One bare `-init` that the header declares *available*, and the loop that never visited it
+
+`INListCarsIntent`'s own entry in `INListCarsIntent.h:17` is
+
+    - (instancetype)init NS_DESIGNATED_INITIALIZER;
+
+Available, and the class's only initialiser: it is an `INIntent` with no property of its own, so
+the whole of it is the superclass's `-init`. `INIntent` declares none of its own, so that is
+`NSObject`'s, and nothing in the chain marks one unavailable - the selector can be spelled, so the
+body is `return [super init];` and no IMP is reached through.
+
+Its row said `absent` with the reason *"the header marks the initialiser unavailable, so a port
+cannot call it"*, which is false of this header. The cause is a gap in the generator, not a
+judgement: the loop that writes an initialiser body visits only selectors spelled `initWith…:`,
+so a bare `-init` reached the file only through the separate block that exists for the classes
+whose header marks one unavailable, and this class is not one of those. Its body is written by
+hand in `EXTRA_METHODS` for that reason, and the registry row's `source` says so rather than
+carrying the sentence about the 110 `-init` rows a header really does mark.
+
+What the release was asked, and how:
+
+    sh tools/intents/probe-host-absent.sh packages/a/apple-backports/registry/Intents/ios16.json
+
+    ios16.json  -[INListCarsIntent init]  found=yes answers=yes declared-by=INListCarsIntent init=object
+    # absent rows: 1, control rows: 464 implemented rows of the same files
+    # rows=465 parsed=465 unparsed=0 found=465 answered=214 inherited-from-NSObject=25
+
+`declared-by=INListCarsIntent` is the column that separates this row from the 110: there, the
+selector is declared by `NSObject` and the port has to forward through an IMP because the header
+forbids naming it; here the class declares it itself and the header permits the name. `init=object`
+is `[[INListCarsIntent alloc] init]` on the host's own class, through the IMP, since a compile-time
+call to a member the port's SDK marks unavailable does not build. All 465 names were found in the
+same process, so the row's `yes` is the release's and not the reader's.
+
 ## What is generated, and what that means for a reader
 
 `IN10_0.m` and `IN10_3.m` are generated, and the generator refuses to emit a body it cannot

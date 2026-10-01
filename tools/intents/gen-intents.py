@@ -665,6 +665,24 @@ EXTRA_METHODS = {
         "    }",
         "}",
     ],
+    # The bare -init of a class whose header declares it AVAILABLE, which the loop above never
+    # reaches: it only visits selectors spelled initWith...:, so an initialiser with no argument
+    # fell through to the group's reason and its row was written as absent with the reason for a
+    # header that marks a member unavailable. This header does not - INListCarsIntent.h:17 reads
+    # `- (instancetype)init NS_DESIGNATED_INITIALIZER;` - and the release answers it: measured on
+    # the host's own Intents, -[INListCarsIntent init] is declared by INListCarsIntent itself and
+    # [[INListCarsIntent alloc] init] returns an object (tools/intents/probe-host-absent.sh against
+    # registry/Intents/ios16.json).
+    ("INListCarsIntent", "init"): [
+        "- (instancetype)init",
+        "{",
+        "    // The header's own declaration is this class's designated initialiser and the class",
+        "    // declares no property, so the whole of it is the superclass's own -init. INIntent",
+        "    // declares none of its own, so this reaches NSObject's, which nothing in the chain",
+        "    // marks unavailable - the selector can be spelled here, and no IMP is needed.",
+        "    return [super init];",
+        "}",
+    ],
     # INMediaDestination's two properties are readonly and its -init is NS_UNAVAILABLE, so the two
     # class methods below are the only way to make one and they fill these.
     "INMediaDestination": [
