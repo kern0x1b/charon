@@ -833,9 +833,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVAssetResourceLoaderDelegate that sends anything like it: the message arrived in iOS 8",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class this protocol's owner sits on IS on 6.1.3 and the protocol is not: 6.1.3's AVAssetResourceLoader carries 13 own instance methods -initWithAsset:, -delegate, -setDelegate:queue:, -delegateQueue and -asset - with the delegate typed as an untyped id, and no protocol named AVAssetResourceLoaderDelegate appears in the release's 1171 protocols. So the loader exists and can be handed a delegate; what 6.1.3 cannot do is say what a delegate must implement, and the header annotates this one ios(8.0) at AVAssetResourceLoader.h:146 - the annotation nearby at :162 belongs to AVAssetResourceLoadingRequestor and says ios(12.0), which is a different class and not this row",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. A cancelled challenge is something a resource loader reports when the delegate has gone away mid-negotiation, and this release has no protocol that says so and no negotiation it would report: -[AVAssetResourceLoader setDelegate:queue:] stores the delegate and the loader uses it, with no message defined for either outcome",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetResourceLoader.h:146, API_UNAVAILABLE(watchos); the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetResourceLoaderDelegate resourceLoader:shouldWaitForRenewalOfRequestedResource:]",
@@ -843,9 +844,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVAssetResourceLoaderDelegate that sends anything like it: the message arrived in iOS 8",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class this protocol's owner sits on IS on 6.1.3 and the protocol is not: 6.1.3's AVAssetResourceLoader carries 13 own instance methods -initWithAsset:, -delegate, -setDelegate:queue:, -delegateQueue and -asset - with the delegate typed as an untyped id, and no protocol named AVAssetResourceLoaderDelegate appears in the release's 1171 protocols. So the loader exists and can be handed a delegate; what 6.1.3 cannot do is say what a delegate must implement, and this is the first of the protocol's three 8.0 members (header: ios(8.0), AVAssetResourceLoader.h:116)",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and on this release there is no renewal to answer: AVAssetResourceLoadingRequest is NO CLASS in 6.1.3's inventory, so no request is ever cancelled and nothing is ever renewed. A delegate set through -[AVAssetResourceLoader setDelegate:queue:] here is reached by the loader's own private -_attemptDelegateHandlingOfRequestWithDictionary:, which sends what it sends without a protocol to send it by",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetResourceLoader.h:116, API_UNAVAILABLE(watchos); the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetResourceLoaderDelegate resourceLoader:shouldWaitForResponseToAuthenticationChallenge:]",
@@ -853,9 +855,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVAssetResourceLoaderDelegate that sends anything like it: the message arrived in iOS 8",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class this protocol's owner sits on IS on 6.1.3 and the protocol is not: 6.1.3's AVAssetResourceLoader carries 13 own instance methods -initWithAsset:, -delegate, -setDelegate:queue:, -delegateQueue and -asset - with the delegate typed as an untyped id, and no protocol named AVAssetResourceLoaderDelegate appears in the release's 1171 protocols. So the loader exists and can be handed a delegate; what 6.1.3 cannot do is say what a delegate must implement, and the header annotates this one ios(8.0) at AVAssetResourceLoader.h:138, which matches the 8.0 cache, where the protocol and this member are both declared",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. Nothing on this release puts an authentication challenge to a resource-loading delegate: the loader's 13 members are about issuing and following requests, and the challenge handling they lead to is what 8.0 declared the protocol for",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetResourceLoader.h:138, API_UNAVAILABLE(watchos); the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetWriterInput markCurrentPassAsFinished]",
@@ -1017,9 +1020,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports have a AVPlayerItemMetadataOutputPushDelegate that sends anything like it: the message arrived in iOS 8",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "no class and no protocol of this name is in 6.1.3's inventory of 12549 classes and 1171 protocols, and the output it belongs to is not there either - AVPlayerItemMetadataOutput is NO CLASS at 6.1.3 and arrives at 8.0 with 14 own instance selectors. This is also the one row of the 64 that the 8.0 cache does not carry either: no class and no protocol at 8.0 declares the selector, the protocol first appears as a declared protocol at 12.0, and the header's ios(8.0) at AVPlayerItemOutput.h:552 is early rather than late",
+      "effect": "calling it raises an unrecognised selector, which is what absent means, and there is nothing on this release to send it: a timed-metadata output, its delegate queue, its identifier list and the player's own output plumbing are all 8.0's, and 6.1.3's AVPlayerItem (237 own instance methods) has no member for any of it - its private _evaluateMetadataOutputs is not there either. A caller on this release reads metadata from the asset and gets no timed delivery",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVPlayerItemOutput.h:552, API_AVAILABLE(macos(10.10), ios(8.0)); the protocol's first declared rung, objc-inventory.lua over 12.0 arm64, with tools/cache-index/first-rung.py answering 8.0 for the selector and 11.0 for the protocol's name; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAsset.metadata",
@@ -1027,9 +1031,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAsset carries 65 own instance methods and its metadata is three members rather than one: -availableMetadataFormats, -commonMetadata and -metadataForFormat:, with -chapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys: and -chapterMetadataGroupsBestMatchingPreferredLanguages: beside them. No member is named metadata",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the metadata is not missing so much as spelled differently: -[AVAsset commonMetadata] gives the items whose identifiers are common keys, -[AVAsset availableMetadataFormats] the formats there are items for, and -metadataForFormat: the items for one of them. A caller gets the same items through those three and cannot get them through one property",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAsset.h:307; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetExportSession.canPerformMultiplePassesOverSourceMediaData",
@@ -1037,9 +1042,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 54 own instance methods and 23 own class methods and none of the 77 names a pass or multiple passes: the export is -determineCompatibleFileTypesWithCompletionHandler: with a private -_determineCompatibleFileTypes, -exportAsynchronouslyWithCompletionHandler:, -estimatedOutputFileLength, -metadata and the preset and output members beside them",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the answer would be NO for every preset on this release, because the export reads its source once: there is no member that asks, and no second pass for a YES to describe. The flag's real use - telling an AVAssetReader to expect a re-read - has no counterpart on either side of the export here",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetExportSession.h:391; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetExportSession.directoryForTemporaryFiles",
@@ -1047,9 +1053,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetExportSession a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetExportSession carries 54 own instance methods and 23 own class methods and its file handling is -outputURL, -outputFileType, -supportedFileTypes, -estimatedOutputFileLength, -shouldOptimizeForNetworkUse and -metadata. No scratch directory member exists, so nothing on the release parks a file anywhere for the export to work in",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and the export does not use one: it writes the output the caller named, reads its source in place, and keeps whatever intermediates it needs in memory. A caller that wants scratch space names a directory itself, which on this release means preparing it and cleaning it up around -exportAsynchronouslyWithCompletionHandler:",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetExportSession.h:405; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetReaderOutput.supportsRandomAccess",
@@ -1090,9 +1097,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetTrack carries 52 own instance methods and 2 own class methods, and its metadata is three members rather than one: -availableMetadataFormats, -commonMetadata and -metadataForFormat:. Its edit bookkeeping exists too, privately: -_hasMultipleNonEmptyEdits is one of the 52, and the header deprecates this property in favour of load(.metadata) at ios(8.0, 16.0), AVAssetTrack.h:260",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the track's metadata is carried under the three other names: -[AVAssetTrack commonMetadata], -[AVAssetTrack availableMetadataFormats] and -metadataForFormat:. The deprecation is the SDK telling callers to ask asynchronously for what these three answer synchronously here",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetTrack.h:260, API_DEPRECATED in ios(16.0); the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetTrack.requiresFrameReordering",
@@ -1100,9 +1108,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetTrack carries 52 own instance methods and 2 own class methods, and its metadata is three members rather than one: -availableMetadataFormats, -commonMetadata and -metadataForFormat:. Its edit bookkeeping exists too, privately: -_hasMultipleNonEmptyEdits is one of the 52. The value says whether decoding this track's samples needs them put back in order, and the release knows the question only privately: -_hasMultipleNonEmptyEdits is in the 52 and nothing public reports it",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the release does not publish whether it reordered anything: it reads a track's samples through -segments and hands them on in whatever order its own pipeline produced, with -_hasMultipleNonEmptyEdits kept private. A caller that needs to know before decoding has no member here to ask",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetTrack.h:180; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriter.directoryForTemporaryFiles",
@@ -1440,9 +1449,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMediaSelectionGroup a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the release has this one under the name it had before 8.0, and it is private: 6.1.3's AVMediaSelectionGroup carries 18 own instance methods and 6 own class methods, and among the 18 is -_defaultOption, where 8.0's class carries -defaultOption instead",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the value is on the release under the old name: -[AVMediaSelectionGroup _defaultOption] on the same object. The group's own public surface here is -options, -allowsEmptySelection and -mediaSelectionOptionWithPropertyList:, and which option the release itself would pick is recorded in a private member no caller can reach by name. A caller that wants a default selects one of -options itself",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVMediaSelectionGroup.h:46; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVPlayerItem.preferredPeakBitRate",
@@ -1450,9 +1460,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVPlayerItem a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the release publishes no bitrate at all: of the 237 own instance methods on 6.1.3's AVPlayerItem not one names a bitrate, and neither does its 35 own class methods. The 8.0 class adds -preferredPeakBitRate, -setPreferredPeakBitRate:, -maximumBitRate, -setMaximumBitRate:, -networkUsuallyExceedsMaxBitRate: and the rest of that family",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and nothing on this release records the value: the player downloads at whatever rate the stream gives it, and the only bandwidth-shaped members on an asset are AVURLAsset's -resourceLoader and its private -assetCache and -cacheKey, none of which is a rate. A caller that wants a ceiling has no member here to write it to",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVPlayerItem.h:655; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVPlayerItemMetadataOutput",
@@ -1460,9 +1471,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is NO CLASS in 6.1.3's inventory of 12549 classes and 1171 protocols, and it arrives at 8.0 with 14 own instance selectors and one own class method - the timed-metadata sink a player item feeds. 6.1.3's AVPlayerItem has no member that adds one: of its 237 own instance methods the output plumbing that arrives with 8.0 -_addMetadataOutput:, -_metadataOutputsForKeys:, -_metadataOutputForKey:, -_evaluateMetadataOutputs, -_removeMetadataOutput: - is all of it, and none of the five is on this release",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference to it does not link. A caller that wants timed metadata delivered during playback on this release has nothing to add it to: metadata is read from the asset - -[AVAssetTrack commonMetadata], -[AVAsset chapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys:] and -[AVAssetTrack metadataForFormat:] are all carried - and nothing on the item pushes it while the player runs",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVPlayerItemOutput.h:466 for the declaration; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVSampleBufferDisplayLayer.error",
@@ -1470,9 +1482,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the same 20 own instance methods, none of them naming an error, and 8.0's class adding -error with the private -_setStatus:error: that fills it",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. Nothing on this release stores a reason for anything the layer did: -enqueueSampleBuffer: returns a CMSampleBufferRetainFail value and -flushAndRemoveImage returns nothing, and there is no member that carries an NSError. A caller that needs to know why a frame was dropped on this release has no member here to ask and the host cannot answer it either - the property is ios(8.0) and there is no device here with a display layer to ask",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVSampleBufferDisplayLayer.h:86; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVSampleBufferDisplayLayer.status",
@@ -1480,9 +1493,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVSampleBufferDisplayLayer a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVSampleBufferDisplayLayer carries 20 own instance methods and NO own class methods, and all 20 are the display surface: -enqueueSampleBuffer:, -flush, -flushAndRemoveImage, -isReadyForMoreMediaData, -requestMediaDataWhenReadyOnQueue:usingBlock:, -stopRequestingMediaData, -controlTimebase/-setControlTimebase:, -videoGravity/-setVideoGravity:, -addAnimation:forKey:, -init, -dealloc, -finalize, -setBounds: and the private -_createVideoQueue, -_setControlTimebase:, -_updatePresentationSize: and -_addAnimationsForContentLayer:size:gravity:. Nothing names a status, and 8.0 adds -status with -_setStatus:error: beside it",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and this release's layer reports itself in two different members instead of one status value: -isReadyForMoreMediaData says whether it will take another sample, and -flushAndRemoveImage is how a caller discards what is on screen. A failure has no member to be read from - the enumeration 8.0 returns here does not exist on this release - so a caller cannot ask why the layer stopped and can only watch the two members it does have",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVSampleBufferDisplayLayer.h:79; the two releases' own class tables for this name, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "+[AVMutableComposition compositionWithURLAssetInitializationOptions:]",
