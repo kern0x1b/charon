@@ -170,5 +170,5 @@ carry CarPlay, which the 12.0 census contradicts.
 .agent-work/runs/carplay-12/members-at-12.txt     its output, quoted above
 ```
 
-`objc12.tsv` is 104 MB and is regenerable from the cache by the one command on this page, so it keeps
-its evidence and loses its bulk at the next worktree sweep.
+`objc12.tsv` is 36 MB (37351344 bytes, 74618 lines) and is regenerable from the cache by the one
+command on this page, so it keeps its evidence and loses its bulk at the next worktree sweep.
