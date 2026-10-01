@@ -3449,80 +3449,88 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -unusedTrackID into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with a CMPersistentTrackID and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadChapterMetadataGroupsBestMatchingPreferredLanguages:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -chapterMetadataGroupsBestMatchingPreferredLanguages: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVTimedMetadataGroup the release answers for those preferred languages and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadChapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -chapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVTimedMetadataGroup the release answers for that title locale and those common keys and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadMediaSelectionGroupForMediaCharacteristic:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -mediaSelectionGroupForMediaCharacteristic: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the AVMediaSelectionGroup the release answers for that media characteristic, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadMetadataForFormat:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -metadataForFormat: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVMetadataItem the release answers for that metadata format and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadTrackWithTrackID:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -trackWithTrackID: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the AVAssetTrack the release answers for that track ID, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadTracksWithMediaCharacteristic:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -tracksWithMediaCharacteristic: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media characteristic and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAsset loadTracksWithMediaType:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -tracksWithMediaType: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media type and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAssetTrack loadAssociatedTracksOfType:completionHandler:]",
@@ -3539,30 +3547,33 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -metadataForFormat: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVMetadataItem the release answers for that metadata format and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAssetTrack loadSamplePresentationTimeForTrackTime:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -samplePresentationTimeForTrackTime: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the CMTime the release answers for that track time and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVAssetTrack loadSegmentForTrackTime:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetTrack a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: 15.0 split -segmentForTrackTime: into an asynchronous method and left the accessor, and this release has only the accessor, so the method is the release's own answer handed to the caller's block rather than an answer of the port's own",
+      "effect": "calls the handler exactly once on the main queue with the AVAssetTrackSegment the release answers for that track time, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVCaptureDevice setPrimaryConstituentDeviceSwitchingBehavior:restrictedSwitchingBehaviorConditions:]",
@@ -3589,70 +3600,77 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -trackWithTrackID: is declared on AVAsset and AVComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the AVAssetTrack the release answers for that track ID, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVComposition loadTracksWithMediaCharacteristic:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -tracksWithMediaCharacteristic: is declared on AVAsset and AVComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media characteristic and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVComposition loadTracksWithMediaType:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -tracksWithMediaType: is declared on AVAsset and AVComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media type and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVMutableComposition loadTrackWithTrackID:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -trackWithTrackID: is declared on AVAsset and AVMutableComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the AVAssetTrack the release answers for that track ID, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVMutableComposition loadTracksWithMediaCharacteristic:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -tracksWithMediaCharacteristic: is declared on AVAsset and AVMutableComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media characteristic and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVMutableComposition loadTracksWithMediaType:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVMutableComposition a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -tracksWithMediaType: is declared on AVAsset and AVMutableComposition inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the NSArray of AVAssetTrack the release answers for that media type and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "-[AVURLAsset findCompatibleTrackForCompositionTrack:completionHandler:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVURLAsset a method like it: it arrived in iOS 15",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "status": "implemented",
+      "reason": "a departure from 15.0 in where the answer comes from: the accessor -compatibleTrackForCompositionTrack: is declared on AVAsset and AVURLAsset inherits it on both band ends, so the method calls the release's own accessor rather than carrying an answer of its own; 15.0 moved the work off the calling thread and this does not",
+      "effect": "calls the handler exactly once on the main queue with the AVAssetTrack the release answers as the compatible track for that composition track, or nil and a nil error - the error is nil because the synchronous accessor has no failure of its own to report, so a caller that switches on the error never sees one; the load cannot be cancelled, because there is nothing here to cancel",
+      "facts": "facts/AVFoundation/AssetAsyncLoading.md",
+      "source": "tools/corpus/objc-inventory.lua class-scoped over the armv7 caches of both band ends (6.1.3 and 4.3), the accessor read on the class that declares it and the superclass chain walked where it is inherited, with tools/corpus/cache-census.lua AV 6.1.3 4.3 as the certifying reader: it printed 11378 classes of which 301 name AV at 6.1.3, 7187 of which 231 at 4.3, and closed \"control: 558 name(s) beginning AV found in this run, so a zero on another rung is the release's and not the reader's\"; the first rung from python3 tools/cache-index/first-rung.py on the selector spelled with its colons, which is why \"tracksWithMediaType:\" reads 4.0 and the bare name reads NONE"
     },
     {
       "api": "AVAssetDownloadConfiguration",
