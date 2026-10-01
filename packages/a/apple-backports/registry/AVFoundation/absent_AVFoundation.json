@@ -2356,9 +2356,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is what a photo capture hands its delegate and 6.1.3 has neither it nor the output that produces one: first-rung answers NONE for _AVCapturePhoto, and 6.1.3's cache carries no AVCapturePhotoOutput at all - its still capture is AVCaptureStillImageOutput, whose own 33 methods hand back a CMSampleBuffer",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release takes a still with -[AVCaptureStillImageOutput captureStillImageAsynchronouslyFromConnection:completionHandler:], whose handler receives the sample buffer and the error, and turns it into an image itself with -[AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:]; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCapturePhoto.h for the declaration; first-rung.py answers NONE for the class name; tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0, controls answered on all three"
+      "reason": "6.1.3 captures a still through AVCaptureStillImageOutput and hands it over as a CMSampleBufferRef - captureStillImageAsynchronouslyFromConnection:completionHandler:, with availableImageDataCodecTypes, imageDataFormatType and previewImageSize - and neither 6.1.3 nor 4.3 has an object of any kind for a captured photo (the class arrived in 11.0, and no class or protocol of either release is named like it). What this port builds instead is written in facts/AVFoundation/AVCapturePhotoOutput.md under Open: its own AVCapturePhotoOutput makes the previews, thumbnail and Exif itself and delivers the still through the 10.0 sample-buffer callback, refusing a delegate that has only the 11.0 one; the object this row names is the work that is left, not a capability 6.1.3 lacks and has not been asked for",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVCapturePhoto, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVDepthData",
@@ -2417,9 +2417,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the row's owner is a protocol and 6.1.3 has no such protocol: of the 16 AV-named protocols in its armv7 cache - AVAssetWriterFigAssetWriterNotificationHandlerDelegate, AVAssetWriterFinishWritingHelperDelegate, AVAsynchronousKeyValueLoading, AVAudioPlayerDelegate, AVAudioSessionDelegate, AVAudioSessionDelegateMediaPlayerOnly, AVCaptureFileOutputPauseResumeDelegate, AVCaptureFileOutputRecordingDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, AVConferenceDelegate, AVDecodedAudioSettingsForFig, AVDecodedVideoSettingsForFig, AVOutputSettingsValidation, AVRecorderImpl, AVReencodedAudioSettingsForFig and AVReencodedVideoSettingsForFig - this one is not among them. The members it names are all on 6.1.3's AVSampleBufferDisplayLayer - -enqueueSampleBuffer:, -flush, -flushAndRemoveImage, -isReadyForMoreMediaData, -requestMediaDataWhenReadyOnQueue:usingBlock:, -stopRequestingMediaData and -controlTimebase - but the layer adopts no protocol, and a category cannot add a conformance the runtime did not record",
-      "effect": "an object declaring this protocol is asked for nothing, which is what absent means; the port defines no protocol of this name. A caller on this release hands buffers to the layer directly, through -[AVSampleBufferDisplayLayer enqueueSampleBuffer:] and -requestMediaDataWhenReadyOnQueue:usingBlock:, which is the release's own shape and needs no conformance to be typed",
-      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferDisplayLayer.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count, and the AVSampleBufferDisplayLayer class table from the same dump, 20 own instance methods; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "reason": "the protocol is what the synchronizer takes a renderer as, so it is absent for the same reason: no protocol of 6.1.3 (1171 of them) or of 4.3 (564) carries the name, and nothing on either release takes a renderer as an argument",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "source": "xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVRouteDetector",
@@ -2427,9 +2427,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class watches and reports the user's ROUTE CHOICE, and 6.1.3 has half of that and not the other half: first-rung answers NONE for the class name, and while 6.1.3's AVAudioSession does carry -overrideOutputAudioPort:error: and -currentRoute among its 64 own instance methods - so a caller can name a port and read the route in use - nothing on this release reports which device the user has chosen, which is the one thing this class's delegate is told",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release chooses a route with -[AVAudioSession overrideOutputAudioPort:error:] and reads where audio went with -[AVAudioSession currentRoute], which are the release's own two answers; there is no member on this release that reports the user's choice between routes; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVRouteDetector.h for the declaration; first-rung.py answers NONE for the class name; the 6.1.3 armv7 class table of AVAudioSession read from objc-inventory.lua, 64 own instance methods including -overrideOutputAudioPort:error: and -currentRoute; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the detector's answer is a classification of what is on the other end of the route, from a model, and neither 6.1.3 nor 4.3 carries it: no class, protocol or selector of either release is named like it, and the census on that prefix printed CONTROL FAILED, which is the tool declining to certify a prefix neither rung it read has. The release does report route changes - AVAudioSession's notifications - so a caller that wants the route has the notification; one that wants to know whether it is a car is asking a question nothing here can answer",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVRouteDetector, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVSampleBufferAudioRenderer",
@@ -2437,9 +2437,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the renderer enqueues CMSampleBuffers of audio and plays them, and 6.1.3's only sample-buffer consumer is video: first-rung answers NONE for the class name, AVSampleBufferDisplayLayer is the sole class of that family on the release, and 6.1.3's AVAudioSession carries 64 own instance methods - -category, -setCategory:error:, -mode, -setMode:error:, -setActive:withError:, -currentRoute, -outputVolume and their setters - none of which accepts a CMSampleBuffer or plays buffers it is handed",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release plays audio it holds with AVAudioPlayer, whose own 6.1.3 table carries -play, -pause and -numberOfChannels, and hands video buffers to -[AVSampleBufferDisplayLayer enqueueSampleBuffer:], which is the release's own enqueue shape; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferAudioRenderer.h for the declaration; first-rung.py answers NONE for the class name; the 6.1.3 armv7 class tables of AVAudioSession and AVSampleBufferDisplayLayer read from objc-inventory.lua, 64 and 20 own instance methods; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the renderer is a CMSampleBuffer sink a caller can time and enqueue itself, and 6.1.3 has none: the only AVSampleBuffer names either end carries are the display layer's three classes (AVSampleBufferDisplayLayer and two internal ones, the census's control in facts/AVFoundation/Release11.md), and 4.3 carries none at all. The release's own way to push buffers is AVAudioEngine with AVAudioPlayerNode and AVAudioPCMBuffer, which this port already carries",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVSampleBufferAudioRenderer, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVSampleBufferRenderSynchronizer",
@@ -2447,9 +2447,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class keeps a video layer and an audio renderer in step, and 6.1.3 has neither half of the pair it synchronizes: first-rung answers NONE for the class name and for AVSampleBufferAudioRenderer, and the release's only sample-buffer display object, AVSampleBufferDisplayLayer, has no synchronizer member - its 20 own instance methods are -enqueueSampleBuffer:, -flush, -flushAndRemoveImage, -isReadyForMoreMediaData, -requestMediaDataWhenReadyOnQueue:usingBlock:, -stopRequestingMediaData, -controlTimebase and -setControlTimebase:",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release drives the layer's own clock with -[AVSampleBufferDisplayLayer setControlTimebase:] and -controlTimebase, which is the release's own way of putting a layer under a clock; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVSampleBufferDisplayLayer.h for the declaration; first-rung.py answers NONE for the class name; the AVSampleBufferDisplayLayer class table from objc-inventory.lua, 20 own instance methods; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the synchronizer puts the audio renderer and a video clock on one sample time, and 6.1.3 has neither half: no AVSampleBufferAudioRenderer, no AVSampleBufferRenderSynchronizer, and no AVSampleBuffer class beyond the display layer's. 4.3 carries none of the family, so nothing on either end could be synchronised against anything",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVSampleBufferRenderSynchronizer, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVVideoComposition.sourceTrackIDForFrameTiming",
