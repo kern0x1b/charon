@@ -536,7 +536,7 @@
       "status": "absent",
       "reason": "answers whether an attachment is drawn by a view from its NSTextAttachmentViewProvider (absent here); the release's text views draw no attachment (facts/UIKit/NSTextMembers13.md), so none is",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It is the getter-only half of the pair 12.0 does carry (-usesTextAttachmentView with no setter in UIFoundation), and the substrate is TextKit 2: 6.1.3 and 4.3 have NSTextAttachment but neither has NSTextLayoutFragment or NSTextLineFragment, and the port's UITextView lays its text out in a WebKit body - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextAttachmentViewProvider",
@@ -556,7 +556,7 @@
       "status": "absent",
       "reason": "the Text Kit 2 layout manager a container belongs to; the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so a container never belongs to one and the answer would always be nil",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit",
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The minimum on this row is 7.0, the only row of this release above 6.0, so it is left out of the 6.x band by band() and read at 7.0; the manager it would answer for is TextKit 2, which arrived in 11.0 - facts/UIKit/UIKit15Absence.md",
       "note": "the object holds API of a class that arrived in iOS 7.0 or stores its data in one, so a band below that release must leave it out"
     },
     {
@@ -607,7 +607,7 @@
       "status": "absent",
       "reason": "the Text Kit 2 content storage watching a text storage; the release's NSTextStorage is there (objc.inventory on 6.1.3), but the port carries no Text Kit 2 (NSTextLayoutManager and NSTextContentStorage absent), so no observer exists to answer",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). 6.1.3 has NSTextStorage and NSLayoutManager (TextKit 1) and neither has NSTextLayoutManager, so the observer a TextKit 2 storage notifies has no counterpart to observe - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "NSTextViewportLayoutController",
@@ -677,7 +677,7 @@
       "status": "absent",
       "reason": "the same selection-toggle flag UIButtonConfiguration draws for UIButton, absent for the same reason: no demand for the declarative configuration system on a bar button item",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). Same flag as UIButton.changesSelectionAsPrimaryAction, which this band carries as inert in UIButton+Configuration15.m, and the same reason: a bar button item on this release has no selection to treat as primary - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIButton.automaticallyUpdatesConfiguration",
@@ -741,7 +741,7 @@
       "status": "absent",
       "reason": "reflects UIControl's own private touch-down tracking state, which this port does not surface publicly on any control - a real wire-up to the existing tracking machinery, just not built, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It reports a button held between touch-down and touch-up, and the port has no pressed-state seam to read it from - no port file overrides -isHighlighted on a button, so there is no held state to answer - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "-[UIButton isHovered]",
@@ -803,7 +803,7 @@
       "status": "absent",
       "reason": "lets the items of a collection view take keyboard focus; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). A collection view participates in full-screen focus only where a focus engine exists, and UIFocusEffect and UIFocusHaloEffect are absent rows of this same release and nothing in the port ever begins a focus update - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UICollectionView.allowsFocusDuringEditing",
@@ -813,7 +813,7 @@
       "status": "absent",
       "reason": "lets the items of a collection view take keyboard focus while it edits; the port has no focus engine (UIFocusSystem absent, ios11.json), so no item can be focused whatever this says",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). The editing variant of the flag above, and the same missing focus engine; it also wants the focus update context an editing collection view would be given - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UICollectionViewCell.configurationUpdateHandler",
@@ -853,7 +853,7 @@
       "status": "absent",
       "reason": "a dynamic colour that resolves to the tint colour of the view it is drawn in; the port resolves dynamic colours against a trait collection (facts/UIKit/UIColorDynamic.md) and its traits do not carry a view's tint, so the colour would have nothing to resolve against - carrying the tint there is real work, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). A class property whose value would have to be a chosen colour: the port carries UIColor+SystemColors.m and UIColor+SystemPurpleColor.m, so the system colours exist, but no release states what the default tint is and the view-level -[UIView tintColor] of 7.0 is a view's own colour, not a class-wide one. A value written here would be a literal standing in for a measurement nobody made - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIControl.toolTip",
@@ -863,7 +863,7 @@
       "status": "absent",
       "reason": "the text shown when a pointer rests on the control; the release has no pointer and so no hover (the 4S and iPad 2 have neither mouse nor trackpad), so the tip would never show - the text could only be kept, no demand",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). A tooltip is shown for a pointer, and there is no pointer on this release: UIPointerStyle, UIPointerInteraction, UIPointerRegion and UIHoverGestureRecognizer are all absent from the 6.1.3 cache - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIControl.toolTipInteraction",
@@ -1414,7 +1414,7 @@
       "status": "absent",
       "reason": "lets the share sheet put one activity, SharePlay, at the top; the release's share sheet lays its activities out itself and has no SharePlay (see UIActivityTypeSharePlay), so there is nothing to promote",
       "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "source": "carried by 0 of 6.1.3, 4.3 and 12.0 (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, class-scoped as backports.lua:1631 carried_by_release reads it, the getter and the is-getter and the setter all checked). It promotes an activity in the share sheet, and the port's own share path is a pasteboard (UIPasteboard+Items10.m) with no activity list to promote an entry in - facts/UIKit/UIKit15Absence.md"
     },
     {
       "api": "UIApplicationOpenNotificationSettingsURLString",
