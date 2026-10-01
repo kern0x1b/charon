@@ -137,9 +137,10 @@
    "introduced": "18.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextFieldDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "measured absent, where the row cited only the SDK's own declaration. UITextFieldDelegate is a @protocol in all four band-end releases - the inventories answer `protocol` and not `class` for it in each - and first-rung answers NONE for insertInputSuggestion:, so the selector is in no held release. A delegate method is a message to be SENT, and nothing on a 6.1.3 release sends it, so the port does not either and a delegate that implements it is simply not called",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the owner and the ladder answer measured with the commands named in the facts page"
   },
   {
    "api": "-[UITextInput insertInputSuggestion:]",
@@ -147,9 +148,10 @@
    "introduced": "18.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInput a method like it: it arrived in iOS 18",
+   "reason": "measured absent, where the row cited only the SDK's own declaration. UITextInput is a @protocol in all four band-end releases - 6.1.3, 12.0, 16.0 and 18.0, all four answering `protocol` and not `class` for it in the Objective-C inventories - and the selector is in no held release at all: first-rung answers NONE for insertInputSuggestion:. So there is no class for the member to live on, and nothing in this port sends it: the release's UITextField and UITextView have no such call",
    "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the owner measured with tools/corpus/objc-inventory.lua over the four caches and the ladder answer with tools/cache-index/first-rung.py, commands, output and controls in the facts page"
   },
   {
    "api": "-[UITextInputDelegate conversationContext:didChange:]",
@@ -157,9 +159,10 @@
    "introduced": "18.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextInputDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "measured absent, where the row cited only the SDK's own declaration. A delegate method is a message the port would have to SEND, and this one is in no held release: first-rung answers NONE for conversationContext:didChange:, while the bare selector `conversationContext` reads 16.0 on some other class - the trap a selector's rung sets, that it says nothing about its owner. No Objective-C inventory of 6.1.3, 12.0, 16.0 or 18.0 carries this member on any owner, against controls that find the same releases' real delegate members in the same runs, so no release sends it and the port does not either",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the ladder answer and the four inventories measured with the commands named in the facts page"
   },
   {
    "api": "-[UITextViewDelegate textView:insertInputSuggestion:]",
@@ -167,89 +170,98 @@
    "introduced": "18.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports have a UITextViewDelegate that sends anything like it: the message arrived in iOS 18",
+   "reason": "measured absent, where the row cited only the SDK's own declaration. UITextViewDelegate is a @protocol in all four band-end releases, and first-rung answers NONE for insertInputSuggestion:. So no release has the selector and no release sends it: the 6.1.3 UITextView's own delegate is asked only what that release asks",
    "effect": "the message is never sent, so a delegate that implements it is simply not called",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own); the owner and the ladder answer measured with the commands named in the facts page"
   },
   {
    "api": "UIConversationContext",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: A conversation context is the per-conversation state a smart reply is resolved against, and resolving one needs a mail or messages service this release has not.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIConversationContext and _OBJC_METACLASS_$_UIConversationContext"
   },
   {
    "api": "UIConversationEntry",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: A conversation entry is one message in that conversation, and there is nothing on a 6.1.3 release that reads or writes one.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIConversationEntry and _OBJC_METACLASS_$_UIConversationEntry"
   },
   {
    "api": "UIInputSuggestion",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: An input suggestion is what a text input offers while the user types, and offering it needs a suggestion service and a UI to present it in, neither of which this release has.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIInputSuggestion and _OBJC_METACLASS_$_UIInputSuggestion"
   },
   {
    "api": "UIMailConversationContext",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: The Mail specialisation of the abstract pair, and it is no more answerable than the pair it would inherit from.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIMailConversationContext and _OBJC_METACLASS_$_UIMailConversationContext"
   },
   {
    "api": "UIMailConversationEntry",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: The Mail specialisation of the abstract pair, and it is no more answerable than the pair it would inherit from.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIMailConversationEntry and _OBJC_METACLASS_$_UIMailConversationEntry"
   },
   {
    "api": "UIMessageConversationContext",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: The Messages specialisation of the abstract pair, and it is no more answerable than the pair it would inherit from.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIMessageConversationContext and _OBJC_METACLASS_$_UIMessageConversationContext"
   },
   {
    "api": "UIMessageConversationEntry",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: The Messages specialisation of the abstract pair, and it is no more answerable than the pair it would inherit from.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UIMessageConversationEntry and _OBJC_METACLASS_$_UIMessageConversationEntry"
   },
   {
    "api": "UISmartReplySuggestion",
    "kind": "class",
    "introduced": "18.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 18, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "reason": "declared in CharonUIKit18.h and implemented empty, which is the same answer CharonUIKit26.h's twenty-one give and for the same reason: a class is a DYLD SYMBOL, and for a name whose only requirement is that dyld resolve it an empty class IS the complete honest answer - invented members would answer for behaviour nobody measured. NO RELEASE THIS PORT TARGETS CARRIES THE NAME, measured on all four of them: no class and no protocol of that name in the Objective-C inventories of 6.1.3, 12.0, 16.0 and 18.0, against controls that find UITextView, UIViewController, UIWindowScene and 25 other owners in the same runs, and first-rung answers NONE for the name - which is what a name that arrived after the ladder's last rung, 18.0, looks like. IT DOES NOT INHERIT FROM ANY OF THE OTHER SEVEN, which is the tempting reading of the names and is not measured: no declaration in this tree names a superclass for any of them, and a wrong superclass is a wrong answer at runtime rather than a missing one, so all eight inherit NSObject",
+   "effect": "the class is EXPORTED, so an application that names it links and dyld resolves it before main runs. It has no members, and that is the whole of it: A smart reply is a reply the system composes for the conversation it is in, and composing one is a service call this release cannot make.",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the absence from every release measured with tools/corpus/objc-inventory.lua over the four caches and tools/cache-index/first-rung.py, both commands with their output and controls in the facts page; the object read with nm -gU, which lists _OBJC_CLASS_$_UISmartReplySuggestion and _OBJC_METACLASS_$_UISmartReplySuggestion"
   },
   {
    "api": "UITextInputTraits.conversationContext",
@@ -257,9 +269,10 @@
    "introduced": "18.4",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UITextInputTraits a property like it: it arrived in iOS 18",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26.5, Mac Catalyst, UIKit"
+   "reason": "measured absent, where the 26.0 sibling of this shape sat `owed`, and owed is not a landing state. WHAT THE MEASUREMENT SAYS: UITextInputTraits is a @protocol and not a class in 6.1.3, 12.0 and 16.0 - it is BOTH in the release's own metadata, and a 6.1.3 release's UITextInputTraits is not a class a caller names - so A CATEGORY CANNOT BE ON A PROTOCOL and there is no port class for this member to live on. The selector itself is in no held release: first-rung answers NONE for `conversationContext` on any of this band's names, and the same selector reads 16.0 on some OTHER class, which is the trap a selector's rung sets - it says nothing about its owner. THE PORT'S ANSWER IS THE NSObject ROW, as it is for -[NSObject allowsNumberPadPopover], and the cost is the same and is stated there: an unrelated object also answers YES to -[NSObject conversationContext]",
+   "effect": "the accessor is NOT defined on UITextInputTraits: it is a @protocol, and no object answers the selector under this name. The port answers the same selector as -[NSObject conversationContext] - a row of its own, added by this band - because a 6.1.3 release has no class of its own for the protocol, and these are two rows for one selector rather than one row naming a selector nothing provides",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the class-versus-protocol answer measured with tools/corpus/objc-inventory.lua over the four band-end caches and the ladder answer with tools/cache-index/first-rung.py - commands, output and controls in the facts page"
   },
   {
    "api": "+[UIBarButtonItem fixedSpaceItem]",
@@ -1799,7 +1812,18 @@
    "facts": "facts/UIKit/UIContentUnavailable26.md",
    "source": "SDK 26.2 surface, UIKit (via=own); the band object read with otool -v -s __TEXT __objc_methname, which is the count the registry check makes",
    "ledger": "missing"
+  },  {
+   "api": "NSObject.conversationContext",
+   "kind": "method",
+   "introduced": "18.4",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the selector is EXPORTED, so an application that names it links and a guarded call finds it. The body is honest storage: the getter returns the context the setter stored and nil when none was stored. Nothing on a 6.1.3 release reads it back - there is no conversation service to hold a context - so there is no caller and nothing to answer",
+   "reason": "built as the port's own member, for UITextInputTraits.conversationContext: that property is declared on a @protocol, a CATEGORY CANNOT BE ON A PROTOCOL, and NSObject is the only class every conforming object inherits. THE COST IS STATED: an unrelated object also answers YES to -[NSObject conversationContext], which is the price of a selector the port does not own a class for - the same price -[NSObject allowsNumberPadPopover] pays. A CATEGORY HAS NO IVARS, so the storage is an associated object, and the getter returns nil when nothing was ever stored",
+   "facts": "facts/UIKit/ConverseAndWriteTools18.md",
+   "source": "SDK 26.2 surface, UIKit (via=own) for the name and the introduced version; the accessor is a category method, which exports no symbol of its own, and the registry check counts the selectors a category adds"
   },
+
   {
    "api": "UITextInputTraits.allowsNumberPadPopover",
    "kind": "property",
