@@ -2941,8 +2941,8 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "the type is a class of a framework this package does not carry, and no header of the port's own SDK declares it, so there is nothing to keep the value in",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "reason": "the release carries the class and the port's SDK declares it with a body - EventKit.h's @interface EKRecurrenceRule : EKObject <NSCopying> - so the earlier reason on this row was wrong twice over: it said no header of the SDK declares it, and EventKit.h does. What is true is narrower: this class's own state keeps an INRecurrenceRule and not an EK one, IN10_0_1.m:628 declaring `INRecurrenceRule * _recurrenceRule` beside the two NSDateComponents, and the header gives the class both - INRecurrenceRule is its property recurrenceRule and the EK one is this selector - so a port would have to keep two recurrence rules where the header gives one ivar, and a getter that answered nil would be a class that looks filled and is not. measured on the release's own armv7 cache with tools/corpus/objc-inventory.lua, EKRecurrenceRule is in all three: 4.3 as NSObject's subclass, 6.1.3 and 9.0 as EKObject's, each with image /System/Library/Frameworks/EventKit.framework/EventKit, so the class the release answers with is there - and the same three runs read 7187, 11378 and 29117 classes with 597, 705 and 1290 beginning UI as the control, so the reading is the reader's and not the run's",
+      "effect": "the method is not there: respondsToSelector: answers no for it, so a caller asking is told so rather than handed an object whose recurrence rule was silently dropped",
       "facts": "facts/Intents/Intents.md"
     },
     {
@@ -2950,8 +2950,8 @@
       "kind": "method",
       "introduced": "11.0",
       "status": "absent",
-      "reason": "an initialiser that takes a value of a class this delivery does not carry is not given a body, because a body that dropped the value would answer with a class that looks filled and is not",
-      "effect": "the class is there and does not implement this: respondsToSelector: answers no, and a port that reached it would not find it",
+      "reason": "the header declares the initialiser and the port's SDK declares the type it takes, so the earlier reason - that the type is a class of a framework this package does not carry - is wrong: EventKit is on every release this port builds a band for, and its EKRecurrenceRule is in 4.3, 6.1.3 and 9.0. The real blocker is one the family already named for a foreign type: an initialiser that takes a value the class has nowhere to keep is not given a body, because a body that dropped the value would answer with a class that looks filled and is not. INDateComponentsRange's designated initializer takes an INRecurrenceRule, its state holds that and no EK value, and the header gives this initialiser a signature and nothing else - no comment, no conversion and no documented relation to the IN one - so what it would do with the value is not stated by anything this port can read, and the class has no ivar to keep the value in besides the INRecurrenceRule one. Giving the body a stored EK value means a second ivar the header's own property set does not have, and giving it none means an object whose recurrenceRule answers nil for a caller that passed one. measured on the release's own armv7 cache with tools/corpus/objc-inventory.lua, EKRecurrenceRule is in all three: 4.3 as NSObject's subclass, 6.1.3 and 9.0 as EKObject's, each with image /System/Library/Frameworks/EventKit.framework/EventKit, so the class the release answers with is there - and the same three runs read 7187, 11378 and 29117 classes with 597, 705 and 1290 beginning UI as the control, so the reading is the reader's and not the run's",
+      "effect": "the method is not there: respondsToSelector: answers no for it, so a caller asking is told so rather than handed an object whose recurrence rule was silently dropped",
       "facts": "facts/Intents/Intents.md"
     },
     {
