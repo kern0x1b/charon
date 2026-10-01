@@ -411,10 +411,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no focus range to store one in: 6.1.3's AVCaptureDevice carries 100 own instance methods and none of them names a range, a distance or a restriction, where 7.0's 134 add this settable property at AVCaptureDevice.h:1117 beside its is-...Supported twin. The property is AVCaptureAutoFocusRangeRestriction, a value the release's own focus code has never been given",
-      "effect": "setting it raises an unrecognised selector, which is what absent means, and because there is no member to store it, a caller that sets it and reads it back reads nothing: the value does not exist on this release in either direction. The release's own way to hold the lens steady is -lockForConfiguration:, which freezes the focus mode where it is - a different control under a different name, and not one this row stands for",
+      "reason": "6.1.3's AVCaptureDevice carries 105 own instance methods where 7.0's 142 carry -autoFocusRangeRestriction, -setAutoFocusRangeRestriction: and -isAutoFocusRangeRestrictionSupported, and the release's 105 carry the whole focus surface around a point and not a range: -focusMode, -setFocusMode:, -isFocusModeSupported:, -focusPointOfInterest, -setFocusPointOfInterest:, -isFocusPointOfInterestSupported, -lockForConfiguration: and -unlockForConfiguration. The restriction is a distance the lens may not search past, and 6.1.3's device exposes no minimum and maximum focus distance to express one in",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means, and the getter is -isAutoFocusRangeRestrictionSupported that would say whether the hardware could honour it. A caller that needs a bounded focus uses -[AVCaptureDevice setFocusPointOfInterest:] with -lockForConfiguration:, which is the release's own mechanism; a restriction set here would bound nothing, since no release member would read it",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1117; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:1117 for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureDevice.autoFocusRangeRestrictionSupported",
@@ -422,10 +422,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and its whole focus surface is -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:, -unlockForConfiguration and -focusPointOfInterest. There is no focus RANGE on the release, so no member exists that could say whether a restriction is supported; 7.0's class carries 134 and adds this property with getter=isAutoFocusRangeRestrictionSupported",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. What the release does answer is -isFocusModeSupported: for a focus MODE, and a device whose lens cannot be held between two distances cannot be asked at all, so a caller asking here is asking a question this release has no way to hold",
+      "reason": "the support flag of the row above, and the getter is isAutoFocusRangeRestrictionSupported and not autoFocusRangeRestrictionSupported, because the header declares getter=isAutoFocusRangeRestrictionSupported at AVCaptureDevice.h:1107. 6.1.3's AVCaptureDevice carries 105 own instance methods and does not carry it, and it has no member to answer it from: the focus distances the flag would report on are not among the 105, which hold -nominalFrameRate's owner AVCaptureDeviceFormat's geometry nowhere and the device's own -exposureDuration, -autoExposureBias, -exposureGain, -isAdjustingFocus and -isLockedForConfiguration",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. -[AVCaptureDevice isFocusPointOfInterestSupported] is the support flag the release does answer, for the point form of the same question; there is no range form on this release to report, and answering NO would claim the hardware had been asked and had said no",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1107; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:1107 for the declaration and its getter, and API_UNAVAILABLE(macos, tvos) on the same declaration, which is why the host probe cannot answer this row either; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both ends"
     },
     {
       "api": "AVCaptureDevice.smoothAutoFocusEnabled",
@@ -433,10 +433,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no lens-position member to set: 6.1.3's AVCaptureDevice carries 100 own instance methods and none of them names a smooth focus, a lens position or a velocity, where 7.0's 134 add this settable property at AVCaptureDevice.h:1137 with getter=isSmoothAutoFocusEnabled. The property is the switch for a motion the release's autofocus cannot be told about",
-      "effect": "setting it raises an unrecognised selector, which is what absent means, and nothing this release carries records the setting, so a caller that sets it and reads it back reads nothing at all. The host is no oracle here either - API_UNAVAILABLE(macos) at the same header - so this row's answer rests on the release's own class table and on nothing else",
+      "reason": "first-rung.py answers NONE for the name smoothAutoFocusEnabled, and that is the name rather than the selector: the header declares getter=isSmoothAutoFocusEnabled at AVCaptureDevice.h:1127, and the selector -isSmoothAutoFocusEnabled reads 7.0 while -isSmoothAutoFocusSupported also reads 7.0. 6.1.3's AVCaptureDevice carries 105 own instance methods and neither, and the capability is the hardware's continuous rack focus, which 6.1.3's focus members - -focusMode, -isFocusModeSupported:, -focusPointOfInterest, -isAdjustingFocus - do not describe: they move the lens to a point and report whether it is still moving",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means, and the support flag -isSmoothAutoFocusSupported is 7.0's too, so a caller cannot even ask the hardware here. Focus on this release is point-based through -[AVCaptureDevice setFocusPointOfInterest:]; a flag set here would report a mode no release member acts on",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1137; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:1127 for the declaration and its getter; the name's presence is tools/cache-index/first-rung.py, whose NONE for smoothAutoFocusEnabled and 7.0 for -isSmoothAutoFocusSupported and -isSmoothAutoFocusEnabled are three separate answers, and whose control on this set is _NSFileSize answering 3.0; the per-member verdict is class-scoped-rows.py with its three controls answered on both ends"
     },
     {
       "api": "AVCaptureDevice.smoothAutoFocusSupported",
@@ -444,10 +444,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "no smooth-focus member exists on 6.1.3's AVCaptureDevice at all: its 100 own instance methods name the focus mode, the focus point of interest, the configuration lock and the adjustment flag, and nothing else about focus. 7.0's 134 add this property with getter=isSmoothAutoFocusSupported. The host cannot answer it either, and says so in Apple's own words: the iOS SDK marks it API_UNAVAILABLE(macos) at AVCaptureDevice.h:1127 and this Mac's own AVFoundation answers LACKS for it, with all four of that probe's controls answered",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. Nothing here says whether the lens can be driven smoothly, and no host is available to say: the capability is unavailable to compile against on macOS by Apple's own annotation, so the release's cache is the only oracle for this row and it has no such member",
+      "reason": "the support flag of the row above, getter isSmoothAutoFocusSupported and not smoothAutoFocusSupported, declared at AVCaptureDevice.h:1127, and 6.1.3's AVCaptureDevice carries neither it nor -isSmoothAutoFocusEnabled among its 105 own instance methods where 7.0's 142 carry both. The release can say whether a focus POINT is supported, -[AVCaptureDevice isFocusPointOfInterestSupported] is one of its 105, and cannot say whether smooth focus is, because the property is a capability of the lens assembly the release's own table does not name",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and it is API_UNAVAILABLE(macos, tvos) at AVCaptureDevice.h:1127, which is why this Mac's own AVFoundation does not answer the row either. A caller asks -isFocusPointOfInterestSupported for the point form; the smooth form has no member on this release and answering NO would claim a query the release never made",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1127; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both; tools/host-has-row.m over the 79 rows of the queue, which answers LACKS here"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:1127 for the declaration, its getter and API_UNAVAILABLE(macos, tvos); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureDeviceFormat.videoBinned",
@@ -466,10 +466,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods, among them -formatDescription, -videoSupportedFrameRateRanges, -supportedStabilizationMethod, -supportsLowLightBoost and -isBinned, and none of them a field of view; 7.0's carries 39, among them -videoFieldOfView, -sensorDimensions, -outputDimensions and -formatDictionary. The number is an angle over the lens geometry and the format's own dictionary - the one that holds it - is 7.0's as well, so there is nothing on this release to read it out of",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. The release describes a format by its CMVideoFormatDescription, which a caller may read through -formatDescription, and by its frame rate ranges through -videoSupportedFrameRateRanges, and neither carries an angle. The header's own answer for an unknown field of view is 0, and there is no way here to reach even that",
+      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods - -formatDescription, -isBinned, -hasBinned, -supportedStabilizationMethod, -videoSupportedFrameRateRanges, -supportsLowLightBoost and their constructors - where 7.0's 39 carry -videoFieldOfView, and none of the 11 is a field of view or a geometry: the release's format knows what it is, not how much of the scene it sees. The header documents 0 as meaning the field of view is unknown at AVCaptureDevice.h:2580, which is 7.0's way of saying the sensor did not report one, and it is the same absence 6.1.3 has by having no member at all",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller estimates the angle of view from -[AVCaptureDeviceFormat formatDescription] and the sensor's own physical size, or reads the lens specification off the device; there is no number on this release and answering 0 here would claim the sensor reported an unknown where it reported nothing",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:2580, which also documents that 0 means the field of view is unknown; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureDevice.h:2580 for the declaration and what 0 means; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureInputPort.clock",
@@ -477,10 +477,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureInputPort carries 11 own instance methods - -input, -mediaType, -formatDescription, -isEnabled, -setEnabled:, -setOwner:, -initWithInput:mediaType:formatDescription:enabled: and its dealloc, copy and description - and no clock; 7.0's 14 add it. The header calls this the port's native clock, and on this release the port has none to report",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller that needs the time of a sample this release delivers takes it from the host time clock, and there is no per-port clock on this release to compare that against, so a caller cannot tell one port's timeline from another's",
+      "reason": "6.1.3's AVCaptureInputPort carries 11 own instance methods - -input, -mediaType, -formatDescription, -isEnabled, -setEnabled:, -setOwner: and their constructors - where 7.0's 14 carry -clock, the private -_setClock: and the KVO declaration -automaticallyNotifiesObserversOfClock. None of the 11 mentions a clock, so there is nothing on the port to read and nothing on the session to set it from, which is the same gap as AVCaptureSession.masterClock one object down",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The port's own -formatDescription is where the timing of the samples it carries is described, and a caller that needs a CMClock builds the host clock itself; this release never stamps the port's samples against a clock the caller can ask for",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureInput.h:138, API_AVAILABLE(macos(10.9), ios(7.0)); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureInput.h:138 for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureMetadataOutput.rectOfInterest",
@@ -488,10 +488,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureMetadataOutput carries 13 own instance methods - -metadataObjectTypes, -availableMetadataObjectTypes, -metadataObjectsDelegate, -setMetadataObjectsDelegate:queue:, -metadataObjectsCallbackQueue and the private graph hooks - and no rectangle; 7.0's 18 add -rectOfInterest and -setRectOfInterest: at AVCaptureMetadataOutput.h:108. The release does keep a metadata transform: -[AVCaptureOutput updateMetadataTransformForCaptureOptions:] and -transformedMetadataObjectForMetadataObject:connection: are both on AVCaptureOutput at 6.1.3. What it exposes is no rectangle to restrict and no public form of the transform",
-      "effect": "setting it raises an unrecognised selector, which is what absent means. The release reports every metadata object of the whole output and maps each one through -transformedMetadataObjectForMetadataObject:connection:, so a caller that wants a sub-rectangle filters the objects it receives by their own bounds after that call rather than narrowing what the output reports, and the API_UNAVAILABLE(macos) on this property is why the host cannot answer it either",
+      "reason": "6.1.3's AVCaptureMetadataOutput carries 13 own instance methods where 7.0's 18 carry -rectOfInterest, -setRectOfInterest: and -applyLiveSourceProperties, and the release's 13 are -metadataObjectTypes, -setMetadataObjectTypes:, -availableMetadataObjectTypes, -metadataObjectsDelegate and -setMetadataObjectsDelegate: with their constructors. The region of interest is a rectangle in the output's coordinates, and 6.1.3's output holds no rectangle: the metadata transform the release does keep is on the superclass, -[AVCaptureOutput transformedMetadataObjectForMetadataObject:connection:]",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller bounds the metadata objects it receives itself, mapping each through -[AVCaptureOutput transformedMetadataObjectForMetadataObject:connection:] and testing its own bounds - which is the route the release does offer, and the two rect conversions on AVCaptureOutput are absent for the same reason; setting a rectangle here would crop nothing, because no release member would read it",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureMetadataOutput.h:108; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureMetadataOutput.h:108 for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureSession.masterClock",
@@ -499,10 +499,10 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods and not one of them names a clock, where 7.0's 91 add -masterClock at AVCaptureSession.h:525 with -_determineMasterClock and -_setMasterClock: beside it. The clock itself is not missing from this release - CMClockGetHostTimeClock is carried from 6.0 - so what the release lacks is any way to reach a clock from a session, not the clock type",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. Timestamps on this release come from the host time clock, which a caller reaches through CMClockGetHostTimeClock itself; the session neither exposes one nor synchronises capture against one, and there is no member here that could be asked for either. Apple deprecated this property in 15.4 in favour of synchronizationClock",
+      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods where 7.0's 91 carry -masterClock, -setMasterClock: and the private -_determineMasterClock, and 6.1.3 has no clock member at all - no getter, no setter, and no private to reach one through. The clock TYPE is on the floor, not the clock: first-rung.py answers CMClockGetHostTimeClock at 6.0, so CoreMedia builds host clocks here. What 6.1.3's session lacks is the member that names which clock its captures are stamped against, and its own members are -recorder, -captureOptions, -beginConfiguration, -commitConfiguration, -addInput:, -addOutput:, -addConnection:, -sessionPreset and -startRunning",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and so does writing it. A caller that needs a clock builds one with CMClockGetHostTimeClock and passes the time to the capture itself; the session's own view of which clock its frames carry does not exist on this release, and a getter that returned the host clock unasked would claim the session had adopted one",
       "facts": "facts/AVFoundation/AVFoundation70.md",
-      "source": "iPhoneOS 16.5 AVCaptureSession.h:525, API_AVAILABLE(ios(7.0, 15.4)); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered on both; tools/cache-index/first-rung.py, which answers _CMClockGetHostTimeClock 6.0 and _NSFileSize 3.0 as its own control"
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureSession.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends; the clock type's first rung is tools/cache-index/first-rung.py, whose control on this set is _NSFileSize answering 3.0"
     },
     {
       "api": "AVCaptureStillImageOutput.automaticallyEnablesStillImageStabilizationWhenAvailable",
@@ -510,9 +510,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVCaptureStillImageOutput carries 38 own instance methods and no -automaticallyEnablesStillImageStabilizationWhenAvailable among them, where 7.0's 52 carry it and its setter. The property is a policy for a capability the release does not have a member for, so there is nothing on this release for the policy to switch on: the still image's own settings are the release's -[AVCaptureStillImageOutput stillImageSettings] and the hardware answer is -[AVCaptureDeviceFormat supportedStabilizationMethod]",
+      "effect": "reading or writing it raises an unrecognised selector, which is what absent means. A caller that wants a stabilized still image checks -[AVCaptureDeviceFormat supportedStabilizationMethod] on the active format and captures; a flag stored here would be a value no release member reads, and the automatic pass this property asks for has no implementation on 6.1.3 to stand in for",
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureStillImageOutput.h for the declaration; the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureStillImageOutput.stillImageStabilizationActive",
@@ -520,9 +520,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the live flag of the row above, getter isStillImageStabilizationActive and not stillImageStabilizationActive, and 6.1.3's AVCaptureStillImageOutput carries 38 own instance methods where 7.0's 52 carry -isStillImageStabilizationActive among the 14 7.0 adds - -addConnection:error:, -removeConnection:, -HDRMode, -isHDRSupported, -shutterSound, -squareCropEnabled, -maxStillImageJPEGDataSize, -observeValueForKeyPath:ofObject:change:context: and their setters besides. None of the 38 is a stabilization member, so the release does not hold a still image's stabilization state to report and no member of it would be updated by one",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and it is API_UNAVAILABLE(macos) at AVCaptureStillImageOutput.h:99. Whether the active format supports stabilization is the release's own question and -[AVCaptureDeviceFormat supportedStabilizationMethod] answers it; whether a given capture applied it is not recorded on this release and a flag returned here would be a constant, not a state",
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureStillImageOutput.h:99 for the declaration, its getter and API_UNAVAILABLE(macos); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVCaptureStillImageOutput.stillImageStabilizationSupported",
@@ -530,9 +530,9 @@
       "introduced": "7.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVCaptureStillImageOutput a property like it: it arrived in iOS 7",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the getter is isStillImageStabilizationSupported and not stillImageStabilizationSupported, declared at AVCaptureStillImageOutput.h:79, and 6.1.3's AVCaptureStillImageOutput carries 38 own instance methods where 7.0's 52 carry it. The release's 38 are the capture half - -captureStillImageAsynchronouslyWithCompletionHandler:, -jpegStillImageNSDataRepresentation:, -jpegDataRepresentation, -stillImageSettings, -setStillImageSettings: - and carry no stabilization member, and the release's own answer to the same hardware question is on the format, where -[AVCaptureDeviceFormat supportedStabilizationMethod] is a 6.1.3 member and 2 means supported",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and it is API_UNAVAILABLE(macos) at AVCaptureStillImageOutput.h:79, so the host probe does not answer it either. A caller asks -[AVCaptureDeviceFormat supportedStabilizationMethod] on the device's -activeFormat and compares with 2, which is the release's own answer; the port's own -[AVCapturePhotoOutput isStillImageStabilizationSupported] already forwards to exactly that",
+      "source": "iPhoneOS 16.5 AVFoundation/AVCaptureStillImageOutput.h:79 for the declaration, its getter and API_UNAVAILABLE(macos); the two releases' own class tables, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/7.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with its three controls answered as wanted on both ends"
     },
     {
       "api": "AVMediaSelectionOption.displayName",
