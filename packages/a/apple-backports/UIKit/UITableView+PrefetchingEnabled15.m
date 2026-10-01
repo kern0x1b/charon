@@ -1,3 +1,7 @@
+#import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 // UITableView+PrefetchingEnabled15.m - the prefetching gate iOS 15.0 gave UITableView.
 //
 // One row: UITableView.prefetchingEnabled, introduced 15.0, minimum 6.0, so this file is one
@@ -34,6 +38,24 @@
 // +load runs before the library's own categories are attached, so a method added from a category
 // would not be there yet (the reason UITableView+Prefetching10.m:15 spells out in its comment).
 
+static const char CharonTablePrefetchEnabled15Key;
+
+@interface UITableView (CharonPrefetchingEnabled15)
+- (BOOL)isPrefetchingEnabled;
+- (void)setPrefetchingEnabled:(BOOL)prefetchingEnabled;
+- (BOOL)charon_prefetchingAllowed;
+@end
+
+// The pass the 10.0 object owns, declared here the way UITableView+Prefetching10.m:18 declares it
+// for its own installer: it is a category method on UITableView, so it is reachable, and it is
+// declared in that file rather than in a header because that file is the only thing that defines
+// it. No C function crosses between the two files, which is what keeps this one safe to link into
+// a band that does not keep the 10.0 one: a category method is resolved at message send, and a C
+// symbol would not be.
+@interface UITableView (CharonPrefetchRows10)
+- (void)charon_prefetchRows;
+@end
+
 @interface CharonTablePrefetchEnabled15Installer : NSObject
 @end
 
@@ -68,30 +90,11 @@
 
 @end
 
-#import <UIKit/UIKit.h>
-#import <objc/runtime.h>
-
-#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
-
 // The key is this file's own, so the 10.0 object and the 15.0 one cannot read each other's
 // storage even where both are linked into one binary.
-static const char CharonTablePrefetchEnabled15Key;
 
-@interface UITableView (CharonPrefetchingEnabled15)
-- (BOOL)isPrefetchingEnabled;
-- (void)setPrefetchingEnabled:(BOOL)prefetchingEnabled;
-- (BOOL)charon_prefetchingAllowed;
-@end
 
-// The pass the 10.0 object owns, declared here the way UITableView+Prefetching10.m:18 declares it
-// for its own installer: it is a category method on UITableView, so it is reachable, and it is
-// declared in that file rather than in a header because that file is the only thing that defines
-// it. No C function crosses between the two files, which is what keeps this one safe to link into
-// a band that does not keep the 10.0 one: a category method is resolved at message send, and a C
-// symbol would not be.
-@interface UITableView (CharonPrefetchRows10)
-- (void)charon_prefetchRows;
-@end
+
 
 @implementation UITableView (CharonPrefetchingEnabled15)
 

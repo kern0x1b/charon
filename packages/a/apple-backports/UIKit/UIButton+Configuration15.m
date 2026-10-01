@@ -119,9 +119,14 @@ static const void *CharonButtonSubtitleLabelKey = &CharonButtonSubtitleLabelKey;
 
 - (void)updateConfiguration
 {
+    // The handler takes the button and nothing else - UIButton.h:46 reads
+    // `typedef void (^UIButtonConfigurationUpdateHandler)(__kindof UIButton *button)` - so the
+    // configuration the handler needs is the one the button already holds, and a handler that
+    // wants it reads -configuration. Passing it as a second argument was wrong, and the armv7
+    // compile is what said so: "too many arguments to block call, expected 1, have 2".
     UIButtonConfigurationUpdateHandler handler = charon_host_update_handler(self);
     if (handler)
-        handler(self, objc_getAssociatedObject(self, CharonButtonConfigurationKey));
+        handler(self);
 }
 
 - (BOOL)changesSelectionAsPrimaryAction
