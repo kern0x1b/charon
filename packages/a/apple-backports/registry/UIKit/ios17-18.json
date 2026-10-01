@@ -1512,13 +1512,13 @@
    "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
-   "api": "UIScrollView.scrollAnimating",
+   "api": "UIScrollView.isScrollAnimating",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "NO, which is what the host answers on a fresh scroll view; there is no in-flight scroll animation at this level for it to report, and the port has no setter because neither the host nor the SDK has one",
-   "source": "UIKit/UIScrollView+ContentAlignment17.m; the host has no setter for this one (measured: the getter answers under the is spelling and instancesRespondToSelector: answers NO for the setter), and the 26.2 SDK declares it (nonatomic, readonly, getter=isScrollAnimating), so the port declares a getter only",
+   "effect": "NO, which is what the host answers in every state measured - fresh, immediately after an animated -setContentOffset:animated:YES, 120ms and 1s later, and mid-zoom - so the getter reports that no animation is in flight, and there is no setter because the host has none and UIScrollView.h declares the property readonly",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m, which defines -isScrollAnimating; the property name is not a selector and the getter is what is implemented - measured by compiling [s scrollAnimating] against the host SDK, which fails with \"no visible @interface for 'UIScrollView' declares the selector 'scrollAnimating'\", while [s isScrollAnimating] compiles, and UIScrollView.h:221,262 declare the property (nonatomic, readonly, getter=isScrollAnimating). The host answers NO in every state measured, including immediately after an animated -setContentOffset:",
    "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
@@ -1542,13 +1542,13 @@
    "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
-   "api": "UIScrollView.zoomAnimating",
+   "api": "UIScrollView.isZoomAnimating",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "NO, the measured host default, for the same reason as scrollAnimating and with the same measured absence of a setter",
-   "source": "UIKit/UIScrollView+ContentAlignment17.m; the host has no setter for this one (measured: the getter answers under the is spelling and instancesRespondToSelector: answers NO for the setter), and the 26.2 SDK declares it (nonatomic, readonly, getter=isScrollAnimating), so the port declares a getter only",
+   "effect": "NO, which is what the host answers in every state measured - fresh, immediately after an animated -setContentOffset:animated:YES, 120ms and 1s later, and mid-zoom - so the getter reports that no animation is in flight, and there is no setter because the host has none and UIScrollView.h declares the property readonly",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m, which defines -isZoomAnimating; the property name is not a selector and the getter is what is implemented - measured by compiling [s scrollAnimating] against the host SDK, which fails with \"no visible @interface for 'UIScrollView' declares the selector 'scrollAnimating'\", while [s isZoomAnimating] compiles, and UIScrollView.h:221,262 declare the property (nonatomic, readonly, getter=isZoomAnimating). The host answers NO in every state measured, including immediately after an animated -setContentOffset:",
    "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {

@@ -179,8 +179,63 @@ Two findings changed the implementation rather than confirming it:
 Cross-checked against the SDK's own declarations, which agree exactly:
 `UIScrollView.h:96,153,157,180,221,262` — `contentAlignmentPoint` readwrite, the two `transfers…`
 readwrite, `withScrollIndicators…:` a method, and `scrollAnimating`/`zoomAnimating` declared
-`(nonatomic, readonly, getter=isScrollAnimating)`. **That last part is why the port declares getters
-only for those two**: writing setters the SDK and the host both lack would be inventing API.
+`(nonatomic, readonly, getter=isScrollAnimating)` / `(getter=isZoomAnimating)`. **That last part is why
+the port declares getters only for those two**: writing setters the SDK and the host both lack would be
+inventing API.
+
+### M4a. THE PROPERTY NAME IS NOT A SELECTOR, and the rows are named by the getter
+
+This is the finding the gate's `unbuilt` check forced, and it is not visible from the header alone.
+
+`UIScrollView.h:221` declares the property `scrollAnimating` with `getter=isScrollAnimating`. So the
+**property name and the getter are different strings**, and only one of them exists as a selector.
+Measured by compiling against the host SDK, which carries the real 17.x API:
+
+```
+[s scrollAnimating]   -> error: no visible @interface for 'UIScrollView' declares the selector
+                                'scrollAnimating'
+[s isScrollAnimating] -> compiles (one -Wunguarded-availability-new note, and it is macCatalyst 17.4)
+s.scrollAnimating = YES -> error: assignment to readonly property
+```
+
+`spellings()` at `backports.lua:1582` builds, for a property row `Class.name`, the selectors `name` and
+`setName:`, and `property_of()` bridges **getter → property** but not **property → getter**. So a row
+spelled `UIScrollView.scrollAnimating` asks the check for `-[UIScrollView scrollAnimating]` — a selector
+that does not exist on the host, in the SDK, or in the port — while the definition the port exports,
+`-[UIScrollView isScrollAnimating]`, is never looked for. That is why the gate reported
+`listed as implemented, but nothing of that name is built` for a member the object **does** define
+(`nm` on the object lists `isScrollAnimating` and `isZoomAnimating`).
+
+The tree already settles this shape. `registry/MediaPlayer/ios10_3mpitem.json` carries
+`MPMediaItem.isPreorder` as `implemented`, its reason saying: *"The header declares it as the property
+preorder with getter = isPreorder, so the property name is not a selector and the getter is what is
+implemented."* Both rows here are therefore **named by their getter**,
+`UIScrollView.isScrollAnimating` and `UIScrollView.isZoomAnimating`, which is what makes the check find
+the definition.
+
+Note what was **not** done: neither row went back to `absent` (the port really does export the getter, so
+`absent` would be false), and no second selector named `scrollAnimating` was invented to satisfy the
+spelling (Apple has no such selector, so exporting one would be API the system does not have).
+
+### M4b. What the two getters answer, in every state reachable here
+
+Not only on a fresh scroll view. Measured around a real animated scroll and zoom:
+
+```
+fresh                            scrollAnimating=0 zoomAnimating=0
+immediately after animated set   scrollAnimating=0 zoomAnimating=0
+after 120ms                      scrollAnimating=0 zoomAnimating=0
+after ~1s                        scrollAnimating=0 zoomAnimating=0
+mid zoom                         scrollAnimating=0 zoomAnimating=0
+after the zoom finished          scrollAnimating=0 zoomAnimating=0
+```
+
+The host answers **NO in every state reachable from a host process**, including immediately after
+`-setContentOffset:animated:YES`. That is consistent with the property being a report on an animation the
+**system's** own scroll view runs: on a release whose scroll view this port's own
+`-setContentOffset:animated:NO` drives, there is no in-flight animation for the getter to report, and NO
+is the measured answer rather than a stand-in for one. It is stated as a measurement and not as a
+guarantee about a device, which is what the rows say.
 
 ## The two release-split trap, and why this slice has two scroll view files
 
