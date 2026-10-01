@@ -130,6 +130,44 @@ means "nothing the release has answers the name" — measured, 0 at both ends. T
 describes two applications *defining* a selector for a framework release the port is not; it is not
 a missing port capability, and no registry row or object changes it.
 
+## The one row whose owner a band end *does* carry, measured on all three rungs
+
+`UIPrintFormatter.requiresMainThread` is the 116th row, and the only one that cited the SDK's own
+declaration as its whole `source`. Its owner class is not new in 16.0, so the class-scoped question
+is real: does `UIPrintFormatter` carry `requiresMainThread` at either band end?
+
+```
+CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 > inv-6.1.3.tsv
+CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/12.0/dyld_shared_cache_arm64  > inv-12.0.tsv
+CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/16.0/dyld_shared_cache_arm64e > inv-16.0.tsv
+```
+
+```
+6.1.3  UIPrintFormatter  super=NSObject  image=.../UIKit.framework/UIKit            selectors=20  requiresMainThread: none
+12.0   UIPrintFormatter  super=NSObject  image=.../UIKitCore.framework/UIKitCore    selectors=22  requiresMainThread: none
+16.0   UIPrintFormatter  super=NSObject  image=.../PrintKitUI.framework/PrintKitUI  selectors=25  requiresMainThread: -requiresMainThread
+```
+
+(The counts are the class's own selectors as `objc-inventory.lua` writes them, `-.cxx_destruct`
+excluded, which is what `carried_by_release` and `added_members` count.)
+
+**The control is the same row on the same reader.** Each rung's `UIPrintFormatter` line carries the
+class's whole selector list, and it holds the selectors the class is known for — `-drawInRect:forPageAtIndex:`,
+`-printPageRenderer`, `-pageCount`, `-copyWithZone:` — while no rung's list holds `requiresMainThread`
+in any spelling (`-requiresMainThread`, `-isRequiresMainThread`, `-setRequiresMainThread:`). The
+reader found the class and read its selectors; the zero is the release's.
+
+**What the 16.0 line settles.** The SDK says `introduced: "16"` for this row and nothing else did.
+The 16.0 cache's own `UIPrintFormatter` carries `-requiresMainThread`, so the release that introduced
+it is 16.0, as the SDK's annotation says — the `16` spelling in the row is this file's own shorthand
+and the `UICalendarViewDelegate` / `UISceneWindowingBehaviors` rows above, whose SDK annotation the
+cache does *not* corroborate, are the two exceptions this file already records.
+
+**Why the row stays `absent`.** Both band ends carry the class and neither carries the accessor, so
+nothing a band builds on answers the name. Carrying a getter that answers YES would be carrying an
+override point nothing reads: the release's print system has no code that asks (measured above — the
+method is not there to ask it), so the value would be stored and never consulted.
+
 ## What a reader should take from this
 
 Every row of the file says `absent`, and that is now a measurement rather than a queue entry: **0
