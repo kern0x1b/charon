@@ -213,3 +213,76 @@ blocked anyway, and the blocker is measured rather than assumed:
 The honest disposition for these rows is therefore `absent` with **that** reason, naming the substrate
 rather than the queue. They are not `owed`: a row lands, and this one lands `absent` because the class
 its parameter names does not exist in this port's world, in any release it deploys on, or in its SDK.
+
+## M6. The bounce-form spring, measured to zero error
+
+`-initWithDuration:bounce:` and `-initWithDuration:bounce:initialVelocity:` (both 17.0) build a spring out
+of a perceptual duration and a bounce. The port's own settling solver does **not** reproduce the host's
+numbers — an earlier version of this object derived the spring from the settling duration and was wrong
+by up to **358%**, so the spring constants were read back off the host's parameters object instead of
+inferred from anything:
+
+```
+double (*dg)(id, SEL) = ...;   // -mass, -stiffness, -damping on the host's own object
+id p = [[UISpringTimingParameters alloc] initWithDuration:0.5 bounce:0.25];
+```
+
+| duration | bounce | host mass | host stiffness | host damping | critical | damping/critical |
+|---|---|---|---|---|---|---|
+| 0.50 | -1.00 | 1.0000 | 157.9137 | inf | 25.1327 | inf |
+| 0.50 | -0.75 | 1.0000 | 157.9137 | 100.5310 | 25.1327 | 4.0000 |
+| 0.50 | -0.50 | 1.0000 | 157.9137 | 50.2655 | 25.1327 | 2.0000 |
+| 0.50 | -0.25 | 1.0000 | 157.9137 | 33.5103 | 25.1327 | 1.3333 |
+| 0.50 | -0.10 | 1.0000 | 157.9137 | 27.9253 | 25.1327 | 1.1111 |
+| 0.50 | 0.00 | 1.0000 | 157.9137 | 25.1327 | 25.1327 | 1.0000 |
+| 0.50 | 0.25 | 1.0000 | 157.9137 | 18.8496 | 25.1327 | 0.7500 |
+| 0.50 | 0.50 | 1.0000 | 157.9137 | 12.5664 | 25.1327 | 0.5000 |
+| 0.50 | 0.75 | 1.0000 | 157.9137 | 6.2832 | 25.1327 | 0.2500 |
+| 0.50 | 1.00 | 1.0000 | 157.9137 | 0.0000 | 25.1327 | 0.0000 |
+
+That is Apple's law, and it is two formulas:
+
+```
+mass      = 1
+stiffness = 4*pi^2 / duration^2          (631.6547 / 157.9137 / 39.4784 / 9.8696 at 0.25 / 0.5 / 1 / 2)
+critical  = 2*sqrt(mass*stiffness) = 4*pi/duration
+damping   = critical * f(bounce),  f(b) = 1 - b        for b >= 0
+                                f(b) = 1 / (1 + b)  for b <  0
+```
+
+**The negative branch is measured, not assumed.** The obvious guess `f(b) = 1 - b` for every sign is
+right for `b >= 0` and **wrong** for `b < 0`: at `b = -0.5` it predicts 1.5 × critical where the host
+answers 2.0. Samples at -0.1, -0.25, -0.5 and -0.75 give 1.1111, 1.3333, 2.0 and 4.0 — that is `1/(1+b)`
+to four places — and at `b = -1` it diverges and the host reports `damping = inf`, which is what this file
+produces rather than a clamp.
+
+### The two sides, run together
+
+The port's formula and the host's own initialiser, over 4 durations × 11 bounces:
+
+```
+   dur  bounce |   host stiff   port stiff |    host damp    port damp
+   0.25   -1.00 |     631.6547     631.6547 |          inf          inf
+   0.25    0.00 |     631.6547     631.6547 |      50.2655      50.2655
+   0.25    0.75 |     631.6547     631.6547 |      12.5664      12.5664
+   0.50   -0.50 |     157.9137     157.9137 |      50.2655      50.2655
+   1.00    0.25 |      39.4784      39.4784 |       9.4248       9.4248
+   2.00    1.00 |       9.8696       9.8696 |       0.0000       0.0000
+   … 44 rows in all …
+WORST |stiffness| error 0.000000
+WORST |damping|  error 0.000000
+```
+
+**Zero error on every one of the 44 samples, including both infinities.** That is why the file holds the
+formulas and not a table of fitted numbers: a table would agree only at the points it was built from.
+
+### What does NOT raise
+
+`bounce 2.0`, `bounce -1.5` and `duration 0.0` all return a usable object on the host — measured, no
+exception and no `NSParameterAssert`. So the port clamps nothing and adds no precondition of its own; a
+clamp would be the port answering something the system does not.
+
+### The velocity
+
+`initialVelocity` passes through **exactly**: a velocity of `(2,0)` reads back `(2,0)`, and every zero
+velocity reads back `(0,0)`. So it goes to the 13.0 initialiser untouched, unscaled.

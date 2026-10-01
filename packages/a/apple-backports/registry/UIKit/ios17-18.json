@@ -416,20 +416,20 @@
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISpringTimingParameters a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "a spring of mass 1 and stiffness 4*pi^2/duration^2, damped to (1 - bounce) of critical, so bounce 0 is critically damped and bounce 1 is undamped and never settles; measured against the host over 4 durations x 11 bounces with zero error on every sample",
+   "source": "UIKit/UISpringTimingParameters+DurationBounce17.m; the spring constants were read back off the host's own parameters object rather than inferred, because the port's settling solver does not reproduce them - a first version derived the spring from the settling duration and was wrong by up to 358% - and the two formulas then match all 44 measured samples with zero error",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UISpringTimingParameters initWithDuration:bounce:initialVelocity:]",
    "kind": "method",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UISpringTimingParameters a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the same spring as -initWithDuration:bounce:, with the caller's velocity stored unchanged - measured, (2,0) reads back (2,0) - and damping = critical/(1 + bounce) for negative bounce, which is where the 1-bounce rule does not hold (measured: bounce -0.5 damps to 2x critical, not 1.5x)",
+   "source": "UIKit/UISpringTimingParameters+DurationBounce17.m; the spring constants were read back off the host's own parameters object rather than inferred, because the port's settling solver does not reproduce them - a first version derived the spring from the settling duration and was wrong by up to 358% - and the two formulas then match all 44 measured samples with zero error",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UITextViewDelegate textView:menuConfigurationForTextItem:defaultMenu:]",
