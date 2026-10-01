@@ -40,10 +40,12 @@
    bookkeeping: the two streams, the half-closes, the read and the write with their completion
    handlers, the delegate callbacks the header names, and the secure connection.
 
-   The delegate callbacks are the four of NSURLSessionStreamDelegate, called on the session's delegate
-   queue when the session has one, and never when the delegate does not answer to the selector: what
-   the header says they are for is a better route being found, the read side closing, the streams
-   being handed to the application, and the write side closing. */
+   The delegate callbacks are three of the four of NSURLSessionStreamDelegate, sent on the session's
+   delegate queue when the session has one and on the main queue otherwise, each one only when the
+   delegate answers to that selector, and never after -captureStreams: what the header says they are
+   for is the read side closing, the streams being handed to the application, and the write side
+   closing. The fourth, a better route, the protocol below declares and this file never sends; the
+   comment at the end of -startSecureConnection says why. */
 
 static char CharonStreamTaskStateKey;
 
@@ -119,9 +121,6 @@ static void charon_load_tls(void)
     charon_tls_protocol = protocol;
     charon_tls_cipher = cipher;
 }
-
-static CharonNegotiatedProtocol charon_tls_protocol;
-static CharonNegotiatedCipher charon_tls_cipher;
 
 static void charon_negotiated_tls(CFReadStreamRef stream, NSNumber **version, NSNumber **cipherValue)
 {
@@ -279,6 +278,7 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     void (^deliver)(void) = ^{
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
                                     [(NSObject *)sessionDelegate methodSignatureForSelector:selector]];
+        [invocation retainArguments];
         invocation.selector = selector;
         invocation.target = sessionDelegate;
         [invocation setArgument:&session atIndex:2];
@@ -293,38 +293,59 @@ static int charon_native_descriptor(CFReadStreamRef stream)
         dispatch_async(dispatch_get_main_queue(), deliver);
 }
 
-- (id<NSURLSessionStreamDelegate>)charon_delegate
+/* The session's delegate, when it answers to this one message. All four of the protocol's methods
+   are @optional and independent of each other, so each is asked for by its own name: a delegate
+   that implements only -URLSession:readClosedForStreamTask: is called for that one and not for the
+   other three. */
+- (id<NSURLSessionStreamDelegate>)charon_delegateFor:(SEL)selector
 {
-    NSURLSession *session = self.session;
-    id<NSURLSessionDelegate> sessionDelegate = session.delegate;
-    if ([sessionDelegate respondsToSelector:@selector(URLSession:streamTask:didBecomeInputStream:outputStream:)])
-        return (id<NSURLSessionStreamDelegate>)sessionDelegate;
-    return nil;
+    id<NSURLSessionDelegate> sessionDelegate = self.session.delegate;
+    if (![sessionDelegate respondsToSelector:selector])
+        return nil;
+    return (id<NSURLSessionStreamDelegate>)sessionDelegate;
 }
 
+/* One of the four, on the session's delegate queue where the session has one, as every other
+   delegate message of this session arrives. The invocation is the port's own because the port
+   declares the protocol and the caller's class implements the method: the arguments are the
+   session, the task and, for the one message that names them, the two streams, at the indices the
+   header's signatures give them. */
 - (void)charon_tellDelegate:(SEL)selector input:(NSInputStream *)input
 {
     NSURLSessionStreamTaskState *state = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
     if (state.captured)
         return; /* the task is completed, and the header says no more messages go to the delegate */
-    id<NSURLSessionStreamDelegate> delegate = [self charon_delegate];
+    id<NSURLSessionStreamDelegate> delegate = [self charon_delegateFor:selector];
     if (!delegate)
         return;
+    NSURLSession *session = self.session;
     /* The selector the protocol in this file declares, asked for by that same name. A device build
        has no other prefix to ask for, and the host differential renames the declaration and the call
        site together, which is what prefix_selectors.py exists for. */
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
-                                [(NSObject *)delegate methodSignatureForSelector:selector]];
-    invocation.selector = selector;
-    invocation.target = delegate;
-    [invocation setArgument:&self atIndex:2];
-    if (selector == @selector(URLSession:streamTask:didBecomeInputStream:outputStream:)) {
-        [invocation setArgument:&input atIndex:3];
-        NSURLSessionStreamTaskState *written = objc_getAssociatedObject(self, &CharonStreamTaskStateKey);
-        NSOutputStream *output = written.output;
-        [invocation setArgument:&output atIndex:4];
-    }
-    [invocation invoke];
+    void (^deliver)(void) = ^{
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
+                                    [(NSObject *)delegate methodSignatureForSelector:selector]];
+        /* -setArgument:atIndex: copies the pointer and not the object, so the invocation has to hold
+           what it is given: the output stream below is a local whose scope ends before -invoke runs,
+           and the crash of a delegate that stores it would land in the delegate's own ARC prologue,
+           nowhere near this line. */
+        [invocation retainArguments];
+        invocation.selector = selector;
+        invocation.target = delegate;
+        [invocation setArgument:&session atIndex:2];
+        [invocation setArgument:&self atIndex:3];
+        if (selector == @selector(URLSession:streamTask:didBecomeInputStream:outputStream:)) {
+            [invocation setArgument:&input atIndex:4];
+            NSOutputStream *output = state.output;
+            [invocation setArgument:&output atIndex:5];
+        }
+        [invocation invoke];
+    };
+    NSOperationQueue *queue = session.delegateQueue;
+    if (queue)
+        [queue addOperationWithBlock:deliver];
+    else
+        dispatch_async(dispatch_get_main_queue(), deliver);
 }
 
 - (void)readDataOfMinLength:(NSUInteger)minBytes
@@ -447,11 +468,13 @@ static int charon_native_descriptor(CFReadStreamRef stream)
     /* Once, and then the task is finished: the header says the message is what completes the task
        and that it will not receive any more delegate messages. So the streams leave this object's
        run loop -- the application owns them from here and the task does not touch them again -- and
-       every callback this file sends is answered from now on by the flag below. */
-    state.captured = YES;
+       every callback this file sends is answered from now on by the flag below. The flag is set
+       after the call and not before it, because the call is the guard's own first test: set first,
+       the handover this method exists to make is the one message it would swallow. */
     [state.input removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [state.output removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self charon_tellDelegate:@selector(URLSession:streamTask:didBecomeInputStream:outputStream:) input:state.input];
+    state.captured = YES;
 }
 
 - (void)closeRead
@@ -543,8 +566,14 @@ static NSString *charon_ssl_level_key(void)
         if (state.output)
             [state.output setProperty:negotiated forKey:settings];
     }
-    /* No route message: iOS 6 has no call that reports one, and inventing it on an unrelated event
-       is a false report to the application. */
+    /* No route message, and the reason is not that this release has nothing to ask with: it carries
+       SystemConfiguration, whose reachability this same library already reads for a task that waits
+       for connectivity (NSURLSession.m, charon_task_when_connected). What those flags report is
+       whether the host is reachable and over which kind of interface; the header's message says the
+       *system* has determined that a better route to the host exists. A change in those flags is
+       this port's own inference from a reachability answer, and sending it under the system's name
+       would be a false report to the application, which is what the header warns the caller about
+       when it says a new task may still fail. */
 }
 
 /* The tree's own idiom for a row that is stored and does nothing, from
