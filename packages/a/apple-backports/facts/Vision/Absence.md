@@ -62,8 +62,10 @@ that section 1 does not already settle.
 
 Which release carried the framework is not the question the rows ask -- the rows ask what 6.1.3 and
 4.3 answer, and the answer is that they never had it -- but it is the reason the tree's own
-`source` fields for the Vision library read "Vision of the arm64 shared cache of iOS 12.0": 12.0 is
-the first held rung whose Vision carries the names the registry was read from.
+`source` fields for the Vision library read "Vision of the arm64 shared cache of iOS 12.0", and that
+is a fact about how the registry was read rather than about when Vision arrived: 11.0 already carries
+155 `VN*` classes, so the framework itself arrived with 11.0 and 12.0 is only the rung the names were
+read out of.
 
 ## 2. Each name of this slice is real, and the first held rung that has it
 
@@ -229,11 +231,23 @@ carries, because a revision the port cannot run is refused by the request handle
 **`VNAnimalIdentifierCat` is `Cat` and `VNAnimalIdentifierDog` is `Dog`**, read here straight out of
 the constant's own value and matching what section 3 read out of the 16.0 image.
 
-**`VNRequestProgressProviding` is reachable by name** and the two nonsense names beside it are not,
-so `NSProtocolFromString` answering for the port's own protocol object is a different answer from one
-the reader would give anyway. The port does not adopt the protocol on its `VNRecognizeTextRequest`,
-and says so in that row: this port cannot run a text recognition, so there is no progress to report,
-and a `progressHandler` that is stored and never called would answer the same as none at all.
+**`VNRequestProgressProviding` is reachable by name** and the nonsense name the probe asks for beside
+it is not, so the pair is what makes a "found" here mean something, and `NSProtocolFromString`
+answering for the port's own protocol object is a different answer from one the reader would give
+anyway. The port does not adopt the protocol on its `VNRecognizeTextRequest`, and says so in that row:
+this port cannot run a text recognition, so there is no progress to report, and a `progressHandler`
+that is stored and never called would answer the same as none at all.
+
+**The protocol's metadata reaches the image twice, from the same declaration and not from two.** The
+build writes one `<Library>Protocols<release>.m` per release a library's implemented protocol rows
+arrived in and names every protocol of that release in it, so the row above causes a
+`VisionBackportsProtocols13.0.m`; and `Vision130.m`'s own `@implementation VNRecognizeTextRequest`
+emits the same protocol object, because the SDK declares that class as conforming to it and reopening
+a class emits the protocols it conforms to. Both definitions come out of the one SDK declaration, so
+they are the same weak symbol and the runtime keeps one. This is not the trap
+`tests/addon/registry_test.lua`'s `protocol_declarations` guards -- that one is about a source
+*defining* `@protocol X <...>` with a member list of its own, which would emit a second object whose
+contents could disagree with the SDK's, and no source of this library does that.
 
 **The revision counts above are the host's, and they are NOT copied.** This host's Vision is a
 generation past 13.0, and its `supportedRevisions` count every revision Apple has added since --
