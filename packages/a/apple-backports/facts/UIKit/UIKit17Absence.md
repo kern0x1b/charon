@@ -369,3 +369,39 @@ the port's existing 13.0 `-impactOccurredWithIntensity:` rather than repeating t
 The bound view is stored so a factory hands back what it was given. Nothing in this release routes
 feedback by view, so the view is **recorded, not obeyed** — which is the honest limit of 17.5's location
 API on a motor that takes no position.
+
+## M9. The class-scoped answer at BOTH ends the package deploys on, certified
+
+The class-scoped 6.1.3 inventory arrived (12549 lines, 11378 classes, 1171 protocols), so this section
+replaces the weaker M7 for everything it could not reach. Run over the **110 rows of this slice that are
+still `absent`** — the 49 this batch moved to `implemented` are not in the question any more:
+
+```
+CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/4.3/dyld_shared_cache_armv7   > inv-4.3.tsv
+CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 > inv-6.1.3.tsv
+```
+
+| band end | classes read | rows checkable | **rows carried** | control |
+|---|---|---|---|---|
+| **4.3** armv7 | 7187 | 96 | **0** | 8/8 |
+| **6.1.3** armv7 | 11378 | 96 | **0** | 8/8 |
+
+The control is the same eight selectors in the same file as the zeros (`setFrame:`, `reloadData`,
+`tintColor`, `title`, `imageNamed:`, `isHidden`, `makeKeyAndVisible`, `text`, `value` — all present on
+both rungs), so the zeros are the releases' and not the reader's.
+
+**This closes the 44 class and protocol rows that M7 could not reach.** A class name belongs to exactly
+one class, so for those rows the class-scoped read is exactly the right question, and the answer at both
+ends is zero.
+
+`checkable = 96` of 110: the other 14 are rows whose owner is a name that rung has neither a class nor a
+protocol for, so `carried_by_release` returns nil and the check does not apply — which is the third
+answer, not a pass and not a failure.
+
+### What is still open, and is not claimed
+
+The **12.0 and 16.0 reads had not returned** when this turn ended (12.0 started 15:27 and the arm64e
+rungs behind it are slower still). Those two are the band's other ends, so the honest statement for them
+today is: **not yet measured**. The rows they would bear on stay `absent` on the 4.3 and 6.1.3 evidence
+alone, which is the strongest evidence actually in hand — a row that survives both ends the package
+deploys on cannot fire `held` for a deployment at or below them.
