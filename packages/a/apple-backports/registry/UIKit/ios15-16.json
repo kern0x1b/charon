@@ -36,10 +36,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "it builds a button from a UIButtonConfiguration, and UIButtonConfiguration (the declarative style engine iOS 15 replaced the button property surface with) is itself absent from this port - no demand for it, not a wall",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
+      "effect": "a button of the port's own UIButton type holding the configuration given, with the primary action wired so that the button's configurationUpdateHandler path can reach it; the constructor the SDK declares for 15.0",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "+[UIDeferredMenuElement elementWithUncachedProvider:]",
@@ -175,20 +176,22 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "it schedules the next -updateConfiguration call, and that method only exists to read the button's UIButtonConfiguration, which this port does not carry - no demand",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
+      "effect": "asks the button to update its configuration now: the update runs the button's configurationUpdateHandler if it has one, with the button and its configuration",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "-[UIButton updateConfiguration]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "the point where a subclass reapplies its UIButtonConfiguration; nothing to override when the configuration this method exists to serve is not carried - no demand",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit; the selector is in no cache this band's registry check reads, and the 6.1.3 deployment carries 0 of the 105 rows: 6.1.3, 4.3 and 12.0 by CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua <cache>, read class-scoped the way backports.lua:1631 carried_by_release reads it, with 8/8 selector controls and 18/18 positive controls through the property path on 6.1.3 - facts/UIKit/UIKit15Absence.md"
+      "effect": "runs the button's configurationUpdateHandler with the button and its configuration, and does nothing when the button has no handler",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "-[UICollectionView reconfigureItemsAtIndexPaths:]",
@@ -677,10 +680,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "toggles the -updateConfiguration cycle this port does not carry, since UIButtonConfiguration itself is absent - no demand",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "effect": "YES until something says otherwise, and setting it YES asks for a configuration update - the default and the effect the 14.0 automaticallyUpdatesContentConfiguration row measured on the host",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "UIButton.behavioralStyle",
@@ -697,30 +701,33 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "inert",
       "reason": "governs the selection indicator a UIButtonConfiguration draws, and that configuration is itself absent from this port - no demand",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "effect": "kept and read back, NO until set; the release has no selection-primary-action behaviour for a button to drive, so setting it changes nothing - the same landing the 13.0 NSLayoutManager.usesDefaultHyphenation row took",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "UIButton.configuration",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "holds the UIButtonConfiguration this port does not carry - no demand for the declarative style engine, so nothing to hold",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "effect": "the configuration is kept per button and copied on set, so mutating the caller's configuration afterwards does not reach the button; setting it asks for a configuration update",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "UIButton.configurationUpdateHandler",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "implemented",
       "reason": "the block -updateConfiguration calls after applying the automatic update; moot without the UIButtonConfiguration cycle this port does not carry - no demand",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "effect": "the handler is kept per button, copied on set, and setting it asks for a configuration update; the update then calls it with the button and the button's configuration, through the same seam the 15.0 cell rows use",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it); delivered on the cell rows' own seam - charon_host_update_handler and charon_host_set_update_handler from CharonConfigurationHost.m, which take a UIView and are reused here rather than remade, and the 15.0 cell rows are the precedent - packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "UIButton.held",
@@ -757,10 +764,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
+      "status": "inert",
       "reason": "exposes the second text line a UIButtonConfiguration draws; that configuration is itself absent from this port - no demand",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "effect": "a UILabel created on first ask and kept, so a caller can set text on it; it is not laid out under the title, because the release's button has no two-line layout to lay out",
+      "source": "SDK 16.4, UIKit; not in UIButton's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UIButton carries no selector mentioning configuration at all; the port's own UIButtonConfiguration is the value these carry, measured by tests/backports/host/uikit2/buttonconfig_test.m, and the wiring is delivered by packages/a/apple-backports/UIKit/UIButton+Configuration15.m",
+      "facts": "facts/UIKit/UIButtonConfiguration15Wiring.md"
     },
     {
       "api": "UIButtonConfiguration",
