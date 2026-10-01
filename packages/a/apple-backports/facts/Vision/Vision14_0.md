@@ -139,6 +139,27 @@ The collinear case is in the controls because it is the one the algorithm has no
 three points on a line have no circle through them, so the circle that holds all three is the one
 over the two farthest apart.
 
+## The release claim behind every row that stays absent
+
+The project's own census tool, run on this machine over both releases that matter, with its control
+in the same run:
+
+    $ CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua VN 6.1.3 12.0
+    6.1.3     $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+             images 524, of which naming VN 0
+             classes 11378, of which VN* 0
+             protocols 1171, of which VN* 0
+    12.0      $HOME/.charon/dyld/12.0/dyld_shared_cache_arm64
+             images 1368, of which naming VN 0
+             classes 63192, of which VN* 222 (VNANEProcessingDevice ... <elided>)
+             protocols 11426, of which VN* 23 (VNClustererModelBuilding ... <elided>)
+    control: 245 name(s) beginning VN found in this run, so a zero on another rung is the release's and not the reader's
+
+iOS 6.1.3 carries **no `VN*` class and no `VN*` protocol at all** - none of 11378 classes and none of
+1171 protocols - while the same reader finds 222 classes and 23 protocols on 12.0. That is the
+release claim every `absent` row of this file rests on, and the same run is what
+`facts/Vision/Absence.md` section 1 records for 4.3 as well.
+
 ## What the object does not carry, and why
 
 The fourteen rows that stay `absent` split in two.
