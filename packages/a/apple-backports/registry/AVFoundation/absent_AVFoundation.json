@@ -860,9 +860,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. There is one pass on this release: media goes in through -appendSampleBuffer: and the input is closed with -markAsFinished, and a call to mark a PASS finished has no pass boundary here to mark",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. The single-pass equivalent is -markAsFinished, which the release also declares and which does close the input; nothing is lost but the loop: a caller that appends once and marks once is doing exactly what this release does, and a caller that wanted a second pass has no way to ask for one here, because -currentPassDescription is absent for the same reason",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:666, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVAssetWriterInput respondToEachPassDescriptionOnQueue:usingBlock:]",
@@ -870,9 +871,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a method like it: it arrived in iOS 8",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. The whole callback is built on a pass description this release never produces, so there is no request to deliver and no per-pass time range for the block to be given",
+      "effect": "calling it raises an unrecognised selector, which is what absent means. The release's own pull loop is -requestMediaDataWhenReadyOnQueue:usingBlock:, which is the single-pass form of the same idea and is carried: a caller drives its source when that block runs and checks -isReadyForMoreMediaData. What the release cannot do is call a block once per pass, because it has no passes - and it cannot hand out a sample reference URL either, so the loop it runs never re-reads a file of samples",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:646, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "-[AVCaptureDevice chromaticityValuesForDeviceWhiteBalanceGains:]",
@@ -1098,9 +1100,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriter a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriter carries 35 own instance methods and 6 own class methods, and its file handling is -outputURL, -outputFileType, -movieFragmentInterval, -movieTimeScale, -shouldOptimizeForNetworkUse and -metadata. There is no scratch directory member and no place the release parks anything while it writes",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and the release does not use one: it writes the output the caller named at -initWithURL:fileType:error: and keeps its intermediates in memory, so a caller that needs scratch space names a directory itself and hands the writer only the final URL",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriter.h:215, API_AVAILABLE(macos(10.10), ios(8.0)); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.canPerformMultiplePasses",
@@ -1108,9 +1111,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. The property asks whether the attached writer will do more than one pass, and on this release a writer never does: 6.1.3's AVAssetWriter answers -startWriting, -startSessionAtSourceTime:, -endSessionAtSourceTime:, -finishWriting and -cancelWriting, with no member about passes",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. The answer on this release would be NO for every input and there is nothing to read it from; a caller that wants to know whether a writer will re-encode its source asks nothing here and writes with -requestMediaDataWhenReadyOnQueue:usingBlock: and -markAsFinished, which is what this release runs whatever the answer would be",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:605, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.currentPassDescription",
@@ -1118,9 +1122,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. A pass description names which part of the source a pass will cover, and there is no pass and no AVAssetWriterInputPassDescription class on 6.1.3 for it to name",
+      "effect": "reading it raises an unrecognised selector, which is what absent means, and the thing it would return does not exist on this release either: AVAssetWriterInputPassDescription is NO CLASS in 6.1.3's 12549-class inventory and arrives at 8.0. A caller writing on this release gets one continuous pass from zero to the end and no description of it to read",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:621, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.performsMultiPassEncodingIfSupported",
@@ -1128,9 +1133,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. The switch asks the writer to analyse the source and re-encode it in a second pass, which is a writer feature and not an input one: nothing in 6.1.3's 35 own AVAssetWriter methods mentions a pass",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and nothing on this release records the setting, so a caller that sets it and reads it back reads nothing. The release encodes once, from whatever the caller appends, with the quality that follows from -outputSettings and the source format hint; there is no analysis pass for this switch to ask for",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:589, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.preferredMediaChunkAlignment",
@@ -1138,9 +1144,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. The alignment is a hint about where each chunk starts in the output, and there is no member for it on 6.1.3's input nor on its writer",
+      "effect": "setting it raises an unrecognised selector, which is what absent means. Nothing on this release stores an alignment and nothing lays chunks out by one, so the chunks land where the encoded samples put them; a caller wanting aligned chunks has to align the media it hands to -appendSampleBuffer: itself",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:469, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.preferredMediaChunkDuration",
@@ -1148,9 +1155,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. A chunk duration is a hint about how the encoded sample groups are cut, and 6.1.3's input publishes no such hint: its nearest neighbours are -expectsMediaDataInRealTime, -mediaTimeScale and the writer's -movieFragmentInterval, which are different cuts of a different file",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and no chunk duration is stored anywhere on this release. A caller that needs its samples grouped reads -outputSettings and -sourceFormatHint and lets the release cut the file as it likes; the one grouping control that does exist here is the writer's -movieFragmentInterval, and it applies to the output file rather than to one input's samples",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:457, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInput.sampleReferenceBaseURL",
@@ -1158,9 +1166,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "neither iOS 6 nor the backports give AVAssetWriterInput a property like it: it arrived in iOS 8",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "6.1.3's AVAssetWriterInput carries 52 own instance methods and 5 own class methods, and they are a single-pass writer: -initWithMediaType:outputSettings: and its sourceFormatHint twin, -appendSampleBuffer:, -requestMediaDataWhenReadyOnQueue:usingBlock:, -isReadyForMoreMediaData, -markAsFinished, -mediaType, -outputSettings, -transform, -expectsMediaDataInRealTime, -metadata, -languageCode, -extendedLanguageTag, -naturalSize, -mediaTimeScale, -marksOutputTrackAsEnabled, -addTrackAssociationWithTrackOfInput:type: and -canAddTrackAssociationWithTrackOfInput:type:. None of them names a pass, a chunk or a reference URL, and 8.0's class adds the whole multi-pass family beside them. The base URL is for a writer that stores each SAMPLE as a file and writes references to it, and this release's writer has no such mode: -appendSampleBuffer: takes a CMSampleBuffer and nothing on 6.1.3 copies one out to a file",
+      "effect": "setting it raises an unrecognised selector, which is what absent means, and the samples are written whatever it says. A caller on this release writes media into the output file itself, through -appendSampleBuffer: with -requestMediaDataWhenReadyOnQueue:usingBlock:, and the output file is the only copy - which is why 8.0 also had to add AVAssetReaderSampleReferenceOutput, the reader half that turns those files back into samples, and that class is NO CLASS in 6.1.3",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:489, API_UNAVAILABLE(watchos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInputMetadataAdaptor",
@@ -1168,9 +1177,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is NO CLASS in 6.1.3's inventory, and it is the class that routes metadata items into an input: its own seven instance selectors at 8.0 are the metadata-queue plumbing and its two class methods are the factories. 6.1.3's input carries -metadata and -setMetadata: for the per-input metadata bag instead, which is the whole of what this release offers here",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference to it does not link. A caller that wants metadata in the file on this release sets the input's -metadata, or the writer's -metadata, and nothing else - there is no adaptor to queue timed items through and no member that accepts an NSMetadataItem on this release",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:840 for the declaration; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVAssetWriterInputPassDescription",
@@ -1178,9 +1188,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class arrived in iOS 8, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, AVFoundation"
+      "reason": "the class is NO CLASS in 6.1.3's inventory of 12549 classes and 1171 protocols, and it is the class a multi-pass writer hands out: its own six instance selectors at 8.0 are sourceTimeRange, sourceTrackID, sourceSampleCountChunkOffset, sourceSampleCountChunkLength, sourceOutputChunkOffset and sourceOutputChunkLength, which are the bookkeeping of a pass over a source. Nothing on 6.1.3's writer has a pass to describe",
+      "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference to it does not link. A caller writing on this release never receives one, because the writer has one pass and reports it with -status and -finishWriting; the counters this class would carry are the counters of a pass that 6.1.3 does not run",
+      "facts": "facts/AVFoundation/AVFoundation80.md",
+      "source": "iPhoneOS 16.5 AVAssetWriterInput.h:679 for the declaration; the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
     },
     {
       "api": "AVCaptureDevice.ISO",
