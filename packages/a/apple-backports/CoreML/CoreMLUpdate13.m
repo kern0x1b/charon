@@ -149,16 +149,22 @@
                                metrics:(NSDictionary *)metrics
                             parameters:(NSDictionary *)parameters
 {
-    // Each of the five is a strong ivar, so storing one retains it and storing another releases the one
-    // held, and a caller that hands nil is answered nil rather than a stand-in.
-    if ((self = [super init])) {
-        _task = task;
-        _model = model;
-        _event = event;
-        _metrics = [metrics copy];
-        _parameters = [parameters copy];
+    // The result is held in a local and not assigned to self, because a selector that does not begin
+    // with "init" is not in the init family and clang refuses `self =` in one - measured on this file.
+    // The local is typed with the class rather than instancetype because this clang rejects instancetype
+    // as a variable type at -target armv7-apple-ios6.0, and a method signature is the only place the
+    // rest of this package spells it.
+    MLUpdateContext *made = [super init];
+    if (made) {
+        // Each of the five is a strong ivar, so storing one retains it and storing another releases the
+        // one held, and a caller that hands nil is answered nil rather than a stand-in.
+        made->_task = task;
+        made->_model = model;
+        made->_event = event;
+        made->_metrics = [metrics copy];
+        made->_parameters = [parameters copy];
     }
-    return self;
+    return made;
 }
 
 - (MLUpdateTask *)task { return _task; }
