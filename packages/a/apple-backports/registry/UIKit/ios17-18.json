@@ -1206,10 +1206,10 @@
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "YES unless the caller sets NO, so a scroll view keeps taking the keyboard's scrolling exactly as this release always did, with the property there to say so",
+   "source": "UIKit/UIScrollView+KeyboardScrolling17.m; the default is the host's, measured: a fresh UIScrollView answers YES to allowsKeyboardScrolling",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UISearchBar.lookToDictateEnabled",
@@ -1466,10 +1466,10 @@
    "kind": "method",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the caller's block runs and the release's own -setContentOffset: shows and fades the indicators the way the header describes; passing nil is a caller error and crashes here as it does on the host, which is measured rather than assumed",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; measured: the host SEGFAULTS on a nil block (exit 139), so the port runs the block and adds no nil guard of its own",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UITextInput caretTransformForPosition:]",
@@ -1506,50 +1506,50 @@
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the point the caller set, read back unchanged, and independent of contentOffset - measured on the host, where setting the point leaves the offset alone; a fresh scroll view answers (0,0)",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; the default is the host's, measured: a fresh 100x100 scroll view with contentOffset (0,0) answers (0,0), and setting (37,11) reads back (37,11) with contentOffset unchanged, so the point is stored and not derived",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIScrollView.scrollAnimating",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "NO, which is what the host answers on a fresh scroll view; there is no in-flight scroll animation at this level for it to report, and the port has no setter because neither the host nor the SDK has one",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; the host has no setter for this one (measured: the getter answers under the is spelling and instancesRespondToSelector: answers NO for the setter), and the 26.2 SDK declares it (nonatomic, readonly, getter=isScrollAnimating), so the port declares a getter only",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIScrollView.transfersHorizontalScrollingToParent",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "YES unless the caller sets NO, so a fresh scroll view hands horizontal scrolling to its parent as it always has",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; the default is the host's, measured: a fresh scroll view answers YES",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIScrollView.transfersVerticalScrollingToParent",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "YES unless the caller sets NO, the same as the horizontal one",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; the default is the host's, measured: a fresh scroll view answers YES",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIScrollView.zoomAnimating",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a property like it: it arrived in iOS 17",
-   "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "NO, the measured host default, for the same reason as scrollAnimating and with the same measured absence of a setter",
+   "source": "UIKit/UIScrollView+ContentAlignment17.m; the host has no setter for this one (measured: the getter answers under the is spelling and instancesRespondToSelector: answers NO for the setter), and the 26.2 SDK declares it (nonatomic, readonly, getter=isScrollAnimating), so the port declares a getter only",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "UIStandardTextCursorView",

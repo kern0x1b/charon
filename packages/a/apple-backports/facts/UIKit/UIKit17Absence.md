@@ -152,3 +152,64 @@ rather than a new class precisely because `NSObject` is the release's own.
 8/8 control in the same run**, and the same check against 6.1.3, 12.0, 16.0 and 18.0 is in this batch's
 later commits. The rows that can be implemented are the ones the host answers, and they land as objects
 carrying 17.x API only — one `.m` per release, checked with `release-split.lua` before export.
+## M4. UIScrollView, measured member by member (17.0 and 17.4)
+
+Asked of the host's own UIKit, built for `arm64-apple-ios15.0-macabi`, on a real `UIScrollView` of
+100x100 with `contentSize` 400x400:
+
+| member | introduced | host | measured default / behaviour |
+|---|---|---|---|
+| `allowsKeyboardScrolling` | 17.0 | get+set | **YES** on a fresh scroll view |
+| `contentAlignmentPoint` | 17.4 | get+set | **(0,0)** on a fresh view; setting (37,11) reads back (37,11) while `contentOffset` stays (0,0) |
+| `isScrollAnimating` | 17.4 | **readonly** | NO |
+| `isZoomAnimating` | 17.4 | **readonly** | NO |
+| `transfersHorizontalScrollingToParent` | 17.4 | get+set | **YES** |
+| `transfersVerticalScrollingToParent` | 17.4 | get+set | **YES** |
+| `withScrollIndicatorsShownForContentOffsetChanges:` | 17.4 | yes | runs the block; **a nil block kills the host** |
+
+Two findings changed the implementation rather than confirming it:
+
+- **`contentAlignmentPoint` is not a function of `contentOffset`.** Setting it to (37,11) left
+  `contentOffset` at (0,0) and read back (37,11). So it is stored, and a port that computed it from the
+  offset would answer something the system does not.
+- **The host SEGFAULTS on a nil block** (exit 139, no output at all), so the port runs the block and does
+  not guard nil. A guard would be the port answering something the system does not, and it would hide
+  the caller's own mistake. This is recorded rather than smoothed over.
+
+Cross-checked against the SDK's own declarations, which agree exactly:
+`UIScrollView.h:96,153,157,180,221,262` — `contentAlignmentPoint` readwrite, the two `transfers…`
+readwrite, `withScrollIndicators…:` a method, and `scrollAnimating`/`zoomAnimating` declared
+`(nonatomic, readonly, getter=isScrollAnimating)`. **That last part is why the port declares getters
+only for those two**: writing setters the SDK and the host both lack would be inventing API.
+
+## The two release-split trap, and why this slice has two scroll view files
+
+My slice holds **17.0 and 17.4 rows on the same class**, and a `.m` must hold ONE release's API.
+`release-split.lua` reads band points only, so one file holding both passes it and only a reader
+catches it — which has stopped three batches. So:
+
+- `UIScrollView+KeyboardScrolling17.m` — the **one** 17.0 row (`allowsKeyboardScrolling`).
+- `UIScrollView+ContentAlignment17.m` — the **six** 17.4 rows.
+
+Nothing else in either file is from the other release.
+
+## M5. The symbol-effect rows are blocked, and by what
+
+The 22 `addSymbolEffect:` / `removeSymbolEffect…` rows and the two `setSymbolImage:withContentTransition:`
+families (24 rows in all) look implementable — the host carries all of them, and the port already has
+real symbol infrastructure (`CharonSymbols.h`, `charon_symbol_bitmap`, `UIImage+Symbols.m`). They are
+blocked anyway, and the blocker is measured rather than assumed:
+
+- Every one of those methods takes an **`NSSymbolEffect *`**, and `NSSymbolEffect` is declared in
+  **Symbols.framework**, not UIKit: measured, the 16.4 SDK's UIKit headers hold **no** `NSSymbol*`
+  declaration at all, and `NSSymbolEffect.h` exists only under `…/Frameworks/Symbols.framework/Headers/`.
+- **`NSSymbolEffect` has no registry row anywhere in this repository** (searched every
+  `registry/*/*.json`), and `registry/Symbols/` does not exist.
+- So implementing these rows would mean inventing a class outside my slice, in a framework this batch
+  does not own, with no row to record it against. `check_registry` reads a built class and finds no
+  entry — which is exactly the `built, but no entry in registry/` failure, and the trap the AGENTS
+  contract names ("a seam the port owns still needs a registry row").
+
+The honest disposition for these rows is therefore `absent` with **that** reason, naming the substrate
+rather than the queue. They are not `owed`: a row lands, and this one lands `absent` because the class
+its parameter names does not exist in this port's world, in any release it deploys on, or in its SDK.
