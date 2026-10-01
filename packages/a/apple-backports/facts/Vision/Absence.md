@@ -395,25 +395,188 @@ the three. A Mac Catalyst build of the same source is silent about all of it.
 
 ## 7. The members these classes carry, and why none of them needs a row of its own
 
-`Vision130.m` defines 34 members, which `nm` on its armv7 object reads out one by one. None of them
-is named by a registry row of its own, and none of them needs to be: `entry_of` in
-`modules/apple/backports.lua` falls back to the row of the class a member belongs to, because a class
-row answers for the members of a class the port defines wholly, and none of these twelve classes is
-one a release carries. That is not an assumption -- it is the tree's own reader asked directly:
+`Vision130.m` defines 39 members, and this section names the command that counts them, because a
+member count without one is a number a reader cannot check. `.cxx_destruct` is dropped: clang emits one
+per class with an ivar and no SDK header declares it.
+
+```
+python3 - <<'PY'
+import re, subprocess
+out = subprocess.run(["nm", "-m", OBJECTS .. "/Vision130.m.o"], capture_output=True, text=True).stdout
+members = set()
+for line in out.splitlines():
+    m = re.search(r"\[Thumb\] ([-+])\[([A-Za-z0-9_]+)(?:\(([A-Za-z0-9_]+)\))? ([^\]]+)\]", line)
+    if not m or m.group(4) == ".cxx_destruct":
+        continue
+    members.add("%s[%s %s]" % (m.group(1), m.group(2), m.group(4)))
+open("Vision130-members.txt", "w").write("\n".join(sorted(members)) + "\n")
+print("members:", len(members))
+PY
+```
+
+```
+members: 39
+```
+
+`OBJECTS` is the armv7 objects folder of a 6.1.3 build of this library, which
+`.agent-work/runs/vision13-r13/armv7-one-library.lua` produces for one library in the seconds a
+whole-tree gate build takes minutes:
+
+```
+CHARON_ROOT=<worktree> xmake l .agent-work/runs/vision13-r13/armv7-one-library.lua Vision <objects> 6.1.3
+```
+
+**The earlier reading of this section was wrong in both numbers and it is corrected here.** It said 34
+members and "every one of them by the row of the class it belongs to". Re-measured, the object carries
+39 and three of them are answered by rows of their own -- the precision and recall triple of
+`VNClassificationObservation`, which are the only three of these 39 that a registry row names in its
+own right. `nm -m`, not `nm -gU`: a method implementation on a class the port opens is `non-external`,
+so `nm -gU` on this object lists 55 symbols of which NONE is a method, and a count taken that way
+answers a different question.
+
+None of the 39 needs a row of its own, and that is not an assumption -- it is the tree's own reader
+asked over the list the command above writes:
 
 ```
 CHARON_ROOT=<worktree> REGISTRY_ROOT=<worktree>/packages/a/apple-backports \
-MEMBERS=<the nm output> xmake l tools/vision/check-rows.lua
+MEMBERS=<worktree>/Vision130-members.txt xmake l tools/vision/check-rows.lua
 ```
 
 ```
-members checked: 34 | answered by a row of their own: 0 | answered by another row: 34 | UNANSWERED: 0
+members checked: 39 | answered by a row of their own: 3 | answered by another row: 36 | UNANSWERED: 0
 ```
+
+`entry_of` in `modules/apple/backports.lua` falls back to the row of the class a member belongs to,
+because a class row answers for the members of a class the port defines wholly, and none of these
+twelve classes is one a release carries. `check-rows.lua` calls that same function, so the 36 is the
+tree's rule and not a copy of it.
 
 The same shape is already in the tree: `VNRequests.o` defines `-[VNDetectRectanglesRequest
 initWithCompletionHandler:]` and `-[VNImageBasedRequest initWithCompletionHandler:]`, and neither is a
 row, while `VNDetectRectanglesRequest.minimumAspectRatio` and its six siblings are. Both are answered
 by the class's own row.
+
+### 7.1 A property is synthesised; a method is not, so every declared method is written down
+
+Opening a class makes clang synthesise every **property** its header declares onto a new ivar, and
+nothing at all for a **method**. So every property of these twelve classes is answered without a line
+and every method had to be written down: a caller that sends one this object does not define does not
+get a wrong answer, it loses the process to an unrecognised selector. **Nine methods are declared by
+the 13.0 headers of these twelve classes**, read out of the SDK the package compiles against with
+
+```
+for h in VNClassifyImageRequest VNRecognizeAnimalsRequest VNRecognizeTextRequest VNFaceObservationAccepting; do
+    awk '/^@interface/,/^@end/' "$SDK/System/Library/Frameworks/Vision.framework/Headers/$h.h" | grep -E '^[-+] \('
+done
+```
+
+plus the `@interface` blocks of `VNRecognizedText`, `VNRecognizedTextObservation`,
+`VNFeaturePrintObservation` and `VNSaliencyImageObservation` in the same SDK's `VNObservation.h` -- and
+that last of the four declares no method at all. The nine:
+
+| method | declared at | what this port does |
+| --- | --- | --- |
+| `-[VNRecognizedText boundingBoxForRange:error:]` | 13.0 | `nil`, no error -- Apple's own answer for the same class with nothing in it (4.1) |
+| `-[VNRecognizedTextObservation topCandidates:]` | 13.0 | an empty array -- Apple's own answer for the same class with nothing in it (4.1) |
+| `-[VNFeaturePrintObservation computeDistance:toFeaturePrintObservation:error:]` | 13.0 | `NO`, both out-parameters untouched -- **not measured against Apple**, whose class does not instantiate here (4.1) |
+| `+[VNRecognizeAnimalsRequest knownAnimalIdentifiersForRevision:error:]` | 13.0, deprecated 15.0 | the two identifiers this library exports, and a revision the port's table does not carry refused with `VNErrorUnsupportedRevision` (4.2) |
+| `+[VNClassifyImageRequest knownClassificationsForRevision:error:]` | 13.0, deprecated 15.0 | **not written down** -- 1303 names (4.2) |
+| `+[VNRecognizeAnimalsRequest supportedIdentifiersAndReturnError:]` | 15.0 | not written down, and not 13.0 at all |
+| `+[VNRecognizeTextRequest supportedRecognitionLanguagesForTextRecognitionLevel:revision:error:]` | 13.0, deprecated 15.0 | **not written down** -- 1, 8 and 33 language codes (4.2) |
+| `+[VNClassifyImageRequest supportedIdentifiersAndReturnError:]` | 15.0 | not written down, and not 13.0 at all |
+| `+[VNRecognizeTextRequest supportedRecognitionLanguagesAndReturnError:]` | 15.0 | not written down, and not 13.0 at all |
+
+The three 15.0 rows are listed so that their absence is read as a decision: they are not 13.0 API, and
+`introduced` in this registry means what the SDK annotates.
+
+**The three that are left open are left open on purpose, and here is what a caller gets.** Each is a
+catalogue method: it reports what a model can recognise, and this port has no model behind
+`VNClassifyImageRequest` or `VNRecognizeTextRequest`. A list written in from another release would be
+a wrong list -- this host's own catalogue is a generation past 13.0 and its own counts already differ
+between revisions, which is exactly what the revision table above warns about -- and a wrong list is
+worse than a missing one, because a caller cannot tell the difference between the two and will filter
+on identifiers nothing here can produce. So `+knownClassificationsForRevision:error:`,
+`+supportedIdentifiersAndReturnError:` and `+supportedRecognitionLanguagesForTextRecognitionLevel:revision:error:`
+raise an unrecognised selector on this port, and the port's own probe says so rather than leaving a
+reader to infer it:
+
+```
+VNClassifyImageRequest             +knownClassificationsForRevision:error:                     answered: no, a caller sending it gets an unrecognised selector
+VNRecognizeAnimalsRequest          +supportedIdentifiersAndReturnError:                        answered: no, a caller sending it gets an unrecognised selector
+VNRecognizeTextRequest             +supportedRecognitionLanguagesForTextRecognitionLevel:revision:error: answered: no, a caller sending it gets an unrecognised selector
+```
+
+Nothing is written to `coordination/crutches.md` for these three, because they are not a workaround
+for a cause that can be fixed: the cause is that the recognisers are Apple's own models and no source
+for Vision exists at all (`coordination/corpus/sources.md`). This is the honest end for them and the
+question only the owner can answer is whether a band should carry a row per missing method so that the
+registry says so rather than the facts page.
+
+### 7.2 What release-split says about this library's objects, and what it cannot see
+
+Run over the armv7 objects of the seven Vision sources of a 6.1.3 build, which is the whole library
+except the three the build generates:
+
+```
+xmake l tools/release-split.lua <objects> <split.tsv>
+```
+
+```
+CharonVisionBilinear.c.o   0 symbols   (no exported symbol at all: every symbol is internal)
+VNConstants.m.o            29          11.0
+VNHandlers.m.o              4          11.0
+VNObservations.m.o         34          11.0
+VNRecognizedObjectObservation.m.o  2   12.0
+VNRequests.m.o             34          11.0
+Vision110.m.o               2          11.0
+Vision130.m.o              25          16.0
+release-split: clean, every object file's symbols first-appear in one release (8 files, 130 symbols, 50 releases checked)
+```
+
+**`Vision130.m.o` is unchanged by this section's four methods: 25 symbols before them and 25 after.**
+They are `non-external`, so `nm -gU` does not see them, which is the same reason `nm -gU` sees no method
+at all in section 7 above. What release-split certifies here is the twenty-five symbols a caller binds
+by name -- twelve `_OBJC_CLASS_$_`, twelve `_OBJC_METACLASS_$_` and `VNElementTypeSize` -- and their
+first appearance, which is 16.0 for every one of them: after 12.0 and by 16.0, because the held set has
+no 13.0, 14.0 or 15.0 in it (section 2).
+
+**The three generated protocol objects are a blind spot, and it is measured rather than asserted.**
+`VNRequestProgressProviding` is the only protocol row of 13.0, and the build writes
+`VisionBackportsProtocols13.0.m` for it into `objects/Vision/protocols/`, one folder below the one
+release-split walks. Asked for by name:
+
+```
+xmake l tools/release-split.lua <objects>/Vision/protocols <out> "$(cat <objects>/sdkdir)"
+```
+
+```
+release-split: clean, every object file's symbols first-appear in one release (3 files, 0 symbols, 50 releases checked)
+```
+
+**Zero symbols.** That is `release-split`'s own `EXCLUDED` table doing what it is written to do --
+`__OBJC_PROTOCOL_$_` is on it, because that symbol appears in no release's export surface -- and it
+means the tool's "clean" here certifies nothing at all. It is the blind spot the script's own header
+warns about, met exactly. The symbol is not a release export by measurement either:
+
+```
+python3 tools/cache-index/first-rung.py _OBJC_PROTOCOL_\$_VNRequestProgressProviding
+```
+
+```
+_OBJC_PROTOCOL_$_VNRequestProgressProviding	NONE
+```
+
+so the exclusion is right and there is no mixed release here to find. What the row needs is not a
+symbol but the metadata, and that is measured where it is linked -- `nm -a` on the
+`libVisionBackports.dylib` of a 6.1.3 build of this tree:
+
+```
+__OBJC_PROTOCOL_$_VNRequestProgressProviding   (d, in __DATA)
+__OBJC_$_PROTOCOL_INSTANCE_METHODS_VNRequestProgressProviding
+```
+
+and the protocol name itself is one of the strings in the image. `NSProtocolFromString` answering for
+it by name is measured in section 4.
 
 ## 8. What a caller gets about the conformances, measured on the port's own classes
 
