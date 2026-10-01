@@ -131,6 +131,43 @@ because the header declares `getter=isVideoBinned` at `AVCaptureDevice.h:2590`, 
 `readonly`, so there is no setter to define. The port forwards; it does not read the dictionary
 itself and does not compute a second answer.
 
+## Why the object is inert from 7.0 up, which is what makes the forward safe
+
+The row's `minimum` is 6.0, so the object is carried from 6.0 up -- and it is compiled into both
+bands, `build/objects` and `build/objects-7.0`, each holding
+`-[AVCaptureDeviceFormat(CharonBinnedVideo) isVideoBinned]` and its
+`__OBJC_$_CATEGORY_AVCaptureDeviceFormat_$_CharonBinnedVideo` metadata. A category's methods are not
+symbols and are never dropped from the rung up, so being carried at 7.0 is not in doubt. What is in
+doubt is whether a category method **replaces** the release's own, because 7.0 has
+`-isVideoBinned` and does **not** have `-isBinned`:
+
+| release | `-isBinned` | `-isVideoBinned` |
+| --- | --- | --- |
+| 6.1.3 armv7 | present, IMP 0x30330259 | absent |
+| 7.0 armv7 | **absent** | present, IMP 0x2c3943b5 |
+
+If the port's copy replaced the release's, every 7.0-and-later caller of `isVideoBinned` would reach
+`[self isBinned]` on a release that has no such method. It does not replace it, and the reason is in
+`packages/a/apple-backports/attach.c`: `charon_collect` adds a category's method only when
+`!charon_implements(cls, selector)`, and `charon_implements` walks the class and its superclasses.
+So at 6.1.3, where nothing implements `isVideoBinned`, the port's method is installed and forwards
+to the release's `-isBinned`; at 7.0 and above, where the release implements `isVideoBinned`, the
+port's method is not installed at all and the release's own body runs, reading the `videoBinned` key
+it was written for. One object, correct on both ends, and the guard is the library's, not a check
+this object performs.
+
+This is also why the AGENTS.md trap about `+load` does not apply here, and why
+`AVPlayerMediaSelectionCriteria7Members.m` can sit beside `AVPlayerMediaSelectionCriteria7.m` for
+members that arrived a release later: a category is kept from the rung up and installs itself only
+where the release is short.
+
+Neither `release-split` nor `nm` can see any of this. `release-split` reported
+`clean, every object file's symbols first-appear in one release (104 files, 824 symbols, 50 releases
+checked)`, and the object exports no symbol to be mixed; the selector itself was checked against the
+caches with a control, where `first-rung.py` answers `isVideoBinned` 7.0 and `isBinned` 6.0 and its
+own control `_NSFileSize` answers 3.0, and a raw selector-string search of the two armv7 caches
+answers 1 for `isVideoBinned` at 7.0 and **0** at 6.1.3.
+
 ### The bodies, as read
 
 `code_map` over each cache for the IMP, then a THUMB disassembly with every literal-pool load
