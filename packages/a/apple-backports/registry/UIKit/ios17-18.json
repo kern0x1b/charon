@@ -1436,10 +1436,10 @@
    "kind": "method",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIControl a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the UIActions registered for UIControlEventPrimaryActionTriggered run, which is measured to be exactly what -sendActionsForControlEvents: with that event does; the target/action list is NOT fired and touch-up-inside is never fired, and a control with no primary action returns quietly rather than raising",
+   "source": "UIKit/UIControl+PerformPrimaryAction17.m; measured on the host - a target/action for the primary event runs 0 times where an addAction: for the same event runs once, and the same UIAction fires once from each of -performPrimaryAction and -sendActionsForControlEvents:UIControlEventPrimaryActionTriggered",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIDragItem setNeedsDropPreviewUpdate]",

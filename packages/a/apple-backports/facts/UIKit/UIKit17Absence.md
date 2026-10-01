@@ -405,3 +405,43 @@ rungs behind it are slower still). Those two are the band's other ends, so the h
 today is: **not yet measured**. The rows they would bear on stay `absent` on the 4.3 and 6.1.3 evidence
 alone, which is the strongest evidence actually in hand — a row that survives both ends the package
 deploys on cannot fire `held` for a deployment at or below them.
+
+## M10. `-performPrimaryAction` (17.4) fires the UIAction list and nothing else
+
+The method's name suggests "whatever this control's main action is". What the host does is narrower, and
+the measurement is what the implementation is:
+
+```
+UIControlEventPrimaryActionTriggered = 0x2000    UIControlEventTouchUpInside = 0x40
+
+1. target/action registered ONLY for the primary event    -> ran 0 times
+2. addAction:forControlEvents: for the primary event      -> ran 1 time
+3. target/action registered for touch-up-inside only       -> ran 0 times
+4. UIAction registered for touch-up-inside                 -> ran 0 times
+5. UIAction on the primary event, then the same call twice:
+     -performPrimaryAction                                 -> ran 1
+     -sendActionsForControlEvents:UIControlEventPrimaryActionTriggered -> ran 2
+```
+
+So it fires the **14.0 UIAction list** for `UIControlEventPrimaryActionTriggered` and nothing else — not
+the target/action list, and never touch-up-inside. **Case 5 is the decisive one**: the same `UIAction`
+fired once from each entry point, which makes the two calls the same call. So the whole object is
+
+```objc
+- (void)performPrimaryAction
+{
+    [self sendActionsForControlEvents:UIControlEventPrimaryActionTriggered];
+}
+```
+
+over machinery `UIControl+Actions14.m` already built, and the event value is the release header's own
+(0x2000), not a literal this file chose.
+
+A control with **no** primary action does not raise — measured, the host returns quietly — so no
+precondition was added.
+
+### Why it is its own file
+
+`UIControl+Actions14.m` is 14.0 (`addAction:forControlEvents:`, `initWithFrame:primaryAction:`). This is
+17.4. One `.m` holds one release's API, and `release-split.lua` reads band points only, so a single file
+holding both would pass the tool and only a reader would catch it.
