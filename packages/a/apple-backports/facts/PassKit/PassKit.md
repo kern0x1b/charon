@@ -227,3 +227,134 @@ own headers do not declare and which the members are spelled with.
 40 member cases, 0 failures, both mutants red. Six of the lines are these two classes, and one of them
 checks the *superclass* — a renamed subclass of the host's class would answer all five questions
 correctly while being a class the release never had.
+
+## The five value classes of iOS 11, and why they are carried rather than absent
+
+`PKPaymentAuthorizationResult`, `PKPaymentRequestUpdate`, `PKPaymentRequestShippingContactUpdate`,
+`PKPaymentRequestShippingMethodUpdate` and `PKPaymentRequestPaymentMethodUpdate` were `absent` with the
+Secure Element's reason, which is the reason this page already overturned for the two controllers:
+**`absent` is for absent _hardware_, and the Secure Element's absence is not why a class is missing.**
+These five are further from the hardware than the controllers were -- none of them touches a Secure
+Element, a card, a pass or a sheet. What decides them is that they are the **value types of the delegate
+completion blocks**, and this port already exports the two classes those blocks belong to:
+
+| the port exports | the header's method over it | the class the handler takes |
+| --- | --- | --- |
+| `PKPaymentAuthorizationViewController` (8.0, `PKPaymentAuthorizationViewController8.m`) | `-paymentAuthorizationViewController:didAuthorizePayment:handler:` (`PKPaymentAuthorizationViewControllerDelegate.h:60`) | `PKPaymentAuthorizationResult` |
+| the same | `-paymentAuthorizationViewController:didSelectShippingContact:handler:` (`:88`) | `PKPaymentRequestShippingContactUpdate` |
+| the same | `-paymentAuthorizationViewController:didSelectShippingMethod:handler:` (`:74`) | `PKPaymentRequestShippingMethodUpdate` |
+| the same | `-paymentAuthorizationViewController:didSelectPaymentMethod:handler:` (`:98`) | `PKPaymentRequestPaymentMethodUpdate` |
+| `PKPaymentAuthorizationController` (10.0, `PKPaymentAuthorizationController10.m`) | the same four on `PKPaymentAuthorizationController.h:64, :97, :92, :108` | the same four |
+
+Every one of those methods is `API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0))` and every one of the
+five classes is `API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0))` in the same header file,
+`PKPaymentRequestStatus.h`. They replaced the 8.0 `-completion:(void (^)(PKPaymentAuthorizationStatus))`
+(the 8.0 method is `API_DEPRECATED(..., ios(8.0, 11.0))` in the same header). So without this object the
+port exports a payment controller whose delegate **cannot be written at all**: the SDK's own header names
+a type the port has not got. That, and not the hardware, is what makes these five the port's to carry.
+
+### The measurement, at both band ends, with the control
+
+```
+$ CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment
+6.1.3     ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+         images 524, of which naming PKPayment 0
+         classes 11378, of which PKPayment* 0
+         protocols 1171, of which PKPayment* 0
+4.3       ~/.charon/dyld/4.3/dyld_shared_cache_armv7
+         images 354, of which naming PKPayment 0
+         classes 7187, of which PKPayment* 0
+         protocols 564, of which PKPayment* 0
+11.0      ~/.charon/dyld/11.0/dyld_shared_cache_arm64
+         images 1258, of which naming PKPayment 0
+         classes 52768, of which PKPayment* 267 (PKPayment PKPaymentActivationResponse ...)
+control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's
+```
+
+6.1.3 and 4.3 are the two rungs the package deploys on and the two ends of the absence, and 11.0 is in the
+run as the control that makes their zeros mean something: the same reader, the same command, one rung
+where the name is there. Transcript: `.agent-work/runs/d10-passkit-r11/census-payment.txt`.
+
+Which release the name is real in, over the whole held ladder:
+
+```
+$ python3 tools/cache-index/first-rung.py --rungs _OBJC_CLASS_\$_PKPaymentAuthorizationResult
+first-rung.py: read 50 per-release index(es) in 30.44s
+_OBJC_CLASS_$_PKPaymentAuthorizationResult	11.0,12.0,16.0,18.0
+```
+
+all five answer **11.0**, and `PKPaymentAuthorizationStatus` answers `NONE` -- which is what an
+enumeration is: it has no symbol at all, so it is the SDK's declaration and not a release's.
+
+### What Apple's own 11.0 has, measured class by class
+
+```
+$ CHARON_ROOT=<worktree> xmake l tools/corpus/objc-inventory.lua \
+    ~/.charon/dyld/11.0/dyld_shared_cache_arm64
+```
+
+| class | superclass | image | Apple's own instance selectors |
+| --- | --- | --- | --- |
+| `PKPaymentAuthorizationResult` | `NSObject` | PassKitCore | `-errors`, `-initWithStatus:errors:`, `-setErrors:`, `-setStatus:`, `-status` |
+| `PKPaymentRequestUpdate` | `NSObject` | PassKitCore | `-initWithPaymentSummaryItems:`, `-paymentSummaryItems`, `-setPaymentSummaryItems:`, `-setStatus:`, `-status` |
+| `PKPaymentRequestShippingContactUpdate` | `PKPaymentRequestUpdate` | PassKitCore | `-errors`, `-initWithErrors:paymentSummaryItems:shippingMethods:`, `-setErrors:`, `-setShippingMethods:`, `-shippingMethods` |
+| `PKPaymentRequestShippingMethodUpdate` | `PKPaymentRequestUpdate` | PassKitCore | **none** |
+| `PKPaymentRequestPaymentMethodUpdate` | `PKPaymentRequestUpdate` | PassKitCore | `-errors`, `-initWithErrors:paymentSummaryItems:`, `-setErrors:` |
+
+Three things in that table are what the port's object is built from. The superclass chain is Apple's own,
+which is why the three updates are subclasses of `PKPaymentRequestUpdate` and not of `NSObject`. And
+`PKPaymentRequestShippingMethodUpdate` has **no instance selector of its own at all** -- measured, not
+inferred from the header -- so what the port adds for it is the class, and its storage is the base
+class's reached through it.
+
+**And one thing in that table is deliberately NOT carried.** Apple's own binary also has, on all five,
+`-init`, `-initWithCoder:`, `-encodeWithCoder:`, `+supportsSecureCoding` and the `NSSecureCoding`
+conformance, plus the private initializers `-initWithStatus:paymentSummaryItems:`,
+`-initWithStatus:errors:paymentSummaryItems:shippingMethods:` and, on the payment-method update, a
+private `-peerPaymentQuote`. **No SDK header declares any of them**: `rg -c NSSecureCoding` over
+`PKPaymentRequestStatus.h` answers **0** in the SDK 26.2 and **0** in the SDK 16.4 the package is built
+against. A name no header declares is not API this package carries -- that is the rule
+`tools/check-passkit-selectors.py` enforces on the method rows, and the reason the 26.2 surface TSV has
+no row for a coding method of these classes.
+
+### What a caller gets on this release, which is the honest half
+
+The object stores what the delegate put in it and hands the same values back: `-initWithStatus:errors:`
+keeps a **copy** of the errors in the order they were passed (the header says they are ordered most
+serious first, `PKPaymentRequestStatus.h:31-33`), and `status` starts at
+`PKPaymentAuthorizationStatusSuccess` -- the header's own stated default for the property (`:48-50`) and
+the enumeration's own zero, since `PKConstants.h:65` declares `PKPaymentAuthorizationStatus` with no
+explicit values. The three `null_resettable` error properties answer the **empty list**, never `nil`,
+because `null_resettable` is Apple's own promise that the getter does not.
+
+What a caller **cannot** fill on this device is the other two lists, and the object does not paper over
+it: there is no `PKPaymentSummaryItem` in 6.1.3 at all (registry row, 8.0, absent) and no
+`PKShippingMethod` either. Both are measured rather than assumed --
+`python3 tools/cache-index/first-rung.py` with `_OBJC_CLASS_$_PKPaymentSummaryItem` and
+`_OBJC_CLASS_$_PKShippingMethod` answers **8.0** for each, which is above 6.1.3 and below the 11.0 the
+census found them on. So in practice `paymentSummaryItems` and `shippingMethods` answer the **empty
+array** here, which is what the release's own missing classes leave and not a value this port invents. Both properties copy, so a delegate that mutates the array it passed
+cannot change what it already reported.
+
+### One object, and what keeps the later releases out of it
+
+`PKPaymentRequestStatus11.m` is the only object, and all five classes first export at 11.0 together
+(measured above), which is what `tools/release-split.lua` reads. The SDK the package compiles against is
+16.4, and its `PKPaymentRequestStatus.h` declares every property of these classes up to 16.4 --
+`orderDetails` (16.0), `shippingMethods` (15.0), `multiTokenContexts`, `recurringPaymentRequest`,
+`automaticReloadPaymentRequest` (16.0), `deferredPaymentRequest` (16.4). Auto-synthesis would put all
+six accessors in an 11.0 object, so each is `@dynamic`, which is what the tree uses for a property this
+release's object does not own (`PDFAnnotation11.m`'s `-bounds`, `MPSImageThreshold13.m`). The built
+object's own member list is the check that they stayed out:
+
+```
+$ xmake l tools/corpus/objc-inventory.lua PKPaymentRequestStatus11.o armv7
+class | PKPaymentAuthorizationResult          |                     | -.cxx_destruct,-errors,-initWithStatus:errors:,-setErrors:,-setStatus:,-status
+class | PKPaymentRequestPaymentMethodUpdate    | PKPaymentRequestUpdate | -.cxx_destruct,-errors,-initWithErrors:paymentSummaryItems:,-setErrors:
+class | PKPaymentRequestUpdate                 |                     | -.cxx_destruct,-initWithPaymentSummaryItems:,-paymentSummaryItems,-setPaymentSummaryItems:,-setStatus:,-status
+class | PKPaymentRequestShippingMethodUpdate   | PKPaymentRequestUpdate |
+class | PKPaymentRequestShippingContactUpdate  | PKPaymentRequestUpdate | -.cxx_destruct,-errors,-initWithErrors:paymentSummaryItems:shippingMethods:,-setErrors:,-setShippingMethods:,-shippingMethods
+```
+
+Every name in that list is one the SDK's own header declares for **11.0**, and `PKPaymentRequestShippingMethodUpdate`
+is empty in the same way Apple's own is.

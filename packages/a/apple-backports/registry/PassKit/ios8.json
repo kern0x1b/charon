@@ -290,11 +290,11 @@
     "kind": "class",
     "introduced": "11.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "a completion block's own value type, and the port's own carried controllers are what make it the port's to carry: this package already exports PKPaymentAuthorizationController (10.0) and PKPaymentAuthorizationViewController (8.0) as classes, and iOS 11 gave each delegate a handler: taking one of these five objects in place of the 8.0 -completion:(void (^)(PKPaymentAuthorizationStatus)); every one of those five delegate methods is API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0)) in the SDK's own PKPaymentAuthorizationViewControllerDelegate.h:60, :86, :97, :107 and PKPaymentAuthorizationController.h:64, :92, :97, :108 -- the same 11.0 as this class. Without it the port exports a controller whose delegate cannot be written at all. And nothing in it touches a Secure Element: it holds a status and a list of errors, and hands them back",
+    "effect": "the class is there and holds what the delegate decided: -initWithStatus:errors: keeps the status it was given and a COPY of the errors in the order it passed them, status reads back what was set, and errors -- null_resettable, as the header declares -- answers the EMPTY list rather than nil, so a count is 0 and not a nil to test for",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "absent at both band ends with the control in one run: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment prints 6.1.3 (armv7, 11378 classes) with 0 naming PKPayment and 4.3 (armv7, 7187) with 0, against 11.0 (arm64, 52768) with 267, and certifies its own reader with 'control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's'; real, and first in 11.0, by python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_PKPaymentAuthorizationResult (11.0, 12.0, 16.0, 18.0); declared at 11.0 by coordination/corpus/sdk-26.2-surface.tsv:25520"
   },
   {
     "api": "PKPaymentAuthorizationViewController",
@@ -411,44 +411,44 @@
     "kind": "class",
     "introduced": "11.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "a completion block's own value type, and the port's own carried controllers are what make it the port's to carry: the port already exports PKPaymentAuthorizationController (10.0) and PKPaymentAuthorizationViewController (8.0) as classes, and -paymentAuthorizationViewController:didSelectPaymentMethod:handler: -- whose handler takes exactly this class -- is API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0)) at PKPaymentAuthorizationViewControllerDelegate.h:107, the same 11.0 as this class. It reaches no Secure Element and asks nothing of one: it holds the errors a delegate reports and the summary items it recomputed for the card type",
+    "effect": "the class is there, a PKPaymentRequestUpdate, and it holds what the delegate put in it: -initWithErrors:paymentSummaryItems: keeps a copy of the errors on top of the base update's copy of the summary items, both lists read back as given, status starts at PKPaymentAuthorizationStatusSuccess, and errors -- null_resettable, as the header declares -- answers the EMPTY list when none were passed. On this release the summary-item list can only ever hold an empty array, because there is no PKPaymentSummaryItem in 6.1.3 at all",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "absent at both band ends with the control in one run: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment prints 6.1.3 (armv7, 11378 classes) with 0 naming PKPayment and 4.3 (armv7, 7187) with 0, against 11.0 (arm64, 52768) with 267, and certifies its own reader with 'control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's'; real, and first in 11.0, by python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_PKPaymentRequestPaymentMethodUpdate; declared at 11.0 by coordination/corpus/sdk-26.2-surface.tsv:25521"
   },
   {
     "api": "PKPaymentRequestShippingContactUpdate",
     "kind": "class",
     "introduced": "11.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "a completion block's own value type, and the port's own carried controllers are what make it the port's to carry: the port already exports PKPaymentAuthorizationController (10.0) and PKPaymentAuthorizationViewController (8.0) as classes, and -paymentAuthorizationViewController:didSelectShippingContact:handler: -- whose handler takes exactly this class -- is API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0)) at PKPaymentAuthorizationViewControllerDelegate.h:97, the same 11.0 as this class. It reaches no Secure Element and asks nothing of one: it holds the errors a delegate reports for a shipping address and the shipping methods it offers instead",
+    "effect": "the class is there, a PKPaymentRequestUpdate, and it holds what the delegate put in it: -initWithErrors:paymentSummaryItems:shippingMethods: keeps copies of the errors and of the shipping methods on top of the base update's copy of the summary items, both lists read back as given, status starts at PKPaymentAuthorizationStatusSuccess, and errors -- null_resettable, as the header declares -- answers the EMPTY list when none were passed. On this release both of those lists can only ever hold an empty array: there is no PKShippingMethod in 6.1.3 and no PKPaymentSummaryItem either",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "absent at both band ends with the control in one run: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment prints 6.1.3 (armv7, 11378 classes) with 0 naming PKPayment and 4.3 (armv7, 7187) with 0, against 11.0 (arm64, 52768) with 267, and certifies its own reader with 'control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's'; real, and first in 11.0, by python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_PKPaymentRequestShippingContactUpdate; declared at 11.0 by coordination/corpus/sdk-26.2-surface.tsv:25522"
   },
   {
     "api": "PKPaymentRequestShippingMethodUpdate",
     "kind": "class",
     "introduced": "11.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "a completion block's own value type, and the port's own carried controllers are what make it the port's to carry: the port already exports PKPaymentAuthorizationController (10.0) and PKPaymentAuthorizationViewController (8.0) as classes, and -paymentAuthorizationViewController:didSelectShippingMethod:handler: -- whose handler takes exactly this class -- is API_AVAILABLE(macos(11.0), ios(11.0), watchos(4.0)) at PKPaymentAuthorizationViewControllerDelegate.h:86, the same 11.0 as this class. It is further from the Secure Element than any of the five: the SDK's own header gives it no member at all (PKPaymentRequestStatus.h:108-110), because everything a delegate recomputes after the user picks a shipping method is the summary items its superclass already carries",
+    "effect": "the class is there, and it is the class alone -- what a caller gets is the base update's storage reached through it: the summary items the delegate recomputed for the newly picked shipping method, read back as given, and status starting at PKPaymentAuthorizationStatusSuccess. On this release those summary items can only ever be an empty array, because there is no PKPaymentSummaryItem in 6.1.3 at all",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "absent at both band ends with the control in one run: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment prints 6.1.3 (armv7, 11378 classes) with 0 naming PKPayment and 4.3 (armv7, 7187) with 0, against 11.0 (arm64, 52768) with 267, and certifies its own reader with 'control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's'; real, and first in 11.0, by python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_PKPaymentRequestShippingMethodUpdate; declared at 11.0 by coordination/corpus/sdk-26.2-surface.tsv:25523"
   },
   {
     "api": "PKPaymentRequestUpdate",
     "kind": "class",
     "introduced": "11.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "the superclass the other three of the five are made of, and the port's own carried controllers are what make it the port's to carry: the port already exports PKPaymentAuthorizationController (10.0) and PKPaymentAuthorizationViewController (8.0) as classes, and iOS 11 gave each delegate a handler: taking one of the three updates derived from this class -- PKPaymentRequestShippingContactUpdate, PKPaymentRequestShippingMethodUpdate and PKPaymentRequestPaymentMethodUpdate at PKPaymentRequestStatus.h:94, :108 and :114, all 11.0 like this class -- in place of the 8.0 -completion:(void (^)(PKPaymentAuthorizationStatus)). Carrying the three without their base would be three classes with no common parent, which is not what the SDK declares. It reaches no Secure Element and asks nothing of one",
+    "effect": "the class is there and holds what the delegate put in it: -initWithPaymentSummaryItems: keeps a COPY of the items it was given and sets status to PKPaymentAuthorizationStatusSuccess, which is the header's own stated default for the property and the enumeration's own zero, and both read back as given. On this release the list can only ever be empty -- there is no PKPaymentSummaryItem in 6.1.3 at all -- so in practice paymentSummaryItems answers the empty array, which is what the release's missing class leaves and not a value this port invents",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "absent at both band ends with the control in one run: CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua PKPayment prints 6.1.3 (armv7, 11378 classes) with 0 naming PKPayment and 4.3 (armv7, 7187) with 0, against 11.0 (arm64, 52768) with 267, and certifies its own reader with 'control: 307 name(s) beginning PKPayment found in this run, so a zero on another rung is the release's and not the reader's'; real, and first in 11.0, by python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_PKPaymentRequestUpdate; declared at 11.0 by coordination/corpus/sdk-26.2-surface.tsv:25524"
   },
   {
     "api": "PKPaymentSummaryItem",
