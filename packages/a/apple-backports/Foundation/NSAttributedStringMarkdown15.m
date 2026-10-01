@@ -719,7 +719,7 @@ static BOOL CharonMarkdownParenEnd(NSString *text, NSUInteger body, NSUInteger l
             NSPresentationIntent *intent = [NSPresentationIntent thematicBreakIntentWithIdentity:[self nextIdentity]
                                                                             nestedInsideIntent:parent];
             /* the release's own text for a break is the two-em dash and not three asterisks */
-            [_result appendAttributedString:[[NSAttributedString alloc] initWithString:@"⸻"
+            [_result appendAttributedString:[[NSAttributedString alloc] initWithString:@"\u2E3B"
                                                                            attributes:[self blockAttributes:intent
                                                                                               span:0
                                                                                                extra:nil]]];
