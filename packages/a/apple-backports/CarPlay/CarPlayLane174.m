@@ -30,7 +30,7 @@
 // CarPlay's own declaration is absent. CPLaneGuidance IS reachable through the umbrella (CarPlay.h:55
 // imports CPRouteInformation.h, which imports CPLaneGuidance.h), but CPLane is not on that path's
 // surface, so the header is named directly rather than relied on to arrive.
-#import <CarPlay/CPLane.h>
+#import "CharonCarPlay174.h"
 #import "CharonCarPlayLane.h"
 
 // CPLane.h:26-27, :43 and :53 are `API_AVAILABLE(ios(18.0))` and are carried in an object of their own
@@ -58,6 +58,16 @@
 // belongs elsewhere, and CarPlayLane18.m's category is where those two accessors are.
 @dynamic highlightedAngle;
 @dynamic angles;
+
+// The three 17.4 properties whose accessors are written by hand below are @synthesize'd explicitly, and
+// the reason is a build flag rather than a style: the review's compile step runs with
+// -Werror=objc-missing-property-synthesis, and a property with a hand-written getter and setter and no
+// explicit @synthesize is still "default synthesizing" to that warning -- measured 2026-10-01 against
+// the build SDK as "auto property synthesis is synthesizing property not explicitly synthesized" on
+// `status`.
+@synthesize status = _status;
+@synthesize primaryAngle = _primaryAngle;
+@synthesize secondaryAngles = _secondaryAngles;
 
 // CPLane.h:25 declares -init and marks it API_DEPRECATED("-[CPLane initWithAngles:] or
 // -[CPLane initWithHighlightedAngle:angles:isPreferred:]", ios(17.4, 18.0)) -- it is deprecated from

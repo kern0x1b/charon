@@ -18,6 +18,7 @@
 // is not the same thing as no guidance at all.
 #import <Foundation/Foundation.h>
 #import <CarPlay/CarPlay.h>
+#import "CharonCarPlay174.h"
 
 @implementation CPLaneGuidance {
     NSArray<CPLane *> *_lanes;

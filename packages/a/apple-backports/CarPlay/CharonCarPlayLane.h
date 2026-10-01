@@ -14,7 +14,7 @@
 #define CHARON_CARPLAY_LANE_H
 
 #import <Foundation/Foundation.h>
-#import <CarPlay/CPLane.h>
+#import "CharonCarPlay174.h"
 
 @interface CPLane (CharonLaneAngles)
 

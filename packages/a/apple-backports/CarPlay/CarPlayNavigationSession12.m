@@ -20,6 +20,32 @@
 // exactly that reason (facts/CarPlay/Session.md).
 #import <CarPlay/CarPlay.h>
 #import <UIKit/UIKit.h>
+#import "CharonCarPlay174.h"
+
+#if !__has_include(<CarPlay/CPLane.h>)
+
+// The session's three 17.4 properties, declared HERE and not in CharonCarPlay174.h. Two reasons, and the
+// second is a measured compile error rather than a preference.
+//
+//   - A class EXTENSION is the file-private way to declare a property of a class whose @implementation
+//     lives in this file, and it is what lets `@dynamic` below name them. Declared in a CATEGORY
+//     instead, the 16.4 build fails with "property declared in category cannot be implemented in class
+//     implementation" -- measured 2026-10-01 compiling this file against the build SDK.
+//   - A class extension is not part of the class's public surface, which is what these three want: they
+//     are 17.4 API whose accessors belong to CarPlayNavigationSession174.m's category, and this object
+//     must hold their storage without holding their accessors.
+//   - It is guarded by the same __has_include the header uses. The 16.4 SDK does not declare these three
+//     at all (CPNavigationSession.h there stops at the 15.4 pause), so the port declares them; the 26.2
+//     SDK does declare them, and redeclaring them there is "illegal redeclaration of 'readwrite' property
+//     in class extension" -- measured 2026-10-01 against both SDKs. Either way the `@dynamic`
+//     directives below stand, and they are what keep the getters out of this 12.0 object.
+@interface CPNavigationSession ()
+@property (nullable, nonatomic, readwrite, copy) CPLaneGuidance *currentLaneGuidance;
+@property (nonatomic, readwrite, copy) NSArray<NSString *> *currentRoadNameVariants;
+@property (nonatomic) CPManeuverState maneuverState;
+@end
+
+#endif
 
 // The 16.4 SDK's header declares -pauseTripForReason:description:turnCardColor: on this class, and it
 // is a 15.4 row carried in its own object (CarPlayNavigationSession154.m), so this 12.0 object does not

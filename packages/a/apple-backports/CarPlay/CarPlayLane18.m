@@ -28,7 +28,7 @@
 // can not be included in angles". So the highlighted angle is never both the highlighted one and one of
 // the remaining ones.
 #import <Foundation/Foundation.h>
-#import <CarPlay/CPLane.h>
+#import "CharonCarPlay174.h"
 #import "CharonCarPlayLane.h"
 
 @implementation CPLane (CharonLaneAngles18)

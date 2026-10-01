@@ -66,6 +66,7 @@
 // members are objects of their own.
 #import <CarPlay/CarPlay.h>
 #import <UIKit/UIKit.h>
+#import "CharonCarPlay174.h"
 
 // What this object asks of the session's own storage. Every name is Charon-prefixed, so it carries no
 // API and stays out of the library's exports -- the same rule the 15.4 object's category follows.

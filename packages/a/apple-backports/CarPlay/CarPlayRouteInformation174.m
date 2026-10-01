@@ -28,6 +28,7 @@
 // the designated initialiser.
 #import <Foundation/Foundation.h>
 #import <CarPlay/CarPlay.h>
+#import "CharonCarPlay174.h"
 
 @implementation CPRouteInformation {
     NSArray<CPManeuver *> *_maneuvers;
