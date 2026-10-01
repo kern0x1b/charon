@@ -107,3 +107,55 @@ reported as an unlisted build; every other unlisted build still is, since the gu
 on the existing condition.
 
 This page is deliberately NOT one of those. It describes port machinery, and it says so in its title.
+
+## The sixteen rows, measured one name at a time (2026-10-02)
+
+Every row of `registry/Metal/ios80classes.json` cited the same command with the same name in it:
+
+    grep -c CharonMetalDevice coordination/corpus/sdk-26.2-surface.tsv is 0
+
+which is a measurement of `CharonMetalDevice`, on fifteen rows about other names. A zero is the answer
+for all sixteen, so the conclusion was right and the evidence was not this row's. Each row now names its
+own:
+
+    grep -c 'CharonMetalTexture' coordination/corpus/sdk-26.2-surface.tsv
+
+and the CONTROL is in the same run, because a reader who cannot see that the file is being read at all
+cannot tell a real zero from a blind one. The same run over the same 145302 rows finds
+
+    2606 rows naming MTL
+
+and zero naming any `CharonMetal`. The `absent` is therefore the surface's, not the reader's.
+
+The method counts were wrong for eight of the sixteen as well, and the correction is what each row now
+says - "N method definitions, at FILE (n), FILE (n)", counted from the source over the class's own
+`@implementation` and every category written on it, so the reader's command is the one the number came
+from:
+
+| row | before | after | where |
+| --- | --- | --- | --- |
+| CharonMetalBlitEncoder | 4 | 24 | MTLBlitCommandEncoder8.m (14), :9 (2), :10 (2), :12 (4), :13 (2) |
+| CharonMetalBuffer | 18 | 18 | CharonMetalBuffer.m |
+| CharonMetalCommandBuffer | 20 | 17 | CharonMetalQueue.m |
+| CharonMetalComputeEncoder | 11 | 11 | MTLComputeCommandEncoder8.m |
+| CharonMetalComputePipeline | 12 | 12 | MTLComputePipeline8.m |
+| CharonMetalDepthStencil | 3 | 3 | CharonMetalDepthStencil.m |
+| CharonMetalDevice | 33 | 36 | CharonMetalDevice.m (33), MTLHeap10.m (1), MTLSharedEvent12.m (2) |
+| CharonMetalDrawable | 10 | 9 | CharonMetalDrawable.m |
+| CharonMetalEncoder | 32 | 36 | CharonMetalEncoder.m (32), MTLHeap11.m (2), MTLHeap13.m (2) |
+| CharonMetalFunction | 23 | 17 | CharonMetalLibrary.m |
+| CharonMetalLayerState | 10 | 1 | CharonMetalDrawable.m |
+| CharonMetalLibrary | 23 | 6 | CharonMetalLibrary.m |
+| CharonMetalPipeline | 11 | 11 | CharonMetalPipeline.m |
+| CharonMetalQueue | 20 | 3 | CharonMetalQueue.m |
+| CharonMetalSampler | 53 | 8 | CharonMetalTexture.m |
+| CharonMetalTexture | 53 | 45 | CharonMetalTexture.m |
+
+Nothing else moved: status stays `absent` on all sixteen, and api, kind, introduced, minimum, source and
+facts are byte-identical to the base revision. `minimum` is the field `minimums()` reads and never
+`status`, so it is the placement record for both bands and is not this band's to touch.
+
+`CharonMetalLayerState` is the row where the two counts differ most and it is worth reading: the class
+is one method in `CharonMetalDrawable.m`, and the row that claimed ten was counting a neighbour's. That
+is the whole failure this section records - a count that belongs to another object, next to a conclusion
+that happens to be true.
