@@ -2146,9 +2146,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureVideoDataOutput carries -availableVideoCodecTypes among its 26 own instance methods, so the unfiltered half of this question is the release's own; the filtered half is not. On this release the only statement of what a writer takes is the INSTANCE method -[AVAssetWriter canApplyOutputSettings:forMediaType:] (AVAssetWriter.h:243), the class-method spelling later SDKs carry is not on it, and the only way to have a writer is +assetWriterWithURL:fileType:error:, which needs a file to write into",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVCaptureVideoDataOutput availableVideoCodecTypes] for what its capture graph can hand to a writer, and asks a writer it already has, with -[AVAssetWriter canApplyOutputSettings:forMediaType:], whether it takes those settings; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureVideoDataOutput.h for the declaration and AVAssetWriter.h:243 for the release's instance-only spelling; the 6.1.3 armv7 class tables of AVCaptureVideoDataOutput and AVAssetWriter read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance and 35 own instance with 6 own class methods, controls answered as wanted"
+      "reason": "both this and its recommended-settings pair ask the writer about a file type, and 6.1.3's writer cannot answer: AVAssetWriter's whole class surface is assetWriterWithURL:fileType:error:, -initialize, -automaticallyNotifiesObserversForKey:, the two keyPathsForValuesAffecting... and _errorForOSStatus:, and an instance carries outputFileType and availableMediaTypes with no map from a file type to codecs. AVAssetWriterInput carries no codec list and no per-codec settings at all, so the list the output itself can give - availableVideoCodecTypes - is what this camera produces, not what that writer takes",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py availableVideoCodecTypesForAssetWriterWithOutputFileType:, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "-[AVCaptureVideoDataOutput recommendedVideoSettingsForVideoCodecType:assetWriterOutputFileType:]",
@@ -2156,9 +2156,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureVideoDataOutput carries 26 own instance methods whose settings vocabulary is -videoSettings, -setVideoSettings: and -availableVideoCVPixelFormatTypes, and none of them takes a codec or a file type; there is no recommendation table on this release to look such a pair up in, and the writer-side half of the question has the same shape as -[AVCaptureVideoDataOutput availableVideoCodecTypesForAssetWriterWithOutputFileType:] - only -[AVAssetWriter canApplyOutputSettings:forMediaType:] answers it and that needs a writer",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVCaptureVideoDataOutput videoSettings] for the settings its graph is set up with and asks its own writer with -canApplyOutputSettings:forMediaType: whether it takes them; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureVideoDataOutput.h for the declaration and AVAssetWriter.h:243 for the release's instance-only spelling; the 6.1.3 armv3 class table of AVCaptureVideoDataOutput read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 26 own instance methods, controls answered as wanted"
+      "reason": "the settings would come from the writer for a codec and a file type, and 6.1.3's writer has neither per codec: AVAssetWriterInput's 57 selectors include no codec list and no recommended settings (its class methods are the two assetWriterInputWithMediaType:outputSettings: factories, -initialize and the key paths). What the output does have is vettedVideoSettingsForSettingsDictionary:, which vets a dictionary the application supplies - the other direction of the same question",
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py recommendedVideoSettingsForVideoCodecType:assetWriterOutputFileType:, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVAggregateAssetDownloadTask",
@@ -2397,9 +2397,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVPlayerItem carries 237 own instance methods and no resolution member: its display vocabulary is -presentationSize, -videoComposition and -tracks, and the scale a video is drawn at on this release comes from -[AVPlayerLayer videoGravity] and the layer's own bounds. There is no member that names a maximum resolution the item would decode to",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVPlayerItem presentationSize] for the size the item will present and -[AVPlayerLayer videoGravity] for how it is fitted, which is the release's own pair of answers; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayerItem.h for the declaration; the 6.1.3 armv7 class tables of AVPlayerItem and AVPlayerLayer read from objc-inventory.lua, 237 and 37 own instance methods, controls answered as wanted"
+      "reason": "the release negotiates no resolution: 6.1.3's AVPlayerItem carries 272 selectors, of which the sizing ones are the private _presentationSize and the private setters that take a composition's render size, and there is no public property an application can ask the item to prefer. A caller that wants a smaller picture renders smaller, which is the video composition's renderSize; the release renders the asset as it is",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py preferredMaximumResolution, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVPlayerItem.videoApertureMode",
@@ -2407,9 +2407,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVPlayerItem carries 237 own instance methods and no aperture member; the release's own aperture vocabulary is on the capture side - -[AVCaptureDevice apertureMode] and -setApertureMode:, which are AVCaptureDevice's 100 - and the player has no member that would carry a mode across from the capture to the playback",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks the capture device what aperture it is at with -[AVCaptureDevice apertureMode], which is the release's own answer, and lets the player present the frames; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayerItem.h for the declaration; the 6.1.3 armv7 class tables of AVPlayerItem and AVCaptureDevice read from objc-inventory.lua, 237 and 100 own instance methods, controls answered as wanted"
+      "reason": "an aperture mode is the HDR path's setting, and 6.1.3 has no HDR path to set: the item carries no aperture or dynamic-range property, its AVCaptureDevice-side HDR flag (isHDRSupported, isHDRCaptureEnabled) is the still camera's and is not the player's, and 4.3's item carries 181 selectors with none of this either",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py videoApertureMode, which reads a first held rung of 10.0.1 by name - another class's selector, which the ladder cannot place on an owner; the class-scoped run above places it on neither end; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVQueuedSampleBufferRendering",
@@ -2488,9 +2488,9 @@
       "introduced": "11.2",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the property lists the HDR modes the display path can play and 6.1.3's AVPlayer carries 140 own instance methods and 19 own class methods with no HDR member and no display member beyond -externalPlaybackType, -externalPlaybackVideoGravity, -allowsExternalPlayback and -allowsAirPlayVideo; the release has no HDR vocabulary on the playback side at all - -[AVCaptureDevice isHDRSupported] is the capture side and is on a different class",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks whether it may play through an external display with -[AVPlayer allowsExternalPlayback] and -externalPlaybackType, which are the release's own two answers for where playback goes; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVPlayer.h for the declaration; the 6.1.3 armv7 class tables of AVPlayer and AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 140 own instance and 19 own class methods for the player and 100 for the device, controls answered as wanted"
+      "reason": "the set is the player's dynamic-range modes, and 6.1.3's AVPlayer has no HDR surface: its 159 selectors are the player graph, the layer, rate, volume, AirPlay, seeking, preroll, the audio session and the access log, and nothing in them reads a display's dynamic range. 4.3's player carries 98 and none there either",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py availableHDRModes, first held rung 12.0 - the ladder holds no 11.2, so the registry's 11.2 cannot be read from the caches; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "-[AVCaptureMovieFileOutput supportedOutputSettingsKeysForConnection:]",
