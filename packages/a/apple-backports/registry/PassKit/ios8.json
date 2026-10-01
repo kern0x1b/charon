@@ -60,10 +60,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: the return type of the property is the Secure Element's own PKPaymentPass, which the release does not have and the device cannot provide, so respondsToSelector: answers NO",
+    "reason": "the release's own PKPass has 90 instance methods and -paymentPass is not among them (apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, a run of 12549 class and protocol rows), so nothing in the release answers the name; and the property's answer is the Secure Element's own PKPaymentPass, an object a 4S has no hardware to produce, so a property answering nil would claim this pass has no payment pass on every device rather than this one",
+    "effect": "the release's PKPass does not answer -paymentPass at all: respondsToSelector: is NO and a call is doesNotRecognizeSelector:, which is what absent means; NSClassFromString(@\"PKPaymentPass\") is likewise nil",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "apple.objc.inventory against $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7: PKPass carries 90 instance methods (-initWithData:error:, -dictionaryRepresentation and the rest) and no -paymentPass; the control in the same run is 590 class rows beginning NS and 64 class rows beginning PK, so the zero on PKPaymentPass is the release's and not the reader's"
   },
   {
     "api": "PKPass.secureElementPass",
@@ -269,10 +269,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "reason": "every member is a read of the result of a transaction: -token is nonnull and is the credential the Secure Element encrypted to the merchant, and -shippingMethod and -billingAddress are what the user chose in a sheet this device cannot present. There is nothing here to compute, so a class of this name would answer nil where its own header promises an object",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPayment.h, which declares @interface PKPayment : NSObject with a nonnull readonly PKPaymentToken *token and no initializer and no class method; and apple.objc.inventory against the armv7 cache of 6.1.3, where PKPayment is absent from a run that finds PKPass and PKPassLibrary"
   },
   {
     "api": "PKPaymentAuthorizationController",
@@ -313,10 +313,10 @@
     "introduced": "8.3",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "reason": "the button is Apple's own artwork: a UIButton whose content is the Apple Pay mark and its card art, which is an asset of a later PassKit and of no release held here, so a class of this name would be an empty button claiming to be Apple's. Its substrate is not missing -- the release has UIButton with 134 instance methods, measured -- so this row is declined for the artwork and not for a class it could build on",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPaymentButton.h, which declares @interface PKPaymentButton : UIButton with +buttonWithType:style: and no drawing of its own; apple.objc.inventory against the armv7 cache of 6.1.3 for UIButton (134 instance methods) and for PKPaymentButton (absent, with the control 64 class rows beginning PK in the same run); and coordination/corpus/sources.md Part G, which lists PassKit among the frameworks with no public implementation source"
   },
   {
     "api": "PKPaymentInformationEventExtension",
@@ -368,21 +368,21 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "reason": "this is the Secure Element's own pass: its single member -activationState reads the state of a Secure Element this device has none of, and the class has no initializer of its own, so every value it could hold is one the hardware produced. PKSecureElementPass, its superclass since 13.4, is absent from the release for the same reason",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPaymentPass.h, which declares @interface PKPaymentPass : PKSecureElementPass with one readonly activationState and no initializer; and apple.objc.inventory against the armv7 cache of 6.1.3, where neither PKPaymentPass nor PKSecureElementPass appears in a run that finds 64 classes beginning PK"
   },
   {
     "api": "PKPaymentRequest",
     "kind": "class",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "every 8.0 member of this class is a value the APPLICATION sets and reads back -- merchantIdentifier, countryCode, currencyCode, supportedNetworks, merchantCapabilities, paymentSummaryItems, requiredBillingAddressFields, requiredShippingAddressFields, shippingMethods, applicationData -- and none is produced by the Secure Element or by any service, so all of them are real on a 4S. No part of the payment is carried: presenting the request needs a PKPaymentPass, which the release has not got",
+    "effect": "the object: [[PKPaymentRequest alloc] init] answers a class that keeps every member it was given and reads it back identically, with the two PKAddressField properties defaulting to PKAddressFieldNone and merchantCapabilities to no capability, which are Apple's own defaults and are what a zero-initialised ivar already carries",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "PKPayment8.m, whose two class symbols tools/release-split.lua places at 8.0 against the held cache ladder; the header is iPhoneOS26.2.sdk and iphoneos-sdk/16.4 PKPaymentRequest.h, which agree on the ten members above and mark -shippingType as 8.3 and the two PKContact members as 9.0, so neither is in this object; the behaviour is measured by the differential recorded in facts/PassKit/PassKit.md -- 24 checks against Apple's own two classes on the host, 0 failures, and a mutant that changes -setLabel:'s copy to a plain assignment and turns exactly the copy case red"
   },
   {
     "api": "PKPaymentRequestCouponCodeUpdate",
@@ -455,11 +455,11 @@
     "kind": "class",
     "introduced": "8.0",
     "minimum": "6.0",
-    "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "status": "implemented",
+    "reason": "a line item is a label and a decimal amount, and both are the caller's own: +summaryItemWithLabel:amount: is the whole of the 8.0 class and nothing in it is produced by the Secure Element or by a service, so it is real on a 4S. The 9.0 -type and +summaryItemWithLabel:amount:type: are in neither this object nor this row",
+    "effect": "the object: +summaryItemWithLabel:amount: answers an instance whose -label and -amount read back exactly what was handed in, with the copy semantics both properties declare -- a mutable string changed after the call does not change the item",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "PKPayment8.m, whose two class symbols tools/release-split.lua places at 8.0 against the held cache ladder; the header is iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPaymentSummaryItem.h, which declares the 8.0 factory and the two properties and marks -type and the three-argument factory as 9.0; the behaviour is measured by the differential recorded in facts/PassKit/PassKit.md -- 24 checks against Apple's own two classes on the host, 0 failures, and a mutant that changes -setLabel:'s copy to a plain assignment and turns exactly the copy case red"
   },
   {
     "api": "PKPaymentToken",
@@ -467,10 +467,10 @@
     "introduced": "8.0",
     "minimum": "6.0",
     "status": "absent",
-    "reason": "the Secure Element: this device has none, there is no PKPaymentPass in the release at all (measured absent from the armv7 cache of 6.1.3), and no program on this device can stand in for the hardware that authorizes a payment",
-    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link, which is what a device with no Secure Element answers",
+    "reason": "every member is a read of the credential itself: -paymentData is the UTF-8 JSON the Secure Element encrypted to the merchant, and -transactionIdentifier, -paymentInstrumentName and -paymentNetwork describe the card that funded it. The class has no initializer and no class method in the 26.2 header, so nothing a caller could write would be anything but nil, and a nil paymentData handed to a merchant's backend is worse than no class",
+    "effect": "the class is not there: NSClassFromString answers nil and a compile-time reference has nothing to link",
     "facts": "facts/PassKit/PassKit.md",
-    "source": "apple.dyld's first_releases over the held cache ladder, and apple.objc.inventory against the armv7 cache of 6.1.3"
+    "source": "iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPaymentToken.h, which declares @interface PKPaymentToken : NSObject with four readonly properties, no initializer and no class method; and apple.objc.inventory against the armv7 cache of 6.1.3, where PKPaymentToken is absent from a run that finds 64 classes beginning PK"
   },
   {
     "api": "PKPaymentTokenContext",

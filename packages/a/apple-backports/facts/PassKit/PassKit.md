@@ -10,6 +10,37 @@ before a line of code is written:
 | `PKAddPassesViewController` | **yes**, 26 instance methods | `-initWithPass:`, `-initWithPass:orURL:`, `-initWithURL:`, `-setDelegate:`, `delegate`, `+isAvailable` |
 | `PKPaymentAuthorizationViewController`, `PKPaymentRequest`, `PKPaymentSummaryItem`, `PKPaymentToken`, `PKPaymentAuthorizationController` | **no** | absent from the release entirely |
 
+The five classes of the 8.0 payment request, measured the same way, with the control that certifies
+the reader in the same run:
+
+```
+$ CHARON_ROOT=<worktree> xmake l tools/corpus/objc-inventory.lua \
+      $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7 > inv-6.1.3.tsv
+12549 rows (class and protocol)
+
+$ awk -F'\t' '$1=="class" && $2 ~ /^PK/ {print $2}' inv-6.1.3.tsv | wc -l
+64
+$ awk -F'\t' '$1=="class" && $2 ~ /^PKPayment/ {n++} END{print n+0}' inv-6.1.3.tsv
+0
+$ awk -F'\t' '$1=="class" && $2 ~ /^NS/ {n++} END{print n+0}' inv-6.1.3.tsv
+590
+$ awk -F'\t' '$1=="class" && $2 ~ /^PKA/ {n++} END{print n+0}' inv-6.1.3.tsv
+1        # PKAddPassesViewController
+```
+
+So the release carries 64 classes beginning `PK` and **zero** beginning `PKPayment`, in a run that
+finds 590 beginning `NS` and the one `PKA` there is: the zero is the release's and not the reader's.
+`tools/cache-index/first-rung.py` agrees and gives the version each arrived: `PKPayment`,
+`PKPaymentPass`, `PKPaymentRequest`, `PKPaymentSummaryItem` and `PKPaymentToken` all read **8.0**, and
+`PKPaymentButton` reads **8.3**. Presence, not version -- the held ladder has a hole at 13.0/14.0/15.0,
+so a name first seen at 8.0 here is 8.0 and not 12.0.
+
+The release's own `PKPass` has **90** instance methods and they do not include `-paymentPass` (the
+list is in the run's output: `-initWithData:error:`, `-initWithCoder:`, `-encodeWithCoder:`,
+`-copyWithZone:`, `-passTypeIdentifier`, `-serialNumber`, `-organizationName`, `-expirationDate`,
+`-logoImage` and the rest, and no payment member), which is why `PKPass.paymentPass` is `absent` on a
+measured ground rather than on the hardware's.
+
 `apple.dyld`'s `first_releases` for the 75 classes the SDK 26.2 declares and this port does not
 have: 8.0 ×7, 8.1 ×1, 9.0 ×6, 10.0.1 ×1, 10.1.1 ×2, 11.0 ×5, 12.0 ×1, 16.0 ×39, 18.0 ×9, and 3 in
 no held release (the 26.x identity-document classes).
@@ -24,17 +55,24 @@ That is a different shape of work from MapKit's and a much smaller one: no class
 `initWithData:error:` of our own, just the members over the release's own objects, and the gate's
 category check is what proves they attach.
 
-**Apple Pay is the hardware wall, and it is Apple's.** There is no Secure Element on a 4S, no Touch
-ID, and no `PKPaymentAuthorizationController` in the release: `PKPaymentAuthorizationViewController`
-and the whole payment request/token/summary family are absent, and Apple's own answer on a device
-without the hardware is that there is nothing to authorize. So:
+**Apple Pay is the hardware wall, and it is Apple's -- but the wall is not the whole family.** There is
+no Secure Element on a 4S, no Touch ID, and no `PKPaymentAuthorizationController` in the release:
+`PKPaymentAuthorizationViewController` and the payment request/token/summary family are all absent
+from the release, and Apple's own answer on a device without the hardware is that there is nothing
+to authorize. So:
 
 - `+[PKPaymentAuthorizationViewController canMakePayments]` and
   `+[PKPaymentRequest canMakePaymentsUsingNetworks:]` answer **NO**, which is the documented answer
   for a device with no Secure Element, and the registry entry says why in those words.
-- The payment classes themselves are `absent` at the seam, each with the reason that the class is the
-  Secure Element's own surface and the device has none -- **not** "absent because the release lacks
-  it", which would be true and useless.
+- **What a completed transaction produces stays absent**: `PKPayment`, `PKPaymentToken`,
+  `PKPaymentPass` and `PKPaymentButton`. Every member of the first three is a read of the credential
+  the Secure Element encrypted, and a class of those names would answer `nil` where its own header
+  promises an object -- see the section on the four below, which is where that is measured rather
+  than asserted. **Not** "absent because the release lacks it", which would be true and useless.
+- **What the caller itself fills in is carried**: `PKPaymentRequest` and `PKPaymentSummaryItem` are
+  `implemented` in `PKPayment8.m`, and the reason is that not one of their 8.0 members is anything
+  other than a value the application set and reads back. A payment request is a form; the form is
+  real on any device and only the signature it would carry is not.
 - `PKAddPaymentPassViewController` and `PKAddPaymentPassRequest` are the other half of the same
   wall: they are the screen that *authorizes* a payment pass, so they are `absent` with the same
   reason, while `PKAddPassesViewController` and `PKPass` (the wallet, not the payment) are the
@@ -53,6 +91,95 @@ COORDINATION §9 forbids.
   call test at 6.1.3 is the check, plus the gate's own category check, which proves the members
   attach to the release's classes.
 - `canMakePayments`: a straight read, and the emulator call test asks it and records the answer.
+- The two classes below: macOS **does** carry `PKPaymentRequest` and `PKPaymentSummaryItem`, so a host
+  differential is possible and is the check — Apple's own object is the oracle, because a class that
+  only keeps values is defined by what it keeps.
+
+## The payment request family: two carried, four declined, and the line between them
+
+The 8.0 payment request is five classes and the release has none of them (measured above: zero class
+rows beginning `PKPayment` in a run of 12549 that finds 64 classes beginning `PK`). What separates
+them is not the release — it has none of all five — but **what a member can answer on a device with no
+Secure Element**, and that is read off the SDK 26.2 headers rather than assumed:
+
+| class | 8.0 members, from the SDK 26.2 header | verdict |
+| --- | --- | --- |
+| `PKPaymentSummaryItem` | `+summaryItemWithLabel:amount:`, `label`, `amount` | **carried** in `PKPayment8.m` |
+| `PKPaymentRequest` | `merchantIdentifier`, `countryCode`, `currencyCode`, `supportedNetworks`, `merchantCapabilities`, `paymentSummaryItems`, `requiredBillingAddressFields`, `requiredShippingAddressFields`, `shippingMethods`, `applicationData` | **carried** in `PKPayment8.m` |
+| `PKPaymentPass` | one readonly `activationState`, **no initializer**, superclass `PKSecureElementPass` | declined |
+| `PKPaymentToken` | `transactionIdentifier`, `paymentData`, `paymentInstrumentName`, `paymentNetwork` — **four readonly, no initializer, no class method** | declined |
+| `PKPayment` | a **nonnull** readonly `token`, plus two nullable address reads and `shippingMethod` — no initializer | declined |
+| `PKPaymentButton` (8.3) | `+buttonWithType:style:` and nothing else that draws | declined |
+
+The carried two hold **values the application put in**, and nothing in either is produced by the
+Secure Element or by any service: a payment request is a form, and the form is real on any device. The
+declined three are the **result of a transaction**, and every member of each is a read of the
+credential the Secure Element encrypted — so a class of those names has no value to answer with, and
+`nil` where the header promises an object is the wrong answer rather than a cautious one.
+`PKPayment`'s `token` is the sharpest case: it is `nonnull`, so a port class would hand a caller
+`nil` for the one property its own declaration guarantees, and a `nil` `paymentData` reaching a
+merchant's backend is a silent failure that looks like a successful one.
+
+`PKPaymentButton` is declined for a different reason and says so: **its substrate is present.** The
+release has `UIButton` with **134** instance methods (same run), so this is not "the class's base is
+missing". It is Apple's own *artwork* — the Apple Pay mark and its card art — which is an asset of a
+later PassKit, is in no release held here, and has no public source (`coordination/corpus/sources.md`
+Part G lists PassKit among the frameworks with no implementation source at all). A class of that name
+would be an empty `UIButton` claiming to be Apple's.
+
+`PKPass.paymentPass` is `absent` on its own measurement rather than on the hardware's: the release's
+own `PKPass` carries 90 instance methods and `-paymentPass` is not among them, so `respondsToSelector:`
+answers NO and the property cannot be answered by anything the release has. `PKPass14.m` already
+declines it for the same reason, and this agrees with that file rather than overriding it.
+
+### What is NOT in `PKPayment8.m`, and why that is the release-split's job alone
+
+The object is the **8.0** object, and only its 8.0 members: `PKPaymentSummaryItem`'s `-type` and
+`+summaryItemWithLabel:amount:type:` are 9.0, and `PKPaymentRequest`'s `-shippingType` is 8.3 and its
+two `PKContact` members are 9.0. `tools/release-split.lua` cannot enforce this on its own — it reads
+band points from **exported symbols**, and an Objective-C class's instance methods are not exported
+symbols (`nm -gU` on the object lists the two `_OBJC_CLASS_$_` and `_OBJC_METACLASS_$_` names and the
+ivars, and no method), so the split is this file's discipline and not the tool's. The file says so at
+its own head, and the gate's read of it is the export:
+
+```
+$ xmake l tools/release-split.lua .agent-work/runs/pk-ios8-a/objects
+release-split: every folder of .agent-work/runs/pk-ios8-a/objects is clean
+```
+
+### The differential for the two carried classes
+
+macOS carries both classes, so **Apple's own objects are the oracle** — the one thing this port has
+been unable to do for the wallet. The run compiles the port's own object under renamed classes
+(`charonHost_PKPaymentRequest`, `charonHost_PKPaymentSummaryItem`, so the driver reaches the port and
+never Apple's) beside Apple's two, and compares member by member. Sources and transcripts:
+`.agent-work/runs/pk-ios8-a/` (`differential.m`, `port-decls.h`, `real.body`, `mutant.body`,
+`libport8.dylib`).
+
+**24 checks, 0 failures** (`./differential > real.body`), against these: the class reached is the
+port's own and not Apple's; a fresh request has no merchant identifier and no summary items on both;
+each of the ten members reads back what was set, equal to Apple's; the two `PKAddressField` properties
+and `merchantCapabilities` default to Apple's own zeros (`PKAddressFieldNone` is 0); and the `copy`
+both properties declare holds — a mutable string changed after the call leaves the item reading
+`Shipping`.
+
+**One mutant**, because a green mutant is a comparison that decides nothing. `-setLabel:`'s
+`[label copy]` becomes a plain assignment, which under ARC retains, and the mutation must turn exactly
+the copy case red and nothing else:
+
+```
+$ diff real.body mutant.body
+< ok   summary item: label was copied, not retained         Shipping
+> FAIL summary item: label was copied, not retained         port=Shipping and Handling apple=Shipping
+< 24 checks, 0 failures
+> 24 checks, 1 failures
+```
+
+The two classes' `PKAddressField` spelling is why `port-decls.h` exists as a scratch header: the
+tracked stand-in (`CharonPassKitStandin.h`) declares `PKMerchantCapability` and the two controllers
+but not `PKAddressField`, and that stand-in is a file shared with the other PassKit bands, so this
+run keeps its own header rather than editing theirs. Wiring the two classes into `tests/backports/host/passkit/run.sh`
+is the follow-up, and it needs `PKAddressField` in the stand-in first.
 
 ## The Secure Element and the wallet: what each member answers, and the measurement behind it
 
