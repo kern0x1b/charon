@@ -1150,10 +1150,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "switches off the prefetching a table does through its prefetchDataSource (iOS 10); the port carries no prefetchDataSource and no UITableViewDataSourcePrefetching (the registry has no row for either), so there is no prefetching to switch",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "implemented",
+      "reason": "the switch that turns the port's own table prefetching on and off; the collection view's half of the same feature has had one since 10.0, and Apple's UITableView gained this one in 15.0, so before this row the table was the one half a caller could not silence",
+      "effect": "NO until set, and setting it YES is what lets the table ask its prefetch data source for the rows just past the screen; the pass itself is the port's own, from UITableView+Prefetching10.m, and a closed gate means the table lays out and the data source is not called at all",
+      "source": "SDK 16.4, UIKit; not in UITableView's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), and 6.1.3's UITableView carries no selector mentioning prefetch at all; the default is the one measured on the host for the collection view's own half of this feature - a freshly made view answers NO for isPrefetchingEnabled and nil for the data source - and the gate is delivered by packages/a/apple-backports/UIKit/UITableView+PrefetchingEnabled15.m",
+      "facts": "facts/UIKit/UITableViewPrefetchingEnabled15.md"
     },
     {
       "api": "UITableViewCell.configurationUpdateHandler",
