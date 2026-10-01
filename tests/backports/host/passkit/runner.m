@@ -405,9 +405,10 @@ int main(void)
             }
             // The contact update's own shipping methods, which the base class has no member for.
             contact = PORT_CLASS(@"PKPaymentRequestShippingContactUpdate");
+            id passedShipping = probeArg();
             id withMethods = ((id (*)(id, SEL, id, id, id))objc_msgSend)([contact alloc],
                 NSSelectorFromString(@"initWithErrors:paymentSummaryItems:shippingMethods:"),
-                nil, @[], @[probeArg()]);
+                nil, @[], @[passedShipping]);
             id methodsRead = ((id (*)(id, SEL))objc_msgSend)(withMethods,
                 NSSelectorFromString(@"shippingMethods"));
             check(@"PKPaymentRequestShippingContactUpdate.shippingMethods is a list, not nil",
@@ -416,10 +417,12 @@ int main(void)
                 [NSNumber numberWithUnsignedInteger:[methodsRead count]], @"1");
             // The list holds what was passed, and the pass was an NSString -- the point is that the
             // array is COPIED and handed back whole, and the only kind of object this release has to
-            // put in a shipping-method list is one a caller already holds. So the element's class is
-            // what a caller can verify on a device that has no PKShippingMethod at all.
-            say(@"  ... and its one element is the object that was passed",
-                NSStringFromClass([[methodsRead objectAtIndex:0] class]), @"__NSCFConstantString");
+            // put in a shipping-method list is one a caller already holds. So the case is IDENTITY --
+            // the very object that went in comes back -- and not the concrete class of an NSString,
+            // which is an implementation name a Foundation rename would turn red for a reason that
+            // has nothing to do with the port.
+            check(@"  ... and its one element is the very object that was passed",
+                  [methodsRead objectAtIndex:0] == passedShipping);
             // The copy, measured the way the result's error list measures it: an NSMutableArray the
             // delegate empties afterwards cannot change what the update already reported.
             NSMutableArray *mutableMethods = [NSMutableArray arrayWithObject:probeArg()];
