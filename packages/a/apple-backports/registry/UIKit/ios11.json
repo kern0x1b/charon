@@ -1728,10 +1728,11 @@
    "kind": "class",
    "introduced": "12.1",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the Apple Pencil is a stylus with its own radio and sensors that no device of this release has",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "the SDK 16.4 headers"
+   "status": "inert",
+   "reason": "the Apple Pencil is a stylus with its own radio and sensors that no device of this release has, so nothing can produce the tap this interaction reports; the class is carried because an application strong-imports its symbol, and dyld kills an application at launch over a missing one",
+   "effect": "the interaction is made and added to a view like any other, keeps its delegate weakly, and never calls it: -[UIPencilInteractionDelegate pencilInteractionDidTap:] is never sent. +preferredTapAction is UIPencilPreferredActionIgnore, because there is no pencil to tap and no preference to read on this release, and +prefersPencilOnlyDrawing is NO",
+   "source": "the strong import measured with nm -m over the corpus Aidoku binary (coordination/corpus/aidoku/extracted/Payload/Aidoku.app/Aidoku), which reads (undefined) external _OBJC_CLASS_$_UIPencilInteraction (from UIKit) beside the same line for _OBJC_CLASS_$_UIApplication; the host asked for every default by .agent-work/runs/pencil/probe.m compiled for Mac Catalyst; the class symbol read out of 6.1.3 and 4.3 with xmake l tools/corpus/cache-census.lua UI and objc-inventory.lua, whose own controls are in the facts page",
+   "facts": "facts/UIKit/UIPencilInteraction12.md"
   },
   {
    "api": "UIScrollView.horizontalScrollIndicatorInsets",
