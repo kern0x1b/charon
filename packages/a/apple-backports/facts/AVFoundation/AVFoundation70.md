@@ -103,6 +103,54 @@ on, and it is what the rows now name.
 answering 3.0 as the index's own control), so the clock type is on the floor; what 6.1.3 lacks is any way
 to reach one from the capture stack.
 
+## The one row the release does answer, under another name
+
+`AVCaptureDeviceFormat.videoBinned` is the only one of the 79 the port carries, and it is carried
+because the release has the answer and only spells it differently. This was the row the table above
+could not settle: `-isBinned` and `-isVideoBinned` are both "is this format binned", and reading
+the table cannot say whether Apple renamed one method or added a second question. Reading the two
+bodies settles it.
+
+Both bodies are the same three steps. Each loads the ivar at offset 4 of the receiver, each sends
+`-objectForKey:` on the object it loaded, each turns the answer into a `BOOL`. The only difference is
+the key, and the key is a plain string in each image's own `__cstring`:
+
+| release | `__cstring` of the AVFoundation image, filtered on `Binned` |
+| --- | --- |
+| 6.1.3 armv7 | `0x30351d96 "Binned"`, `0x3035222b "LiveSourceOptions.Binned"` -- and **0** strings naming `videoBinned` |
+| 7.0 armv7 | `0x2c3c257f "videoBinned"`, `0x2c3c258b "Tc,R,N,GisVideoBinned"`, `0x2c3c2b59 "LiveSourceOptions.Binned"` |
+
+The zero is the control: the same 6.1.3 run that finds 0 strings naming `videoBinned` finds 16
+naming `olume` and 2 naming `Binned`, so the reader was looking and the name is not there.
+`first-rung.py` agrees on the two selectors, `isBinned` at 6.0 and `isVideoBinned` at 7.0, and
+`"LiveSourceOptions.Binned"` is the session-level key both sides carry and is not this property.
+
+So `-[AVCaptureDeviceFormat isVideoBinned]` is `-[self isBinned]`, and that is what
+`AVCaptureDeviceFormat+Binning7.m` writes. The selector is `isVideoBinned` and not `videoBinned`
+because the header declares `getter=isVideoBinned` at `AVCaptureDevice.h:2590`, and the property is
+`readonly`, so there is no setter to define. The port forwards; it does not read the dictionary
+itself and does not compute a second answer.
+
+### The bodies, as read
+
+`code_map` over each cache for the IMP, then a THUMB disassembly with every literal-pool load
+resolved, because the cache has slid its pointers and a raw walk of a `method_t` list reads a
+`class_ro_t`'s method list as if nothing had moved -- `tools/mach32_methods.py`'s own
+`ro + 20` read returns "entries of 940877676 bytes" on this cache, which is the reason the two
+bodies were read through `apple.objc`'s slide-resolving reader instead.
+
+    -[AVCaptureDeviceFormat isVideoBinned]  7.0 armv7   IMP 0x2c3943b5 (THUMB)
+    -[AVCaptureDeviceFormat isBinned]       6.1.3 armv7 IMP 0x30330259 (THUMB)
+
+    # 7.0, -[AVCaptureDeviceFormat isVideoBinned]
+    ldr  r2, [r0, r2]      ; the ivar at offset 4          (pool 0x3815d844 holds 4)
+    ldr  r0, [r0, r3]      ; the object it holds
+    ldr  r1, [r1]          ; pool 0x38150e6c -> selector objectForKey:
+    ldr  r0, [r0, r3]      ; the dictionary
+    blx  ...               ; -[dict objectForKey: "videoBinned"]
+    ldr  r1, [r1]          ; the second pool word
+    blx  ...               ; the answer to a BOOL
+
 ## Reproducing
 
     CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 \
