@@ -507,10 +507,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "no token can be selected, so none is copied",
-      "effect": "the method is a delegate method the port never sends: the delegate is never asked and allowsCopyingTokens is only kept",
+      "reason": "nothing of the release carries it: 6.1.3 and 4.3 hold 0 classes and 0 protocols beginning UISearchTextField where the same run finds the field, its accessibility class and the paste protocol at 16.0, and the selector is 0 in both caches - nor is there a UISearchTextFieldDelegate to ask, nor an NSItemProvider to answer with, the release carrying that first at 8.0",
+      "effect": "the method is a delegate method the port never sends: the port's UISearchTextField keeps allowsCopyingTokens and draws its tokens as chips that cannot be touched, and no token is ever copied, so no delegate is asked for an item provider",
       "facts": "facts/UIKit/UISearchTextField.md",
-      "source": "the header of SDK 16.4; nothing of a release was read, since iOS 6 never sends the callback"
+      "source": "SDK 16.4, UIKit; cache-census.lua over the armv7 caches of 6.1.3 and 4.3 for UISearchTextField and NSItemProvider, each against a control in its own run that certifies the reader (3 names at 16.0, 1 at 8.0): 0 classes and 0 protocols of the first at both ends and 0 of the second, where the release first carries NSItemProvider at 8.0 and the port's own NSItemProvider object is carried at minimum 6.0 - facts/UIKit/UISearchTextField.md"
     },
     {
       "api": "UISearchTextFieldPasteItem",
@@ -529,10 +529,10 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the release has no paste delegate that makes a token of pasted text",
-      "effect": "the method belongs to an object the port never makes: an application never receives a paste item to call it on",
+      "reason": "the protocol it refines does not exist: UITextPasteItem is 0 classes and 0 protocols at 6.1.3 and 4.3 and first appears at 11.0, where the run finds one of each, and UISearchTextFieldPasteItem itself is 0 below 16.0 - so the release can hand an application no paste item of any kind, and the port declines UITextPasteItem as well",
+      "effect": "the method belongs to an object the port never makes: no paste item is made and no object is ever handed to an application as one, so there is nothing on which this could be called",
       "facts": "facts/UIKit/UISearchTextField.md",
-      "source": "the header of SDK 16.4; nothing of a release was read, since iOS 6 never sends the callback"
+      "source": "SDK 16.4, UIKit; cache-census.lua over the armv7 caches of 6.1.3, 4.3 and 11.0 for UITextPasteItem and over 6.1.3, 4.3 and 16.0 for UISearchTextField, each with a control in its own run (2 names at 11.0, 3 at 16.0): 0 at both ends for the protocol this one refines; the selector setSearchTokenResult: is 0 by grep -cxF in the 6.1.3 and 4.3 caches - facts/UIKit/UISearchTextField.md"
     },
     {
       "api": "UISearchBar.searchTextField",
