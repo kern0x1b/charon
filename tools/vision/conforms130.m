@@ -69,8 +69,10 @@ int main(void)
                error ? "an error" : "none");
         error = nil;
         animals = [VNRecognizeAnimalsRequest knownAnimalIdentifiersForRevision:3 error:&error];
-        printf("VNRecognizeAnimalsRequest knownAnimalIdentifiersForRevision:3 = %s, error = %s %ld\n",
-               animals ? "a list" : "nil", error.domain.UTF8String, (long)error.code);
+        printf("VNRecognizeAnimalsRequest knownAnimalIdentifiersForRevision:3 = %s, error = %s\n",
+               animals ? "a list" : "nil", error ? [NSString stringWithFormat:@"%@ %ld", error.domain,
+                                                                            (long)error.code].UTF8String
+                                                  : "none");
 
         VNRecognizedText *word = [[VNRecognizedText alloc] init];
         error = nil;

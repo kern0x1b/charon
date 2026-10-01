@@ -418,21 +418,23 @@ PY
 members: 39
 ```
 
-`OBJECTS` is the armv7 objects folder of a 6.1.3 build of this library, which
-`.agent-work/runs/vision13-r13/armv7-one-library.lua` produces for one library in the seconds a
-whole-tree gate build takes minutes:
+`OBJECTS` is the armv7 objects folder of a 6.1.3 build of this library, and `tools/vision/armv7-objects.lua`
+produces it for one library in the seconds a whole-tree gate build takes minutes -- through
+`backports.compile()`, so the flags are the build's own and not a command line of its own:
 
 ```
-CHARON_ROOT=<worktree> xmake l .agent-work/runs/vision13-r13/armv7-one-library.lua Vision <objects> 6.1.3
+CHARON_ROOT=<checkout> xmake l tools/vision/armv7-objects.lua Vision <objects> 6.1.3
 ```
 
-**The earlier reading of this section was wrong in both numbers and it is corrected here.** It said 34
-members and "every one of them by the row of the class it belongs to". Re-measured, the object carries
-39 and three of them are answered by rows of their own -- the precision and recall triple of
-`VNClassificationObservation`, which are the only three of these 39 that a registry row names in its
-own right. `nm -m`, not `nm -gU`: a method implementation on a class the port opens is `non-external`,
-so `nm -gU` on this object lists 55 symbols of which NONE is a method, and a count taken that way
-answers a different question.
+**The earlier reading of this section was wrong in both numbers, and it was wrong for the tree it was
+written on.** It said 34 members and "every one of them by the row of the class it belongs to". The same
+command over the object as it stood at `6328dcde6` -- the commit that wrote the 34 -- reads **35**
+members, and three of them are answered by rows of their own, the precision and recall triple of
+`VNClassificationObservation`, which are the only three a registry row names in their own right. The
+39 is the same object with the four methods of 7.1 below, and 35 + 4 is 39, so the 34 was a
+miscount of a real list and not a list that has since changed. `nm -m` and not `nm -gU` is the other
+half: a method implementation on a class the port opens is `non-external`, and `nm -gU` on this object
+lists 55 symbols of which NONE is a method, so a count taken that way answers a different question.
 
 None of the 39 needs a row of its own, and that is not an assumption -- it is the tree's own reader
 asked over the list the command above writes:
@@ -533,12 +535,22 @@ Vision130.m.o              25          16.0
 release-split: clean, every object file's symbols first-appear in one release (8 files, 130 symbols, 50 releases checked)
 ```
 
-**`Vision130.m.o` is unchanged by this section's four methods: 25 symbols before them and 25 after.**
-They are `non-external`, so `nm -gU` does not see them, which is the same reason `nm -gU` sees no method
-at all in section 7 above. What release-split certifies here is the twenty-five symbols a caller binds
-by name -- twelve `_OBJC_CLASS_$_`, twelve `_OBJC_METACLASS_$_` and `VNElementTypeSize` -- and their
-first appearance, which is 16.0 for every one of them: after 12.0 and by 16.0, because the held set has
-no 13.0, 14.0 or 15.0 in it (section 2).
+**The four methods of 7.1 add no exported symbol, and both halves of that are measured.** Compiled
+from the same tree with and without them:
+
+```
+nm -gU Vision130.m.o | wc -l     55 before   55 after
+nm -m  Vision130.m.o, methods     35 before   39 after
+xmake l tools/release-split.lua <obj>       25 symbols, all 16.0, before
+xmake l tools/release-split.lua <obj>       25 symbols, all 16.0, after
+```
+
+They are `non-external`, which is the same reason `nm -gU` sees no method at all in the count above,
+and it is why a change to what a port defines can never show up in a release-split count: what that
+count certifies here is the twenty-five symbols a caller binds by name -- twelve `_OBJC_CLASS_$_`,
+twelve `_OBJC_METACLASS_$_` and `VNElementTypeSize` -- and their first appearance, which is 16.0 for
+every one of them: after 12.0 and by 16.0, because the held set has no 13.0, 14.0 or 15.0 in it
+(section 2).
 
 **The three generated protocol objects are a blind spot, and it is measured rather than asserted.**
 `VNRequestProgressProviding` is the only protocol row of 13.0, and the build writes
