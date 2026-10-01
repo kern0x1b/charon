@@ -26,9 +26,10 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "implemented",
+   "reason": "MLTask.h:26-27 calls it \"Class that abstracts state transitions and basic task controls\", and it gives both methods as their effect and nothing else: -resume \"resumes the task and changes state to \\\"Running\\\"\" (:41-42) and -cancel \"starts cancelling the task and changes the state to \\\"Cancelling\\\"\" (:44-45). The five states are MLTaskState's own cases (:16-24): Suspended 1, Running 2, Cancelling 3, Completed 4, Failed 5. Placement is the header's own annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :29 - NOT first-rung's, which answers 16.0 for all five of these names because the held ladder has no 13.0 rung. -init and +new are NS_UNAVAILABLE at :47-51 with the header's own reason \"cannot construct MLTask without parameters\", so each refuses by name. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here: -taskIdentifier, -state and -error answer, and -resume moves a Suspended task to Running and -cancel moves a Suspended or Running task to Cancelling, which is exactly what MLTask.h:41-45 says each does. A transition the header does not describe - resuming a cancelling task, cancelling a completed one - is refused by name with the state printed and nothing is changed. -init and +new refuse. What drives the task beyond its two transitions, the model-update training, is not carried and no row here claims it is.",
+   "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -36,9 +37,10 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "implemented",
+   "reason": "MLUpdateContext.h:21 declares five readonly properties - task, model, event, metrics and parameters (:24-36) - and NO initializer at all, which is why there is one here and it is not public: the release builds a context inside its own training loop and hands it to the registered handlers, so neither is there either. Placement is the header's annotation at :20; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here and its five getters answer the state the context was built with; a caller that handed nil is answered nil rather than a stand-in, and the metrics and parameters dictionaries are copied on the way in. It cannot be made from outside the package, which is what MLUpdateContext.h's own declaration says.",
+   "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -46,9 +48,10 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "inert",
+   "reason": "MLUpdateProgressHandlers.h:16-17 calls it \"Allows applications to register for progress and completion handlers\", and :22-24 gives the one initializer that registers them; -init and +new are NS_UNAVAILABLE at :25-29. Placement is the header's annotation at :18; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. INERT and not implemented because nothing in this port produces the MLUpdateProgressEvent the two blocks would be called with: an event is a step of the model-update training loop, MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)) (MLUpdateTask.h:31 and :46), and no training loop is carried anywhere in this package. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here and -initForEvents:progressHandler:completionHandler: answers: the two blocks are held in strong ivars, which is what ARC copies a block into, so what a caller registers outlives the call. -init and +new refuse by name. What is NOT here is anything that fires those blocks, and that is the training loop's absence rather than a refusal to implement this class - which is the same shape MPSImageGaussianBlur's row records as inert.",
+   "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -56,9 +59,10 @@
    "kind": "class",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "status": "implemented",
+   "reason": "MLUpdateTask.h:20 makes it MLTask's one subclass on the 13.0 surface, and both of its initialisers are API_AVAILABLE(macos(11.0), ios(14.0)) (:31 and :46), so at 13.0 the class declares no initializer of its own. -init and +new are NS_UNAVAILABLE at :53-56. Placement is the header's annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :19; first-rung answers 16.0 for this name, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here, with MLTask's identifier, state and error and its two transitions, which are inherited and not copied. -init and +new refuse by name, as MLUpdateTask.h:53-56 marks them. Its two real initialisers are iOS 14.0 API and are other rows: a caller cannot MAKE an MLUpdateTask from this object, and nothing pretends otherwise.",
+   "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -377,8 +381,9 @@
    "introduced": "13.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the protocol arrived in iOS 13, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "reason": "The protocol arrived in iOS 13 (MLWritable.h's own API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0))), so no release below 13 carries it, and THIS PACKAGE DOES NOT DECLARE IT EITHER, which is the half the generator's sentence left out. check_registry answers a protocol row from whether the built objects carry the protocol's own metadata: CharonCoreMLProtocols.h - the one header of packages/a/apple-backports/CoreML that declares protocols - declares MLFeatureProvider and nothing else (`grep -n '@protocol' packages/a/apple-backports/CoreML/CharonCoreMLProtocols.h` answers one line), and no @implementation in the folder emits _OBJC_PROTOCOL_$_MLWritable, so `implemented` would be a claim no measurement supports. The control, in the same run: MLKey answers 1 file and MLModel 2, so the zero is the package's and not the reader's. Placement, as for the four classes beside it: the header's own annotation, not first-rung, which answers 16.0 for this name because the held ladder has no 13.0 rung. What the protocol is FOR is a model's update write - -writeToURL:error:, \"Writes the model to disk and returns YES if the write is successful\" (MLWritable.h:22-23) - which is Core ML's model-update training and is not carried.",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil, and a class cannot declare conformance to it. What is missing is the training loop that would both use it and write a model: no MLUpdateProgressEvent is produced anywhere in this package, and MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)). The row stays absent rather than being rewritten with a sentence about iOS 6, which was never the question.",
+   "facts": "facts/CoreML/Update13.md",
    "source": "SDK 16.4, CoreML"
   }
  ]
