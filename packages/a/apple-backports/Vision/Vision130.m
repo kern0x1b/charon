@@ -116,3 +116,42 @@ NSUInteger VNElementTypeSize(VNElementType elementType)
 
 @implementation VNGenerateImageFeaturePrintRequest
 @end
+
+/* The other six requests of 13.0, each declared over VNImageBasedRequest by its own header and each
+ * with exactly one revision in 13.0, so the port's own revision table places every one of them
+ * without a revision of its own. The classifier, the face capture quality, the person, the two
+ * saliency maps and the text are Apple's own models, and there is no source for any of them. */
+@implementation VNClassifyImageRequest
+@end
+
+@implementation VNDetectFaceCaptureQualityRequest
+@end
+
+@implementation VNDetectHumanRectanglesRequest
+@end
+
+@implementation VNGenerateAttentionBasedSaliencyImageRequest
+@end
+
+@implementation VNGenerateObjectnessBasedSaliencyImageRequest
+@end
+
+@implementation VNRecognizeTextRequest
+@end
+
+/* The observations those requests answer with. Each is the superclass its own header names, so an
+ * answer is a kind of the observation this port already answers for and a caller reading one through
+ * VNDetectedObjectObservation, VNObservation or VNPixelBufferObservation reads it as that kind. The
+ * port fills none of them: there is no model behind any of these requests, so a handler refuses the
+ * request and no observation of this port's making appears. */
+@implementation VNRecognizedText
+@end
+
+@implementation VNRecognizedTextObservation
+@end
+
+@implementation VNFeaturePrintObservation
+@end
+
+@implementation VNSaliencyImageObservation
+@end

@@ -12,16 +12,6 @@
    "source": "SDK 16.4, Vision"
   },
   {
-   "api": "VNClassifyImageRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
    "api": "VNContour",
    "kind": "class",
    "introduced": "14.0",
@@ -62,16 +52,6 @@
    "source": "SDK 16.4, Vision"
   },
   {
-   "api": "VNDetectFaceCaptureQualityRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
    "api": "VNDetectHumanBodyPoseRequest",
    "kind": "class",
    "introduced": "14.0",
@@ -92,16 +72,6 @@
    "source": "SDK 16.4, Vision"
   },
   {
-   "api": "VNDetectHumanRectanglesRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
    "api": "VNDetectTrajectoriesRequest",
    "kind": "class",
    "introduced": "14.0",
@@ -118,36 +88,6 @@
    "minimum": "6.0",
    "status": "absent",
    "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNFeaturePrintObservation",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNGenerateAttentionBasedSaliencyImageRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNGenerateObjectnessBasedSaliencyImageRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, Vision"
   },
@@ -222,16 +162,6 @@
    "source": "SDK 16.4, Vision"
   },
   {
-   "api": "VNRecognizeTextRequest",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
    "api": "VNRecognizedPoint",
    "kind": "class",
    "introduced": "14.0",
@@ -248,36 +178,6 @@
    "minimum": "6.0",
    "status": "absent",
    "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNRecognizedText",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNRecognizedTextObservation",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, Vision"
-  },
-  {
-   "api": "VNSaliencyImageObservation",
-   "kind": "class",
-   "introduced": "13.0",
-   "minimum": "6.0",
-   "status": "absent",
-   "reason": "the class arrived in iOS 13, and nothing in iOS 6 does its work or stands in for it",
    "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
    "source": "SDK 16.4, Vision"
   },

@@ -20,6 +20,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNClassifyImageRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request that answers with a classification per class. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0, so the port's own revision table already places it. The classifier behind it is Apple's own and Apple has published no source for Vision, so what the port carries is the class and its revision table",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNCoreMLFeatureValueObservation",
       "kind": "class",
       "introduced": "11.0",
@@ -56,6 +67,17 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNDetectFaceCaptureQualityRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request that scores a face for capture quality. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0, the second arriving in 14.0. The scoring behind it is Apple's own model and there is no source for it",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNDetectFaceLandmarksRequest",
       "kind": "class",
       "introduced": "11.0",
@@ -81,6 +103,17 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNDetectHumanRectanglesRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request that finds a person in a picture. The SDK annotates it ios(13.0) and that is what a row's introduced means here, but a release can carry a class before the release that declares it public: the census reads it as a real class of 11.0's Vision, beside VNHumanObservation and VNHumanDetector. The port's rung carries no Vision at all, so the name is the port's to answer, and a row the release answers itself may not stay absent",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3 and 155 VN* classes in 11.0, this one among them, with 12.0 read in the same run as a second control; facts/Vision/Absence.md sections 1 and 2"
     },
     {
       "api": "VNDetectRectanglesRequest",
@@ -155,12 +188,45 @@
       "source": "Vision of the arm64 shared cache of iOS 12.0"
     },
     {
+      "api": "VNFeaturePrintObservation",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the observation a feature print answers with: the descriptor's element type, its element count and its data, over VNObservation as its own header declares. The descriptor behind it is Apple's own learned model, so the port carries the class and the request that would fill it is refused",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNObservation that archives and copies through the port's own observation machinery. Nothing of this port computes a feature print",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and this host's own Vision, where NSClassFromString answers for it; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
+      "api": "VNGenerateAttentionBasedSaliencyImageRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request that answers with the saliency image observation below. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0. The model behind it is Apple's own and there is no source for it",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNGenerateImageFeaturePrintRequest",
       "kind": "class",
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
       "reason": "the request whose answer is the feature print observation whose element type VNElementTypeSize answers for. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0, so the port's own revision table already places it. The descriptor behind it is Apple's own learned model and there is no source for it",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
+      "api": "VNGenerateObjectnessBasedSaliencyImageRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the other of the two saliency requests, and it answers with the same observation. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0",
       "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
       "facts": "facts/Vision/Absence.md",
       "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
@@ -267,6 +333,17 @@
       "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
     },
     {
+      "api": "VNRecognizeTextRequest",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the request whose answer is the recognized text observation below. It is a VNImageBasedRequest, as its own header declares, and it had exactly one revision in 13.0, the second and third arriving in 14.0 and 16.0. The recogniser behind it is Apple's own and there is no source for it, which is also why this port does not adopt VNRequestProgressProviding on it",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNRequest that a handler takes. Running it answers VNErrorNotImplemented from the request path",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and the SDK's own annotation of ios(13.0) with its single revision; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
       "api": "VNRecognizedObjectObservation",
       "kind": "class",
       "introduced": "12.0",
@@ -274,6 +351,28 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNRecognizedText",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "one candidate for a piece of text a recognized text observation carries, with its string, its confidence and a box for a range of the string. Apple declares it over NSObject and it is a value a caller reads, so the port carries the class and its place in the observation hierarchy",
+      "effect": "the class is there: NSClassFromString answers it and alloc makes one. This port recognises no text, so nothing of this port makes one, and the request that would is refused with VNErrorNotImplemented",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and this host's own Vision, where NSClassFromString answers for it and answers nil for a name it does not carry; facts/Vision/Absence.md sections 1 and 4"
+    },
+    {
+      "api": "VNRecognizedTextObservation",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the observation a text recognition answers with: a rectangle observation holding its candidates. Its own header names VNRectangleObservation as its superclass and so does the port, so an answer read through VNDetectedObjectObservation is read through the right kind",
+      "effect": "the class is there: NSClassFromString answers it and alloc makes one, and it is a kind of VNRectangleObservation. This port recognises no text, so nothing of this port makes one",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and this host's own Vision, where NSClassFromString answers for it; facts/Vision/Absence.md sections 1 and 4"
     },
     {
       "api": "VNRectangleObservation",
@@ -292,6 +391,17 @@
       "status": "implemented",
       "facts": "facts/Vision/Vision.md",
       "source": "Vision of the arm64 shared cache of iOS 12.0"
+    },
+    {
+      "api": "VNSaliencyImageObservation",
+      "kind": "class",
+      "introduced": "13.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the observation both saliency requests answer with: a pixel buffer observation carrying the heat map and the boxes of its modes. Its own header names VNPixelBufferObservation as its superclass and so does the port, so the buffer and the feature name are inherited from the observation this port already answers for",
+      "effect": "the class is there: NSClassFromString answers it, alloc makes one, and it is a kind of VNPixelBufferObservation. This port computes no saliency map, so nothing of this port makes one",
+      "facts": "facts/Vision/Absence.md",
+      "source": "the Vision census of the two releases this port deploys on, which finds no image naming Vision at all in 6.1.3 or 4.3, with 11.0 and 12.0 read in the same run as the control, and this host's own Vision, where NSClassFromString answers for it; facts/Vision/Absence.md sections 1 and 4"
     },
     {
       "api": "VNSequenceRequestHandler",
