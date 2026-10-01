@@ -32,7 +32,7 @@
 //
 // +load is required and is why the method is installed from a class and not from the category:
 // +load runs before the library's own categories are attached, so a method added from a category
-// would not be there yet (the reason UITableView+Prefetching10.m:38 spells out in its comment).
+// would not be there yet (the reason UITableView+Prefetching10.m:15 spells out in its comment).
 
 @interface CharonTablePrefetchEnabled15Installer : NSObject
 @end
