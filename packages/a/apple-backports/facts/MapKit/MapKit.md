@@ -485,8 +485,55 @@ the header's own default, where nobody set one, rather than a number of this por
 `-initWithPointsOfInterestRequest:` over the release's own search; and the completer's two delegate
 messages, which the port's own `MKLocalSearchCompleter` already sends.
 
-**The wall, and it is eight rows: `MKLocalPointsOfInterestRequest` and its members are `absent`.**
-A map's own points of interest — the restaurants and stations a map knows about — arrive with a map
-that has them, and this release's map has none. So there is no centre and radius to search around, the
-class is not built as a request for nothing, and `-initWithPointsOfInterestRequest:` asks the release's
-own search with the empty request, which is the release's own answer for a request with no query.
+**The eight rows that are `inert`, and the false claim they used to stand on.**
+`MKLocalPointsOfInterestRequest` and its seven members were `absent` with the reason "a MAP'S OWN
+points of interest — the restaurants and stations a map knows about — arrive with a map that has them.
+This release's map has none." **That reason was false, and it is measured false below.** The class is
+the release's own nowhere, which is true and is not why it was absent:
+
+```
+$ CHARON_ROOT=<worktree> xmake l tools/corpus/cache-census.lua MKLocalPointsOfInterest 6.1.3 4.3 16.0
+6.1.3     $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+          images 524, of which naming MKLocalPointsOfInterest 0
+          classes 11378, of which MKLocalPointsOfInterest* 0
+          protocols 1171, of which MKLocalPointsOfInterest* 0
+4.3       $HOME/.charon/dyld/4.3/dyld_shared_cache_armv7
+          images 354, of which naming MKLocalPointsOfInterest 0
+          classes 7187, of which MKLocalPointsOfInterest* 0
+          protocols 564, of which MKLocalPointsOfInterest* 0
+16.0      $HOME/.charon/dyld/16.0/dyld_shared_cache_arm64e
+          images 2664, of which naming MKLocalPointsOfInterest 0
+          classes 143137, of which MKLocalPointsOfInterest* 1 (MKLocalPointsOfInterestRequest)
+          protocols 25549, of which MKLocalPointsOfInterest* 0
+control: 1 name(s) beginning MKLocalPointsOfInterest found in this run, so a zero on another rung is
+the release's and not the reader's
+```
+
+and neither release has the class's entry points either — `grep -cxF` on each release's own selector
+table (`~/.charon/dyld/6.1.3/selectors_armv7.txt`, `~/.charon/dyld/4.3/selectors_armv7.txt`) answers
+**0 and 0** for `initWithCenterCoordinate:radius:`, for `initWithCoordinateRegion:` and for
+`pointOfInterestCategory`. `python3 tools/cache-index/first-rung.py MKLocalPointsOfInterestRequest`
+answers `16.0`, which is the ladder's hole (no 13.0, 14.0 or 15.0 is held) and not a measured first
+release; `tools/release-split.lua` says so in its own note.
+
+**What the release DOES have is the search the request is for.** `apple.objc.inventory` on the armv7
+cache of 6.1.3: the release's own `MKLocalSearchRequest` carries `-naturalLanguageQuery`, `-region` and
+their setters, its own `MKLocalSearch` carries `-initWithRequest:` and `-startWithCompletionHandler:`,
+its own `MKLocalSearchResponse` carries `-mapItems`, and its own `MKMapItem` carries `-name`,
+`-placemark`, `-isBusiness`, `-rating`, `-numberOfRatings`, `-numberOfReviews` and `-attributions`.
+Those last four are the fields of a **business**, which is what a point of interest is on a release
+whose map knows places: this release's own search answers a question about points of interest. What
+it has no member for is the request that *describes* one. So the request is carried here —
+`MKLocalPointsOfInterestRequest14.m`, whose object is release 14's alone — and the search stays the
+release's.
+
+**Why the rows are `inert` and not `implemented`:** nothing applies the request yet. The one caller a
+program has is `-[MKLocalSearch initWithPointsOfInterestRequest:]`, a 14.0 row that is not this
+object's, and its implementation in `MKLocalSearchRequest13.m` makes the release's own search with an
+**empty** request and drops the argument. So the symbols load and answer exactly what the caller gave
+them — `-initWithCenterCoordinate:radius:` and `-initWithCoordinateRegion:` read each other through
+the **release's own projection** (`MKMapPointForCoordinate`, `MKMapPointsPerMeterAtLatitude` and
+`MKCoordinateRegionForMapRect`, all `3.2` on the ladder, with the region-to-map-rect direction being
+`+[CharonMapKit charon_mapRectForRegion:]`, the declared inverse of the release's own function) — and
+the release's own search is still asked with no query. The three initialisers and the filter setter say
+so once in the log, which is what `registry/README.md` asks of an inert entry.
