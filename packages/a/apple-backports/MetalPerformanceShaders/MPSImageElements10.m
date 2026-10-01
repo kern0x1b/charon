@@ -71,6 +71,15 @@
 //
 // ONE RELEASE. Both classes here first appear in 10.0.1 per first-rung and nothing from another
 // release is defined in this file.
+//
+// AND WHAT THE ALLOCATOR'S MOVE COST, recorded because it was a silent regression rather than a loud
+// one. Moving MPSTemporaryImageAllocator out of this file to satisfy release-split also took
+// MPSTemporaryImage's own implementation with it - the block sat after the allocator's, and the edit
+// removed both. Nothing failed: the objects compiled, release-split was clean, and the differential was
+// green, because no case reaches this class. `review-mechanical.sh` caught it as a NOTE against the
+// MPSTemporaryImage row ("no added file implements it"), which is the only thing that looked. The class
+// is restored here and the allocator stays in CharonMPSTemporaryImage.m, which is what release-split
+// asked for; the two were never one decision.
 
 #import "CharonMPS.h"
 #import "CharonMPSImage.h"
@@ -129,6 +138,130 @@ static const float kCharonMPSImageLaplacianWeights[9] = { 0.0f, 1.0f, 0.0f,
                                       weights:kCharonMPSImageLaplacianWeights
                                           bias:(double)self.bias
                                           what:@"MPSImageLaplacian"];
+}
+
+@end
+
+@implementation MPSTemporaryImage {
+    NSUInteger _readCount;
+}
+
+// MPSImage.h:930: +defaultAllocator, "a well known MPSImageAllocator that makes MPSTemporaryImages".
+// The protocol's one required method is -imageForCommandBuffer:imageDescriptor:kernel: (:246-249),
+// and a temporary image is that method's answer with this class in place of MPSImage - which is what
+// it does below. The allocator is a singleton because the release's own two are process-wide caches
+// and a caller comparing allocators by identity would see the same object the release shows.
++ (id<MPSImageAllocator>)defaultAllocator
+{
+    static id<MPSImageAllocator> shared = nil;
+    if (!shared)
+        shared = CharonMPSTemporaryImageDefaultAllocator();
+    return shared;
+}
+
+// MPSImage.h:938-947: +temporaryImageWithCommandBuffer:imageDescriptor:. The header says the object
+// "will be released when the command buffer is committed", and its texture "will become invalid
+// before this time due to the action of the readCount property" - so what this port builds is an
+// ordinary MPSImage over the descriptor, tagged so the read count is decremented by the kernel that
+// reads it. The storage cannot be recycled behind the caller's back the way the release's private
+// texture is, because every MPS kernel in this package walks an MPSImage's values on the CPU
+// (MPSImage13.m holds them in a texture it reads), so a private, GPU-only texture would be a texture
+// nothing here can read. That is stated rather than hidden: the read count is honoured, the recycling
+// it guards is the port's own whole-image lifetime, and MPSImage9.m's -initWithTexture: is what puts a
+// texture the caller chose into an image.
++ (instancetype)temporaryImageWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                                imageDescriptor:(MPSImageDescriptor *)imageDescriptor
+{
+    if (!commandBuffer) {
+        CharonMPSRefuse(@"MPSTemporaryImage: no command buffer, so no temporary image was made");
+        return nil;
+    }
+    id<MTLDevice> device = [commandBuffer respondsToSelector:@selector(device)] ? [commandBuffer device] : nil;
+    if (!device)
+        device = MTLCreateSystemDefaultDevice();
+    if (!device || !imageDescriptor) {
+        CharonMPSRefuse(@"MPSTemporaryImage: a temporary image needs a command buffer with a device and a "
+                        @"descriptor, and one of the two was missing");
+        return nil;
+    }
+    MPSTemporaryImage *image = [[MPSTemporaryImage alloc] initWithDevice:device imageDescriptor:imageDescriptor];
+    // A read count starts at one: a temporary image may be written any number of times and read once.
+    image->_readCount = 1;
+    return image;
+}
+
+// MPSImage.h:955-975, the two texture-descriptor forms. The header's restrictions are MTLTextureType
+// 2D or 2DArray, usage ShaderRead or ShaderWrite, storage private, depth 1 - and storage private is
+// exactly what this port's kernels cannot walk (see above), so the texture the caller names is used as
+// it is and the form is refused only where it has no shape at all.
++ (instancetype)temporaryImageWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                              textureDescriptor:(MTLTextureDescriptor *)textureDescriptor
+{
+    if (!commandBuffer || !textureDescriptor) {
+        CharonMPSRefuse(@"MPSTemporaryImage: a temporary image needs a command buffer and a texture "
+                        @"descriptor, and one of the two was missing");
+        return nil;
+    }
+    id<MTLDevice> device = [commandBuffer respondsToSelector:@selector(device)] ? [commandBuffer device] : nil;
+    if (!device)
+        device = MTLCreateSystemDefaultDevice();
+    if (!device)
+        return nil;
+    NSUInteger channels = 1;
+    switch (textureDescriptor.pixelFormat) {
+    case MTLPixelFormatRG32Float: case MTLPixelFormatRG16Float: case MTLPixelFormatRG8Unorm:
+        channels = 2;
+        break;
+    case MTLPixelFormatRGBA32Float: case MTLPixelFormatRGBA16Float: case MTLPixelFormatRGBA8Unorm:
+        channels = 4;
+        break;
+    default:
+        break;
+    }
+    MPSTemporaryImage *image = [[MPSTemporaryImage alloc] initWithTexture:[device newTextureWithDescriptor:textureDescriptor]
+                                                        featureChannels:channels];
+    image->_readCount = 1;
+    return image;
+}
+
+// MPSImage.h:977-995: the same, with the feature channel count given rather than inferred.
++ (instancetype)temporaryImageWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                              textureDescriptor:(MTLTextureDescriptor *)textureDescriptor
+                                featureChannels:(NSUInteger)featureChannels
+{
+    if (!commandBuffer || !textureDescriptor) {
+        CharonMPSRefuse(@"MPSTemporaryImage: a temporary image needs a command buffer and a texture "
+                        @"descriptor, and one of the two was missing");
+        return nil;
+    }
+    id<MTLDevice> device = [commandBuffer respondsToSelector:@selector(device)] ? [commandBuffer device] : nil;
+    if (!device)
+        device = MTLCreateSystemDefaultDevice();
+    if (!device)
+        return nil;
+    MPSTemporaryImage *image = [[MPSTemporaryImage alloc] initWithTexture:[device newTextureWithDescriptor:textureDescriptor]
+                                                        featureChannels:featureChannels ? featureChannels : 1];
+    image->_readCount = 1;
+    return image;
+}
+
+// The read count, which is what decides when the storage may be reused. MPSImage.h:1030-1050 is where
+// the release documents it, and it is the same counter MPSTemporaryMatrix11.m carries and
+// CharonMPSConsumeReadCount decrements - which is why that helper in CharonMPS.h tests for
+// MPSTemporaryMatrix and MPSTemporaryVector by name and does not yet know about this class: a
+// temporary IMAGE is read through an MPSImage, and the kernels that walk one decrement nothing today.
+// So this count is carried and readable, and a caller that sets it gets it back, and no kernel in this
+// package changes it. That is the whole of what is honest here: the count exists, and nothing applies
+// it yet because MPSImageAllocator - which is where the release puts the recycling decision - is not a
+// row this port carries.
+- (NSUInteger)readCount
+{
+    return _readCount;
+}
+
+- (void)setReadCount:(NSUInteger)readCount
+{
+    _readCount = readCount;
 }
 
 @end
