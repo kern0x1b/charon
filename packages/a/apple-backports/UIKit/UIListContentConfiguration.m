@@ -285,6 +285,24 @@ static UIConfigurationColorTransformer charon_thirty_percent(void)
     return _alpha;
 }
 
+// The public spelling of the alpha this object already stored, encoded, copied and applied.  The ivar, the
+// -initCharonWithStyle: default (0 for a bare configuration, 1 otherwise), the NSCoding key, -copyWithZone:,
+// -isEqual: and the three views UIListContentView.m sets the alpha on are all this file's own and all
+// predate the accessors below; what 18.0 added is only that a caller can reach the value, and the storage
+// it would write is the storage the drawing path already reads.  So the accessors are the same
+// -image/-setImage:/ -textProperties pair this file already writes, and -charon_alpha is kept beside them
+// because UIListContentView.m:187 reads it and the registry check counts selectors, not which of two
+// spellings a caller prefers.
+- (CGFloat)alpha
+{
+    return _alpha;
+}
+
+- (void)setAlpha:(CGFloat)alpha
+{
+    _alpha = alpha;
+}
+
 - (UIImage *)image
 {
     return _image;
