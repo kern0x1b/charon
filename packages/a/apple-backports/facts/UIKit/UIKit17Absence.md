@@ -445,3 +445,56 @@ precondition was added.
 `UIControl+Actions14.m` is 14.0 (`addAction:forControlEvents:`, `initWithFrame:primaryAction:`). This is
 17.4. One `.m` holds one release's API, and `release-split.lua` reads band points only, so a single file
 holding both would pass the tool and only a reader would catch it.
+
+## M11. Two more 17.4 methods, one scroll view and one drag item
+
+### `-stopScrollingAndZooming` (17.4)
+
+Measured on a 200x200 scroll view with 800x800 of content:
+
+```
+-[UIScrollView stopScrollingAndZooming] = 1
+after -setContentOffset:(100,100) animated:YES -> offset = (100,100)
+after -stopScrollingAndZooming                 -> offset = (100,100), zoomScale = 1.00
+a second call, with nothing animating            -> NO raise
+```
+
+So it **stops the motion where it is**: the offset does not move and the zoom scale is not reset. The
+implementation is the release's own `-setContentOffset:animated:NO`, which lands on the offset the scroll
+has reached — the measured behaviour, not a reimplementation of physics.
+
+Its header names three clauses, and only the first is reachable here:
+
+1. stops any scrolling or zooming, programmatic or from the user — **reachable**, and is what the port does;
+2. stop at the current offset during deceleration, or move within the valid range when bouncing —
+   **not reachable**: there is no separate deceleration the port owns, and bouncing is the release's own
+   physics rather than something to reimplement;
+3. if paging is enabled, align the offset with a page boundary — **not reachable**: the port does not
+   own a page-boundary alignment, and inventing one would be a second scroll implementation.
+
+### `-setNeedsDropPreviewUpdate` (17.4)
+
+Measured on a `UIDragItem` made with `initWithItemProvider:` and no drop animation anywhere:
+
+```
+responds = 1
+with no drop animation in progress -> NO raise (quiet)
+twice more                           -> NO raise
+previewProvider set beforehand       -> STILL SET afterwards
+```
+
+The header says the same thing: *"If no active drop animation is in progress for the specified item,
+then nothing happens."* And a drop animation is the **system's**: a drag that leaves the application
+needs the system drag service, which `UIDragItem.m`'s own header says this release cannot do. So the
+condition the header names is never true here, and a quiet method is what the header prescribes for that
+case — not a stub standing in for unfinished work.
+
+It does **not** call the `previewProvider`: the header says the provider is called when and if the system
+asks, and calling it here would be the port driving a system callback on its own initiative. The provider
+is left exactly where the caller put it, which is measured, not assumed.
+
+### Why two files and not two appended methods
+
+`UIDragItem.m` is **11.0** API and `UIScrollView+ContentAlignment17.m` is **17.4** geometry. A `.m` holds
+one release's API, and `release-split.lua` reads band points only — folding these into their neighbours
+passes the tool and only a reader catches it.

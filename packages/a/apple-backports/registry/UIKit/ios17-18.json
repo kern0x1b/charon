@@ -1446,20 +1446,20 @@
    "kind": "method",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIDragItem a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "nothing visible, which is what the header prescribes: a drop animation is the system's and this release has none, so the condition the method names is never true. Measured on the host - it does not raise with no drop animation in progress, and a previewProvider set beforehand is STILL SET afterwards, so it neither consumes nor runs it",
+   "source": "the host's answers measured on the host's own UIKit: an animated contentOffset and this call leave the offset and zoom scale identical, and setNeedsDropPreviewUpdate is quiet with no drop animation in progress and leaves an existing previewProvider set",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIScrollView stopScrollingAndZooming]",
    "kind": "method",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "neither iOS 6 nor the backports give UIScrollView a method like it: it arrived in iOS 17",
-   "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "SDK 26, Mac Catalyst, UIKit"
+   "status": "implemented",
+   "effect": "the scroll stops where it is: measured on the host, the contentOffset after an animated set and after this call is the same (100,100) and the zoom scale is untouched at 1.00, because this is the release's own -setContentOffset:animated:NO landing on the offset reached. Calling it with nothing animating returns quietly rather than raising",
+   "source": "the host's answers measured on the host's own UIKit: an animated contentOffset and this call leave the offset and zoom scale identical, and setNeedsDropPreviewUpdate is quiet with no drop animation in progress and leaves an existing previewProvider set",
+   "facts": "facts/UIKit/UIKit17Absence.md"
   },
   {
    "api": "-[UIScrollView withScrollIndicatorsShownForContentOffsetChanges:]",
