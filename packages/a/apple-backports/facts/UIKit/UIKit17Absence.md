@@ -498,3 +498,31 @@ is left exactly where the caller put it, which is measured, not assumed.
 `UIDragItem.m` is **11.0** API and `UIScrollView+ContentAlignment17.m` is **17.4** geometry. A `.m` holds
 one release's API, and `release-split.lua` reads band points only — folding these into their neighbours
 passes the tool and only a reader catches it.
+
+## M12. Three band ends measured, certified, control 8/8 at each
+
+The 12.0 arm64 inventory arrived (74618 lines, 63192 classes, 11426 protocols). With M9's 4.3 and 6.1.3
+reads, three of the band ends are now measured and the fourth (16.0 arm64e) is still reading.
+
+| band end | arch | classes | protocols | rows checkable | **carried** | control |
+|---|---|---|---|---|---|---|
+| **4.3** | armv7 | 7187 | — | 96 | **0** | 8/8 |
+| **6.1.3** | armv7 | 11378 | 1171 | 96 | **0** | 8/8 |
+| **12.0** | arm64 | 63192 | 11426 | 93 | **0** | 8/8 |
+
+Run over the rows still marked `absent` at the time of each read, with the same `carried_by_release`
+re-implementation (M1) and the same eight controls read from the same file as the zeros.
+
+`checkable` falls from 96 to 93 between 6.1.3 and 12.0 because three rows' owners are names 12.0 has
+neither a class nor a protocol for either — which is the check not applying, not a pass.
+
+**12.0 matters more than its position suggests.** It is the last release held before the ladder's jump to
+16.0, so it is the band end that says whether a 17.x name is already there "after 12.0, by 16.0". It
+carries none of this slice's 107 remaining names.
+
+## What is still open, and is not claimed
+
+The **16.0 arm64e** read started at 15:35 and had not returned. That cache is split into ~45 parts and is
+the slowest of the four. So the honest statement for it today is **not yet measured**, and no row in this
+file rests on it. Everything above is reproducible from the three commands in M1 and M9 with the
+`CHARON_ROOT` prefix each one prints.
