@@ -44,8 +44,38 @@ typedef NSInteger MPRepeatType;
 enum { MPRepeatTypeOff = 0, MPRepeatTypeOne = 1, MPRepeatTypeAll = 2 };
 typedef NSInteger MPShuffleType;
 enum { MPShuffleTypeOff = 0, MPShuffleTypeItems = 1, MPShuffleTypeCollections = 2 };
+// The 9.0 language option and its group, at the contract MPNowPlayingInfoLanguageOption90.m implements.
+// It was already here as a bare NSObject with one accessor, because MPChangeLanguageOptionCommandEvent90.m
+// needs a type for its `languageOption` property to compile against and the framework's own class is
+// absent on this release. It now carries the full contract, so that object is the ONE place a stand-in
+// build sees these classes declared - a second @interface for either name in the .m is a duplicate
+// definition and does not compile, which is what a first draft of that object did and what this header
+// is extended to prevent. The type and the two cases are spelled as MPNowPlayingInfoLanguageOption.h
+// spells them; nothing here is invented to make a check pass.
+typedef NSUInteger MPNowPlayingInfoLanguageOptionType;
+enum { MPNowPlayingInfoLanguageOptionTypeAudible = 0, MPNowPlayingInfoLanguageOptionTypeLegible = 1 };
 @interface MPNowPlayingInfoLanguageOption : NSObject
+- (instancetype)initWithType:(MPNowPlayingInfoLanguageOptionType)languageOptionType
+                 languageTag:(NSString *)languageTag
+             characteristics:(NSArray<NSString *> *)languageOptionCharacteristics
+                 displayName:(NSString *)displayName
+                  identifier:(NSString *)identifier;
+@property (nonatomic, readonly) MPNowPlayingInfoLanguageOptionType languageOptionType;
+@property (nonatomic, readonly) NSString *languageTag;
+@property (nonatomic, readonly) NSArray<NSString *> *languageOptionCharacteristics;
+@property (nonatomic, readonly) NSString *displayName;
+@property (nonatomic, readonly) NSString *identifier;
 @property (nonatomic, readonly) BOOL isAutomaticLegibleLanguageOption;
+@property (nonatomic, readonly) BOOL isAutomaticAudibleLanguageOption;
+@end
+
+@interface MPNowPlayingInfoLanguageOptionGroup : NSObject
+- (instancetype)initWithLanguageOptions:(NSArray<MPNowPlayingInfoLanguageOption *> *)languageOptions
+                  defaultLanguageOption:(MPNowPlayingInfoLanguageOption *)defaultLanguageOption
+                    allowEmptySelection:(BOOL)allowEmptySelection;
+@property (nonatomic, readonly) NSArray<MPNowPlayingInfoLanguageOption *> *languageOptions;
+@property (nonatomic, readonly) MPNowPlayingInfoLanguageOption *defaultLanguageOption;
+@property (nonatomic, readonly) BOOL allowEmptySelection;
 @end
 @interface MPRemoteCommand : NSObject
 @end
