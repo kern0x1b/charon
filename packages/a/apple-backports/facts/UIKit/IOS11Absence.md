@@ -119,3 +119,38 @@ this release has not got, and the extension-side owners need an extension host. 
 family whose substrate the port supplies — `UITextDropProposal`, which `CharonTextDropRequest` holds
 and `UITextView+TextDragDrop11.m` stores a delegate's answer into — is the one this band wrote; see
 `TextDragAndDrop.md`.
+
+## The one object, and what it is built from
+
+`UITextDropProposal` moved `absent` → `implemented`, so it is the band and not the audit. The port was
+already typed over the class it did not define:
+
+    CharonTextDragDrop11.h:22   @property (nonatomic, strong) UITextDropProposal *proposal;
+    UITextView+TextDragDrop11.m:346   request.proposal = (UITextDropProposal *)objc_msgSend(delegate, …);
+
+`objc.code_map` over UIKit of iOS 11.0 arm64 gives the class its superclass (`UIDropProposal`), four
+ivars of its own and ten methods. The two that decide behaviour were decoded, and the literals were
+settled by assembling candidates with the pinned clang and matching encodings rather than by decoding
+bitmasks — the first decoder run read `setPrecise:` as taking 0, which the header contradicts, and the
+disagreement had to be measured away:
+
+    -[UITextDropProposal initWithDropOperation:] 0x18a55caa0
+        [super initWithDropOperation:] ; CBZ result ; setPrecise: ; setDropAction: ; setUseFastSameViewOperations:
+    -[UITextDropProposal copyWithZone:] 0x18a55cb50
+        [super copyWithZone:] ; then each of the four getters and setters, in that order
+
+    mov x2,#0      -> 0xd2800002   (UITextDropActionInsert)
+    orr w2,wzr,#1  -> 0x320003e2   (precise, and useFastSameViewOperations, both YES)
+
+The object was then compiled for the port's own target and read back:
+
+    clang -target armv7-apple-ios6.1.3 -fobjc-arc -c packages/a/apple-backports/UIKit/UITextDropProposal.m
+    llvm-nm -gU UITextDropProposal.o
+        00000280 S _OBJC_CLASS_$_UITextDropProposal
+
+and the ten selectors out of its `__objc_methname` are the ten the 11.0 cache lists for the class:
+`copyWithZone: dropAction dropPerformer dropProgressMode initWithDropOperation: setDropAction:
+setDropPerformer: setDropProgressMode: setUseFastSameViewOperations: useFastSameViewOperations`.
+**The properties' names and their selectors agree here**, which is not free: `@property(getter=isX)`
+families in this file are where a row spells a name no selector carries, and the gate answers
+"listed as implemented, but nothing of that name is built" for one.
