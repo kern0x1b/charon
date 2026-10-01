@@ -154,3 +154,14 @@ setDropPerformer: setDropProgressMode: setUseFastSameViewOperations: useFastSame
 **The properties' names and their selectors agree here**, which is not free: `@property(getter=isX)`
 families in this file are where a row spells a name no selector carries, and the gate answers
 "listed as implemented, but nothing of that name is built" for one.
+
+And the release the object's API belongs to is one, which `release-split` reads off the symbol table
+rather than off the file's name:
+
+    xmake l tools/release-split.lua <objdir> <outdir> ~/Git/tools/sdks/iPhoneOS16.5.sdk
+        release-split: clean, every object file's symbols first-appear in one release
+                       (1 files, 2 symbols, 50 releases checked)
+
+Two symbols is the class and its metaclass, which is what `exported_symbols` counts for a class object;
+the ivars and the `NSCopying` metadata it also carries are excluded. This is the check that a mixed file
+passes silently, because it reads band points and not the API — so it was run rather than assumed.
