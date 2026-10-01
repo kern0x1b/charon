@@ -15,8 +15,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release has neither half of this: its NSAttributedString carries no formatting entry point at all (no initWithFormat:, no public attributedStringWithFormat:), and a format template may contain %#@, which selects among plural forms by the CLDR plural category of a variable - so no NSAttributedString row that takes a format can be answered faithfully here, and one that skipped %#@ would answer wrong text silently instead of failing",
+      "source": "the SDK 26.2 NSAttributedString.h declaration for the availability, and the 6.0 armv7 census read with python3 over ~/.charon/dyld/6.0/classes_armv7.json: 11284 classes read in the run, NSAttributedString's class methods carry no initWithFormat: and no public attributedStringWithFormat:, and the only four names on the whole rung containing plural/CLDR/ICU are -[PKIngestibleCard pluralTemplateDescription], -[PKPass pluralTemplateDescription], -[EMNumberFormatter icuFormatString] and a private -[IUVideoSummaryView _populateHeaderAndContentLabels:...] - none of which computes a plural category. The commands and their output are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -25,8 +25,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release has neither half of this: its NSAttributedString carries no formatting entry point at all (no initWithFormat:, no public attributedStringWithFormat:), and a format template may contain %#@, which selects among plural forms by the CLDR plural category of a variable - so no NSAttributedString row that takes a format can be answered faithfully here, and one that skipped %#@ would answer wrong text silently instead of failing",
+      "source": "the SDK 26.2 NSAttributedString.h declaration for the availability, and the 6.0 armv7 census read with python3 over ~/.charon/dyld/6.0/classes_armv7.json: 11284 classes read in the run, NSAttributedString's class methods carry no initWithFormat: and no public attributedStringWithFormat:, and the only four names on the whole rung containing plural/CLDR/ICU are -[PKIngestibleCard pluralTemplateDescription], -[PKPass pluralTemplateDescription], -[EMNumberFormatter icuFormatString] and a private -[IUVideoSummaryView _populateHeaderAndContentLabels:...] - none of which computes a plural category. The commands and their output are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -35,8 +35,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release has neither half of this: its NSAttributedString carries no formatting entry point at all (no initWithFormat:, no public attributedStringWithFormat:), and a format template may contain %#@, which selects among plural forms by the CLDR plural category of a variable - so no NSAttributedString row that takes a format can be answered faithfully here, and one that skipped %#@ would answer wrong text silently instead of failing",
+      "source": "the SDK 26.2 NSAttributedString.h declaration for the availability, and the 6.0 armv7 census read with python3 over ~/.charon/dyld/6.0/classes_armv7.json: 11284 classes read in the run, NSAttributedString's class methods carry no initWithFormat: and no public attributedStringWithFormat:, and the only four names on the whole rung containing plural/CLDR/ICU are -[PKIngestibleCard pluralTemplateDescription], -[PKPass pluralTemplateDescription], -[EMNumberFormatter icuFormatString] and a private -[IUVideoSummaryView _populateHeaderAndContentLabels:...] - none of which computes a plural category. The commands and their output are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -45,8 +45,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSAttributedString a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release has neither half of this: its NSAttributedString carries no formatting entry point at all (no initWithFormat:, no public attributedStringWithFormat:), and a format template may contain %#@, which selects among plural forms by the CLDR plural category of a variable - so no NSAttributedString row that takes a format can be answered faithfully here, and one that skipped %#@ would answer wrong text silently instead of failing",
+      "source": "the SDK 26.2 NSAttributedString.h declaration for the availability, and the 6.0 armv7 census read with python3 over ~/.charon/dyld/6.0/classes_armv7.json: 11284 classes read in the run, NSAttributedString's class methods carry no initWithFormat: and no public attributedStringWithFormat:, and the only four names on the whole rung containing plural/CLDR/ICU are -[PKIngestibleCard pluralTemplateDescription], -[PKPass pluralTemplateDescription], -[EMNumberFormatter icuFormatString] and a private -[IUVideoSummaryView _populateHeaderAndContentLabels:...] - none of which computes a plural category. The commands and their output are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -55,8 +55,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSURLSession a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release carries no NSURLSession at all - Apple shipped it in iOS 7, above every rung this port's minimum reaches - so there is no session here to make an upload task from resume data, and no task to cancel into it",
+      "source": "the SDK 26.2 NSURLSession.h declaration for the availability, and the class census with python3 over ~/.charon/dyld/4.3/classes_armv7.json and ~/.charon/dyld/6.0/classes_armv7.json: 7187 and 11284 classes read in the two runs and no key containing URLSession in either, while the same reader matched classes elsewhere in the same runs. tools/cache-index/first-rung.py places cancelByProducingResumeData: at 7.0, and the census shows the classes owning it there are the private -[__NSCFURLSessionDownloadTask cancelByProducingResumeData:], -[__NSCFBackgroundDownloadTask ...] and -[__NSCFLocalDownloadTask ...] - the download task's subclasses, not an upload task's. The commands are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -65,8 +65,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSURLSession a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release carries no NSURLSession at all - Apple shipped it in iOS 7, above every rung this port's minimum reaches - so there is no session here to make an upload task from resume data, and no task to cancel into it",
+      "source": "the SDK 26.2 NSURLSession.h declaration for the availability, and the class census with python3 over ~/.charon/dyld/4.3/classes_armv7.json and ~/.charon/dyld/6.0/classes_armv7.json: 7187 and 11284 classes read in the two runs and no key containing URLSession in either, while the same reader matched classes elsewhere in the same runs. tools/cache-index/first-rung.py places cancelByProducingResumeData: at 7.0, and the census shows the classes owning it there are the private -[__NSCFURLSessionDownloadTask cancelByProducingResumeData:], -[__NSCFBackgroundDownloadTask ...] and -[__NSCFLocalDownloadTask ...] - the download task's subclasses, not an upload task's. The commands are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
@@ -75,8 +75,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release carries no NSURLSession at all - Apple shipped it in iOS 7, above every rung this port's minimum reaches - so there is no session here to make an upload task from resume data, and no task to cancel into it; the delegate the release would send it to is part of that same absent session",
+      "source": "the SDK 26.2 NSURLSession.h declaration for the availability, and the class census with python3 over ~/.charon/dyld/4.3/classes_armv7.json and ~/.charon/dyld/6.0/classes_armv7.json: 7187 and 11284 classes read in the two runs and no key containing URLSession in either, while the same reader matched classes elsewhere in the same runs. tools/cache-index/first-rung.py places cancelByProducingResumeData: at 7.0, and the census shows the classes owning it there are the private -[__NSCFURLSessionDownloadTask cancelByProducingResumeData:], -[__NSCFBackgroundDownloadTask ...] and -[__NSCFLocalDownloadTask ...] - the download task's subclasses, not an upload task's. The commands are in facts/Foundation/Foundation17ReleaseAbsences.md; the SDK 26.2 NSURLSession.h comment for this message states when it is sent (\"Sent for each informational response received except 101 switching protocols\" for the first, \"This may be necessary when resuming a failed upload task\" for the second)",
       "status": "absent"
     },
     {
@@ -85,8 +85,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports have a NSURLSessionTaskDelegate that sends anything like it: the message arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release carries no NSURLSession at all - Apple shipped it in iOS 7, above every rung this port's minimum reaches - so there is no session here to make an upload task from resume data, and no task to cancel into it; the delegate the release would send it to is part of that same absent session",
+      "source": "the SDK 26.2 NSURLSession.h declaration for the availability, and the class census with python3 over ~/.charon/dyld/4.3/classes_armv7.json and ~/.charon/dyld/6.0/classes_armv7.json: 7187 and 11284 classes read in the two runs and no key containing URLSession in either, while the same reader matched classes elsewhere in the same runs. tools/cache-index/first-rung.py places cancelByProducingResumeData: at 7.0, and the census shows the classes owning it there are the private -[__NSCFURLSessionDownloadTask cancelByProducingResumeData:], -[__NSCFBackgroundDownloadTask ...] and -[__NSCFLocalDownloadTask ...] - the download task's subclasses, not an upload task's. The commands are in facts/Foundation/Foundation17ReleaseAbsences.md; the SDK 26.2 NSURLSession.h comment for this message states when it is sent (\"Sent for each informational response received except 101 switching protocols\" for the first, \"This may be necessary when resuming a failed upload task\" for the second)",
       "status": "absent"
     },
     {
@@ -95,8 +95,8 @@
       "introduced": "17.0",
       "kind": "method",
       "minimum": "6.0",
-      "reason": "neither iOS 6 nor the backports give NSURLSessionUploadTask a method like it: it arrived in iOS 17",
-      "source": "SDK 26, Mac Catalyst, Foundation",
+      "reason": "the release carries no NSURLSession at all - Apple shipped it in iOS 7, above every rung this port's minimum reaches - so there is no session here to make an upload task from resume data, and no task to cancel into it",
+      "source": "the SDK 26.2 NSURLSession.h declaration for the availability, and the class census with python3 over ~/.charon/dyld/4.3/classes_armv7.json and ~/.charon/dyld/6.0/classes_armv7.json: 7187 and 11284 classes read in the two runs and no key containing URLSession in either, while the same reader matched classes elsewhere in the same runs. tools/cache-index/first-rung.py places cancelByProducingResumeData: at 7.0, and the census shows the classes owning it there are the private -[__NSCFURLSessionDownloadTask cancelByProducingResumeData:], -[__NSCFBackgroundDownloadTask ...] and -[__NSCFLocalDownloadTask ...] - the download task's subclasses, not an upload task's. The commands are in facts/Foundation/Foundation17ReleaseAbsences.md",
       "status": "absent"
     },
     {
