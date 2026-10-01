@@ -3358,7 +3358,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no zoom member of any kind, so there is no zoom vocabulary this could be a bound of, and no centre-stage member; 4.3 cannot be asked of: its armv7 cache has no AVCaptureDeviceFormat",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release crops through -[AVCaptureConnection videoScaleAndCropFactor], whose release-own bound is min(width, height) * 0.0625 of what a still image output captures; the port defines no accessor",
+      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release crops through -[AVCaptureConnection videoScaleAndCropFactor], whose release-own bound this tree has measured at max(1, min(width, height) * 0.0625) of the format - facts/AVFoundation/CaptureZoomAudioSession.md:14 and :34, and AVCaptureDevice+VideoZoom7.m:210 - and that measurement is not repeated here; the port defines no accessor",
       "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDeviceFormat and AVCaptureConnection read from objc-inventory.lua, 11 and 56 own instance methods; tools/corpus/class-scoped-rows.py reads NO CLASS for the format on 4.3, controls answered on all three releases"
     },
     {
