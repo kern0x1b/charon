@@ -484,20 +484,22 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "sets a paragraph to hyphenate as the system does by default; the release's NSParagraphStyle carries hyphenationFactor (objc.inventory on 6.1.3), which this flag would set to the default factor - not built for lack of demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "inert",
+      "reason": "the mutable spelling of the flag above, and it sets the same associated storage the immutable getter reads, so a copy of a mutable style carries what was set on it",
+      "effect": "kept and read back, NO until set; the first YES says so once in the log and the lines do not change, because there is no default hyphenation to defer to",
+      "source": "SDK 16.4, UIKit; not in NSMutableParagraphStyle's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), where 6.1.3 carries -setHyphenationFactor: and no boolean; delivered by packages/a/apple-backports/UIKit/NSParagraphStyle+Text15.m",
+      "facts": "facts/UIKit/NSParagraphStyleDefaultHyphenation15.md"
     },
     {
       "api": "NSParagraphStyle.usesDefaultHyphenation",
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "answers whether a paragraph hyphenates as the system does by default; the release's NSParagraphStyle carries hyphenationFactor (objc.inventory on 6.1.3), from which this could be answered - not built for lack of demand, not a wall",
-      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "SDK 16.4, UIKit"
+      "status": "inert",
+      "reason": "sets a paragraph to hyphenate as the system does by default; the release hyphenates nothing by default, which is the same answer the 13.0 layout-manager half of this flag already gives (NSLayoutManager+Text13.m), so the two halves agree - the flag is kept and read back and lines break exactly as they did",
+      "effect": "kept and read back, NO until set; the first YES says so once in the log and the lines do not change, because there is no default hyphenation to defer to",
+      "source": "SDK 16.4, UIKit; not in NSParagraphStyle's methods in the 6.1.3, 4.3 or 12.0 cache (objc-inventory, class-scoped as backports.lua:1631 carried_by_release reads it), where 6.1.3 carries -hyphenationFactor and no boolean; delivered by packages/a/apple-backports/UIKit/NSParagraphStyle+Text15.m",
+      "facts": "facts/UIKit/NSParagraphStyleDefaultHyphenation15.md"
     },
     {
       "api": "NSTextAttachment.allowsTextAttachmentView",
