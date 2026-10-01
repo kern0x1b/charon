@@ -766,19 +766,21 @@
    "api": "UIPasteConfiguration",
    "kind": "class",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the configuration tells the system which types a responder accepts before it is offered anything to paste, and this release's paste menu and drop target ask nobody: a paste happens through -paste: on the responder or through UIPasteboard, both driven by the release's own machinery. Not carried by the port either",
-   "effect": "the class is not there, so a responder is never told it may paste something it cannot be handed, and NSClassFromString answers nil",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a class of that name, so the release has no class at all"
+   "status": "implemented",
+   "effect": "what a drop target will accept, as type identifiers. Adding one that is already there changes nothing, so the order of two adds does not matter; -addTypeIdentifiersForAcceptingClass: asks the class for +readableTypeIdentifiersForItemProvider and adds nothing when the class does not answer, because a class named there need not adopt NSItemProviderReading and a configuration accepting nothing would be worse than one that says what it has. It copies and it codes, both over the release's own NSKeyedArchiver, and a copy of a configuration accepts exactly what the original does",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIPasteConfiguration 6.1.3 4.3 16.0): images 524 of which naming UIPasteConfiguration 0 at 6.1.3 and 354 of which naming UIPasteConfiguration 0 at 4.3, classes 11378 and 7187 of which UIPasteConfiguration* 0 at both ends, protocols 1171 and 564 of which UIPasteConfiguration* 0 at both ends; the 16.0 rung reads 1 class (UIPasteConfiguration) at 16.0, and the run's own control line reads 'control: 2 name(s) beginning UIPasteConfiguration found in this run', so a zero on either end is the release's and not the reader's. UIPasteConfiguration is in neither release, so the port builds the class whole; the members are answered by their own class row. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0, exporting _OBJC_CLASS_$_UIPasteConfiguration and its metaclass and nothing else the tool weighs",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIPasteConfigurationSupporting",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol says a responder keeps a paste configuration, and nothing in this release reads one off a responder: the responder is asked to paste or not, and the configuration has no place to be read. Not carried by the port either",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "the protocol asks a view what it accepts on a paste; nothing here ever asks. The port's drop routing is its own, in UIKit/ViewDragDropRouting11.m, and it decides a drop from the item provider's own type identifiers over the release's -setValue:forPasteboardType:, so there is no point in the flow where a target is asked for a configuration",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A caller that wants a paste refused names on the types itself, which is what UIPasteConfiguration is for on the side that does answer",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UIPasteConfiguration 6.1.3 4.3 16.0): images 524 of which naming UIPasteConfiguration 0 at 6.1.3 and 354 of which naming UIPasteConfiguration 0 at 4.3, classes 11378 and 7187 of which UIPasteConfiguration* 0 at both ends, protocols 1171 and 564 of which UIPasteConfiguration* 0 at both ends; the 16.0 rung reads 1 class (UIPasteConfiguration) and 1 protocol (UIPasteConfigurationSupporting) at 16.0, and the run's own control line reads 'control: 2 name(s) beginning UIPasteConfiguration found in this run', so a zero on either end is the release's and not the reader's",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UIDataSourceTranslating",
@@ -894,27 +896,30 @@
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the protocol says a responder keeps a paste configuration, and the text input of this release keeps none: the release's own edit menu pastes through -paste: on the responder, with no configuration in between. Not carried by the port either",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "it is UIPasteConfigurationSupporting plus a paste delegate, and neither half is asked for: the port's text drop routing is UITextView+TextDragDrop11.m's own, which hands the view the operation it already decided rather than consulting anything",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port",
+   "source": "cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UITextPaste 6.1.3 4.3 16.0): images 524 of which naming UITextPaste 0 at 6.1.3 and 354 of which naming UITextPaste 0 at 4.3, classes 11378 and 7187 of which UITextPaste* 0 at both ends, protocols 1171 and 564 of which UITextPaste* 0 at both ends; the 16.0 rung reads 3 classes and 7 protocols at 16.0, of which the protocol UITextPasteConfigurationSupporting is one, and the run's own control line reads 'control: 10 name(s) beginning UITextPaste found in this run', so a zero on either end is the release's and not the reader's",
+   "facts": "facts/UIKit/IOS11AdoptedTypes.md"
   },
   {
    "api": "UITextPasteDelegate",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the delegate a text paste is performed through, and nothing in this release asks one: the paste menu of this era calls -paste: on the responder and nothing else. Not carried by the port either",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "every member of it is a question about a paste into a UITextRange: transform an item, combine several attributed strings for a range, perform the paste into a range, animate it. Answering any of them means standing in for the release's own text input pipeline, which this port does not replace, and answering them wrongly would put the wrong text in the user's document",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port. A caller pastes through the release's own -insertText:, which it has",
+   "source": "the SDK 16.4 header UITextPasteDelegate.h declares all four members and every one of them takes a UITextRange; cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UITextPaste 6.1.3 4.3 16.0) reads 0 classes and 0 protocols beginning UITextPaste at both ends and 3 classes and 7 protocols at 16.0, with the run's own control line 'control: 10 name(s) beginning UITextPaste found in this run'",
+   "facts": "facts/UIKit/TextDragAndDrop.md"
   },
   {
    "api": "UITextPasteItem",
    "kind": "protocol",
    "introduced": "11.0",
    "status": "absent",
-   "reason": "the item a text paste delegate is offered, and the offer is made by the same machinery that does not exist here. Not carried by the port either",
-   "effect": "the protocol is not there",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: neither carries a protocol of that name, so the release has no protocol at all"
+   "reason": "it is the object a paste is described through, and the port has nothing to describe a paste with: its text drop routing carries the provider across and asks the release's -insertText: to put it down. NSItemProvider is carried (Foundation/NSItemProvider.m) and UITextDropRequest is carried, so the two halves of the real thing exist; the item that joins them does not and would hold no result",
+   "effect": "the protocol is not emitted, so -conformsToProtocol: answers NO and an application that adopts it does not compile against the port",
+   "source": "the SDK 16.4 header UITextPasteDelegate.h declares it with -itemProvider, -localObject, -defaultAttributes and the five setXxxResult: members; cache-census.lua read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/cache-census.lua UITextPaste 6.1.3 4.3 16.0) reads 0 at both ends and 3 classes and 7 protocols at 16.0, with the run's own control line 'control: 10 name(s) beginning UITextPaste found in this run'",
+   "facts": "facts/UIKit/TextDragAndDrop.md"
   },
   {
    "api": "UISpringLoadedInteractionBehavior",
@@ -1594,21 +1599,21 @@
    "api": "UIPasteboard.itemProviders",
    "kind": "property",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the property reads the board back as providers, and the board holds bytes under type identifiers. Wrapping each item in a provider would be a value the port invented rather than read, and the providers it invented would answer for data the release already holds under its own names. NSItemProvider is carried, so -[UIPasteboard setObjects:] answers for the same data in the shape this release has",
-   "effect": "the property is not there; an application reads and writes this pasteboard by type as this release does",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIPasteboard is in the cache and its own selector table carries no such member",
-   "minimum": "6.0"
+   "status": "implemented",
+   "effect": "the providers an application put on the pasteboard, as they were given, or nil when none were. A provider whose expiration date has passed is not in the answer: the date is honoured on the read and not by a timer, because the release's UIPasteboard has no expiration of its own and a timer would be the port guessing when the system meant to expire",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIPasteboard is in both and its own selector table carries no -itemProviders, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The release does have -setItems:/+items and -setValue:forPasteboardType: on the same class, which is what an application falls back on: the providers and the release's own string and URL lists are two answers to two questions and neither writes over the other. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "-[UIPasteboard setItemProviders:localOnly:expirationDate:]",
    "kind": "method",
    "introduced": "11.0",
-   "status": "absent",
-   "reason": "the items a pasteboard is given as item providers cannot be stored as item providers, because the release's own pasteboard holds bytes under type identifiers and -setValue:forPasteboardType: is the only thing it stores through. The port's -setObjects: and -setObjects:localOnly:expirationDate: compose exactly that release primitive over the release's own type lists, which facts/UIKit/UIPasteboardIOS10.md records; there is no provider-shaped primitive here to compose. NSItemProvider itself is carried, in Foundation, so the class the array would hold exists; what does not exist is anywhere on this release to put one",
-   "effect": "the method is not there. An application that would set providers on this release sets objects instead, which the port answers",
-   "source": "the 6.1.3 and 4.3 armv7 caches, read class-scoped with objc-inventory: UIPasteboard is in the cache and its own selector table carries no such member",
-   "minimum": "6.0"
+   "status": "implemented",
+   "effect": "the providers are held as they were given and read back by -itemProviders. localOnly is named and not kept: the port's pasteboard and its drag both stay inside the one process that began them, so no provider ever leaves to another process and the flag has nothing to decide; a caller that passes YES gets exactly what it gets for NO, which is the truth about this port's pasteboard",
+   "source": "objc-inventory over the 6.1.3 and 4.3 armv7 caches, read class-scoped (CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, and the same for ~/.charon/dyld/4.3/dyld_shared_cache_armv7; the 6.1.3 dump is 12549 lines and the 4.3 dump 7751): UIPasteboard is in both and its own selector table carries no -setItemProviders:localOnly:expirationDate:, while the same two dumps read -[UIViewController viewDidLoad], -[UIPasteboard setItems:], -[UIScrollView setContentInset:], -[UITableView setSeparatorStyle:], -[UIView frame] and -[NSObject hash] present on both, so the zero is the release's and not the reader's. The port's own object is UIKit/CharonIOS11.m, compiled for armv7-apple-ios6.1.3 against the 16.4 SDK with exit 0",
+   "minimum": "6.0",
+   "facts": "facts/UIKit/DragAndDrop.md"
   },
   {
    "api": "-[UIPasteboard setObjects:]",
