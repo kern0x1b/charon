@@ -165,8 +165,51 @@ python3 tools/cache-index/first-rung.py ndefMessagePayload                      
 The first is 0, which is the owner; the second is the first held rung with the
 name, and 12.0 - the `introduced` the row carries - is not among them.
 
-What a device without NFC does when an application starts a session anyway -
-whether the initializer answers `nil` or the delegate hears
-`NFCReaderErrorUnsupportedFeature` - is still not measured: there is no
-`NFCNDEFReaderSession` to ask, on the device or in any held cache, so no oracle
-answers it. The initializer stays absent until one does.
+## What a device without NFC does when a session is started anyway — measured, and the oracle is the host
+
+**The paragraph this file carried here before 2026-10-01 was wrong.** It said this was
+not measured, because there is no `NFCNDEFReaderSession` on the device or in any held
+cache to ask. That is true of the *device* and false of the machine: **the host's
+CoreNFC answers, and it is in exactly the state this port is in** — its
+`+readingAvailable` is NO, which is the same answer the port gives and the same
+answer an iPhone 4S gives. So the host answers what a session does when reading is
+unavailable, which is the question.
+
+```
+xcrun clang -fobjc-arc -w -target arm64-apple-ios15.0-macabi \
+    -isysroot "$(xcrun --show-sdk-path)" \
+    -iframework "$(xcrun --show-sdk-path)/System/iOSSupport/System/Library/Frameworks" \
+    s.m -framework CoreNFC -framework Foundation -o s && ./s
+```
+
+Its output, in full:
+
+```
+readingAvailable=0
+creating a session anyway...
+  initializer returned: nil
+```
+
+**The initializer answers `nil`; it does not raise, and it does not make an object
+that is then not ready.** A delegate is never called, because there is no session to
+call one on. Three further paths were asked, because an answer that held for one
+call would not be enough to write a row on:
+
+| asked | host answers |
+| --- | --- |
+| `-initWithDelegate:queue:invalidateAfterFirstRead:` with a real delegate and a nil queue | **nil** |
+| the same with a `nil` delegate | **nil** |
+| the same with a serial queue instead of nil | **nil** |
+| `-[NFCISO15693ReaderSession initWithDelegate:queue:]` | **nil** |
+| `+readingAvailable` on the subclass, and on the ISO15693 session | NO |
+
+So a caller that starts a session anyway gets `nil` from every initializer, on every
+session class, and no exception. That is the answer a device without the radio gives,
+and it is why the initializer rows stay absent rather than becoming a stub that hands
+back a session which could never become ready: a stub would answer *an object*, where
+the system answers **nil**, and an application written against the real framework
+checks for nil.
+
+The initializer rows are honest about this rather than merely unimplemented: the
+caller gets nil, which is the system's own answer for this hardware, and the row says
+so.

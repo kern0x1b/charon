@@ -79,8 +79,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and the release has no session to carry it from: the armv7 caches of 6.1.3 and 4.3 hold no CoreNFC, so there is no reader session this could begin; the device's own lack of an NFC radio is the framework's documented answer, which the carried +readingAvailable gives as NO",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds 34 NFC classes and the CoreNFC image in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises. What a caller that starts a session anyway gets is measured, not assumed: the system answers nil. The host, whose +readingAvailable is NO exactly as this port's is, returns nil from -initWithDelegate:queue:invalidateAfterFirstRead: with a delegate, with a nil delegate and with a serial queue, and does not raise, so no delegate is ever called"
     },
     {
       "api": "-[NFCReaderSession invalidateSession]",
@@ -89,8 +88,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and the release has no session to carry it from: the armv7 caches of 6.1.3 and 4.3 hold no CoreNFC, so there is no reader session this could invalidate; the device's own lack of an NFC radio is the framework's documented answer, which the carried +readingAvailable gives as NO",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds 34 NFC classes and the CoreNFC image in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises. What a caller that starts a session anyway gets is measured, not assumed: the system answers nil. The host, whose +readingAvailable is NO exactly as this port's is, returns nil from -initWithDelegate:queue:invalidateAfterFirstRead: with a delegate, with a nil delegate and with a serial queue, and does not raise, so no delegate is ever called"
     },
     {
       "api": "-[NFCNDEFReaderSession initWithDelegate:queue:invalidateAfterFirstRead:]",
@@ -99,8 +97,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and the release has no session to carry it from: the armv7 caches of 6.1.3 and 4.3 hold no CoreNFC, so there is no reader session this initializer could make; the device's own lack of an NFC radio is the framework's documented answer, which the carried +readingAvailable gives as NO",
-      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-      "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds 34 NFC classes and the CoreNFC image in 11.0's arm64 cache, so the absence is the release's and not the reader's"
+      "effect": "the method is not declared, so respondsToSelector: answers honestly and an unchecked call raises. What a caller that starts a session anyway gets is measured, not assumed: the system answers nil. The host, whose +readingAvailable is NO exactly as this port's is, returns nil from -initWithDelegate:queue:invalidateAfterFirstRead: with a delegate, with a nil delegate and with a serial queue, and does not raise, so no delegate is ever called"
     },
     {
       "api": "NFCReaderSessionDelegate",
@@ -109,7 +106,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and the release never sends it: the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC, and neither this protocol nor NFCReaderSession's own is a protocol in 11.0's or 12.0's cache - the SDK header declares both, but Apple's own 11.0 and 12.0 binaries emit no protocol metadata for either, and both first appear as protocols in 16.0's arm64e cache",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. A tag is what a session hands its delegate, and there is no session: measured, every session initializer on the host - whose +readingAvailable is NO exactly as this port's is - answers nil rather than handing back a session, so no tag object is ever produced to conform to this",
       "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
@@ -119,7 +116,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and the release never sends it: the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC, and neither this protocol nor NFCReaderSession's own is a protocol in 11.0's or 12.0's cache - the SDK header declares both, but Apple's own 11.0 and 12.0 binaries emit no protocol metadata for either, and both first appear as protocols in 16.0's arm64e cache",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. A tag is what a session hands its delegate, and there is no session: measured, every session initializer on the host - whose +readingAvailable is NO exactly as this port's is - answers nil rather than handing back a session, so no tag object is ever produced to conform to this",
       "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
@@ -151,7 +148,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and it is not a gap in this series: it is the reader session for ISO15693 tags, which arrived with the tag sessions in iOS 11.0; the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all, and first-rung.py gives the name its first held rung at 11.0, where the cache has it as a class",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes. Its own initializer is measured too: on the host, whose +readingAvailable is NO exactly as this port's is, -initWithDelegate:queue: answers nil and does not raise, so a caller starting one anyway gets nil rather than a session that could never become ready",
       "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
@@ -172,7 +169,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and it is not a gap in this series: the tag is what an NFC session hands a delegate, and the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all; first-rung.py gives the name its first held rung at 11.0, where the cache carries it as both a class and a protocol",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. A tag is what a session hands its delegate, and there is no session: measured, every session initializer on the host - whose +readingAvailable is NO exactly as this port's is - answers nil rather than handing back a session, so no tag object is ever produced to conform to this",
       "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
@@ -182,7 +179,7 @@
       "minimum": "6.0",
       "status": "absent",
       "reason": "not carried, and it is not a gap in this series: the tag is what an NFC session hands a delegate, and the armv7 caches of 6.1.3 and 4.3 carry no CoreNFC at all; first-rung.py gives the name its first held rung at 11.0, where the cache carries it as both a class and a protocol",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil. A tag is what a session hands its delegate, and there is no session: measured, every session initializer on the host - whose +readingAvailable is NO exactly as this port's is - answers nil rather than handing back a session, so no tag object is ever produced to conform to this",
       "source": "the armv7 shared caches of iOS 6.1.3 and iOS 4.3, read with modules/apple/objc.lua inventory, which tools/corpus/cache-census.lua runs and prints with its control (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua NFC; its output is in facts/CoreNFC/NFCReaderSession.md): 0 of 524 and 0 of 354 images name CoreNFC, 0 of 11378 and 0 of 7187 classes and 0 of 1171 and 0 of 564 protocols begin with NFC, and the same reader finds the CoreNFC image, 34 NFC* classes and 11 NFC* protocols in 11.0's arm64 cache, so the absence is the release's and not the reader's"
     },
     {
