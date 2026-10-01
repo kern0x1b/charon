@@ -717,3 +717,33 @@ configuration "needs `UIButtonConfiguration`, which this library does not carry"
 is a category over the release's own. The two content-unavailable rows are therefore not blocked on substrate
 any more; they are blocked only on writing them, which is the next piece of work on this slice and is not part
 of this commit. Nothing is claimed for them here beyond removing the stale reason.
+
+## M16. The symbol-effect rows, and what "absent" is a claim ABOUT here
+
+Fifteen rows of the symbol-effect family — every `removeSymbolEffect…` and `removeAllSymbolEffects…` on
+`UIBarButtonItem` and `UIImageView`, plus the two types they name — sat `absent` with
+`source: "SDK 26, Mac Catalyst, UIKit"`, which is the SDK's own declaration and not a measurement. They now
+name what was measured.
+
+**The band ends.** Every one of them is `0 carried` at 4.3, 6.1.3, 12.0 and 16.0, read class-scoped from each
+release's own cache with the same eight control selectors at 8/8 in the same run (M1, M9, M12, M13). A
+release with no SF Symbols cannot carry a symbol effect.
+
+**The parameter, which is the part that decides whether a port could ever write them.** Every one of those
+methods takes an `NSSymbolEffect`. Measured on this machine's 16.4 build SDK: the UIKit headers hold **no**
+`NSSymbol*` declaration at all — `NSSymbolEffect.h` exists only under
+`System/Library/Frameworks/Symbols.framework/Headers`. And `NSSymbolEffect` has **no registry row anywhere in
+this repository** (every `registry/*/*.json` searched) and `registry/Symbols/` does not exist.
+
+So writing these methods would mean inventing a class in a framework this port does not carry, with no row to
+record it against — and `check_registry` reads a built class and finds no entry, which is precisely the
+`built, but no entry in registry/` failure. That is why the `remove…` half is `absent` with the substrate named
+rather than quietly implemented against a type the port invented: a method whose only argument cannot be spelled
+is not an API, it is a signature.
+
+**What a caller gets**, which is what `effect` now says for all fifteen: `instancesRespondToSelector:` answers
+NO and an unchecked call raises, and — for the `remove…` half — there is no effect to remove because there is
+no effect to add.
+
+**Not claimed:** anything about how a symbol effect would animate here. There is no system side to compare
+against and no glyph to draw, so nothing is said about it.
