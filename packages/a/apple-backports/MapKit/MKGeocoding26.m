@@ -83,6 +83,45 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
     return [NSString stringWithFormat:@"%@, %@", _fullAddress, _regionName];
 }
 
+// MKAddressRepresentations.h:33, the header's own two-argument form:
+//     - (nullable NSString *)fullAddressIncludingRegion:(BOOL)includingRegion singleLine:(BOOL)singleLine
+// and the comment above it shows the address as the geocoder wrote it, one part to a line:
+//     1 Apple Park Way / Cupertino, CA 95014 / United States
+// which is what `singleLine:NO` asks to keep. This port's own addresses come out of the release's
+// CLPlacemark comma-joined, so for them there is no newline to keep and the two spellings agree; the
+// normalisation below is what makes the argument mean something for an address a caller built itself with
+// newlines in it.
+- (NSString *)fullAddressIncludingRegion:(BOOL)includingRegion singleLine:(BOOL)singleLine
+{
+    NSString *address = includingRegion && _regionName.length > 0
+            ? [NSString stringWithFormat:@"%@, %@", _fullAddress, _regionName]
+            : _fullAddress;
+    if (!singleLine) {
+        return address;
+    }
+    NSArray<NSString *> *lines = [address componentsSeparatedByCharactersInSet:
+                                  [NSCharacterSet newlineCharacterSet]];
+    return [lines componentsJoinedByString:@", "];
+}
+
+// MKAddressRepresentations.h:39, `@property (nonatomic, readonly, copy, nullable) NSString
+// *cityWithContext`, with the header's own example above it:
+//     // Cupertino, CA
+//     @property (nonatomic, readonly, copy, nullable) NSString *cityWithContext;
+// so it is the city with the region beside it, where -cityName is the city alone and the method below is
+// the same idea with the caller choosing how much context. An address with no city answers nil, which is
+// what the header's `nullable` allows and what there is to spell.
+- (NSString *)cityWithContext
+{
+    if (_cityName.length == 0) {
+        return nil;
+    }
+    if (_regionName.length == 0) {
+        return [_cityName copy];
+    }
+    return [NSString stringWithFormat:@"%@, %@", _cityName, _regionName];
+}
+
 // The city, in the style the header asks for: the full name, the short one, or whichever the caller
 // has not chosen.
 - (NSString *)cityWithContextUsingStyle:(MKAddressRepresentationsContextStyle)style
@@ -170,6 +209,20 @@ typedef NS_ENUM(NSInteger, MKAddressRepresentationsContextStyle) {
     self = [super init];
     if (self) {
         _representations = [[MKAddressRepresentations alloc] initWithFullAddress:fullAddress];
+    }
+    return self;
+}
+
+// MKAddress.h:15,
+//     - (nullable instancetype)initWithFullAddress:(NSString *)fullAddress shortAddress:(nullable NSString *)shortAddress
+// Both spellings the caller gave are kept as given, and the short address is the one it gave rather than
+// the first line of the full address: this initialiser exists because an address can be short without
+// being the head of the long form, which is what the header's two arguments are for.
+- (instancetype)initWithFullAddress:(NSString *)fullAddress shortAddress:(NSString *)shortAddress
+{
+    self = [self initWithFullAddress:fullAddress];
+    if (self) {
+        _representations.shortAddress = [shortAddress copy];
     }
     return self;
 }
