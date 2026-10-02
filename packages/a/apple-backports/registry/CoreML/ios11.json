@@ -886,44 +886,44 @@
    "kind": "enum",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "the element type of a multi-array: what the bytes in it mean. It is a declaration and nothing else - no object, no symbol, nothing to define - and the value the consumer writes is the enumerator's, inlined at compile time, so carrying it means carrying the header",
+   "status": "inert",
+   "reason": "an enumeration has no symbol: the type and its cases are declared by the SDK's MLMultiArray.h and nothing in this port exports a name for them, in Apple's build or in ours, so there is nothing a build could point at. Measured, the shape is the same one the Metal family hit twice and the same answer came back here: tools/cache-index/first-rung.py answers NONE for MLMultiArrayDataType over every held cache, because there is no symbol to find",
    "facts": "facts/CoreML/CoreML.md",
    "source": "SDK 16.4, MLMultiArray.h:17, typedef NS_ENUM(NSInteger, MLMultiArrayDataType) - the declaration read as the SDK writes it; the values are Apple's own and nothing on this device changes one",
-   "effect": "the consumer names the type and its cases in the port's own copy of MLMultiArray.h, and the case's value is the SDK's own constant; every member this port carries that takes the type takes the same enumerators"
+   "effect": "the case name is provided at compile time and the value is the SDK's own: a caller writing MLMultiArrayDataTypeFloat32 gets 0x10000 | 32 out of the port's own copy of MLMultiArray.h, and nothing here computes or checks it. Every member of the port that takes the type takes that same enumerator, so a filter, a shape and a data type agree"
   },
   {
    "api": "MLMultiArrayDataTypeDouble",
    "kind": "constant",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "MLMultiArrayDataTypeDouble = 0x10000 | 64: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "status": "inert",
+   "reason": "an enumeration has no symbol: the type and its cases are declared by the SDK's MLMultiArray.h and nothing in this port exports a name for them, in Apple's build or in ours, so there is nothing a build could point at. Measured, the shape is the same one the Metal family hit twice and the same answer came back here: tools/cache-index/first-rung.py answers NONE for MLMultiArrayDataType over every held cache, because there is no symbol to find",
    "facts": "facts/CoreML/CoreML.md",
    "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one",
-   "effect": "the consumer writes MLMultiArrayDataTypeDouble and the SDK's own value (0x10000 | 64) is what its code carries; no release's Core ML carries a different one"
+   "effect": "the value is the SDK's own constant, inlined into the caller's code at compile time: 0x10000 | 64 is written in the port's copy of MLMultiArray.h and nothing here computes it"
   },
   {
    "api": "MLMultiArrayDataTypeFloat32",
    "kind": "constant",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "MLMultiArrayDataTypeFloat32 = 0x10000 | 32: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "status": "inert",
+   "reason": "an enumeration has no symbol: the type and its cases are declared by the SDK's MLMultiArray.h and nothing in this port exports a name for them, in Apple's build or in ours, so there is nothing a build could point at. Measured, the shape is the same one the Metal family hit twice and the same answer came back here: tools/cache-index/first-rung.py answers NONE for MLMultiArrayDataType over every held cache, because there is no symbol to find",
    "facts": "facts/CoreML/CoreML.md",
    "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one",
-   "effect": "the consumer writes MLMultiArrayDataTypeFloat32 and the SDK's own value (0x10000 | 32) is what its code carries; no release's Core ML carries a different one"
+   "effect": "the value is the SDK's own constant, inlined into the caller's code at compile time: 0x10000 | 32 is written in the port's copy of MLMultiArray.h and nothing here computes it"
   },
   {
    "api": "MLMultiArrayDataTypeInt32",
    "kind": "constant",
    "introduced": "11.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "MLMultiArrayDataTypeInt32 = 0x20000 | 32: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "status": "inert",
+   "reason": "an enumeration has no symbol: the type and its cases are declared by the SDK's MLMultiArray.h and nothing in this port exports a name for them, in Apple's build or in ours, so there is nothing a build could point at. Measured, the shape is the same one the Metal family hit twice and the same answer came back here: tools/cache-index/first-rung.py answers NONE for MLMultiArrayDataType over every held cache, because there is no symbol to find",
    "facts": "facts/CoreML/CoreML.md",
    "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one",
-   "effect": "the consumer writes MLMultiArrayDataTypeInt32 and the SDK's own value (0x20000 | 32) is what its code carries; no release's Core ML carries a different one"
+   "effect": "the value is the SDK's own constant, inlined into the caller's code at compile time: 0x20000 | 32 is written in the port's copy of MLMultiArray.h and nothing here computes it"
   }
  ]
 }

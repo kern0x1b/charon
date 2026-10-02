@@ -129,15 +129,31 @@ the three kinds of row answer differently:
   scheduled work reads as a decline. The row that would say it, and every tool that would have to learn a new
   status, are in the commit that writes them.
 
-**The header-only enumeration is carried by its header, and that has a row.** `MLMultiArrayDataType` is one
-`enum` row and its six cases six `constant` rows, each in the band the SDK dates it in (11.0 for
+**The header-only enumeration is carried by its header, and that is what `inert` says.** `MLMultiArrayDataType`
+is one `enum` row and its six cases six `constant` rows, each in the band the SDK dates it in (11.0 for
 Double/Float32/Int32, 14.0 for Float64/Float, 16.0 for Float16), with the values the header writes -
 `0x10000|64`, `0x10000|64`, `0x10000|32`, `0x10000|16`, `0x10000|32`, `0x20000|32`. The value is Apple's own and
-the consumer inlines it at compile time, so what the port carries is the header and there is nothing to define:
-`implemented`, which is what the registry already calls 42 enum rows and 197 struct rows. Lowering a row of
-this shape needed `modules/apple/lift.lua` to match an `enum` or a `struct` declaration the way it already
-matched a `type`, and to read `inert` - the registry's word for "the port carries it and there is nothing of its
-own to define" - as carried rather than as a gap.
+the consumer inlines it at compile time, so what the port carries is the header and there is nothing to define
+and nothing to export - which is why the rows are `inert` and not `implemented`: an enumeration has no
+symbol, in Apple's build or in ours, and `implemented` means the port's own object answers the name. The gate
+said so in the only terms that decide it:
+
+    error: the registry does not describe what the backports carry:
+      listed as implemented, but nothing of that name is built: MLMultiArrayDataType; MLMultiArrayDataTypeDouble; …
+
+`tools/cache-index/first-rung.py` answers NONE for `MLMultiArrayDataType` over the held caches for the same
+reason, and that is the third family to meet this wall after Metal's two. A row whose api has no symbol is
+`inert`, and its reason says the whole of it: an enumeration has no symbol, the cases are declared by the SDK
+header, and nothing here computes or exports one. Its effect says what a caller gets - the value the SDK's own
+header gives, written into the caller's code at compile time.
+
+`modules/apple/lift.lua` still carries the two changes that came with these rows, and it is worth being
+precise about what they now do: `matches()` knows an `enum` or a `struct` declaration the way it already knew a
+`type`, which is what a row of this shape needs the moment a status that means "real and exported" exists for it,
+and `carried()` reads `inert` as carried rather than as evidence that the port does not carry the api. Neither
+half is what unblocked Core ML - the gate's own message above is the proof, the wall was the status - and this
+family no longer needs either: the enumeration's uses in the SDK's headers are all `implemented` members, so
+nothing was blocking them.
 
 ## What the host differential found, and what it changed
 
