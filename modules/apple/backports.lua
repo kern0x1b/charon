@@ -1597,7 +1597,18 @@ spellings = function(api)
     local found = {[plain] = true, [plain .. "()"] = true}
     local class, member = plain:match("^([%u][%w_]*)%.(.+)$")
     if class then
-        for _, selector in ipairs({member, "set" .. member:sub(1, 1):upper() .. member:sub(2) .. ":"}) do
+        local accessors = {member, "set" .. member:sub(1, 1):upper() .. member:sub(2) .. ":"}
+        -- and the getter a property the SDK declares getter=isXxx for is read through, which is the other
+        -- direction property_of() pairs: a row spelled with the property's own name and a port that carries
+        -- exactly the -isXxx the header names are one declaration, and without this the check reads such a
+        -- port as carrying nothing at all (AVCaptureVideoPreviewLayer.previewing, whose header declares
+        -- getter=isPreviewing and whose port defines -isPreviewing and no selector named -previewing). Only
+        -- for a bare name: a member that is itself an accessor is spelled as itself, and property_of() has
+        -- already paired it with the property name it belongs to.
+        if member:match("^[%a][%w_]*$") and not member:match("^is%u") then
+            table.insert(accessors, "is" .. member:sub(1, 1):upper() .. member:sub(2))
+        end
+        for _, selector in ipairs(accessors) do
             found[string.format("-[%s %s]", class, selector)] = true
             found[string.format("+[%s %s]", class, selector)] = true
         end
