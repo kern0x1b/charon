@@ -21,10 +21,24 @@
      a soft break 64 and a hard break 128, and the extended syntax is interpreted with the default
      options even though allowsExtendedAttributes answers NO.
 
-   NSLinkAttributeName is one name this object uses and does not define: the SDK declares it in UIKit's
-   copy of NSAttributedString.h and the release carries it from 6.0 (first-rung _NSLinkAttributeName 6.0),
-   so a reference here links to the device's own symbol the way every other name of an older release does,
-   and the port defines none of it.
+   The key a link's URL rides under is the release's own string and not the C name that spells it, and
+   this object carries that string under a name of its own. NSLinkAttributeName is declared in UIKit's
+   copy of NSAttributedString.h and in no Foundation header, the 16.4 SDK exports it from UIKit and not
+   from Foundation, and the device carries it in UIFoundation: read out of the armv7 dyld cache of
+   6.1.3 itself, /System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation holds
+   _NSLinkAttributeName among its external defined symbols, and its __TEXT,__cstring holds the family
+   NSFontName NSFontSize NSFontTrait NSBaselineOffset NSAttachment NSLink NSCharacterShape - one string
+   per attribute name, and the link's is NSLink and not NSLinkAttributeName.
+
+   So the name is the release's and this library must not define it: a second definition of a data
+   symbol the device already exports is a collision in a flat namespace. The Foundation library links
+   Foundation, CoreFoundation and SystemConfiguration and nothing that carries the name, which is why
+   a reference to it does not link here while the device has it all the same, and which is why the
+   string is taken instead. The string is what an attributed string holds and what a caller reads back
+   through the release's own NSLinkAttributeName, so carrying it is what makes the round trip answer.
+   The shape is NSBundleResourceRequest.m's charon_manifest_tags_key - an Apple string under a name of
+   our own - and the reason is the one NSLanguageIdentifierAttributeName already has here: for this
+   key the name is not the value.
 
    What the port does not carry, measured and named rather than faked: NSListItemDelimiterAttributeName,
    which the system puts on a list item's run and which the SDK this port builds against (iPhoneOS16.5)
@@ -344,6 +358,10 @@ static NSArray *CharonMarkdownCells(NSString *line, NSArray **alignments)
 
 #pragma mark the span spans
 
+/* The key a link's URL rides under, which is the release's own "NSLink" and not the C name that spells
+   it. Why the name is not taken and where the string was read is at the head of this file. */
+static NSString *const CharonMarkdownLinkKey = @"NSLink";
+
 - (NSURL *)urlFor:(NSString *)text
 {
     if (!text.length)
@@ -613,7 +631,7 @@ static BOOL CharonMarkdownParenEnd(NSString *text, NSUInteger body, NSUInteger l
                 if (url) {
                     [self appendInline:text from:plain to:index intent:intent span:0 extra:nil];
                     [self parseInlines:text from:index + 1 to:close intent:intent];
-                    [_result addAttribute:NSLinkAttributeName
+                    [_result addAttribute:CharonMarkdownLinkKey
                                    value:url
                                    range:NSMakeRange(_result.length - (close - index - 1), close - index - 1)];
                     index = at + 1;
@@ -643,7 +661,7 @@ static BOOL CharonMarkdownParenEnd(NSString *text, NSUInteger body, NSUInteger l
                     [[NSAttributedString alloc] initWithString:inside
                                                    attributes:[self blockAttributes:intent
                                                                       span:0
-                                                                       extra:@{NSLinkAttributeName: url}]]];
+                                                                       extra:@{CharonMarkdownLinkKey: url}]]];
                 index = close + 1;
                 plain = index;
                 continue;

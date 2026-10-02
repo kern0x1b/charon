@@ -90,6 +90,53 @@ properties, a copy of the five and a keyed archive under the SDK's own property 
 measured and are the allocation's own — `allowsExtendedAttributes` NO, `interpretedSyntax` full,
 `failurePolicy` return the error, `languageCode` nil, `appliesSourcePositionAttributes` NO.
 
+### The link's key: the name is the release's, the value is `NSLink`, and the Foundation library can reach neither
+
+`NSLinkAttributeName` is declared in **UIKit's** copy of `NSAttributedString.h`
+(`UIKIT_EXTERN NSAttributedStringKey const NSLinkAttributeName API_AVAILABLE(macos(10.0), ios(7.0))`)
+and in no Foundation header of the SDK this port builds against (`iPhoneOS16.4.sdk`). The 16.4 SDK
+exports `_NSLinkAttributeName` from `UIKit.tbd` and from no other `.tbd`; `Foundation.tbd` does not
+carry it. `FoundationBackports` links `Foundation`, `CoreFoundation` and `SystemConfiguration` and
+`icucore` (`modules/apple/backports.lua`), so nothing on that link line offers the name, and the
+reference failed at the 6.1.3 band link with
+
+    Undefined symbols for architecture armv7:
+      "_NSLinkAttributeName", referenced from:
+          -[CharonMarkdownParser parseInlines:from:to:intent:] in NSAttributedStringMarkdown15.o
+    ld: symbol(s) not found for architecture armv7
+
+The **device** does carry the name, and where it lives is measured from the armv7 dyld cache of 6.1.3
+itself (`~/.charon/dyld/6.1.3/dyld_shared_cache_armv7`, 574 images, every image's external defined
+symbol table read — the same order `modules/apple/dyld.lua`'s `library_of()` reads them in, export trie
+first and symbol table otherwise, and no image of that cache carries an export trie):
+
+| release | image that exports `_NSLinkAttributeName` |
+| --- | --- |
+| 6.0, 6.0.2, 6.1, **6.1.3**, 6.1.6, 7.0, 7.1, 8.0, 9.3 | `/System/Library/PrivateFrameworks/UIFoundation.framework/UIFoundation` |
+
+So the name belongs to the release from 6.0 on and the port must not define it: a second definition of a
+data symbol the device already exports is a collision in a flat namespace, and at a band point of 6.0 or
+later `band()` (`modules/apple/backports.lua:787`) would refuse an object that defined it beside the
+15.0 keys of `NSAttributedStringKeys15.m`, whose seven symbols the same release does not export.
+
+The **value** is what an attributed string holds and what a caller reads back, and it is not the name.
+It is `NSLink`, read out of the same image's own `__TEXT,__cstring` (`__cstring` at 0x36d760c8, size
+0x942d, inside `__TEXT` vmaddr 0x36cef000), which holds the attribute-name family one string after the
+other —
+
+    NSFontName\0 NSFontSize\0 NSFontTrait\0 NSBaselineOffset\0 NSAttachment\0 NSLink\0 NSCharacterShape\0
+
+— and it is what this tree already records: `tests/backports/device/textkit7-expectations.h` carries
+`"constant.NSLinkAttributeName":"NSLink"`, read on the iPad 2 and compared with the host's own UIKit
+(`facts/UIKit/NSAttributedStringText.md`). The 6.0 cache holds the same family in the same order in
+UIFoundation's `__TEXT,__cstring`, so the value has been `NSLink` for as long as the name has existed.
+
+`NSAttributedStringMarkdown15.m` therefore writes the link under `CharonMarkdownLinkKey`, a
+file-scope `static NSString * const` holding that string, and defines nothing with Apple's name on it.
+The shape is `NSBundleResourceRequest.m`'s `charon_manifest_tags_key` — an Apple string under a name of
+our own — and the reason is the one `NSLanguageIdentifierAttributeName` already has in
+`NSAttributedStringKeys15.m`: for this key the name is not the value.
+
 ### What is not carried, named
 
 * **`NSListItemDelimiterAttributeName`** is a 16.0 name and the SDK this port builds against
