@@ -253,6 +253,28 @@ second field is a bare count — not the spelling.
 
 Nothing here is decided dead. Each is blocked on a named substrate.
 
+**Two of the entries below have since been carried, and the split they asked for is what they asked for.**
+`MPSImagePyramid` and `MPSImageGaussianPyramid` are in `MPSImagePyramid10.m` and the three Laplacian
+pyramid classes are in `MPSImageLaplacianPyramid12.m` — two objects, because the release's own cache
+ladder exports the Gaussian from `10.0.1` and the Laplacian classes from `12.0`, and an object carries
+one release. That is the second entry's own conclusion, acted on. The measurements are left exactly as
+written, because they are what the two objects rest on: the ladder exports the Laplacian classes from
+12.0, and the release's own kernel still crashes on this family's encode, so no number in either object
+is a measurement of Apple's code.
+
+**A third object was needed, and the measurement that forced it is the export trie, not the name.**
+`MPSImagePyramid` itself is annotated `ios(10.0)` (`MPSImageConvolution.h:519`) and
+`first-rung.py` answers `10.0.1` for `_OBJC_CLASS_$_MPSImagePyramid` — both true, and `first-rung`
+answers whether a rung *carries* a name, which this one does from `10.0.1` because
+`MPSImageGaussianPyramid`'s `super_class` points at it. What an object is *placed* by is what a client
+can bind, and `tools/release-split.lua` measures that: over the same held ladder it answers **16.0**.
+Walking the export tries confirms it — `10.0.1` and `11.0` export `MPSImageGaussianPyramid` and no
+`MPSImagePyramid`; `12.0` adds the three Laplacian classes and still none; `16.0` adds
+`_OBJC_CLASS_$_MPSImagePyramid`. So `MPSImagePyramid` is `MPSImagePyramid16.m`, and sharing one `.m`
+with the Gaussian is what `band()` refuses with *"an object carries API that arrived in one release, so
+split it"*.
+
+
 **`MPSImagePyramid`, `MPSImageGaussianPyramid` — a missing substrate, measured on both sides.** Both
 classes resolve and hold their parameters (`kernelWidth 5`, `kernelHeight 5` by default; 3x3 from the
 custom initialiser). What is missing is a substrate that answers the **encode**: the pyramid is
