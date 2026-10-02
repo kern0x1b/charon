@@ -63,9 +63,24 @@ static void charon_deliver(dispatch_block_t block)
 // `id (*)(id, SEL)` shape and reading the result as an object is undefined behaviour, and on armv7 it
 // misreads the register or the sret pointer rather than trapping - so each of those two is cast to its
 // own signature below and nothing else is.
+//
+// The macro also carries the accessor's ARGUMENTS, and it carries them by their own type rather than
+// by a type written beside the call: CHARON_SEND1 and CHARON_SEND2 read __typeof__ of each argument
+// they are given, so the signature the message is sent through is the one those arguments have and a
+// call site cannot name a signature its own argument does not match. That is the whole point of the
+// cast - the argument registers on armv7 are chosen by the cast's parameter types, so a cast that does
+// not name an argument's type passes it in the wrong register and nothing reports it.
+//
+// The macro is therefore the WHOLE send: it supplies the receiver, the selector and every argument, and
+// its expansion is the value of the expression. It does not yield a function pointer for the call site
+// to call, because an expansion that is already a send has no room left for a trailing `(argument)` -
+// that shape applied the argument to the RESULT of the send, which is not a function, and every one of
+// those call sites failed with "called object type 'id' is not a function or function pointer".
 #define CHARON_SEND(instance, selector) ((id (*)(id, SEL))objc_msgSend)((instance), sel_registerName(selector))
+#define CHARON_SEND1(instance, selector, arg) ((id (*)(id, SEL, __typeof__(arg)))objc_msgSend)((instance), sel_registerName(selector), (arg))
+#define CHARON_SEND2(instance, selector, arg, arg2) ((id (*)(id, SEL, __typeof__(arg), __typeof__(arg2)))objc_msgSend)((instance), sel_registerName(selector), (arg), (arg2))
 #define CHARON_SEND_INT(instance, selector) ((CMPersistentTrackID (*)(id, SEL))objc_msgSend)((instance), sel_registerName(selector))
-#define CHARON_SEND_TIME(instance, selector) ((CMTime (*)(id, SEL, CMTime))objc_msgSend)((instance), sel_registerName(selector))
+#define CHARON_SEND_TIME(instance, selector, arg) ((CMTime (*)(id, SEL, __typeof__(arg)))objc_msgSend)((instance), sel_registerName(selector), (arg))
 
 @interface AVAsset (CharonAsyncLoading15)
 @end
@@ -75,7 +90,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaType:(AVMediaType)mediaType completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaType:") (mediaType);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaType:", mediaType);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -85,7 +100,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTrackWithTrackID:(CMPersistentTrackID)trackID completionHandler:(void (^)(AVAssetTrack *track, NSError *error))handler
 {
     void (^delivered)(AVAssetTrack *, NSError *) = [handler copy];
-    AVAssetTrack *track = CHARON_SEND(self, "trackWithTrackID:") (trackID);
+    AVAssetTrack *track = CHARON_SEND1(self, "trackWithTrackID:", trackID);
     charon_deliver(^{
         if (delivered)
             delivered(track, nil);
@@ -95,7 +110,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaCharacteristic:(AVMediaCharacteristic)mediaCharacteristic completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaCharacteristic:") (mediaCharacteristic);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaCharacteristic:", mediaCharacteristic);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -115,7 +130,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadMetadataForFormat:(AVMetadataFormat)format completionHandler:(void (^)(NSArray<AVMetadataItem *> *metadata, NSError *error))handler
 {
     void (^delivered)(NSArray<AVMetadataItem *> *, NSError *) = [handler copy];
-    NSArray<AVMetadataItem *> *metadata = CHARON_SEND(self, "metadataForFormat:") (format);
+    NSArray<AVMetadataItem *> *metadata = CHARON_SEND1(self, "metadataForFormat:", format);
     charon_deliver(^{
         if (delivered)
             delivered(metadata, nil);
@@ -125,7 +140,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadMediaSelectionGroupForMediaCharacteristic:(AVMediaCharacteristic)mediaCharacteristic completionHandler:(void (^)(AVMediaSelectionGroup *mediaSelectionGroup, NSError *error))handler
 {
     void (^delivered)(AVMediaSelectionGroup *, NSError *) = [handler copy];
-    AVMediaSelectionGroup *group = CHARON_SEND(self, "mediaSelectionGroupForMediaCharacteristic:") (mediaCharacteristic);
+    AVMediaSelectionGroup *group = CHARON_SEND1(self, "mediaSelectionGroupForMediaCharacteristic:", mediaCharacteristic);
     charon_deliver(^{
         if (delivered)
             delivered(group, nil);
@@ -135,7 +150,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadChapterMetadataGroupsBestMatchingPreferredLanguages:(NSArray<NSString *> *)preferredLanguages completionHandler:(void (^)(NSArray<AVTimedMetadataGroup *> *metadataGroups, NSError *error))handler
 {
     void (^delivered)(NSArray<AVTimedMetadataGroup *> *, NSError *) = [handler copy];
-    NSArray<AVTimedMetadataGroup *> *groups = CHARON_SEND(self, "chapterMetadataGroupsBestMatchingPreferredLanguages:") (preferredLanguages);
+    NSArray<AVTimedMetadataGroup *> *groups = CHARON_SEND1(self, "chapterMetadataGroupsBestMatchingPreferredLanguages:", preferredLanguages);
     charon_deliver(^{
         if (delivered)
             delivered(groups, nil);
@@ -145,7 +160,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadChapterMetadataGroupsWithTitleLocale:(NSLocale *)locale containingItemsWithCommonKeys:(NSArray<NSString *> *)commonKeys completionHandler:(void (^)(NSArray<AVTimedMetadataGroup *> *metadataGroups, NSError *error))handler
 {
     void (^delivered)(NSArray<AVTimedMetadataGroup *> *, NSError *) = [handler copy];
-    NSArray<AVTimedMetadataGroup *> *groups = CHARON_SEND(self, "chapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys:") (locale, commonKeys);
+    NSArray<AVTimedMetadataGroup *> *groups = CHARON_SEND2(self, "chapterMetadataGroupsWithTitleLocale:containingItemsWithCommonKeys:", locale, commonKeys);
     charon_deliver(^{
         if (delivered)
             delivered(groups, nil);
@@ -162,7 +177,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadMetadataForFormat:(AVMetadataFormat)format completionHandler:(void (^)(NSArray<AVMetadataItem *> *metadata, NSError *error))handler
 {
     void (^delivered)(NSArray<AVMetadataItem *> *, NSError *) = [handler copy];
-    NSArray<AVMetadataItem *> *metadata = CHARON_SEND(self, "metadataForFormat:") (format);
+    NSArray<AVMetadataItem *> *metadata = CHARON_SEND1(self, "metadataForFormat:", format);
     charon_deliver(^{
         if (delivered)
             delivered(metadata, nil);
@@ -172,7 +187,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadSamplePresentationTimeForTrackTime:(CMTime)trackTime completionHandler:(void (^)(CMTime samplePresentationTime, NSError *error))handler
 {
     void (^delivered)(CMTime, NSError *) = [handler copy];
-    CMTime time = CHARON_SEND_TIME(self, "samplePresentationTimeForTrackTime:") (trackTime);
+    CMTime time = CHARON_SEND_TIME(self, "samplePresentationTimeForTrackTime:", trackTime);
     charon_deliver(^{
         if (delivered)
             delivered(time, nil);
@@ -186,7 +201,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadSegmentForTrackTime:(CMTime)trackTime completionHandler:(void (^)(AVAssetTrackSegment *segment, NSError *error))handler
 {
     void (^delivered)(AVAssetTrackSegment *, NSError *) = [handler copy];
-    AVAssetTrackSegment *segment = CHARON_SEND(self, "segmentForTrackTime:") (trackTime);
+    AVAssetTrackSegment *segment = CHARON_SEND1(self, "segmentForTrackTime:", trackTime);
     charon_deliver(^{
         if (delivered)
             delivered(segment, nil);
@@ -206,7 +221,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTrackWithTrackID:(CMPersistentTrackID)trackID completionHandler:(void (^)(AVAssetTrack *track, NSError *error))handler
 {
     void (^delivered)(AVAssetTrack *, NSError *) = [handler copy];
-    AVAssetTrack *track = CHARON_SEND(self, "trackWithTrackID:") (trackID);
+    AVAssetTrack *track = CHARON_SEND1(self, "trackWithTrackID:", trackID);
     charon_deliver(^{
         if (delivered)
             delivered(track, nil);
@@ -216,7 +231,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaCharacteristic:(AVMediaCharacteristic)mediaCharacteristic completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaCharacteristic:") (mediaCharacteristic);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaCharacteristic:", mediaCharacteristic);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -226,7 +241,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaType:(AVMediaType)mediaType completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaType:") (mediaType);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaType:", mediaType);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -248,7 +263,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTrackWithTrackID:(CMPersistentTrackID)trackID completionHandler:(void (^)(AVAssetTrack *track, NSError *error))handler
 {
     void (^delivered)(AVAssetTrack *, NSError *) = [handler copy];
-    AVAssetTrack *track = CHARON_SEND(self, "trackWithTrackID:") (trackID);
+    AVAssetTrack *track = CHARON_SEND1(self, "trackWithTrackID:", trackID);
     charon_deliver(^{
         if (delivered)
             delivered(track, nil);
@@ -258,7 +273,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaCharacteristic:(AVMediaCharacteristic)mediaCharacteristic completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaCharacteristic:") (mediaCharacteristic);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaCharacteristic:", mediaCharacteristic);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -268,7 +283,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)loadTracksWithMediaType:(AVMediaType)mediaType completionHandler:(void (^)(NSArray<AVAssetTrack *> *tracks, NSError *error))handler
 {
     void (^delivered)(NSArray<AVAssetTrack *> *, NSError *) = [handler copy];
-    NSArray<AVAssetTrack *> *tracks = CHARON_SEND(self, "tracksWithMediaType:") (mediaType);
+    NSArray<AVAssetTrack *> *tracks = CHARON_SEND1(self, "tracksWithMediaType:", mediaType);
     charon_deliver(^{
         if (delivered)
             delivered(tracks, nil);
@@ -287,7 +302,7 @@ static void charon_deliver(dispatch_block_t block)
 - (void)findCompatibleTrackForCompositionTrack:(AVAssetTrack *)compositionTrack completionHandler:(void (^)(AVAssetTrack *track, NSError *error))handler
 {
     void (^delivered)(AVAssetTrack *, NSError *) = [handler copy];
-    AVAssetTrack *track = CHARON_SEND(self, "compatibleTrackForCompositionTrack:") (compositionTrack);
+    AVAssetTrack *track = CHARON_SEND1(self, "compatibleTrackForCompositionTrack:", compositionTrack);
     charon_deliver(^{
         if (delivered)
             delivered(track, nil);
