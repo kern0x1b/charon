@@ -137,6 +137,20 @@
 
 @implementation MPSystemMusicPlayerController (CharonOpenToPlay11)
 
+// MPMusicPlayerController.h:46, the header's own declaration:
+//     - (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor
+//         MP_API(ios(11.0), tvos(14.0)) MP_UNAVAILABLE(watchos, macos) NS_SWIFT_NAME(openToPlay(_:));
+// under the header's own comment "Switches to Music to play the content provided by the queue
+// descriptor." One argument and no completion handler, so the honest behaviour on a release with no
+// Music application to switch to and no system music player is the one the two methods above give: the
+// queue is left exactly as the caller had it. It returns void and takes no handler, so there is no
+// channel to report through and nothing is invented to report through one - which is why this cannot be
+// the port's own -openToPlayQueueDescriptor:completionHandler: below, which is not a spelling any SDK
+// declares.
+- (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor {
+    (void)queueDescriptor;
+}
+
 - (void)openToPlayQueueDescriptor:(MPMusicPlayerQueueDescriptor *)queueDescriptor
                completionHandler:(void (^)(NSError *))completionHandler {
     (void)queueDescriptor;
