@@ -38,7 +38,7 @@
     if (prototypeInstruction == nil) {
         return composition;
     }
-    NSArray<AVVideoCompositionInstruction *> *built = composition.instructions;
+    NSArray<id<AVVideoCompositionInstruction>> *built = composition.instructions;
     NSMutableArray<AVVideoCompositionInstruction *> *instructions =
         [NSMutableArray arrayWithCapacity:[built count]];
     for (AVVideoCompositionInstruction *instruction in built) {
