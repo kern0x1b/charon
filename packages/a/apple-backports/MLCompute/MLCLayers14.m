@@ -1165,9 +1165,33 @@ static BOOL CharonMLCNormalized(MLCTensor *tensor, NSArray<NSNumber *> *shape)
     // A normalization with no running mean and no running variance: the framework's own declaration of
     // the mean and the variance is not optional, so the port's own path is what carries the absence,
     // and the layer answers no mean and no variance (measured).
+    return [self layerWithFeatureChannelCount:featureChannelCount
+                                         beta:beta
+                                        gamma:gamma
+                                varianceEpsilon:varianceEpsilon
+                                      momentum:0.99f];
+}
+
++ (instancetype)layerWithFeatureChannelCount:(NSUInteger)featureChannelCount
+                                        beta:(MLCTensor *)beta
+                                       gamma:(MLCTensor *)gamma
+                               varianceEpsilon:(float)varianceEpsilon
+                                     momentum:(float)momentum
+{
+    // MLCInstanceNormalizationLayer.h:95-99, the momentum overload of the header's own five-argument
+    // form. Same layer with the momentum the caller gave instead of the default the form above uses:
+    // the momentum is "the momentum value for the running mean and variance computation" (the header's
+    // own words at :92), and this layer has no running mean and no running variance to compute, so the
+    // value is kept and is what -momentum answers.
     MLCInstanceNormalizationLayer *layer = [[MLCInstanceNormalizationLayer alloc] charon_init];
     [layer charon_label:@"InstanceNorm"];
-    [layer charon_setFeatureChannelCount:featureChannelCount beta:beta gamma:gamma varianceEpsilon:varianceEpsilon momentum:0.99f mean:nil variance:nil];
+    [layer charon_setFeatureChannelCount:featureChannelCount
+                                    beta:beta
+                                   gamma:gamma
+                           varianceEpsilon:varianceEpsilon
+                                 momentum:momentum
+                                    mean:nil
+                                variance:nil];
     return layer;
 }
 
