@@ -89,9 +89,10 @@
     // kernel that declares no axis answers nothing and the zero is the default.
     _axis = [kernel conformsToProtocol:@protocol(CharonMPSNDArrayAxisKernel)]
          ? (NSUInteger)[(id<CharonMPSNDArrayAxisKernel>)kernel axis] : 0;
-    [_recorded release];
-    _recorded = [[NSString stringWithFormat:@"%lu sources, gradient of source %lu",
-                    (unsigned long)_sourceCount, (unsigned long)_sourceGradientIndex] retain];
+    // _recorded is a strong ivar, so this one store is the whole of it: the store retains the string
+    // it is given and releases the one it held, which is the pair of messages that stood around it.
+    _recorded = [NSString stringWithFormat:@"%lu sources, gradient of source %lu",
+                    (unsigned long)_sourceCount, (unsigned long)_sourceGradientIndex];
 }
 
 // The recorded filter of one source, which is the whole of what a gradient pass reads. A state that
@@ -121,11 +122,14 @@
     return _sourceShapes[index * CHARON_MPS_NDARRAY_MAX_DIMENSIONS + dimension];
 }
 
+// The free is all that is left of -dealloc here, and it is not a choice: _filters is a malloc'd
+// array of CharonMPSNDArrayFilter, a C struct, so no reference to it was ever anything ARC owned and
+// this is the only place it is given back. The [_recorded release] and the [super dealloc] that
+// stood beside it were both deleting ARC's own work - the first for a strong ivar, the second
+// because ARC calls it itself.
 - (void)dealloc
 {
     free(_filters);
-    [_recorded release];
-    [super dealloc];
 }
 
 @end
@@ -145,12 +149,14 @@
             for (NSUInteger i = 0; i < count; i++)
                 _filters[i] = CharonMPSNDArrayDefaultFilter();
         }
-        // RETAINED, and that is not a style choice. +[MPSNDArray defaultAllocator] answers the same
-        // singleton every time - it is a class method on one class, so it has one answer to give - and
-        // this object's -dealloc releases it. Storing it without a retain made the second kernel ever
-        // built take the singleton's own retain count down, and the harness found it as a SIGSEGV in
-        // objc_release at the end of the first case that built one and released it.
-        _destinationArrayAllocator = [[MPSNDArray defaultAllocator] retain];
+        // HELD, and that is not a style choice. +[MPSNDArray defaultAllocator] answers the same
+        // singleton every time - it is a class method on one class, so it has one answer to give -
+        // and the ivar has to OWN a reference to it. Under ARC a strong ivar is exactly that: the
+        // store below retains it and gives it back when this object goes away. Storing it with no
+        // ownership at all made the second kernel ever built take the singleton's own retain count
+        // down, and the harness found it as a SIGSEGV in objc_release at the end of the first case
+        // that built one and let it go.
+        _destinationArrayAllocator = [MPSNDArray defaultAllocator];
     }
     return self;
 }
@@ -185,7 +191,7 @@
                 }
             }
         }
-        _destinationArrayAllocator = [[MPSNDArray defaultAllocator] retain];
+        _destinationArrayAllocator = [MPSNDArray defaultAllocator];
     }
     return self;
 }
@@ -207,12 +213,12 @@
     return _destinationArrayAllocator;
 }
 
+// A store to a strong ivar: it retains what it is given and releases what it held, which is the
+// release-then-retain of the two lines this replaces, in that order, to the same net ownership - and
+// to the same answer when the argument is the allocator already held.
 - (void)setDestinationArrayAllocator:(id<MPSNDArrayAllocator>)destinationArrayAllocator
 {
-    if (_destinationArrayAllocator != destinationArrayAllocator) {
-        [_destinationArrayAllocator release];
-        _destinationArrayAllocator = [destinationArrayAllocator retain];
-    }
+    _destinationArrayAllocator = destinationArrayAllocator;
 }
 
 // The filter of one source, as the base's five per-source accessors read it. A source index past the
@@ -322,7 +328,10 @@
     // (MPSNDArrayGradientState.h:17-23), and what it records is the filter and the shapes, both of
     // which are set on the next line. So this is the release's own available path and not a private
     // one invented to get round the annotation.
-    MPSNDArrayGradientState *state = [[[MPSNDArrayGradientState alloc] initWithResource:nil] autorelease];
+    // No [.. autorelease]: this method returns an MPSState * and is not a family method, so ARC
+    // hands the value back through objc_autoreleaseReturnValue - the same release, at the same
+    // point, into the caller's pool - and the local holds it until then.
+    MPSNDArrayGradientState *state = [[MPSNDArrayGradientState alloc] initWithResource:nil];
     [state charon_mps_recordFor:self sources:sources];
     return state;
 }
@@ -337,11 +346,14 @@
     return copy;
 }
 
+// The free is all that is left of -dealloc here, and it is not a choice: _filters is a malloc'd
+// array of CharonMPSNDArrayFilter, a C struct, so no reference to it was ever anything ARC owned and
+// this is the only place it is given back. The [_destinationArrayAllocator release] and the
+// [super dealloc] that stood beside it were both deleting ARC's own work - the first for a strong
+// ivar, the second because ARC calls it itself.
 - (void)dealloc
 {
     free(_filters);
-    [_destinationArrayAllocator release];
-    [super dealloc];
 }
 
 @end
@@ -410,7 +422,7 @@
     if (!descriptor)
         return nil;
     id<MTLDevice> device = [cmdBuf respondsToSelector:@selector(device)] ? [cmdBuf device] : self.device;
-    MPSNDArray *destination = [[[MPSNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    MPSNDArray *destination = [[MPSNDArray alloc] initWithDevice:device descriptor:descriptor];
     [self encodeToCommandBuffer:cmdBuf sourceArrays:sourceArrays destinationArray:destination];
     return destination;
 }
@@ -509,7 +521,7 @@
         return nil;
     MPSNDArrayDescriptor *descriptor = [gradient descriptor];
     id<MTLDevice> device = [cmdBuf respondsToSelector:@selector(device)] ? [cmdBuf device] : self.device;
-    MPSNDArray *destination = [[[MPSNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    MPSNDArray *destination = [[MPSNDArray alloc] initWithDevice:device descriptor:descriptor];
     [self encodeToCommandBuffer:cmdBuf sourceArrays:sourceArrays sourceGradient:gradient
                     gradientState:state destinationArray:destination];
     return destination;
@@ -589,7 +601,7 @@
     if (!descriptor)
         return nil;
     id<MTLDevice> device = [cmdBuf respondsToSelector:@selector(device)] ? [cmdBuf device] : self.device;
-    MPSNDArray *destination = [[[MPSNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    MPSNDArray *destination = [[MPSNDArray alloc] initWithDevice:device descriptor:descriptor];
     [self encodeToCommandBuffer:cmdBuf sourceArray:sourceArray destinationArray:destination];
     return destination;
 }
@@ -707,7 +719,7 @@
     if (!descriptor)
         return nil;
     id<MTLDevice> device = [cmdBuf respondsToSelector:@selector(device)] ? [cmdBuf device] : self.device;
-    MPSNDArray *destination = [[[MPSNDArray alloc] initWithDevice:device descriptor:descriptor] autorelease];
+    MPSNDArray *destination = [[MPSNDArray alloc] initWithDevice:device descriptor:descriptor];
     [self encodeToCommandBuffer:cmdBuf primarySourceArray:primarySourceArray
                secondarySourceArray:secondarySourceArray destinationArray:destination];
     return destination;

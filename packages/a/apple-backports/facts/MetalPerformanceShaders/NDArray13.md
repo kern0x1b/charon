@@ -158,9 +158,11 @@ the answer is `20 0 40 50 0 100`.
 They are recorded because none of them is visible in the source and all three would have shipped.
 
 - **An over-release of a singleton.** `+[MPSNDArray defaultAllocator]` answers the same object every
-  time, and the kernel's `-dealloc` releases its allocator. Storing it in `-init` without a retain made
-  the *second* kernel ever built take the singleton's own retain count down: a SIGSEGV inside
-  `objc_release` at the end of the first case that built one and released it.
+  time, and the kernel's `_destinationArrayAllocator` ivar has to hold a reference to it for as long
+  as the kernel lives - which, under the `-fobjc-arc` the package is built with, is what a strong ivar
+  does rather than a `retain` and a `-dealloc` to undo it. Storing it with no ownership at all made the
+  *second* kernel ever built take the singleton's own retain count down: a SIGSEGV inside
+  `objc_release` at the end of the first case that built one and let it go.
 - **Two pairs of declared encodes that were missing**, each found by its name in the report rather
   than by anything a reader would notice: the binary gradients' `primarySourceArray:` /
   `secondarySourceArray:` pair (`MPSNDArrayKernel.h:532-539`) and the unary gradient's `sourceArray:`
