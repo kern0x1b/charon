@@ -173,10 +173,13 @@ word for a member nobody carries. The objects they go in, measured:
 | 12.0 | `CPActionSheetTemplate`, `CPAlertTemplate`, `CPImageSet`, `CPSearchTemplate`, `CPTrip`, `CPRouteChoice`, `CPTripPreviewTextConfiguration` |
 | 16.0 | `CPButton`, `CPTextButton` |
 
-The remaining 48 of the corpus have **no registry entry at all** and their ledger rows stay `missing`:
+The remaining 47 of the corpus have **no registry entry at all** and their ledger rows stay `missing`:
 they are not `absent` (they draw in-app like these do and nothing about them needs a car, so calling
-them absent would be a false claim), they are simply not written yet. The objects they go in,
-measured:
+them absent would be a false claim), they are simply not written yet. **The count in that sentence was
+already 4 higher than the table below it before this change** -- the table named 44 classes and the
+sentence said 48 -- and taking `CPMessageGridItemConfiguration` out of the 26.0 row is what moved both
+to 47 and 43. That drift is measured, not fixed here: reconciling the two is another page's edit.
+The objects they go in, measured:
 
 | object | classes |
 | --- | --- |
@@ -185,7 +188,41 @@ measured:
 | 16.0 | `CPContact`, `CPContactTemplate`, `CPDashboardButton`, `CPDashboardController`, `CPInformationItem`, `CPInformationRatingItem`, `CPInformationTemplate`, `CPInstrumentClusterController`, `CPListImageRowItem`, `CPMessageComposeBarButton`, `CPMessageListItem`, `CPNowPlayingButton`, `CPNowPlayingTemplate`, `CPPointOfInterest`, `CPPointOfInterestTemplate`, `CPTabBarTemplate` -- all in the 16.4 headers, all first exported at 16.0 |
 | 17.4 | `CPLane`, `CPLaneGuidance`, `CPRouteInformation` |
 | 18.0 | `CPNowPlayingMode`, `CPNowPlayingModeSports`, `CPNowPlayingSportsClock`, `CPNowPlayingSportsEventStatus`, `CPNowPlayingSportsTeam`, `CPNowPlayingSportsTeamLogo` -- members of `CPNowPlayingTemplate`, so a category on the 16.0 class in the 18.0 object |
-| 26.0 | `CPListImageRowItemElement` and its five subclasses, `CPMessageGridItemConfiguration` |
+| 26.0 | `CPListImageRowItemElement` and its five subclasses |
+
+## `CPMessageGridItemConfiguration` is the one 26.0 class this library registers, and it is a value object
+
+It **was** in the table above as one of the classes with no registry entry at all -- the 26.0 row named
+it beside `CPListImageRowItemElement` -- and it is not there now. This section says what replaced that
+entry. Measured, not read off a header:
+
+- **The corpus names four rows for it and no more** -- the class, one initialiser and two properties.
+  `coordination/corpus/ledger/CarPlay.tsv` lines 24, 205, 356 and 357, and
+  `coordination/corpus/sdk-26.2-surface.tsv` lines 133868, 133893, 133919 and 133920. All four say
+  `26.0`, and **no member of it arrived later**: the class and its three members are one release, which
+  is why the object that carries them is `CarPlayGrid260.m` and not a second one. The ledger's own
+  `status` for all four was `missing`, with the reason "no class or protocol CPMessageGridItemConfiguration
+  in the built libraries or the 6.1.3 cache" -- which was a **statement about the registry, not about
+  the code**: `CarPlayGrid260.m` exports `_OBJC_CLASS_$_CPMessageGridItemConfiguration` and nothing
+  registered it, so `releases_in()` had no row to fall back on and `check_releases()` refused the whole
+  CarPlay library with "neither the SDK, the registry nor a held release's own cache says which iOS
+  release CPMessageGridItemConfiguration arrived in".
+- **It is a value object and needs nothing a car has.** Its whole surface is the two values a caller
+  gives it -- a conversation identifier and an unread flag -- and `CarPlayGrid260.m` keeps them and
+  answers with them. That is the same line the neighbouring implemented rows draw, and it is why the
+  four rows are `implemented` and not `absent`: nothing about this class is a screen, a head unit or a
+  scale, so there is no absence to record.
+- **What it is not** is drawn. CPGridButton.h:24 says `unread` says whether the item "shows an unread
+  indicator", and :21-23 says the identifier "is not directly displayed to the user" and that SiriKit
+  hands it back when the item is selected. On this release neither happens -- there is no car screen and
+  no SiriKit selection -- so both values are carried and readable and neither is shown or handed back.
+  Each row's `effect` says that in its own words.
+- **The SDK the package compiles against does not have the class at all**, so this is not a declaration
+  of Apple's that was copied: `grep` finds the name nowhere in the iPhoneOS16.4 SDK, whose
+  `CarPlay.framework/Headers/CPGridButton.h` is 57 lines and stops at the 12.0 members (its last
+  initialiser at `:30`). `CharonCarPlay260.h` therefore carries Apple's own declaration from
+  CPGridButton.h:15-34 -- declarations only, no method body and no Apple byte -- and every behaviour in
+  it is `CarPlayGrid260.m`'s.
 
 ## `CPTemplate.title` is not a name this port carries
 
@@ -280,7 +317,7 @@ The 12.0 object this series added, `CarPlayNavigationSession12.m`, carries only 
 
 ## What is not carried, and why that is not `absent`
 
-The 48 classes named in the table above -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,
+The 47 classes named in the table above -- `CPNowPlayingTemplate` and the now-playing buttons, `CPTabBarTemplate`,
 `CPInformationTemplate`, `CPContactTemplate`, `CPSearchTemplate`, `CPActionSheetTemplate`,
 `CPAlertTemplate`, `CPTrip`, `CPSearchTemplateDelegate` and the rest -- have **no registry entry at
 all**, on purpose. They are not `absent`: they draw in-app like the seventeen do, and nothing about
