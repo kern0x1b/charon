@@ -1007,11 +1007,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:, -unlockForConfiguration. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target. The target bias is the value the release's own metering drives to, and this release exposes the caller's offset instead - -autoExposureBias with -setAutoExposureBias: - which is a different quantity applied on the way in",
-      "effect": "calling it raises an unrecognised selector, which is what absent means. The release's exposure bias is -autoExposureBias, set under -lockForConfiguration: and read straight back; it offsets the release's metering rather than setting the metering's target, and the release answers no completion time because it makes no such adjustment here - the exposure simply moves as the device's own automatic exposure decides",
-      "facts": "facts/AVFoundation/AVFoundation80.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1433, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
+      "status": "implemented",
+      "reason": "rank in the AVFoundation demand table, CRASH-ON-USE for 1 app; 6.1.3 has no public exposure-bias API, but objc.inventory over its own armv7 cache shows AVCaptureDevice already carries a private -autoExposureBias/-setAutoExposureBias: pair, which is the mechanism this drives since no public one exists",
+      "effect": "checks -isLockedForConfiguration as the header documents (NSGenericException otherwise), forwards the value to the private -setAutoExposureBias:, and calls the completion handler on the main queue with CMClockGetTime(CMClockGetHostTimeClock()); the value is not clamped here because 6.1.3's private pair carries no bounds to clamp against (see minExposureTargetBias/maxExposureTargetBias, left absent)",
+      "facts": "facts/AVFoundation/Demand8.md",
+      "source": "objc.inventory (modules/apple/objc.lua) over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, AVCaptureDevice selectors matching exposure/bias/iso"
     },
     {
       "api": "-[AVCaptureDevice setFocusModeLockedWithLensPosition:completionHandler:]",
@@ -1084,11 +1084,11 @@
       "kind": "method",
       "introduced": "8.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureVideoPreviewLayer carries 54 own instance methods and 2 own class methods, and its session pair is -initWithSession: and -setSession:, which connect as they are given, beside -connection, -connections, -addConnection:error:, -removeConnection:, -videoGravity/-setVideoGravity:, -pointForCaptureDevicePointOfInterest:, -captureDevicePointOfInterestForPoint:, -rectForMetadataObject: and -transformedMetadataObjectForMetadataObject:. This is the re-attachment half of the pair, so a layer built without a session can take one later; 6.1.3's -setSession: attaches and connects in the same call and the layer is never session-less",
-      "effect": "calling it raises an unrecognised selector, which is what absent means, and the release's -setSession: attaches the session and connects at once. A caller that must configure the layer first and add the session afterwards has no order to choose from on this release: -[AVCaptureVideoPreviewLayer initWithLayer:] makes a layer with no session and -setSession: then fills it, which is as close as this release comes and is not this row",
-      "facts": "facts/AVFoundation/AVFoundation80.md",
-      "source": "iPhoneOS 16.5 AVCaptureVideoPreviewLayer.h:105, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
+      "status": "implemented",
+      "reason": "rank in the AVFoundation demand table, CRASH-ON-USE for 1 app; 6.1.3's preview layer already forms its one automatic connection through -setSession: (automatic video routing predates 8.0), and -addConnection:/-canAddConnection: on AVCaptureSession, which a caller would use to wire a connection by hand afterwards, is itself an 8.0 arrival this port does not carry",
+      "effect": "calls through to -setSession:, giving a working preview; the \"no connection\" half of the header's contract is not honoured since nothing in this port lets a caller add a connection by hand afterwards",
+      "facts": "facts/AVFoundation/Demand8.md",
+      "source": "python3 tools/cache-index/first-rung.py setSessionWithNoConnection: (answers 8.0)"
     },
     {
       "api": "-[AVPlayerItemMetadataOutputPushDelegate metadataOutput:didOutputTimedMetadataGroups:fromPlayerItemTrack:]",
@@ -1382,10 +1382,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. A maximum is the other bound on the same value, and as with the minimum this release carries neither the value nor either bound; -exposureDuration and -exposureGain are the closest numbers and neither is a bias",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. Nothing here reports how far the meter's target may go; the caller writes -autoExposureBias under -lockForConfiguration: and the release's own metering answers with the exposure it chooses, which is not a bound a caller can read back",
-      "facts": "facts/AVFoundation/AVFoundation80.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1412, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
+      "reason": "6.1.3's AVCaptureDevice carries a private -autoExposureBias/-setAutoExposureBias: pair (objc.inventory over its own armv7 cache) but, filtered for \"bias\" alone, nothing else of that name: no bounds accessor exists there, public or private, and no SDK header or public source gives a 6.1.3-era sensor's legal AE-bias range",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "facts": "facts/AVFoundation/Demand8.md",
+      "source": "objc.inventory (modules/apple/objc.lua) over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, AVCaptureDevice selectors matching bias"
     },
     {
       "api": "AVCaptureDevice.maxWhiteBalanceGain",
@@ -1404,10 +1404,10 @@
       "introduced": "8.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and 5 own class methods, and among them -isHDRSupported, -exposureDuration, -setExposureDuration:, -exposureGain, -setExposureGain:, -exposureMode, -isExposureModeSupported:, -autoExposureBias, -setAutoExposureBias:, -whiteBalanceMode, -setWhiteBalanceMode:, -whiteBalanceTemperature, -setWhiteBalanceTemperature:, -isWhiteBalanceModeSupported:, -isAdjustingWhiteBalance, -automaticallyAdjustsImageControlMode, -setAutomaticallyAdjustsImageControlMode:, -focusMode, -setFocusMode:, -isFocusModeSupported:, -lockForConfiguration:. It carries no member naming ISO, a lens, an aperture, a gain or an exposure target, and 8.0's 8.0-armv7 class adds all of them. A minimum is a bound on the same value, and this release carries neither the value nor its bounds: its -autoExposureBias is the caller's offset and is not clamped by anything published here",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. There is no floor on the release to report and no floor on the caller's own -autoExposureBias either; the release accepts what it is given and produces whatever image its own metering decides, so a caller that needs the achievable range has no number on this release to ask for",
-      "facts": "facts/AVFoundation/AVFoundation80.md",
-      "source": "iPhoneOS 16.5 AVCaptureDevice.h:1402, API_UNAVAILABLE(macos, tvos); the two releases' own class tables for this class, objc-inventory.lua over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7 and ~/.charon/dyld/8.0/dyld_shared_cache_armv7, read through tools/corpus/class-scoped-rows.py with all twelve of its controls answered over 6.1.3 armv7, 8.0 armv7, 8.0 armv7s and 12.0 arm64; and the release's whole 113981-name selector set, ~/.charon/dyld/6.1.3/selectors_armv7.txt, which carries six of the 129 names these 64 rows ask for"
+      "reason": "6.1.3's AVCaptureDevice carries a private -autoExposureBias/-setAutoExposureBias: pair (objc.inventory over its own armv7 cache) but, filtered for \"bias\" alone, nothing else of that name: no bounds accessor exists there, public or private, and no SDK header or public source gives a 6.1.3-era sensor's legal AE-bias range",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "facts": "facts/AVFoundation/Demand8.md",
+      "source": "objc.inventory (modules/apple/objc.lua) over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7, AVCaptureDevice selectors matching bias"
     },
     {
       "api": "AVCaptureDevice.videoHDREnabled",
@@ -1954,10 +1954,11 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no colour-space list, and 4.3 cannot even be asked of: its armv7 cache has no AVCaptureDeviceFormat at all. The colour spaces this property returns do not exist on this release either - first-rung answers NONE for _AVCaptureColorSpaceSRGB and _AVCaptureColorSpaceP3_D65",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDeviceFormat formatDescription] and takes the colour from the format description the release hands it, which is where this release keeps it; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; first-rung.py answers NONE for the two colour-space names; tools/corpus/class-scoped-rows.py reads ABSENT on 6.1.3 and NO CLASS on 4.3, controls answered on all three releases"
+      "status": "implemented",
+      "reason": "rank in the AVFoundation demand table, CRASH-ON-USE for 1 app; 6.1.3's capture stack has no color space selection at all, and the one space it has ever produced is sRGB",
+      "effect": "@[@(AVCaptureColorSpaceSRGB)], for every format",
+      "source": "python3 tools/cache-index/first-rung.py supportedColorSpaces (answers 10.0.1); no iPad 2 or iPhone 4S camera this port targets ever reports a non-sRGB format",
+      "facts": "facts/AVFoundation/Demand10.md"
     },
     {
       "api": "AVCaptureMovieFileOutput.availableVideoCodecTypes",
@@ -1994,10 +1995,11 @@
       "kind": "property",
       "introduced": "10.0",
       "minimum": "6.0",
-      "status": "absent",
-      "reason": "6.1.3's AVCaptureSession carries 84 own instance methods and no wide-colour member, and the property's own value does not exist here: first-rung answers NONE for _AVCaptureColorSpaceSRGB and _AVCaptureColorSpaceP3_D65, so a setter would have no AVCaptureColorSpace to take and a getter none to return",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release builds the graph it wants itself, between -beginConfiguration and -commitConfiguration, and chooses the format with -[AVCaptureDevice setActiveFormat:], which is the release's own way of setting what the device captures; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureSession.h for the declaration; first-rung.py answers NONE for the two colour-space names; the 6.1.3 armv7 class tables of AVCaptureSession and AVCaptureDevice read from objc-inventory.lua, 84 and 100 own instance methods, controls answered as wanted"
+      "status": "inert",
+      "reason": "stored as a real flag, but it has nothing to act on: wide color needs a format whose supportedColorSpaces carries more than sRGB, which this port's own supportedColorSpaces (AVCaptureDeviceFormat.supportedColorSpaces, this same slice) never answers, since no held hardware ever reports a wide-color format",
+      "effect": "YES by default, settable and readable, but no session on this port's hardware is ever reconfigured by it",
+      "source": "python3 tools/cache-index/first-rung.py automaticallyConfiguresCaptureDeviceForWideColor (answers 10.0.1); AVCaptureDeviceFormat.supportedColorSpaces in this same object never reports a space beyond sRGB",
+      "facts": "facts/AVFoundation/Demand10.md"
     },
     {
       "api": "AVMutableVideoComposition.colorPrimaries",
@@ -2313,9 +2315,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class carries a camera's intrinsic and extrinsic calibration and 6.1.3 has neither the calibration matrix nor the depth frame a calibration comes from: first-rung answers NONE for _AVCameraCalibrationData, and its AVCaptureConnection carries 56 own instance methods with no intrinsic-matrix member, so there is no source for the values on this release",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release takes the calibration the application itself knows, and hands the release the frames it wants through AVAssetReader; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCameraCalibrationData.h for the declaration; first-rung.py answers NONE for the class name; tools/corpus/class-scoped-rows.py answers NO CLASS on 6.1.3, 4.3 and 7.0, controls answered on all three"
+      "reason": "neither 6.1.3 nor 4.3 carries a camera calibration object: no class or protocol name of either release contains Calibration (11378 classes and 1171 protocols at 6.1.3, 7187 and 564 at 4.3) or Intrinsic, and a calibration is the coefficients of the matrix a camera would hand",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVCameraCalibrationData, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureConnection.cameraIntrinsicMatrixDeliveryEnabled",
@@ -2343,9 +2345,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the output delivers depth frames and 6.1.3 has no depth anywhere in its capture stack: first-rung answers NONE for _AVCaptureDepthDataOutput and for _AVDepthData, 6.1.3's AVCaptureSession carries 84 own instance methods whose outputs it finds with -outputWithClass:, and no depth format is on 6.1.3's AVCaptureDeviceFormat, whose 11 own instance methods are -formatDescription, -mediaType, -videoSupportedFrameRateRanges, -isBinned, -supportedStabilizationMethod and -supportsLowLightBoost among them",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release adds an AVCaptureVideoDataOutput or an AVCaptureDepthDataOutput's 6.1.3 counterpart, which does not exist, and takes the frames it gets; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDepthDataOutput.h for the declaration; first-rung.py answers NONE for the two class names; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the output would hand depth sample buffers to a delegate, and neither 6.1.3 nor 4.3 has a depth capture output: 6.1.3's AVCaptureVideoDataOutput answers availableVideoCVPixelFormatTypes, availableVideoCodecTypes and vettedVideoSettingsForSettingsDictionary: (28 selectors) and none of them is a depth format",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVCaptureDepthDataOutput, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDepthDataOutputDelegate",
@@ -2353,9 +2355,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the row's owner is a protocol and 6.1.3 has no such protocol: of the 16 AV-named protocols in its armv7 cache this one is not among them, and neither is it on 4.3 or on 7.0. It is also the delegate of a class this release does not have - first-rung answers NONE for _AVCaptureDepthDataOutput",
-      "effect": "the message is never sent, so a delegate that implements it is simply not called, which is what absent means. 6.1.3's own sample-buffer delegate is AVCaptureVideoDataOutputSampleBufferDelegate, which -[AVCaptureVideoDataOutput setSampleBufferDelegate:queue:] calls with its CMSampleBuffer, its presentation time and its drop reason; that is the callback a caller on this release writes",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDepthDataOutput.h for the declaration; the protocol census is objc-inventory.lua's protocol table of the 6.1.3 armv7 cache, printed with its 16-of-1171 count; tools/corpus/class-scoped-rows.py answers NO PROTOCOL on all three releases, controls answered on all three"
+      "reason": "the messages would be sent by a depth capture output, which neither 6.1.3 nor 4.3 has, and no protocol of either release carries the name (1171 protocols at 6.1.3, 564 at 4.3, none matching)",
+      "effect": "the protocol is not there: NSProtocolFromString answers nil, and a delegate that implements its methods is simply never called, because nothing on the release would send them",
+      "source": "xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDevice.activeDepthDataFormat",
@@ -2363,9 +2365,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no depth member; its format vocabulary is -activeFormat, -formats, -setActiveFormat: and -activeInput, and none of the formats on this release carries a depth format - AVCaptureDeviceFormat's 11 own instance methods name none",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release sets the format it wants with -[AVCaptureDevice setActiveFormat:] under -lockForConfiguration, which is the release's own answer for what the device is set up to capture; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDevice and AVCaptureDeviceFormat read from objc-inventory.lua, 100 and 11 own instance methods, controls answered as wanted"
+      "reason": "the active format is the release's own, and 6.1.3's AVCaptureDeviceFormat (11 instance and 3 class selectors: formatDescription, mediaType, videoSupportedFrameRateRanges, supportedStabilizationMethod, supportsLowLightBoost, isBinned, isEqual: and the dictionary initialiser) has no depth format among them; a device reporting which of several depth formats runs needs a depth stream to pick from",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py activeDepthDataFormat, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDevice.dualCameraSwitchOverVideoZoomFactor",
@@ -2373,9 +2375,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no zoom member at all, so there is no factor for a switch-over to be expressed in; it has no dual-camera concept either - its device-type vocabulary is what AVCaptureDeviceType.m carries and it names the back, front and external cameras this release has",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureDevice videoZoomFactor], which the port's own 7.0 category carries, and -[AVCaptureDevice deviceType] to tell devices apart; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; the 6.1.3 armv7 class table of AVCaptureDevice read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 100 own instance methods, controls answered as wanted"
+      "reason": "the factor at which two cameras hand over is a property of a dual camera, and neither 6.1.3 nor 4.3 has one: no class or selector of either release names a wide or dual camera, and 6.1.3's AVCaptureDevice carries 100 instance selectors of exposure, focus, flash, torch, white balance, frame duration and low-light boost with no second lens in any of it",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py dualCameraSwitchOverVideoZoomFactor, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDevice.maxAvailableVideoZoomFactor",
@@ -2403,9 +2405,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no depth member, and 4.3 cannot be asked of at all: its armv7 cache has no AVCaptureDeviceFormat. first-rung answers NONE for _AVDepthData, so there is not even a type for the array's elements",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks -[AVCaptureDeviceFormat formatDescription] and -videoSupportedFrameRateRanges for what the format can do, which are the release's own two members; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; first-rung.py answers NONE for _AVDepthData; tools/corpus/class-scoped-rows.py reads ABSENT on 6.1.3 and NO CLASS on 4.3, controls answered on all three releases"
+      "reason": "the release's AVCaptureDeviceFormat is a class of 6.0 and its 14 selectors (measured at 6.1.3) describe one format - dimensions, supported frame rate ranges, binning, stabilization, low light boost - with no notion of a second, depth-carrying format",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py supportedDepthDataFormats, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDeviceFormat.unsupportedCaptureOutputClasses",
@@ -2413,9 +2415,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no member naming an output class, and 4.3 cannot be asked of: its armv7 cache has no AVCaptureDeviceFormat at all. The output classes on this release are found from the other side, by asking the session for them with -[AVCaptureSession outputWithClass:]",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release asks the session what it can take, with -[AVCaptureSession canAddOutput:] and -outputWithClass:, which is the release's own answer for which outputs this configuration accepts; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureDeviceFormat and AVCaptureSession read from objc-inventory.lua, 11 and 84 own instance methods, and NO CLASS for the format on 4.3, controls answered on all three releases"
+      "reason": "the class list would be built from what the format cannot be attached to, and 6.1.3's AVCaptureDeviceFormat has no such list: it is a dictionary-backed object with 14 selectors, none of them about an output, and the release's session decides that per connection (AVCaptureConnection carries mediaType, its input ports and its output)",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py unsupportedCaptureOutputClasses, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDeviceFormat.videoMaxZoomFactorForDepthDataDelivery",
@@ -2423,9 +2425,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no zoom member of any kind, so there is no zoom vocabulary this could be a bound of, and 4.3 cannot be asked of: its armv7 cache has no AVCaptureDeviceFormat. first-rung answers NONE for _AVDepthData, so the depth side of the pair does not exist either",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release crops rather than zooms, through -[AVCaptureConnection videoScaleAndCropFactor], which 6.1.3's still image output holds to min(width, height) * 0.0625 of what it captures; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; first-rung.py answers NONE for _AVDepthData; tools/corpus/class-scoped-rows.py reads ABSENT on 6.1.3 and NO CLASS on 4.3, controls answered on all three releases"
+      "reason": "the range is the zoom over which the format would deliver depth, and 6.1.3's format has no depth delivery to bound: its own limit is the scale and crop limit, max(1, min(width, height) * 0.0625), which the port already carries as AVCaptureDeviceFormat.videoMaxZoomFactor",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py videoMaxZoomFactorForDepthDataDelivery, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureDeviceFormat.videoMinZoomFactorForDepthDataDelivery",
@@ -2433,9 +2435,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the same absence as AVCaptureDeviceFormat.videoMaxZoomFactorForDepthDataDelivery: 6.1.3's AVCaptureDeviceFormat carries 11 own instance methods and no zoom member, 4.3 has no AVCaptureDeviceFormat at all, and first-rung answers NONE for _AVDepthData",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release crops through -[AVCaptureConnection videoScaleAndCropFactor] rather than zooming, which is what this release offers; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDeviceFormat.h for the declaration; first-rung.py answers NONE for _AVDepthData; tools/corpus/class-scoped-rows.py reads ABSENT on 6.1.3 and NO CLASS on 4.3, controls answered on all three releases"
+      "reason": "the same range from below, over a depth delivery the release has none of, and 6.1.3's own zoom cannot go below 1 at all: the port's setVideoZoomFactor: raises NSRangeException for a smaller factor, as 7.0 does",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py videoMinZoomFactorForDepthDataDelivery, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCapturePhoto",
@@ -2453,9 +2455,9 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class is a depth frame with a calibration and 6.1.3 has no depth frame: first-rung answers NONE for the class name, 6.1.3's AVCaptureDeviceFormat carries 11 own instance methods with no depth format, and its AVCaptureDevice carries 100 with no depth member. There is nothing on this release that produces one",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release takes the frames its capture outputs actually deliver - an AVCaptureVideoDataOutput's CMSampleBuffer - and has no depth alongside them; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVDepthData.h for the declaration; first-rung.py answers NONE for the class name; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the class carries one depth sample's calibration and its map, and no release this port deploys on produces a depth sample: neither 6.1.3 nor 4.3 has a depth capture output, a depth format or a calibration object, and their AVCaptureVideoDataOutput answers pixel formats and codecs of an ordinary camera",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVDepthData, first held rung 11.0; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVMutableAssetDownloadStorageManagementPolicy",
@@ -2555,9 +2557,9 @@
       "introduced": "11.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "6.1.3's AVCaptureDevice carries 100 own instance methods and no system-pressure member, and the states it would report are not on this release: first-rung answers NONE for _AVCaptureSystemPressureState, so there is no state a getter could return and no member that would produce one",
-      "effect": "reading it raises an unrecognised selector, which is what absent means. A caller on this release reads -[AVCaptureSession isInterrupted] and the device's own -isAdjustingExposure, -isAdjustingFocus and -isAdjustingWhiteBalance, which are the release's three answers for what the capture is doing; the port defines no accessor",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureDevice.h for the declaration; first-rung.py answers NONE for _AVCaptureSystemPressureState; the 6.1.3 armv7 class tables of AVCaptureDevice and AVCaptureSession read from objc-inventory.lua, 100 and 84 own instance methods, controls answered as wanted"
+      "reason": "the state is read from a thermal monitor, and neither 6.1.3 nor 4.3 has API for one: 6.1.3's NSProcessInfo carries 33 selectors - process counting, host and user, uptime, physical memory, the environment, the arguments and the app-switching save and restore - and none of them reports a thermal or pressure state",
+      "effect": "the accessor is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
+      "source": "python3 tools/cache-index/first-rung.py systemPressureState, first held rung 12.0, the ladder holding no 11.1 so the registry's 11.1 cannot be read from the caches; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVCaptureSystemPressureState",
@@ -2565,9 +2567,9 @@
       "introduced": "11.1",
       "minimum": "6.0",
       "status": "absent",
-      "reason": "the class describes thermal and system pressure and 6.1.3 has no member that reports either: first-rung answers NONE for the class name, and 6.1.3's AVCaptureDevice and AVCaptureSession carry no pressure vocabulary of any kind - the session's 84 own instance methods carry -isInterrupted and nothing about the state of the machine",
-      "effect": "the class cannot be instantiated, which is what absent means. A caller on this release reads -[AVCaptureSession isInterrupted] for the one pressure this release reports, and -[AVCaptureDevice isAdjustingExposure] and its two siblings for what the camera is doing about it; the port defines no class of this name",
-      "source": "iPhoneOS 16.4 AVFoundation/AVCaptureSystemPressureState.h for the declaration; first-rung.py answers NONE for the class name; tools/corpus/class-scoped-rows.py answers NO CLASS on all three releases, controls answered on all three"
+      "reason": "the class is a reading of a thermal monitor, and neither 6.1.3 nor 4.3 has API for one; NSProcessInfo, the only class either release has that reports anything about the machine, carries 33 selectors on 6.1.3 and none of them is a thermal or pressure state",
+      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+      "source": "python3 tools/cache-index/first-rung.py _OBJC_CLASS_$_AVCaptureSystemPressureState, first held rung 12.0, the ladder holding no 11.1; xmake l tools/corpus/objc-inventory.lua over the armv7 caches of 6.1.3 and 4.3, whose class and protocol lists answer it (the command, its output and the control - AVCaptureDevice with 100 instance selectors at 6.1.3 and 66 at 4.3 - in facts/AVFoundation/Release11.md)"
     },
     {
       "api": "AVPlayer.availableHDRModes",
