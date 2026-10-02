@@ -25,6 +25,8 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <math.h>
+#import "CharonCarPlayTemplate.h"
+#import "CharonCarPlay174.h"
 
 // The header's own rect of a given aspect ratio inside another, which UIKit does not export and this
 // file needs three times to draw a button's own image at its own shape. Charon's own, so no API.
@@ -328,6 +330,9 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
     UIImage *_image;
     BOOL _enabled;
     void (^_handler)(CPGridButton *);
+    // The 26.0 members' storage, reached from CarPlayGrid260.m through the charon_ accessors below. See
+    // the comment on those accessors for why it is here and not there.
+    CPMessageGridItemConfiguration *_charon_messageConfiguration;
 }
 
 @synthesize titleVariants = _titleVariants;
@@ -355,6 +360,31 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 - (void)setEnabled:(BOOL)enabled
 {
     _enabled = enabled;
+}
+
+// The 26.0 object's storage, reached from CarPlayGrid260.m. A category cannot add an ivar and the class's
+// @implementation is this file, so the value lives here behind Charon-prefixed accessors - the same shape
+// CarPlayNavigationSession12.m uses for _turnCardColor. Every name is Charon-prefixed, so none of it is
+// API and none of it appears in this object's exports: this file is 12.0 and stays 12.0, and the 26.0
+// selectors live in their own object.
+//
+// The message configuration is held as given: CPGridButton.h:71 declares it `readonly, nullable` with no
+// copy attribute, so a nil in is a nil out and nothing is duplicated.
+- (CPMessageGridItemConfiguration *)charon_messageConfiguration
+{
+    return _charon_messageConfiguration;
+}
+
+- (void)charon_setMessageConfiguration:(CPMessageGridItemConfiguration *)messageConfiguration
+{
+    _charon_messageConfiguration = messageConfiguration;
+}
+
+- (void)charon_setTitleVariants:(NSArray<NSString *> *)titleVariants
+{
+    // CPGridButton.h:88 declares titleVariants `readonly, copy`, so the copy happens here and a later
+    // change to the caller's array does not change the button.
+    _titleVariants = [titleVariants copy] ?: @[];
 }
 
 // The button, drawn by the grid template that holds it: its image above the first of its own title
@@ -505,6 +535,9 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 @implementation CPTravelEstimates {
     NSMeasurement<NSUnitLength *> *_distanceRemaining;
     NSTimeInterval _timeRemaining;
+    // The 17.4 member's storage, reached from CarPlayTravelEstimates174.m through the charon_ accessors
+    // below. See the comment on those accessors for why it is here and not there.
+    NSMeasurement<NSUnitLength *> *_charon_distanceRemainingToDisplay;
 }
 
 @synthesize distanceRemaining = _distanceRemaining;
@@ -553,6 +586,21 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
             [_distanceRemaining doubleValue], _timeRemaining];
 }
 
+// The 17.4 member's storage, reached from CarPlayTravelEstimates174.m. A category cannot add an ivar and
+// the class's @implementation is this file, so the value lives here behind a Charon-prefixed accessor -
+// the same shape CarPlayNavigationSession12.m uses for _turnCardColor. The name is Charon-prefixed, so
+// none of it is API and none of it appears in this object's exports: this file is 12.0 and stays 12.0,
+// and the 17.4 selectors live in their own object.
+- (NSMeasurement<NSUnitLength *> *)charon_distanceRemainingToDisplay
+{
+    return _charon_distanceRemainingToDisplay;
+}
+
+- (void)charon_setDistanceRemainingToDisplay:(NSMeasurement<NSUnitLength *> *)distance
+{
+    _charon_distanceRemainingToDisplay = distance;
+}
+
 @end
 
 @implementation CPManeuver {
@@ -571,6 +619,16 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
     UIColor *_cardBackgroundColor;
     CPTravelEstimates *_initialTravelEstimates;
     id _userInfo;
+    // The 17.4 members' storage, reached from CarPlayManeuver174.m through the charon_ accessors below.
+    // See the comment on those accessors for why it is here and not there.
+    CPManeuverType _charon_maneuverType;
+    CPTrafficSide _charon_trafficSide;
+    CPJunctionType _charon_junctionType;
+    NSMeasurement<NSUnitAngle *> *_charon_junctionExitAngle;
+    NSSet<NSMeasurement<NSUnitAngle *> *> *_charon_junctionElementAngles;
+    CPLaneGuidance *_charon_linkedLaneGuidance;
+    NSArray<NSString *> *_charon_roadFollowingManeuverVariants;
+    NSString *_charon_highwayExitLabel;
 }
 
 @synthesize instructionVariants = _instructionVariants;
@@ -640,6 +698,58 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
     return YES;
 }
 
+// The 17.4 members of CPManeuver, kept here and reached from CarPlayManeuver174.m. A category cannot
+// add an ivar and the class's @implementation is this file, so the values those eight properties hold
+// live here behind Charon-prefixed accessors - the same shape CarPlayNavigationSession12.m already uses
+// for _turnCardColor through -charon_pauseWithReason:description:turnCardColor: and the one
+// CarPlayTemplatesView12.m uses for CPListTemplate's 18.4 and 26.0 members. Every name is
+// Charon-prefixed, so none of it is API and none of it appears in this object's exports: this file is
+// 12.0 and stays 12.0, and the 17.4 selectors live in their own object.
+//
+// The defaults are the zero of each type, which is what a fresh -init leaves behind and what the
+// headers' own numbering makes: CPManeuverTypeNoTurn = 0 and CPJunctionTypeIntersection = 0 and
+// CPTrafficSideRight = 0 (CharonCarPlay174.h, from CPManeuver.h:14-79). So a maneuver with nothing set
+// is a maneuver with no turn, at an intersection, with traffic on the right - and nil for the four
+// objects, which is what the header's own `nullable, copy` promises.
+- (CPManeuverType)charon_maneuverType { return _charon_maneuverType; }
+- (void)charon_setManeuverType:(CPManeuverType)type { _charon_maneuverType = type; }
+
+- (CPTrafficSide)charon_trafficSide { return _charon_trafficSide; }
+- (void)charon_setTrafficSide:(CPTrafficSide)side { _charon_trafficSide = side; }
+
+- (CPJunctionType)charon_junctionType { return _charon_junctionType; }
+- (void)charon_setJunctionType:(CPJunctionType)type { _charon_junctionType = type; }
+
+- (NSMeasurement<NSUnitAngle *> *)charon_junctionExitAngle { return _charon_junctionExitAngle; }
+- (void)charon_setJunctionExitAngle:(NSMeasurement<NSUnitAngle *> *)angle
+{
+    _charon_junctionExitAngle = angle;
+}
+
+- (NSSet<NSMeasurement<NSUnitAngle *> *> *)charon_junctionElementAngles
+{
+    return _charon_junctionElementAngles;
+}
+- (void)charon_setJunctionElementAngles:(NSSet<NSMeasurement<NSUnitAngle *> *> *)angles
+{
+    _charon_junctionElementAngles = angles;
+}
+
+- (CPLaneGuidance *)charon_linkedLaneGuidance { return _charon_linkedLaneGuidance; }
+- (void)charon_setLinkedLaneGuidance:(CPLaneGuidance *)guidance { _charon_linkedLaneGuidance = guidance; }
+
+- (NSArray<NSString *> *)charon_roadFollowingManeuverVariants
+{
+    return _charon_roadFollowingManeuverVariants;
+}
+- (void)charon_setRoadFollowingManeuverVariants:(NSArray<NSString *> *)variants
+{
+    _charon_roadFollowingManeuverVariants = [variants copy];
+}
+
+- (NSString *)charon_highwayExitLabel { return _charon_highwayExitLabel; }
+- (void)charon_setHighwayExitLabel:(NSString *)label { _charon_highwayExitLabel = [label copy]; }
+
 @end
 
 // ============================ the alert ============================
@@ -656,16 +766,44 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 @synthesize handler = _handler;
 @synthesize color = _color;
 
-- (instancetype)initWithTitle:(NSString *)title handler:(CPAlertActionHandler)handler style:(CPAlertActionStyle)style color:(UIColor *)color
+- (instancetype)initWithTitle:(NSString *)title style:(CPAlertActionStyle)style handler:(CPAlertActionHandler)handler
 {
+    // CPAlertAction.h:40, the header's own 12.0 initialiser: a title, a display style and the callback
+    // the header says is "invoked when the user taps this action". The title is copied, which is the
+    // header's own `copy` on the title property at :57, and the handler with it - a block copied under
+    // ARC is the same block, so this is the header's `copy` on the handler property at :59 and not a
+    // second copy of anything. A nil title becomes the empty string, because the title is nonnull and a
+    // nil in would otherwise be stored and answered.
     self = [super init];
     if (self) {
         _title = [title copy] ?: @"";
-        _handler = [handler copy];
         _style = style;
-        _color = color;
+        _handler = [handler copy];
     }
     return self;
+}
+
+- (instancetype)initWithTitle:(NSString *)title handler:(CPAlertActionHandler)handler style:(CPAlertActionStyle)style color:(UIColor *)color
+{
+    // The port's own four-value spelling, which the header has no declaration for: it is the header's
+    // 12.0 initialiser and its 16.0 colour in one, and the 16.0 half is CarPlayAlertAction160.m's. Kept
+    // because it was already here and something may call it; it now says so rather than filling the
+    // fields twice.
+    self = [self initWithTitle:title style:style handler:handler];
+    if (self) {
+        [self charon_setColor:color];
+    }
+    return self;
+}
+
+// The 16.0 object's storage, reached from CarPlayAlertAction160.m. It is declared in
+// CharonCarPlayTemplate.h, and the name is Charon-prefixed, so none of it is API and none of it appears
+// in this object's exports.
+- (void)charon_setColor:(UIColor *)color
+{
+    // CPAlertAction.h:60 declares color `copy, readonly, nullable`, so the copy is what the property's own
+    // attribute asks for and a nil in stays nil.
+    _color = [color copy];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
@@ -712,9 +850,9 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 - (instancetype)initWithTitleVariants:(NSArray<NSString *> *)titleVariants
                        subtitleVariants:(NSArray<NSString *> *)subtitleVariants
                              imageSet:(CPImageSet *)imageSet
-                             duration:(NSTimeInterval)duration
-                       primaryAction:(CPAlertAction *)primaryAction
-                     secondaryAction:(CPAlertAction *)secondaryAction
+                               duration:(NSTimeInterval)duration
+                         primaryAction:(CPAlertAction *)primaryAction
+                       secondaryAction:(CPAlertAction *)secondaryAction
 {
     self = [super init];
     if (self) {
@@ -742,9 +880,72 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
     _subtitleVariants = [newSubtitleVariants copy] ?: @[];
     _imageSet = newImageSet;
     _image = newImageArray.firstObject;
-    _duration = newDuration;
-    _primaryAction = newPrimaryAction;
-    _secondaryAction = newSecondaryAction;
+_duration = newDuration;
+        _primaryAction = newPrimaryAction;
+        _secondaryAction = newSecondaryAction;
+}
+
+// CPNavigationAlert.h:58-63, the header's own 12.0 initialiser with a CPImageSet, deprecated in 13.0 in
+// favour of the image overload below it. It is here because the header's own deprecated declaration is
+// still a declaration an application may compile against, and the argument order is the header's:
+// imageSet, primaryAction, secondaryAction, duration.
+- (instancetype)initWithTitleVariants:(NSArray<NSString *> *)titleVariants
+                     subtitleVariants:(NSArray<NSString *> *)subtitleVariants
+                             imageSet:(CPImageSet *)imageSet
+                        primaryAction:(CPAlertAction *)primaryAction
+                      secondaryAction:(CPAlertAction *)secondaryAction
+                             duration:(NSTimeInterval)duration
+{
+    // The image set is kept as given and the standalone image stays nil, which is the header's own
+    // reading of the deprecation: "If an animated image is provided, only the first image from each
+    // image set will be used" (CPNavigationAlert.h:46-47), so a set and an image are two ways of saying
+    // the same picture and this one says it with the set. The title and subtitle variants are copied and
+    // a nil in becomes empty, as the header's own `copy` properties would.
+    self = [super init];
+    if (self) {
+        _titleVariants = [titleVariants copy] ?: @[];
+        _subtitleVariants = [subtitleVariants copy] ?: @[];
+        _imageSet = imageSet;
+        _primaryAction = primaryAction;
+        _secondaryAction = secondaryAction;
+        _duration = duration;
+    }
+    return self;
+}
+
+// CPNavigationAlert.h:65-70, the header's own 12.0 initialiser with a UIImage - the one the deprecation
+// above points at, and the one an application on 13.0 or later writes.
+- (instancetype)initWithTitleVariants:(NSArray<NSString *> *)titleVariants
+                     subtitleVariants:(NSArray<NSString *> *)subtitleVariants
+                                image:(UIImage *)image
+                        primaryAction:(CPAlertAction *)primaryAction
+                      secondaryAction:(CPAlertAction *)secondaryAction
+                             duration:(NSTimeInterval)duration
+{
+    // The image goes to the class's own -image, which CPNavigationAlert.h:87 declares `copy, readonly,
+    // nullable`, and the image set stays nil because this overload does not take one. Animated images
+    // are not supported by the header either, and this stores the image as given rather than stepping
+    // through its frames.
+    self = [super init];
+    if (self) {
+        _titleVariants = [titleVariants copy] ?: @[];
+        _subtitleVariants = [subtitleVariants copy] ?: @[];
+        _image = image;
+        _primaryAction = primaryAction;
+        _secondaryAction = secondaryAction;
+        _duration = duration;
+    }
+    return self;
+}
+
+// CPNavigationAlert.h:81-82, the header's own update of the two variant arrays. "Updating an alert that
+// has been already been dismissed has no effect" (:74) is the template's business - the port has no
+// dismissal state on an alert - and what a caller can observe here is the two arrays it just gave.
+- (void)updateTitleVariants:(NSArray<NSString *> *)newTitleVariants
+           subtitleVariants:(NSArray<NSString *> *)newSubtitleVariants
+{
+    _titleVariants = [newTitleVariants copy] ?: @[];
+    _subtitleVariants = [newSubtitleVariants copy] ?: @[];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder

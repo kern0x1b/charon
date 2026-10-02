@@ -346,6 +346,9 @@
     NSArray<CPRouteChoice *> *_routeChoices;
     id _userInfo;
     NSArray<CPBarButton *> *_charon_bar_buttons;
+    // The 17.4 member's storage, reached from CarPlayTrip174.m through the charon_ accessors below. See
+    // the comment on those accessors for why it is here and not there.
+    NSArray<NSString *> *_charon_destinationNameVariants;
 }
 
 @synthesize origin = _origin;
@@ -379,6 +382,23 @@
     return [self initWithOrigin:[coder decodeObjectForKey:@"CPTripOrigin"]
                    destination:[coder decodeObjectForKey:@"CPTripDestination"]
                   routeChoices:[coder decodeObjectForKey:@"CPTripRouteChoices"] ?: @[]];
+}
+
+// The 17.4 member's storage, reached from CarPlayTrip174.m. A category cannot add an ivar and the class's
+// @implementation is this file, so the value lives here behind a Charon-prefixed accessor - the same
+// shape CarPlayNavigationSession12.m uses for _turnCardTimeColor. The name is Charon-prefixed, so none of
+// it is API and none of it appears in this object's exports: this file is 12.0 and stays 12.0, and the
+// 17.4 selectors live in their own object.
+- (NSArray<NSString *> *)charon_destinationNameVariants
+{
+    return _charon_destinationNameVariants;
+}
+
+- (void)charon_setDestinationNameVariants:(NSArray<NSString *> *)variants
+{
+    // CPTrip.h:158 declares the property `copy, nullable`, so the copy happens here and a nil in is a nil
+    // out.
+    _charon_destinationNameVariants = [variants copy];
 }
 
 + (BOOL)supportsSecureCoding

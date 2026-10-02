@@ -93,6 +93,83 @@ typedef NS_ENUM(NSInteger, CPLaneStatus) {
 @property (readonly, nonatomic, copy) CPTravelEstimates *maneuverTravelEstimates;
 @end
 
+// CPManeuver.h:14-79, the three enumerations the 17.4 members of CPManeuver are typed with, and
+// CPManeuver.h:209-245 the eight members that use them. Every case is what Apple's own header enumerates,
+// with Apple's own numbers, and the three enumerations are `NS_ENUM(NSUInteger, ...)` there. They belong
+// in this file for the reason the three classes above do: the build SDK is 16.4, whose
+// CarPlay.framework/Headers has no CPLane.h, no CPLaneGuidance.h and no CPRouteInformation.h, and whose
+// CPManeuver.h stops at the 15.4 members. The `__has_include(<CarPlay/CPLane.h>)` test at the top of this
+// file is what tells the two SDKs apart, and CPLane is 17.4 like these three, so one test covers all of
+// them: against 16.4 the include is false and these declarations are the ones in scope; against the
+// iOSSupport SDK the Mac Catalyst differential compiles it, the include is true and the SDK's own
+// declarations are.
+typedef NS_ENUM(NSUInteger, CPManeuverType) {
+    CPManeuverTypeNoTurn                    =  0,
+    CPManeuverTypeLeftTurn                  =  1,
+    CPManeuverTypeRightTurn                 =  2,
+    CPManeuverTypeStraightAhead             =  3,
+    CPManeuverTypeUTurn                     =  4,
+    CPManeuverTypeFollowRoad                =  5,
+    CPManeuverTypeEnterRoundabout           =  6,
+    CPManeuverTypeExitRoundabout            =  7,
+    CPManeuverTypeOffRamp                   =  8,
+    CPManeuverTypeOnRamp                    =  9,
+    CPManeuverTypeArriveEndOfNavigation     = 10,
+    CPManeuverTypeStartRoute                = 11,
+    CPManeuverTypeArriveAtDestination       = 12,
+    CPManeuverTypeKeepLeft                  = 13,
+    CPManeuverTypeKeepRight                 = 14,
+    CPManeuverTypeEnter_Ferry               = 15,
+    CPManeuverTypeExitFerry                 = 16,
+    CPManeuverTypeChangeFerry               = 17,
+    CPManeuverTypeStartRouteWithUTurn       = 18,
+    CPManeuverTypeUTurnAtRoundabout         = 19,
+    CPManeuverTypeLeftTurnAtEnd             = 20,
+    CPManeuverTypeRightTurnAtEnd            = 21,
+    CPManeuverTypeHighwayOffRampLeft        = 22,
+    CPManeuverTypeHighwayOffRampRight       = 23,
+    CPManeuverTypeArriveAtDestinationLeft   = 24,
+    CPManeuverTypeArriveAtDestinationRight  = 25,
+    CPManeuverTypeUTurnWhenPossible         = 26,
+    CPManeuverTypeArriveEndOfDirections     = 27,
+    CPManeuverTypeRoundaboutExit1           = 28,
+    CPManeuverTypeRoundaboutExit2           = 29,
+    CPManeuverTypeRoundaboutExit3           = 30,
+    CPManeuverTypeRoundaboutExit4           = 31,
+    CPManeuverTypeRoundaboutExit5           = 32,
+    CPManeuverTypeRoundaboutExit6           = 33,
+    CPManeuverTypeRoundaboutExit7           = 34,
+    CPManeuverTypeRoundaboutExit8           = 35,
+    CPManeuverTypeRoundaboutExit9           = 36,
+    CPManeuverTypeRoundaboutExit10          = 37,
+    CPManeuverTypeRoundaboutExit11          = 38,
+    CPManeuverTypeRoundaboutExit12          = 39,
+    CPManeuverTypeRoundaboutExit13          = 40,
+    CPManeuverTypeRoundaboutExit14          = 41,
+    CPManeuverTypeRoundaboutExit15          = 42,
+    CPManeuverTypeRoundaboutExit16          = 43,
+    CPManeuverTypeRoundaboutExit17          = 44,
+    CPManeuverTypeRoundaboutExit18          = 45,
+    CPManeuverTypeRoundaboutExit19          = 46,
+    CPManeuverTypeSharpLeftTurn             = 47,
+    CPManeuverTypeSharpRightTurn            = 48,
+    CPManeuverTypeSlightLeftTurn            = 49,
+    CPManeuverTypeSlightRightTurn           = 50,
+    CPManeuverTypeChangeHighway             = 51,
+    CPManeuverTypeChangeHighwayLeft         = 52,
+    CPManeuverTypeChangeHighwayRight        = 53
+};
+
+typedef NS_ENUM(NSUInteger, CPJunctionType) {
+    CPJunctionTypeIntersection = 0,
+    CPJunctionTypeRoundabout   = 1
+};
+
+typedef NS_ENUM(NSUInteger, CPTrafficSide) {
+    CPTrafficSideRight = 0,
+    CPTrafficSideLeft  = 1
+};
+
 // CPNavigationEnum.h's CPManeuverState, the type of the session's maneuverState property (:103). The
 // four cases are what that header enumerates, in its own order.
 typedef NS_ENUM(NSInteger, CPManeuverState) {

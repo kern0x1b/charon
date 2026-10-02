@@ -1898,11 +1898,10 @@
       "kind": "property",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a UICollectionViewController over the template's own grid buttons, each drawn by the button itself into its cell, with the leading bar buttons drawn in the template's own bar",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "status": "absent",
+      "reason": "not carried, and what it names is a screen this port does not have: CPGridTemplate.h:34-38 calls it \"The expected image size for your CPGridButton\" and points the caller at -[CPInterfaceController carTraitCollection] for the scale the image is to be sized to. The scale is the car screen's own, and there is no car screen: this release's CarPlay has no scene, no CPWindow connection and no head unit, which is the same absence CarPlayTemplates12.m states for the whole drawing half. Nothing in this tree records the number either - grep of the repository and of coordination/corpus finds the name only in the ledger (CarPlay.tsv:289), in the 26.2 surface table and in the registry, with no measurement of it anywhere - so a number written here would be a limit invented for screens that do not exist, and a wrong size is worse than none: the caller would lay its images out against it",
+      "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises. The sibling 14.0 limits the port does carry, +[CPListTemplate maximumItemCount] and +maximumSectionCount, are a different thing: those are counts of a list a template holds, and their numbers are in the registry and in the class's own code",
+      "source": "the declaration is `@property (nonatomic, class, readonly) CGSize maximumGridButtonImageSize API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos, watchos)` at CPGridTemplate.h:40 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers, and it is absent from the iPhoneOS16.4 SDK the package compiles against, whose CPGridTemplate.h stops at the 15.0 members. That it is a real 26.0 UIKit-side API is what coordination/corpus/sdk-26.2-surface.tsv records at line 133895"
     },
     {
       "api": "CPGridTemplate.title",
@@ -2305,22 +2304,20 @@
       "kind": "property",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a UITableViewController over the template's own sections and rows, with the leading bar buttons the CPBarButtonProviding protocol asks for drawn in the template's own bar, the header's own empty view variants when there are no sections, and the header's own class limits maximumItemCount and maximumSectionCount as limits rather than counts",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "status": "absent",
+      "reason": "not carried, and for the reason the same property on CPGridTemplate gives: CPListTemplate.h:255-260 calls it \"The expected image size for your CPGridButton\" and points at -[CPInterfaceController carTraitCollection], and the scale that fixes the size is the car screen's own. There is no car screen on this release - no scene, no CPWindow connection, no head unit - and nothing in this tree or in coordination/corpus records the number, so a value written here would be a layout limit invented for screens that do not exist. A caller that gets a wrong size lays its grid images out against it, which is worse than the honest absence",
+      "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises",
+      "source": "the declaration is `@property (nonatomic, class, readonly) CGSize maximumGridButtonImageSize API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos, watchos)` at CPListTemplate.h:260 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133917"
     },
     {
       "api": "CPListTemplate.maximumHeaderGridButtonCount",
       "kind": "property",
       "introduced": "26.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says",
-      "effect": "a UITableViewController over the template's own sections and rows, with the leading bar buttons the CPBarButtonProviding protocol asks for drawn in the template's own bar, the header's own empty view variants when there are no sections, and the header's own class limits maximumItemCount and maximumSectionCount as limits rather than counts",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+      "status": "absent",
+      "reason": "not carried, and the count is a trimming limit the system applies to a car screen: CPListTemplate.h:246-251 says \"The maximum number of grid buttons that may appear in a CPListTemplate\", that \"Your list template will display the first maximumHeaderGridButtonCount buttons\" and that \"Any sections beyond that limit will be trimmed\". The number is Apple's own and this port has no car screen to trim - no scene, no CPWindow connection, no head unit - and nothing in this tree or in coordination/corpus records it (the name appears in the ledger at CarPlay.tsv:341, in the 26.2 surface table and in the registry, and nowhere else). So the limit is not written, and a caller that sets more header grid buttons than the system would have shown keeps all of them rather than losing the ones this port guessed would be trimmed",
+      "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises. headerGridButtons beside it is carried and answered, so a caller can set and read the buttons; what it cannot learn is how many of them a car screen would have shown",
+      "source": "the declaration is `@property (nonatomic, class, readonly) NSUInteger maximumHeaderGridButtonCount API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos, watchos)` at CPListTemplate.h:252 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133918"
     },
     {
       "api": "CPListTemplate.maximumItemCount",

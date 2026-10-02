@@ -21,6 +21,7 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
+#import "CharonCarPlayTemplate.h"
 
 // The three buttons' own drawing and their own taps, which are implemented in
 // CarPlayTemplates12.m and declared here so the templates that hold them can ask. Every member is
@@ -299,6 +300,14 @@
     _headerButton = headerButton;
 }
 
+// The 15.0 object's storage, reached from CarPlayTemplates150.m. It is declared in
+// CharonCarPlayTemplate.h, and every name is Charon-prefixed, so none of it is API and none of it
+// appears in this object's exports. The strings copy on the way in, which is what CPListSection.h:82-97's
+// own `copy` would do anyway; the image and the button take what they are given, and a nil in clears.
+- (void)charon_setHeaderSubtitle:(NSString *)headerSubtitle { _headerSubtitle = [headerSubtitle copy]; }
+- (void)charon_setHeaderImage:(UIImage *)headerImage { _headerImage = headerImage; }
+- (void)charon_setHeaderButton:(CPButton *)headerButton { _headerButton = headerButton; }
+
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_items forKey:@"CPListSectionItems"];
@@ -420,6 +429,14 @@ static UINavigationBar *_listNavigationBar;
     CPAssistantCellConfiguration *_assistantCellConfiguration;
     UITableViewController *_list;
     CharonCarPlayBar *_charon_bar;
+    // The storage the 18.4 and 26.0 objects reach (CarPlayListTemplate184.m, CarPlayGrid260.m). A
+    // category cannot add an ivar and the class's @implementation is this file, so the values those
+    // members keep live here behind the Charon-prefixed accessors of CharonCarPlayTemplate.h - the same
+    // shape CarPlayNavigationSession12.m already uses for _turnCardColor. Every name is Charon-prefixed,
+    // so none of it is API and none of it appears in this object's exports: this file is 12.0 and stays
+    // 12.0, and the 18.4 and 26.0 selectors live in their own objects.
+    BOOL _charon_showsSpinnerWhileEmpty;
+    NSArray<CPGridButton *> *_charon_headerGridButtons;
 }
 
 @synthesize delegate = _delegate;
@@ -550,14 +567,29 @@ static UINavigationBar *_listNavigationBar;
     _list.tableView.dataSource = (id)[CharonListSource sourceForTemplate:self];
     _list.tableView.delegate = (id)[CharonListSource sourceForTemplate:self];
     if (_sections.count == 0) {
-        // The header's own empty view, which is the title variants the caller gave, or nothing.
-        NSString *empty = _emptyViewTitleVariants.firstObject ?: _emptyViewSubtitleVariants.firstObject;
-        UILabel *label = [[UILabel alloc] initWithFrame:_list.view.bounds];
-        label.text = empty;
-        label.textAlignment = NSTextAlignmentCenter;
-        label.textColor = [UIColor colorWithWhite:1.0 alpha:0.6];
-        label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-        _list.tableView.backgroundView = label;
+        if (_charon_showsSpinnerWhileEmpty) {
+            // The 18.4 member's answer, drawn here because the empty state is here. CPListTemplate.h:226
+            // declares it `assign` and says the template shows a spinner while it is empty, so the
+            // spinner is the whole of the property and this is where a caller asking for it sees it. The
+            // indicator is this release's own UIActivityIndicatorView, centred in the table's own view,
+            // and it spins because the template has nothing to show yet - which is the state the property
+            // is about.
+            UIActivityIndicatorView *spinner =
+                    [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            spinner.center = CGPointMake(CGRectGetMidX(_list.view.bounds), CGRectGetMidY(_list.view.bounds));
+            spinner.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            [spinner startAnimating];
+            _list.tableView.backgroundView = spinner;
+        } else {
+            // The header's own empty view, which is the title variants the caller gave, or nothing.
+            NSString *empty = _emptyViewTitleVariants.firstObject ?: _emptyViewSubtitleVariants.firstObject;
+            UILabel *label = [[UILabel alloc] initWithFrame:_list.view.bounds];
+            label.text = empty;
+            label.textAlignment = NSTextAlignmentCenter;
+            label.textColor = [UIColor colorWithWhite:1.0 alpha:0.6];
+            label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+            _list.tableView.backgroundView = label;
+        }
     }
     _charon_bar = [[CharonCarPlayBar alloc] initWithFrame:CGRectMake(0.0, 0.0, 176.0, 44.0)];
     _charon_bar.charon_buttons = self.barButtons;
@@ -579,6 +611,25 @@ static UINavigationBar *_listNavigationBar;
         _charon_bar.backgroundColor = [UIColor clearColor];
     }
     _charon_bar.charon_buttons = barButtons;
+}
+
+// The 18.4 and 26.0 objects' storage, reached from CarPlayListTemplate184.m and CarPlayGrid260.m. They
+// are declared in CharonCarPlayTemplate.h and every name is Charon-prefixed, so none of this is API and
+// none of it appears in this object's exports.
+- (BOOL)charon_showsSpinnerWhileEmpty { return _charon_showsSpinnerWhileEmpty; }
+
+- (void)charon_setShowsSpinnerWhileEmpty:(BOOL)showsSpinnerWhileEmpty
+{
+    _charon_showsSpinnerWhileEmpty = showsSpinnerWhileEmpty;
+}
+
+- (NSArray<CPGridButton *> *)charon_headerGridButtons { return _charon_headerGridButtons; }
+
+- (void)charon_setHeaderGridButtons:(NSArray<CPGridButton *> *)headerGridButtons
+{
+    // `copy` on the way in, per CPListTemplate.h:265, so a later change to the caller's array does not
+    // change the template's. A nil in stays nil, which is what `nullable` means.
+    _charon_headerGridButtons = [headerGridButtons copy];
 }
 
 - (void)encodeWithCoder:(NSCoder *)coder
