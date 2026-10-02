@@ -1560,6 +1560,17 @@
       "source": "iPhoneOS 16.4 AVFoundation/AVCaptureFileOutput.h for the declaration; the 6.1.3 armv7 class tables of AVCaptureMovieFileOutput and AVCaptureConnection read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 25 and 56 own instance methods, controls answered as wanted"
     },
     {
+      "api": "-[AVComposition setURLAssetInitializationOptions:]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the setter half of AVComposition.URLAssetInitializationOptions, which the surface names as the property alone, so the selector the port defines is registered here by its own name. The dictionary is what AVComposition.h documents for +[AVURLAsset URLAssetWithURL:options:], and 6.1.3 has that factory - AVURLAsset carries -initWithURL:options: among its 37 own instance methods and +URLAssetWithURL:options: among its 7 own class methods. What the release's AVComposition has is no place to remember it: its own table is 15 instance methods, of which the public ones are -description, -naturalSize, -tracks and -mutableCopyWithZone: and the rest are the private asset-inspector and mutable-composition bookkeeping, none of them for this. So the port copies the value onto the composition under an associated-object key and the pair reads it back",
+      "effect": "the dictionary is copied onto the composition when it is set and -URLAssetInitializationOptions answers that copy, so a caller that sets and reads the pair gets the same options and a caller that mutates the dictionary afterwards does not see the mutation; the value is what a later +[AVURLAsset URLAssetWithURL:options:] is to be given, and nothing on 6.1.3 reads it off a composition by itself",
+      "source": "iPhoneOS 16.4 AVFoundation/AVComposition.h for the declaration; the 6.1.3 armv7 class tables of AVComposition and AVURLAsset read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 15 own instance methods and 37 with 7 own class methods, controls answered as wanted",
+      "facts": "facts/AVFoundation/AVFoundation90.md"
+    },
+    {
       "api": "AVAsset.canContainFragments",
       "kind": "property",
       "introduced": "9.0",
@@ -2385,7 +2396,7 @@
       "introduced": "11.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the same answer as AVVideoComposition.sourceTrackIDForFrameTiming, carried by the one category on the superclass so both spellings read the same instructions; AVMutableVideoComposition's own 12 instance methods add no track member on 6.1.3 either, and its superclass carries the -instructions this is computed from",
+      "reason": "the same answer as AVVideoComposition.sourceTrackIDForFrameTiming, computed once there and forwarded to from a category on this class, because a category adds the selector to the class it is written on and not to that class's subclasses; AVMutableVideoComposition's own 12 instance methods add no track member on 6.1.3 either, and its superclass carries the -instructions this is computed from",
       "effect": "the first instruction's first layer instruction is asked for its own trackID, and a composition whose instructions are empty answers kCMPersistentTrackID_Invalid; setting the instructions of a mutable composition changes the answer, which is the point of the property",
       "source": "iPhoneOS 16.4 AVFoundation/AVVideoComposition.h:386 for the declaration; the 6.1.3 armv7 class tables of AVMutableVideoComposition and AVVideoComposition read from objc-inventory.lua through tools/corpus/class-scoped-rows.py, 12 and 26 own instance methods, controls answered as wanted",
       "facts": "facts/AVFoundation/AVFoundation110.md"
