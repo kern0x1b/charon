@@ -7,9 +7,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
+   "reason": "what Core ML's own Core ML's own model STORE: a handle on the container its daemon writes and syncs with Apple's servers, not a value the port holds is, read out of the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there): -initWithIdentifier:, -entries, -deployments, -_downloadWithProgress:, -_registerForUpdates, -_handleTrialUpdateForNamespaceName:, and the class methods +beginAccessingModelCollectionWithIdentifier:completionHandler: and +endAccessingModelCollectionWithIdentifier:. This port carries no such thing and cannot: Core ML's own model STORE: a handle on the container its daemon writes and syncs with Apple's servers, not a value the port holds, and the port's reader has no path to one - it reads a model's bytes from a URL or from NSData and runs them, and writes no model anywhere",
+   "effect": "the class is not there, and that is what a caller gets: NSClassFromString answers nil and a compile time reference to it does not link. On the releases where Core ML is present the system carries it instead (first held rung: 16.0)",
+   "source": "the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there); the first held cache that carries it: %s, from tools/cache-index/first-rung.py",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLModelCollectionEntry",
@@ -17,9 +18,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-   "source": "SDK 16.4, CoreML"
+   "reason": "what Core ML's own one row of that store, reachable only through the store is, read out of the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there): -modelIdentifier, -modelURL, -description, -isEqualToModelCollectionEntry: and the class method +entryWithModelIdentifier:modelURL:. This port carries no such thing and cannot: one row of that store, reachable only through the store, and the port's reader has no path to one - it reads a model's bytes from a URL or from NSData and runs them, and writes no model anywhere",
+   "effect": "the class is not there, and that is what a caller gets: NSClassFromString answers nil and a compile time reference to it does not link. On the releases where Core ML is present the system carries it instead (first held rung: 16.0)",
+   "source": "the 16.0 dyld shared cache on this machine, CoreML.framework's Objective-C metadata read by tools/corpus/objc-inventory.lua (168,686 classes; this class and its selectors come from there); the first held cache that carries it: %s, from tools/cache-index/first-rung.py",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLTask",
@@ -71,9 +73,10 @@
    "introduced": "14.0",
    "minimum": "6.0",
    "status": "absent",
-   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-   "effect": "the symbol is not there: a weak reference to it is NULL",
-   "source": "SDK 16.4, CoreML"
+   "reason": "the name Core ML posts when a collection changes. Its VALUE is a pointer into Core ML's own data, and nothing in this tree says what string that pointer holds: the 16.0 cache carries the name (dyld_shared_cache_arm64e.09 and .44.dyldlinkedit) and five com.apple.CoreML* strings, and no measurement here pairs the symbol with one of them. The port does not write a notification name it has not measured",
+   "effect": "the symbol is not exported, so an application that links it does not link: nothing answers the name and no notification with it is ever posted",
+   "source": "the 16.0 dyld shared cache on this machine: the name is in dyld_shared_cache_arm64e.09 and .44.dyldlinkedit, the five candidate value strings are not attributable to this symbol without following the pointer, and the port does not invent one",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "+[MLFeatureValue featureValueWithCGImage:constraint:options:error:]",
@@ -230,40 +233,44 @@
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "status": "owed",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md); the port carries no such method today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the method is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "-[MLModel predictionFromFeatures:usingState:error:]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "status": "owed",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md); the port carries no such method today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the method is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "-[MLModel predictionFromFeatures:usingState:options:completionHandler:]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "status": "owed",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md); the port carries no such method today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the method is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "-[MLModel predictionFromFeatures:usingState:options:error:]",
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "status": "owed",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md); the port carries no such method today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the method is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "-[MLModelAsset init]",
@@ -280,10 +287,11 @@
    "kind": "method",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the method is declared in a Core ML header newer than the one this port is built against (the SDK is 16.4 and the method arrived in iOS 18), so its contract is not in the tree to read: a method whose semantics are a guess is worse than one that is not there, and nothing in this port calls it",
+   "status": "owed",
+   "reason": "the method is declared in a Core ML header newer than the one this port is built against (the SDK is 16.4 and the method arrived in iOS 18), so its contract is not in the tree to read: a method whose semantics are a guess is worse than one that is not there, and nothing in this port calls it; the port carries no such method today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the method is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (which has not got it); SDK 26.2 (which has)"
+   "source": "SDK 16.4, CoreML (which has not got it); SDK 26.2 (which has)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "-[MLParameterKey init]",
@@ -300,59 +308,64 @@
    "kind": "property",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the state constraint is a constraint on a state feature, and a state feature is a recurrent model's own carry between calls; this port reads no recurrent model, so there is no state to constrain",
+   "status": "owed",
+   "reason": "the state constraint is a constraint on a state feature, and a state feature is a recurrent model's own carry between calls; this port reads no recurrent model, so there is no state to constrain; the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLModel.availableComputeDevices",
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here",
+   "status": "owed",
+   "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here; the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLModelConfiguration.functionName",
    "kind": "property",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the name is the entry point of a model of a program -- the mlProgram form -- and this port refuses that form by name: it reads the neural network, the tree ensemble, the GLM and the preprocessing models, and no other",
+   "status": "owed",
+   "reason": "the name is the entry point of a model of a program -- the mlProgram form -- and this port refuses that form by name: it reads the neural network, the tree ensemble, the GLM and the preprocessing models, and no other; the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLModelConfiguration.optimizationHints",
    "kind": "property",
    "introduced": "17.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the hints are advice to the compiler that turns a model into weights for a particular device, and this port compiles no model: it reads a container and runs it, so there is nothing for a hint to advise",
+   "status": "owed",
+   "reason": "the hints are advice to the compiler that turns a model into weights for a particular device, and this port compiles no model: it reads a container and runs it, so there is nothing for a hint to advise; the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLModelDescription.stateDescriptionsByName",
    "kind": "property",
    "introduced": "18.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "a model that carries a state declares it as a feature of its own, and this port reads no model that does: the recurrent layers are refused by name (facts/CoreML/CoreML.md)",
+   "status": "owed",
+   "reason": "a model that carries a state declares it as a feature of its own, and this port reads no model that does: the recurrent layers are refused by name (facts/CoreML/CoreML.md); the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
    "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+   "source": "SDK 16.4, CoreML (the headers this package is built against)",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLBatchProvider",
    "kind": "protocol",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "status": "implemented",
+   "reason": "the protocol a batch provider is asked for: the port DEFINES it in CoreML/MLFeatureProvider.m, because a conforming class names a protocol object at run time and on a release with no Core ML there is nothing to define it but this port. The declaration in that file is the definition - the SDK's own is a declaration, and a protocol nothing in a translation unit uses is dropped from the object - and the object is hidden at the link, the way Apple's own frameworks keep theirs",
+   "effect": "the protocol is there under its own name, with the members the SDK's header declares on it: count and -featuresAtIndex:, over the port's own MLArrayBatchProvider. A conforming class in the port conforms to the same protocol object, and NSProtocolFromString answers it",
    "source": "SDK 16.4, CoreML"
   },
   {
@@ -360,20 +373,22 @@
    "kind": "protocol",
    "introduced": "11.2",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
+   "status": "implemented",
+   "reason": "Core ML's custom layer protocol: a model's own layer implementation, which Core ML calls once on model load with the specification's own parameter dictionary",
+   "effect": "the protocol is there under its own name, with the header's own methods and its <NSObject> base list, and the metadata object the generated protocol source emits is the SDK's own declaration",
+   "source": "SDK 16.4, MLCustomLayer.h:19, the declaration as the SDK writes it; the protocol object is emitted for this row by modules/apple/backports.lua protocol_sources() into CoreMLBackportsProtocols11.2.m, measured: nm over that object reports __OBJC_PROTOCOL_$_MLCustomLayer, and it compiles clean with the package's flags",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLCustomModel",
    "kind": "protocol",
    "introduced": "12.0",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-   "effect": "the protocol is not there: NSProtocolFromString answers nil",
-   "source": "SDK 16.4, CoreML"
+   "status": "implemented",
+   "reason": "Core ML's custom model protocol: a model whose forward and return are a program's, with the specification's own input and output description",
+   "effect": "the protocol is there under its own name, with the header's own methods and its <NSObject> base list, and the metadata object the generated protocol source emits is the SDK's own declaration",
+   "source": "SDK 16.4, MLCustomModel.h:19, the declaration as the SDK writes it; the protocol object is emitted for this row by modules/apple/backports.lua protocol_sources() into CoreMLBackportsProtocols12.0.m, measured: nm over that object reports __OBJC_PROTOCOL_$_MLCustomModel, and it compiles clean with the package's flags",
+   "facts": "facts/CoreML/CoreML.md"
   },
   {
    "api": "MLWritable",

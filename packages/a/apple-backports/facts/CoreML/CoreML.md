@@ -116,18 +116,46 @@ adjudicated against the built objects - the 21 sources of `CoreML/` compiled wit
 `nm -gU` plus `otool -oV` over the 21 objects, which define 23 classes, 6 protocols and 262 method entries - and
 the three kinds of row answer differently:
 
-- **`MLBatchProvider` is carried.** `CoreML/MLFeatureProvider.m` declares *and defines* it: a protocol a
-  conforming class names as an object at run time, and on a release with no Core ML there is nothing to define
-  it but this port. Its row said `absent` and "the protocol is not there", which was false; it is `implemented`.
+- **`MLBatchProvider` is carried.** Its row said `absent` and "the protocol is not there", which was false. It is
+  `implemented`, and it is now carried twice on purpose: `CoreML/MLArrayBatchProvider12.o` conforms to it and
+  therefore carries the metadata object a conforming class needs, and the generated
+  `CoreMLBackportsProtocols12.0.m` emits it for the row. Measured: both definitions are
+  `weak private external` (`nm -m`) and **both are the SDK's own**, from `MLBatchProvider.h`, so ld64 keeping
+  whichever comes first yields the same object. That is not the case this file already recorded for
+  `MLFeatureProvider`, where the two definitions DISAGREED (the port's own declaration gave the protocol the
+  base `<NSObject>`, the SDK's gives it none). `CoreML/MLFeatureProvider.m` declared `MLBatchProvider` for the
+  same reason it once declared `MLFeatureProvider` - and that declaration is now gone: nothing in that
+  translation unit used the protocol, so clang dropped it (`nm MLFeatureProvider.o` shows no
+  `__OBJC_PROTOCOL_$_MLBatchProvider`, and the object is byte-identical before and after the removal), and a
+  translation unit that DID use it would have emitted a third definition that disagreed with the SDK's.
 - **The nine `-init`/`+new` rows are absent, and that is the whole truth.** Apple declares all of them
   `NS_UNAVAILABLE` ("cannot construct MLKey without parameters", `MLKey.h:27-29` and its four siblings): an
   application compiled against Core ML's own header cannot send them and one that sends by name gets
   `doesNotRecognizeSelector`. The port's objects inherit NSObject's and there is no body of the port's to carry.
-- **The other 28 are owed, and the vocabulary has no word for it.** They are `absent`, which is true - nothing in
-  the 21 objects defines `MLModelCollection`, `MLTask`, `MLWritable`, `MLModel.availableComputeDevices` or the
-  22 methods - but `absent` ranks as a real gap in `tools/corpus/aggregate.py` and `tools/crash-demand.py`, so
-  scheduled work reads as a decline. The row that would say it, and every tool that would have to learn a new
-  status, are in the commit that writes them.
+- **Two protocols are carried**: `MLCustomLayer` and `MLCustomModel`, both declared with a body by SDK 16.4
+  (`MLCustomLayer.h:19`, `MLCustomModel.h:19`), so `CharonCoreMLProtocols.h` forward-declares them and
+  `protocol_sources()` emits their metadata objects into the generated protocol source. Measured: that object
+  compiles clean with the package's flags and `nm` reports `__OBJC_PROTOCOL_$_MLCustomLayer` and
+  `$_MLCustomModel` in it; none of the 21 port objects defines either, so each has exactly one definition.
+  `MLWritable` was carried in the first form of this change and is not: its row stays `absent` with the
+  measurement in facts/CoreML/Update13.md (iOS 13.0, and the update family it belongs to), which main
+  decided after this series was written.
+- **Seven rows are `absent` with what is missing named, read out of a cache and not out of a header.** The 16.0
+  dyld shared cache on this machine answers, through `tools/corpus/objc-inventory.lua` (168,686 classes) and
+  `tools/cache-index/first-rung.py`, exactly what six of them are: `MLModelCollection` carries
+  `-initWithIdentifier:`, `-entries`, `-downloadWithProgress:`, `-registerForUpdates` and
+  `-handleTrialUpdateForNamespaceName:`, which is Core ML's own model STORE - a container its daemon writes
+  and syncs with Apple's servers; `MLModelCollectionEntry` is one row of that store (`-modelIdentifier`,
+  `-modelURL`); `MLTask` is the state machine that daemon drives (`-initWithState:`, `-canCancel`,
+  `-completeWithTaskContext:`, `-failWithError:taskContext:`); `MLUpdateTask` is
+  `+updateModelAtURL:trainingData:configuration:writeToURL:error:`, a training run that writes a model back;
+  `MLUpdateContext` is its per-step context; `MLUpdateProgressHandlers` is that loop's callbacks. This port
+  carries no store and no daemon and cannot: its reader takes a model's bytes from a URL or from `NSData` and
+  runs them, and it writes no model anywhere. `MLModelCollectionDidChangeNotification` is the seventh, and the
+  cache is what keeps it out: the name is in the cache twice (`.09` and `.44.dyldlinkedit`) and five
+  `com.apple.CoreML*` value strings are, but no measurement pairs the symbol with one of them, and the port
+  does not write a notification name it has not measured. All seven answer `absent`, and what a caller gets is
+  named: `NSClassFromString` answers nil, or the symbol does not link.
 
 **The header-only enumeration is carried by its header, and that is what `inert` says.** `MLMultiArrayDataType`
 is one `enum` row and its six cases six `constant` rows, each in the band the SDK dates it in (11.0 for

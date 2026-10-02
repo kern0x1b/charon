@@ -3,8 +3,15 @@
 // header of this folder does, is forward-declared and its body comes from that import; any other is
 // transcribed from the SDK that declares it: the base list, each member with its kind and types,
 // @required and @optional as sections, and API_AVAILABLE(ios(<introduced>)). Facts only.
+// This file has a forward-declared protocol in it, so it imports <CoreML/CoreML.h> for that body, and
 #import <CoreML/CoreML.h>
 #import <Foundation/Foundation.h>
 #import <objc/NSObject.h>
+
+@protocol MLCustomLayer;
+
+@protocol MLCustomModel;
+
+@protocol MLBatchProvider;
 
 @protocol MLFeatureProvider;

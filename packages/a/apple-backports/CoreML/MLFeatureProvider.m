@@ -30,20 +30,20 @@
 
 @protocol MLFeatureProvider;
 
-@protocol MLBatchProvider <NSObject>
-@property (readonly, nonatomic) NSInteger count;
-- (id<MLFeatureProvider>)featuresAtIndex:(NSInteger)index;
-@end
-
-/* Core ML's own headers declare both protocols, and the import below is where they are seen. MLFeatureProvider
- * is deliberately NOT declared here as well: a second declaration of a protocol the compiler has already seen is
- * ignored ("duplicate protocol definition of 'MLFeatureProvider' is ignored [-Wduplicate-protocol]"), so declaring
- * it here made this object emit a definition that DISAGREED with the one the generated CoreMLBackportsProtocols11.0.m
- * emits -- this one gave the protocol the base <NSObject>, the 16.4 SDK's header gives it none -- and ld64 keeps
- * whichever of two weak definitions comes first on the link line, silently. MLBatchProvider is declared because no
- * registry row carries it, so nothing generates a second definition of that one, and nothing here emits it either.
- * The import stays: CharonMLBridge.h needs the enums (MLFeatureType, MLFeatureTypeInt64) that only this header
- * declares. */
+/* Core ML's own headers declare both protocols, and the import below is where they are seen. NEITHER is declared
+ * here, and MLBatchProvider was until the registry row that carries it: a declaration is only a reference once the
+ * compiler has seen the definition, so a second one is ignored ("duplicate protocol definition of 'X' is ignored
+ * [-Wduplicate-protocol]"), and this one was worse than ignored - it gave MLBatchProvider the base <NSObject>
+ * where the 16.4 SDK's header gives it none, so this object emitted a definition that DISAGREED with the one
+ * the generated CoreMLBackportsProtocols12.0.m emits for the same protocol, and ld64 keeps whichever of two weak
+ * definitions comes first on the link line, silently. That is the defect this file already fixed once for
+ * MLFeatureProvider, and the row that carried it is what made it apply to MLBatchProvider too.
+ *
+ * Two objects still define __OBJC_PROTOCOL_$_MLBatchProvider - MLArrayBatchProvider12.o, which conforms to it
+ * and therefore carries the metadata object it needs, and the generated protocol source - and that is harmless
+ * because both definitions are the SDK's own, byte for byte: measured with `nm -m`, both are
+ * `weak private external`, and both come from MLBatchProvider.h. The import stays: CharonMLBridge.h needs the
+ * enums (MLFeatureType, MLFeatureTypeInt64) that only this header declares. */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wduplicate-protocol"
 #import <CoreML/CoreML.h>
