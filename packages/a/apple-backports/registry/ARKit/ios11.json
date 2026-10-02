@@ -1321,11 +1321,10 @@
       "kind": "property",
       "introduced": "12.0",
       "minimum": "6.0",
-      "status": "implemented",
-      "reason": "carried: a map the session starts from, and carrying one is starting from it oracle: measured by the tracker's own differential, tests/backports/host/arkit/run.sh over a 30-frame synthetic sequence, whose numbers are recorded in facts/ARKit/TrackerDifferential.md",
-      "effect": "the map, and a session asked to run with one starts from that map's anchors rather than from nothing",
-      "source": "the SDK 16.4 headers of ARKit",
-      "facts": "facts/ARKit/ARSCNViewFamily.md"
+      "status": "absent",
+      "reason": "not carried, and what it needs is a relocalisation the tracker does not have: the property is the map a session localises to before it reports anchors, and the port has no step that matches the camera's features against one. That was measured, not read off a header: ARSession.m:77-104 is the whole of -runWithConfiguration:options: and it reads the configuration only for +isSupported, ARSessionRunOptionResetTracking and ARSessionRunOptionRemoveExistingAnchors, never for initialWorldMap; CharonARTracker.h:123-241 is the tracker's whole interface and no member of it takes a map, a point set or an anchor list; and across the nine ARKit sources the name occurs once, at the @dynamic in ARConfiguration2.m:77. What the port does have is the other direction: -[ARSession getCurrentWorldMapWithCompletionHandler:] at ARSession.m:306 hands back a map built from the anchors and the points the session has, and -[ARFrame worldMap] at ARFrame.m:401 answers the dictionary behind it. So a map goes out and none comes in, and a caller that set this would be answered as though the session had started from a map it never read - which is the reading the header's own sentence names, \"attempt to localize to the provided map with a limited tracking state until localization is successful\", and the port would answer neither the attempt nor the state",
+      "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises. The @dynamic at ARConfiguration2.m:77 stays for exactly that, and the reason is measured rather than stylistic: a copy of that file with the line removed compiles clean and otool -ov on the object then lists -[ARWorldTrackingConfiguration initialWorldMap] and -setInitialWorldMap:, which clang synthesised from the SDK header's own property - an accessor that stores a map and returns it while the session runs on from nothing, which is the lie this row would then be claiming",
+      "source": "the SDK 16.4 header declares it `@property (nonatomic, strong, nullable) ARWorldMap *initialWorldMap API_AVAILABLE(ios(12.0))` at ARKit.framework/Headers/ARConfiguration.h:261. What is absent is measured from this port's own tree and from the releases: otool -ov over the objects of ARConfiguration2.m, ARConfiguration3.m and ARConfiguration4.m lists the @dynamic and no accessor for either -initialWorldMap or -setInitialWorldMap:, and ARWorldTrackingConfiguration is itself absent, 0 entries, from the class list of the armv7 shared cache of both 6.1.3 and 4.3"
     },
     {
       "api": "ARWorldTrackingConfiguration.maximumNumberOfTrackedImages",
@@ -1334,7 +1333,7 @@
       "minimum": "6.0",
       "status": "implemented",
       "reason": "carried: how many pictures the session reports at once, which is a number the caller sets oracle: measured by the tracker's own differential, tests/backports/host/arkit/run.sh over a 30-frame synthetic sequence, whose numbers are recorded in facts/ARKit/TrackerDifferential.md",
-      "effect": "the number asked for, and a session reports at most that many image anchors",
+      "effect": "the number as the caller set it. The tracker carries no reference-image detection, so no image anchor is ever reported and the number limits nothing - measured, the names ARReferenceImage and ARImageAnchor occur in neither CharonARTracker.m nor ARSession.m, and -[ARImageTrackingConfiguration maximumNumberOfTrackedImages] at ARConfiguration3.m:46 is the same setting with the same reach",
       "source": "the SDK 16.4 headers of ARKit",
       "facts": "facts/ARKit/ARSCNViewFamily.md"
     },
@@ -1525,7 +1524,7 @@
       "effect": "said when a pairing is broken; measured in tests/backports/host/arkit, which records the calls and their order"
     },
     {
-      "api": "-[ARSCNPlaneGeometry planeGeometryWithDevice:]",
+      "api": "+[ARSCNPlaneGeometry planeGeometryWithDevice:]",
       "kind": "method",
       "introduced": "11.0",
       "minimum": "6.0",

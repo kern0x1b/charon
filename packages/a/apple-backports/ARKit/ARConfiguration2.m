@@ -32,6 +32,8 @@
 {
     ARPlaneDetection _planeDetection;
     AREnvironmentTexturing _environmentTexturing;
+    NSSet<ARReferenceImage *> *_detectionImages;
+    NSInteger _maxTrackedImages;
 }
 
 - (instancetype)init
@@ -66,6 +68,34 @@
 - (AREnvironmentTexturing)environmentTexturing { return _environmentTexturing; }
 - (void)setEnvironmentTexturing:(AREnvironmentTexturing)environmentTexturing { _environmentTexturing = environmentTexturing; }
 
+// The two settings below are not one of the ones this file leaves @dynamic, because nothing about
+// them needs a sensor this device has not: the pictures to look for are found in the camera's own
+// frames, and how many of them at once is a number the caller sets. Both are declared in
+// ARConfiguration.h - detectionImages at :267 as `copy, null_resettable`, maximumNumberOfTrackedImages
+// at :283 - and what the header's own attributes say is what these answer: the set is copied, so a
+// later change to the caller's set does not change the configuration, and nil resets it, which for a
+// null_resettable property means empty rather than nil.
+//
+// What the tracker does with either is a separate question and this file does not answer it. The
+// tracker matches features between consecutive frames and reports planes; it names neither
+// ARReferenceImage nor ARImageAnchor, so no image anchor is ever reported and the number limits
+// nothing. That is what the two registry rows say as well.
+- (NSSet<ARReferenceImage *> *)detectionImages
+{
+    return _detectionImages ?: [NSSet set];
+}
+
+- (void)setDetectionImages:(NSSet<ARReferenceImage *> *)detectionImages
+{
+    _detectionImages = [detectionImages copy];
+}
+
+- (NSInteger)maximumNumberOfTrackedImages { return _maxTrackedImages; }
+- (void)setMaximumNumberOfTrackedImages:(NSInteger)maximumNumberOfTrackedImages
+{
+    _maxTrackedImages = maximumNumberOfTrackedImages;
+}
+
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@: %p; planeDetection = %lu>",
@@ -74,8 +104,14 @@
 
 // The settings a caller sets that this device cannot honour behind. Each is declared by the SDK's
 // own header and is not answered here, which is what `@dynamic` says.
+//
+// initialWorldMap is here for a measured reason and not because it needs a sensor: it is the map a
+// session localises to, and -runWithConfiguration:options: (ARSession.m:77) reads the configuration
+// for nothing else, while no member of CharonARTracker takes a map. Its registry row answers absent,
+// which is what a @dynamic here makes true: respondsToSelector: answers NO. Removing the line would
+// not make the absence honest - clang then synthesises the pair of accessors from the SDK header's own
+// property, and they would store a map and return it while the session runs on from nothing.
 @dynamic initialWorldMap;
-@dynamic detectionImages;
 @dynamic detectionObjects;
 @dynamic wantsHDREnvironmentTextures;
 @dynamic automaticImageScaleEstimationEnabled;

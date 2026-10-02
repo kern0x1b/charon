@@ -48,7 +48,22 @@
     _maximumNumberOfTrackedImages = maximumNumberOfTrackedImages;
 }
 
-@dynamic trackingImages;
+// The pictures the session is asked to look for, and the row's own reading of the property: the set
+// as the caller set it, copied so that a later change to their set does not change the configuration.
+// ARConfiguration.h:421 declares it `copy`, which is the copy and nothing more.
+//
+// What the tracker does with the set is a separate question and this file does not answer it: the
+// tracker matches features between frames and reports planes, and it names neither ARReferenceImage
+// nor ARImageAnchor, so no image anchor comes from it. That is the row's effect as well.
+- (NSSet<ARReferenceImage *> *)trackingImages
+{
+    return _trackingImages;
+}
+
+- (void)setTrackingImages:(NSSet<ARReferenceImage *> *)trackingImages
+{
+    _trackingImages = [trackingImages copy];
+}
 
 
 + (BOOL)isSupported
