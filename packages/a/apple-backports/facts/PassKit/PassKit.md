@@ -97,6 +97,11 @@ no held release (the 26.x identity-document classes).
 
 ## `PKRemotePass`: the release has the pass relay, so `remotePass` is an answer and not an absence
 
+> **Superseded (2026-10-03).** No category answers `PKPass.remotePass` in the tree, and its row is
+> `absent`: the property is a BOOL read through `-isRemotePass`, which the registry's property spelling
+> cannot carry - see "`PKPass.remotePass` is a BOOL read through `-isRemotePass`" below and
+> `PassKit/PKPaymentPass9.m`. The cache measurement of `PKRemotePass` / `PKLocalPass` here stands.
+
 The cache holds **`PKRemotePass`**, superclass `PKPass`, 8 instance methods, and **`PKLocalPass`**,
 superclass `PKPass`, 42 -- the release's own split of a pass by where it lives. That is Apple's pass
 relay of 6.1.3 working, the service that kept a pass on another device current, and it is the reason
@@ -621,3 +626,137 @@ passed and reading the count again -- and the three `null_resettable` lists answ
 The last three cases are the negative ones: `PKPaymentRequestUpdate` must carry **no** `shippingMethods`
 (15.0), **no** `multiTokenContexts` (16.0) and `PKPaymentAuthorizationResult` **no** `orderDetails`
 (16.0), because `@dynamic` is what keeps an 11.0 object from shipping a later release's member.
+
+**The probe asks whether the class is there, not only whether a member answers**: 52 check lines over
+40 member cases, 0 failures, both mutants red. Six of the lines are these two classes, and one of them
+checks the *superclass* — a renamed subclass of the host's class would answer all five questions
+correctly while being a class the release never had.
+
+## Release 9: PKPaymentPass9.m, and two corrections this pass found above
+
+The release-9 object is `PassKit/PKPaymentPass9.m`. It carries `PKAddPaymentPassRequest`,
+`PKAddPaymentPassRequestConfiguration` and `PKAddPaymentPassViewController` as classes, and
+`-[PKPass deviceName]` as a category on the release's own `PKPass`. The three classes were `absent`
+with the reason "the Secure Element: this device has none", and that is the reasoning the 6.1.3 gate
+already refused once, in the section above about the two payment controllers: a class exists on a
+device without the hardware and answers the question. `+[PKAddPaymentPassViewController
+canAddPaymentPass]` answers **NO**, Apple's own documented answer for a device with no Secure
+Element. The other two hold the issuer's own `NSString`/`NSData` and need no hardware to exist.
+
+### The measurement, with its command, its output and its control
+
+```
+$ xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7
+   (run through coordination/heavy.sh; output kept at .agent-work/runs/pk9/inv-6.1.3.tsv)
+$ awk -F'\t' '$1=="class" && $2 ~ /^PK/' .agent-work/runs/pk9/inv-6.1.3.tsv | wc -l
+66
+$ awk -F'\t' '$1=="class"' .agent-work/runs/pk9/inv-6.1.3.tsv | wc -l
+11378
+```
+
+The 11378 is the control: one run of a working reader, and the 66 is its PassKit count.
+
+| name | in the armv7 cache of 6.1.3? | what the run says |
+| --- | --- | --- |
+| `PKPass` | **yes**, 90 instance methods | neither `-deviceName` nor `-isRemotePass` among them |
+| `PKPassLibrary` | **yes**, 34 instance + 1 class method | no remote-payment member of any kind |
+| `PKAddPassesViewController` | **yes**, super `UIViewController` | the release's own pass sheet |
+| `PKRemotePass`, `PKLocalPass`, `PKWelcomePass` | **yes**, all super `PKPass` | the release's own pass subclasses |
+| `PKAddPaymentPassRequest` | **no** | port defines it |
+| `PKAddPaymentPassRequestConfiguration` | **no** | port defines it |
+| `PKAddPaymentPassViewController` | **no** | port defines it |
+| `PKPaymentMethod` | **no** | and unreachable, see below |
+| `PKPaymentPass` | **no** | which is why the delegate callback stays unfired |
+
+The 4.3 end carries no PassKit at all, and that zero is the release's and not the reader's:
+
+```
+$ python3 -c "import json; d=json.load(open('~/.charon/dyld/4.3/classes_armv7.json'))['classes']; \
+    n=sorted(d); print([x for x in n if x.startswith('UI')].__len__(), [x for x in n if x.startswith('PK')])"
+597 ['PKJob', 'PKPaper', 'PKPrintSettings', 'PKPrinter', 'PKPrinterBrowser']
+```
+
+597 names beginning `UI` in that run, so the reader works; the five `PK*` names are PDFKit's, and
+there is no `PKPass` at 4.3 to hang a category on.
+
+### Correction 1: the PKPass table at the top of this file is not what the release carries
+
+> Already applied (2026-10-03): the table at the top marks these members absent from 6.1.3; this
+> section is kept as the measurement behind that.
+
+The table in "The measurement pass" lists `passNumber`, `userName`, `deviceName`,
+`primaryAccountNumberSuffix`, `foregroundColor`, `backgroundColor` and `logoImage` among `PKPass`'s
+members. **It is a summary of the header, not of the release, and six of those names are not in the
+release's PKPass at all** — the class-scoped run above answers 90 instance methods and none of them
+is `-deviceName`, `-passNumber`, `-userName`, `-primaryAccountNumberSuffix`, `-foregroundColor`,
+`-backgroundColor` or `-logoImage`. `deviceName` is the one this band turns on, and it is in that
+list wrongly. Every claim in this file that rests on a *class-scoped* measurement stands; the table
+should be read as what the SDK declares, not as what 6.1.3 has.
+
+### Correction 2: `PKPass14.m`'s comment says the release has no `PKRemotePass`. It has one.
+
+`PKPass14.m` says "The release has no `PKPaymentPass` and no `PKRemotePass`". The first half is
+measured and right. The second is wrong:
+
+```
+$ python3 tools/cache-index/first-rung.py PKRemotePass
+PKRemotePass	6.1
+$ awk -F'\t' '$1=="class" && $2=="PKRemotePass" {print $2, $3}' .agent-work/runs/pk9/inv-6.1.3.tsv
+PKRemotePass PKPass
+```
+
+So the release carries `PKRemotePass` as a `PKPass` subclass, from 6.1 on. `PKPaymentPass` is
+genuinely absent, which is the half that matters and is why this object answers nothing about a
+payment pass. Left for the band that owns `PKPass14.m` to correct; it is not this band's row.
+
+### `PKPass.remotePass` is a BOOL read through `-isRemotePass`, and the row said PKRemotePass
+
+The row said "the property's value is a PKRemotePass". It is not. The header is:
+
+```
+$ grep -n "remotePass\|deviceName" .../iPhoneOS26.2.sdk/System/Library/Frameworks/PassKit.framework/Headers/PKPass.h
+50:@property (nonatomic, assign, readonly, getter=isRemotePass)   BOOL       remotePass API_AVAILABLE(macos(11.0), ios(9.0), watchos(3.0));
+51:@property (nonatomic, copy, readonly)                          NSString   *deviceName API_AVAILABLE(macos(11.0), ios(9.0), watchos(3.0));
+```
+
+The value is a **BOOL** saying whether this pass lives on another device, and the selector is
+**`isRemotePass`**, not `remotePass`. `first-rung.py` agrees about both: `isRemotePass` reads 9.0 and
+`remotePass` reads 9.0 too (it is `PKRemotePass`'s own), while `deviceName` reads **3.0** — which is
+another class's selector and not `PKPass`'s, the exact trap the ladder's own note describes, and the
+reason the class-scoped run above and not `first-rung` answers this band.
+
+`-[PKPass deviceName]` is carried and answers nil. `PKPass.remotePass` stays `absent`, and that is a
+limitation of the check rather than of the answer: the row is spelled `PKPass.remotePass` as the SDK
+surface spells it, and `backports.lua`'s `spellings()` turns a property row into `-[PKPass
+remotePass]` and `-[PKPass setRemotePass:]` — never the getter that Apple's `getter=` attribute
+renames it to. So an `implemented` row could not be shown to be built, while carrying the selector
+would leave the registry describing the build wrongly. The answer itself is NO and would be as
+honest as `deviceName`'s nil; what is missing is a row spelling that can carry it. Recorded here and
+in the row rather than papered over by defining a `-remotePass` method no Apple SDK declares.
+
+### `PKPaymentMethod` is absent because Apple's API gives a caller no way to reach the name
+
+```
+$ grep -rn paymentMethodWithType .../iPhoneOS26.2.sdk/System/Library/Frameworks/      # nothing
+$ awk -F'\t' '$1=="PassKit" && $4 ~ /PKPaymentMethod/' coordination/corpus/sdk-26.2-surface.tsv
+```
+
+The 26.2 header declares three readonly properties and no initializer, and no factory exists in
+that SDK, so nothing can construct one and nothing can hand one over: the surface carries no method
+row for this class at any version. The one flow that would deliver one sits behind
+`+canMakePayments`, which answers NO. So no selector of it can be sent on this device, nothing
+crashes by reaching for it, and carrying the class would be a class no caller can obtain an instance
+of — which is the line drawn against the three add-payment-pass classes, where a caller *can* reach
+every name.
+
+### One object per release, and what places it
+
+Every class in the object first appears at 9.0 (`first-rung.py` on all three), and `band()` drops an
+object from every band whose release already exports all of its symbols. So this file is built
+exactly where the release lacks these three classes and nowhere else — which is what keeps the
+`PKPass` category from replacing the release's own `-deviceName` in a band that has it. The four
+members iOS 10.1, 12.0 and 12.3 added to `PKAddPaymentPassRequestConfiguration` are `@dynamic` and
+not answered, so that a 9.0 object carries no other release's API. One clang warning is left on
+purpose and is written down in the object: `PKAddPaymentPassRequestConfiguration`'s `-init` is not
+overridden, because overriding it means naming one of the release's 9.0 scheme constants (which has
+no registry row) or passing nil to a parameter Apple's header declares nonnull.
