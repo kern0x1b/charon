@@ -1,7 +1,12 @@
 #import <Foundation/Foundation.h>
 
 #import "CharonDocumentBrowserTypes.h"
-#import "CharonUIKitProtocols.h"
+
+// The delegate property below names this protocol. Declared here as a forward declaration and not
+// by importing the umbrella: UIDocumentBrowserTransitionController.h in this chain re-declares the
+// class properties the SDK 16.4 UIDocumentBrowserViewController.h already declares, and pulling
+// that umbrella in makes both visible at once.
+@protocol UIDocumentBrowserViewControllerDelegate;
 
 // The delegate property below names this protocol. Declared here as a forward declaration and not
 // by importing the umbrella: UIDocumentBrowserTransitionController.h in this chain re-declares the
