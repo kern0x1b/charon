@@ -84,7 +84,7 @@
       "introduced": "13.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "a promise is not a value this engine has, so this is the port's own ES5 promise - the one +[JSValue valueWithNewPromiseInContext:fromExecutor:] builds - and the same constructor, the same executor and the same promise object, not a second promise (DeferredPromise, JSValue.m)",
+      "reason": "a promise is not a value this engine has, so this is the port's own ES5 promise - the one +[JSValue valueWithNewPromiseInContext:fromExecutor:] builds - and the same constructor, the same executor and the same promise object, not a second promise (charon_js_deferred_promise, CharonJSPromise.m)",
       "effect": "answers a promise and the two functions that settle it, both functions of their own. A resolve reaches a reaction the promise was given, on the next run loop turn rather than as the call returns, which is the difference +[JSValue valueWithNewPromiseInContext:fromExecutor:] already carries: the release with a native promise drains its microtask queue as the outermost call into script returns, and this queue has no leave of its own to run at when a C client makes the call itself. A rejection through the C API leaves its reaction unrun on this engine and on the host's own one alike, measured in the same run and asserted on neither. NULL with the exception left where the caller reads it when the promise could not be made",
       "facts": "facts/JavaScriptCore/CAPI.md",
       "source": "SDK 16.4 for the contract; JavaScriptCore-254/Source/JavaScriptCore/API/JSValueRef.cpp, JSObjectRef.cpp and JSContextRef.cpp for what each function is; tests/backports/host/jscontext/checks.m for the answers, the host's own JavaScriptCore as the oracle"

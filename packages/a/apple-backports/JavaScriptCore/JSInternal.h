@@ -166,6 +166,31 @@ void charon_js_release_pending(void);
 void charon_js_leave(void);
 void charon_js_note_jobs(JSContextRef context, JSObjectRef drain);
 
+/*
+ * The port's own ES5 promise, in CharonJSPromise.m - a file that exports no API symbol of its own,
+ * so band() keeps it in every release, which is what lets the iOS 16.0 object below reach it from a
+ * band where JSValue.m has been re-exported to the release's own JSValue and is not in the library.
+ *
+ * charon_js_promise_constructor is the context's Promise, made the first time it is asked for and
+ * found again through the virtual machine's weak object map, so a context has one for as long as
+ * anything can reach it. NULL only if making it failed, which the context's exception handler has
+ * then been told.
+ *
+ * charon_js_deferred_promise is the promise and the two functions that settle it: the context's own
+ * constructor, an executor that captures the resolving functions, and the promise. *outException is
+ * left where the caller reads it and nothing is reported here, because the two callers report it
+ * their own way. A call that has entered (charon_js_enter) leaves it entered when it hands a promise
+ * back, so the CALLER leaves it (charon_js_leave) once it is done: a job queued by the caller's own
+ * callback may not run while that callback's script is still on the stack. Both failure paths leave
+ * it themselves, so a caller that gets NULL must not.
+ */
+/* Both _Nullable because both return NULL on the failure their own comment names, and this header
+ * is inside NS_ASSUME_NONNULL_BEGIN: leaving the return bare made -Wnonnull fire on the two
+ * `return NULL;` lines, which is the annotation disagreeing with the code rather than a warning
+ * to silence. */
+JSObjectRef _Nullable charon_js_promise_constructor(JSContext *context);
+JSObjectRef _Nullable charon_js_deferred_promise(JSContext *context, JSObjectRef _Nullable *_Nonnull outResolve, JSObjectRef _Nullable *_Nonnull outReject, JSValueRef _Nullable *_Nonnull outException);
+
 typedef struct CharonJSFrame {
     struct CharonJSFrame *up;
     /* Each retained for the frame's life, since the caller's values are often temporaries ARC

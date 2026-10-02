@@ -138,7 +138,7 @@ the object it returns, or a TypeError "Objective-C blocks called as constructors
 - **The JavaScript class name of a wrapper** is the bridge's own (`[object CharonOpaqueObject]`,
   `[object CharonExportObject]`) where the host shows the Objective-C class (`[object NSURL]`), so
   `String(wrapper)` differs.
-- **Promises** are the release engine's own ES5 script (JSValue.m, `CharonPromiseSource`) over native
+- **Promises** are the release engine's own ES5 script (CharonJSPromise.m, `CharonPromiseSource`) over native
   helpers; a context made by `-init` gets a global `Promise` (the iOS 6 global has none) - writable,
   configurable and not enumerable, as the host's - and a context adopted from a web view page does not. Reactions run when the outermost Objective-C call into JavaScript returns;
   jobs queued with no such call on the stack (script run through the C API directly, a page) run on the
