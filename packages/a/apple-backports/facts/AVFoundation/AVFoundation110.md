@@ -36,8 +36,10 @@ at 6.1.3, 4.3 and 7.0. The row is absent for that half only, and says so.
 ## The two carried rows
 
 Both spellings of `sourceTrackIDForFrameTiming` - on `AVVideoComposition` and on
-`AVMutableVideoComposition` - are one category on the superclass, and the answer is computed from the
-release's own members:
+`AVMutableVideoComposition` - are the same answer, and each is a definition of its own: a category adds
+a selector to the class it is written on and not to that class's subclasses, so the subclass's category
+forwards to the superclass's with `[super sourceTrackIDForFrameTiming]` rather than computing the value
+twice. The answer is computed from the release's own members:
 
 | what the SDK says | what 6.1.3 has |
 | --- | --- |
