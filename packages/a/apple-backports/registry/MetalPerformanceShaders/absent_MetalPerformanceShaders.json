@@ -1,4 +1,5 @@
 {
+  "framework": "MetalPerformanceShaders",
   "entries": [
     {
       "api": "MPSImageGaussianBlur",

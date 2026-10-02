@@ -1,4 +1,5 @@
 {
+  "framework": "CarPlay",
   "entries": [
     {
       "api": "+[CPActionSheetTemplate new]",
@@ -628,6 +629,50 @@
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
     },
     {
+      "api": "-[CPLane initWithAngles:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "one of the two 18.0 initialisers of a class whose other half is 17.4, so it is an object of its own (packages/a/apple-backports/CarPlay/CarPlayLane18.m) and the storage it needs sits with the class's 17.4 ivars behind the Charon accessors in CharonCarPlayLane.h. The header's own account of it is CPLane.h:33's and :38's deprecation text: it is the way to create a CPLane with CPLaneStatusNotGood",
+      "effect": "a lane holding the angles it was given and no highlighted angle, whose status is CPLaneStatusNotGood -- the header's rule at :41 is \"highlightedAngle must not be set if status is CPLaneStatusNotGood\", so a lane with no highlighted angle cannot be Good",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "-[CPLane initWithAngles:highlightedAngle:isPreferred:]",
+      "kind": "method",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the other 18.0 initialiser, in an object of its own for the same reason as -initWithAngles:. The header's deprecation text names it as the way to create a CPLane with status CPLaneStatusGood or CPLaneStatusPreferred (CPLane.h:33, :38)",
+      "effect": "a lane holding the angles it was given plus the angle to highlight: preferred gives CPLaneStatusPreferred, a highlighted angle without preferred gives CPLaneStatusGood, and neither gives CPLaneStatusNotGood with no highlighted angle, which is the header's own rule at :41-42. The highlighted angle is never also one of the angles, because :42 says \"If highlightedAngle is present it can not be included in angles\"",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "-[CPLane init]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly, and one the header itself declares and then deprecates: CPLane.h:25 is `- (instancetype)init API_DEPRECATED(\"-[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]\", ios(17.4, 18.0))` -- deprecated from the release that introduced it and gone at 18.0. Carried because the SDK this port targets declares it and a program written against 17.4 calls it; what it answers is the header's own default and nothing is invented",
+      "effect": "a lane with no angles and the status the enumeration gives value 0, which is CPLaneStatusNotGood (CPLane.h:12). It is carried for a 17.4 caller and is not what an 18.0 caller should reach for: the header's deprecation names -initWithAngles: for exactly this",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "-[CPLane setStatus:]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly. CPLane.h:33 carries its own deprecation text -- \"Use -[CPLane initWithAngles:] to create a CPLane with CPLaneStatusNotGood, use -[CPLane initAngles:highlightedAngle:isPreferred:] to create a CPLane with status CPLaneStatusGood or CPLaneStatusPreferred\" -- and that text is about how a lane is MADE, which is a choice the program makes through an initialiser, not a limit on what a setter may store",
+      "effect": "stores the status it was given, and the guidance card redraws the lane's plate from it: a NotGood lane is drawn dimmed and a Good or Preferred one is drawn bright, which is what CPLane.h:14 makes the guidance for (\"which lane or lanes are preferred\")",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
       "api": "-[CPListItem accessoryImage]",
       "kind": "method",
       "introduced": "12.0",
@@ -1211,6 +1256,17 @@
       "source": "the 26.2 headers this port targets (CPMapTemplate.h declares each of these), the absence of the selector from every source file in packages/a/apple-backports/ measured by grep, and coordination/review-mechanical.sh's own finding, which names them"
     },
     {
+      "api": "-[CPMessageGridItemConfiguration initWithConversationIdentifier:unread:]",
+      "kind": "method",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says: both arguments are kept exactly as CPGridButton.h:21-24 describes them, the identifier copied and unread taken as given, and the header's own `@c NO` default is what an instance that never saw this initialiser reads",
+      "effect": "a configuration holding the conversation identifier and the unread flag it was given. CPGridButton.h:21-23 says the identifier is not displayed to the user and that SiriKit passes it back when the user selects the item; there is no car and no SiriKit selection on this release, so what a caller observes is the value it set and read, and the CPGridButton it configures reads it back through its own messageConfiguration property",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "the declaration is `- (instancetype)initWithConversationIdentifier:(NSString *)conversationIdentifier unread:(BOOL)unread;` at CPGridButton.h:27-28 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it -- its own CarPlay.framework/Headers/CPGridButton.h is 57 lines and stops at the 12.0 members, its last initialiser at :30 -- and coordination/corpus/sdk-26.2-surface.tsv records it at line 133893"
+    },
+    {
       "api": "-[CPNavigationAlert initWithTitleVariants:subtitleVariants:image:primaryAction:secondaryAction:duration:]",
       "kind": "method",
       "introduced": "12.0",
@@ -1352,6 +1408,28 @@
       "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
+      "api": "-[CPRouteInformation initWithManeuvers:laneGuidances:currentManeuvers:currentLaneGuidance:tripTravelEstimates:maneuverTravelEstimates:]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the designated initialiser of a class this port builds wholly (CPRouteInformation.h:23, NS_DESIGNATED_INITIALIZER), and the only way to make one: :25 marks -init NS_UNAVAILABLE",
+      "effect": "a route information holding the six values it was given, each copied. The order is the header's: maneuvers, laneGuidances, currentManeuvers, currentLaneGuidance, tripTravelEstimates, maneuverTravelEstimates",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "-[CPRouteInformation init]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "the header's own refusal, not a hardware one: CPRouteInformation.h:25 is `- (instancetype)init NS_UNAVAILABLE`, and :23's designated initialiser is the only way to make one. The port compiles the forbidden call nowhere and implements nothing under this selector",
+      "effect": "nothing of ours answers it: a route information is made with -initWithManeuvers:... and the header forbids -init, so there is no object to make and nothing to link",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
     },
     {
       "api": "-[CPSessionConfiguration initWithDelegate:]",
@@ -1967,6 +2045,105 @@
       "effect": "the object that owns a CPWindow, keeps the root template, the tab templates and the pushed stack, pushes, pops, presents and dismisses with the header's own completion forms and its deprecated forms, sends the delegate the four template lifecycle messages, and answers the header's own carTraitCollection with this device's own screen trait collection, because the car is this device",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
+    },
+    {
+      "api": "CPLane",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class a 17.4 member of CPNavigationSession needs as its value, and not a queue entry: CPNavigationSession.h:80 types currentLaneGuidance as a CPLaneGuidance, :93 takes an array of them, and CPLaneGuidance.h:22 types its own lanes as an array of CPLane. Apple's own framework carries the class with no head unit attached -- \"CPLaneGuidance is the class currentLaneGuidance's value is  present\" -- so an absent row would be a claim about Apple rather than about this port. Carried in an object of its own because an object holds API of exactly one release (modules/apple/backports.lua's releases_in, read by `tools/release-split.lua`)",
+      "effect": "a lane the program builds and the guidance card draws as one plate: its own status, its primary angle and its remaining angles, all kept as given, and it survives an NSSecureCoding round trip with all of them. Measured on Apple's own object: +supportsSecureCoding answers YES",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLane.angles",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 18.0 replacement for secondaryAngles, declared readonly at CPLane.h:53 and carried in the 18.0 object's category, with the same @dynamic in the 17.4 object and the same reason",
+      "effect": "the angles the program gave the initialiser, and nil when it gave none. CPLane.h:42 says the highlighted angle is not included in it, which is what the 18.0 initialiser arranges",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLane.highlightedAngle",
+      "kind": "property",
+      "introduced": "18.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the 18.0 replacement for primaryAngle, declared readonly at CPLane.h:43 and carried in the 18.0 object's category so the 17.4 object neither stores nor answers it -- measured: without @dynamic the 17.4 object listed highlightedAngle and angles as properties with _highlightedAngle and _angles IVARS, which put 18.0 storage in a 17.4 band",
+      "effect": "the angle the lane highlights, or nil. CPLane.h:41 says it \"must not be set if status is CPLaneStatusNotGood\", so a NotGood lane answers nil rather than a zero-degree measurement",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLane.primaryAngle",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly, and one the header deprecates in favour of 18.0's highlightedAngle: CPLane.h:38 is API_DEPRECATED(\"Use highlightedAngle to get value, use -[CPLane initAngles:highlightedAngle:isPreferred:] to create a CPLane with highlightedAngle set\", ios(17.4, 18.0)). Carried for a 17.4 caller; the 18.0 replacement is a row of its own",
+      "effect": "the angle the program set, or nil. The header says \"the angle to be highlighted if this lane is preferred or good\" (:36-37), so a lane with no angle has none and a getter that answered a zero-degree measurement would be a value the program never gave",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLane.secondaryAngles",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly, and one the header deprecates in favour of 18.0's angles: CPLane.h:48 is API_DEPRECATED(..., ios(17.4, 18.0)). Carried for a 17.4 caller; the 18.0 replacement is a row of its own",
+      "effect": "the array the program set, copied -- the header says `strong` at :48 and the guidance card never mutates a program's array -- and nil when none was set",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLane.status",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly, and the value the guidance card draws each lane plate from",
+      "effect": "the status as the program set it. The header's own words at :30-31 are \"a CPLaneStatus representing the status of this lane\", and the enumeration is CPLaneStatusNotGood = 0, CPLaneStatusGood, CPLaneStatusPreferred (CPLane.h:10-15)",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLaneGuidance",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the class a 17.4 member of CPNavigationSession needs as its value, and not a queue entry: CPNavigationSession.h:80 types currentLaneGuidance as a CPLaneGuidance, :93 takes an array of them, and CPLaneGuidance.h:22 types its own lanes as an array of CPLane. Apple's own framework carries the class with no head unit attached -- \"CPLaneGuidance is the class currentLaneGuidance's value is  present\" -- so an absent row would be a claim about Apple rather than about this port. Carried in an object of its own because an object holds API of exactly one release (modules/apple/backports.lua's releases_in, read by `tools/release-split.lua`)",
+      "effect": "guidance the program declares about which lanes are preferred, as CPLaneGuidance.h:14 says it is, kept as the program gave it and answering nil -- not an empty array -- for both of its array properties before anything is set, which is what Apple's own object answers",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLaneGuidance.instructionVariants",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly. CPLaneGuidance.h:25-27 says the array holds \"an array of NSString representing the instruction for this lane guidance, arranged from most to least preferred. You must provide at least one variant.\" -- and the measured answer settles what an empty one does: a fresh guidance answers NIL for it, not an empty array",
+      "effect": "the array the program set, copied, and nil when none was set. The order is kept as given because \"arranged from most to least preferred\" says which one a driver reads first; the port does not invent a variant for an empty one and does not refuse one either, because a caller that sets none has said what it said",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPLaneGuidance.lanes",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the array of CPLane the program set, copied -- the header declares it `copy` at CPLaneGuidance.h:22 -- and nil when none was set. Each lane is drawn as one plate of the session's guidance card, in the order given, because :22 says the array's lanes are \"an array of CPLane objects, each describes a single lane\" and the order a program gives is its own",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
     },
     {
       "api": "CPListItem",
@@ -2638,6 +2815,39 @@
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
     },
     {
+      "api": "CPMessageGridItemConfiguration",
+      "kind": "class",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "there is no CarPlay in this release, and this class is the one CarPlay class of 26.0 that needs nothing a car has: it holds the two values a caller gives it and answers with them, so it is built over the release's own Foundation. The iPhoneOS16.4 SDK this package compiles against does not declare the class at all, so CharonCarPlay260.h declares Apple's own shape, declarations only and no method body, and CarPlayGrid260.m is where the behaviour is",
+      "effect": "a configuration of two stored values and no view: the CPGridButton that was initialised with one keeps it and hands it back from its own messageConfiguration property, and the unread flag is carried and readable but never drawn, because there is no car screen to draw it on",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "the declaration is `API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos, watchos)` over `@interface CPMessageGridItemConfiguration : NSObject` at CPGridButton.h:15-16 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; grep finds the name nowhere in the iPhoneOS16.4 SDK the package compiles against, whose CarPlay.framework/Headers/CPGridButton.h is 57 lines and stops at the 12.0 members, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133868"
+    },
+    {
+      "api": "CPMessageGridItemConfiguration.conversationIdentifier",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says, and the header's own two attributes are the two rules the implementation follows: `readonly` is why there is no setter, and `copy` is why the initialiser copies what it is given",
+      "effect": "the identifier the initialiser was given, read back unchanged. CPGridButton.h:21-23 says it is not displayed to the user and that SiriKit hands it back when the item is selected, so on this release the value is a round trip a caller can read and nothing else: nothing draws it and nothing hands it back",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "the declaration is `@property (nonatomic, readonly) NSString *conversationIdentifier` at CPGridButton.h:32 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133919"
+    },
+    {
+      "api": "CPMessageGridItemConfiguration.unread",
+      "kind": "property",
+      "introduced": "26.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says, and the header's own `getter=isUnread` is the accessor's name: -isUnread and -setUnread: are both the object's own BOOL ivar, read and written in place",
+      "effect": "the flag the initialiser was given, and whatever a caller has set since through -setUnread:. CPGridButton.h:24 says the default is NO, and an instance that never saw the initialiser reads NO, because the ivar starts zeroed. The header's promise is that the item shows an unread indicator, and no indicator is drawn on this release: there is no car screen, so the flag is carried and readable and nothing more",
+      "facts": "facts/CarPlay/CarPlay.md",
+      "source": "the declaration is `@property (nonatomic, getter=isUnread) BOOL unread` at CPGridButton.h:30 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133920"
+    },
+    {
       "api": "CPNavigationAlert",
       "kind": "class",
       "introduced": "12.0",
@@ -2845,6 +3055,83 @@
       "effect": "a route choice is a choice of route between two places, which is arithmetic and not a car: the choice's own three variant lists and user info, with NSCopying and NSSecureCoding as the header declares, and the choices' own summaries as the rows of a trip's list",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder"
+    },
+    {
+      "api": "CPRouteInformation",
+      "kind": "class",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the argument type of CPNavigationSession's 17.4 -resumeTripWithUpdatedRouteInformation: (CPNavigationSession.h:58), so the six members this slice carries cannot land without it. Apple's own framework carries it -- \"CPRouteInformation is the class resumeTrip takes  present\" -- so an absent row would be a claim about Apple",
+      "effect": "the six values a rerouting trip needs, each copied once by the designated initialiser and answered as it was given, and nil for every one of them when nil went in, which is what Apple's own object answers with no head unit",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.currentLaneGuidance",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly. The header types it nonnull at :45, and the measured answer is that nil in is nil out",
+      "effect": "the current lane guidance the initialiser was given, copied, and nil for nil. A rerouting route with no current lane guidance is an ordinary state, so nil is answered rather than an empty guidance invented",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.currentManeuvers",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the current maneuvers the initialiser was given, copied, and nil for nil. CPRouteInformation.h:53-55 calls maneuverTravelEstimates the estimates \"for the first maneuver in the list of current maneuvers\", so this array's first object is the maneuver being performed",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.laneGuidances",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the lane guidance the initialiser was given, copied, and nil for nil",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.maneuverTravelEstimates",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the estimates for the first current maneuver the initialiser was given, copied, and nil for nil. The object does not check that they belong to that maneuver: CPRouteInformation.h:53-55 describes what a caller is expected to pass, and the value is the program's own",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.maneuvers",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the maneuvers the initialiser was given, copied, and nil for nil. CPRouteInformation.h:29-30 says each \"describes a single maneuver\", and -[CPNavigationSession resumeTripWithUpdatedRouteInformation:] makes these the session's upcoming maneuvers, because a resumed trip's maneuvers are the new route's",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
+    },
+    {
+      "api": "CPRouteInformation.tripTravelEstimates",
+      "kind": "property",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a member of the class this port builds wholly",
+      "effect": "the trip's travel estimates the initialiser was given, copied, and nil for nil. The session's guidance card falls back to them when it has no estimate for the maneuver being performed",
+      "facts": "facts/CarPlay/NavigationSession174.md",
+      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
     },
     {
       "api": "CPSearchTemplate",
@@ -3428,292 +3715,6 @@
       "effect": "a real window the application owns, which is what a car's window is here, with the header's own mapButtonSafeAreaLayoutGuide as a real layout guide that the map template's map buttons are added to; templateApplicationScene is nil because there is no scene, which is the wall",
       "facts": "facts/CarPlay/CarPlay.md",
       "source": "apple.objc.inventory against the armv7 dyld shared cache of 6.1.3, which has no CarPlay class of any name, and apple.dyld's first_releases over the held cache ladder for the release that first exports each"
-    },
-    {
-      "api": "-[CPLane initWithAngles:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "one of the two 18.0 initialisers of a class whose other half is 17.4, so it is an object of its own (packages/a/apple-backports/CarPlay/CarPlayLane18.m) and the storage it needs sits with the class's 17.4 ivars behind the Charon accessors in CharonCarPlayLane.h. The header's own account of it is CPLane.h:33's and :38's deprecation text: it is the way to create a CPLane with CPLaneStatusNotGood",
-      "effect": "a lane holding the angles it was given and no highlighted angle, whose status is CPLaneStatusNotGood -- the header's rule at :41 is \"highlightedAngle must not be set if status is CPLaneStatusNotGood\", so a lane with no highlighted angle cannot be Good",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "-[CPLane initWithAngles:highlightedAngle:isPreferred:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the other 18.0 initialiser, in an object of its own for the same reason as -initWithAngles:. The header's deprecation text names it as the way to create a CPLane with status CPLaneStatusGood or CPLaneStatusPreferred (CPLane.h:33, :38)",
-      "effect": "a lane holding the angles it was given plus the angle to highlight: preferred gives CPLaneStatusPreferred, a highlighted angle without preferred gives CPLaneStatusGood, and neither gives CPLaneStatusNotGood with no highlighted angle, which is the header's own rule at :41-42. The highlighted angle is never also one of the angles, because :42 says \"If highlightedAngle is present it can not be included in angles\"",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "-[CPLane init]",
-      "kind": "method",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly, and one the header itself declares and then deprecates: CPLane.h:25 is `- (instancetype)init API_DEPRECATED(\"-[CPLane initWithAngles:] or -[CPLane initWithHighlightedAngle:angles:isPreferred:]\", ios(17.4, 18.0))` -- deprecated from the release that introduced it and gone at 18.0. Carried because the SDK this port targets declares it and a program written against 17.4 calls it; what it answers is the header's own default and nothing is invented",
-      "effect": "a lane with no angles and the status the enumeration gives value 0, which is CPLaneStatusNotGood (CPLane.h:12). It is carried for a 17.4 caller and is not what an 18.0 caller should reach for: the header's deprecation names -initWithAngles: for exactly this",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "-[CPLane setStatus:]",
-      "kind": "method",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly. CPLane.h:33 carries its own deprecation text -- \"Use -[CPLane initWithAngles:] to create a CPLane with CPLaneStatusNotGood, use -[CPLane initAngles:highlightedAngle:isPreferred:] to create a CPLane with status CPLaneStatusGood or CPLaneStatusPreferred\" -- and that text is about how a lane is MADE, which is a choice the program makes through an initialiser, not a limit on what a setter may store",
-      "effect": "stores the status it was given, and the guidance card redraws the lane's plate from it: a NotGood lane is drawn dimmed and a Good or Preferred one is drawn bright, which is what CPLane.h:14 makes the guidance for (\"which lane or lanes are preferred\")",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "-[CPMessageGridItemConfiguration initWithConversationIdentifier:unread:]",
-      "kind": "method",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says: both arguments are kept exactly as CPGridButton.h:21-24 describes them, the identifier copied and unread taken as given, and the header's own `@c NO` default is what an instance that never saw this initialiser reads",
-      "effect": "a configuration holding the conversation identifier and the unread flag it was given. CPGridButton.h:21-23 says the identifier is not displayed to the user and that SiriKit passes it back when the user selects the item; there is no car and no SiriKit selection on this release, so what a caller observes is the value it set and read, and the CPGridButton it configures reads it back through its own messageConfiguration property",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "the declaration is `- (instancetype)initWithConversationIdentifier:(NSString *)conversationIdentifier unread:(BOOL)unread;` at CPGridButton.h:27-28 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it -- its own CarPlay.framework/Headers/CPGridButton.h is 57 lines and stops at the 12.0 members, its last initialiser at :30 -- and coordination/corpus/sdk-26.2-surface.tsv records it at line 133893"
-    },
-    {
-      "api": "-[CPRouteInformation initWithManeuvers:laneGuidances:currentManeuvers:currentLaneGuidance:tripTravelEstimates:maneuverTravelEstimates:]",
-      "kind": "method",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the designated initialiser of a class this port builds wholly (CPRouteInformation.h:23, NS_DESIGNATED_INITIALIZER), and the only way to make one: :25 marks -init NS_UNAVAILABLE",
-      "effect": "a route information holding the six values it was given, each copied. The order is the header's: maneuvers, laneGuidances, currentManeuvers, currentLaneGuidance, tripTravelEstimates, maneuverTravelEstimates",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "-[CPRouteInformation init]",
-      "kind": "method",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the header's own refusal, not a hardware one: CPRouteInformation.h:25 is `- (instancetype)init NS_UNAVAILABLE`, and :23's designated initialiser is the only way to make one. The port compiles the forbidden call nowhere and implements nothing under this selector",
-      "effect": "nothing of ours answers it: a route information is made with -initWithManeuvers:... and the header forbids -init, so there is no object to make and nothing to link",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane",
-      "kind": "class",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the class a 17.4 member of CPNavigationSession needs as its value, and not a queue entry: CPNavigationSession.h:80 types currentLaneGuidance as a CPLaneGuidance, :93 takes an array of them, and CPLaneGuidance.h:22 types its own lanes as an array of CPLane. Apple's own framework carries the class with no head unit attached -- \"CPLaneGuidance is the class currentLaneGuidance's value is  present\" -- so an absent row would be a claim about Apple rather than about this port. Carried in an object of its own because an object holds API of exactly one release (modules/apple/backports.lua's releases_in, read by `tools/release-split.lua`)",
-      "effect": "a lane the program builds and the guidance card draws as one plate: its own status, its primary angle and its remaining angles, all kept as given, and it survives an NSSecureCoding round trip with all of them. Measured on Apple's own object: +supportsSecureCoding answers YES",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane.angles",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the 18.0 replacement for secondaryAngles, declared readonly at CPLane.h:53 and carried in the 18.0 object's category, with the same @dynamic in the 17.4 object and the same reason",
-      "effect": "the angles the program gave the initialiser, and nil when it gave none. CPLane.h:42 says the highlighted angle is not included in it, which is what the 18.0 initialiser arranges",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane.highlightedAngle",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the 18.0 replacement for primaryAngle, declared readonly at CPLane.h:43 and carried in the 18.0 object's category so the 17.4 object neither stores nor answers it -- measured: without @dynamic the 17.4 object listed highlightedAngle and angles as properties with _highlightedAngle and _angles IVARS, which put 18.0 storage in a 17.4 band",
-      "effect": "the angle the lane highlights, or nil. CPLane.h:41 says it \"must not be set if status is CPLaneStatusNotGood\", so a NotGood lane answers nil rather than a zero-degree measurement",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane.primaryAngle",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly, and one the header deprecates in favour of 18.0's highlightedAngle: CPLane.h:38 is API_DEPRECATED(\"Use highlightedAngle to get value, use -[CPLane initAngles:highlightedAngle:isPreferred:] to create a CPLane with highlightedAngle set\", ios(17.4, 18.0)). Carried for a 17.4 caller; the 18.0 replacement is a row of its own",
-      "effect": "the angle the program set, or nil. The header says \"the angle to be highlighted if this lane is preferred or good\" (:36-37), so a lane with no angle has none and a getter that answered a zero-degree measurement would be a value the program never gave",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane.secondaryAngles",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly, and one the header deprecates in favour of 18.0's angles: CPLane.h:48 is API_DEPRECATED(..., ios(17.4, 18.0)). Carried for a 17.4 caller; the 18.0 replacement is a row of its own",
-      "effect": "the array the program set, copied -- the header says `strong` at :48 and the guidance card never mutates a program's array -- and nil when none was set",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLane.status",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly, and the value the guidance card draws each lane plate from",
-      "effect": "the status as the program set it. The header's own words at :30-31 are \"a CPLaneStatus representing the status of this lane\", and the enumeration is CPLaneStatusNotGood = 0, CPLaneStatusGood, CPLaneStatusPreferred (CPLane.h:10-15)",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLaneGuidance",
-      "kind": "class",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the class a 17.4 member of CPNavigationSession needs as its value, and not a queue entry: CPNavigationSession.h:80 types currentLaneGuidance as a CPLaneGuidance, :93 takes an array of them, and CPLaneGuidance.h:22 types its own lanes as an array of CPLane. Apple's own framework carries the class with no head unit attached -- \"CPLaneGuidance is the class currentLaneGuidance's value is  present\" -- so an absent row would be a claim about Apple rather than about this port. Carried in an object of its own because an object holds API of exactly one release (modules/apple/backports.lua's releases_in, read by `tools/release-split.lua`)",
-      "effect": "guidance the program declares about which lanes are preferred, as CPLaneGuidance.h:14 says it is, kept as the program gave it and answering nil -- not an empty array -- for both of its array properties before anything is set, which is what Apple's own object answers",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLaneGuidance.instructionVariants",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly. CPLaneGuidance.h:25-27 says the array holds \"an array of NSString representing the instruction for this lane guidance, arranged from most to least preferred. You must provide at least one variant.\" -- and the measured answer settles what an empty one does: a fresh guidance answers NIL for it, not an empty array",
-      "effect": "the array the program set, copied, and nil when none was set. The order is kept as given because \"arranged from most to least preferred\" says which one a driver reads first; the port does not invent a variant for an empty one and does not refuse one either, because a caller that sets none has said what it said",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPLaneGuidance.lanes",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the array of CPLane the program set, copied -- the header declares it `copy` at CPLaneGuidance.h:22 -- and nil when none was set. Each lane is drawn as one plate of the session's guidance card, in the order given, because :22 says the array's lanes are \"an array of CPLane objects, each describes a single lane\" and the order a program gives is its own",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPMessageGridItemConfiguration",
-      "kind": "class",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "there is no CarPlay in this release, and this class is the one CarPlay class of 26.0 that needs nothing a car has: it holds the two values a caller gives it and answers with them, so it is built over the release's own Foundation. The iPhoneOS16.4 SDK this package compiles against does not declare the class at all, so CharonCarPlay260.h declares Apple's own shape, declarations only and no method body, and CarPlayGrid260.m is where the behaviour is",
-      "effect": "a configuration of two stored values and no view: the CPGridButton that was initialised with one keeps it and hands it back from its own messageConfiguration property, and the unread flag is carried and readable but never drawn, because there is no car screen to draw it on",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "the declaration is `API_AVAILABLE(ios(26.0)) API_UNAVAILABLE(macos, watchos)` over `@interface CPMessageGridItemConfiguration : NSObject` at CPGridButton.h:15-16 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; grep finds the name nowhere in the iPhoneOS16.4 SDK the package compiles against, whose CarPlay.framework/Headers/CPGridButton.h is 57 lines and stops at the 12.0 members, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133868"
-    },
-    {
-      "api": "CPMessageGridItemConfiguration.conversationIdentifier",
-      "kind": "property",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says, and the header's own two attributes are the two rules the implementation follows: `readonly` is why there is no setter, and `copy` is why the initialiser copies what it is given",
-      "effect": "the identifier the initialiser was given, read back unchanged. CPGridButton.h:21-23 says it is not displayed to the user and that SiriKit hands it back when the item is selected, so on this release the value is a round trip a caller can read and nothing else: nothing draws it and nothing hands it back",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "the declaration is `@property (nonatomic, readonly) NSString *conversationIdentifier` at CPGridButton.h:32 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133919"
-    },
-    {
-      "api": "CPMessageGridItemConfiguration.unread",
-      "kind": "property",
-      "introduced": "26.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the member of a class this port builds, so it is carried with the class and behaves as the SDK's own header says, and the header's own `getter=isUnread` is the accessor's name: -isUnread and -setUnread: are both the object's own BOOL ivar, read and written in place",
-      "effect": "the flag the initialiser was given, and whatever a caller has set since through -setUnread:. CPGridButton.h:24 says the default is NO, and an instance that never saw the initialiser reads NO, because the ivar starts zeroed. The header's promise is that the item shows an unread indicator, and no indicator is drawn on this release: there is no car screen, so the flag is carried and readable and nothing more",
-      "facts": "facts/CarPlay/CarPlay.md",
-      "source": "the declaration is `@property (nonatomic, getter=isUnread) BOOL unread` at CPGridButton.h:30 of the CarPlay.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/CarPlay.framework/Versions/A/Headers; the iPhoneOS16.4 SDK the package compiles against does not declare it, and coordination/corpus/sdk-26.2-surface.tsv records it at line 133920"
-    },
-    {
-      "api": "CPRouteInformation",
-      "kind": "class",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "the argument type of CPNavigationSession's 17.4 -resumeTripWithUpdatedRouteInformation: (CPNavigationSession.h:58), so the six members this slice carries cannot land without it. Apple's own framework carries it -- \"CPRouteInformation is the class resumeTrip takes  present\" -- so an absent row would be a claim about Apple",
-      "effect": "the six values a rerouting trip needs, each copied once by the designated initialiser and answered as it was given, and nil for every one of them when nil went in, which is what Apple's own object answers with no head unit",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.currentLaneGuidance",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly. The header types it nonnull at :45, and the measured answer is that nil in is nil out",
-      "effect": "the current lane guidance the initialiser was given, copied, and nil for nil. A rerouting route with no current lane guidance is an ordinary state, so nil is answered rather than an empty guidance invented",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.currentManeuvers",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the current maneuvers the initialiser was given, copied, and nil for nil. CPRouteInformation.h:53-55 calls maneuverTravelEstimates the estimates \"for the first maneuver in the list of current maneuvers\", so this array's first object is the maneuver being performed",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.laneGuidances",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the lane guidance the initialiser was given, copied, and nil for nil",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.maneuverTravelEstimates",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the estimates for the first current maneuver the initialiser was given, copied, and nil for nil. The object does not check that they belong to that maneuver: CPRouteInformation.h:53-55 describes what a caller is expected to pass, and the value is the program's own",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.maneuvers",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the maneuvers the initialiser was given, copied, and nil for nil. CPRouteInformation.h:29-30 says each \"describes a single maneuver\", and -[CPNavigationSession resumeTripWithUpdatedRouteInformation:] makes these the session's upcoming maneuvers, because a resumed trip's maneuvers are the new route's",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
-    },
-    {
-      "api": "CPRouteInformation.tripTravelEstimates",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "a member of the class this port builds wholly",
-      "effect": "the trip's travel estimates the initialiser was given, copied, and nil for nil. The session's guidance card falls back to them when it has no estimate for the maneuver being performed",
-      "facts": "facts/CarPlay/NavigationSession174.md",
-      "source": "the 26.2 headers this port targets (CPLane.h:10-15 for the status enumeration, :22-33 for the class, -init and -setStatus:, :36-48 for primaryAngle and secondaryAngles; CPLaneGuidance.h:16-28; CPRouteInformation.h:17-55), tools/corpus/objc-inventory.lua over the arm64e dyld shared caches of 16.0 and 18.0 read per class, python3 tools/cache-index/first-rung.py CPLaneGuidance CPRouteInformation (which answers 16.0 and 18.0 -- presence on a held ladder with no 13.x/14.x/15.x rung), Apple's own CarPlay on this machine with no head unit attached from tests/backports/host/carplay/headunit-probe.m section 8, and the port's own objects driven by tests/backports/host/carplay/runner.m; facts/CarPlay/NavigationSession174.md"
     }
   ]
 }

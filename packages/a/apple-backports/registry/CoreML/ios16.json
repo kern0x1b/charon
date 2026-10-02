@@ -2,17 +2,6 @@
  "framework": "CoreML",
  "entries": [
   {
-   "api": "MLMultiArrayDataTypeFloat16",
-   "kind": "constant",
-   "introduced": "16.0",
-   "minimum": "6.0",
-   "status": "implemented",
-   "reason": "MLMultiArrayDataTypeFloat16 = 0x10000 | 16: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
-   "effect": "the consumer writes MLMultiArrayDataTypeFloat16 and the SDK's own value (0x10000 | 16) is what its code carries; no release's Core ML carries a different one",
-   "facts": "facts/CoreML/CoreML.md",
-   "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one"
-  },
-  {
    "api": "MLModelAsset",
    "kind": "class",
    "introduced": "16.0",
@@ -71,6 +60,17 @@
    "reason": "the options of one prediction: the CPU-only flag and the backing objects the caller proposes for the answers",
    "facts": "facts/CoreML/CoreML.md",
    "source": "the CoreML model specification Apple ships in coremltools (BSD-3-Clause), and the runtime of coremltools 9.0 on this host; the values of the exported constants and the shape of every description are measured against the CoreML of this host by tests/backports/host/coreml/run.sh"
+  },
+  {
+   "api": "MLMultiArrayDataTypeFloat16",
+   "kind": "constant",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLMultiArrayDataTypeFloat16 = 0x10000 | 16: the element type a multi-array of that type holds. A case is a value the consumer inlines at compile time, so the port carries it by carrying the header and there is nothing of its own to define",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "SDK 16.4, MLMultiArray.h:18-23, the enumerator as the SDK writes it: the value is Apple's own, inlined into the consumer's code at compile time, and no release's Core ML carries a different one",
+   "effect": "the consumer writes MLMultiArrayDataTypeFloat16 and the SDK's own value (0x10000 | 16) is what its code carries; no release's Core ML carries a different one"
   }
  ]
 }

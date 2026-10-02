@@ -1,390 +1,390 @@
 {
-  "framework": "CoreML",
-  "entries": [
-    {
-      "api": "MLModelCollection",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLModelCollectionEntry",
-      "kind": "class",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
-      "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLTask",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "MLTask.h:26-27 calls it \"Class that abstracts state transitions and basic task controls\", and it gives both methods as their effect and nothing else: -resume \"resumes the task and changes state to \\\"Running\\\"\" (:41-42) and -cancel \"starts cancelling the task and changes the state to \\\"Cancelling\\\"\" (:44-45). The five states are MLTaskState's own cases (:16-24): Suspended 1, Running 2, Cancelling 3, Completed 4, Failed 5. Placement is the header's own annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :29 - NOT first-rung's, which answers 16.0 for all five of these names because the held ladder has no 13.0 rung. -init and +new are NS_UNAVAILABLE at :47-51 with the header's own reason \"cannot construct MLTask without parameters\", so each refuses by name. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
-      "effect": "the class is here: -taskIdentifier, -state and -error answer, and -resume moves a Suspended task to Running and -cancel moves a Suspended or Running task to Cancelling, which is exactly what MLTask.h:41-45 says each does. A transition the header does not describe - resuming a cancelling task, cancelling a completed one - is refused by name with the state printed and nothing is changed. -init and +new refuse. What drives the task beyond its two transitions, the model-update training, is not carried and no row here claims it is.",
-      "facts": "facts/CoreML/Update13.md",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLUpdateContext",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "MLUpdateContext.h:21 declares five readonly properties - task, model, event, metrics and parameters (:24-36) - and NO initializer at all, which is why there is one here and it is not public: the release builds a context inside its own training loop and hands it to the registered handlers, so neither is there either. Placement is the header's annotation at :20; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
-      "effect": "the class is here and its five getters answer the state the context was built with; a caller that handed nil is answered nil rather than a stand-in, and the metrics and parameters dictionaries are copied on the way in. It cannot be made from outside the package, which is what MLUpdateContext.h's own declaration says.",
-      "facts": "facts/CoreML/Update13.md",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLUpdateProgressHandlers",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "inert",
-      "reason": "MLUpdateProgressHandlers.h:16-17 calls it \"Allows applications to register for progress and completion handlers\", and :22-24 gives the one initializer that registers them; -init and +new are NS_UNAVAILABLE at :25-29. Placement is the header's annotation at :18; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. INERT and not implemented because nothing in this port produces the MLUpdateProgressEvent the two blocks would be called with: an event is a step of the model-update training loop, MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)) (MLUpdateTask.h:31 and :46), and no training loop is carried anywhere in this package. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
-      "effect": "the class is here and -initForEvents:progressHandler:completionHandler: answers: the two blocks are held in strong ivars, which is what ARC copies a block into, so what a caller registers outlives the call. -init and +new refuse by name. What is NOT here is anything that fires those blocks, and that is the training loop's absence rather than a refusal to implement this class - which is the same shape MPSImageGaussianBlur's row records as inert.",
-      "facts": "facts/CoreML/Update13.md",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLUpdateTask",
-      "kind": "class",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "implemented",
-      "reason": "MLUpdateTask.h:20 makes it MLTask's one subclass on the 13.0 surface, and both of its initialisers are API_AVAILABLE(macos(11.0), ios(14.0)) (:31 and :46), so at 13.0 the class declares no initializer of its own. -init and +new are NS_UNAVAILABLE at :53-56. Placement is the header's annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :19; first-rung answers 16.0 for this name, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
-      "effect": "the class is here, with MLTask's identifier, state and error and its two transitions, which are inherited and not copied. -init and +new refuse by name, as MLUpdateTask.h:53-56 marks them. Its two real initialisers are iOS 14.0 API and are other rows: a caller cannot MAKE an MLUpdateTask from this object, and nothing pretends otherwise.",
-      "facts": "facts/CoreML/Update13.md",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLModelCollectionDidChangeNotification",
-      "kind": "constant",
-      "introduced": "14.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
-      "effect": "the symbol is not there: a weak reference to it is NULL",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithCGImage:constraint:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithCGImage:orientation:constraint:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithCGImage:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithImageAtURL:constraint:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:constraint:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLFeatureValue featureValueWithImageAtURL:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
-      "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
-      "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
-    },
-    {
-      "api": "+[MLKey new]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "+[MLMetricKey new]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "+[MLModelAsset new]",
-      "kind": "method",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "+[MLParameterKey new]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "-[MLImageConstraint init]",
-      "kind": "method",
-      "introduced": "11.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLKey init]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "-[MLMetricKey init]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "-[MLModel newState]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
-      "effect": "the method is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLModel predictionFromFeatures:usingState:error:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
-      "effect": "the method is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLModel predictionFromFeatures:usingState:options:completionHandler:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
-      "effect": "the method is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLModel predictionFromFeatures:usingState:options:error:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
-      "effect": "the method is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLModelAsset init]",
-      "kind": "method",
-      "introduced": "16.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "-[MLMultiArray transferToMultiArray:]",
-      "kind": "method",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the method is declared in a Core ML header newer than the one this port is built against (the SDK is 16.4 and the method arrived in iOS 18), so its contract is not in the tree to read: a method whose semantics are a guess is worse than one that is not there, and nothing in this port calls it",
-      "effect": "the method is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (which has not got it); SDK 26.2 (which has)"
-    },
-    {
-      "api": "-[MLParameterKey init]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
-      "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
-      "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
-    },
-    {
-      "api": "MLFeatureDescription.stateConstraint",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the state constraint is a constraint on a state feature, and a state feature is a recurrent model's own carry between calls; this port reads no recurrent model, so there is no state to constrain",
-      "effect": "the property is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "MLModel.availableComputeDevices",
-      "kind": "property",
-      "introduced": "17.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here",
-      "effect": "the property is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "MLModelConfiguration.functionName",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the name is the entry point of a model of a program -- the mlProgram form -- and this port refuses that form by name: it reads the neural network, the tree ensemble, the GLM and the preprocessing models, and no other",
-      "effect": "the property is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "MLModelConfiguration.optimizationHints",
-      "kind": "property",
-      "introduced": "17.4",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the hints are advice to the compiler that turns a model into weights for a particular device, and this port compiles no model: it reads a container and runs it, so there is nothing for a hint to advise",
-      "effect": "the property is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "MLModelDescription.stateDescriptionsByName",
-      "kind": "property",
-      "introduced": "18.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "a model that carries a state declares it as a feature of its own, and this port reads no model that does: the recurrent layers are refused by name (facts/CoreML/CoreML.md)",
-      "effect": "the property is not there: the selector is not sent at all",
-      "source": "SDK 16.4, CoreML (the headers this package is built against)"
-    },
-    {
-      "api": "MLBatchProvider",
-      "kind": "protocol",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLCustomLayer",
-      "kind": "protocol",
-      "introduced": "11.2",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLCustomModel",
-      "kind": "protocol",
-      "introduced": "12.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil",
-      "source": "SDK 16.4, CoreML"
-    },
-    {
-      "api": "MLWritable",
-      "kind": "protocol",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "reason": "The protocol arrived in iOS 13 (MLWritable.h's own API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0))), so no release below 13 carries it, and THIS PACKAGE DOES NOT DECLARE IT EITHER, which is the half the generator's sentence left out. check_registry answers a protocol row from whether the built objects carry the protocol's own metadata: CharonCoreMLProtocols.h - the one header of packages/a/apple-backports/CoreML that declares protocols - declares MLFeatureProvider and nothing else (`grep -n '@protocol' packages/a/apple-backports/CoreML/CharonCoreMLProtocols.h` answers one line), and no @implementation in the folder emits _OBJC_PROTOCOL_$_MLWritable, so `implemented` would be a claim no measurement supports. The control, in the same run: MLKey answers 1 file and MLModel 2, so the zero is the package's and not the reader's. Placement, as for the four classes beside it: the header's own annotation, not first-rung, which answers 16.0 for this name because the held ladder has no 13.0 rung. What the protocol is FOR is a model's update write - -writeToURL:error:, \"Writes the model to disk and returns YES if the write is successful\" (MLWritable.h:22-23) - which is Core ML's model-update training and is not carried.",
-      "effect": "the protocol is not there: NSProtocolFromString answers nil, and a class cannot declare conformance to it. What is missing is the training loop that would both use it and write a model: no MLUpdateProgressEvent is produced anywhere in this package, and MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)). The row stays absent rather than being rewritten with a sentence about iOS 6, which was never the question.",
-      "facts": "facts/CoreML/Update13.md",
-      "source": "SDK 16.4, CoreML"
-    }
-  ]
+ "framework": "CoreML",
+ "entries": [
+  {
+   "api": "MLModelCollection",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLModelCollectionEntry",
+   "kind": "class",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the class arrived in iOS 14, and nothing in iOS 6 does its work or stands in for it",
+   "effect": "the class is not there: NSClassFromString answers nil and alloc on a compile time reference crashes",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLTask",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLTask.h:26-27 calls it \"Class that abstracts state transitions and basic task controls\", and it gives both methods as their effect and nothing else: -resume \"resumes the task and changes state to \\\"Running\\\"\" (:41-42) and -cancel \"starts cancelling the task and changes the state to \\\"Cancelling\\\"\" (:44-45). The five states are MLTaskState's own cases (:16-24): Suspended 1, Running 2, Cancelling 3, Completed 4, Failed 5. Placement is the header's own annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :29 - NOT first-rung's, which answers 16.0 for all five of these names because the held ladder has no 13.0 rung. -init and +new are NS_UNAVAILABLE at :47-51 with the header's own reason \"cannot construct MLTask without parameters\", so each refuses by name. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here: -taskIdentifier, -state and -error answer, and -resume moves a Suspended task to Running and -cancel moves a Suspended or Running task to Cancelling, which is exactly what MLTask.h:41-45 says each does. A transition the header does not describe - resuming a cancelling task, cancelling a completed one - is refused by name with the state printed and nothing is changed. -init and +new refuse. What drives the task beyond its two transitions, the model-update training, is not carried and no row here claims it is.",
+   "facts": "facts/CoreML/Update13.md",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLUpdateContext",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLUpdateContext.h:21 declares five readonly properties - task, model, event, metrics and parameters (:24-36) - and NO initializer at all, which is why there is one here and it is not public: the release builds a context inside its own training loop and hands it to the registered handlers, so neither is there either. Placement is the header's annotation at :20; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here and its five getters answer the state the context was built with; a caller that handed nil is answered nil rather than a stand-in, and the metrics and parameters dictionaries are copied on the way in. It cannot be made from outside the package, which is what MLUpdateContext.h's own declaration says.",
+   "facts": "facts/CoreML/Update13.md",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLUpdateProgressHandlers",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "reason": "MLUpdateProgressHandlers.h:16-17 calls it \"Allows applications to register for progress and completion handlers\", and :22-24 gives the one initializer that registers them; -init and +new are NS_UNAVAILABLE at :25-29. Placement is the header's annotation at :18; first-rung answers 16.0, which is the held ladder's hole at 13.0 and not an arrival date. INERT and not implemented because nothing in this port produces the MLUpdateProgressEvent the two blocks would be called with: an event is a step of the model-update training loop, MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)) (MLUpdateTask.h:31 and :46), and no training loop is carried anywhere in this package. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here and -initForEvents:progressHandler:completionHandler: answers: the two blocks are held in strong ivars, which is what ARC copies a block into, so what a caller registers outlives the call. -init and +new refuse by name. What is NOT here is anything that fires those blocks, and that is the training loop's absence rather than a refusal to implement this class - which is the same shape MPSImageGaussianBlur's row records as inert.",
+   "facts": "facts/CoreML/Update13.md",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLUpdateTask",
+   "kind": "class",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "MLUpdateTask.h:20 makes it MLTask's one subclass on the 13.0 surface, and both of its initialisers are API_AVAILABLE(macos(11.0), ios(14.0)) (:31 and :46), so at 13.0 the class declares no initializer of its own. -init and +new are NS_UNAVAILABLE at :53-56. Placement is the header's annotation API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0)) at :19; first-rung answers 16.0 for this name, which is the held ladder's hole at 13.0 and not an arrival date. No number in this row is a measurement of Apple's code and this band claims none: the update classes' whole behaviour is to drive Core ML's model-update training, which runs against a GPU and a training corpus. No host case, no device run and no gate were run for this object; what is measured is in the facts page with the command beside it.",
+   "effect": "the class is here, with MLTask's identifier, state and error and its two transitions, which are inherited and not copied. -init and +new refuse by name, as MLUpdateTask.h:53-56 marks them. Its two real initialisers are iOS 14.0 API and are other rows: a caller cannot MAKE an MLUpdateTask from this object, and nothing pretends otherwise.",
+   "facts": "facts/CoreML/Update13.md",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLModelCollectionDidChangeNotification",
+   "kind": "constant",
+   "introduced": "14.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the constant arrived in iOS 14, and nothing in iOS 6 has what it names",
+   "effect": "the symbol is not there: a weak reference to it is NULL",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:orientation:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithCGImage:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:constraint:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:orientation:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLFeatureValue featureValueWithImageAtURL:pixelsWide:pixelsHigh:pixelFormatType:options:error:]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a CoreGraphics image is not a pixel buffer, and these constructors are where Core ML turns one into the other: scaling and cropping it to the size a model asks for and taking an orientation. The selector is not carried here, but the CONVERSION is, inside Vision rather than Core ML: VNHandlers.m draws the CGImage (or reads the URL) into a CVPixelBuffer of the model's own image constraint's size through charon_vision_pixels (CharonVisionImage.h:49), which applies the two crop-and-scale rules. A VNCoreMLRequest therefore runs the conversion these rows say is missing, and tests/backports/host/vision/run-crop.sh measures it against Core ML's own image constructor",
+   "effect": "the method is not there: the selector is not sent at all, so an application calls it through Core ML and gets nothing. What the port does instead is the conversion itself, inside Vision, and it is NOT exact: against Core ML's own constructor the check reports 8x8 to 16x16 differing in 7 of 256 pixels under both rules, 4x7 to 33x9 in 6 of 432 under scale fit, 13x7 to 8x8 in 1 of 128, and 100x50 to 224x224 in 3208 of 50176; the centre-crop rule is further off still, 297 of 432 and 50176 of 50176. 16x16 to 16x16 agrees on every pixel. The same numbers are in facts/Vision/Vision.md",
+   "source": "the conversion these rows name, measured against Core ML's own image constructor pixel for pixel by sh tests/backports/host/vision/run-crop.sh, whose table is in facts/Vision/Vision.md and whose committed geometry is tests/backports/host/vision/croprect.md; and the release half, read with modules/apple/objc.lua's inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither 6.1.3 nor 4.3 carries Core ML at all, while the same reader finds MLFeatureValue among 245 ML* classes in 12.0's arm64 cache; and the host, which answers both selector families (+featureValueWithCGImage:constraint:options:error: and +featureValueWithImageAtURL:constraint:options:error: both responds=1, tests/backports/host/coreml/probe-unavailable.m), so what is missing is the release's and not the port's"
+  },
+  {
+   "api": "+[MLKey new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "+[MLMetricKey new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "+[MLModelAsset new]",
+   "kind": "method",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "+[MLParameterKey new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "-[MLImageConstraint init]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "-[MLMetricKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "-[MLModel newState]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:error:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:options:completionHandler:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModel predictionFromFeatures:usingState:options:error:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a state is a recurrent model's own carry between one call and the next, and a recurrent model is one whose specification carries the recurrent layers, which the interpreter refuses by name (facts/CoreML/CoreML.md)",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLModelAsset init]",
+   "kind": "method",
+   "introduced": "16.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "the method is not there, which is what NS_UNAVAILABLE means: an application compiled against Core ML's own header cannot send it, and one that sends it by name gets doesNotRecognizeSelector",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "-[MLMultiArray transferToMultiArray:]",
+   "kind": "method",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the method is declared in a Core ML header newer than the one this port is built against (the SDK is 16.4 and the method arrived in iOS 18), so its contract is not in the tree to read: a method whose semantics are a guess is worse than one that is not there, and nothing in this port calls it",
+   "effect": "the method is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (which has not got it); SDK 26.2 (which has)"
+  },
+  {
+   "api": "-[MLParameterKey init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own header declares it NS_UNAVAILABLE: a key, a model asset and an image constraint have no public initialiser, because a model builds them and an application only reads them",
+   "effect": "an application compiled against Core ML's own header cannot send it, because the framework declares it unavailable, and this port declares no initialiser of its own. A program that sends it by name does NOT get doesNotRecognizeSelector: measured on this host's own Core ML (tests/backports/host/coreml/probe-unavailable.m, run through objc_msgSend because a bracketed call will not compile), +new and -init both respond and both answer, built by the NSObject implementation the class inherits. What comes back is the case the annotation exists to warn about: the key answers name nil and scope nil, and a key is only a name and a scope -- MLKey's own -isEqual: compares those two, and a model's parameter dictionary is keyed by them -- so it matches no key the framework or this port hands out. The failure is silent, which is why the header refuses to compile the send in the first place",
+   "source": "the host's own Core ML, asked through objc_msgSend (tests/backports/host/coreml/probe-unavailable.m; the command and its output are in facts/CoreML/CoreML.md): +new responds=1 and answers an MLKey whose name and scope are both nil, and -init likewise, which corrects the doesNotRecognizeSelector an earlier version of this row claimed; and the two armv7 releases this package deploys on, read with modules/apple/objc.lua inventory through tools/corpus/cache-census.lua (CHARON_ROOT=\"$PWD\" xmake l tools/corpus/cache-census.lua ML 6.1.3 4.3): 0 of 524 and 0 of 354 images name ML, so neither release carries Core ML at all and its ML* classes are MediaLibrary's and Photos', while the same reader finds 245 ML* classes and 23 ML* protocols in 12.0's arm64 cache, so the zero on the two armv7 rungs is the release's and not the reader's"
+  },
+  {
+   "api": "MLFeatureDescription.stateConstraint",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the state constraint is a constraint on a state feature, and a state feature is a recurrent model's own carry between calls; this port reads no recurrent model, so there is no state to constrain",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModel.availableComputeDevices",
+   "kind": "property",
+   "introduced": "17.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelConfiguration.functionName",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the name is the entry point of a model of a program -- the mlProgram form -- and this port refuses that form by name: it reads the neural network, the tree ensemble, the GLM and the preprocessing models, and no other",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelConfiguration.optimizationHints",
+   "kind": "property",
+   "introduced": "17.4",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the hints are advice to the compiler that turns a model into weights for a particular device, and this port compiles no model: it reads a container and runs it, so there is nothing for a hint to advise",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLModelDescription.stateDescriptionsByName",
+   "kind": "property",
+   "introduced": "18.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "a model that carries a state declares it as a feature of its own, and this port reads no model that does: the recurrent layers are refused by name (facts/CoreML/CoreML.md)",
+   "effect": "the property is not there: the selector is not sent at all",
+   "source": "SDK 16.4, CoreML (the headers this package is built against)"
+  },
+  {
+   "api": "MLBatchProvider",
+   "kind": "protocol",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLCustomLayer",
+   "kind": "protocol",
+   "introduced": "11.2",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 11, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLCustomModel",
+   "kind": "protocol",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "the protocol arrived in iOS 12, and nothing in iOS 6 sends or asks for what it declares",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil",
+   "source": "SDK 16.4, CoreML"
+  },
+  {
+   "api": "MLWritable",
+   "kind": "protocol",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "The protocol arrived in iOS 13 (MLWritable.h's own API_AVAILABLE(macos(10.15), ios(13.0), tvos(14.0))), so no release below 13 carries it, and THIS PACKAGE DOES NOT DECLARE IT EITHER, which is the half the generator's sentence left out. check_registry answers a protocol row from whether the built objects carry the protocol's own metadata: CharonCoreMLProtocols.h - the one header of packages/a/apple-backports/CoreML that declares protocols - declares MLFeatureProvider and nothing else (`grep -n '@protocol' packages/a/apple-backports/CoreML/CharonCoreMLProtocols.h` answers one line), and no @implementation in the folder emits _OBJC_PROTOCOL_$_MLWritable, so `implemented` would be a claim no measurement supports. The control, in the same run: MLKey answers 1 file and MLModel 2, so the zero is the package's and not the reader's. Placement, as for the four classes beside it: the header's own annotation, not first-rung, which answers 16.0 for this name because the held ladder has no 13.0 rung. What the protocol is FOR is a model's update write - -writeToURL:error:, \"Writes the model to disk and returns YES if the write is successful\" (MLWritable.h:22-23) - which is Core ML's model-update training and is not carried.",
+   "effect": "the protocol is not there: NSProtocolFromString answers nil, and a class cannot declare conformance to it. What is missing is the training loop that would both use it and write a model: no MLUpdateProgressEvent is produced anywhere in this package, and MLUpdateTask's only initialisers are API_AVAILABLE(ios(14.0)). The row stays absent rather than being rewritten with a sentence about iOS 6, which was never the question.",
+   "facts": "facts/CoreML/Update13.md",
+   "source": "SDK 16.4, CoreML"
+  }
+ ]
 }
