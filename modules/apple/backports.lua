@@ -82,7 +82,31 @@ LIBRARIES = {
     {name = "PushKitBackports", folder = "PushKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "JavaScriptCoreBackports", folder = "JavaScriptCore", frameworks = {"JavaScriptCore", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "SceneKitBackports", folder = "SceneKit", frameworks = {"UIKit", "QuartzCore", "OpenGLES", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports", "OpenGLESBackports"}},
-    {name = "MediaPlayerBackports", folder = "MediaPlayer", frameworks = {"MediaPlayer", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- AVFoundation, for the one object here whose owner class is not MediaPlayer's:
+    -- AVPlayerItem+NowPlayingInfo16.m is a category on AVPlayerItem, and a category's class reference
+    -- is a symbol, so a band whose link does not carry AVFoundation leaves _OBJC_CLASS_$_AVPlayerItem
+    -- undefined and ld fails - measured, the 6.1.3 armv7 band on exactly that name from
+    -- __OBJC_$_CATEGORY_AVPlayerItem_$_CharonMPAdditions. AVPlayerItem is AVFoundation's class on this
+    -- release - facts/MediaPlayer/WholeCacheRead.md, and the two armv7 inventories in the gate's own
+    -- object store agree - and framework_install_path() below raises rather than quietly dropping a
+    -- framework whose two ends of a band disagree, so this is a declaration the linker can bind.
+    --
+    -- It adds no image to a process, which is the whole cost question and the reason to answer it
+    -- this way rather than by leaving the row out. This library links -framework MediaPlayer on
+    -- every band, and the release's OWN libMediaPlayer already loads AVFoundation, so dyld has that
+    -- image open before this library's first object runs. Measured, `otool -L` on the armv7
+    -- MediaPlayer of 6.1.3 (~/.charon/dyld/6.1.3/MediaPlayer, the file that release ships beside
+    -- its shared cache, so this is a read of a release file and not of a cache image): 39
+    -- LC_LOAD_DYLIB entries, and among them
+    --   /System/Library/Frameworks/AVFoundation.framework/AVFoundation (compatibility version 1.0.0, current version 2.0.0)
+    -- beside CoreMedia, CoreVideo, CoreGraphics, ImageIO, QuartzCore, AudioToolbox and
+    -- MobileCoreServices. So what this line buys is the DECLARATION, not a load: the linker can bind
+    -- the category to the release's own AVPlayerItem, which nm -m shows as
+    -- "(undefined) external _OBJC_CLASS_$_AVPlayerItem (from AVFoundation)" - the shape check_categories()
+    -- accepts - instead of leaving a NULL class pointer in an image the loader never opened.
+    -- AVKitBackports declares AVFoundation for the same reason and the same way: its
+    -- AVPictureInPictureController.m holds an AVPlayerLayer, and AVPlayerLayer is AVFoundation's.
+    {name = "MediaPlayerBackports", folder = "MediaPlayer", frameworks = {"MediaPlayer", "AVFoundation", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MessageUIBackports", folder = "MessageUI", frameworks = {"MessageUI", "MobileCoreServices", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MessagesBackports", folder = "Messages", frameworks = {"MessageUI", "Messages", "UIKit", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "MetricKitBackports", folder = "MetricKit", frameworks = {"MetricKit", "Foundation"}, libraries = {"FoundationBackports"}},

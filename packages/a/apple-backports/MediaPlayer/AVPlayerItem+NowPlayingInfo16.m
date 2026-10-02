@@ -10,6 +10,16 @@
 // header is - so this file is a MediaPlayer object and belongs in this directory, and the object name says
 // which class it adds to.
 //
+// AND HOW THE BAND LINKS IT, because a category on a class the band's link does not carry cannot link at
+// all: the class reference is a symbol, so with no AVFoundation on the link line ld leaves
+// _OBJC_CLASS_$_AVPlayerItem undefined and the 6.1.3 band fails. MediaPlayerBackports therefore names
+// AVFoundation among its frameworks (modules/apple/backports.lua), and what that binds is the RELEASE's own
+// AVPlayerItem - the one carrying the 237 methods read below - and nothing this port defines. It costs no
+// image: this band links -framework MediaPlayer anyway and the release's own libMediaPlayer loads
+// AVFoundation itself (otool -L; facts/MediaPlayer/WholeCacheRead.md). A stand-in AVPlayerItem would have
+// quieted ld and left a NULL class pointer at run time, which is the state backports.lua's
+// check_categories() exists to refuse.
+//
 // MEASURED, and this row waited two turns for it because it is the one member of the family whose owner
 // class does not live in MediaPlayer's image. The per-image read (tools/mach32_methods.py over the MediaPlayer
 // image at 0x31fe3000) cannot see AVPlayerItem at all, and the release's whole-cache selector list could not
