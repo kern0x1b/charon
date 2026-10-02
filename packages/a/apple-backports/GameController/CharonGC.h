@@ -4,6 +4,7 @@
 + (NSArray<NSDictionary *> *)extendedSpecs;
 + (NSArray<NSDictionary *> *)microSpecs;
 + (NSArray<NSDictionary *> *)mouseSpecs;
++ (NSArray<NSDictionary *> *)keyboardSpecs;
 @end
 
 @interface GCControllerElement (Charon)
