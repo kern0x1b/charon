@@ -6,7 +6,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -17,7 +17,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -28,7 +28,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -39,7 +39,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -50,7 +50,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -61,7 +61,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -72,7 +72,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -83,7 +83,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -94,7 +94,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -105,7 +105,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -116,7 +116,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -127,7 +127,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -138,7 +138,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -149,7 +149,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "class",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "iOS 6.1.3 has no ModelIO.framework at all, so the class is carried; a hard reference to one is a LOAD-FAIL and carrying it is what stops the kill",
       "source": "clang s own AST of the 26.2 headers via tools/corpus/surface-diff-latest.py --rows, MINUS every class the tree already declares in registry/ModelIO or implements in packages/a/apple-backports/ModelIO",
       "status": "implemented"
@@ -160,7 +160,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "method",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -171,7 +171,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -182,7 +182,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "10.0",
       "kind": "method",
-      "minimum": "10.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -193,7 +193,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "10.0",
       "kind": "method",
-      "minimum": "10.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -204,7 +204,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "10.0",
       "kind": "method",
-      "minimum": "10.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -215,7 +215,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "method",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -226,7 +226,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -237,7 +237,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -248,7 +248,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -259,7 +259,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -270,7 +270,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "method",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -281,7 +281,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -292,7 +292,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -303,7 +303,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -314,7 +314,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "method",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -325,7 +325,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -336,7 +336,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -347,7 +347,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -358,7 +358,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -369,7 +369,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -380,7 +380,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -391,7 +391,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -402,7 +402,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -413,7 +413,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -424,7 +424,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -435,7 +435,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "12.0",
       "kind": "selector",
-      "minimum": "12.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -446,7 +446,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -457,7 +457,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "18.0",
       "kind": "selector",
-      "minimum": "18.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -468,7 +468,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -479,7 +479,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -490,7 +490,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -501,7 +501,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -512,7 +512,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "12.0",
       "kind": "selector",
-      "minimum": "12.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -523,7 +523,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "12.0",
       "kind": "selector",
-      "minimum": "12.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -534,7 +534,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "12.0",
       "kind": "selector",
-      "minimum": "12.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -545,7 +545,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "12.0",
       "kind": "selector",
-      "minimum": "12.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -556,7 +556,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -567,7 +567,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -578,7 +578,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -589,7 +589,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -600,7 +600,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -611,7 +611,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -622,7 +622,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -633,7 +633,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -644,7 +644,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -655,7 +655,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -666,7 +666,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -677,7 +677,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -688,7 +688,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -699,7 +699,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -710,7 +710,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -721,7 +721,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -732,7 +732,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -743,7 +743,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -754,7 +754,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -765,7 +765,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -776,7 +776,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -787,7 +787,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -798,7 +798,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -809,7 +809,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -820,7 +820,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -831,7 +831,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -842,7 +842,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -853,7 +853,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -864,7 +864,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -875,7 +875,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -886,7 +886,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -897,7 +897,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -908,7 +908,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -919,7 +919,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -930,7 +930,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -941,7 +941,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -952,7 +952,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -963,7 +963,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -974,7 +974,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -985,7 +985,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -996,7 +996,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1007,7 +1007,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1018,7 +1018,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1029,7 +1029,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1040,7 +1040,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1051,7 +1051,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1062,7 +1062,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1073,7 +1073,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1084,7 +1084,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1095,7 +1095,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1106,7 +1106,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1117,7 +1117,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1128,7 +1128,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1139,7 +1139,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1150,7 +1150,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1161,7 +1161,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1172,7 +1172,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1183,7 +1183,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1194,7 +1194,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1205,7 +1205,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1216,7 +1216,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1227,7 +1227,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1238,7 +1238,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1249,7 +1249,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1260,7 +1260,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1271,7 +1271,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1282,7 +1282,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1293,7 +1293,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1304,7 +1304,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1315,7 +1315,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1326,7 +1326,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1337,7 +1337,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1348,7 +1348,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1359,7 +1359,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1370,7 +1370,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1381,7 +1381,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1392,7 +1392,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1403,7 +1403,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1414,7 +1414,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1425,7 +1425,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1436,7 +1436,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1447,7 +1447,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1458,7 +1458,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1469,7 +1469,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1480,7 +1480,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1491,7 +1491,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1502,7 +1502,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1513,7 +1513,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1524,7 +1524,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1535,7 +1535,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1546,7 +1546,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1557,7 +1557,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1568,7 +1568,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1579,7 +1579,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1590,7 +1590,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1601,7 +1601,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1612,7 +1612,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1623,7 +1623,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1634,7 +1634,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1645,7 +1645,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1656,7 +1656,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1667,7 +1667,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1678,7 +1678,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1689,7 +1689,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1700,7 +1700,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1711,7 +1711,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1722,7 +1722,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1733,7 +1733,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1744,7 +1744,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1755,7 +1755,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1766,7 +1766,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1777,7 +1777,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1788,7 +1788,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1799,7 +1799,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1810,7 +1810,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1821,7 +1821,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1832,7 +1832,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1843,7 +1843,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1854,7 +1854,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1865,7 +1865,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -1876,7 +1876,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1887,7 +1887,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1898,7 +1898,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1909,7 +1909,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1920,7 +1920,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1931,7 +1931,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1942,7 +1942,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1953,7 +1953,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1964,7 +1964,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1975,7 +1975,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1986,7 +1986,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -1997,7 +1997,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2008,7 +2008,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2019,7 +2019,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2030,7 +2030,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2041,7 +2041,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2052,7 +2052,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2063,7 +2063,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2074,7 +2074,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2085,7 +2085,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2096,7 +2096,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2107,7 +2107,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2118,7 +2118,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2129,7 +2129,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2140,7 +2140,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2151,7 +2151,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2162,7 +2162,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2173,7 +2173,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2184,7 +2184,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2195,7 +2195,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2206,7 +2206,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2217,7 +2217,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2228,7 +2228,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2239,7 +2239,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2250,7 +2250,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2261,7 +2261,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2272,7 +2272,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2283,7 +2283,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2294,7 +2294,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2305,7 +2305,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2316,7 +2316,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2327,7 +2327,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2338,7 +2338,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2349,7 +2349,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2360,7 +2360,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2371,7 +2371,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2382,7 +2382,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2393,7 +2393,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2404,7 +2404,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2415,7 +2415,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2426,7 +2426,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2437,7 +2437,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2448,7 +2448,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2459,7 +2459,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2470,7 +2470,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2481,7 +2481,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2492,7 +2492,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2503,7 +2503,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2514,7 +2514,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2525,7 +2525,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2536,7 +2536,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2547,7 +2547,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2558,7 +2558,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2569,7 +2569,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2580,7 +2580,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2591,7 +2591,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2602,7 +2602,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2613,7 +2613,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2624,7 +2624,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2635,7 +2635,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2646,7 +2646,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2657,7 +2657,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2668,7 +2668,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2679,7 +2679,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2690,7 +2690,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2701,7 +2701,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2712,7 +2712,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2723,7 +2723,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2734,7 +2734,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2745,7 +2745,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2756,7 +2756,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2767,7 +2767,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2778,7 +2778,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2789,7 +2789,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2800,7 +2800,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2811,7 +2811,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2822,7 +2822,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2833,7 +2833,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2844,7 +2844,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -2855,7 +2855,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2866,7 +2866,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2877,7 +2877,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2888,7 +2888,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2899,7 +2899,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2910,7 +2910,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2921,7 +2921,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2932,7 +2932,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2943,7 +2943,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2954,7 +2954,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2965,7 +2965,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2976,7 +2976,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2987,7 +2987,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -2998,7 +2998,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3009,7 +3009,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3020,7 +3020,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3031,7 +3031,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3042,7 +3042,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3053,7 +3053,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3064,7 +3064,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3075,7 +3075,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3086,7 +3086,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3097,7 +3097,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3108,7 +3108,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3119,7 +3119,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3130,7 +3130,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3141,7 +3141,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3152,7 +3152,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3163,7 +3163,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3174,7 +3174,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; it is the accessor of a property the 26.2 header declares, read from the ObjCPropertyDecl node s own readwrite flag rather than guessed",
       "source": "clang s own JSON AST, -ast-dump-filter=MDL, on the property node",
       "status": "implemented"
@@ -3185,7 +3185,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3196,7 +3196,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3207,7 +3207,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3218,7 +3218,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3229,7 +3229,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3240,7 +3240,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3251,7 +3251,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3262,7 +3262,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3273,7 +3273,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "11.0",
       "kind": "selector",
-      "minimum": "11.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3284,7 +3284,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3295,7 +3295,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3306,7 +3306,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3317,7 +3317,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3328,7 +3328,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3339,7 +3339,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3350,7 +3350,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3361,7 +3361,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3372,7 +3372,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3383,7 +3383,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "9.0",
       "kind": "selector",
-      "minimum": "9.0",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3394,7 +3394,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
@@ -3405,7 +3405,7 @@
       "facts": "facts/ModelIO/Surface.md",
       "introduced": "",
       "kind": "selector",
-      "minimum": "",
+      "minimum": "6.0",
       "reason": "carried so a caller naming it is CALLABLE; the release has no ModelIO surface at all",
       "source": "clang s own AST of the 26.2 headers, MINUS every member the tree already declares in registry/ModelIO",
       "status": "implemented"
