@@ -111,9 +111,17 @@
 
 @protocol UITableViewDropPlaceholderContext;
 
+@protocol UITextDragDelegate;
+
 @protocol UITextDragRequest;
 
+@protocol UITextDraggable;
+
+@protocol UITextDropDelegate;
+
 @protocol UITextDropRequest;
+
+@protocol UITextDroppable;
 
 @protocol UITextInputTraits;
 
