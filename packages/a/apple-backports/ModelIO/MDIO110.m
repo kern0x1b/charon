@@ -16,6 +16,24 @@
 // nothing is pretended; MDLAsset and MDLMesh are built for real on the CPU in the object
 // that follows, and nothing here claims to be one.
 
+// MDLAnimationBindComponent had a class row and no object, which the reviewer's script found by name.
+// A class row with nothing behind it is the same defect as a member row with nothing behind it, so the
+// class is here rather than its row removed.
+@implementation MDLAnimationBindComponent
+@end
+
+// MDLMatrix4x4Array first appears at 11.0, so the class is declared here and is CALLABLE.
+@implementation MDLMatrix4x4Array
+@end
+
+// MDLPackedJointAnimation first appears at 11.0, so the class is declared here and is CALLABLE.
+@implementation MDLPackedJointAnimation
+@end
+
+// MDLSkeleton first appears at 11.0, so the class is declared here and is CALLABLE.
+@implementation MDLSkeleton
+@end
+
 // The selectors a row named and NO object defined, which the reviewer found by running the gate s
 // own metadata script: main owns these classes, so they go in CATEGORIES here rather than in a
 // second @implementation of a class another object already owns.

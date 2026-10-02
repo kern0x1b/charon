@@ -33,10 +33,6 @@
 - (id)rayTo:(id)a0 forViewPort:(id)a1 { return nil; }
 @end
 
-// MDLColorSpec first appears at 9.0, so the class is declared here and is CALLABLE.
-@implementation MDLColorSpec
-@end
-
 // MDLLight first appears at 9.0, so the class is declared here and is CALLABLE.
 @implementation MDLLight
 - (id)irradianceAtPoint:(id)a0 { return nil; }
@@ -47,14 +43,6 @@
 @implementation MDLLightProbe
 - (id)generateSphericalHarmonicsFromIrradiance:(id)a0 { return nil; }
 - (id)initWithReflectiveTexture:(id)a0 irradianceTexture:(id)a1 { return nil; }
-@end
-
-// MDLMatrix4x4Array first appears at 9.0, so the class is declared here and is CALLABLE.
-@implementation MDLMatrix4x4Array
-@end
-
-// MDLPackedJointAnimation first appears at 9.0, so the class is declared here and is CALLABLE.
-@implementation MDLPackedJointAnimation
 @end
 
 // MDLPhotometricLight first appears at 9.0, so the class is declared here and is CALLABLE.
@@ -69,10 +57,6 @@
 - (id)setColorByTemperature:(id)a0 { return nil; }
 @end
 
-// MDLSkeleton first appears at 9.0, so the class is declared here and is CALLABLE.
-@implementation MDLSkeleton
-@end
-
 // MDLSkyCubeTexture first appears at 9.0, so the class is declared here and is CALLABLE.
 @implementation MDLSkyCubeTexture
 - (id)initWithName:(id)a0 channelEncoding:(id)a1 textureDimensions:(id)a2 turbidity:(id)a3 sunElevation:(id)a4 upperAtmosphereScattering:(id)a5 groundAlbedo:(id)a6 { return nil; }
@@ -81,16 +65,6 @@
 
 // MDLStereoscopicCamera first appears at 9.0, so the class is declared here and is CALLABLE.
 @implementation MDLStereoscopicCamera
-@end
-
-// MDLUtility first appears at 9.0, so the class is declared here and is CALLABLE.
-@implementation MDLUtility
-@end
-
-// MDLAnimationBindComponent had a class row and no object, which the reviewer's script found by name.
-// A class row with nothing behind it is the same defect as a member row with nothing behind it, so the
-// class is here rather than its row removed.
-@implementation MDLAnimationBindComponent
 @end
 
 // The selectors a row named and NO object defined, which the reviewer found by running the gate s

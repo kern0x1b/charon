@@ -11,6 +11,13 @@
 // nothing is pretended; MDLAsset and MDLMesh are built for real on the CPU in the object
 // that follows, and nothing here claims to be one.
 
+// MDLUtility first appears at 18.0 on the rule first_releases() applies, which is the first held
+// rung from which a client can bind it throughout: the cache of 12.0 exports it, the cache of 16.0
+// does not, and 18.0 does again, so 12.0 alone does not place the class in a band that also runs
+// on 16.0. The class is declared here and is CALLABLE.
+@implementation MDLUtility
+@end
+
 // The selectors a row named and NO object defined, which the reviewer found by running the gate s
 // own metadata script: main owns these classes, so they go in CATEGORIES here rather than in a
 // second @implementation of a class another object already owns.
