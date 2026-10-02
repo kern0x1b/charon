@@ -233,6 +233,7 @@ CHARON_VALUE_PROPERTY(NSString *, keyboardIdentifier)
 CHARON_VALUE_PROPERTY(NSString *, version)
 CHARON_VALUE_PROPERTY(NSMeasurement *, width)
 CHARON_VALUE_PROPERTY(NSMeasurement *, height)
+CHARON_SCALAR_PROPERTY(NSTimeInterval, duration)
 -(NSInteger)totalWords { NSNumber *boxed = [self charon_valueForKey:@"totalWords"];
     return boxed ? (NSInteger)[boxed longLongValue] : (NSInteger)0; }
 -(void)charon_setTotalWords:(NSInteger)value { [self charon_setValue:@(value) forKey:@"totalWords"]; }
@@ -396,6 +397,7 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 
 @implementation SRMessagesUsageReport
 @dynamic duration, totalOutgoingMessages, totalIncomingMessages, totalUniqueContacts;
+CHARON_SCALAR_PROPERTY(NSTimeInterval, duration)
 CHARON_SCALAR_PROPERTY(NSInteger, totalOutgoingMessages)
 CHARON_SCALAR_PROPERTY(NSInteger, totalIncomingMessages)
 CHARON_SCALAR_PROPERTY(NSInteger, totalUniqueContacts)
@@ -407,6 +409,7 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 
 @implementation SRNotificationUsage
 @dynamic bundleIdentifier, event;
+CHARON_VALUE_PROPERTY(NSString *, bundleIdentifier)
 CHARON_SCALAR_PROPERTY(SRNotificationEvent, event)
 @end
 
@@ -416,8 +419,10 @@ CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 
 @implementation SRPhoneUsageReport
 @dynamic duration, totalOutgoingCalls, totalIncomingCalls, totalUniqueContacts, totalPhoneCallDuration;
+CHARON_SCALAR_PROPERTY(NSTimeInterval, duration)
 CHARON_SCALAR_PROPERTY(NSInteger, totalOutgoingCalls)
 CHARON_SCALAR_PROPERTY(NSInteger, totalIncomingCalls)
+CHARON_SCALAR_PROPERTY(NSInteger, totalUniqueContacts)
 CHARON_SCALAR_PROPERTY(NSTimeInterval, totalPhoneCallDuration)
 @end
 
