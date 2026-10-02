@@ -23,6 +23,11 @@ layer of OpenGL ES beneath it, as large as the drawable size, and answers a draw
 drawable is shown when the command buffer that presents it is committed. A layer with no device, or a device that is not the port's,
 answers `nil`, as the header says it does when no drawable is available. `preferredDevice` is `nil`. The maximum of drawables raises the
 exception of iOS 12 for a value outside 2 to 3, and the port keeps one framebuffer and answers a drawable of it each time. The properties of
-iOS 16 (`wantsExtendedDynamicRangeContent`, `EDRMetadata`, `developerHUDProperties`) are declared dynamic, as a layer's properties are, and the
-release's `CALayer` gives such a property an accessor that keeps the value, so they are kept and used for nothing; the class `CAEDRMetadata`
-that would fill the second is absent.
+iOS 16 (`wantsExtendedDynamicRangeContent`, `EDRMetadata`, `developerHUDProperties`) are kept as three settings and used for nothing, and
+they are kept by the port rather than by the release: `Metal/CAMetalLayer+ExtendedRange16.m` is a category that holds each in an associated
+object, as the 11.0 and 11.2 properties beside it are. The claim this file used to make - that `@dynamic` on a layer means the release's
+`CALayer` supplies an accessor that keeps the value - is false for these three and was measured rather than assumed: they are declared in
+`CAMetalLayer.h:119`, `:128` and `:141` and so are the layer's own rather than `CALayer`'s, all six selectors are in none of the 113981
+selectors of 6.1.3 nor of the 70062 of 4.3, 4.3's `CALayer` is 249 instance and 10 class methods with none of them, and `CAEDRMetadata` -
+the class that would fill the second - is 0 of the 7187 class names of 4.3, as `CAMetalLayer` itself is. The names stay on the `@dynamic`
+at `CAMetalLayer8.m:8` because that line is what stops that file synthesising a second accessor pair for a property another file answers.

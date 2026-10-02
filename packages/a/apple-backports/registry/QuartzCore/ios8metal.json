@@ -128,10 +128,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "reason": "the layer keeps the value itself, in the category Metal/CAMetalLayer+ExtendedRange16.m beside the neighbouring 11.0 and 11.2 properties, each in an associated object so the layer's own ivar layout is not disturbed. It is not the release's CALayer that answers these six selectors, and that was measured rather than assumed: wantsExtendedDynamicRangeContent, setWantsExtendedDynamicRangeContent:, EDRMetadata, setEDRMetadata:, developerHUDProperties and setDeveloperHUDProperties: are in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3; the class list of 4.3 has 7187 names and CAMetalLayer and CAEDRMetadata are 0 of them; and 4.3's CALayer is 249 instance and 10 class methods with none of the six. The name stays on the @dynamic at CAMetalLayer8.m:8 for the other half of the reason: that line is what stops this file synthesising an accessor pair of its own for a property another file answers, and otool -ov on the object confirms the six selectors come from the category",
       "effect": "is kept as given, NO to start, and shows nothing more: no display of iOS 6 has an extended range",
       "facts": "facts/QuartzCore/CAMetalLayer.md",
-      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the three properties of 16.0 and the class CAEDRMetadata are declared in the header of iOS 16.4, at CAMetalLayer.h:119, :128 and :141 and in CAEDRMetadata.h:15, and their absence from the releases they are backported to is measured on the armv7 shared caches of 6.1.3 (244881694 bytes) and 4.3 (153152518 bytes) through the selectors and class lists modules/apple/objc.lua's inventory holds, with contentsScale present and nextDrawable absent from the 6.1.3 selector list as the controls of those same two reads"
     },
     {
       "api": "CAMetalLayer.EDRMetadata",
@@ -139,10 +139,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "reason": "the layer keeps the value itself, in the category Metal/CAMetalLayer+ExtendedRange16.m beside the neighbouring 11.0 and 11.2 properties, each in an associated object so the layer's own ivar layout is not disturbed. It is not the release's CALayer that answers these six selectors, and that was measured rather than assumed: wantsExtendedDynamicRangeContent, setWantsExtendedDynamicRangeContent:, EDRMetadata, setEDRMetadata:, developerHUDProperties and setDeveloperHUDProperties: are in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3; the class list of 4.3 has 7187 names and CAMetalLayer and CAEDRMetadata are 0 of them; and 4.3's CALayer is 249 instance and 10 class methods with none of the six. The name stays on the @dynamic at CAMetalLayer8.m:8 for the other half of the reason: that line is what stops this file synthesising an accessor pair of its own for a property another file answers, and otool -ov on the object confirms the six selectors come from the category",
       "effect": "is kept as given, nil to start, and used for nothing: the class of iOS 16 that would make one is absent",
       "facts": "facts/QuartzCore/CAMetalLayer.md",
-      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the three properties of 16.0 and the class CAEDRMetadata are declared in the header of iOS 16.4, at CAMetalLayer.h:119, :128 and :141 and in CAEDRMetadata.h:15, and their absence from the releases they are backported to is measured on the armv7 shared caches of 6.1.3 (244881694 bytes) and 4.3 (153152518 bytes) through the selectors and class lists modules/apple/objc.lua's inventory holds, with contentsScale present and nextDrawable absent from the 6.1.3 selector list as the controls of those same two reads"
     },
     {
       "api": "CAMetalLayer.developerHUDProperties",
@@ -150,10 +150,10 @@
       "introduced": "16.0",
       "minimum": "6.0",
       "status": "implemented",
-      "reason": "the property is declared dynamic, as the layers of the release keep their properties, and the release's CALayer gives it an accessor that keeps the value; this layer has nothing to do with it",
+      "reason": "the layer keeps the value itself, in the category Metal/CAMetalLayer+ExtendedRange16.m beside the neighbouring 11.0 and 11.2 properties, each in an associated object so the layer's own ivar layout is not disturbed. It is not the release's CALayer that answers these six selectors, and that was measured rather than assumed: wantsExtendedDynamicRangeContent, setWantsExtendedDynamicRangeContent:, EDRMetadata, setEDRMetadata:, developerHUDProperties and setDeveloperHUDProperties: are in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3; the class list of 4.3 has 7187 names and CAMetalLayer and CAEDRMetadata are 0 of them; and 4.3's CALayer is 249 instance and 10 class methods with none of the six. The name stays on the @dynamic at CAMetalLayer8.m:8 for the other half of the reason: that line is what stops this file synthesising an accessor pair of its own for a property another file answers, and otool -ov on the object confirms the six selectors come from the category",
       "effect": "is kept as given, nil to start, and shows no HUD: there is no Metal to show one for",
       "facts": "facts/QuartzCore/CAMetalLayer.md",
-      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the release's CALayer, which gives a property a class declares dynamic an accessor that keeps the value"
+      "source": "QuartzCore of the arm64 shared cache of iOS 12.0 for the list of methods; the three properties of 16.0 and the class CAEDRMetadata are declared in the header of iOS 16.4, at CAMetalLayer.h:119, :128 and :141 and in CAEDRMetadata.h:15, and their absence from the releases they are backported to is measured on the armv7 shared caches of 6.1.3 (244881694 bytes) and 4.3 (153152518 bytes) through the selectors and class lists modules/apple/objc.lua's inventory holds, with contentsScale present and nextDrawable absent from the 6.1.3 selector list as the controls of those same two reads"
     }
   ]
 }
