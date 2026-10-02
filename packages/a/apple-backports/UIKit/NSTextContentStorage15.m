@@ -28,9 +28,12 @@ static BOOL charon_is_paragraph_ending(NSString *string, NSUInteger index)
     return index + 1 >= string.length || [string characterAtIndex:index + 1] != 10;
 }
 
-// -includesTextListMarkers is a 26.0 member the build SDK does not declare, so it is not a property in this file;
-// the 26.0 row's entry says where the port answers it. -textStorage is the protocol's, and the port implements
-// its getter and setter by hand because the protocol's is a plain property and the observer has to move with it.
+// -includesTextListMarkers is a 26.0 member of THIS class the build SDK does not declare, so it is not a
+// property in this file, and it is not answered on this class either: its registry row answers absent, and
+// the reason is the text production rather than the spelling - this storage's elements are NSTextParagraphs
+// and it produces no NSTextListMarker. The 26.0 member of the name that IS carried is NSTextList's, written
+// out in UIKit26_0.m. -textStorage is the protocol's, and the port implements its getter and setter by hand
+// because the protocol's is a plain property and the observer has to move with it.
 
 @implementation NSTextContentStorage {
     // The backing store, and the string this object answers for. When there is a text storage the string is
