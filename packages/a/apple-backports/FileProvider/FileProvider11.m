@@ -72,6 +72,16 @@
 // members below are this class's own at 16.0 and later, or are API_UNAVAILABLE(ios) in the SDK's own header,
 // so this object does not define them. @dynamic leaves respondsToSelector: answering NO, which is the truth,
 // where a method that answered NO would be a name the port claims and does not carry.
+//
+// disconnected, testingModes and backingStoreIdentity are here for a second reason beyond 16.0:
+// what each promises is a system rather than a setting. A domain is "disconnected from its
+// extension" and there is no extension; a testing mode "alters the behavior of the system" and
+// there is no system to alter; a backing store identity names "the backing store of the domain on
+// the system" and there is none. Their registry rows answer absent, and the @dynamic is what
+// makes that true at run time.
+//
+// hidden, replicated and supportsSyncingTrash are listed here for the other reason: the 16.0
+// CATEGORY answers them, through the charon_ accessors above.
 @dynamic hidden;
 @dynamic disconnected;
 @dynamic replicated;

@@ -18,10 +18,7 @@
 //   userEnabled
 //   replicated
 //   hidden
-//   disconnected
-//   testingModes
 //   supportsSyncingTrash
-//   backingStoreIdentity
 
 // The 16.0 two-argument init lives in ITS OWN object, not in the 11.0 one. It was in the 11.0 piece at
 // first and that is exactly what release-split refuses: an object whose symbols first appear in two
