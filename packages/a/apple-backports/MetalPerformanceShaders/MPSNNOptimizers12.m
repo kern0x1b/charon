@@ -250,20 +250,46 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
 @synthesize regularizationScale = _regularizationScale;
 @synthesize regularizationType = _regularizationType;
 
+// How each of the three concrete optimizers is built. MPSNNOptimizers.h:249 marks the base's
+// -initWithDevice: NS_UNAVAILABLE - "You must use one of the sub-classes of MPSNNOptimizer" (:247)
+// - so none of the three may call it: [super initWithDevice:] inside any of them resolves to that
+// redeclaration and does not compile. The only initializer this base has left is MPSKernel's
+// -initWithCoder:device: (MPSKernel.h:162), which decodes an archive and takes a nonnull coder none of
+// these kernels has, so this internal one is how they reach MPSKernel's own -initWithDevice:
+// (MPSKernel.h:117), which the header does not mark unavailable.
+//
+// This is not in the `init` family - the name does not begin with "init" in the family's own sense - so
+// it must not assign to self, and it returns what the superclass made instead, which is the very object
+// the caller's own allocation already is. The shape MPSImageReduceUnary has in CharonMPSReduce.h:35,
+// for the same reason; MPSMatrixRandom's seam in CharonMPS.h stays in the init family because it takes
+// the generator's identity, which this base has no counterpart for.
+- (instancetype)charon_initWithDevice:(id<MTLDevice>)device
+{
+    MPSNNOptimizer *made = [super initWithDevice:device];
+    if (made) {
+        // The defaults each concrete optimizer starts from: the descriptor's own (:66, :72, :78, :94,
+        // :100), with the momentum terms left to the concrete classes.
+        made->_learningRate = 1e-3f;
+        made->_gradientRescale = 1.0f;
+        made->_applyGradientClipping = NO;
+        made->_regularizationType = MPSNNRegularizationTypeNone;
+        made->_regularizationScale = 0.0f;
+    }
+    return made;
+}
+
+// MPSNNOptimizers.h:247-249 - NS_UNAVAILABLE, and the comment above it says the base must not be
+// instantiated. It declares no -encodeToCommandBuffer: of its own (:209-251 is seven properties, the
+// unavailable initializer and the setter), so an object made here is a kernel that can update nothing,
+// and the refusal names the three that can - the same answer MPSMatrixRandom13.m:23-27 and
+// MPSImageReduceUnary16.m:86-105 give for their own bases.
 - (instancetype)initWithDevice:(id<MTLDevice>)device
 {
-    // MPSNNOptimizers.h:249 marks the base's -initWithDevice: NS_UNAVAILABLE ("You must use one of
-    // the sub-classes of MPSNNOptimizer"), so the base is never built by name and the defaults below
-    // are the ones each subclass starts from. They are the descriptor's defaults (:66, :72, :78, :94,
-    // :100) with the momentum terms left to the concrete classes.
-    if ((self = [super initWithDevice:device])) {
-        _learningRate = 1e-3f;
-        _gradientRescale = 1.0f;
-        _applyGradientClipping = NO;
-        _regularizationType = MPSNNRegularizationTypeNone;
-        _regularizationScale = 0.0f;
-    }
-    return self;
+    CharonMPSRefuse(@"MPSNNOptimizer: -initWithDevice: is unavailable on the abstract base, which"
+                    @" MPSNNOptimizers.h:247-249 says must not be instantiated - use"
+                    @" MPSNNOptimizerStochasticGradientDescent, MPSNNOptimizerRMSProp or"
+                    @" MPSNNOptimizerAdam");
+    return nil;
 }
 
 // The base declares exactly this setter (:265) and learningRate is readonly (:243), so the rate is
@@ -316,14 +342,15 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device learningRate:(float)learningRate
 {
-    if ((self = [super initWithDevice:device])) {
-        [self setLearningRate:learningRate];
+    MPSNNOptimizerStochasticGradientDescent *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made setLearningRate:learningRate];
         // "Default value is 0.0" for momentumScale (:253), and the descriptor's own defaults for the
-        // rest, which -initWithDevice: on the base already set.
-        _momentumScale = 0.0f;
-        _useNestrovMomentum = NO;
+        // rest, which the base's internal initializer above already set.
+        made->_momentumScale = 0.0f;
+        made->_useNestrovMomentum = NO;
     }
-    return self;
+    return made;
 }
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
@@ -331,12 +358,13 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
              useNestrovMomentum:(BOOL)useNestrovMomentum
            optimizerDescriptor:(MPSNNOptimizerDescriptor *)optimizerDescriptor
 {
-    if ((self = [super initWithDevice:device])) {
-        [self charon_mps_applyDescriptor:optimizerDescriptor];
-        _momentumScale = momentumScale;
-        _useNestrovMomentum = useNestrovMomentum;
+    MPSNNOptimizerStochasticGradientDescent *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made charon_mps_applyDescriptor:optimizerDescriptor];
+        made->_momentumScale = momentumScale;
+        made->_useNestrovMomentum = useNestrovMomentum;
     }
-    return self;
+    return made;
 }
 
 - (float)momentumScale { return _momentumScale; }
@@ -411,13 +439,14 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device learningRate:(float)learningRate
 {
-    if ((self = [super initWithDevice:device])) {
-        [self setLearningRate:learningRate];
+    MPSNNOptimizerRMSProp *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made setLearningRate:learningRate];
         // "Default value is 0.9" (:459) and "default value is 1e-8" (:466).
-        _decay = 0.9;
-        _epsilon = 1e-8f;
+        made->_decay = 0.9;
+        made->_epsilon = 1e-8f;
     }
-    return self;
+    return made;
 }
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
@@ -425,12 +454,13 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
                       epsilon:(float)epsilon
            optimizerDescriptor:(MPSNNOptimizerDescriptor *)optimizerDescriptor
 {
-    if ((self = [super initWithDevice:device])) {
-        [self charon_mps_applyDescriptor:optimizerDescriptor];
-        _decay = decay;
-        _epsilon = epsilon;
+    MPSNNOptimizerRMSProp *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made charon_mps_applyDescriptor:optimizerDescriptor];
+        made->_decay = decay;
+        made->_epsilon = epsilon;
     }
-    return self;
+    return made;
 }
 
 - (double)decay { return _decay; }
@@ -479,17 +509,18 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device learningRate:(float)learningRate
 {
-    if ((self = [super initWithDevice:device])) {
-        [self setLearningRate:learningRate];
+    MPSNNOptimizerAdam *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made setLearningRate:learningRate];
         // "Default value is 0.9" (:505), "Default value is 0.999" (:512), "default value is 1e-8"
         // (:519), and timeStep is "the number of times update has occurred" (:525) - zero before any
         // update, so that the first one runs with t == 1.
-        _beta1 = 0.9;
-        _beta2 = 0.999;
-        _epsilon = 1e-8f;
-        _timeStep = 0;
+        made->_beta1 = 0.9;
+        made->_beta2 = 0.999;
+        made->_epsilon = 1e-8f;
+        made->_timeStep = 0;
     }
-    return self;
+    return made;
 }
 
 - (instancetype)initWithDevice:(id<MTLDevice>)device
@@ -499,14 +530,15 @@ static BOOL CharonMPSOptimizerVectors(MPSVector *const *vectors, NSUInteger coun
                      timeStep:(NSUInteger)timeStep
            optimizerDescriptor:(MPSNNOptimizerDescriptor *)optimizerDescriptor
 {
-    if ((self = [super initWithDevice:device])) {
-        [self charon_mps_applyDescriptor:optimizerDescriptor];
-        _beta1 = beta1;
-        _beta2 = beta2;
-        _epsilon = epsilon;
-        _timeStep = timeStep;
+    MPSNNOptimizerAdam *made = [super charon_initWithDevice:device];
+    if (made) {
+        [made charon_mps_applyDescriptor:optimizerDescriptor];
+        made->_beta1 = beta1;
+        made->_beta2 = beta2;
+        made->_epsilon = epsilon;
+        made->_timeStep = timeStep;
     }
-    return self;
+    return made;
 }
 
 - (double)beta1 { return _beta1; }

@@ -400,6 +400,23 @@ static inline double CharonMPSNeuronA(const CharonMPSNeuron *neuron, NSUInteger 
 - (void)charon_mps_batchOver:(NSUInteger)available first:(NSUInteger *)first count:(NSUInteger *)count;
 @end
 
+@interface MPSNNOptimizer (CharonMPS)
+// Internal, and how each of the three concrete optimizers is built. MPSNNOptimizers.h:249 marks the
+// base's -initWithDevice: NS_UNAVAILABLE - "You must use one of the sub-classes of MPSNNOptimizer"
+// (:247) - so a subclass of this base cannot call it: a [super initWithDevice:] inside
+// MPSNNOptimizerStochasticGradientDescent, MPSNNOptimizerRMSProp or MPSNNOptimizerAdam resolves to that
+// redeclaration and does not compile. The only initializer this base has left is MPSKernel's
+// -initWithCoder:device: (MPSKernel.h:162), which decodes an archive and takes a nonnull coder no
+// caller of these kernels has, so this is what reaches MPSKernel's own -initWithDevice: (MPSKernel.h:117)
+// instead, which the header does not mark unavailable.
+//
+// Unlike MPSMatrixRandom's seam above this one takes nothing the base does not already know, so it is
+// not in the init family: the name does not begin with "init", so it must not assign to self, and it
+// returns what MPSKernel made instead - the object the caller's own allocation already is. That is the
+// same shape MPSImageReduceUnary's seam has in CharonMPSReduce.h:35, for the same reason.
+- (instancetype)charon_initWithDevice:(id<MTLDevice>)device;
+@end
+
 @interface MPSMatrixSoftMax (CharonMPS)
 - (void)charon_mps_setLogarithmic:(BOOL)logarithmic;
 @end
