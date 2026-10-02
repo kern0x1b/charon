@@ -142,8 +142,11 @@ CHARON_VALUE_CODING_METHODS
         [self charon_decodePropertiesWithCoder:coder];
     return self;
 }
-// Its own header gives it the two representations.
+// Its own header gives it the two representations, and the deprecated NS_REFINED_FOR_SWIFT spelling of
+// the second is the third: MXMetaData.h:56, :63 and :70 declare JSONRepresentation,
+// DictionaryRepresentation (deprecated, "Use dictionaryRepresentation") and dictionaryRepresentation.
 - (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)DictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 - (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
 
@@ -158,8 +161,11 @@ CHARON_VALUE_CODING_METHODS
         [self charon_decodePropertiesWithCoder:coder];
     return self;
 }
-// Its own header gives it the two representations.
+// Its own header gives it the two representations, and the deprecated NS_REFINED_FOR_SWIFT spelling of
+// the second is the third: MXMetaData.h:56, :63 and :70 declare JSONRepresentation,
+// DictionaryRepresentation (deprecated, "Use dictionaryRepresentation") and dictionaryRepresentation.
 - (NSData *)JSONRepresentation { return [CharonMetricValue jsonOf:self]; }
+- (NSDictionary *)DictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 - (NSDictionary *)dictionaryRepresentation { return [CharonMetricValue dictionaryOf:self]; }
 @end
 
