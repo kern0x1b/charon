@@ -2,61 +2,9 @@
 #import <objc/runtime.h>
 
 // AVFoundation's 10.0 surface, the five rows DEMAND-AVFoundation-10.tsv measured CRASH-ON-USE
-// against 6.1.3. ONE OBJECT for 10.0 only.
-
-#pragma mark - AVPlayer.automaticallyWaitsToMinimizeStalling
-
-// 6.1.3's -[AVPlayer setRate:] already plays immediately at the given rate - there is no
-// stall-avoidance wait to turn on or off, so the flag has one real consumer in this port:
-// -playImmediatelyAtRate: below, which the header says must not be called while this is YES.
-
-static const char charon_waitsToMinimizeStallingKey;
-
-@implementation AVPlayer (CharonAutomaticWaiting10)
-
-- (BOOL)automaticallyWaitsToMinimizeStalling
-{
-    NSNumber *stored = objc_getAssociatedObject(self, &charon_waitsToMinimizeStallingKey);
-    return stored ? stored.boolValue : YES;
-}
-
-- (void)setAutomaticallyWaitsToMinimizeStalling:(BOOL)automaticallyWaitsToMinimizeStalling
-{
-    objc_setAssociatedObject(self, &charon_waitsToMinimizeStallingKey, @(automaticallyWaitsToMinimizeStalling), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-@end
-
-#pragma mark - AVPlayer.playImmediatelyAtRate:
-
-@implementation AVPlayer (CharonPlayImmediately10)
-
-- (void)playImmediatelyAtRate:(float)rate
-{
-    if (self.automaticallyWaitsToMinimizeStalling)
-        @throw [NSException exceptionWithName:NSInvalidArgumentException
-                                       reason:@"playImmediatelyAtRate: should not be used when automaticallyWaitsToMinimizeStalling is YES"
-                                     userInfo:nil];
-    // 6.1.3 has no stall-avoidance wait of its own, so setting the rate already is "immediately".
-    self.rate = rate;
-}
-
-@end
-
-#pragma mark - AVPlayerItemVideoOutput.initWithOutputSettings:
-
-// 6.1.3's AVPlayerItemVideoOutput already has -initWithPixelBufferAttributes:
-// (objc.inventory over ~/.charon/dyld/6.1.3/dyld_shared_cache_armv7); outputSettings is the later
-// name for the same pixel-buffer-attributes dictionary, so this forwards to it unchanged.
-
-@implementation AVPlayerItemVideoOutput (CharonOutputSettings10)
-
-- (instancetype)initWithOutputSettings:(NSDictionary<NSString *, id> *)outputSettings
-{
-    return [self initWithPixelBufferAttributes:outputSettings];
-}
-
-@end
+// against 6.1.3. ONE OBJECT for 10.0 only. Three of the five - automaticallyWaitsToMinimizeStalling,
+// -playImmediatelyAtRate: and -initWithOutputSettings: - are AVFoundation100.m's, which carried them
+// first; this file carries the two capture members nothing else defines.
 
 #pragma mark - AVCaptureDeviceFormat.supportedColorSpaces
 

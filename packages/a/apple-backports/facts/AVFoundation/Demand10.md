@@ -1,5 +1,13 @@
 # AVFoundation release 10 demand rows
 
+> **Correction (2026-10-03).** Three of the five members below - `automaticallyWaitsToMinimizeStalling`,
+> `-playImmediatelyAtRate:` and `-initWithOutputSettings:` - were already carried by `AVFoundation100.m`
+> (facts/AVFoundation/AVFoundation100.md) when this object was written, so the same selectors were
+> defined by two categories and which one ran was undefined. They are `AVFoundation100.m`'s alone now;
+> `AVFoundationDemand10.m` carries `supportedColorSpaces` and `automaticallyConfiguresCaptureDeviceForWideColor`.
+> The text below is kept as the measurement it was; the guard it describes on `-playImmediatelyAtRate:`
+> is not the one that runs.
+
 Corpus: `DEMAND-AVFoundation-10.tsv`, 5 rows, CRASH-ON-USE, each called by 1 app in the corpus.
 `python3 tools/cache-index/first-rung.py playImmediatelyAtRate: initWithOutputSettings: supportedColorSpaces automaticallyConfiguresCaptureDeviceForWideColor automaticallyWaitsToMinimizeStalling`
 answers 10.0.1 for all five (10.0.1 is the oldest *held* rung that carries the names; the SDK's own

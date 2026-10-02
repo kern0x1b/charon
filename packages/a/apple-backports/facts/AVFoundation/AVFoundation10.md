@@ -1,5 +1,13 @@
 # The release-10 absent rows of `absent_AVFoundation.json`, read class by class
 
+> **Correction (2026-10-03).** Of "the three that land" below, `-playImmediatelyAtRate:` and
+> `-[AVPlayerItemVideoOutput initWithOutputSettings:]` were already carried by `AVFoundation100.m`
+> (facts/AVFoundation/AVFoundation100.md), so `AVFoundation10.m` defined both a second time. They are
+> `AVFoundation100.m`'s alone now, and `AVFoundation10.m` carries `-[AVPlayer timeControlStatus]` only.
+> The stricter key handling this page describes for `-initWithOutputSettings:` (raising on an empty
+> dictionary, a codec key or an unknown key) is therefore not what runs; `AVFoundation100.m` maps the
+> four pixel-buffer keys and ignores the rest.
+
 The 36 rows of `absent_AVFoundation.json` whose `introduced` is 10.0, 10.2 or 10.3. Every one of them is
 a member of a class the release carries, or a class or protocol the release does not carry at all, so the
 question each row asks is not "does a name exist anywhere" but "does THIS class have THIS member at the

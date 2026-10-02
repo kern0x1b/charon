@@ -1,5 +1,12 @@
 # The writing-tools surface of iOS 18.2, and why eight rows are absent
 
+> **Superseded (2026-10-03).** Written while all eight rows were `absent`. `registry/UIKit/ios26.json`
+> on main now carries `UIWritingToolsCoordinator`, `UIWritingToolsCoordinatorContext`,
+> `UIWritingToolsCoordinatorAnimationParameters`, `UITextView.writingToolsCoordinator` and
+> `UITextView.subclassForWritingToolsCoordinator` as `implemented`; `UIWritingToolsCoordinatorDelegate`,
+> `-[UIResponderStandardEditActions showWritingTools:]` and `-[UIApplication defaultStatusForCategory:error:]`
+> stay `absent`. The rows' own text is authoritative; the ladder measurement below still holds.
+
 Eight rows arrived with iOS 18.2: `UITextView.writingToolsCoordinator`,
 `UITextView.subclassForWritingToolsCoordinator`, `UIWritingToolsCoordinator`,
 `UIWritingToolsCoordinatorContext`, `UIWritingToolsCoordinatorDelegate`,
