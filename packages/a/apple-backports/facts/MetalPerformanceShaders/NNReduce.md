@@ -2,8 +2,45 @@
 
 `MPSNNReduceUnary` and the twelve concrete classes: RowMin, ColumnMin, FeatureChannelsMin, RowMax,
 ColumnMax, FeatureChannelsMax, RowMean, ColumnMean, FeatureChannelsMean, RowSum, ColumnSum,
-FeatureChannelsSum. One object, `MPSNNReduce11.m`, and `MPSNNReduce.h:36` plus each concrete class's
-own annotation says `ios(11.3)`, so the object carries one release and nothing else does.
+FeatureChannelsSum. `MPSNNReduce.h:36` plus each concrete class's own annotation says `ios(11.3)`, and
+`introduced` in the registry says 11.3 for all thirteen, which is when **Apple** published them.
+
+## Two objects, and which release each one is
+
+This page said "one object" and the 6.1.3 gate refused the claim, correctly:
+`3 objects hold API no single release introduced: MPSBackports: MPSNNReduce11.m defines ...`. The
+release test does not read the header's annotation and does not read `introduced`; it reads
+`modules/apple/dyld.lua`'s `first_releases()` over the held ladder, which is what
+`modules/apple/backports.lua`'s `check_releases()` calls, and that asks a different question: *the
+first held release that EXPORTS the symbol*, so that a client of the backport can bind it. Measured
+with that call:
+
+| symbol | `first_releases()` | rungs that export it |
+| --- | --- | --- |
+| `_OBJC_CLASS_$_MPSNNReduceUnary` and its metaclass | **16.0** | 16.0, 18.0 |
+| `_OBJC_CLASS_$_MPSNNReduceColumnMax`, `RowMin`, `FeatureChannelsSum` and the other nine | **12.0** | 12.0, 16.0, 18.0 |
+
+`tools/cache-index/first-rung.py` answers **12.0 for all fourteen of them**, and that is the whole
+difference between the two tools rather than a disagreement about the caches: `first-rung.py` reads
+whether a rung **carries** a name (its string section, its Objective-C metadata) and
+`first_releases()` reads whether a rung **exports** it. The 12.0 cache carries
+`MPSNNReduceUnary` and does not export it, so the base reads as 16.0 and the twelve concrete
+classes as 12.0, and an object cannot be both. This is the same split
+`MPSImageReduce12.m` / `MPSImageReduceUnary16.m` already makes for the same reason, and the
+thirteen rows keep `introduced: 11.3`: that field is a fact about Apple's headers and the band an
+object is placed in is a fact about the held caches, and the two are not the same fact.
+
+| file | what it holds | why |
+| --- | --- | --- |
+| `MPSNNReduce16.m` | `MPSNNReduceUnary`: the walk, the ivars, the `charon_nnReduceWithDevice:` seam, the weight accessors | the base is exported from 16.0 |
+| `MPSNNReduce12.m` | the twelve concrete classes, and `MPSNNReduceFeatureChannelsSum`'s `weight` accessors | the twelve are exported from 12.0 |
+
+The seam both files share is declared once, in `CharonMPSReduce.h`, beside the
+`MPSImageReduceUnary` one: a `static` in either file would be a second copy, and a `charon_`
+selector reaching the class the SDK declares is the one thing the two can share. All three of the
+differential's mutation sites (`column-start`, `feature-step`, `weight-default`) are in the base, so
+`tests/backports/host/mpsnnreduce/mutation.sh` names `MPSNNReduce16.m`; `anchor_check` there is what
+finds that a site moved rather than that a mutation is wrong.
 
 ## What decided that this is work and not a missing capability
 

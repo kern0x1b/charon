@@ -22,7 +22,7 @@
 # MPSNNReduceFeatureChannelsSum alone and each kernel is its own object with its own copy of the base's
 # storage - so there is no caller that sets a weight and then asks a minimum. A site for it here would
 # pass for a reason that has nothing to do with the mutation, which is worse than no site: the campaign
-# would report it caught. The scope is instead held by MPSNNReduce11.m's own comment and by the
+# would report it caught. The scope is instead held by MPSNNReduce16.m's own comment and by the
 # reference header, which is where a reader can check it.
 #
 # Every anchor is resolved before the first harness run, in one python process that prints a line per
@@ -61,9 +61,9 @@ anchor_check() {
     python3 - "$mps" "$MUTANTS_DIR" <<'PYEOF'
 import os, sys
 mps, mutants = sys.argv[1], sys.argv[2]
-sites = [("MPSNNReduce11.m", "column-start"),
-         ("MPSNNReduce11.m", "feature-step"),
-         ("MPSNNReduce11.m", "weight-default")]
+sites = [("MPSNNReduce16.m", "column-start"),
+         ("MPSNNReduce16.m", "feature-step"),
+         ("MPSNNReduce16.m", "weight-default")]
 bad = []
 for name, site in sites:
     try:
@@ -113,7 +113,13 @@ print("mutated %s at %s" % (path.rsplit('/', 1)[-1], sys.argv[3].rsplit('/', 1)[
 PYEOF
 }
 
-FILE=MPSNNReduce11.m
+# All three sites are in the base, not in the twelve concrete classes: column-start and feature-step
+# are two lines of the base's -encodeToCommandBuffer:sourceImage:destinationImage:, and weight-default
+# is the base's -charon_nnReduceWithDevice:byColumn:byFeatureChannel:operation:. Splitting one object
+# into MPSNNReduce16.m (the base) and MPSNNReduce12.m (the twelve concrete classes) moved all three
+# into MPSNNReduce16.m, and anchor_check above is what finds that a site moved rather than that a
+# mutation is wrong.
+FILE=MPSNNReduce16.m
 check_red() {
     site=$1
     # a mutant must make the run RED. The run's own exit code is the verdict, and the count line is
