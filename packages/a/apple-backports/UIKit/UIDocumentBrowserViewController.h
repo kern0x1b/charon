@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 #import "CharonDocumentBrowserTypes.h"
+#import "CharonUIKitProtocols.h"
 
 // UIDocumentBrowserViewController, as the 26.2 header declares it, and only the members that arrived
 // in iOS 11 and 12 -- the ones from 13.0 and later (activeDocumentCreationIntent,
