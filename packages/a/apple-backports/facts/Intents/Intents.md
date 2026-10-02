@@ -605,18 +605,59 @@ which is a compile-time marker. It says a caller must not *name* the selector. I
 system has no answer, and the system has one — which is the thing that had to be measured before the
 rows could move, and it is in the `source` of every one of them.
 
-**What the host was measured to answer.** Eight classes, by hand, through the IMP and not by a call —
-a compile-time call is unavailable and cannot be, which is the same constraint the emitted body is
-built around:
+**What the host was measured to answer.** Not by hand any more. `tests/backports/host/intents/init-rows.m`
+is the per-class harness, and `init-classes.txt` beside it is the class list it reads, so a row that
+is added or moved is measured by the next run and not by an edit to a program. Through the IMP and
+not by a call — a compile-time call is unavailable and cannot be, which is the same constraint the
+emitted body is built around:
 
-    class_getMethodImplementation(Cls, @selector(init))  is non-NULL   on all eight
-    [[Cls alloc] init] through that IMP                    an object    on all eight
-                                                             no exception
-    respondsToSelector:init                                 1           on all eight
-    every declared property                                present and nil
+    $ sh tests/backports/host/intents/run-rows.sh
+    $ build/init-rows tests/backports/host/intents/init-classes.txt
 
-    INMessage  INPerson  INBillDetails  INBalanceAmount
-    INCurrencyAmount  INCallRecord  INCar  INFile
+    control: INCharonNoSuchClassForThisHarness reads absent, as it must
+    control: NSObject, whose -init the SDK does not mark unavailable, has IMP non-NULL and answers
+             an object through it
+    control: INAirline declares 3 of its own, 3 of the 7 class_copyPropertyList answers
+    ... 21 classes ...
+    init-rows: 21 answer -init with an object, 0 do not
+
+    class_getMethodImplementation(Cls, @selector(init))  non-NULL   on all twenty-one
+    [[Cls alloc] init] through that IMP                    an object, no exception, on all twenty-one
+    respondsToSelector:init                                 1           on all twenty-one
+    every property the class's own header declares         nil, or the zero case of its enumeration
+
+The twenty-one are the classes of `init-classes.txt`: `INAddMediaIntentResponse`, `INAirline`,
+`INAirport`, `INAirportGate`, `INDeleteTasksIntentResponse`, `INFlight`,
+`INGetReservationDetailsIntentResponse`, `INMediaDestination`, `INMediaSearch`, `INMediaUserContext`,
+`INRentalCar`, `INReservation`, `INReservationAction`, `INSearchForMediaIntentResponse`, `INSeat`,
+`INSnoozeTasksIntentResponse`, `INStartCallIntentResponse`, `INTicketedEvent`, `INTrainTrip`,
+`INUpdateMediaAffinityIntentResponse`, `INUserContext`.
+
+**Two corrections this harness found in the text it replaces, both of them real.**
+
+- *"every declared property present and nil" was false of NSObject's own six.* `hash`, `superclass`,
+  `description`, `debugDescription`, `class` and `zone` are declared on every class and can never be
+  nil, and `class_copyPropertyList` answers them along with the class's own — seven entries for
+  `INAirline`, of which three are its declaration. A check that had asked for nil of them would have
+  failed on classes that answer perfectly, which is what the first run of the harness did: twenty of
+  twenty-one FAIL. The walk now stops at NSObject, which is the only honest reading of "declared".
+- *an enumeration property never reads nil.* `INMediaDestination`'s `mediaDestinationType` reads
+  `NSNumber 0`, not nil, because that is what zeroed integer storage holds — and the framework says
+  itself that this is the same thing: `NEUTRAL_ENUMERATIONS` in `gen-intents.py` is the host's own
+  list of the enumerations whose zero case "will be reformed to notRequired", a success with nothing
+  to say. Eleven of the twenty-one have such a property — `code` on the eight response classes,
+  `mediaDestinationType`, `mediaType`, `sortOrder`, `reference`, `subscriptionStatus`,
+  `reservationStatus`, `type`, `category`, `confirmationReason` — and every one of them reads the
+  zero case. The rows quote that, not a nil that never happens.
+
+What the harness does **not** settle, and what is owed: it compares the port's `-init` with the
+system's through `tests/backports/host/prefix_selectors.py`, the tool `mpsmatrix/run.sh` uses to
+rename the port's classes so its implementations are reached under names of their own. That rename
+list is generated from the port's own object symbols, and the port's Intents sources additionally
+need `CharonIntents262.h` renamed with them, because that header re-declares the classes the port's
+own SDK lacks and the host's has, and without the rename the host build fails with *duplicate
+interface definition*. Until that run exists, what is proven for the port's own side is the compile,
+the presence of each `-init` per `nm`, and the registry's own text.
 
 **What the port now answers.** The same, by construction: the class defines `-init` even though the
 header marks it unavailable — which compiles, because defining an unavailable method is allowed — and
@@ -667,18 +708,20 @@ the control, and it is the one class of the four whose header marks nothing.
 
 ## What is NOT proven here, and is owed
 
-- **The per-class harness is owed and is not in the tree.** The eight classes above are the
-  measurement. The other hundred and two are the same rule applied to the same header, and that is a
-  *claim* until a harness runs them. `tests/backports/host/intents/` holds the constants suite
-  (`constants.m` and its `run.sh`) and nothing for these: the harness has to compare the port's
-  `-init` with the system's class by class, and the port's classes and the framework's share a name,
-  so a lookup in one process returns the framework's object and the check compares the framework with
-  itself. The tree already has the tool for the fix — `tests/backports/host/prefix_selectors.py`, which
-  `mpsmatrix/run.sh` uses to rename the port's classes so its implementations are reached under names
-  of their own — and the port's Intents sources additionally need `CharonIntents262.h` renamed with
-  them, because that header re-declares the classes the port's own SDK lacks and the host's has, and
-  without the rename the host build fails with *duplicate interface definition*. The rename list is
-  generated from the port's own object symbols, so every name in it is a class the port really defines.
+- **The twenty-one are measured; the other eighty-nine are still the same rule applied to the same
+  header.** `init-classes.txt` names the classes of one slice, and a class is added to it by being
+  added to the slice. The harness itself is not slice-specific: given the rest of the classes it
+  answers the same way for them, and nothing about it would have to change.
+- **The port's own `-init` has not been run against the system's.** The harness above reads the
+  system's class; the port's side is proven by the compile, the presence of each `-init` per `nm`,
+  and the registry's own text. Comparing the two needs `tests/backports/host/prefix_selectors.py`,
+  which renames the port's classes so its implementations are reached under names of their own —
+  the port's classes and the framework's share a name, so a lookup in one process returns the
+  framework's object and the check compares the framework with itself. The port's Intents sources
+  additionally need `CharonIntents262.h` renamed with them, because that header re-declares the
+  classes the port's own SDK lacks and the host's has, and without the rename the host build fails
+  with *duplicate interface definition*. The rename list is generated from the port's own object
+  symbols, so every name in it is a class the port really defines.
 - **Nothing here runs on a device or under `xmake emulate`.** Every answer above is the macOS host's
   own Intents, and the port's objects are armv7 iOS 6.1.3. That the `-init` survives into a linked
   6.1.3 binary is the link step's job.
