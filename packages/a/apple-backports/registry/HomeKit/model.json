@@ -528,7 +528,8 @@
    "status": "implemented",
    "reason": "a vendor accessory's HAP instance identifier comes from the vendor, which publishes it for an accessory it has paired",
    "effect": "nil",
-   "facts": "facts/HomeKit/HMHome.md"
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "the declaration is `@property (nullable, nonatomic, readonly, copy) NSNumber *HAPInstanceID NS_REFINED_FOR_SWIFT API_AVAILABLE(ios(26.1), watchos(26.1), tvos(26.1)) API_UNAVAILABLE(macos);` at HMAccessory+Vendor.h:24 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers; it is absent from the iPhoneOS16.4 SDK the package compiles against, and coordination/corpus/sdk-26.2-surface.tsv:144859 records it at 26.1. The spelling NS_REFINED_FOR_SWIFT is why the accessor is -HAPInstanceID and not -hapInstanceID, and that spelling is the row's"
   },
   {
    "api": "HMAccessory.vendorAccessory",
@@ -537,28 +538,29 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "a vendor accessory is one whose HAP public key the vendor has published, and this port holds no vendor service to ask",
-   "effect": "nil",
-   "facts": "facts/HomeKit/HMHome.md"
+   "effect": "is NO for every accessory this port holds, and there is nothing that could make it YES: the question is whether a vendor has published an HAP public key for the accessory, and this release has no vendor service at all",
+   "facts": "facts/HomeKit/HMHome.md",
+   "source": "the declaration is `@property (nonatomic, readonly, getter=isVendorAccessory) BOOL vendorAccessory API_AVAILABLE(ios(26.1), watchos(26.1), tvos(26.1)) API_UNAVAILABLE(macos);` at HMAccessory+Vendor.h:17 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers; it is absent from the iPhoneOS16.4 SDK the package compiles against, and coordination/corpus/sdk-26.2-surface.tsv:144860 records it at 26.1"
   },
   {
-   "api": "HMAccessory.matterControllerXPCConnectBlock",
+   "api": "HMHome.matterControllerXPCConnectBlock",
    "kind": "property",
    "introduced": "16.1",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "it is what hands a Matter controller over, and there is no Matter controller on this release to hand over",
-   "effect": "a settable block, kept and read back, that the port never calls",
-   "facts": "facts/HomeKit/HMHome.md"
+   "status": "absent",
+   "reason": "not carried, and this row was naming the wrong class as well as claiming a coverage nothing had: the 26.2 HomeKit surface has this property on HMHome, not on HMAccessory - coordination/corpus/sdk-26.2-surface.tsv records it at line 80647 as HMHome.matterControllerXPCConnectBlock, introduced 16.1, and the ledger at HomeKit.tsv:633 says the same - and HMHome.h:462 is the declaration, `@property (nonatomic, readonly, strong) NSXPCConnection * (^matterControllerXPCConnectBlock)(void) API_AVAILABLE(ios(16.1))`. The port does not carry HMHome's Matter half and nothing installs the block: the property is readonly, so a caller cannot set it, and the system that would install it on a paired Matter controller is not something this port carries. Measured, not assumed: the names matterControllerXPCConnectBlock and matterStartupParametersXPCConnectBlock are in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3, and the release has no HMHome of its own to answer either - the class list of 4.3 has 7187 names with HMHome 0 of them",
+   "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises. This is the honest reading for a block that hands a caller an XPC connection to a Matter controller: an answered nil would tell a caller the block is there to call, and calling it is a null block dereference. The registry's own reason for this row claimed \"a settable block, kept and read back\" - the header's property is readonly, so there is no setter and nothing could have been kept",
+   "source": "the declaration is at HMHome.h:462 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers, and arrived at API_AVAILABLE(ios(16.1)). It is absent from the iPhoneOS16.4 SDK the package compiles against. That HMAccessory is not its owner is what coordination/corpus/sdk-26.2-surface.tsv:80647 and ledger/HomeKit.tsv:633 record"
   },
   {
-   "api": "HMAccessory.matterStartupParametersXPCConnectBlock",
+   "api": "HMHome.matterStartupParametersXPCConnectBlock",
    "kind": "property",
    "introduced": "18.2",
    "minimum": "6.0",
-   "status": "implemented",
-   "reason": "it hands over a Matter controller's startup parameters, and there is no Matter controller on this release",
-   "effect": "a settable block, kept and read back, that the port never calls, for the same reason",
-   "facts": "facts/HomeKit/HMHome.md"
+   "status": "absent",
+   "reason": "not carried, on the same two counts as its 16.1 sibling: the 26.2 HomeKit surface has this property on HMHome and not on HMAccessory (sdk-26.2-surface.tsv:126803 records HMHome.matterStartupParametersXPCConnectBlock, introduced 18.2, and ledger/HomeKit.tsv:634 says the same), and HMHome.h:468 declares it `@property (nonatomic, readonly, strong) NSXPCConnection * (^matterStartupParametersXPCConnectBlock)(void) API_AVAILABLE(ios(18.2))` - readonly, so a caller cannot install it, and nothing else on this release would. The port carries no Matter startup parameters and no controller to produce them. Measured: the name is in none of the 113981 selectors of 6.1.3 nor of the 70062 of 4.3, and HMHome is 0 entries of the 7187 class names of 4.3",
+   "effect": "the accessor is not answered, so respondsToSelector: answers NO and an unchecked call raises, which is the truth for a block that hands a caller an XPC connection this release has no way to make",
+   "source": "the declaration is at HMHome.h:468 of the HomeKit.framework headers of the SDK this machine carries for the host, /Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk/System/iOSSupport/System/Library/Frameworks/HomeKit.framework/Headers, and arrived at API_AVAILABLE(ios(18.2)). It is absent from the iPhoneOS16.4 SDK the package compiles against"
   },
   {
    "api": "HMHomeDelegate",
