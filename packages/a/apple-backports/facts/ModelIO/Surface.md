@@ -51,6 +51,68 @@ The answers are the honest empties — nil, NO, 0 — for a machine with no GPU,
 provider. `MDLAsset` and `MDLMesh` are built for real on the CPU in the commit after this one; nothing in
 these 747 rows claims to be a loaded asset or a computed mesh.
 
+## Seven of these rows name protocols, not classes
+
+A 6.1.3 band link refused with `Undefined symbols for architecture armv7` for
+`_OBJC_CLASS_$_MDLAssetResolver` and `_OBJC_CLASS_$_MDLLightProbeIrradianceDataSource`, each
+"referenced from" a category in MDIO110.o and MDIO90.o. A category adds methods to a class and never
+creates one, so the two questions are what the names are and whether they can be carried.
+
+**Neither is a class; both are protocols the 16.4 SDK declares with a body.**
+
+| name | where 16.4 declares it | what it is |
+| --- | --- | --- |
+| `MDLAssetResolver` | `MDLAssetResolver.h:14` | `@protocol MDLAssetResolver <NSObject>` |
+| `MDLLightProbeIrradianceDataSource` | `MDLAsset.h:298` | `@protocol MDLLightProbeIrradianceDataSource <NSObject>` |
+| `MDLMeshBuffer` | `MDLMeshBuffer.h:61` | `@protocol MDLMeshBuffer <NSObject, NSCopying>` |
+| `MDLMeshBufferAllocator` | `MDLMeshBuffer.h:181` | `@protocol MDLMeshBufferAllocator <NSObject>` |
+| `MDLObjectContainerComponent` | `MDLTypes.h:82` | `@protocol MDLObjectContainerComponent <MDLComponent, NSFastEnumeration>` |
+| `MDLTransformComponent` | `MDLTransform.h:27` | `@protocol MDLTransformComponent <MDLComponent>` |
+| `MDLTransformOp` | `MDLTransformStack.h:26` | `@protocol MDLTransformOp` |
+
+`grep -rn "@interface MDLAssetResolver"` over the SDK's System/Library/Frameworks returns nothing and
+`grep -rn "@class MDLAssetResolver"` over the same tree returns nothing, every framework and not
+only ModelIO; the same holds for `MDLLightProbeIrradianceDataSource`, whose only
+two hits in the whole SDK are the `@protocol` at MDLAsset.h:298 and the consumer at MDLAsset.h:332.
+Every consumer in the SDK takes the name protocol-qualified - `id<MDLAssetResolver>` at MDLAsset.h:229,
+MDLMaterial.h:385, MDLMaterial.h:393 and MDLTexture.h:86, and
+`id<MDLLightProbeIrradianceDataSource>` at MDLAsset.h:332 - so no caller is ever given an instance of
+either and there is nothing to instantiate. The tree's own host probe had it right already:
+`tests/backports/host/modelio/port-support.m:57` restates `@protocol MDLAssetResolver <NSObject>` with
+both methods, and `MDLAsset9.m:24` declares `@property (nonatomic, retain) id<MDLAssetResolver> resolver;`.
+
+The generator's header map is why they were ever mistaken for classes: `tools/corpus/hdr-map.json`
+records only `@interface` declarations, and it holds the three concrete resolvers
+(`MDLRelativeAssetResolver`, `MDLPathAssetResolver`, `MDLBundleAssetResolver`) and neither protocol.
+`CharonModelIO.h` then declared each missing name as `@interface X : NSObject` so a category had
+something to attach to, and that is the whole of the failure: **seven** categories on seven such
+names emitted seven `_OBJC_CLASS_$_` references and no object in the library defined any of them. The
+band link printed two of the seven.
+
+The ios version on each protocol row is clang's, not the generator's: compiled at
+`-target armv7-apple-ios6.1.3` with `-Wunguarded-availability`, which names iOS 11.0 for
+`MDLAssetResolver` and `MDLTransformOp`, iOS 9.0 for `MDLMeshBuffer`, `MDLMeshBufferAllocator`,
+`MDLObjectContainerComponent` and `MDLTransformComponent`, and **nothing at all** for
+`MDLLightProbeIrradianceDataSource`, which the SDK annotates with no version - so its row's 9.0 is the
+version of the surface it belongs to, `MDLLightProbe` at MDLLight.h:142 being
+`API_AVAILABLE(macos(10.11), ios(9.0), tvos(9.0))`.
+
+**Twenty of the twenty-one rows a protocol owns are implemented by a concrete class that conforms to
+it**, and one is not: nothing in the 16.4 SDK and nothing in this port conforms to
+`MDLLightProbeIrradianceDataSource`, so `sphericalHarmonicsCoefficientsAtPosition:` is adjudicated
+`absent` with that reason. Measured by reading every `@implementation` block of this directory and
+matching each row's selector against the classes the SDK declares as conforming:
+`MDLMeshBufferData` (2 of 2), `MDLMeshBufferDataAllocator` (6 of 6), `MDLObjectContainer` (3 of 3),
+`MDLTransform` (4 of 4), `MDLTransformStack` (3 of 3), the eight `MDLTransform*Op` classes (3 of 3),
+and `MDLRelativeAssetResolver`, `MDLPathAssetResolver`, `MDLBundleAssetResolver` (2 of 2 each).
+
+The protocols themselves are carried the way `modules/apple/backports.lua`'s `protocol_sources()`
+carries every other one: a `kind: protocol`, `status: implemented` row, from which the build writes
+`ModelIOBackportsProtocols<release>.m` and clang emits `__OBJC_PROTOCOL_$_<name>` into it.
+`CharonModelIOProtocols.h` is the header those generated sources import, and holds forward
+declarations only, because every one of the seven is declared with a body by the SDK the package
+compiles against and the umbrella import beside them brings the bodies in.
+
 ## Owed, and not verified here
 
 The gate's two lists — built without a row, row without a build — have **not** been computed. An earlier

@@ -211,10 +211,6 @@
 - (id)resetWithDouble4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
 - (id)resetWithFloat4Array:(id)a0 atTimes:(id)a1 count:(id)a2 { return nil; }
 @end
-@implementation MDLAssetResolver (CharonPerClass110)
-- (id)canResolveAssetNamed:(id)a0 { return nil; }
-- (id)resolveAssetNamed:(id)a0 { return nil; }
-@end
 @implementation MDLMatrix4x4Array (CharonPerClass110)
 - (id)clear { return nil; }
 - (id)getDouble4x4Array:(id)a0 maxCount:(id)a1 { return nil; }
@@ -274,9 +270,4 @@
 - (id)setSunElevation { return nil; }
 - (id)setTurbidity { return nil; }
 - (id)setUpperAtmosphereScattering { return nil; }
-@end
-@implementation MDLTransformOp (CharonPerClass110)
-- (id)IsInverseOp { return nil; }
-- (id)double4x4AtTime:(id)a0 { return nil; }
-- (id)float4x4AtTime:(id)a0 { return nil; }
 @end

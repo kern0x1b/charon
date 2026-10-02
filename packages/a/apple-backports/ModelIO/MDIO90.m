@@ -86,9 +86,6 @@
 @implementation MDLLightProbe (CharonMissing90)
 + (id)lightProbeWithTextureSize:(id)a0 forLocation:(id)a1 lightsToConsider:(id)a2 objectsToConsider:(id)a3 reflectiveCubemap:(id)a4 irradianceCubemap:(id)a5 { return nil; }
 @end
-@implementation MDLLightProbeIrradianceDataSource (CharonMissing90)
-- (id)sphericalHarmonicsCoefficientsAtPosition:(id)a0 { return nil; }
-@end
 @implementation MDLMaterial (CharonMissing90)
 - (id)loadTexturesUsingResolver:(id)a0 { return nil; }
 - (id)propertiesWithSemantic:(id)a0 { return nil; }
@@ -184,9 +181,6 @@
 @implementation MDLLightProbe (CharonPerClass90)
 + (id)lightProbeWithTextureSize:(id)a0 forLocation:(id)a1 lightsToConsider:(id)a2 objectsToConsider:(id)a3 reflectiveCubemap:(id)a4 irradianceCubemap:(id)a5 { return nil; }
 @end
-@implementation MDLLightProbeIrradianceDataSource (CharonPerClass90)
-- (id)sphericalHarmonicsCoefficientsAtPosition:(id)a0 { return nil; }
-@end
 @implementation MDLMaterial (CharonPerClass90)
 - (id)loadTexturesUsingResolver:(id)a0 { return nil; }
 - (id)propertiesWithSemantic:(id)a0 { return nil; }
@@ -204,23 +198,6 @@
 - (id)initWithName:(id)a0 semantic:(id)a1 matrix4x4:(id)a2 { return nil; }
 - (id)initWithName:(id)a0 semantic:(id)a1 string:(id)a2 { return nil; }
 - (id)initWithName:(id)a0 semantic:(id)a1 textureSampler:(id)a2 { return nil; }
-@end
-@implementation MDLMeshBuffer (CharonPerClass90)
-- (id)fillData:(id)a0 offset:(id)a1 { return nil; }
-- (id)map { return nil; }
-@end
-@implementation MDLMeshBufferAllocator (CharonPerClass90)
-- (id)newBuffer:(id)a0 type:(id)a1 { return nil; }
-- (id)newBufferFromZone:(id)a0 data:(id)a1 type:(id)a2 { return nil; }
-- (id)newBufferFromZone:(id)a0 length:(id)a1 type:(id)a2 { return nil; }
-- (id)newBufferWithData:(id)a0 type:(id)a1 { return nil; }
-- (id)newZone:(id)a0 { return nil; }
-- (id)newZoneForBuffersWithSize:(id)a0 andType:(id)a1 { return nil; }
-@end
-@implementation MDLObjectContainerComponent (CharonPerClass90)
-- (id)addObject:(id)a0 { return nil; }
-- (id)objectAtIndexedSubscript:(id)a0 { return nil; }
-- (id)removeObject:(id)a0 { return nil; }
 @end
 @implementation MDLPhotometricLight (CharonPerClass90)
 - (id)generateTexture:(id)a0 { return nil; }
@@ -248,12 +225,6 @@
 + (id)textureNamed:(id)a0 assetResolver:(id)a1 { return nil; }
 - (id)writeToURL:(id)a0 level:(id)a1 { return nil; }
 - (id)writeToURL:(id)a0 type:(id)a1 level:(id)a2 { return nil; }
-@end
-@implementation MDLTransformComponent (CharonPerClass90)
-+ (id)globalTransformWithObject:(id)a0 atTime:(id)a1 { return nil; }
-- (id)localTransformAtTime:(id)a0 { return nil; }
-- (id)setLocalTransform:(id)a0 { return nil; }
-- (id)setLocalTransform:(id)a0 forTime:(id)a1 { return nil; }
 @end
 @implementation MDLVertexAttribute (CharonPerClass90)
 - (id)initWithName:(id)a0 format:(id)a1 offset:(id)a2 bufferIndex:(id)a3 { return nil; }
