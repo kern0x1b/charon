@@ -215,6 +215,10 @@ method is not there rather than finding it in the corpus and wondering:
   the surface file reads `via=own`, as it does for
   `-[HKWorkoutSessionDelegate workoutSession:didGenerateEvent:]`, it is the SDK's declaration and the row
   follows it.
+  **Correction (2026-10-03).** The four rows do not say 18.0: `introduced` stays 8.0, the value the
+  registry's own source gives them, and each row's reason and source name 18.0 as the release that owns
+  the method, which is the measured form recorded in facts/HealthKit/HealthKit8Absent.md. The paragraph
+  above describes a change that was proposed and not the one that landed.
 
 **A word about the effect of an `-init` row, because it is the same word in every library's copy of
 this page.** `respondsToSelector:` does **not** answer NO for the `-init` of one of these classes: it
