@@ -105,13 +105,15 @@ is undefined, rather than a string or an object standing in for a symbol, becaus
 for a symbol is a different value that claims to be the same one.
 ## The eight the release's engine can answer, carried
 
-`registry/JavaScriptCore/capi.json` holds the twelve rows this section is about; the eight that answer
-something are built in `JavaScriptCore/JSCAPI.m` and the one that returns a promise is built with the
-promise it returns, in `JavaScript.m`'s own file (`JSValue.m`, `DeferredPromise`). Each is asked
-directly by `tests/backports/host/jscontext/checks.m`, which is a differential: the same file runs
-first against the host's own JavaScriptCore, which is the oracle, then against the backport linked over
-the host's C API. **Both sides answer every check they run and finish with `checks=all passed`**, and the
-blocks-and-structs matrix is 351 lines identical on the two.
+`registry/JavaScriptCore/capi.json` holds the twelve rows this section is about. The eight that answer
+something are built in `JavaScriptCore/JSCAPI9.m` (JSValueIsArray, JSValueIsDate), `JSCAPI16.m`
+(JSValueIsSymbol and the four `ForKey`) and `JSCAPI8.m` (JSGlobalContextCopyName), and the ninth, the
+one that returns a promise, is built in `JavaScriptCore/JSObjectMakeDeferredPromise16.m` over the
+machinery in `CharonJSPromise.m`. The four carried inert below are in `JSCAPI8.m` and `JSCAPI18.m`.
+Each is asked directly by `tests/backports/host/jscontext/checks.m`, which is a differential: the same
+file runs first against the host's own JavaScriptCore, which is the oracle, then against the backport
+linked over the host's C API. **Both sides answer every check they run and finish with
+`checks=all passed`**, and the blocks-and-structs matrix is 351 lines identical on the two.
 
 The number to quote is the run's, not the file's, and the two are not the same count: the run prints
 **177** `ok` lines per side (`grep -c '^ok '` on its log), the file carries **181** `check(` statements, of
@@ -202,23 +204,47 @@ round trip - a flag read back what was set - and neither the fact nor the effect
 
 ## Which release each object is, and which release each name was published in
 
-**`JSCAPI.m` is one release: iOS 6.1.3, by construction.** Every entry point it defines is absent from
-6.1.3 - that is the whole reason the file exists - so no band this package builds can supply any of them
-from the release, and the object is 6.1.3-band surface by that fact rather than by its name. The file
-carries no release suffix for the same reason `UIKit26_*` needs none: each of those is one object per
-release because each *replaces* a class a later release has, and here every symbol is new to the band.
+**This section used to say `JSCAPI.m` is one release: iOS 6.1.3, by construction, and that nothing in
+the release-split check reads the `introduced` fields. The 6.1.3 gate read them, and refused the
+object:**
 
-Its eleven functions are nevertheless the API of four Apple releases, and the `introduced` field of each
-row records where Apple published that name: `JSGlobalContextSetName` and `CopyName` at 8.0, `JSValueIsArray`
-and `JSValueIsDate` at 9.0, the four `ForKey` rows and `JSValueIsSymbol` at 13.0, and the two
-`JSGlobalContext…Inspectable` at 16.4. Those four numbers are a fact about Apple's headers, not a claim
-about which band the object belongs to, and nothing in the release-split check reads them. The twelfth
-symbol, `JSObjectMakeDeferredPromise` (13.0), is defined in `JSValue.m` rather than beside its eleven
-because it returns the promise that file builds; moving it out would mean calling across files into a
-function whose own exports a band's release already has, which is the trap `charon/AGENTS.md` names.
+    JavaScriptCoreBackports: JSCAPI.m defines JSGlobalContextCopyName JSGlobalContextSetName from
+      iOS 8.0 and JSValueIsArray JSValueIsDate from iOS 9.0
+    JavaScriptCoreBackports: JSValue.m defines JSValue from iOS 7.0 and JSObjectMakeDeferredPromise
+      from iOS 16.0; an object carries API that arrived in one release
 
-Every one of the twenty-six rows is `minimum: 6.0`, and the two objects are one release each: `JSCAPI.m`
-exports eight symbols the release has none of and `JSValue.m` the ninth beside the promise it returns, so
-neither file is claimed from a band that already carries its exports. The four `ForKey` rows are four names
-of one release (iOS 13.0) and the thirteen typed-array rows thirteen names of another (10.0), and a protocol
-conformance is not a split - nothing here conforms to a protocol.
+So the claim was wrong twice over, and the second half of it was the part that mattered: the check
+does not read `introduced`, and `introduced` is not the number that decides which object an API goes
+in. `introduced` is where **Apple published** a name, and it is right about that; what decides the
+object is the first held release that **exports** the symbol, read by `modules/apple/dyld.lua`'s
+`first_releases()` - the call `modules/apple/backports.lua`'s `check_releases()` makes, so this is the
+measurement that refuses the mixed object and not a second opinion on it. Measured with it:
+
+| object | symbol | `first_releases()` | rungs that export it | `introduced` (Apple) |
+| --- | --- | --- | --- | --- |
+| `JSCAPI8.m` | `JSGlobalContextSetName`, `JSGlobalContextCopyName` | **8.0** | every rung from 8.0 on | 8.0 |
+| `JSCAPI9.m` | `JSValueIsArray`, `JSValueIsDate` | **9.0** | every rung from 9.0 on | 9.0 |
+| `JSCAPI16.m` | `JSValueIsSymbol`, the four `JSObject...ForKey` | **16.0** | 16.0, 18.0 | 13.0 |
+| `JSCAPI18.m` | `JSGlobalContextSetInspectable`, `JSGlobalContextIsInspectable` | **18.0** | 18.0 | 16.4 |
+| `JSValue.m` | `JSValue` and its metaclass | **7.0** | every rung from 7.0 on | 7.0 |
+| `JSObjectMakeDeferredPromise16.m` | `JSObjectMakeDeferredPromise` | **16.0** | 16.0, 18.0 | 13.0 |
+
+The 13.0 and 16.4 rows read as 16.0 and 18.0 because no release between 12.0 and 16.0 is held, and
+none between 16.0 and 18.0: a name Apple published inside a gap is bounded from above by the next rung
+that exports it. `tools/release-split.lua` prints the same note about its own ladder when it skips a
+major release. No `introduced` value changed, because none of them was wrong.
+
+`CharonJSPromise.m` is a fifth file and is in **every** band: `nm -gU` on it reports three symbols and
+`backports.lua`'s `internal_symbol()` filters all three (two `charon_js_` entry points and a block
+descriptor), so `band()` sees no API of its own and keeps it wherever it is needed. That is what lets
+`JSObjectMakeDeferredPromise16.m` reach the promise at all: from iOS 7.0 to 15.x, `JSValue.m` is
+re-exported to the release's own `JSValue` and is not in the library, so the promise could not have
+stayed in it, and it could not have been a `static inline` in `JSInternal.h` either, because
+`PromiseClass` and `CaptureClass` hold their `JSClassRef` in a `dispatch_once` function-local and
+`PromiseState` answers by identity. One copy, in a file that exports nothing, is the shape
+`charon/AGENTS.md` names for exactly this.
+
+Every one of the twenty-six rows is `minimum: 6.0`, and every object above is one release: no object
+is claimed from a band that already carries its exports. The four `ForKey` rows are four names of one
+release and the thirteen typed-array rows thirteen names of another (10.0), and a protocol conformance
+is not a split - nothing here conforms to a protocol.
