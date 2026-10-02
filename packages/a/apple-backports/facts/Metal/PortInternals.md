@@ -294,3 +294,104 @@ facts are byte-identical to the base revision. `minimum` is the field `minimums(
 is one method in `CharonMetalDrawable.m`, and the row that claimed ten was counting a neighbour's. That
 is the whole failure this section records - a count that belongs to another object, next to a conclusion
 that happens to be true.
+
+## The sixteen are `absent`, and the status that was on them is the one claim the evidence refuses
+
+A later revision set all sixteen to `ignored`, and the light guard answered with the rule that status
+owes a field nothing else does - `modules/apple/backports.lua:1547-1548`, asking for an `effect` on
+every non-implemented row, a `reason` on every status but `ignored`, and a `facts` page on `ignored`
+and only on `ignored`:
+
+    registry_test FAIL: the registry says: CharonMetalBlitEncoder is ignored without a file of facts
+
+The field was missing, so the light guard was right to refuse. The status was the defect, and adding
+the field would have moved the failure rather than fixed it, which is why the status is what this
+section settles.
+
+**`ignored` asserts the opposite of what is true of these sixteen.** README.md:862-864 defines it as
+the quietest answer: "the call reaches the release's own implementation, which does something else
+with it, and nothing of ours is in the way". There has to be a release implementation to reach. The
+tree's own shape for a real `ignored` row agrees - `registry/CoreGraphics/ios7.json`'s
+`kCGColorSpaceSRGB` reads "the release exports the name and does not make a space from it". No release
+ever exported `CharonMetalDevice`, so there is nothing for the call to reach and the status cannot be
+true of any of the sixteen.
+
+`check_registry` refuses exactly that, and refuses it before a facts page is ever consulted -
+`modules/apple/backports.lua:1942-1943` raises into the `missing` list, which `:2012` prints as
+
+    listed as ignored because the release carries it, but the release does not: <every name>
+
+so an `ignored` row naming a name no release carries fails the full gate whatever its `facts` says.
+The light guard does not run that branch, which is the whole reason this could look like a missing
+prose file for a whole series.
+
+### Four measurements, each with the control that says the file was read
+
+1. **No SDK header names one.** `grep -rl CharonMetal` over
+   `.../iPhoneOS16.4.sdk/System/Library/Frameworks/Metal.framework/Headers` names no file. Control, the
+   same grep over the same directory for `MTLDevice`: `MTLBinaryArchive.h`, `MTLCaptureScope.h`,
+   `MTLCommandEncoder.h`.
+2. **No SDK surface row names one.** `grep -c <name> coordination/corpus/sdk-26.2-surface.tsv` is 0
+   for each of the sixteen, by each row's own name and not by a neighbour's, and `grep -c Charon` over
+   all 145301 rows is 0 as well. Control in the same run: `grep -c MTL` is 3477.
+3. **No held release cache carries one.** `grep -ho '^_OBJC_CLASS_\$_Charon[A-Za-z]*'
+   coordination/corpus/caches/*.tsv` is empty over 6.0, 7.0.1, 10.3.4, 12.0, 16.0 and 18.0 - which is
+   the condition `carried_by_release` reports as false, the one `:1942` asks about. Controls in the
+   same run: `grep -c '^_OBJC_CLASS_\$_MTL'` is 119, 171, 339 and 394 in 10.3.4, 12.0, 16.0 and 18.0
+   and 0 in 6.0 and 7.0.1, and `grep -c '^_OBJC_CLASS_\$_WLSourceDevice' 18.0.tsv` is 3.
+4. **The port builds all sixteen.** `grep -rl "@implementation <name>" packages/a/apple-backports/Metal/*.m`
+   names a file for every one of them - the table in the section above is the method counts, this is
+   where each `@implementation` is written.
+
+### Where the sixteen come from, by the file that defines them
+
+Measured with the command in 4, one row per name, grouped by family rather than repeated per row:
+
+| family | names | defined in |
+| --- | --- | --- |
+| the buffer | `CharonMetalBuffer` | `CharonMetalBuffer.m` |
+| the queue and its command buffer | `CharonMetalCommandBuffer`, `CharonMetalQueue` | `CharonMetalQueue.m` |
+| the device | `CharonMetalDevice` | `CharonMetalDevice.m`, and methods on it in `MTLHeap10.m`, `MTLSharedEvent12.m` |
+| the drawable | `CharonMetalDrawable`, `CharonMetalLayerState` | `CharonMetalDrawable.m` |
+| the render encoder | `CharonMetalEncoder` | `CharonMetalEncoder.m`, and methods on it in `MTLHeap11.m`, `MTLHeap13.m` |
+| the library and its functions | `CharonMetalFunction`, `CharonMetalLibrary` | `CharonMetalLibrary.m` |
+| the depth stencil | `CharonMetalDepthStencil` | `CharonMetalDepthStencil.m` |
+| the render pipeline | `CharonMetalPipeline` | `CharonMetalPipeline.m` |
+| the texture and its samplers | `CharonMetalSampler`, `CharonMetalTexture` | `CharonMetalTexture.m` |
+| the blit encoder | `CharonMetalBlitEncoder` | `MTLBlitCommandEncoder8.m`, `:9`, `:10`, `:12`, `:13` |
+| the compute encoder | `CharonMetalComputeEncoder` | `MTLComputeCommandEncoder8.m` |
+| the compute pipeline | `CharonMetalComputePipeline` | `MTLComputePipeline8.m` |
+
+They are stand-ins for the `MTL` types, not Apple's names for anything: on a release with no GPU to
+ask, these are what the port hands back where an application asks Metal for a device, a buffer or a
+command queue. Measurement 1 is what makes them the port's own and measurement 4 is what makes the
+rows load-bearing rather than hollow.
+
+### Why `implemented` is unreachable either, and not for the reason this page used to give
+
+Earlier revisions of this page, and the `reason` text of all sixteen rows, say these objects are
+"compiled with hidden visibility so the band exports nothing under it". **That is not what happens in
+this tree.** `modules/apple/backports.lua:457` says it outright - "Only C is compiled hidden" - and
+`:500-501` adds `-fvisibility=hidden` only on the `else` of the `if objective_c` test, so a `.m`
+object is compiled with default visibility like every other class a backport carries.
+
+What actually keeps a `Charon` name out of the check is `internal_symbol`, `:193`, whose predicate at
+`:213` is
+
+    local bare = name:match("^_OBJC_%u*CLASS_%$_(.+)$") or name:match("^_(.+)$") or name
+    return bare:startswith("charon_") or bare:startswith("Charon")
+
+`exported_symbols` at `:263` drops every symbol that predicate claims, and `surface()` builds
+`found.classes` out of `exported_symbols` at `:1452`. So `_OBJC_CLASS_$_CharonMetalDevice` cannot reach
+the set `check_registry` reads for "built" whatever visibility it was compiled with - which is why
+`:2003` answered "listed as implemented, but nothing of that name is built" for a class that defines
+36 methods. The outcome the earlier claim reached is right; the mechanism was not, and a reader who
+went looking for `-fvisibility=hidden` on a `.m` file would not find it.
+
+### What stays, and why the rows are not noise
+
+`minimum` is 6.0 on all sixteen and is what `minimums()` reads - `:2059`, taking `entry.minimum` at
+`:2068` through `entry_of`, never `entry.status`. Five objects every band places depend on exactly
+that, as the section above records, so the rows stay whatever their status is: they are the only place
+this tree records that these internal classes become linkable at 6.0. `status` is what the registry
+test reads, `minimum` is what the band reads, and neither is a substitute for the other.
