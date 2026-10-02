@@ -285,7 +285,7 @@
    "status": "implemented",
    "reason": "the GCXboxGamepad class this series adds carries the member as a synthesised property, so the getter answers; nothing in the package writes the ivar and no 6.1.3 host has a Series X controller, so the answer is the nil the property is nullable for",
    "effect": "the getter answers nil, which is what the property is declared nullable for; a caller that sends the setter has no receiver to store it and the value is not readable back",
-   "source": "the header of iOS 16.4 GCXboxGamepad for the member; the class and its property synthesis in this series' GCGamepadTouchpads14.m",
+   "source": "the header of iOS 16.4 GCXboxGamepad for the member; the class and its property synthesis in this series' GCGamepadTouchpads14.m"
   },
   {
    "api": "GCDualShockGamepad.touchpadButton",
