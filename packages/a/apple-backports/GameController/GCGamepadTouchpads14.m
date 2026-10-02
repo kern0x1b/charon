@@ -18,6 +18,10 @@
 // nil here - and nil is what the header's own example code expects a caller to handle. Each is a real
 // accessor rather than an @dynamic, because a caller that reaches one gets nil rather than
 // doesNotRecognizeSelector:.
+//
+// buttonShare - the Series X controller's share button, iOS 15 - is no member of this iOS 14 object:
+// no controller carrying one attaches, so it is not written, and default property synthesis answers
+// it off an ivar nothing here writes, which reads nil as the paddles do.
 @implementation GCXboxGamepad
 
 - (GCControllerButtonInput *)paddleButton1 { return nil; }
