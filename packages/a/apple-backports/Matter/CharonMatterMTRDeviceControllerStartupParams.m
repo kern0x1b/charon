@@ -42,17 +42,6 @@
 @synthesize operationalCertificateIssuer = _operationalCertificateIssuer;
 @synthesize operationalCertificateIssuerQueue = _operationalCertificateIssuerQueue;
 
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _fabricID = @0;
-    _ipk = [NSData data];
-    return self;
-}
-
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
 // are shaped so. Their accessors are written out over the storage above, because a category

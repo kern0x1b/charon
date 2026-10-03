@@ -28,14 +28,4 @@
 @synthesize port = _port;
 @synthesize shouldStartServer = _shouldStartServer;
 
-- (instancetype)init
-{
-    self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _shouldStartServer = NO;
-    return self;
-}
-
 @end

@@ -19,6 +19,17 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+static NSString *charonDescribeObject(id value)
+{
+    return [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRUnitTestingClusterNestedStructList
 
 @synthesize a = _a;
@@ -60,6 +71,17 @@
     return self;
 }
 
-// -description: the host does not have this class, so the header's answer stands and this
-// object does not override it. Named by the run, per class, from the host measurement.
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"a:%@; ", charonDescribeObject(self->_a)];
+    [text appendFormat:@"b:%@; ", charonDescribeObject(self->_b)];
+    [text appendFormat:@"c:%@; ", charonDescribeObject(self->_c)];
+    [text appendFormat:@"d:%@; ", charonDescribeObject(self->_d)];
+    [text appendFormat:@"e:%@; ", charonDescribeObject(self->_e)];
+    [text appendFormat:@"f:%@; ", charonDescribeObject(self->_f)];
+    [text appendFormat:@"g:%@; ", charonDescribeObject(self->_g)];
+    [text appendString:@">"];
+    return text;
+}
 @end

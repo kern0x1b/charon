@@ -1665,7 +1665,52 @@ def describe_body(name, properties, slots):
     return "".join(body)
 
 
-def emit_params(path, name, info, version, buckets, copying, counts, host=None):
+INIT_UNAVAILABLE = re.compile(r"^\s*-\s*\(\s*instancetype\s*\)\s*init\s+NS_UNAVAILABLE")
+
+
+def init_unavailable_classes(sdk):
+    """The plain data classes whose OWN header marks -init NS_UNAVAILABLE, read out of the SDK.
+
+    It is 2 of the 924 in SDK 26.2 - MTRDeviceControllerFactoryParams and MTRDeviceControllerStartupParams -
+    and it is why they hold nothing in a fresh object. The hand-written source says so in one line:
+
+        charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/MTRDeviceControllerStartupParams.h:30
+            - (instancetype)init NS_UNAVAILABLE;
+
+    while the GENERATED sources of the same framework write one member per line and default every nonnull one:
+
+        charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/zap-generated/MTRCommandPayloadsObjc.mm
+            @implementation MTRGroupsClusterAddGroupParams
+            - (instancetype)init
+            {
+                if (self = [super init]) {
+                    _groupID = @(0);
+                    _groupName = @"";
+                    _timedInvokeTimeoutMs = nil;
+                    _serverSideProcessingTimeout = nil;
+                }
+                return self;
+            }
+
+    So the rule is not "a nonnull member gets a zero": it is "the class has an -init of its own, and that
+    -init defaults every member". A class the source declares no initialiser for inherits NSObject's, which
+    stores nothing, and every member of it is nil whatever its nullability says - which is what the host does
+    and what `fabricID` and `ipk` measured.
+    """
+    found = set()
+    for path, lines in matter_headers(sdk):
+        for index, line in enumerate(lines):
+            if not INIT_UNAVAILABLE.match(line):
+                continue
+            for back in range(index, -1, -1):
+                head = CLASS_HEAD.match(lines[back])
+                if head:
+                    found.add(head.group(1))
+                    break
+    return found
+
+
+def emit_params(path, name, info, version, buckets, copying, counts, host=None, unavailable=()):
     """One object for one plain data class: its members, and a copy that is independent.
 
     The synthesis is WRITTEN OUT rather than left to the compiler, so the object's own property list is
@@ -1808,7 +1853,7 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
         if not every:
             body.append("    (void)zone;\n")
         body.append("    return copied;\n}\n\n")
-    if not info.get("init_unavailable") and not info.get("members_unavailable"):
+    if name not in unavailable:
         body.append("- (instancetype)init\n{\n    self = [super init];\n    if (!self) {\n"
                     "        return nil;\n    }\n")
         for prop in own:
@@ -2726,6 +2771,11 @@ def main():
         older = {}
         if DECLARED_16:
             older = payload_classes([each for _, block in matter_headers(arguments.sdk16) for each in block])
+        # The classes whose header marks -init NS_UNAVAILABLE. Two of 924, and both hand-written in the
+        # framework's own source: MTRDeviceControllerFactoryParams and MTRDeviceControllerStartupParams.
+        unavailable = init_unavailable_classes(arguments.sdk) & set(wanted)
+        print("  %d of the %d plain data classes whose own header marks -init NS_UNAVAILABLE, and so get no"
+              " -init here: %s" % (len(unavailable), len(wanted), ", ".join(sorted(unavailable))))
         missing, properties, emitted, interfaces = [], 0, 0, []
         declared_by_16, extended_by_26, own_by_16 = 0, 0, 0
         contracts = arguments.contracts or arguments.out
@@ -2784,7 +2834,8 @@ def main():
             if arguments.cases is not None:
                 CASES.append((name, buckets))
             properties += emit_params(path, name, info, None, buckets, copying, counts,
-                                      host_measurements(arguments.host_measurements).get(name))
+                                      host_measurements(arguments.host_measurements).get(name),
+                                      unavailable=unavailable)
             EMITTED_FILES[name] = os.path.basename(path)
             with open(os.path.join(contracts, stem + ".m.contract"), "w") as out:
                 out.write("%s\n" % name)

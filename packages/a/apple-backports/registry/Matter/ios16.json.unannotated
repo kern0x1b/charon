@@ -5662,14 +5662,12 @@ MTRDataTypeWebRTCSessionStruct.videoStreamID
 -[MTRDescriptorClusterDeviceTypeStruct setType:]
 -[MTRDescriptorClusterDeviceTypeStruct description]
 MTRDescriptorClusterDeviceTypeStruct.description
--[MTRDeviceControllerFactoryParams init]
 MTRDeviceControllerFactoryParams.certificationDeclarationCertificates
 MTRDeviceControllerFactoryParams.otaProviderDelegate
 MTRDeviceControllerFactoryParams.port
 MTRDeviceControllerFactoryParams.productAttestationAuthorityCertificates
 MTRDeviceControllerFactoryParams.shouldStartServer
 MTRDeviceControllerFactoryParams.storage
--[MTRDeviceControllerStartupParams init]
 -[MTRDeviceControllerStartupParams setFabricId:]
 -[MTRDeviceControllerStartupParams setVendorId:]
 -[MTRDeviceControllerStartupParams setNodeId:]
@@ -9049,6 +9047,8 @@ MTRUnitTestingClusterGlobalEchoResponseParams.description
 MTRUnitTestingClusterNestedStruct.description
 -[MTRUnitTestingClusterNestedStructList copyWithZone:]
 -[MTRUnitTestingClusterNestedStructList init]
+-[MTRUnitTestingClusterNestedStructList description]
+MTRUnitTestingClusterNestedStructList.description
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct copyWithZone:]
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct init]
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct description]

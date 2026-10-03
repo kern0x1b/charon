@@ -129560,17 +129560,6 @@
       "effect": "every property the SDK's own header declares for the class is an ivar of the object's own, with the header's attribute deciding the setter. The class carries no <NSCopying> and has no superclass that does, so it has no -copyWithZone:, which is what the header says about it"
     },
     {
-      "api": "-[MTRDeviceControllerFactoryParams init]",
-      "kind": "method",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRDeviceControllerFactory.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
-      "facts": "facts/Matter/Matter.md",
-      "reason": "a member of a cluster class the release does not have, carried whole",
-      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
-    },
-    {
       "api": "MTRDeviceControllerFactoryParams.certificationDeclarationCertificates",
       "kind": "property",
       "introduced": "16.4",
@@ -129646,17 +129635,6 @@
       "facts": "facts/Matter/Matter.md",
       "reason": "a plain data class of the Matter framework: the release this family is carried into has no Matter.framework at all, so nothing can be shadowed and the class is carried whole, generated from the SDK's own payload declarations rather than written by hand",
       "effect": "every property the SDK's own header declares for the class is an ivar of the object's own, with the header's attribute deciding the setter. The class carries no <NSCopying> and has no superclass that does, so it has no -copyWithZone:, which is what the header says about it"
-    },
-    {
-      "api": "-[MTRDeviceControllerStartupParams init]",
-      "kind": "method",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRDeviceControllerStartupParams.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
-      "facts": "facts/Matter/Matter.md",
-      "reason": "a member of a cluster class the release does not have, carried whole",
-      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
       "api": "-[MTRDeviceControllerStartupParams fabricId]",
@@ -184340,6 +184318,17 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRUnitTestingClusterNestedStructList description]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "MTRUnitTestingClusterNestedStructList.a",
       "kind": "property",
       "introduced": "16.4",
@@ -184374,6 +184363,17 @@
     },
     {
       "api": "MTRUnitTestingClusterNestedStructList.d",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.description",
       "kind": "property",
       "introduced": "16.4",
       "minimum": "6.0",
