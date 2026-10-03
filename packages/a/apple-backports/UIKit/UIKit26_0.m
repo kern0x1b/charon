@@ -373,17 +373,27 @@ static char CharonTextViewSelectedRangesKey;
 
 @implementation NSTextList (CharonUIKit26)
 
-static char CharonTextListIncludesMarkersKey;
+// NSTextList.h:65 of the 26.2 SDK declares `@property (readonly, class) BOOL includesTextListMarkers` and
+// documents it: "When YES, TextKit includes text list marker in the contents. It is NO by default."
+//
+// The accessor is a CLASS method and there is no setter, and both halves are measured rather than read off
+// the header. Apple's own class: the arm64e shared cache of iOS 18.0 carries `includesTextListMarkers` in
+// NSTextList's metaclass list and in neither of its instance lists. The host's own class, asked with the
+// port's object NOT linked: +includesTextListMarkers answers NO, and -includesTextListMarkers and
+// -setIncludesTextListMarkers: are both absent; with the port's object linked they are both present, which
+// is what this category used to add and what no Apple release has.
+//
+// NO is the answer for the reason the header gives, and it is the whole of the property on this release: a
+// list is nothing but its markers, and the port's text system produces no marker at all - NSTextListMarker
+// is not a class the port carries, only its seventeen enumerated constants are
+// (registry/UIKit/measured-constants.json) - so there is no text whose contents could hold one. A flag
+// stored per list would have answered YES to a question about text this release never generates, which is
+// the same fiction registry/UIKit/ios15content.json's NSTextContentStorage row refuses.
++ (BOOL)includesTextListMarkers
+{
+    return NO;
+}
 
-- (BOOL)includesTextListMarkers
-{
-    return [(NSNumber *)objc_getAssociatedObject(self, &CharonTextListIncludesMarkersKey) boolValue];
-}
-- (void)setIncludesTextListMarkers:(BOOL)includes
-{
-    objc_setAssociatedObject(self, &CharonTextListIncludesMarkersKey, [NSNumber numberWithBool:includes],
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
 @end
 
 @implementation UIColor (CharonUIKit26)

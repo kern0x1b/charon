@@ -90,3 +90,42 @@
 // tree to read the signature from.  Carrying a property on a remembered signature would be a guess with a
 // symbol on it, which is the defect this family's rules name.  Both are in coordination/api-queue.md and
 // what they need is a NEWER SURFACE, not a different implementation.
+## `NSTextList.includesTextListMarkers` is a CLASS property, and the port had it as an instance one
+
+`NSTextList.h:65` of the 26.2 SDK declares
+
+    @property (readonly, class) BOOL includesTextListMarkers API_AVAILABLE(macos(26.0), ios(26.0), ...);
+
+with the comment "When YES, TextKit includes text list marker in the contents.  It is NO by default."
+
+The port answered it with an **instance** getter over a per-list associated flag and an **instance** setter, so
+`-[NSTextList includesTextListMarkers]` and `-[NSTextList setIncludesTextListMarkers:]` existed and
+`+[NSTextList includesTextListMarkers]` did not.  Two measurements say the shape was wrong and which shape is
+right.
+
+**Apple's own class.**  The arm64e shared cache of iOS 18.0, read with `modules/apple/objc.lua`'s inventory:
+`includesTextListMarkers` is in `NSTextList`'s **metaclass** list, and in neither of its instance lists.  The
+metaclass list holds four names in all: `_standardMarkerAttributesForAttributes:`, `includesTextListMarkers`,
+`initialize` and `supportsSecureCoding`.  (The reader stores every method name with a `-` prefix whichever list
+it came from, so which list a name is in is the only thing that says instance from class - see the correction
+recorded in `UIContentUnavailable17.md`.)
+
+**The host's own class.**  One probe, run twice in the same build, the only difference being whether the port's
+object is linked:
+
+    with the port's object NOT linked:   +includesTextListMarkers -> NO
+                                         -includesTextListMarkers        absent
+                                         -setIncludesTextListMarkers:    absent
+    with the port's object linked:       +includesTextListMarkers -> NO
+                                         -includesTextListMarkers        absent
+                                         -setIncludesTextListMarkers:    absent
+
+Before the change the second run read `-includesTextListMarkers` present and `-setIncludesTextListMarkers:`
+present: the two selectors the port used to add, and the two no Apple release has.  After it, the port's
+contribution to the class's selector set is empty on the host and the object carries one name of this property.
+
+**The answer on this release is NO**, and the header's own sentence is why: a list is nothing but its markers,
+and this port produces no marker at all - `NSTextListMarker` is not a class the port carries, only its seventeen
+enumerated constants are (`registry/UIKit/measured-constants.json`).  A flag stored per list would have answered
+YES to a question about text this release never generates, which is the same fiction
+`registry/UIKit/ios15content.json`'s `NSTextContentStorage.includesTextListMarkers` row already refuses.
