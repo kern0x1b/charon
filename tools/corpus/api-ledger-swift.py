@@ -30,7 +30,6 @@ Usage:
 import argparse
 import collections
 import hashlib
-import hashlib
 import json
 import os
 import re
@@ -349,9 +348,6 @@ def main():
             if not os.path.exists(binary):
                 note("  %s/%s: no armv7-apple-ios.swiftmodule, not this port's target" % (owner, module))
                 continue
-            # Keyed over everything the content depends on: the module that is read, the digester
-            # that reads it, the overlay's shims, and this file. A change to any is a new cache file
-            # rather than a stale one nobody invalidates by hand.
             # Keyed over everything the content depends on, *this file's contents* included, not
             # its path: the reader's shapes changed twice today and a path-keyed cache kept serving
             # entries written by the older reader -- one of them a versioned record nested inside the
@@ -454,7 +450,7 @@ def main():
              "search-dirs": search, "extra-module-maps": extra_maps,
              "module-maps-for": owner_maps, "include-dirs-for": owner_includes, "modules": modules,
              "conformances": {k: sorted(set(v)) for k, v in all_conformances.items()},
-             "conformances": {k: sorted(set(v)) for k, v in all_conformances.items()}, "sources": sources, "failures": failures,
+             "sources": sources, "failures": failures,
              "references": references}
     path = os.path.join(args.out, "swift-modules.json")
     with open(path, "w", encoding="utf-8") as f:
