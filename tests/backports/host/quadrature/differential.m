@@ -18,7 +18,10 @@
 //     and QAGS answers -101);
 //   - the subdivision limit from a workspace of exactly one interval's bytes and of one byte less, which is
 //     the boundary the header's QUADRATURE_INTEGRATE_QAG_WORKSPACE_PER_INTERVAL names;
-//   - an infinite bound, which only QAGS takes;
+//   - an infinite bound, which only QAGS takes. There the contract is the answer and the batching is not part
+//     of it, so the two batch sequences are printed and recorded and not asserted; the two integrands with no
+//     finite integral over an unbounded range are checked against QUADPACK's promise of an error and nothing
+//     else. Both are said where they are compared, with the measurements that forced them.
 //   - the refusals: a NULL function, a NULL options, a count the header does not list, an integrator the
 //     enumeration does not name, both tolerances zero, and an unreachable tolerance.
 //
@@ -128,6 +131,17 @@ static double exact_integral(int integrand, double a, double b)
     }
 }
 
+// Whether the integrand has a finite integral over an unbounded range. x^2 and sin do not: sin over 0 to
+// infinity has no limit at all, so a quadrature of it walks out to max_intervals and QUADPACK answers one of
+// its two codes for exactly that - ier = 1, "the number of subintervals reached LIMIT", or ier = 3, "the
+// integral is divergent, or the absolute error is maximal" - which the header maps to -101 and -102. There is
+// no answer for the two sides to agree on, so the case below asserts that the port reports an error and
+// records the host's.
+static int converges_at_infinity(int integrand)
+{
+    return integrand != SQUARE && integrand != SINE;
+}
+
 // One call on each side, with the same options, and the comparison of everything both of them answer.
 static void one(const char *name, int integrand, double a, double b, quadrature_integrator integrator,
                 double abstol, double reltol, size_t points_per_interval, size_t max_intervals, size_t workspace_size)
@@ -166,12 +180,29 @@ static void one(const char *name, int integrand, double a, double b, quadrature_
     int theirCount = batch_count < 64 ? batch_count : 64;
     memcpy(theirSizes, batch_sizes, sizeof(size_t) * (size_t)theirCount);
 
-    // The same arithmetic on both sides, and the count of points, which is what tells the rules apart.
+    // The same arithmetic on both sides, and the count of points, which is what tells the rules apart. Over a
+    // bound at infinity the counts are recorded and not asserted: the header's contract for this call is the
+    // answer - the value, the estimate and the status - and the batching is not part of it, because a
+    // callback sees the same points however they are grouped. The host does not group them the way a QUADPACK
+    // port does: over 1/(1+x^2) from 0 to infinity it alternates a call of 15 transformed abscissae with a call
+    // of 21 abscissae over (0,1) itself, 15 21 15 over 51 points, where dqagie makes one 15-point pass and asks
+    // for nothing else. Both sequences are printed on every failure of such a case, and on every pass, so the
+    // difference is on the record per case rather than asserted.
     double scale = fabs(theirs) > 1.0 ? fabs(theirs) : 1.0;
-    int ok = myStatus == theirStatus && fabs(mine - theirs) <= 1e-12 * scale && myPoints == theirPoints &&
-             myBatches == theirBatches && myCount == theirCount;
-    for (int k = 0; ok && k < myCount; k++) {
-        ok = mySizes[k] == theirSizes[k];
+    int unbounded = isinf(a) || isinf(b);
+    // Over an infinite bound and an integrand with no finite integral there, the two sides have no common
+    // answer to compare: QUADPACK answers ier = 1 or ier = 3, the header maps those to -101 and -102, and the
+    // host answers QUADRATURE_SUCCESS with 5.5384500034908009e+34 over x^2 and -647.55276816795913 over sin.
+    // What is checked is QUADPACK's own promise for a divergent integral - an error, never success - and both
+    // answers are printed.
+    int divergent = unbounded && !converges_at_infinity(integrand);
+    int ok = divergent ? (myStatus != QUADRATURE_SUCCESS)
+                       : (myStatus == theirStatus && fabs(mine - theirs) <= 1e-12 * scale);
+    if (ok && !unbounded) {
+        ok = myPoints == theirPoints && myBatches == theirBatches && myCount == theirCount;
+        for (int k = 0; ok && k < myCount; k++) {
+            ok = mySizes[k] == theirSizes[k];
+        }
     }
     // And the estimate, which is checked against the integral rather than against the host's own estimate of
     // it. Comparing the two estimates was this file's rule until it was measured to be unreachable: QUADPACK's
@@ -192,7 +223,7 @@ static void one(const char *name, int integrand, double a, double b, quadrature_
         double wanted = fmax(abstol, reltol * fabs(exact));
         ok = fabs(mine - exact) <= wanted && myError >= fabs(mine - exact);
     }
-    if (!ok) {
+    if (!ok || unbounded) {
         snprintf(detail, sizeof detail,
                  "port %.17g status %d error %.6g over %ld points in %ld batches | host %.17g status %d error %.6g "
                  "over %ld points in %ld batches | batch sizes port",
@@ -206,6 +237,20 @@ static void one(const char *name, int integrand, double a, double b, quadrature_
         for (int k = 0; k < theirCount && used + 12 < sizeof detail; k++) {
             used += (size_t)snprintf(detail + used, sizeof detail - used, " %llu", (unsigned long long)theirSizes[k]);
         }
+    }
+    if (ok && unbounded) {
+        // A passing case over an infinite bound still prints both answers and its two batch sequences, so the
+        // recorded difference is on the line rather than only in this file's comment.
+        printf("     %s: port %.17g status %d | host %.17g status %d | batches port", name, mine, (int)myStatus,
+               theirs, (int)theirStatus);
+        for (int k = 0; k < myCount; k++) {
+            printf(" %llu", (unsigned long long)mySizes[k]);
+        }
+        printf(" | host");
+        for (int k = 0; k < theirCount; k++) {
+            printf(" %llu", (unsigned long long)theirSizes[k]);
+        }
+        printf("  (recorded, not asserted: the batching is not the header's contract)\n");
     }
     report(ok, name, detail);
     free(mine_workspace);

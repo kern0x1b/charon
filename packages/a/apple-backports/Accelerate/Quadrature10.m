@@ -762,9 +762,14 @@ static void charon_dqk15i(CharonIntegrand fun, void *arg, double boun, int inf, 
 {
     double hlgth = 0.5 * (b - a);
     double centr = 0.5 * (b + a);
-    // dqelg's dinf is min(1, inf): 1 where the caller's bound is finite, so the mapping below is the identity,
-    // and 0 where it is infinite, so the point at t is boun + (1 - t) / t.
-    double dinf = inf == 1 ? 0.0 : 1.0;
+    // dqk15i.f's `dinf = min0(1, inf)`: inf is 1 for a bound at one end and 2 for a bound at each end, so the
+    // minimum is 1 for both and the mapping below is always the one it names. Reading it the other way round -
+    // 1 where the caller's bound is finite - made the one-bound case skip the mapping altogether, so
+    // tabsc1 and tabsc2 came out at boun and all fifteen abscissae were the same point. Measured before the
+    // fix, QAGS over 1/(1+x^2) from 0 to infinity answered -1.4415465026818126 with a status of -101 where the
+    // host answers 1.5707963267948966 with a status of 0, and over exp(-x) from 0 to infinity 1430740.6159842864
+    // against 1.0000000000000002.
+    const double dinf = 1.0;
     double fv1[8], fv2[8];
     double resg = 0.0, resk, resabs_value, resasc, fc, reskh, fsum, absc, absc1, absc2, tabsc1, tabsc2;
     double fval1, fval2;
@@ -882,15 +887,15 @@ double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
     if (epsabs <= 0.0 && epsrel < fmax(50.0 * CHARON_EPMACH, 0.5e-28)) {
         return 6;
     }
+    // dqagie.f's `boun = bound; if(inf.eq.2) boun = 0.0d0`, named once and handed to every dqk15i of the run
+    // - the transformed abscissa is boun + (1 - t) / t against the caller's bound, not against the
+    // subinterval being split, so the same bound has to be used for every pass. Zero where the finite case
+    // has nothing to name.
+    double boun = 0.0;
     if (inf == 0) {
         charon_dqk(rule, fun, arg, a, b, result, abserr, &resabs, &defabs);
     } else {
-        double boun = inf == 2 ? 0.0 : a;
-        if (inf == 2) {
-            boun = 0.0;
-        } else {
-            boun = a;
-        }
+        boun = inf == 2 ? 0.0 : a;
         charon_dqk15i(fun, arg, boun, inf, 0.0, 1.0, result, abserr, &resabs, &defabs);
     }
     dres = fabs(*result);
@@ -957,8 +962,9 @@ double alist[2 * 1000], blist[2 * 1000], rlist[2 * 1000], elist[2 * 1000];
             charon_dqk(rule, fun, arg, a1, b1, &area1, &error1, &resabs, &defab1);
             charon_dqk(rule, fun, arg, a2, b2, &area2, &error2, &resabs, &defab2);
         } else {
-            charon_dqk15i(fun, arg, a1, inf, a1, b1, &area1, &error1, &resabs, &defab1);
-            charon_dqk15i(fun, arg, a2, inf, a2, b2, &area2, &error2, &resabs, &defab2);
+            // boun, not a1 and not a2: dqagie.f hands the same bound to both halves' dqk15i calls.
+            charon_dqk15i(fun, arg, boun, inf, a1, b1, &area1, &error1, &resabs, &defab1);
+            charon_dqk15i(fun, arg, boun, inf, a2, b2, &area2, &error2, &resabs, &defab2);
         }
         area12 = area1 + area2;
         erro12 = error1 + error2;
