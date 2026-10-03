@@ -98,20 +98,24 @@ port's answer is also the eigen-decomposition and also the exact one.
 
 ## Where the host cannot be the oracle
 
-Six places, each named in the differential's case names and each checked against the header's own rule
+Five places, each named in the differential's case names and each checked against the header's own rule
 instead. A differential that cannot ask the host is still a differential: the expectation in each of
 these is written out from the header in the test, and it is not the code under test that produces it.
-Every one of the six was measured on the host on 2026-10-03, in one program with each case in a child of
+Every one of the five was measured on the host on 2026-10-03, in one program with each case in a child of
 its own so that a case which ends the process is reported and does not hide the next.
 
-1. **The outer product ignores `x`.** Measured, for the complex type at `alpha = 1` with `x = {1, 2, 3}`
-   and `y = {5, -6}` at the columns `{0, 2}`: the host answers `C[0][2] = -6`, which is `y[1]` with no
-   factor of `x[1]` at all, where the header's `C = alpha * x * y'` gives `-12`. The **real type does the
-   same** (measured, the same `-6`), and the real family's differential cannot see it because every one
-   of its outer-product cases passes `x = {1, 1}`. The port multiplies by `x[k * incx]`, as the header
-   says, and the complex differential checks that against the two products written out by hand. The real
-   port does the same thing, so nothing has to change there - but its harness has a blind spot, and the
-   finding is with the coordinator.
+1. **The outer product's row and column indices.** Not a host defect - the host is right here, and the
+   port was wrong. `C[i, indy[k]] = alpha * x[i] * y[k]`: **x is indexed by the row and y by the column.**
+   Measured on the host for `M = N = 3`, `nz = 2`, `alpha = 1`, `x = {1, 2, 3}` and `y = {5, -6}` at the
+   columns `{0, 2}`: `C[0] = (5, -6)`, `C[1] = (10, -12)`, `C[2] = (15, -18)`, which is `alpha * x[i] * y[k]`
+   row by row. Both this family and the real one indexed `x` by the nonzero `k` and wrote the same value
+   into every row, which is `alpha * x[k] * y[k]` and agrees with the host **only where x is constant down
+   its length** - which is every case either differential had, since they all pass `x = {1, 1}`. Both are
+   fixed, both differentials now carry a case with three different values of x, and each carries the
+   mutant - the same loop reading x at `k` - which the case asserts differs from the header, so the case
+   cannot pass with that bug in it. Measured as a proof rather than asserted: with the port's outer product
+   mutated to read x at index 0, both differentials answer exactly one failure, in exactly that case.
+
 2. **A transpose the enumeration does not name, in a matrix-vector product.** The host hands it to
    `cblas_cgemv`: `BLAS error: Parameter transpose passed to cblas_cgemv was 77, which is invalid`, and
    the child exits 255. The port refuses it, which is what the header says.

@@ -1135,6 +1135,15 @@ sparse_status sparse_matrix_triangular_solve_dense_double(enum CBLAS_ORDER order
 // C = alpha * x * y' for a dense x and a sparse y, as a new matrix. A count of nonzeros above N is
 // SPARSE_ILLEGAL_PARAMETER and the caller's matrix pointer is left alone, measured; a count of zero and
 // an alpha of zero both answer a matrix of the right shape with nothing in it, also measured.
+//
+// **x is indexed by the row and y by the column**, because C[i, j] = alpha * x[i] * y[k] for the k whose
+// indy[k] is j: the outer product is a column of x scaled into a row. An earlier version read x at k and
+// wrote the same value into every row, which is C[i, j] = alpha * x[k] * y[k] and answers the right
+// number only where x is constant down its length - which is why the differential, whose cases all pass
+// x = {1, 1}, could not see it. Measured on the host, and the case that sees it is in
+// tests/backports/host/sparseblas/differential.m together with a mutant that drops x: for M = 3, N = 3,
+// nz = 2, alpha = 1, x = {1, 2, 3} and y = {5, -6} at the columns {0, 2} the host answers
+// C[0] = (5, -6), C[1] = (10, -12), C[2] = (15, -18).
 static sparse_status CharonSparseOuter(sparse_dimension M, sparse_dimension N, sparse_dimension nz, double alpha,
                                        const void *x, sparse_stride incx, const void *y, const sparse_index *indy,
                                        void **C, uint32_t magic, size_t size, size_t matrixSize)
@@ -1148,16 +1157,19 @@ static sparse_status CharonSparseOuter(sparse_dimension M, sparse_dimension N, s
     }
     struct sparse_m_float *asFloat = (struct sparse_m_float *)matrix;
     for (sparse_dimension k = 0; k < nz; k++) {
-        double left = size == sizeof(float) ? (double)((const float *)x)[(long)(k * incx)]
-                                            : ((const double *)x)[(long)(k * incx)];
-        double value = alpha * left;
-        if (value == 0.0) {
+        double right = size == sizeof(float) ? (double)((const float *)y)[k] : ((const double *)y)[k];
+        if (alpha == 0.0 || right == 0.0) {
             continue;
         }
-        double right = size == sizeof(float) ? (double)((const float *)y)[k] : ((const double *)y)[k];
         for (sparse_dimension i = 0; i < M; i++) {
+            double left = size == sizeof(float) ? (double)((const float *)x)[(long)(i * incx)]
+                                                : ((const double *)x)[(long)(i * incx)];
+            double value = alpha * left * right;
+            if (value == 0.0) {
+                continue;
+            }
             sparse_index before = asFloat->row[i].count;
-            CharonSparsePut(&asFloat->row[i], indy[k], value * right, size);
+            CharonSparsePut(&asFloat->row[i], indy[k], value, size);
             asFloat->nonzero += (long)asFloat->row[i].count - (long)before;
         }
     }

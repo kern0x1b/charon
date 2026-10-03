@@ -1137,10 +1137,18 @@ sparse_status sparse_matrix_product_dense_double_complex(enum CBLAS_ORDER order,
                                            sizeof(double _Complex));
 }
 
-// C = alpha * x * y' for a dense x and a sparse y, as a new matrix. A count of nonzeros above N is
-// SPARSE_ILLEGAL_PARAMETER and the caller's matrix pointer is left alone, and a count of zero and an
-// alpha of exactly zero both answer a matrix of the right shape with nothing in it, all measured on the
-// host for the complex type as for the real one.
+// C = alpha * x * y' for a dense x and a sparse y, as a new matrix, and **x is indexed by the row and y
+// by the column**, because C[i, j] = alpha * x[i] * y[k] for the k whose indy[k] is j: the outer product
+// is a column of x scaled into a row. An earlier version read x at k and wrote the same value into every
+// row, which answers the right number only where x is constant down its length; the host does not do that
+// (measured, for M = N = 3, nz = 2, alpha = 1, x = {1, 2+i, -1} and y = {5+i, -6+2i} at the columns {0, 2}
+// it answers C[0] = (9+7i, -14-2i), C[1] = (11+8i, -18-3i) and C[2] = (8+6i, -12+4i), which is
+// alpha * x[i] * y[k] row by row), and the differential's case and its mutant are in
+// tests/backports/host/sparseblas/differential-complex.m.
+//
+// A count of nonzeros above N is SPARSE_ILLEGAL_PARAMETER and the caller's matrix pointer is left alone,
+// and a count of zero and an alpha of exactly zero both answer a matrix of the right shape with nothing in
+// it, all measured on the host for the complex type as for the real one.
 static sparse_status CharonSparseOuterComplex(sparse_dimension M, sparse_dimension N, sparse_dimension nz,
                                                CharonComplex alpha, const void *x, sparse_stride incx, const void *y,
                                                const sparse_index *indy, void **C, uint32_t magic, size_t size,
@@ -1155,16 +1163,19 @@ static sparse_status CharonSparseOuterComplex(sparse_dimension M, sparse_dimensi
     }
     struct sparse_m_float *asFloat = (struct sparse_m_float *)matrix;
     for (sparse_dimension k = 0; k < nz; k++) {
-        double leftRe = 0.0, leftIm = 0.0;
-        CharonSparseReadComplexValue(x, (sparse_index)(k * incx), size, &leftRe, &leftIm);
-        CharonComplex value = CharonComplexMul(alpha, CharonComplexMake(leftRe, leftIm));
-        if (CharonComplexIsZero(value)) {
-            continue;
-        }
         double rightRe = 0.0, rightIm = 0.0;
         CharonSparseReadComplexValue(y, k, size, &rightRe, &rightIm);
-        CharonComplex scaled = CharonComplexMul(value, CharonComplexMake(rightRe, rightIm));
+        if (CharonComplexIsZero(alpha) || CharonComplexIsZero(CharonComplexMake(rightRe, rightIm))) {
+            continue;
+        }
         for (sparse_dimension i = 0; i < M; i++) {
+            double leftRe = 0.0, leftIm = 0.0;
+            CharonSparseReadComplexValue(x, (sparse_index)(i * incx), size, &leftRe, &leftIm);
+            CharonComplex scaled = CharonComplexMul(alpha, CharonComplexMul(CharonComplexMake(leftRe, leftIm),
+                                                                             CharonComplexMake(rightRe, rightIm)));
+            if (CharonComplexIsZero(scaled)) {
+                continue;
+            }
             sparse_index before = asFloat->row[i].count;
             CharonSparsePutComplex(&asFloat->row[i], indy[k], scaled.re, scaled.im, size);
             asFloat->nonzero += (long)asFloat->row[i].count - (long)before;
