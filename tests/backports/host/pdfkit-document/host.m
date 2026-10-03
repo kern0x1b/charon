@@ -545,6 +545,23 @@ static void printSelection(const char *prefix, PDFSelection *selection, PDFDocum
             printf("%s.range%lu=%lu,%lu\n", prefix, (unsigned long)i, (unsigned long)r.location,
                    (unsigned long)r.length);
         }
+        // The RECT over the selection's ranges on page 0, to four places, and it is asked of EVERY
+        // selection either side answers - not only of the font fixtures - because it is geometry over
+        // whatever text a page happens to carry, and the text fixtures are where a run's x, its size and
+        // a multi-line union are already pinned.
+        CGRect b = [selection boundsForPage:page0];
+        printf("%s.bounds0=%.4f,%.4f,%.4f,%.4f\n", prefix, b.origin.x, b.origin.y, b.size.width,
+               b.size.height);
+        // AND OVER A PAGE THE SELECTION DOES NOT COVER, which is the +inf,+inf,0,0 this row has to
+        // reproduce and which a single-page document cannot show: the last page is asked whenever the
+        // document has more than one, and a one-page document answers nothing for it because there is
+        // no other page to name.
+        if (document.pageCount > 1) {
+            PDFPage *last = [document pageAtIndex:document.pageCount - 1];
+            CGRect o = [selection boundsForPage:last];
+            printf("%s.boundsLast=%.4f,%.4f,%.4f,%.4f\n", prefix, o.origin.x, o.origin.y, o.size.width,
+                   o.size.height);
+        }
     }
     NSAttributedString *attributed = selection.attributedString;
     printf("%s.attributed=%s\n", prefix, attributed == nil ? "(nil)" : "an-object");
