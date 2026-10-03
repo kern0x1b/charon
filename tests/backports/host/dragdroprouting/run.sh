@@ -21,7 +21,10 @@ export DDR_ROOT=$root
 rm -rf "$build"
 mkdir -p "$build"
 cp "$here/xmake.lua" "$here/control" "$build/"
-export DDR_UIKIT=$scratch
+# DDR_UIKIT is NOT set here. xmake.lua already falls back to the port's own UIKit when it is unset
+# (path.join(root, "packages/a/apple-backports/UIKit")), and this line used to point it at a scratch
+# copy through a variable nothing defines, so under `set -u` the whole test died on
+# "dragdroprouting/run.sh: line 24: scratch: unbound variable" before xmake was ever configured.
 cd "$build"
 xmake f -p iphoneos -a armv7 -y > configure.log 2>&1
 xmake build -y > build.log 2>&1
