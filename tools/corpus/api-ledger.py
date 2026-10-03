@@ -769,6 +769,7 @@ def load_swift_modules(path):
     with open(path, encoding="utf-8") as f:
         index = json.load(f)
     names = {}
+    counts = {}
     for module, declared in (index.get("modules") or {}).items():
         # Both shapes are read, and a third that is neither is refused with what it is: the cache
         # holds a versioned record and the index a flat map of names to kinds, and a reader that
@@ -784,6 +785,7 @@ def load_swift_modules(path):
                 "either -- it is %s. The index was probably written by a run that died part way "
                 "through; rebuild it with api-ledger-swift.py."
                 % (path, module, type(declared).__name__))
+        counts[module] = len(declared)
         for name, kind in declared.items():
             names.setdefault(name, set()).add((module, kind))
     return {"names": names, "modules": set(index["modules"]), "registries": {},
@@ -791,7 +793,12 @@ def load_swift_modules(path):
             "references": index.get("references", {}), "digester": index.get("digester", ""),
             "target": index.get("target", ""), "sources": index.get("sources", {}),
             "search-dirs": index.get("search-dirs", []),
-            "extra-module-maps": index.get("extra-module-maps", [])}
+            "extra-module-maps": index.get("extra-module-maps", []),
+            # What each module declares, and how many of a framework's rows its own module placed.
+            # Both are read by classify_swift's coverage branch and by nothing else; neither was
+            # filled in, so the branch compared against two empty maps and took its first answer
+            # for every row -- which is the subject of the self-test beside it.
+            "declaration-count": counts, "matched-by-framework": {}}
 
 
 # The operators Swift synthesises from a protocol conformance, and the conformance that makes it.
@@ -826,7 +833,7 @@ def synthesised_operator(api, swift):
             "and the conformance is the whole of the declaration" % (owner, protocol, member))
 
 
-def classify_swift(api, row, swift):
+def classify_swift(api, row, swift, matched=None):
     """(status, reason, introduced, needs) for a Swift row, from the port's own built modules, and
     from a Swift package's own registry where there is no built module to read.
 
@@ -835,6 +842,10 @@ def classify_swift(api, row, swift):
     -- a record of intent with no built module on this machine to check it against. It still counts
     as not missing, and `needs=build` says what is left. Objective-C rows take no registry input at
     all, which is the property the 2026-09-27 review verified and it is kept that way.
+
+    `matched`, when given, is where a row placed `implemented` BY THE FRAMEWORK'S OWN MODULE is
+    counted. Only the pass itself can say that, and the coverage branch below cannot decide without
+    it, so build() classifies the Swift rows once to fill the count and once more to use it.
     """
     found = None
     for form in swift_forms(api):
@@ -870,6 +881,9 @@ def classify_swift(api, row, swift):
                 reason += " (as %s, where the %s row's %s declares %s)" % (
                     named[0], row["framework"], row["kind"], "the same kind"
                     if named[0] in wanted else "another kind")
+            if matched is not None and row["framework"] in swift["modules"] and \
+                    any(module == row["framework"] for module, _ in agreeing):
+                matched[row["framework"]] = matched.get(row["framework"], 0) + 1
             return "implemented", reason, None, None
         return ("undecided", "a module declares %s as %s and the surface row says %s: two descriptions "
                 "of one name that this tool will not choose between"
@@ -895,10 +909,40 @@ def classify_swift(api, row, swift):
             return ("undecided",
                     "module read (%d declarations) and 0 of this framework's rows match it: "
                     "coverage, not the matcher" % declared, None, "swift-module")
-        return ("missing", "not declared by the port's built %s module %s"
-                % (swift["target"], row["framework"]), None, "code")
+        return ("missing", "not declared by the port's built %s module %s, which declares %d names "
+                           "and %d of this framework's rows"
+                % (swift["target"], row["framework"],
+                   swift.get("declaration-count", {}).get(row["framework"], 0),
+                   swift.get("matched-by-framework", {}).get(row["framework"], 0)), None, "code")
     return ("undecided", "no module this port builds for %s stands for %s, so nothing here can place "
                          "this row" % (swift["target"], row["framework"]), None, "swift-module")
+
+
+def resolve_swift_coverage(results, swift, matched):
+    """Re-classify the Swift rows that took the coverage branch, now that the count is filled.
+
+    The branch asks whether the framework's own module placed ANY row of that framework, and only
+    the pass itself can answer it -- so the rows are classified once to fill `matched` and once
+    more to use it. Without the second pass the branch took its first answer for every row:
+    `matched-by-framework` was read and never written, so the guard saw an empty map, the `missing`
+    answer under it was unreachable, and 9801 rows read `undecided` with the reason "0 of this
+    framework's rows match it" -- false for every framework whose module had placed thousands,
+    Foundation among them. Only the rows of a framework that placed at least one are re-classified,
+    and only those can reach the `missing` answer; a framework no module placed is still a coverage
+    question, and 0 matched is not evidence of a gap.
+
+    `results` is the list build() fills, and the entries are replaced in place. Returns the count.
+    """
+    swift["matched-by-framework"] = dict(matched)
+    again = 0
+    for index, (row, status, reason, introduced, needs) in enumerate(results):
+        if (status != "undecided" or needs != "swift-module" or row["lang"] != "swift"
+                or row["framework"] not in swift["modules"]
+                or not matched.get(row["framework"])):
+            continue
+        results[index] = (row,) + classify_swift(row["api"], row, swift)
+        again += 1
+    return again
 
 
 def parse_version(text):
@@ -1096,6 +1140,7 @@ def main():
     results = []
     diagnostics = []
     deferred = []
+    matched = {}
     for row in rows:
         kind, lang, api = row["kind"], row["lang"], row["api"]
         if lang == "swift":
@@ -1104,7 +1149,7 @@ def main():
                                 "swift-only row and no Swift pass was given (--swift-modules)", None,
                                 "swift-pass"))
             else:
-                status, reason, introduced, needs = classify_swift(api, row, swift)
+                status, reason, introduced, needs = classify_swift(api, row, swift, matched)
                 results.append((row, status, reason, introduced, needs))
         elif (kind, lang) in RUNTIME_KINDS:
             if kind == "class":
@@ -1179,6 +1224,14 @@ def main():
         results.append((row, status, reason, introduced, needs))
 
     elapsed = time.time() - started
+
+    # Pass 1b: the Swift rows the coverage branch held back, now that the pass has counted. What
+    # that branch decides and why it needs two passes is resolve_swift_coverage's own account.
+    if swift:
+        again = resolve_swift_coverage(results, swift, matched)
+        note("coverage branch: %d frameworks placed a row, %d rows re-classified as measured absent"
+             % (len(matched), again))
+
     write_output(results, args, elapsed, indexes, walked, header_seconds, swift)
 
 
