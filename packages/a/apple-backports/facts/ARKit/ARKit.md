@@ -383,3 +383,72 @@ rows of the body-tracking family stay open.
    (`0x7c8`) in every record, so the mistake reads as "every record points at 0x7c8".
 3. A stored pointer carries slide and tag above the address bits and must be masked with `0xFFFFFFFFF`
    before it is read - the rule `tools/cache-value.lua` already applies (its line 107).
+
+## The `+new` half of that section was decided by a count that could not be anything but 0
+
+**The 33 `+[X new]` rows above carried a reason that was vacuous, and 5 of them were also wrong. Both
+are corrected here; the correction is the measurement below and the rows say so.**
+
+The old text read, for every one of the 33:
+
+> `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of
+> iOS 16.0
+
+**Why the count was vacuous.** `modules/apple/objc.lua` stores every selector it reads under the key
+`"-" .. name` - `method_list`, `modules/apple/objc.lua:91` - and it does that in a class's **own class
+list** exactly as in its own instance list. So a class that owns `+new` holds the key `-new`, and a
+search for `+new` cannot match anything: it answers 0 for every class of every cache, which is what
+"0 of 143137" was. The same trap, one key off, makes `objc-inventory.lua`'s output look wrong in an
+unrelated place: the class-method column of `NSObject` begins `-CA_addValue:multipliedBy:` and holds
+`-alloc` and `-new`, not `+alloc` and `+new`.
+
+**The census that replaces it.** `tools/corpus/class-selector-census.lua` counts each class's own
+instance list and own class list separately, over the whole cache:
+
+```
+$ CHARON_ROOT=$PWD xmake l tools/corpus/class-selector-census.lua \
+      ~/.charon/dyld/16.0/dyld_shared_cache_arm64e -new | tail -1
+#own instance 3  class 523  both 0  of 143137 classes
+```
+
+**523 classes own `+new`**, not 0. Restricted to ARKitCore (285 classes) there are 13 owners:
+
+```
+ARBodyTrackingConfiguration          ARImageTrackingConfiguration      ARPositionalTrackingConfiguration
+ARCustomTechniquesConfiguration      ARInternalFaceTrackingConfiguration ARRemoteGeoTrackingTechnique
+ARFaceTrackingConfiguration         ARObjectScanningConfiguration     ARRemoteLocationSensor
+ARGeoTrackingConfiguration           AROrientationTrackingConfiguration ARSplitForwarderTechnique
+                                                                                                     ARWorldTrackingConfiguration
+```
+
+That list is the positive control the row needs: a reader that cannot see a `+new` answers 0 here
+too. It is also the answer to the six configuration rows: **every one of ARKit's configuration
+subclasses defines its own `+new`**, which is why `ARKit/ARConfiguration2.m` and
+`ARKit/ARConfiguration4.m` each define `+ (instancetype)new { return [[self alloc] init]; }`.
+
+What is counted is a class's own list plus any category any image adds to it, and **not** the
+superclass chain: `collect()` in `modules/apple/objc.lua` reads `data.methods` and the metaclass's
+`methods` and never walks a superclass. That is the distinction a `+new` question needs, because
+`+new` is NSObject's and is inherited by almost every class in a cache.
+
+**What changed, per row** (33 rows in `registry/ARKit/ios11.json`, edited by row - 67 lines changed,
+33 `reason`, 33 `source`, 1 `effect`, and no other line of the file moved):
+
+| rows | before | after | the measurement |
+| --- | --- | --- | --- |
+| 27 | `absent`, "Apple's ARKit does not define it, and no class does" | `absent`, "not in *this class's* own class-method list", with the census and its control in the row | none of the 27 is among ARKitCore's 13 owners |
+| 5 | `implemented`, but the reason said **"Apple's ARKit does not define it on the class"** | `implemented`, "the release defines it as well as the port", with the address | `+[ARWorldTrackingConfiguration new]` 0x1af1198cc, `+[ARFaceTrackingConfiguration new]` 0x1af0e7218, `+[ARImageTrackingConfiguration new]` 0x1af0f3dac, `+[ARObjectScanningConfiguration new]` 0x1af1e3100, `+[AROrientationTrackingConfiguration new]` 0x1af12db3c |
+| 1 | `absent`, same vacuous reason | `absent`, but **for a different cause**: the release *does* define it (0x1af1016c4) and what is absent here is the **class** - this package carries no `ARGeoTrackingConfiguration` at all | the 15 rows this ledger holds for that class are a decision about the class, not about this selector |
+
+The five `implemented` rows are the ones where the old text was not merely vacuous but **wrong**: it
+told a reader that the port's `+new` is there only because the header redeclares it, when the release
+defines it too. That is the better of the two reasons and the row now carries it.
+
+**The `-init` half is unaffected.** Instance lists were read as the reader stores them, and the eight
+rows above that claim `-init` is or is not in a class's own instance list were read with the key the
+reader uses. Nothing in this correction touches them.
+
+**Out of scope, recorded:** `registry/MapKit/ios13.json` carries eight rows of
+`MKLocalPointsOfInterestRequest` whose text also cites the figure 143137. They are `inert` rows of
+another framework's `+[X new]` family and are not this series' to change; the cause above is theirs to
+apply when MapKit's series picks them up.
