@@ -41,9 +41,11 @@ NS_UNAVAILABLE_CLASSES = [
     "VTTemporalNoiseFilterParameters",
 ]
 
-# The nine methods SDK 26.2 declares on VTFrameProcessor, all of which the port carries.
+# The six methods SDK 26.2 declares on VTFrameProcessor that the port carries. -init is NOT among them:
+# Apple's own class implements none, so the port's must not either - the same rule the sixteen
+# NS_UNAVAILABLE classes are held to, for the same measured reason.
 PROCESSOR_METHODS = [
-    "init", "startSessionWithConfiguration:error:", "processWithParameters:error:",
+    "startSessionWithConfiguration:error:", "processWithParameters:error:",
     "processWithParameters:completionHandler:", "processWithParameters:frameOutputHandler:",
     "processWithCommandBuffer:parameters:", "endSession",
 ]
@@ -169,6 +171,18 @@ def main():
         row = registry.get(("-[VTFrameProcessor %s]" % method, "method"))
         if row is None or row["status"] != "implemented":
             failures.append("no implemented registry row for -[VTFrameProcessor %s]" % method)
+
+    # -init is the other half of the same rule: Apple's VTFrameProcessor implements none, so the port's must
+    # not either, and the row is `absent` rather than unimplemented. SDK 26.2 declares it WITHOUT the
+    # NS_UNAVAILABLE the other sixteen carry, which is why this assertion exists separately - the annotation
+    # is not what decides it, the host measurement is.
+    if "init" in processor:
+        failures.append("VTFrameProcessor.o defines -init; the host's class implements none of its own, so "
+                        "the port's class must not differ from Apple's in which class owns the method")
+    processor_init_row = registry.get(("-[VTFrameProcessor init]", "method"))
+    if processor_init_row is None or processor_init_row["status"] != "absent":
+        failures.append("-[VTFrameProcessor init] is not an absent registry row; the host's class implements "
+                        "no -init of its own")
 
     # Every class the SDK marks -init NS_UNAVAILABLE: its compiled object must carry neither -init nor
     # +new, and the registry must say absent for both. An `absent` row that carried the method anyway is
@@ -373,7 +387,8 @@ def main():
             print("FAIL " + failure)
         print("videotoolbox-frameprocessor: %d failure(s)" % len(failures))
         return 1
-    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods, the"
+    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods (and no"
+          " -init, which Apple's class does not implement either), the"
           " protocol accessors on %d conforming classes, the HDR session's 3 functions and its measured"
           " constant, and %d NS_UNAVAILABLE classes agree with the host and with the registry"
           % (len(codes), len(PROCESSOR_METHODS), len(CONFORMS), len(NS_UNAVAILABLE_CLASSES)))

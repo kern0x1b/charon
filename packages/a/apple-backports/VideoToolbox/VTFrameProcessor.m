@@ -44,11 +44,6 @@
 
 @implementation VTFrameProcessor
 
-- (instancetype)init
-{
-    return [super init];
-}
-
 // The one error this family builds, in one place, so the domain, the code and the user-info key are
 // spelled once between them and cannot drift: two call sites writing `code:VTFrameProcessorSession-
 // NotStarted` and one of them writing 19732 by hand would be the defect this method exists to stop.

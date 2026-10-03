@@ -390,8 +390,6 @@ typedef NS_ENUM(NSInteger, VTSuperResolutionScalerParametersSubmissionMode) {
 
 @interface VTFrameProcessor : NSObject
 
-- (instancetype)init;
-
 - (BOOL)startSessionWithConfiguration:(id<VTFrameProcessorConfiguration>)configuration
                                  error:(NSError * _Nullable * _Nullable)error;
 

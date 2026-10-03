@@ -81,12 +81,13 @@ owns the method. This is CoreML's shape, not SensorKit's: `registry/CoreML/absen
 `+new responds=1` and "answers an MLKey whose name and scope are both nil", while SensorKit's
 `SRSensorReader -init` raises because Apple implements it to raise.
 
-`VTFrameProcessor` is the seventeenth and the exception, and the difference is the SDK's own: its
-`VTFrameProcessor.h:51` declares `- (instancetype) init;` with NO annotation, so the method is declared
-surface and the port carries it as `[super init]` - which is the inherited implementation written out.
-Apple's own class also inherits it rather than defining it; the facts record that, because it is the one
-place in this family where the port's class owns a method Apple's does not, and the reason is the
-header's.
+`VTFrameProcessor` is the seventeenth and looks like the exception, because its `VTFrameProcessor.h:51`
+declares `- (instancetype) init;` with NO annotation where the other sixteen write `NS_UNAVAILABLE`. **The
+annotation was never what decides these rows, and the host measurement says the same thing here:**
+`class_copyMethodList` over the host's own `VTFrameProcessor` reads no own `-init` either, so it too
+inherits NSObject's. So the port defines none, and `-init` is recorded `absent` with that measurement - the
+same answer as the other sixteen, reached the same way. `-[VTFrameProcessor startSessionWithConfiguration:error:]`
+on such an object answers NO with `VTFrameProcessorInitializationFailed` exactly as before.
 
 `processorSupported` is declared on three of the classes and the SDK marks it
 `API_DEPRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
@@ -101,7 +102,7 @@ the hardware, which is the port's contract for hardware it cannot have:
 
 | member | answer |
 | --- | --- |
-| `-init` | `[super init]` - SDK 26.2 declares it and does not mark it unavailable |
+| `-init` | not carried - Apple's own class implements none, so the port's must not either; `+new` reaches NSObject's |
 | `-startSessionWithConfiguration:error:` | NO with `VTFrameProcessorInitializationFailed`, or `VTFrameProcessorInvalidParameterError` for a nil configuration |
 | `-processWithParameters:error:` | NO with `VTFrameProcessorSessionNotStarted`, or `VTFrameProcessorInvalidParameterError` for nil parameters |
 | `-processWithParameters:completionHandler:` | the completion RUNS once, with the parameters and that same error |

@@ -389,13 +389,13 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
-   "status": "implemented",
+   "status": "absent",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameProcessor init]",
    "kind": "method",
-   "reason": "SDK 26.2's VTFrameProcessor.h:51 declares it and does not mark it NS_UNAVAILABLE, so it is the one way to make a frame processor and the port carries it; it is the one of the family's initialisers that is not NS_UNAVAILABLE, and the other fifteen classes are recorded absent for that reason",
-   "effect": "a frame processor with nothing started on it, which is what -startSessionWithConfiguration:error: then refuses to start",
-   "source": "SDK 26.2, VTFrameProcessor.h:51"
+   "reason": "MEASURED ON THE HOST, not read off the header. Apple's own VideoToolbox implements NO -init of its own on VTFrameProcessor either: class_copyMethodList over the host's class reads no own -init, so +new and -init are NSObject's, inherited. Both answer, neither raises, and the object that comes back is a frame processor with nothing started on it. The port therefore does not define -init: adding one would put a method in the port's class that Apple's class does not have, which is the divergence the coordinator ruled against for the sixteen NS_UNAVAILABLE classes and which holds here for the same measured reason. SDK 26.2 declares - (instancetype) init at VTFrameProcessor.h:51 WITHOUT the NS_UNAVAILABLE annotation the other sixteen carry, which is why this row was carried first - the annotation was never what decided it",
+   "effect": "not carried. +[VTFrameProcessor new] reaches NSObject's -init and answers a frame processor with nothing started on it, which is what the host hands out too; -startSessionWithConfiguration:error: on it answers NO with VTFrameProcessorInitializationFailed as it always does. Measured 2026-10-03 on this host's own VideoToolbox (an M4 Pro) with class_copyMethodList and objc_msgSend; tests/backports/host/videotoolbox-frameprocessor repeats it and fails if VTFrameProcessor.o grows an -init of its own",
+   "source": "SDK 26.2, VTFrameProcessor.h:51 declares - (instancetype) init without NS_UNAVAILABLE, which is not what decides this row; the host's own answer measured with class_copyMethodList and objc_msgSend on 2026-10-03"
   },
   {
    "introduced": "26.0",
