@@ -171,22 +171,29 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 
 @end
 
+// One -Wobjc-designated-initializers, and it is Apple's own shape rather than something left
+// undone.  The iOS 16.0 arm64e cache gives PDFActionGoTo no -init of its own (own -init: 0),
+// read with the tree's own census in modules/apple/objc.lua over that cache - the script is
+// .agent-work/v-pdfkit/own-inits.lua and it runs through coordination/heavy.sh - while PDFAction
+// has one (own -init: 1), PDFActionResetForm has one (own -init: 1), PDFDestination has one
+// (own -init: 1) and PDFBorder has one (own -init: 1).  So [[X alloc] init] reaches PDFAction's,
+// which is why a fresh action's -type is NIL - measured - and why this class needs no -init of
+// its own to set its defaults.
+//
+// clang asks for the override anyway, because the header marks this class's own initializer a
+// DESIGNATED one - PDFActionGoTo.h:25, PDFActionNamed.h:45, PDFActionURL.h:22 and
+// PDFActionRemoteGoTo.h:27 each do exactly that - and that makes the inherited -init a
+// convenience initializer.  PKPaymentRequestStatus11.m, MTLRasterizationRate13.m and
+// PHObject8.m silence the same diagnostic for the same reason, and this is the same arrangement.
+// Scoped to this @implementation with its push and pop, and no wider.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 @implementation PDFActionGoTo {
+
     PDFDestination *_destination;
 }
 
 @synthesize destination = _destination;
-
-// -init is NSObject's, and the host's answer for [[PDFActionGoTo alloc] init] is a PDFActionGoTo with a
-// NIL -type and a nil destination - measured, init.gotoNil.class in the harness.  So -init deliberately
-// sets NOTHING: a type name belongs to a dictionary this object was not built from, and the earlier
-// version that set "GoTo" here would answer a name the host does not.  It is implemented because the
-// superclass's -init is this class's designated initializer's superclass and the compiler will not let a
-// subclass leave that unimplemented (-Wobjc-designated-initializers).
-- (instancetype)init
-{
-    return [super init];
-}
 
 - (instancetype)initWithDestination:(PDFDestination *)destination
 {
@@ -241,19 +248,31 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 }
 
 @end
+#pragma clang diagnostic pop
 
+// One -Wobjc-designated-initializers, and it is Apple's own shape rather than something left
+// undone.  The iOS 16.0 arm64e cache gives PDFActionNamed no -init of its own (own -init: 0),
+// read with the tree's own census in modules/apple/objc.lua over that cache - the script is
+// .agent-work/v-pdfkit/own-inits.lua and it runs through coordination/heavy.sh - while PDFAction
+// has one (own -init: 1), PDFActionResetForm has one (own -init: 1), PDFDestination has one
+// (own -init: 1) and PDFBorder has one (own -init: 1).  So [[X alloc] init] reaches PDFAction's,
+// which is why a fresh action's -type is NIL - measured - and why this class needs no -init of
+// its own to set its defaults.
+//
+// clang asks for the override anyway, because the header marks this class's own initializer a
+// DESIGNATED one - PDFActionGoTo.h:25, PDFActionNamed.h:45, PDFActionURL.h:22 and
+// PDFActionRemoteGoTo.h:27 each do exactly that - and that makes the inherited -init a
+// convenience initializer.  PKPaymentRequestStatus11.m, MTLRasterizationRate13.m and
+// PHObject8.m silence the same diagnostic for the same reason, and this is the same arrangement.
+// Scoped to this @implementation with its push and pop, and no wider.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 @implementation PDFActionNamed {
+
     PDFActionNamedName _name;
 }
 
 @synthesize name = _name;
-
-// -init leaves the name at kPDFActionNamedNone and the type nil - measured on [[PDFActionNamed alloc]
-// init] - for the reason -[PDFActionGoTo init] gives: nothing here came from a dictionary.
-- (instancetype)init
-{
-    return [super init];
-}
 
 - (instancetype)initWithName:(PDFActionNamedName)name
 {
@@ -292,18 +311,31 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 }
 
 @end
+#pragma clang diagnostic pop
 
+// One -Wobjc-designated-initializers, and it is Apple's own shape rather than something left
+// undone.  The iOS 16.0 arm64e cache gives PDFActionURL no -init of its own (own -init: 0),
+// read with the tree's own census in modules/apple/objc.lua over that cache - the script is
+// .agent-work/v-pdfkit/own-inits.lua and it runs through coordination/heavy.sh - while PDFAction
+// has one (own -init: 1), PDFActionResetForm has one (own -init: 1), PDFDestination has one
+// (own -init: 1) and PDFBorder has one (own -init: 1).  So [[X alloc] init] reaches PDFAction's,
+// which is why a fresh action's -type is NIL - measured - and why this class needs no -init of
+// its own to set its defaults.
+//
+// clang asks for the override anyway, because the header marks this class's own initializer a
+// DESIGNATED one - PDFActionGoTo.h:25, PDFActionNamed.h:45, PDFActionURL.h:22 and
+// PDFActionRemoteGoTo.h:27 each do exactly that - and that makes the inherited -init a
+// convenience initializer.  PKPaymentRequestStatus11.m, MTLRasterizationRate13.m and
+// PHObject8.m silence the same diagnostic for the same reason, and this is the same arrangement.
+// Scoped to this @implementation with its push and pop, and no wider.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 @implementation PDFActionURL {
+
     NSURL *_url;
 }
 
 @synthesize URL = _url;
-
-// -init leaves the URL nil and the type nil - measured on [[PDFActionURL alloc] init].
-- (instancetype)init
-{
-    return [super init];
-}
 
 // NSURL is immutable, so the copy shares it - which is what -[url copy] on the host answers and what
 // assigning the property already does.
@@ -341,27 +373,53 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 }
 
 @end
+#pragma clang diagnostic pop
 
+// One -Wobjc-designated-initializers, and it is Apple's own shape rather than something left
+// undone.  The iOS 16.0 arm64e cache gives PDFActionRemoteGoTo no -init of its own (own -init: 0),
+// read with the tree's own census in modules/apple/objc.lua over that cache - the script is
+// .agent-work/v-pdfkit/own-inits.lua and it runs through coordination/heavy.sh - while PDFAction
+// has one (own -init: 1), PDFActionResetForm has one (own -init: 1), PDFDestination has one
+// (own -init: 1) and PDFBorder has one (own -init: 1).  So [[X alloc] init] reaches PDFAction's,
+// which is why a fresh action's -type is NIL - measured - and why this class needs no -init of
+// its own to set its defaults.
+//
+// clang asks for the override anyway, because the header marks this class's own initializer a
+// DESIGNATED one - PDFActionGoTo.h:25, PDFActionNamed.h:45, PDFActionURL.h:22 and
+// PDFActionRemoteGoTo.h:27 each do exactly that - and that makes the inherited -init a
+// convenience initializer.  PKPaymentRequestStatus11.m, MTLRasterizationRate13.m and
+// PHObject8.m silence the same diagnostic for the same reason, and this is the same arrangement.
+// Scoped to this @implementation with its push and pop, and no wider.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 @implementation PDFActionRemoteGoTo {
     NSUInteger _pageIndex;
     CGPoint _point;
     NSURL *_url;
+    // Whether a point was ever SET, and it is what makes a FRESH object answer the unspecified sentinel
+    // with no -init of its own: alloc zeroes the ivars, and zeroing gives the origin rather than the
+    // sentinel.  Measured on [[PDFActionRemoteGoTo alloc] init], which answers index 0, an unspecified
+    // point and a nil URL, and on every /GoToR fixture, which answers the same point.
+    BOOL _pointIsSet;
 }
 
 @synthesize pageIndex = _pageIndex;
-@synthesize point = _point;
 @synthesize URL = _url;
 
-// -init leaves the index at 0, the point UNSPECIFIED and the URL nil, with the type nil - measured on
-// [[PDFActionRemoteGoTo alloc] init], and the unspecified point is this class's own default rather than
-// the origin.
-- (instancetype)init
+// -point, with the unset case the flag carries.  A point that WAS set is answered as it was set,
+// including the origin: -initWithPageIndex:atPoint:fileURL: sets the flag whatever point it is given,
+// and the dictionary reader below clears it again because a remote action's /D is not read for one.
+- (CGPoint)point
 {
-    self = [super init];
-    if (self == nil)
-        return nil;
-    _point = CGPointMake(kPDFDestinationUnspecifiedValue, kPDFDestinationUnspecifiedValue);
-    return self;
+    if (!_pointIsSet)
+        return CGPointMake(kPDFDestinationUnspecifiedValue, kPDFDestinationUnspecifiedValue);
+    return _point;
+}
+
+- (void)setPoint:(CGPoint)point
+{
+    _point = point;
+    _pointIsSet = YES;
 }
 
 // All three members are values, so a copy carries them.
@@ -370,6 +428,7 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
     PDFActionRemoteGoTo *copy = (PDFActionRemoteGoTo *)[super copyWithZone:zone];
     copy->_pageIndex = _pageIndex;
     copy->_point = _point;
+    copy->_pointIsSet = _pointIsSet;
     copy->_url = _url;
     return copy;
 }
@@ -381,6 +440,7 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
         return nil;
     _pageIndex = pageIndex;
     _point = point;
+    _pointIsSet = YES;
     _url = [url copy];
     [self charon_setTypeName:@"GoToR"];
     return self;
@@ -413,6 +473,9 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
                            fileURL:nil];
     if (self == nil)
         return nil;
+    // the flag back off: a remote action read out of a dictionary answers the same unspecified point a
+    // fresh one does, which is measured on every /GoToR fixture
+    _pointIsSet = NO;
     NSString *file = charonActionString(action, "F");
     NSURL *documentURL = [document documentURL];
     if (file != nil && documentURL != nil) {
@@ -429,6 +492,7 @@ static NSString *charonActionString(CGPDFDictionaryRef action, const char *key)
 }
 
 @end
+#pragma clang diagnostic pop
 
 @implementation PDFActionResetForm {
     NSArray<NSString *> *_fields;

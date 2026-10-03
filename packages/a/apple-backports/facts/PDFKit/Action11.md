@@ -236,9 +236,9 @@ and the port does the same.
 So `PDFDestination`'s plain `-init` cannot reach its state through `-initWithPage:atPoint:`, and sets the
 three members itself: no page, and an unspecified point and zoom.
 
-## The four subclasses' `-init`
+## The four subclasses have no `-init`, and the cache says so
 
-`[[X alloc] init]` works on the host for all four, and answers a **nil `-type`** for each — measured:
+`[[X alloc] init]` works on the host for all four and answers a **nil `-type`** for each - measured:
 
 | | `-type` | members |
 | --- | --- | --- |
@@ -248,24 +248,55 @@ three members itself: no page, and an unspecified point and zoom.
 | `[[PDFActionRemoteGoTo alloc] init]` | nil | index 0, point **unspecified**, URL nil |
 
 (`[[PDFActionResetForm alloc] init]` is the exception and not an `-init` override: `-init` **is** that
-class's designated initializer, so it answers `-type` "ResetForm" — measured.)
+class's designated initializer, so it answers `-type` "ResetForm" - measured.)
 
-A nil `-type` is the point: a type name belongs to a dictionary the object was not built from, and an
-earlier version that set `"GoTo"` in `-init` would answer a name the host does not.
+A nil `-type` is the point: a type name belongs to a dictionary the object was not built from.
 
-`-init` is marked `NS_DESIGNATED_INITIALIZER` in the port's header and **not** in the SDK's. Two reasons,
-both about this port rather than about Apple:
+**Which of these classes defines `-init` of its own is a question about metadata, and the answer is read
+from the iOS 16.0 arm64e cache** with the tree's own census (`modules/apple/objc.lua`, the reader the
+registry's class census uses), by `.agent-work/v-pdfkit/own-inits.lua`, run through
+`coordination/heavy.sh`:
 
-* the host answers `[[PDFActionGoTo alloc] init]` with an object, so a caller of this port must be able to
-  write it without a diagnostic;
-* a class that declares a designated initializer of its own otherwise treats `-init` as a *convenience*
-  initializer, and clang rejects a convenience initializer that calls `[super init]` — two warnings per
-  subclass, replacing the one it fixed.
+    PDFAction                own -init: 1     16 instance methods of its own
+    PDFActionGoTo            own -init: 0     12 instance methods of its own
+    PDFActionNamed           own -init: 0     11 instance methods of its own
+    PDFActionURL             own -init: 0     11 instance methods of its own
+    PDFActionRemoteGoTo      own -init: 0     16 instance methods of its own
+    PDFActionResetForm       own -init: 1     14 instance methods of its own
+    PDFDestination           own -init: 1     17 instance methods of its own
+    PDFBorder                own -init: 1     31 instance methods of its own
 
-The alternative was `#pragma clang diagnostic ignored "-Wobjc-designated-initializers"`, which this tree
-does use for exactly this situation (`PKPaymentRequestStatus11.m`, `MTLRasterizationRate13.m`,
-`PHObject8.m`). It was not used here because the coordinator asked for the warnings to be *cleared*, and
-because an implemented `-init` plus a marked declaration is a real answer where a pragma is a silence.
+So the four subclasses have **no** `-init` and `[[X alloc] init]` reaches `PDFAction`'s - which is why a
+fresh action's `-type` is nil - while `PDFAction`, `PDFActionResetForm`, `PDFDestination` and `PDFBorder`
+each have one. Apple's headers declare `-init` for **none** of the eight: they declare only each class's
+designated initializer (`PDFActionGoTo.h:25`, `PDFActionNamed.h:45`, `PDFActionURL.h:22`,
+`PDFActionRemoteGoTo.h:27`, `PDFActionResetForm.h:26`, `PDFDestination.h:29`), so a class that has an
+`-init` implements one its header does not declare and the four that do not, do not.
+
+**One measurement went wrong before it went right, and it is worth recording.** The first version of the
+script asked `entry.instance["init"]` and reported `own -init: 0` for **all eight** classes - which would
+have "confirmed" that none of them has one and removed `PDFBorder`'s and `PDFAction`'s along with the
+four. The keys are **spelled** selectors with a leading dash for an instance method: `PDFBorder`'s own
+list is `-.cxx_destruct`, `-_isRectangular`, `-_setDashFromArray:`, `-init`,
+`-initWithAnnotationDictionary:forPage:`, `-lineWidth`, and a bare `init` is nowhere in it. The table
+above asks for `-init`.
+
+**The fresh state comes from storage, not from an initializer.** `PDFActionRemoteGoTo`'s fresh point is
+the *unspecified* sentinel while `alloc` zeroes the ivars, so the class carries `BOOL _pointIsSet`:
+`-point` answers the sentinel while it is clear, and `-initWithPageIndex:atPoint:fileURL:` sets it
+whatever point it was given, so a point that *was* set is answered as set - including the origin. The
+dictionary reader clears it again, because a remote action's `/D` is not read for a point (measured:
+unspecified on every `/GoToR` fixture, `/XYZ` included).
+
+**The warning is scoped away per class, with the measurement above named in the comment.** clang asks for
+the `-init` override because the header marks each subclass's own initializer
+`NS_DESIGNATED_INITIALIZER`, which makes the inherited `-init` a *convenience* initializer.
+`PDFDestination` is the same case for its own reason: the cache gives it an `-init` (`own -init: 1`) while
+`PDFDestination.h` declares none, so its `-init` is implemented and the diagnostic about the shape is
+scoped away. Each is a `#pragma clang diagnostic push` / `ignored` / `pop` around one `@implementation` -
+the arrangement `PKPaymentRequestStatus11.m`, `MTLRasterizationRate13.m` and `PHObject8.m` already use
+for this diagnostic.
+
 
 ## What is NOT here, and why
 

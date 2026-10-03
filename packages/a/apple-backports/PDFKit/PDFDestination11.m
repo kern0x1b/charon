@@ -36,6 +36,17 @@ static CGFloat charonDestinationNumber(CGPDFArrayRef destination, size_t index)
     return (CGFloat)number;
 }
 
+// One -Wobjc-designated-initializers pair, and it is Apple's own shape here too.  The iOS 16.0
+// arm64e cache gives PDFDestination its OWN -init (own -init: 1) while PDFDestination.h
+// declares none - it declares only the designated -initWithPage:atPoint: at :29 - which makes
+// an implementation's -init a convenience initializer and clang rejects one that calls
+// [super init].  So this is the same arrangement as PDFAction11.m's four and as
+// PKPaymentRequestStatus11.m's four: the method is implemented, because the cache says the class
+// has one, and the diagnostic about its shape is scoped away rather than left standing.  Read
+// with the tree's own census over that cache: .agent-work/v-pdfkit/own-inits.lua, through
+// coordination/heavy.sh.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
 @implementation PDFDestination {
     // Weak, as PDFDestination.h declares it: a destination does not keep a page alive, and answers nil
     // once the page's document has gone.
@@ -197,3 +208,4 @@ static CGFloat charonDestinationNumber(CGPDFArrayRef destination, size_t index)
 }
 
 @end
+#pragma clang diagnostic pop
