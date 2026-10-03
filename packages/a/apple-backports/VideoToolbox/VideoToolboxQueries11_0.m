@@ -40,6 +40,32 @@
 static const int32_t kCharonVTProbeWidth = 320;
 static const int32_t kCharonVTProbeHeight = 240;
 
+// The callback record the probe hands the release, and why it hands one at all.
+//
+// VTDecompressionSessionCreate's outputCallback is documented as optional, and it is documented as optional
+// only from iOS 9: before that the header had no handler form, and a NULL callback record may be refused
+// with kVTParameterErr whatever the codec - which would make this function answer NO always, for a reason
+// that has nothing to do with the hardware it is asking about. So a real no-op record goes in instead. It
+// cannot be reached: nothing is decoded here, the session's EXISTENCE is the whole of the question, and no
+// sample buffer is ever handed to the session. The record's shape is the 16.4 SDK's
+// (VTDecompressionSession.h:94-98) and is valid at every band.
+static void charon_probe_output(void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status,
+                                VTDecodeInfoFlags infoFlags, CVImageBufferRef imageBuffer,
+                                CMTime presentationTimeStamp, CMTime presentationDuration)
+{
+    (void)decompressionOutputRefCon;
+    (void)sourceFrameRefCon;
+    (void)status;
+    (void)infoFlags;
+    (void)imageBuffer;
+    (void)presentationTimeStamp;
+    (void)presentationDuration;
+}
+
+static const VTDecompressionOutputCallbackRecord kCharonVTProbeCallback = {
+    charon_probe_output, NULL
+};
+
 // The release's own answer to "can you decode this codec in hardware", asked by trying. A NULL session with
 // noErr is not possible - VTDecompressionSessionCreate either hands one back or fails - so the status is
 // the answer and nothing else is consulted.
@@ -55,10 +81,9 @@ static Boolean charon_can_decode(CMVideoCodecType codecType, CFStringRef require
                                                        &kCFTypeDictionaryKeyCallBacks,
                                                        &kCFTypeDictionaryValueCallBacks);
     VTDecompressionSessionRef session = NULL;
-    // No destination attributes and no output callback: nothing is decoded here, the session's existence is
-    // the whole of the question, and both of those parameters are documented as optional.
+    // No destination image buffer attributes, and the no-op callback record above rather than a NULL one.
     OSStatus created = specification ? VTDecompressionSessionCreate(kCFAllocatorDefault, format, specification,
-                                                                    NULL, NULL, &session)
+                                                                    NULL, &kCharonVTProbeCallback, &session)
                                     : kVTInvalidSessionErr;
     if (session) {
         VTDecompressionSessionInvalidate(session);
