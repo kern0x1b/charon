@@ -157,6 +157,34 @@ build_value() {   # $1 output name, then the port objects to link
     }
 }
 
+
+# THE SAMPLE-POSITION BOUNDS, OUT OF PROCESS, ONE INVOCATION PER BOUND AND PER SIDE. Metal's own refusals
+# here are ASSERTIONS, which stop the process, so a case that asks one of them in the same binary as
+# everything else dies before it has compared anything. The port's refusals are NSExceptions, so its
+# side is asked the same way and prints what it said.
+#
+# BOTH SIDES MUST REFUSE. The port's side must print "refused, " and exit 0; Apple's side must NOT print
+# "accepted" and must NOT exit 0. An assertion's text is in the case's own comment rather than parsed
+# out of a signal: what the harness compares is the SHAPE both sides agree on, which is the part a
+# caller can rely on.
+sample_bounds() {   # $1 the bound, $2 a label for the line
+    port_out=$("$work/bounds" "$1" port 2>&1) && port_rc=0 || port_rc=$?
+    case "$port_out" in
+        *"refused, "*) printf "  ok   %s: the PORT refuses it and says why: %s\n" "$2" "$(printf '%s' "$port_out" | sed -n 's/^port: refused, //p')" ;;
+        *) echo "FAIL  $2: the PORT did not refuse it: $port_out" >&2; exit 1 ;;
+    esac
+    [ "$port_rc" -eq 0 ] || { echo "FAIL  $2: the port side exited $port_rc" >&2; exit 1; }
+    apple_out=$("$work/bounds" "$1" apple 2>&1) && apple_rc=0 || apple_rc=$?
+    case "$apple_out" in
+        *"accepted"*) echo "FAIL  $2: APPLE's own object ACCEPTED it, so the port is refusing something Metal allows: $apple_out" >&2; exit 1 ;;
+    esac
+    if [ "$apple_rc" -eq 0 ]; then
+        echo "FAIL  $2: APPLE's own object exited 0, so it did not refuse it either: $apple_out" >&2
+        exit 1
+    fi
+    printf "  ok   %s: APPLE's own object refuses it too (exit %s)\n" "$2" "$apple_rc"
+}
+
 build() {   # $1 output name
     rm -f "$work/$1" "$work/$1-case.o" "$work/$1-port.o"
     # shellcheck disable=SC2086
@@ -371,6 +399,31 @@ expect_red_value m9 "the compute descriptor's equality forgetting the depth of t
 # runs. Asking Apple's -isEqual: inside the differential TRAPS - measured, a Trace/BPT trap in
 # objc_opt_respondsToSelector at the first call, with the port's classes linked the only difference - so
 # the Apple side has its own case here and the comparison is a diff of two measured runs.
+echo "the sample-position bounds, out of process, one invocation per bound and per side:"
+# shellcheck disable=SC2086
+xcrun clang $common -c "$here/descriptors26-samplebounds.m" -o "$work/bounds-case.o" > "$work/bounds.log" 2>&1 || {
+    echo "RUN FAILED  the sample-bound case does not build" >&2
+    sed -n '/error:/,$p' "$work/bounds.log" | head -3 | sed 's/^/    /' >&2
+    exit 1
+}
+# shellcheck disable=SC2086
+xcrun clang $common $frameworks -o "$work/bounds" "$work/bounds-case.o" "$work/real-port.o" >> "$work/bounds.log" 2>&1 || {
+    echo "RUN FAILED  the sample-bound case does not link" >&2
+    sed -n '/Undefined symbols/,$p' "$work/bounds.log" | sed -n '2,6p' | sed 's/^/    /' >&2
+    exit 1
+}
+sample_bounds count          "a count of 3 is not a sample count"
+sample_bounds coordinates    "an x of 1.5 is outside [0, 1)"
+sample_bounds coordinates-below "a y of -0.5 is outside [0, 1)"
+sample_bounds read-smaller   "a read of count 2 with four programmed"
+sample_bounds read-larger    "a read of count 8 with four programmed"
+# AND THE ONE THAT IS ALLOWED, so the refusals above are not "refuse everything": a read of count 0 is
+# how a caller asks how many there are, and both sides answer 4 and exit 0.
+zero_port=$("$work/bounds" read-zero port 2>&1) || { echo "FAIL  a read of count 0: the port side exited non-zero: $zero_port" >&2; exit 1; }
+zero_apple=$("$work/bounds" read-zero apple 2>&1) || { echo "FAIL  a read of count 0: Apple's own side exited non-zero: $zero_apple" >&2; exit 1; }
+printf "  ok   a read of count 0: both sides answer %s and %s\n" \
+    "$(printf '%s' "$zero_port" | sed -n 's/.*answered //p')" "$(printf '%s' "$zero_apple" | sed -n 's/.*answered //p')"
+
 echo "Apple's own answers to the value-equality questions, in a binary of their own:"
 # shellcheck disable=SC2086
 xcrun clang $common -framework Foundation -framework Metal -o "$work/apple" "$here/descriptors26-apple.m" \
@@ -406,6 +459,50 @@ fi
 echo "  the port's value equality IS Apple's own, member for member: $(wc -l < "$work/apple.value" | tr -d ' ') answers agree"
 sed -n '1,3p' "$work/apple.value" | sed 's/^/    /'
 
-echo "descriptors26: the differential is green, the Apple-side answers agree, the control is RUN FAILED, and all nine mutants are red"
+# M10 AND M11 ARE THE TWO NEW BOUNDS, and they are measured OUT OF PROCESS like the bounds are, because
+# a mutant that dropped a refusal would make the PORT accept something Metal refuses - which the
+# in-process differential cannot see, since it never asks a question that stops the process.
+build_bounds() {   # $1 mutant name
+    # shellcheck disable=SC2086
+    xcrun clang $common $includes -c "$work/port/port.m" -o "$work/$1-bounds-port.o" > "$work/$1-bounds.log" 2>&1 || {
+        echo "RUN FAILED  $1 (the port, renamed) does not build for the bounds case" >&2
+        sed -n '/error:/,$p' "$work/$1-bounds.log" | head -3 | sed 's/^/    /' >&2
+        exit 1
+    }
+    # shellcheck disable=SC2086
+    xcrun clang $common $frameworks -o "$work/bounds-$1" "$work/bounds-case.o" "$work/$1-bounds-port.o" >> "$work/$1-bounds.log" 2>&1 || {
+        echo "RUN FAILED  $1 does not link for the bounds case" >&2
+        exit 1
+    }
+}
+# ONLY AN ACCEPTANCE IS A RED HERE. An earlier version counted a non-zero exit as one, and the first
+# M10 aborted - a red for the wrong reason, because the mutation was supposed to make the port ACCEPT
+# and instead made it raise unconditionally. Anything that is not an acceptance is a FAIL.
+expect_red_bounds() {   # $1 mutant name, $2 the bound, $3 what it broke
+    out=$("$work/bounds-$1" "$2" port 2>&1) && rc=0 || rc=$?
+    case "$out" in
+        *"accepted"*)
+            if [ "$rc" -ne 0 ]; then
+                echo "FAIL  $3 accepted the bound and then exited $rc - a red for the wrong reason" >&2
+                exit 1
+            fi
+            echo "  red  $3: $(printf '%s' "$out" | grep accepted)" ;;
+        *)
+            echo "FAIL  $3 is NOT red - the mutant did not accept the bound, so the bound is measured by nothing" >&2
+            printf '%s\n' "$out" | sed 's/^/    /' >&2
+            exit 1 ;;
+    esac
+}
+mutate m10 MTL4RenderPass26.m MTL4RenderPassDescriptor \
+    "            if (!CharonMetal4CoordinateIsInRange(positions[index].x))" \
+    "            if (0 && !CharonMetal4CoordinateIsInRange(positions[index].x))   /* MUTATION */" 1
+build_bounds m10; expect_red_bounds m10 coordinates "M10 the coordinate bound"
+
+mutate m11 MTL4RenderPass26.m MTL4RenderPassDescriptor \
+    "    if (count != 0 && count != _samplePositionCount) {" "    if (0) {" 1
+build_bounds m11; expect_red_bounds m11 read-smaller "M11 the read's count bound"
+build_bounds m11; expect_red_bounds m11 read-larger "M11 the read's count bound, a larger count"
+
+echo "descriptors26: the differential is green, the Apple-side answers agree, the three sample-position bounds are refused by both sides, the control is RUN FAILED, and all eleven mutants are red"
 # THE SCRATCH IS REMOVED HERE.
 rm -rf "$work"

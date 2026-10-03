@@ -55,17 +55,35 @@ static NSUInteger CharonMetal4AttachmentBaseHash(MTLRenderPassAttachmentDescript
     return hash;
 }
 
-// THE SAMPLE POSITIONS' BOUND IS NOT SIXTEEN, IT IS THE SAMPLE COUNTS METAL ACCEPTS, and that is
-// measured rather than assumed: Apple's own -[MTL4RenderPassDescriptor setSamplePositions:count:]
-// asserts "count must be 0, 2, 4 or 8" - the framework's own words, caught from its assertion - which
-// is what MTL4RenderPass.h:107 means by "This value needs to be a valid sample count". A count that is
-// not one of those is refused here the way the eight-slot arrays are refused, by name and with the
-// list, rather than stored as a shape nothing would read.
+// THREE BOUNDS, ALL REFUSED THE SAME WAY, AND ALL THREE MEASURED off Apple's own assertions rather than
+// read off the header. The earlier version of this file claimed three and ENFORCED ONE, which was the
+// defect worth fixing here:
+//
+//   * THE COUNT MUST BE A VALID SAMPLE COUNT. Apple's own words: "count (3) is not a supported sample
+//     count for custom positions. count must be 0, 2, 4 or 8." That is what MTL4RenderPass.h:107 means
+//     by "This value needs to be a valid sample count".
+//   * BOTH COORDINATES LIE IN [0, 1). Two separate assertions, one per axis: "Provided sample position
+//     x-coodificate (1.500000) at index 1 is not within the range [0,1)" and the same for y. A negative
+//     coordinate is out of range at the bottom of it and 1.5 at the top.
+//   * A READ'S COUNT MUST MATCH WHAT IS PROGRAMMED. Apple's own words: "Non-zero count (2) does not match
+//     the number of programmed custom sample positions (4)" - measured for a count SMALLER than the
+//     programmed one as well as a larger one, and both are the same assertion. A count of ZERO is the
+//     one that is always allowed: it is how a caller asks how many there are without room for them.
+//
+// Every one of them is refused the way the eight-slot arrays are refused: an NSException whose reason
+// names the bound and the value. Metal's own refusals are assertions that stop the process, so the
+// differential asks them OUT OF PROCESS and compares what each side printed - see
+// tests/backports/host/metal-census/descriptors26-samplebounds.{m,sh}.
 enum { CharonMetal4SamplePositions = 8 };
 
 static BOOL CharonMetal4SampleCountIsValid(NSUInteger count)
 {
     return count == 0 || count == 2 || count == 4 || count == 8;
+}
+
+static BOOL CharonMetal4CoordinateIsInRange(float value)
+{
+    return value >= 0.0f && value < 1.0f;
 }
 
 @implementation MTL4RenderPassDescriptor {
@@ -126,13 +144,19 @@ static BOOL CharonMetal4SampleCountIsValid(NSUInteger count)
     _stencilAttachment = [stencilAttachment copy];
 }
 
-// THE HEADER'S OWN CONTRACT for the two: setSamplePositions:count: takes the positions and how many
-// there are, "or 0 to disable custom sample positions"; getSamplePositions:count: "stores the app's
-// last set custom sample positions into an output array" and "only modifies the array when the count
-// parameter consists of a length sufficient to store the number of sample positions", and answers how
-// many there were. So a count of 0 empties the storage, a count past what has been set writes what
-// there is and answers THAT, and a read into a buffer too small for them changes nothing - which is
-// what the header says twice and what the two methods below do.
+// THE HEADER'S OWN CONTRACT for the two, and then what the MEASUREMENT says where the two differ.
+// MTL4RenderPass.h:108 says setSamplePositions:count: takes the positions and how many there are, "or
+// 0 to disable custom sample positions"; :113 says getSamplePositions:count: "stores the app's last set
+// custom sample positions into an output array" and "only modifies the array when the `count` parameter
+// consists of a length sufficient to store the number of sample positions".
+//
+// THE HEADER'S "SUFFICIENT TO STORE" IS NOT WHAT METAL DOES, and the comment that used to stand here
+// said the opposite - that a read into a buffer too small would change nothing - which my own
+// measurement refutes. Measured, against Apple's own object, out of process: with four positions
+// programmed, a read with a count of 2 asserts "Non-zero count (2) does not match the number of
+// programmed custom sample positions (4)". A count SMALLER than what is programmed is refused exactly
+// as a larger one is, and the only count that is always allowed is zero. So the two methods below
+// refuse three bounds rather than one, and the third of them is that read.
 - (void)setSamplePositions:(const MTLSamplePosition *)positions count:(NSUInteger)count
 {
     if (!CharonMetal4SampleCountIsValid(count)) {
@@ -141,6 +165,19 @@ static BOOL CharonMetal4SampleCountIsValid(NSUInteger count)
                            (unsigned long)count];
         return;
     }
+    // THE COORDINATES, per axis and with the INDEX in the message, because Apple's own assertion names
+    // the index and this is the one a reader debugging a sampler would look for.
+    if (positions)
+        for (NSUInteger index = 0; index < count; index++) {
+            if (!CharonMetal4CoordinateIsInRange(positions[index].x))
+                [NSException raise:NSInvalidArgumentException
+                            format:@"setSamplePositions:count:%lu: sample position %lu has x-coodificate %f, which is not within the range [0,1)",
+                                   (unsigned long)count, (unsigned long)index, positions[index].x];
+            if (!CharonMetal4CoordinateIsInRange(positions[index].y))
+                [NSException raise:NSInvalidArgumentException
+                            format:@"setSamplePositions:count:%lu: sample position %lu has y-coodificate %f, which is not within the range [0,1)",
+                                   (unsigned long)count, (unsigned long)index, positions[index].y];
+        }
     // A NULL POINTER STORES NOTHING, and that is measured rather than guessed: with two positions
     // programmed, -setSamplePositions:NULL count:0 leaves the object holding TWO, while the same call
     // with a non-NULL pointer and count 0 leaves it holding NONE - which is what MTL4RenderPass.h:107
@@ -156,9 +193,19 @@ static BOOL CharonMetal4SampleCountIsValid(NSUInteger count)
     _samplePositionCount = count;
 }
 
+// AND THE READ, whose bound is the same shape as the other two: a count of zero asks how many there
+// are and is always allowed, and any OTHER count must be exactly what is programmed - measured for a
+// count smaller than the programmed one as well as a larger one, because the first version of this
+// method accepted anything and claimed to follow the header's "a length sufficient to store".
 - (NSUInteger)getSamplePositions:(MTLSamplePosition *)positions count:(NSUInteger)count
 {
-    if (positions && count >= _samplePositionCount)
+    if (count != 0 && count != _samplePositionCount) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"getSamplePositions:count:%lu: a non-zero count must match the %lu programmed custom sample position(s)",
+                           (unsigned long)count, (unsigned long)_samplePositionCount];
+        return 0;
+    }
+    if (positions && count == _samplePositionCount && count != 0)
         memcpy(positions, _samplePositions, _samplePositionCount * sizeof(MTLSamplePosition));
     return _samplePositionCount;
 }
