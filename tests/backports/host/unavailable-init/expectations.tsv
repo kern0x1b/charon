@@ -1,31 +1,40 @@
-# The host's own answer for every class whose SDK 26.2 header closes -init and +new with
-# NS_UNAVAILABLE, transcribed from probe.m's output on this machine and held to it by
-# check_host.py, which fails when the host answers something else. own-init and own-new say
-# whether the selector is in the CLASS's own method list, which is the corpus row's question
-# and which an inherited selector is in no class's; answer/exception/reason say what a caller
-# reaches at run time, which is the behaviour the port owes. port-source and port-object are
-# where the port answers it and which of the two pair-macros it answers with, and
-# check_port.py holds the source, the macro's own definition and the object to all three.
+# The pair -init and +new, which these frameworks' SDK 26.2 headers close with NS_UNAVAILABLE, and
+# what Apple's own class does about each of them. NS_UNAVAILABLE is a promise about source and adds
+# nothing at run time, so the header settles nothing: the question is what Apple's own class does, and
+# the port owes that answer or nothing at all.
 #
-# A raise with an empty reason is Apple's own: measured, the exception carries a reason of
-# zero length for the nine classes that name no other door. The reason field is empty there
-# and the port raises with an empty format, which is the same exception a caller sees.
-framework	class	own-init	own-new	answer	exception	reason	port-macro	port-source	port-object
-SensorKit	SRAcousticSettings	0	0	ok			CHARON_SENSORKIT_INHERITED_NEW_AND_INIT	SensorKit/SensorKit260.m	SensorKit260.m.o
-SensorKit	SRAudioLevel	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRElectrocardiogramData	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRElectrocardiogramSample	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRElectrocardiogramSession	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRFaceMetrics	1	1	raises	NSInternalInconsistencyException	Not available	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRFaceMetricsExpression	1	1	raises	NSInternalInconsistencyException	Not available	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRFetchResult	1	1	raises	NSInternalInconsistencyException	Not available	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit140.m	SensorKit140.m.o
-SensorKit	SRPhotoplethysmogramAccelerometerSample	0	0	ok			CHARON_SENSORKIT_INHERITED_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRPhotoplethysmogramOpticalSample	0	0	ok			CHARON_SENSORKIT_INHERITED_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRPhotoplethysmogramSample	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
-SensorKit	SRSensorReader	1	1	raises	NSInternalInconsistencyException	Use initWithSensor:	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SRSensorReader.m	SRSensorReader.m.o
-SensorKit	SRSleepSession	0	0	ok			CHARON_SENSORKIT_INHERITED_NEW_AND_INIT	SensorKit/SensorKit260.m	SensorKit260.m.o
-SensorKit	SRSpeechExpression	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRSpeechMetrics	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRSupplementalCategory	1	1	raises	NSInternalInconsistencyException	Not available	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit164.m	SensorKit164.m.o
-SensorKit	SRWristTemperature	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
-SensorKit	SRWristTemperatureSession	1	1	raises	NSInternalInconsistencyException		CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+# own-init / own-new   whether the selector is in the CLASS's own method list, which is what a corpus
+#                      row asks and what an inherited selector is in no class's.
+# answer/exception/reason   what a caller reaches at run time.
+# oracle               where the answer was measured: `host` for the host's own framework, `ios16`
+#                      for a class read out of the arm64e cache of iOS 16.0 with the repository's own
+#                      tools/corpus/objc-inventory.lua.
+# port-init / port-new what the port owes for each selector, which follows from own-init and own-new
+#                      and nothing else: `raise` where Apple's own class defines that selector, `none`
+#                      where it does not - a definition there would put the selector in the port's
+#                      metadata where Apple's has neither, and would answer the caller exactly what
+#                      NSObject's already answers. The two differ per class and per selector:
+#                      HealthKit's classes define -init and inherit +new, SensorKit's define both.
+# port-source/port-object   where the port answers it, and which object must carry the selectors.
+#
+# check_host.py asks the host again and fails when it answers something else; check_port.py holds the
+# source, the macro's own body and the compiled armv7 object to this table. run.sh runs both.
+framework	oracle	class	own-init	own-new	answer	exception	reason	port-init	port-new	port-macro	port-source	port-object
+SensorKit	host	SRAcousticSettings	0	0	ok			none	none	-	SensorKit/SensorKit260.m	SensorKit260.m.o
+SensorKit	host	SRAudioLevel	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRElectrocardiogramData	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRElectrocardiogramSample	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRElectrocardiogramSession	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRFaceMetrics	1	1	raises	NSInternalInconsistencyException	Not available	raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRFaceMetricsExpression	1	1	raises	NSInternalInconsistencyException	Not available	raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRFetchResult	1	1	raises	NSInternalInconsistencyException	Not available	raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit140.m	SensorKit140.m.o
+SensorKit	host	SRPhotoplethysmogramAccelerometerSample	0	0	ok			none	none	-	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRPhotoplethysmogramOpticalSample	0	0	ok			none	none	-	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRPhotoplethysmogramSample	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o
+SensorKit	host	SRSensorReader	1	1	raises	NSInternalInconsistencyException	Use initWithSensor:	raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SRSensorReader.m	SRSensorReader.m.o
+SensorKit	host	SRSleepSession	0	0	ok			none	none	-	SensorKit/SensorKit260.m	SensorKit260.m.o
+SensorKit	host	SRSpeechExpression	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRSpeechMetrics	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRSupplementalCategory	1	1	raises	NSInternalInconsistencyException	Not available	raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit164.m	SensorKit164.m.o
+SensorKit	host	SRWristTemperature	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
+SensorKit	host	SRWristTemperatureSession	1	1	raises	NSInternalInconsistencyException		raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o

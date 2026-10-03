@@ -93,23 +93,12 @@ CHARON_DECLARE_SENSORKIT_VALUE_CLASS(SRWristTemperatureSession)
 //     photoplethysmogram samples that are channels of the sample their parent already guards - so a
 //     caller that reaches the pair reaches NSObject's and gets a new empty value object.
 //
-// The pair is carried either way, and that is the reason these two macros exist rather than the
-// inheritance being left to speak: a corpus row asks whether the SELECTOR is in the class's own
-// method list, and an inherited selector is in no class's list, so the row reads missing against a
-// class that answers it at run time. The second macro's body is what this port already answered with;
-// the first carries NSObject's own, spelled out, which is what the four classes reach there.
-
-// The four whose own class carries neither: NSObject's pair, in NSObject's own words.
-#define CHARON_SENSORKIT_INHERITED_NEW_AND_INIT                                          \
-    -(instancetype)init                                                                   \
-    {                                                                                    \
-        return [super init];                                                             \
-    }                                                                                    \
-                                                                                         \
-    +(instancetype)new                                                                   \
-    {                                                                                    \
-        return [[self alloc] init];                                                      \
-    }
+// The port answers the fourteen and leaves the four to NSObject, and the difference is the point: a
+// definition would put -init and +new in the port's class metadata where Apple's class metadata has
+// neither, which changes what the class IS and answers the caller exactly what NSObject's already
+// answers. Their rows are `absent` with this measurement as the reason, and a corpus row reading
+// `missing` for a selector Apple's own class does not carry is the tool's question about a class's own
+// method list rather than a gap in the port.
 
 // The fourteen that refuse. `reason_text` is the host's own reason string for that class, which is
 // what the exception carries: the name is NSInternalInconsistencyException for all fourteen, and

@@ -4,7 +4,6 @@
 
 // SensorKit of iOS 26.0, the properties that arrived then.
 @implementation SRAcousticSettings
-CHARON_SENSORKIT_INHERITED_NEW_AND_INIT
 @dynamic environmentalSoundMeasurementsEnabled, audioExposureSampleLifetime, headphoneSafetyAudioLevel, musicEQSettings, accessibilitySettings;
 CHARON_SCALAR_PROPERTY(BOOL, environmentalSoundMeasurementsEnabled)
 CHARON_SCALAR_PROPERTY(SRAcousticSettingsSampleLifetime, audioExposureSampleLifetime)
@@ -56,7 +55,6 @@ CHARON_SCALAR_PROPERTY(BOOL, lateNightModeEnabled)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRSleepSession
-CHARON_SENSORKIT_INHERITED_NEW_AND_INIT
 @dynamic startDate, duration, identifier;
 CHARON_VALUE_PROPERTY(NSDate *, startDate)
 CHARON_SCALAR_PROPERTY(NSTimeInterval, duration)

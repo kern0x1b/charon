@@ -35,7 +35,6 @@ CHARON_VALUE_PROPERTY(NSString *, identifier)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRPhotoplethysmogramAccelerometerSample
-CHARON_SENSORKIT_INHERITED_NEW_AND_INIT
 @dynamic nanosecondsSinceStart, samplingFrequency, x, y, z;
 CHARON_SCALAR_PROPERTY(int64_t, nanosecondsSinceStart)
 CHARON_VALUE_PROPERTY(NSMeasurement *, samplingFrequency)
@@ -47,7 +46,6 @@ CHARON_VALUE_PROPERTY(NSMeasurement *, z)
 CHARON_SENSORKIT_VALUE_STORE_IMPLEMENTATION
 @end
 @implementation SRPhotoplethysmogramOpticalSample
-CHARON_SENSORKIT_INHERITED_NEW_AND_INIT
 @dynamic emitter, activePhotodiodeIndexes, signalIdentifier, nominalWavelength, effectiveWavelength, samplingFrequency, nanosecondsSinceStart, backgroundNoiseOffset, conditions;
 CHARON_SCALAR_PROPERTY(NSInteger, emitter)
 CHARON_VALUE_PROPERTY(NSIndexSet *, activePhotodiodeIndexes)
