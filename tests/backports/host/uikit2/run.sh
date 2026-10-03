@@ -520,6 +520,11 @@ control "no such key" 2
 
 group contentunavailable "UIContentUnavailableProperties.m UIContentUnavailableConfiguration.m" contentunavailable_test.m
 
+# The link-preview attribution of 14.5 and its view. Its system side is the SDK's own class - both classes
+# are in the 16.4 SDK this package compiles against - so this group does not declare the system side, which
+# is the stronger of the two positions the suite has.
+group eventattribution "UIEventAttribution145.m" eventattribution_test.m
+
 # the spring curve: UIKit's own parameters, our solver, and a real CASpringAnimation
 xcrun clang $target -fobjc-arc -Wall -w -I"$harness" "$here/spring_uikit.m" $frameworks -o "$build/spring_uikit"
 xcrun clang $target $flags -w -c "$sources/UIView+SpringAnimation.m" -o "$build/plain/spring.o"
