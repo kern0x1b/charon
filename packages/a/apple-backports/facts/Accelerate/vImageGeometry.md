@@ -1395,6 +1395,55 @@ are not three**, which `vImageNewResamplingFilter(scale, kvImageHighQualityResam
 rows at a scale of one), and check whether the deviation from the normalised five-lobe kernel has the same
 magnitude and the same sign pattern - a fixed-point `sinc` would, a normalising correction would not.
 
+## The filter's constructors ARE on 6.1.3, and `CharonResampling.h` is built on the opposite (2026-10-03)
+
+Counted off `coordination/corpus/caches/*.tsv` on an exact tab-separated match, one row per framework that
+carries the symbol:
+
+| symbol | 6.0 | 7.0.1 |
+| --- | --- | --- |
+| `_vImageNewResamplingFilter` | 2 | 2 |
+| `_vImageNewResamplingFilterForFunctionUsingBuffer` | 2 | 2 |
+| `_vImageGetResamplingFilterSize` | 2 | 2 |
+| `_vImageDestroyResamplingFilter` | 2 | 2 |
+| `_vImageGetResamplingFilterExtent` | 0 | 2 |
+| `_vImageHorizontalShear_ARGB16S` | 0 | 2 |
+| `_vImageHorizontalShearD_ARGB16S` | 0 | 2 |
+
+So **the sixteen-bit shears and `vImageGetResamplingFilterExtent` arrive at 7.0 and the filter's four
+functions are there from 6.0**, which is the asymmetry that matters here - and it is the opposite of what
+`CharonResampling.h` records. That file's own comment reads: "the Accelerate band measured that the armv7
+caches carry **none** of vImage's C API below 7.0.1, so whatever the header's `API_AVAILABLE(ios(5.0))` says,
+there is no `vImageNewResamplingFilter` and no `vImageNewResamplingFilterForFunctionUsingBuffer` on 4.3 or
+6.1.3 to fill a caller's buffer. So the port writes the filter itself, into a buffer the caller allocated from
+`vImageGetResamplingFilterSize`, and **the layout is the port's own**." The second half of that is what the
+design rests on, and the premise is false for 6.1.3. (The 4.3 claim is not settled either way: the corpus holds
+no 4.3 index.)
+
+**Two consequences, both for the coordinator's ruling rather than for a commit.**
+
+1. `CharonResampleFilterOf` refuses every buffer whose tag is not the port's own and `CharonShearReady` answers
+   `kvImageInvalidParameter` for the NULL it returns. **A caller on a real device builds its filter with the
+   system's `vImageNewResamplingFilter`, so the port's shears refuse every call that carries a genuine filter.**
+   That is a defect on the 7.0+ band the thirty-six rows are for, and it is independent of the weight question.
+   Nothing in the corpus contradicts it: the ledger carries no row for any of the four filter functions, only
+   for `vImageGetResamplingFilterExtent()`.
+2. If the filter is the release's, **the Q14 row is inside the caller's buffer and the port reads it**, so the
+   generator question does not arise. Reading it is not a private-structure crutch: `Geometry.h` documents the
+   buffer and the constructor that fills it - "This function writes the kernel values into a preallocated kernel
+   buffer that you provide ... at least the size of the kernel data, which is given by
+   `vImageGetResamplingKernelSize`" - so what is read is what the release wrote through the release's own
+   public mechanism. An earlier section of this page said as much ("the port does not have to reproduce the
+   release's arithmetic to agree with it. It has to read the numbers the release wrote") and
+   `CharonResampling.h` decided the other way on the strength of the premise above.
+
+**The one oracle caveat that belongs with every measurement on this page.** Everything measured about the Q14
+row, the integer sum, the half-up store and the 14400 of 14400 is **this Mac's macOS Accelerate**, not the
+armv7 release the port targets; the device measurement is the one that decides, and a 6.1.3 guest is where to
+take it. The layout measured here - the header, 64 rows of eight `int16` at halfword 1080 for the default
+Lanczos3 filter, every row summing to 16384, the scale-1 and scale-2 tables byte-identical - is a macOS
+reading and is not yet an armv7 one.
+
 ## The 6.1.3 filter's layout, read out of the release's own instructions (2026-10-04, v-tail-a11)
 
 Every number in the section above came from **macOS Accelerate**, and macOS Accelerate is not 6.1.3's. The
