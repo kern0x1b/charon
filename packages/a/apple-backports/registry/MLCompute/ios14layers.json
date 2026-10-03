@@ -2377,6 +2377,468 @@
       "effect": "a node is one layer, one source and one result, and the shape is the one the layer's operation produces: every case of this operation in tests/backports/host/mlcompute/graph-cases.m answers as the host's own MLCompute does, over two and three dimensions, for the arities the host refuses and the shapes it does not check; facts/MLCompute/Graph.md carries the tables",
       "facts": "facts/MLCompute/Graph.md",
       "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probe named in the facts and held by tests/backports/host/mlcompute"
+    },
+
+    {
+      "api": "MLCInferenceGraph",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an inference graph over the graph objects it is given: its layers, its sources and its results are those of the graph objects, nil for a device until a compile and the device that compile was given after it, and every case of it in tests/backports/host/mlcompute/inference-cases.m answers as the host's own MLCompute does",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "MLCTrainingGraph",
+      "kind": "class",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a training graph over the graph objects it is given, the loss layer and the optimizer: its layers, its sources and its results are those of the graph objects, and every case of it in tests/backports/host/mlcompute/inference-cases.m answers as the host's own MLCompute does",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "+[MLCInferenceGraph graphWithGraphObjects:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an inference graph over the graph objects it is given: its layers, its sources and its results are those of the graph objects, nil for a device until a compile and the device that compile was given after it, and every case of it in tests/backports/host/mlcompute/inference-cases.m answers as the host's own MLCompute does",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "+[MLCInferenceGraph new]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an object with no layer, no node and no device, which is what the framework answers for an initialiser its own header marks unavailable, measured",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "+[MLCTrainingGraph graphWithGraphObjects:lossLayer:optimizer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a training graph over the graph objects it is given, the loss layer and the optimizer: its layers, its sources and its results are those of the graph objects, and every case of it in tests/backports/host/mlcompute/inference-cases.m answers as the host's own MLCompute does",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph addInputs:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph addInputs:lossLabels:lossLabelWeights:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph addOutputs:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph compileWithOptions:device:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "a compile needs a device the first time and answers NO without one, and answers YES for one whatever it is given afterwards; the compile is also what makes deviceMemorySize an answer rather than a zero, measured for both classes in one process",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph compileWithOptions:device:inputTensors:inputTensorsData:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the compile of 14.0 with the constant tensors bound first: YES for nil dictionaries, for two empty ones, for tensors with no data, for data with no tensors and for both, measured, and it raises inside the host over a graph with no layer at all, which facts/MLCompute/Graph.md records and no case asks",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph executeWithInputsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the forward pass over the graph's own nodes, computed by the port's engine and not asserted: an execute of a ReLU over -1, 2, -3 and 4 writes 0, 2, 0 and 4 into the buffer the caller named for the output and calls the completion handler with no error, which is what the host answers",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph executeWithInputsData:lossLabelsData:lossLabelWeightsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the forward pass over the graph's own nodes, computed by the port's engine and not asserted: an execute of a ReLU over -1, 2, -3 and 4 writes 0, 2, 0 and 4 into the buffer the caller named for the output and calls the completion handler with no error, which is what the host answers",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph executeWithInputsData:lossLabelsData:lossLabelWeightsData:outputsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the forward pass over the graph's own nodes, computed by the port's engine and not asserted: an execute of a ReLU over -1, 2, -3 and 4 writes 0, 2, 0 and 4 into the buffer the caller named for the output and calls the completion handler with no error, which is what the host answers",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph executeWithInputsData:outputsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the forward pass over the graph's own nodes, computed by the port's engine and not asserted: an execute of a ReLU over -1, 2, -3 and 4 writes 0, 2, 0 and 4 into the buffer the caller named for the output and calls the completion handler with no error, which is what the host answers",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph init]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "an object with no layer, no node and no device, which is what the framework answers for an initialiser its own header marks unavailable, measured",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCInferenceGraph linkWithGraphs:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "YES for an empty list, for this graph itself and for another graph, and this graph's layers do not grow: a linked graph shares its tensors with it rather than joining it, measured",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph addInputs:lossLabels:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph addInputs:lossLabels:lossLabelWeights:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph addOutputs:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors under the names given become the tensors an execute reads its data from and writes its results into; YES for a name the graph knows, for one it does not, for an empty dictionary and for nil, all measured, and the two execute forms that carry loss label data answer NO on the host unless the loss labels were declared with -addInputs:lossLabels:lossLabelWeights: first, which is what the header's own comment asks a caller to do",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph allocateUserGradientForTensor:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what the gradient members answer before any pass has run, all measured: nil for a gradient tensor, for the gradient data of a parameter and for a user gradient; one fresh tensor of the source's shape and float32 type, and not the source itself, for each source of a layer the graph has, and none for a layer it has not; none for the gradient of a result",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph bindOptimizerData:deviceData:withTensor:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors the graph was told about are kept and the answer is YES: measured for -stopGradientForTensors: over a tensor the graph knows and one it does not, for -setTrainingTensorParameters: over an empty list, and for -bindOptimizerData:deviceData:withTensor: over a tensor it knows and one it does not, where the data is bound to the tensor it was given",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph compileOptimizer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph compileWithOptions:device:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph compileWithOptions:device:inputTensors:inputTensorsData:]",
+      "kind": "method",
+      "introduced": "14.5",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeForwardWithBatchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeForwardWithBatchSize:options:outputsData:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeGradientWithBatchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeGradientWithBatchSize:options:outputsData:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeOptimizerUpdateWithOptions:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeWithInputsData:lossLabelsData:lossLabelWeightsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph executeWithInputsData:lossLabelsData:lossLabelWeightsData:outputsData:batchSize:options:completionHandler:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO: this port's engine carries the forward pass of an activation and neither a gradient pass nor an optimizer update, so there is no training graph to compile, to link or to execute - which is what the host answers over the binding the cases ask. facts/MLCompute/Graph.md names the other binding, every answer the host gives there (a compile of YES, twice the device memory, YES to the gradient pass and to the optimizer update, and a forward pass that raises) and why no case can hold this row to it",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph gradientDataForParameter:layer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what the gradient members answer before any pass has run, all measured: nil for a gradient tensor, for the gradient data of a parameter and for a user gradient; one fresh tensor of the source's shape and float32 type, and not the source itself, for each source of a layer the graph has, and none for a layer it has not; none for the gradient of a result",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph gradientTensorForInput:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what the gradient members answer before any pass has run, all measured: nil for a gradient tensor, for the gradient data of a parameter and for a user gradient; one fresh tensor of the source's shape and float32 type, and not the source itself, for each source of a layer the graph has, and none for a layer it has not; none for the gradient of a result",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph linkWithGraphs:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "NO, measured for an empty list, for this graph itself and for another graph of its own kind: linking training graphs needs a compiled training graph to link into, and this port's engine compiles none",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph resultGradientTensorsForLayer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what the gradient members answer before any pass has run, all measured: nil for a gradient tensor, for the gradient data of a parameter and for a user gradient; one fresh tensor of the source's shape and float32 type, and not the source itself, for each source of a layer the graph has, and none for a layer it has not; none for the gradient of a result",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph setTrainingTensorParameters:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors the graph was told about are kept and the answer is YES: measured for -stopGradientForTensors: over a tensor the graph knows and one it does not, for -setTrainingTensorParameters: over an empty list, and for -bindOptimizerData:deviceData:withTensor: over a tensor it knows and one it does not, where the data is bound to the tensor it was given",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph sourceGradientTensorsForLayer:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "what the gradient members answer before any pass has run, all measured: nil for a gradient tensor, for the gradient data of a parameter and for a user gradient; one fresh tensor of the source's shape and float32 type, and not the source itself, for each source of a layer the graph has, and none for a layer it has not; none for the gradient of a result",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph stopGradientForTensors:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the tensors the graph was told about are kept and the answer is YES: measured for -stopGradientForTensors: over a tensor the graph knows and one it does not, for -setTrainingTensorParameters: over an empty list, and for -bindOptimizerData:deviceData:withTensor: over a tensor it knows and one it does not, where the data is bound to the tensor it was given",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "-[MLCTrainingGraph synchronizeUpdates]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "nothing to bring back: the CPU device computes into the very memory a program reads, which is what -[MLCTensor synchronizeData] answers, measured, and the case asks that the call runs and returns, which is all a void member can be asked",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "MLCInferenceGraph.deviceMemorySize",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "0 until this graph's own compile has been asked, whatever that compile answered, and from then the byte width of the tensors its own nodes produce; the caller's own bindings do not move it, measured over the inference graph and over a training graph in the same process",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "MLCTrainingGraph.deviceMemorySize",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "0 until this graph's own compile has been asked, whatever that compile answered, and from then the byte width of the tensors its own nodes produce; a training graph whose own compile succeeds answers twice that, for its forward and its gradient pass, and this port's compile never succeeds, measured",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
+    },
+
+    {
+      "api": "MLCTrainingGraph.optimizer",
+      "kind": "property",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the optimizer the graph was made with, and nil when it was made without one, measured",
+      "facts": "facts/MLCompute/Graph.md",
+      "source": "the headers of MLCompute in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MLCompute by the probes named in the facts and held case by case by tests/backports/host/mlcompute, which compiles one program beside the framework and beside the port's own translation units and compares the two runs"
     }
   ]
 }

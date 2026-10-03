@@ -1,5 +1,5 @@
 #!/bin/sh
-# cases.m and record.m, run once against the host's own MLCompute and once against the port's four
+# The case files and record.m, run once against the host's own MLCompute and once against the port's own
 # translation units, with every name the port defines renamed so both answers can be in one process tree.
 # The host's answers are what the port is held to; run.sh says nothing about whether they are right, and
 # facts/MLCompute/ carries what was measured and where it came from.
@@ -11,11 +11,26 @@ here=$(cd "$(dirname "$0")" && pwd)
 port=${MLCOMPUTE_PORT:-$here/../../../../packages/a/apple-backports/MLCompute}
 registry=${MLCOMPUTE_REGISTRY:-$here/../../../../packages/a/apple-backports/registry/MLCompute}
 build=${MLCOMPUTE_BUILD:-${TMPDIR:-/tmp}/charon-mlcompute-host}
+# The engine the port's own MLCInferenceGraph computes its forward pass with, built by the one script both
+# MLCompute harnesses use and kept beside $build rather than inside it, so the rm below does not throw it away
+# and a second run does not build it again. The release build compiles the engine's five C units for armv7
+# and needs no C++ runtime; this is the harness only.
+engine=${MLCOMPUTE_ENGINE_BUILD:-${TMPDIR:-/tmp}/charon-mlcompute-engine-host}
 rm -rf "$build"
 mkdir -p "$build"
 sdk=$(xcrun --show-sdk-path)
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk -fobjc-arc -w -I$here"
 libs="-framework Foundation -framework Accelerate"
+ggmlhost=$(sh "$here/ggml-host.sh" "$engine")
+ggml=${MLCOMPUTE_GGML:-$(ls -td "$HOME"/.xmake/packages/g/ggml/0.25.3/*/ 2>/dev/null | head -1 | sed "s:/$::")}
+# The port's own translation units, the engine's archive and the engine's header: CharonMLCGraph.mm is where
+# the port computes, so a case that asks the port what an execute computed is asking the port's arithmetic.
+portsources() {
+    printf '%s' "$port/MLCTypes14.m $port/MLCDevice15.m $port/MLCTensors14.m $port/MLCDescriptors14.m \
+$port/MLCLayers14.m $port/MLCOptimizers14.m $port/MLCOptimizers15.m $port/MLCAdamAMSGrad15.m \
+$port/MLCGraph14.m $port/MLCInferenceGraph14.m $port/MLCTrainingGraph14.m $port/MLCGraphConstants15.m \
+$port/CharonMLCGraph.mm"
+}
 
 # Every MLC name the port's own sources define, taken from the sources so that nothing can be added to one
 # and missed here. The classes come from the @interface and @implementation lines and the functions from the
@@ -43,28 +58,25 @@ print("renamed %d names" % len(names))
 PY
 
 # The system side: the host's framework answers every case.
-xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" $libs -framework MLCompute -o "$build/system"
+xcrun clang $common "$here/record.m" "$here/cases.m" "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" "$here/inference-cases.m" $libs -framework MLCompute -o "$build/system"
 "$build/system" > "$build/system.log" 2>&1 || { echo "the system run failed:"; tail -20 "$build/system.log"; exit 1; }
 
 # The port side: the same program with the port's own files, which answer every case in their place. A
 # Metal device does not exist for the port to name, so the cases that ask MLCDevice about a GPU get the
 # answer a machine with no GPU gives; the run.sh notes those lines below as the ones that are meant to
 # differ, and they are the only ones.
-xcrun clang $common -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" "$here/layer-cases.m" \
-    "$here/optimizer-cases.m" "$here/graph-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" \
-    "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" "$port/MLCOptimizers14.m" \
-    "$port/MLCOptimizers15.m" \
-    "$port/MLCAdamAMSGrad15.m" "$port/MLCGraph14.m" $libs -o "$build/port"
+xcrun clang $common -include "$build/rename.h" -I"$port" -I"$ggml/include" "$here/record.m" "$here/cases.m" \
+    "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" "$here/inference-cases.m" \
+    $(portsources) "$ggmlhost" $libs -lc++ -o "$build/port"
 "$build/port" > "$build/port.log" 2>&1 || { echo "the port run failed:"; tail -20 "$build/port.log"; exit 1; }
 
 # The red control: the same program and the same objects with every optimizer default one step off, which
 # is what a default nobody measured looks like. It exists because a comparison that cannot see a wrong
 # number is not a comparison: -DCHARON_MLC_PLANT is compiled into CharonMLCOptimizerState's initialiser in
 # MLCompute/MLCOptimizers14.m and into nothing else, so a build of the library carries no plant.
-xcrun clang $common -DCHARON_MLC_PLANT=1 -include "$build/rename.h" -I"$port" "$here/record.m" "$here/cases.m" \
-    "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" "$port/MLCTypes14.m" "$port/MLCDevice15.m" \
-    "$port/MLCTensors14.m" "$port/MLCDescriptors14.m" "$port/MLCLayers14.m" "$port/MLCOptimizers14.m" \
-    "$port/MLCOptimizers15.m" "$port/MLCAdamAMSGrad15.m" "$port/MLCGraph14.m" $libs -o "$build/port-plant1"
+xcrun clang $common -DCHARON_MLC_PLANT=1 -include "$build/rename.h" -I"$port" -I"$ggml/include" "$here/record.m" \
+    "$here/cases.m" "$here/layer-cases.m" "$here/optimizer-cases.m" "$here/graph-cases.m" \
+    "$here/inference-cases.m" $(portsources) "$ggmlhost" $libs -lc++ -o "$build/port-plant1"
 "$build/port-plant1" > "$build/port-plant1.log" 2>&1 || { echo "the planted port run failed:"; tail -20 "$build/port-plant1.log"; exit 1; }
 plant_wrong=$(diff "$build/system.log" "$build/port-plant1.log" | grep -c '^<' || true)
 if [ "$plant_wrong" -lt 1 ]; then
