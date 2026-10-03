@@ -94,3 +94,32 @@ The rule the port follows, from the coordinator's answer of 2026-10-03: where Ap
 selector the port carries it with the measured body; where Apple's own class does not, the port does not
 either, because a definition would change what the class is and answer the caller exactly what NSObject's
 already answers.
+
+## The ten `-init` IMPs are out of the cache, and what the first of them does
+
+The ten rows above are decided by the code, not by the header, and the code is in the cache.
+`apple.objc.method_imps` (added for this, commit b9089f454, held by the coordinator until the commit that
+uses it lands) reads, in one pass over the arm64e cache of iOS 16.0, every method the ten classes define
+themselves with the address and 512 bytes at it: 1060 methods over the ten classes, written to
+`charon/.agent-work/worktrees/v-health/.agent-work/runs/cachewalk/hk-init-imp.out`. The addresses are the
+cache's own UNSLID addresses, so a page-relative `adrp` inside a body resolves the same way whatever the
+slide. A pass costs minutes - 157s measured on the cache of iOS 18.0, 525s on 16.0 - which is why the
+reader takes the whole set of names at once.
+
+**How to read those bytes.** A wrapper Mach-O is not needed and does not work: a hand-built one is called
+malformed by llvm-objdump (measured, `offset field plus size field of section 0 in LC_SEGMENT_64 extends
+past the end of the file`). What works is assembling them into an object file with clang and running
+llvm-objdump over that. The first body read that way: **`-[HMZone init]` calls one function and returns
+nil** - not a raise, and not a constructed object. Which function it calls is the next measurement, and
+the answer for the row follows from it: a nil-returning `-init` is a third shape, neither the SensorKit
+raise nor the HealthKit raise nor the NSObject forward, and the port has to match whichever it is.
+
+Three traps in the reader, measured here and not to be paid for twice:
+
+1. this tree's lua does not parse the `%` operator and has no `pcall` and no `os.args`; use
+   `string.format` and `function main(arg, ...)`;
+2. `method_list(read, address, names)` takes a collection and indexes it, while `method_entries(read,
+   address, each)` is the one that yields `(name, imp)`; passing a function to the first is
+   `attempt to index a function value (local 'names')`;
+3. `method_entries` is a file-local defined near the end of `objc.lua`, so a function that uses it has to
+   be defined after it.
