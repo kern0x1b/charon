@@ -595,8 +595,11 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = metrics ]; then
 import re, sys
 path = sys.argv[1]
 text = open(path).read()
-before = "@interface charon_host_AVMetricPlayerItemStallEvent : AVMetricPlayerItemRateChangeEvent"
-after = "@interface charon_host_AVMetricPlayerItemStallEvent : AVMetricEvent"
+# The parent is spelled charon_host_-prefixed since the prologue began renaming parents too; an unprefixed
+# anchor stopped matching then and the guard printed "the mutation target is not unique (0 matches)", which
+# is the guard doing its job on a stale aim rather than on a missing plant.
+before = "@interface charon_host_AVMetricPlayerItemStallEvent : charon_host_AVMetricPlayerItemRateChangeEvent"
+after = "@interface charon_host_AVMetricPlayerItemStallEvent : charon_host_AVMetricEvent"
 if text.count(before) != 1:
     raise SystemExit("the mutation target is not unique (%d matches), so this run proves nothing"
                      % text.count(before))
@@ -677,8 +680,27 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = coding ]; then
 import sys
 path = sys.argv[1]
 text = open(path).read()
-before = "    if ((self = charon_intents_super_init(self, [NSObject class]))) {\n        charon_intents_decode(self, coder);\n    }"
-after = "    if ((self = [self init])) {\n        charon_intents_decode(self, coder);\n    }"
+# THE PLANT IS ON THE ENCODE SIDE, and that is what makes it observable.
+#
+# Three plants were tried here and the first two were invisible, which is worth recording because each read
+# as a passing run:
+#
+#   1. swap charon_intents_super_init for [self init] in -initWithCoder:. Invisible: -init stamps a date,
+#      the decode then overwrites it from the archive, and every value still arrives.
+#   2. delete the charon_intents_decode call. Also invisible: NSKeyedUnarchiver has already restored the
+#      ivars by the time a nil decode could matter, and the probe reads the ACCESSORS.
+#   3. delete the charon_intents_encode call - this one. The archive then has no key for these classes at
+#      all and every value must notice it.
+#
+# Two of those edits never even landed. They were python string replacements aimed at text a previous edit
+# had already replaced, and python's str.replace on a missing needle is a silent no-op - so the file kept the
+# FIRST plant for four runs while the commit messages described the third. The guard below is the fix for
+# that class of mistake as well as for the mutation: it reads the target out of the file and says so when it
+# is not there, instead of compiling whatever is there and reporting that the mutation "was applied".
+path = sys.argv[1]
+text = open(path).read()
+before = "    charon_intents_encode(self, coder);"
+after = "    /* PLANTED: the archive writes nothing at all */"
 if text.count(before) != 1:
     raise SystemExit("the mutation target is not unique (%d matches), so this run proves nothing"
                      % text.count(before))
@@ -686,7 +708,7 @@ out = text.replace(before, after)
 if out.count(before) != 0 or out.count(after) != 1:
     raise SystemExit("the mutation did not take, so this run proves nothing")
 open(path, "w").write(out)
-print("# the mutation applied: -initWithCoder: no longer decodes, so the archive carries nothing")
+print("# the mutation applied: -encodeWithCoder: now writes nothing, so the archive carries no value")
 PERTURB
     # REBUILD THE OBJECT THE PROBE LINKS, and show that the result is not the object that was there.
     #
