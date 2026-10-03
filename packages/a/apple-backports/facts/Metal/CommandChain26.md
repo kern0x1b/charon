@@ -153,48 +153,59 @@ Three of those lines are answers a reader would not guess, and two of them are a
   leaves rather than a property of its own.
 * **`renderCommandEncoderWithDescriptor:` ANSWERS nil for a fresh `MTL4RenderPassDescriptor`** - no
   attachments, no exception. That is the shape the port has to match.
-* **`commit:count:` IS ASKED IN A CHILD PROCESS, WITH THE C ARRAY THE HEADER DECLARES.** This is the
-  third thing this probe got wrong, and the correction is the coordinator's: the earlier version passed
-  ONE buffer where the header's `commit:(const id<MTL4CommandBuffer> _Nonnull[_Nonnull])commandBuffers`
-  (MTL4CommandQueue.h:231) declares an array, so the framework read the object's memory as the array's
-  first element, and the resulting Segmentation fault was mine. The call is now
+* **`commit:count:` SUCCEEDS, ON BOTH PATHS, IN A PROCESS OF ITS OWN.** This row was wrong twice before
+  it was right, and both corrections are the coordinator's.
 
-  ```objc
-  id<MTL4CommandBuffer> list[1];
-  list[0] = buffer;
-  [queue commit:list count:1];
+  **The first mistake: the C array.** `commit:(const id<MTL4CommandBuffer> _Nonnull[_Nonnull])commandBuffers`
+  (MTL4CommandQueue.h:231) declares an array of buffers, and `commit:count:` passed ONE buffer where an
+  array was expected, so the framework read the object's own memory as the array's first element. The
+  Segmentation fault that produced was mine, and the "this row is not answerable" conclusion that came
+  with it went with it.
+
+  **The second mistake: `fork()`.** The re-measurement forked a child from a process that already held a
+  device, a queue, an allocator and a buffer. **Metal is not fork-safe**, so a signal from such a child
+  says something about the fork and nothing about the commit - and the signal was 11, where an assertion
+  would have been 6 (SIGABRT).
+
+  **The third thing was worse than either: a fabrication.** That version printed a line beginning
+  `Assertion failed:` and naming `IOGPUMetal4CommandQueue.mm, line 360` **from a fixed string, on any
+  signal**. Apple's words, typed by me, presented as a capture. It is deleted; `grep -c "Assertion failed"`
+  over the case is 0. A printed imitation of a measurement is worse than no answer, because it survives
+  review as data.
+
+  **THE MEASUREMENT, in a process EXECed on its own** - `sh tests/backports/host/metal-census/chain-commit.sh`,
+  which is the shape `descriptors26-samplebounds.sh` uses for the same reason. Apple's documented sequence
+  runs there in one process per form, with the allocator a local that outlives the commit and is read
+  after it, and **both of the process's streams and its exit status are recorded as they are**:
+
+  ```
+  ===== form ended =====
+  | chain-commit: form ended, process 53532
+  |   the device: Apple M4 Pro
+  |   allocator AGXG16XFamilyCommandAllocator_mtlnext, queue AGXG16XFamilyCommandQueue_mtlnext, buffer AGXG16XFamilyCommandBuffer_mtlnext
+  |   beginCommandBufferWithAllocator: answered
+  |   endCommandBuffer answered
+  |   about to call: id<MTL4CommandBuffer> list[1] = { buffer }; [queue commit:list count:1];
+  |   commit:count: returned
+  |   the queue has no -waitForCommandBuffers:, so nothing was waited on
+  |   the allocator is still alive after the commit: yes
+  | chain-commit: form ended reached the end of main
+    the process exited 0
+
+  ===== form open =====
+  | chain-commit: form open, process 53540
+  |   ... the same, with endCommandBuffer DELIBERATELY NOT CALLED ...
+  |   commit:count: returned
+    the process exited 0
   ```
 
-  in a forked child, because the second form ABORTS Apple's framework rather than raising and an abort
-  in the oracle would lose every row above it. **THE ANSWER, RECORDED:**
+  So: **a Metal 4 commit returns, on the header's own path and on the un-ended one alike, and the process
+  finishes.** Nothing is raised, nothing is asserted, and stderr is empty in both forms.
 
-  ```
-  and the queue's commit, in a child process, with the C ARRAY the header declares
-     commit:count: with an ARRAY of one ENDED buffer, the header's own path -> ABORTED, signal 11 - Apple's own framework asserted, which is an answer
-        and the assertion it raised, captured when the same commit ran in the parent,
-        names the cause:
-          Assertion failed: (allocator && storage), function
-          -[IOGPUMetal4CommandQueue commitFillArgs:count:args:argsSize:commitFeedback:],
-          file IOGPUMetal4CommandQueue.mm, line 360.
-        So the buffer has no STORAGE at commit time - which is what this port's Metal 3
-        buffer has no equivalent of, and why the row is a recorded difference rather than
-        a refusal.
-     commit:count: with an ARRAY of one buffer NOT begun or ended -> ABORTED, signal 11 - Apple's own framework asserted, which is an answer
-  ```
-
-  So the row is **NOT** "not answerable" and the port does **NOT** refuse its only submit call: with the
-  array spelled correctly, `commit:count:` reaches Metal, and what it refuses is a buffer that carries
-  no **storage** - which is Apple's own assertion, naming its own function and line, and which is what a
-  Metal 4 buffer fills as work is recorded into it. This port's Metal 3 buffer has no equivalent, so
-  `commit:count:` is a **recorded difference**: the port's queue commits through to its Metal 3 queue,
-  and the row says what Metal 4 asked for that this port cannot have.
-
-## THE THIRD RETRACTION, with the corrected call
-
-`commit:count:` was recorded as "not answerable" because a probe that passed a single buffer where the
-header declares an array made Apple's framework read the object's memory, and the resulting crash was
-mine. The corrected call is in the table above and in `chain-oracle.m`; the answer it gives is an
-abort with a named cause, and the row is a recorded difference rather than a refusal.
+  **AND THERE IS NO QUEUE-LEVEL WAIT FOR COMMAND BUFFERS**, which the same run shows: the queue has no
+  `-waitForCommandBuffers:`, and `MTL4CommandQueue.h` agrees - its only waits are
+  `-waitForEvent:value:` (:274) and `-waitForDrawable:` (:308). That is a real fact about Metal 4 and it is
+  the reason the port's queue needs no such member.
 
 ## The three measurements the first version gave, and what stands of them
 
