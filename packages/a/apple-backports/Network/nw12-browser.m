@@ -52,22 +52,27 @@
 #include <dns_sd.h>
 #include <string.h>
 
-/* The DNS-SD entry points are weak imports, and the reason is measured rather than guessed:
-   `coordination/corpus/caches/6.0.tsv` lists every one of them exported by iOS 6.0 -
-   DNSServiceQueryRecord, DNSServiceResolve, DNSServiceProcessResult and DNSServiceRefSockFD among them,
-   all in libSystem.dylib - and the armv7 ladder this package builds ends at 10.3.4, so every band
-   from 6.0 up has them. The floor of that ladder is 4.3 and this machine holds no export list for it,
-   so rather than assert what could not be measured the port binds them weakly and answers the browser's
-   own documented failure where a band turns out to have none: `nw_browser_state_failed` with
-   `nw_error_domain_dns`. */
-#define CHARON_NW_DNS_WEAK __attribute__((weak_import))
+/* The DNS-SD entry points, redeclared to be reached under the names dns_sd.h gives them. Nothing here
+   is a fallback: every one of them is exported by every release this package builds, measured on the
+   ladder's own caches - `tools/corpus/cache-exports.lua` over the export tries, because the trie
+   compresses names and a raw search over the cache bytes is not an oracle:
+
+       4.3     _DNSServiceQueryRecord, _DNSServiceResolve, _DNSServiceProcessResult,
+               _DNSServiceRefSockFD, _DNSServiceRefDeallocate, _DNSServiceBrowse
+               all in /usr/lib/system/libsystem_dnssd.dylib
+       6.0     the same six, the same image
+       6.1.3   the same six, the same image
+
+   The redeclaration is here because `DNSServiceBrowse` is declared with an `interfaceIndex` this port's
+   releases do not pass, and the redeclarations of the five that are called spell out the prototypes the
+   releases have. `facts/Network/NWBrowser.md` carries the reading and the run. */
 extern DNSServiceErrorType DNSServiceQueryRecord(DNSServiceRef *, DNSServiceFlags, uint32_t, const char *,
-                                                uint16_t, uint16_t, DNSServiceQueryRecordReply, void *) CHARON_NW_DNS_WEAK;
+                                                uint16_t, uint16_t, DNSServiceQueryRecordReply, void *);
 extern DNSServiceErrorType DNSServiceResolve(DNSServiceRef *, DNSServiceFlags, uint32_t, const char *,
-                                            const char *, const char *, DNSServiceResolveReply, void *) CHARON_NW_DNS_WEAK;
-extern void DNSServiceRefDeallocate(DNSServiceRef) CHARON_NW_DNS_WEAK;
-extern int DNSServiceProcessResult(DNSServiceRef) CHARON_NW_DNS_WEAK;
-extern int DNSServiceRefSockFD(DNSServiceRef) CHARON_NW_DNS_WEAK;
+                                            const char *, const char *, DNSServiceResolveReply, void *);
+extern void DNSServiceRefDeallocate(DNSServiceRef);
+extern int DNSServiceProcessResult(DNSServiceRef);
+extern int DNSServiceRefSockFD(DNSServiceRef);
 
 @class CharonNWBrowser;
 
@@ -308,10 +313,9 @@ static CharonNWBrowserLookup *charon_browser_lookup(CharonNWBrowser *browser, NS
 static void charon_browser_resolve(CharonNWBrowser *browser, CharonNWBrowserLookup *lookup)
 {
     DNSServiceRef resolve = NULL;
-    if (!DNSServiceResolve || DNSServiceResolve(&resolve, 0, kDNSServiceInterfaceIndexAny,
-                                                lookup->_name.UTF8String, lookup->_type.UTF8String,
-                                                lookup->_domain.UTF8String, charon_browser_resolved,
-                                                (__bridge void *)lookup) != kDNSServiceErr_NoError || !resolve)
+    if (DNSServiceResolve(&resolve, 0, kDNSServiceInterfaceIndexAny, lookup->_name.UTF8String,
+                          lookup->_type.UTF8String, lookup->_domain.UTF8String, charon_browser_resolved,
+                          (__bridge void *)lookup) != kDNSServiceErr_NoError || !resolve)
         return;
     lookup->_resolve = resolve;
     lookup->_source = charon_browser_source(DNSServiceRefSockFD(resolve), browser->_queue);
@@ -462,12 +466,6 @@ static void charon_browser_begin(nw_browser_t browser)
         }
         self->_type = type;
         self->_domain = domain;
-        if (!DNSServiceQueryRecord || !DNSServiceResolve || !DNSServiceProcessResult || !DNSServiceRefSockFD ||
-            !DNSServiceRefDeallocate) {
-            charon_browser_report(self, nw_browser_state_failed,
-                                  charon_browser_error(nw_error_domain_dns, kDNSServiceErr_Unknown));
-            return;
-        }
         DNSServiceRef browse = NULL;
         DNSServiceErrorType failure = DNSServiceQueryRecord(&browse, 0, kDNSServiceInterfaceIndexAny,
                                                            charon_browser_query(type, domain).UTF8String,

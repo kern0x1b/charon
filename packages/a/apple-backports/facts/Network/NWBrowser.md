@@ -8,24 +8,29 @@ and this is what they are built on.
 A browse is a PTR query for a service type in a domain, so the port asks it with `DNSServiceQueryRecord`
 and reads each instance name out of the answer; `DNSServiceResolve` then answers for each instance with
 the port it publishes and the record it advertises. Both are the documented C interface of
-mDNSResponder (`dns_sd.h`, shipped in the SDK) and both are on the armv7 ladder's releases:
+mDNSResponder (`dns_sd.h`, shipped in the SDK). Every callback runs on the queue the program gave the
+browser: each reference is driven by a dispatch source over its own descriptor (`DNSServiceRefSockFD`,
+`DNSServiceProcessResult`), created on that queue, and no handler runs before the browser has been
+started.
 
-| entry point | 6.0 cache |
-| --- | --- |
-| `DNSServiceQueryRecord` | `libSystem.dylib` (`coordination/corpus/caches/6.0.tsv`, `_DNSServiceQueryRecord`) |
-| `DNSServiceResolve` | `libSystem.dylib` (same file, `_DNSServiceResolve`) |
-| `DNSServiceProcessResult` | `libSystem.dylib` (same file, `_DNSServiceProcessResult`) |
-| `DNSServiceRefSockFD` | `libSystem.dylib` (same file, `_DNSServiceRefSockFD`) |
-| `DNSServiceRefDeallocate` | `libSystem.dylib` (same file, `_DNSServiceRefDeallocate`) |
+Every entry point is exported by every release this package builds, measured on the ladder's own caches
+through the export trie - `tools/corpus/cache-exports.lua`, because the trie compresses names and a raw
+search over the cache bytes is not an oracle (`tools/cicontext-bounds.lua` says so in the same words):
 
-Every callback runs on the queue the program gave the browser: each reference is driven by a dispatch
-source over its own descriptor (`DNSServiceRefSockFD`, `DNSServiceProcessResult`), created on that
-queue, and no handler runs before `nw_browser_start` has returned to its caller.
+| release | images in the cache | the six entry points |
+| --- | --- | --- |
+| 4.3 | 354 | `_DNSServiceQueryRecord`, `_DNSServiceResolve`, `_DNSServiceProcessResult`, `_DNSServiceRefSockFD`, `_DNSServiceRefDeallocate`, `_DNSServiceBrowse`, all in `/usr/lib/system/libsystem_dnssd.dylib` |
+| 6.0 | 516 | the same six, the same image |
+| 6.1.3 | 524 | the same six, the same image |
 
-**The floor of the ladder is not measured.** The armv7 ladder this package builds ends at 10.3.4 and
-the oldest export list this machine holds is iOS 6.0, so the five entry points are weak imports and a
-band without them gets the browser's own documented failure, `nw_browser_state_failed` with
-`nw_error_domain_dns`. Nothing else is conditional on their absence.
+So the browser binds them directly: there is no weak import and no fallback, because there is nothing to
+fall back from.
+
+```
+VNET_RELEASES="4.3 6.0 6.1.3" VNET_SYMBOLS="_DNSServiceQueryRecord _DNSServiceResolve \
+  _DNSServiceProcessResult _DNSServiceRefSockFD _DNSServiceRefDeallocate _DNSServiceBrowse" \
+  xmake l tools/corpus/cache-exports.lua
+```
 
 ## Why the browse is a PTR query and not `DNSServiceBrowse`
 
@@ -45,7 +50,9 @@ the same on every release this port builds, and the browse is expressed with the
 for `<type>.<domain>` enumerates exactly the instances a browse enumerates, and each answer carries the
 `interfaceIndex` a browse callback carries.
 
-`DNSServiceBrowse` is not weak-imported and never called, so the band that has it says nothing.
+`DNSServiceBrowse` is exported by every one of those caches too, and is never called: what the
+cache cannot say is how many parameters the entry point takes, and the header's answer is not the
+releases'.
 
 ## Which file holds which call, and why
 
