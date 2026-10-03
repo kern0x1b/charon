@@ -59,6 +59,16 @@ static UIColor *charon_multiple_selection_separator_colour(void)
     UIColor *_multipleSelectionColor;
 }
 
+// `visualEffect` is 15.0 and its accessors live in UIListSeparatorConfiguration+VisualEffect15.m. It is
+// @dynamic HERE and not synthesised, because the 16.4 SDK declares the property on this class and clang
+// would otherwise emit the pair into this object - nm on the object at armv7-apple-ios6.0 showed
+// -visualEffect, -setVisualEffect: and _OBJC_IVAR_$_UIListSeparatorConfiguration._visualEffect in a file
+// whose every other member is 14.5, and the registry check is right to call that a 14.5 object carrying
+// API the release does not have. The ivar auto-synthesis would make is not wanted either: the storage is
+// the object's own associated value in the 15.0 object, keyed there, so that the copy the header asks for
+// is made once and in one place. The three seams below are where this object reaches that storage.
+@dynamic visualEffect;
+
 + (BOOL)supportsSecureCoding
 {
     // Measured: the class answers +supportsSecureCoding YES and a configuration archives through a
@@ -146,6 +156,12 @@ static UIColor *charon_multiple_selection_separator_colour(void)
     copy.bottomSeparatorInsets = _bottomInsets;
     copy.color = _color;
     copy.multipleSelectionColor = _multipleSelectionColor;
+    // The visual effect is 15.0 and its storage is in the 15.0 object, so this 14.5 object asks for it
+    // rather than naming a member of another release.  No visible @interface for the class, so the call is
+    // through the declared protocol: a direct message send of an undeclared selector would be a warning this
+    // package's own line counts.
+    if ([copy respondsToSelector:@selector(charon_takeVisualEffectFrom:)])
+        [copy charon_takeVisualEffectFrom:self];
     return copy;
 }
 
@@ -158,16 +174,20 @@ static UIColor *charon_multiple_selection_separator_colour(void)
 // questions rather than asking them to agree.
 
 // The keys are the host's own, read out of the host's archive plist (facts/UIKit/
-// UIListSeparatorConfiguration145.md, M1c): topSepVisibility, bottomSepVisibility, topSepInsets, insets -
-// which is the BOTTOM separator's insets, the top one having its own key - color and multiSelectColor.
+// UIListSeparatorConfiguration145.md, M4): topSepVisibility, bottomSepVisibility, topSepInsets, insets -
+// which is the BOTTOM separator's insets, the top one having its own key - color, multiSelectColor and
+// visualEffect.
 //
 // What the host's archive does NOT carry, measured, is the list appearance: the plist has no key for it.
 // So neither does this, and that is not an omission either - an archive read back here gets the six values
 // above and the appearance it was built with is gone, which is what the host's own archive does.
 //
-// `visualEffect` is in the host's plist and is a 15.0 property whose row is `absent` on this port, so it
-// is not written: an archive that carried a key nothing here can answer would claim API this library has no
-// row for.
+// `visualEffect` is in the host's plist under its own name, and it IS written - through the seam above,
+// from the 15.0 object that defines the pair and holds the storage.  It was not written in the first
+// version of this file, on the ground that "an archive that carried a key nothing here can answer would
+// claim API this library has no row for": the ground was right and the conclusion wrong, because the
+// accessors existed all the same, auto-synthesised into this object by the SDK's declaration. A row is a
+// statement about the code, not a thing that decides it.
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeInteger:_topVisibility forKey:@"topSepVisibility"];
@@ -178,6 +198,11 @@ static UIColor *charon_multiple_selection_separator_colour(void)
                 forKey:@"insets"];
     [coder encodeObject:_color forKey:@"color"];
     [coder encodeObject:_multipleSelectionColor forKey:@"multiSelectColor"];
+    // The host's own archive writes SEVEN keys and the seventh is `visualEffect`, the property's own name -
+    // read out of the host's plist, where the object's dictionary is { bottomSepVisibility, color, insets,
+    // multiSelectColor, topSepInsets, topSepVisibility, visualEffect }.  15.0, so the 15.0 object writes it.
+    if ([self respondsToSelector:@selector(charon_encodeVisualEffectWithCoder:)])
+        [self charon_encodeVisualEffectWithCoder:coder];
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
@@ -201,6 +226,8 @@ static UIColor *charon_multiple_selection_separator_colour(void)
         UIColor *multiple = [coder decodeObjectOfClass:[UIColor class] forKey:@"multiSelectColor"];
         if (multiple)
             _multipleSelectionColor = multiple;
+        if ([self respondsToSelector:@selector(charon_decodeVisualEffectWithCoder:)])
+            [self charon_decodeVisualEffectWithCoder:coder];
     }
     return self;
 }

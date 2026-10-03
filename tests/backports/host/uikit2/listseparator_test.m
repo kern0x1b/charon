@@ -16,6 +16,7 @@
 @property (nonatomic) NSDirectionalEdgeInsets bottomSeparatorInsets;
 @property (nonatomic, strong) UIColor *color;
 @property (nonatomic, strong) UIColor *multipleSelectionColor;
+@property (nonatomic, copy, nullable) UIVisualEffect *visualEffect;
 @end
 
 typedef id (*zero_init)(id, SEL);
@@ -67,6 +68,8 @@ static void check_one_appearance(NSInteger appearance, NSString *label)
     BOTH([NSString stringWithFormat:@"the %@ colour is a colour", label], colourRole(ours.color), colourRole(theirs.color));
     BOTH([NSString stringWithFormat:@"the %@ multiple-selection colour is a colour", label],
          colourRole(ours.multipleSelectionColor), colourRole(theirs.multipleSelectionColor));
+    BOTH([NSString stringWithFormat:@"the %@ visual effect is nil until written", label],
+         ours.visualEffect ? @"set" : @"nil", theirs.visualEffect ? @"set" : @"nil");
 
     // Every write, read back on both sides.
     ours.topSeparatorVisibility = 2; theirs.topSeparatorVisibility = 2;
@@ -107,6 +110,29 @@ static void check_one_appearance(NSInteger appearance, NSString *label)
     BOTH([NSString stringWithFormat:@"a %@ copy keeps the colour instance", label],
          ourCopy.color == ours.color ? @"same" : @"other", theirCopy.color == theirs.color ? @"same" : @"other");
 
+    // The visual effect, which is 15.0 and is the one member this case asks about by NAME rather than by
+    // value, because its whole shape is the answer (facts/UIKit/UIListSeparatorConfiguration145.md, M4):
+    // nil until written, a copy on the way in so the getter never answers the instance the caller set, carried
+    // by -copyWithZone: as another copy, and archived under the property's own name.
+    UIBlurEffect *effect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleSystemThinMaterial];
+    ours.visualEffect = effect;
+    theirs.visualEffect = effect;
+    BOTH([NSString stringWithFormat:@"the %@ visual effect is a visual effect", label],
+         ours.visualEffect ? NSStringFromClass([ours.visualEffect class]) : @"nil",
+         theirs.visualEffect ? NSStringFromClass([theirs.visualEffect class]) : @"nil");
+    BOTH([NSString stringWithFormat:@"the %@ visual effect is copied on the way in", label],
+         ours.visualEffect == effect ? @"same" : @"copy", theirs.visualEffect == effect ? @"same" : @"copy");
+    // The copy is taken HERE rather than above: a copy carries what the receiver held when it was made, so a
+    // copy made before the effect was written is the same object on both sides and would say nothing.
+    UIListSeparatorConfiguration *ourEffectCopy = [ours copy];
+    UIListSeparatorConfiguration *theirEffectCopy = [theirs copy];
+    BOTH([NSString stringWithFormat:@"the %@ copy carries the visual effect", label],
+         ourEffectCopy.visualEffect ? NSStringFromClass([ourEffectCopy.visualEffect class]) : @"nil",
+         theirEffectCopy.visualEffect ? NSStringFromClass([theirEffectCopy.visualEffect class]) : @"nil");
+    BOTH([NSString stringWithFormat:@"the %@ copy's visual effect is copied too", label],
+         ourEffectCopy.visualEffect == ours.visualEffect ? @"same" : @"other",
+         theirEffectCopy.visualEffect == theirs.visualEffect ? @"same" : @"other");
+
     // The archive. The keys are the host's own, read out of the host's archive plist, so this compares the
     // round trip rather than the bytes: both sides encode through a secure-coding archiver and read back.
     // One NSError per call, and the lengths as integers.  The first version of this section shared one
@@ -144,6 +170,9 @@ static void check_one_appearance(NSInteger appearance, NSString *label)
                  insets(ourBack.bottomSeparatorInsets), insets(theirBack.bottomSeparatorInsets));
             BOTH([NSString stringWithFormat:@"the %@ archived colour comes back", label],
                  colourRole(ourBack.color), colourRole(theirBack.color));
+            BOTH([NSString stringWithFormat:@"the %@ archived visual effect comes back", label],
+                 ourBack.visualEffect ? NSStringFromClass([ourBack.visualEffect class]) : @"nil",
+                 theirBack.visualEffect ? NSStringFromClass([theirBack.visualEffect class]) : @"nil");
         }
     }
 }

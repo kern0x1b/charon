@@ -99,6 +99,64 @@ A first version of this file, and of the row beside it, said the port had a `-in
 named the selector as one the row cites and the file the row names does not define. A comment that describes a
 method which is not there is the same defect as a row that describes one, so both were corrected forward.
 
+## M4. `visualEffect` (15.0): what the host does with it, measured
+
+The row used to be `absent`, on the ground that the port did not carry this class. The class arrived and the
+ground went with it - and the port was answering the property all the same, because the 16.4 build SDK
+declares it on the class and clang auto-synthesised the pair into the 14.5 object. `nm` on that object at
+`armv7-apple-ios6.0`, before the fix:
+
+    00000570 t -[UIListSeparatorConfiguration visualEffect]
+    00000574 t -[UIListSeparatorConfiguration setVisualEffect:]
+    00001168 S _OBJC_IVAR_$_UIListSeparatorConfiguration._visualEffect
+
+Apple's own metadata says the pair belongs to the class: the arm64e cache of iOS 18.0 carries
+`-visualEffect` and `-setVisualEffect:` in `UIListSeparatorConfiguration`'s own instance list, among its 37,
+and so does the host's own class. So the member is carried, in `UIListSeparatorConfiguration+VisualEffect15.m`
+(15.0), and the 14.5 object declares the property `@dynamic` so nothing is synthesised there. After the fix
+`nm` on the 14.5 object shows nothing for this member, and the 15.0 object carries the pair and three seams.
+
+### What the host does with it
+
+The oracle is the host's own UIKitCore under Mac Catalyst, read by
+`.agent-work/runs/fix/effect-probe.m`; nothing of the port's is linked into it.
+
+| read | the host's answer |
+| --- | --- |
+| a fresh configuration's `visualEffect` | **nil** |
+| after `-setVisualEffect:` | a `UIBlurEffect`, and **not** the instance that was set - the header's `copy` is applied |
+| `-copyWithZone:` | carries it, and the copy's effect is again not the receiver's instance; the copy is not its receiver |
+| a copy of a fresh configuration | nil |
+| `-isEqual:` of two written alike, both effectless | **1** |
+| `-isEqual:` of the same two, one given an effect | **0** - the effect joins the equality |
+| `-hash:` of either pair | **alike** - the hash does *not* take it into account |
+| the archive | writes **seven** keys, the seventh being `visualEffect`, the property's own name, and reads back a `UIBlurEffect` |
+
+The host's object's dictionary in the archive, verbatim:
+
+    { bottomSepVisibility = 0; color = ...; insets = ...; multiSelectColor = ...;
+      topSepInsets = ...; topSepVisibility = 2; visualEffect = ...; }
+
+Six of those seven this port wrote from the start; the seventh is the one under discussion, and it is now
+written too, under the host's own key.
+
+### Why `@dynamic` here and not there
+
+`@dynamic` on a property whose accessors do not exist is a crutch: the selector is unrecognised and the row
+would be claiming nothing. Here they exist, in the 15.0 object, and the `@dynamic` says exactly that: the 14.5
+object must not synthesise a pair of its own, because it is a 14.5 object and this member is 15.0, and the
+auto-synthesised ivar is not wanted since the storage is an associated object the 15.0 object owns.
+
+### The three seams
+
+The 14.5 object holds the copy and the archive, and both have to reach a 15.0 member. A category's
+`[super copyWithZone:]` resolves against `NSObject` rather than against the class it is a category of -
+measured, not assumed, in `UIImageConfiguration+Locale17.m`'s comment - so a 15.0 category could not *extend*
+the 14.5 copy; it could only replace it, and a replacement would lose the six fields. The direction that
+works is the one the locale object uses: the older object calls, the newer one implements, through
+declarations both can see in `CharonLists.h`. Nothing outside this library reads those three, which is why
+they are not registry rows; the case reads the public pair.
+
 ## What this port does not do
 
 The appearance model. `-initWithListAppearance:` stores the appearance and applies the defaults above; it does
