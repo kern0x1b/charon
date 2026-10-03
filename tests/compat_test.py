@@ -1459,7 +1459,7 @@ LATER_CALLS = r"""
 #include <time.h>
 #include <unistd.h>
 
-int memset_s(void *, size_t, int, size_t);
+int charon_memset_s(void *, size_t, int, size_t);
 void charon_arc4random_buf(void *, size_t);
 void *voucher_copy(void);
 void *voucher_adopt(void *);
@@ -1497,7 +1497,12 @@ static int dies(const char *scenario)
 static void memsets(void)
 {
     int (*darwin)(void *, size_t, int, size_t) = dlsym(RTLD_DEFAULT, "memset_s");
-    expect(darwin && darwin != memset_s, "the test reaches Darwin's memset_s beside the shim");
+    /* The shim is called the way the port reaches it, by the name its header gives it. Spelled `memset_s` it is
+       not the shim at all on a host whose Libc has a memset_s of its own - measured on this one, libsystem_c
+       exports it (dladdr names /usr/lib/system/libsystem_c.dylib), so the call went there and dlsym found the
+       same function: the seven cases below compared Apple's memset_s with itself and could not fail, which is
+       what the next line reported. */
+    expect(darwin && darwin != charon_memset_s, "the test reaches Darwin's memset_s beside the shim");
     static const struct { size_t capacity, count; int null; } cases[] = {
         {16, 8, 0}, {16, 16, 0}, {16, 17, 0}, {16, SIZE_MAX, 0}, {SIZE_MAX, 4, 0}, {16, 8, 1}, {0, 0, 0},
     };
@@ -1505,7 +1510,7 @@ static void memsets(void)
         unsigned char mine[24], theirs[24];
         memset(mine, 0xaa, sizeof mine);
         memset(theirs, 0xaa, sizeof theirs);
-        int got = memset_s(cases[index].null ? NULL : mine, cases[index].capacity, 0x5c, cases[index].count);
+        int got = charon_memset_s(cases[index].null ? NULL : mine, cases[index].capacity, 0x5c, cases[index].count);
         int wanted = darwin(cases[index].null ? NULL : theirs, cases[index].capacity, 0x5c, cases[index].count);
         char what[160];
         snprintf(what, sizeof what, "memset_s(capacity %zu, count %zu%s) answers %d and writes the bytes Darwin's does",
