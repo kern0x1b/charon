@@ -279,7 +279,6 @@ static struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphT
 static void run(MPSGraph *graph, NSArray<MPSGraphTensor *> *feeds, NSArray<MPSGraphTensorData *> *values,
                 MPSGraphTensor *target, void *out, size_t bytes, MPSDataType feedType, MPSDataType resultType)
 {
-    NSUInteger count = (NSUInteger)(bytes / MPSSizeofMPSDataType(resultType));
     id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
     MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:target.shape dataType:resultType];
     remember(buffer, out, bytes);
@@ -511,36 +510,59 @@ static void reduction_families(void)
 // element of it is in the answer twice.
 static float tieFeed[8] = { 4.0f, 4.0f, 4.0f, 9.0f, 9.0f, 9.0f, 1.0f, 1.0f };
 
-// The refusal of the pair above, asked the way a differential asks one: the graph is built and run
-// inside the @try, because that is where the release raises, and what is printed is the name of the
-// exception rather than the framework's own message about its kernel table, which is not a contract.
-static void nan_propagation_refusal_case(const char *name)
+// The data types the two NaN-propagating binaries do not answer, and the feeds they are asked over: eight
+// ascending bytes against eight descending ones, so every type here reads the same two numbers.
+static unsigned char refusedBytes[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+static unsigned char reversedBytes[8] = { 8, 7, 6, 5, 4, 3, 2, 1 };
+static struct { const char *name; MPSDataType type; } refused[] = {
+    {"int8", MPSDataTypeInt8}, {"int16", MPSDataTypeInt16}, {"int32", MPSDataTypeInt32},
+    {"int64", MPSDataTypeInt64}, {"uint8", MPSDataTypeUInt8}, {"uint16", MPSDataTypeUInt16},
+    {"uint32", MPSDataTypeUInt32}, {"uint64", MPSDataTypeUInt64}, {"bool", MPSDataTypeBool},
+};
+
+// The refusal of the pair above, asked the way a differential asks one: the graph is built and run inside
+// the @try, because that is where the release raises, and what is printed is the name of the exception
+// rather than the framework's own message about its kernel table, which is not a contract.
+//
+// Every data type that is not a floating point one is asked, because the set the release refuses is the
+// question and one type is not the set: measured on this host's own MPSGraph, int8, int16, int32, int64,
+// uint8, uint16, uint32, uint64 and bool each raise, and float16 and float32 each answer. The kernel the
+// release reaches for is named in the exception and it names the type - isNaN_i8, isNaN_i16_i8, isNaN_i_i8,
+// isNaN_i64_i8, isNaN_u8_i8, isNaN_u16_i8, isNaN_u_i8, isNaN_u64_i8, and for a boolean isNaN_i8 again -
+// which is the whole of what it is refusing: there is no NaN kernel for an integer type, and a boolean is
+// an integer type to it. The feeds are eight ascending and eight descending bytes, which every one of
+// those types can hold, so nothing in the answer is the feed's own fault.
+static void nan_propagation_refusal_case(const char *label, const char *typeName, MPSDataType type,
+                                         const void *left, const void *right)
 {
-    @try {
-        MPSGraph *one = [MPSGraph new];
-        MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeInt32 name:@"a"];
-        MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeInt32 name:@"b"];
-        MPSGraphTensor *t = strcmp(name, "minimumWithNaNPropagation-int32") == 0
-                          ? [one minimumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"m"]
-                          : [one maximumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"M"];
-        size_t bytes = 8 * MPSSizeofMPSDataType(MPSDataTypeInt32);
-        id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
-        MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:@[@2, @4]
-                                                                              dataType:MPSDataTypeInt32];
-        remember(buffer, integerResult, sizeof(integerResult));
-        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@2, @4] dataType:MPSDataTypeInt32];
-        MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:@{a: shaped, b: shaped}
-                                                  targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
-        [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
-                              inputsArray:@[feed(intFeed, @[@2, @4], MPSDataTypeInt32),
-                                           feed(integerValues, @[@2, @4], MPSDataTypeInt32)]
-                               resultsArray:@[destination] executionDescriptor:nil];
-        printf("#case %s answered-rather-than-raised\n", name);
-    } @catch (NSException *raised) {
-        // One field, and no spaces in it: run.sh reads a case line of five fields as a case with a result
-        // buffer and this one has none, so the answer is printed as the third field and the whole line is
-        // compared as it stands.
-        printf("#case %s raised-%s\n", name, raised.name.UTF8String);
+    for (int isMaximum = 0; isMaximum < 2; isMaximum++) {
+        char name[96];
+        snprintf(name, sizeof name, "%sWithNaNPropagation-%s", isMaximum ? "maximum" : "minimum", typeName);
+        @try {
+            MPSGraph *one = [MPSGraph new];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:type name:@"a"];
+            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:type name:@"b"];
+            MPSGraphTensor *t = isMaximum
+                ? [one maximumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"M"]
+                : [one minimumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"m"];
+            size_t bytes = 8 * MPSSizeofMPSDataType(type);
+            id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+            MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:@[@2, @4]
+                                                                                  dataType:type];
+            remember(buffer, integerResult, sizeof(integerResult));
+            MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@2, @4] dataType:type];
+            MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:@{a: shaped, b: shaped}
+                                                      targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+            [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                                  inputsArray:@[feed(left, @[@2, @4], type), feed(right, @[@2, @4], type)]
+                                   resultsArray:@[destination] executionDescriptor:nil];
+            printf("#case %s %s answered-rather-than-raised\n", name, label);
+        } @catch (NSException *raised) {
+            // One field for the answer and no spaces in it: run.sh reads a case line of five fields as a
+            // case with a result buffer and this one has none, so the answer is printed as the third field
+            // and the whole line is compared as it stands.
+            printf("#case %s %s raised-%s\n", name, label, raised.name.UTF8String);
+        }
     }
 }
 
@@ -658,8 +680,8 @@ static void reduction_rest_families(void)
     // framework's own kernel table, which has no NaN kernel for an integer type to ask with. Asked
     // through @try on both sides and printed as the exception's name, which is a differential like any
     // other answer: the 14.0 pair over the same feed answers numbers, and this one does not.
-    nan_propagation_refusal_case("minimumWithNaNPropagation-int32");
-    nan_propagation_refusal_case("maximumWithNaNPropagation-int32");
+    for (i = 0; i < sizeof(refused) / sizeof(refused[0]); i++)
+        nan_propagation_refusal_case("over", refused[i].name, refused[i].type, refusedBytes, reversedBytes);
 }
 
 static void families(MPSDataType type, const void *left, const void *right, const char *label)
