@@ -671,10 +671,35 @@ typedef enum {
     // 4x2, and a negative dimension is counted from the end, so dimension:-1 withDimension:0 answers what
     // dimension:0 withDimension:1 answers. The walk refuses an axis outside the rank, which is the same
     // refusal the reduction family's axis is.
+    // The two axes are exchanged and the result KEEPS THE OPERAND'S RANK, measured: dimension:0
+    // withDimension:2 of a 2x3x4 answers a 4x3x2, and dimension:0 withDimension:0 answers the operand itself.
+    // So the permutation handed to the walk is the identity with those two entries exchanged rather than a
+    // two-entry ordering, which would answer a rank of two whatever the operand's rank was. Both axes are read
+    // back as the signed numbers the header's own NSUInteger was written as, because the release counts a
+    // negative one from the end (measured, dimension:-1 withDimension:0 answers what dimension:0
+    // withDimension:1 answers).
+    NSUInteger rank = tensor.shape.count;
+    NSInteger first = (NSInteger)(int32_t)(uint32_t)dimension;
+    NSInteger second = (NSInteger)(int32_t)(uint32_t)withDimension;
+    if (first < 0) first += (NSInteger)rank;
+    if (second < 0) second += (NSInteger)rank;
+    if ((NSUInteger)first >= rank || (NSUInteger)second >= rank) {
+        // An axis outside the rank is the walk's refusal, so the two are handed over as they were written and
+        // the walk names them: the release builds a tensor whose shape is nil here and writes nothing, which
+        // is the named divergence every axis outside the rank in this library carries.
+        return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
+                                 tensor:tensor
+                            parameters:@{@"gather": @"transpose",
+                                         @"gatherPermutation": @[@(first), @(second)]}
+                                   name:name];
+    }
+    NSMutableArray<NSNumber *> *permutation = [NSMutableArray arrayWithCapacity:rank];
+    for (NSUInteger axis = 0; axis < rank; axis++)
+        [permutation addObject:@((NSInteger)axis)];
+    [permutation exchangeObjectAtIndex:(NSUInteger)first withObjectAtIndex:(NSUInteger)second];
     return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
                              tensor:tensor
-                        parameters:@{@"gather": @"transpose",
-                                     @"gatherPermutation": @[@((int32_t)withDimension), @((int32_t)dimension)]}
+                        parameters:@{@"gather": @"transpose", @"gatherPermutation": permutation}
                                name:name];
 }
 
@@ -691,7 +716,17 @@ typedef enum {
                            parameters:(NSDictionary *)parameters
                                   name:(NSString *)name
 {
-    return [self charon_mps_operation:kind inputs:@[tensor] parameters:parameters name:name];
+    MPSGraphTensor *result = [self charon_mps_operation:kind inputs:@[tensor] parameters:parameters name:name];
+    // The result's shape goes on the output tensor here, when the parameter is written down and the operand's
+    // own shape is known - which is what a caller reads off the tensor before it runs anything, and what the
+    // release can always answer because it infers the result's type when the graph is built. A fed parameter
+    // is data and arrives when the graph runs, so the interpreter puts the shape on then.
+    NSArray<NSNumber *> *shape = [self charon_mps_gatherShapeOfTensor:tensor
+                                                          parameters:parameters
+                                                                 named:name];
+    if (shape != nil)
+        [result charon_mps_setShape:shape];
+    return result;
 }
 
 // The gather whose parameter is fed rather than written down: the axis, the axes or the shape arrives as the
@@ -712,10 +747,10 @@ typedef enum {
                            @"compiler refuses a floating point operand and the process goes down with it",
                             name, (unsigned)type];
     }
-    NSMutableDictionary *all = [NSMutableDictionary dictionary];
-    all[@"gatherCount"] = @(CharonMPSGraphElementCount(fedParameter.shape));
-    [all addEntriesFromDictionary:parameters];
-    return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:all name:name];
+    // Nothing is added to the parameters here: the shape of a fed parameter is not known until the graph runs,
+    // so the count of its elements is read out of the fed tensor data itself then, and the parameters say
+    // only which of the operation's inputs carries it.
+    return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:parameters name:name];
 }
 
 #pragma mark - the cumulative family, whose seam every release's scan factory goes through

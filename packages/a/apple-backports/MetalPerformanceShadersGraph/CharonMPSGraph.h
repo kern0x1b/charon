@@ -282,6 +282,14 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                          fedParameter:(MPSGraphTensor *)fedParameter
                            parameters:(NSDictionary *)parameters
                                   name:(NSString *)name;
+// The result's shape of such a gather, asked when the graph is BUILT so that the output tensor carries it
+// before anything runs: the release infers the result's type at build time - which is why an axis it cannot
+// use aborts there - so a caller can read the shape off the tensor it was handed, and this is where the port
+// answers that. It is the walk's own plan with the operand's shape and no fed parameter, so a parameter the
+// caller fed gives nil and the interpreter puts the shape on when it runs.
+- (NSArray<NSNumber *> *)charon_mps_gatherShapeOfTensor:(MPSGraphTensor *)tensor
+                                             parameters:(NSDictionary *)parameters
+                                                    named:(NSString *)name;
 // A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
 // element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
 // here - negative counted from the end of the rank, and an axis outside it refused the way the reduction

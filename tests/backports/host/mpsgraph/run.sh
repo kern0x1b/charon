@@ -37,10 +37,22 @@ arithmetic:0
 reduction:0
 reduction_rest:0
 cumulative:0
+gather_transpose:0
+gather_flatten:0
+gather_broadcast:0
+gather_reverse:0
+gather_squeeze:0
+gather_expand:0
 "
 
 xcrun clang -fobjc-arc $target $quiet "$here/graph-cases.m" \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/system"
+# refusals.m is the host's own MPSGraph and nothing of this port's: it asks the questions a case cannot ask,
+# because several of them take the release down, and it is asked against the SYSTEM framework on purpose - what
+# is being recorded is what the release does, so that the rows of the methods whose parameter is fed and the
+# rows of the ones the port refuses carry a measurement a later reader re-runs rather than a line of prose.
+xcrun clang -fobjc-arc $target $quiet "$here/refusals.m" \
+    -framework Foundation -framework Metal -framework MetalPerformanceShadersGraph -o "$build/refusals"
 
 # The names this library carries, each under a name of its own.
 python3 - "$graph" "$build/rename.h" <<'PY'
@@ -320,9 +332,55 @@ PY
     fi
 done
 
+# The questions a case cannot ask. refusals.txt names the exit status each one is measured to have and the
+# text its own diagnostic has to carry, or the shape it answers where it answers at all; neither is an
+# allowance, because a question whose answer changed is a question this file no longer describes, and the two
+# lists - the file's own and refusals.txt's - are read against each other so that a question added to one and
+# not the other is a failure rather than a question nobody asks.
+echo
+echo "== refusals"
+asked=$("$build/refusals" 2>&1 >/dev/null || true)
+asked=$(printf '%s\n' "$asked" | sed 's/^name the question; these are: //')
+listed=$(grep -v '^#' "$here/refusals.txt" | grep -v '^$' | cut -d' ' -f1 | sort | tr '\n' ' ')
+infile=$(printf '%s\n' "$asked" | tr ' ' '\n' | grep -v '^$' | sort | tr '\n' ' ')
+if [ "$listed" != "$infile" ]; then
+    echo "FAILED: refusals.txt asks [$listed] and refusals.m declares [$infile]"
+    failed=1
+else
+    questions=0
+    while read -r question status what; do
+        case "$question" in ''|'#'*) continue ;; esac
+        questions=$((questions + 1))
+        set +e
+        "$build/refusals" "$question" > "$build/refusal.out" 2> "$build/refusal.err"
+        got=$?
+        set -e
+        if [ "$got" -ne "$status" ]; then
+            echo "FAILED: $question exited $got and refusals.txt says $status"
+            failed=1
+            continue
+        fi
+        if [ "$what" = "-" ]; then
+            # A process that is gone writes nothing this file can match, so what is checked is that it wrote
+            # nothing at all: a framework that started explaining itself here would be a new answer.
+            if [ -s "$build/refusal.err" ]; then
+                echo "FAILED: $question is expected to die without a word and wrote: $(head -1 "$build/refusal.err")"
+                failed=1
+                continue
+            fi
+        elif ! grep -aqF "$what" "$build/refusal.out" "$build/refusal.err"; then
+            echo "FAILED: $question is measured to carry '$what' and does not: $(tail -1 "$build/refusal.err" | cut -c1-160)"
+            failed=1
+            continue
+        fi
+        echo "  $question: exit $status, $what"
+    done < "$here/refusals.txt"
+    echo "compared: $questions questions of the release's own refusal and fed forms"
+fi
+
 echo
 if [ "$failed" -ne 0 ]; then
     echo "mpsgraph: FAILED"
     exit 1
 fi
-echo "mpsgraph: every family compared, the red control fired in each"
+echo "mpsgraph: every family compared, the red control fired in each, and every refusal answered as measured"
