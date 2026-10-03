@@ -11,10 +11,15 @@
 
 #import "CharonMLCompute.h"
 
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-#pragma clang diagnostic ignored "-Wnullability-completeness"
+// A category and not a second @implementation of the class: MLCOptimizers14.m defines MLCAdamOptimizer, and
+// a class implementation here emitted _OBJC_CLASS_$_MLCAdamOptimizer a second time (nm over both objects),
+// with getters and ivars of its own beside the 14.0 ones. clang's note that a category implements a method
+// its primary class also implements is the release split itself - the primary class, MLCOptimizers14.m,
+// leaves this one factory out because it is 15.0's - and is silenced for that reason alone, as
+// PHPickerConfiguration15.m and MPSImageThreshold13.m silence it.
+#pragma clang diagnostic ignored "-Wobjc-protocol-method-implementation"
 
-@implementation MLCAdamOptimizer
+@implementation MLCAdamOptimizer (CharonMLCAdamAMSGrad15)
 
 + (instancetype)optimizerWithDescriptor:(MLCOptimizerDescriptor *)optimizerDescriptor
                                   beta1:(float)beta1

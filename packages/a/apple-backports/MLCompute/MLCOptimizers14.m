@@ -20,7 +20,6 @@
 #import "CharonMLCompute.h"
 
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
-#pragma clang diagnostic ignored "-Wnullability-completeness"
 
 @implementation CharonMLCOptimizerState
 {
