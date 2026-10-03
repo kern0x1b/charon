@@ -35,9 +35,17 @@ All three ran over these 64 rows. The class-scoped reader is the one the registr
 **The brief's expectation was wrong and the measurement says so: 6.1.3 carries none of the 64.** Not "not
 many" — none. 55 sit on a class that is there and does not have the member, and 9 name a class or protocol
 the release has never heard of. So no row can be `ignored` (the release carries none, at either band end),
-and no row can be `implemented` (the port builds none of them — the tree answers one of the 79 in the
-7.0 slice and none of these 64), and `absent` is the honest end unless a row has a substrate to be built
-on. Each row below names the substrate it does or does not have.
+and `absent` is the honest end unless a row has a substrate to be built on. Each row below names the
+substrate it does or does not have.
+
+**Eight of the 64 have since been built**, and this page's reading of the ladder is what they were built
+from: `AVFoundation/AVAssetWriterInputMultiPass8.m` carries the writer input's multi-pass family, the
+`AVAssetWriterInputPassDescription` class and the export session's half of the same mechanism, as a
+single-pass input - a shape `AVAssetWriterInput.h:477` says an input is in when `canPerformMultiplePasses`
+is NO. 55 of the 64 stay `absent` (2 were already `implemented` before this, so the file now holds 10
+`implemented` rows at 8.0 out of 65 - the 64 plus the class's own `-sourceTimeRanges`). What that object
+answers, what Apple's own class answers for the same questions on this machine, and the one row where the
+two differ are in [`WriterInputMultiPass8.md`](WriterInputMultiPass8.md).
 
 ## The three readers agreeing is the point, and here is what it caught
 
