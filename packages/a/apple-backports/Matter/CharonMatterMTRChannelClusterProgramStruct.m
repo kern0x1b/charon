@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -101,25 +95,25 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"identifier:%@; ", charonDescribeObject(self.identifier)];
-    [text appendFormat:@"channel:%@; ", charonDescribeObject(self.channel)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
-    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self.endTime)];
-    [text appendFormat:@"title:%@; ", charonDescribeObject(self.title)];
-    [text appendFormat:@"subtitle:%@; ", charonDescribeObject(self.subtitle)];
-    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self.descriptionString)];
-    [text appendFormat:@"audioLanguages:%@; ", charonDescribeObject(self.audioLanguages)];
-    [text appendFormat:@"ratings:%@; ", charonDescribeObject(self.ratings)];
-    [text appendFormat:@"thumbnailUrl:%@; ", charonDescribeObject(self.thumbnailUrl)];
-    [text appendFormat:@"posterArtUrl:%@; ", charonDescribeObject(self.posterArtUrl)];
-    [text appendFormat:@"dvbiUrl:%@; ", charonDescribeObject(self.dvbiUrl)];
-    [text appendFormat:@"releaseDate:%@; ", charonDescribeObject(self.releaseDate)];
-    [text appendFormat:@"parentalGuidanceText:%@; ", charonDescribeObject(self.parentalGuidanceText)];
-    [text appendFormat:@"recordingFlag:%@; ", charonDescribeObject(self.recordingFlag)];
-    [text appendFormat:@"seriesInfo:%@; ", charonDescribeObject(self.seriesInfo)];
-    [text appendFormat:@"categoryList:%@; ", charonDescribeObject(self.categoryList)];
-    [text appendFormat:@"castList:%@; ", charonDescribeObject(self.castList)];
-    [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self.externalIDList)];
+    [text appendFormat:@"identifier:%@; ", charonDescribeObject(self->_identifier)];
+    [text appendFormat:@"channel:%@; ", charonDescribeObject(self->_channel)];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
+    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self->_endTime)];
+    [text appendFormat:@"title:%@; ", charonDescribeObject(self->_title)];
+    [text appendFormat:@"subtitle:%@; ", charonDescribeObject(self->_subtitle)];
+    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self->_descriptionString)];
+    [text appendFormat:@"audioLanguages:%@; ", charonDescribeObject(self->_audioLanguages)];
+    [text appendFormat:@"ratings:%@; ", charonDescribeObject(self->_ratings)];
+    [text appendFormat:@"thumbnailUrl:%@; ", charonDescribeObject(self->_thumbnailUrl)];
+    [text appendFormat:@"posterArtUrl:%@; ", charonDescribeObject(self->_posterArtUrl)];
+    [text appendFormat:@"dvbiUrl:%@; ", charonDescribeObject(self->_dvbiUrl)];
+    [text appendFormat:@"releaseDate:%@; ", charonDescribeObject(self->_releaseDate)];
+    [text appendFormat:@"parentalGuidanceText:%@; ", charonDescribeObject(self->_parentalGuidanceText)];
+    [text appendFormat:@"recordingFlag:%@; ", charonDescribeObject(self->_recordingFlag)];
+    [text appendFormat:@"seriesInfo:%@; ", charonDescribeObject(self->_seriesInfo)];
+    [text appendFormat:@"categoryList:%@; ", charonDescribeObject(self->_categoryList)];
+    [text appendFormat:@"castList:%@; ", charonDescribeObject(self->_castList)];
+    [text appendFormat:@"externalIDList:%@; ", charonDescribeObject(self->_externalIDList)];
     [text appendString:@">"];
     return text;
 }

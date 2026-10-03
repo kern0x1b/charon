@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -87,20 +81,20 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nullableInt:%@; ", charonDescribeObject(self.nullableInt)];
-    [text appendFormat:@"optionalInt:%@; ", charonDescribeObject(self.optionalInt)];
-    [text appendFormat:@"nullableOptionalInt:%@; ", charonDescribeObject(self.nullableOptionalInt)];
-    [text appendFormat:@"nullableString:%@; ", charonDescribeObject(self.nullableString)];
-    [text appendFormat:@"optionalString:%@; ", charonDescribeObject(self.optionalString)];
-    [text appendFormat:@"nullableOptionalString:%@; ", charonDescribeObject(self.nullableOptionalString)];
-    [text appendFormat:@"nullableStruct:%@; ", charonDescribeObject(self.nullableStruct)];
-    [text appendFormat:@"optionalStruct:%@; ", charonDescribeObject(self.optionalStruct)];
-    [text appendFormat:@"nullableOptionalStruct:%@; ", charonDescribeObject(self.nullableOptionalStruct)];
-    [text appendFormat:@"nullableList:%@; ", charonDescribeObject(self.nullableList)];
-    [text appendFormat:@"optionalList:%@; ", charonDescribeObject(self.optionalList)];
-    [text appendFormat:@"nullableOptionalList:%@; ", charonDescribeObject(self.nullableOptionalList)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendFormat:@"nullableInt:%@; ", charonDescribeObject(self->_nullableInt)];
+    [text appendFormat:@"optionalInt:%@; ", charonDescribeObject(self->_optionalInt)];
+    [text appendFormat:@"nullableOptionalInt:%@; ", charonDescribeObject(self->_nullableOptionalInt)];
+    [text appendFormat:@"nullableString:%@; ", charonDescribeObject(self->_nullableString)];
+    [text appendFormat:@"optionalString:%@; ", charonDescribeObject(self->_optionalString)];
+    [text appendFormat:@"nullableOptionalString:%@; ", charonDescribeObject(self->_nullableOptionalString)];
+    [text appendFormat:@"nullableStruct:%@; ", charonDescribeObject(self->_nullableStruct)];
+    [text appendFormat:@"optionalStruct:%@; ", charonDescribeObject(self->_optionalStruct)];
+    [text appendFormat:@"nullableOptionalStruct:%@; ", charonDescribeObject(self->_nullableOptionalStruct)];
+    [text appendFormat:@"nullableList:%@; ", charonDescribeObject(self->_nullableList)];
+    [text appendFormat:@"optionalList:%@; ", charonDescribeObject(self->_optionalList)];
+    [text appendFormat:@"nullableOptionalList:%@; ", charonDescribeObject(self->_nullableOptionalList)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

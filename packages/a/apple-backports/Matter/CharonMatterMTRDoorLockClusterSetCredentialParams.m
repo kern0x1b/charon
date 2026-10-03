@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -77,14 +71,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"operationType:%@; ", charonDescribeObject(self.operationType)];
-    [text appendFormat:@"credential:%@; ", charonDescribeObject(self.credential)];
-    [text appendFormat:@"credentialData:%@; ", charonDescribeObject(self.credentialData)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self.userIndex)];
-    [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self.userStatus)];
-    [text appendFormat:@"userType:%@; ", charonDescribeObject(self.userType)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendFormat:@"operationType:%@; ", charonDescribeObject(self->_operationType)];
+    [text appendFormat:@"credential:%@; ", charonDescribeObject(self->_credential)];
+    [text appendFormat:@"credentialData:%@; ", charonDescribeObject(self->_credentialData)];
+    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
+    [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self->_userStatus)];
+    [text appendFormat:@"userType:%@; ", charonDescribeObject(self->_userType)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

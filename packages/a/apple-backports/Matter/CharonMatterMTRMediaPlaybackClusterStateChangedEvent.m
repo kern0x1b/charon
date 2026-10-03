@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -84,15 +78,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"currentState:%@; ", charonDescribeObject(self.currentState)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
-    [text appendFormat:@"duration:%@; ", charonDescribeObject(self.duration)];
-    [text appendFormat:@"sampledPosition:%@; ", charonDescribeObject(self.sampledPosition)];
-    [text appendFormat:@"playbackSpeed:%@; ", charonDescribeObject(self.playbackSpeed)];
-    [text appendFormat:@"seekRangeEnd:%@; ", charonDescribeObject(self.seekRangeEnd)];
-    [text appendFormat:@"seekRangeStart:%@; ", charonDescribeObject(self.seekRangeStart)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self.data)];
-    [text appendFormat:@"audioAdvanceUnmuted:%@; ", charonDescribeObject(self.audioAdvanceUnmuted)];
+    [text appendFormat:@"currentState:%@; ", charonDescribeObject(self->_currentState)];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
+    [text appendFormat:@"duration:%@; ", charonDescribeObject(self->_duration)];
+    [text appendFormat:@"sampledPosition:%@; ", charonDescribeObject(self->_sampledPosition)];
+    [text appendFormat:@"playbackSpeed:%@; ", charonDescribeObject(self->_playbackSpeed)];
+    [text appendFormat:@"seekRangeEnd:%@; ", charonDescribeObject(self->_seekRangeEnd)];
+    [text appendFormat:@"seekRangeStart:%@; ", charonDescribeObject(self->_seekRangeStart)];
+    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
+    [text appendFormat:@"audioAdvanceUnmuted:%@; ", charonDescribeObject(self->_audioAdvanceUnmuted)];
     [text appendString:@">"];
     return text;
 }

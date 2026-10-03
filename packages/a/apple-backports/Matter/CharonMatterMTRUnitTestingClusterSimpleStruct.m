@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -85,15 +79,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"a:%@; ", charonDescribeObject(self.a)];
-    [text appendFormat:@"b:%@; ", charonDescribeObject(self.b)];
-    [text appendFormat:@"c:%@; ", charonDescribeObject(self.c)];
-    [text appendFormat:@"d:%@; ", charonDescribeObject(self.d)];
-    [text appendFormat:@"e:%@; ", charonDescribeObject(self.e)];
-    [text appendFormat:@"f:%@; ", charonDescribeObject(self.f)];
-    [text appendFormat:@"g:%@; ", charonDescribeObject(self.g)];
-    [text appendFormat:@"h:%@; ", charonDescribeObject(self.h)];
-    [text appendFormat:@"i:%@; ", charonDescribeObject(self.i)];
+    [text appendFormat:@"a:%@; ", charonDescribeObject(self->_a)];
+    [text appendFormat:@"b:%@; ", charonDescribeObject(self->_b)];
+    [text appendFormat:@"c:%@; ", charonDescribeObject(self->_c)];
+    [text appendFormat:@"d:%@; ", charonDescribeObject(self->_d)];
+    [text appendFormat:@"e:%@; ", charonDescribeObject(self->_e)];
+    [text appendFormat:@"f:%@; ", charonDescribeObject(self->_f)];
+    [text appendFormat:@"g:%@; ", charonDescribeObject(self->_g)];
+    [text appendFormat:@"h:%@; ", charonDescribeObject(self->_h)];
+    [text appendFormat:@"i:%@; ", charonDescribeObject(self->_i)];
     [text appendString:@">"];
     return text;
 }

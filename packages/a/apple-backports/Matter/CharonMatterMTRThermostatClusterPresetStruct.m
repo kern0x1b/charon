@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -72,12 +66,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self.presetHandle)];
-    [text appendFormat:@"presetScenario:%@; ", charonDescribeObject(self.presetScenario)];
-    [text appendFormat:@"name:%@; ", charonDescribeObject(self.name)];
-    [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self.coolingSetpoint)];
-    [text appendFormat:@"heatingSetpoint:%@; ", charonDescribeObject(self.heatingSetpoint)];
-    [text appendFormat:@"builtIn:%@; ", charonDescribeObject(self.builtIn)];
+    [text appendFormat:@"presetHandle:%@; ", charonDescribeObject(self->_presetHandle)];
+    [text appendFormat:@"presetScenario:%@; ", charonDescribeObject(self->_presetScenario)];
+    [text appendFormat:@"name:%@; ", charonDescribeObject(self->_name)];
+    [text appendFormat:@"coolingSetpoint:%@; ", charonDescribeObject(self->_coolingSetpoint)];
+    [text appendFormat:@"heatingSetpoint:%@; ", charonDescribeObject(self->_heatingSetpoint)];
+    [text appendFormat:@"builtIn:%@; ", charonDescribeObject(self->_builtIn)];
     [text appendString:@">"];
     return text;
 }

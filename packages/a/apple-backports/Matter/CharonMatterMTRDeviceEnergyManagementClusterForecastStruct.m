@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -83,15 +77,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"forecastID:%@; ", charonDescribeObject(self.forecastID)];
-    [text appendFormat:@"activeSlotNumber:%@; ", charonDescribeObject(self.activeSlotNumber)];
-    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
-    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self.endTime)];
-    [text appendFormat:@"earliestStartTime:%@; ", charonDescribeObject(self.earliestStartTime)];
-    [text appendFormat:@"latestEndTime:%@; ", charonDescribeObject(self.latestEndTime)];
-    [text appendFormat:@"isPausable:%@; ", charonDescribeObject(self.isPausable)];
-    [text appendFormat:@"slots:%@; ", charonDescribeObject(self.slots)];
-    [text appendFormat:@"forecastUpdateReason:%@; ", charonDescribeObject(self.forecastUpdateReason)];
+    [text appendFormat:@"forecastID:%@; ", charonDescribeObject(self->_forecastID)];
+    [text appendFormat:@"activeSlotNumber:%@; ", charonDescribeObject(self->_activeSlotNumber)];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self->_startTime)];
+    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self->_endTime)];
+    [text appendFormat:@"earliestStartTime:%@; ", charonDescribeObject(self->_earliestStartTime)];
+    [text appendFormat:@"latestEndTime:%@; ", charonDescribeObject(self->_latestEndTime)];
+    [text appendFormat:@"isPausable:%@; ", charonDescribeObject(self->_isPausable)];
+    [text appendFormat:@"slots:%@; ", charonDescribeObject(self->_slots)];
+    [text appendFormat:@"forecastUpdateReason:%@; ", charonDescribeObject(self->_forecastUpdateReason)];
     [text appendString:@">"];
     return text;
 }

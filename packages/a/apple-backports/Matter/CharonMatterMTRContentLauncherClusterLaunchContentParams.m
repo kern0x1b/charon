@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -74,13 +68,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"search:%@; ", charonDescribeObject(self.search)];
-    [text appendFormat:@"autoPlay:%@; ", charonDescribeObject(self.autoPlay)];
-    [text appendFormat:@"data:%@; ", charonDescribeObject(self.data)];
-    [text appendFormat:@"playbackPreferences:%@; ", charonDescribeObject(self.playbackPreferences)];
-    [text appendFormat:@"useCurrentContext:%@; ", charonDescribeObject(self.useCurrentContext)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendFormat:@"search:%@; ", charonDescribeObject(self->_search)];
+    [text appendFormat:@"autoPlay:%@; ", charonDescribeObject(self->_autoPlay)];
+    [text appendFormat:@"data:%@; ", charonDescribeObject(self->_data)];
+    [text appendFormat:@"playbackPreferences:%@; ", charonDescribeObject(self->_playbackPreferences)];
+    [text appendFormat:@"useCurrentContext:%@; ", charonDescribeObject(self->_useCurrentContext)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

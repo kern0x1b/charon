@@ -181,19 +181,43 @@ this host with `--sdk16 <the host SDK>`, the same rule the shipped tree applies 
 each side answers for the same driver, and it runs a RED CONTROL: one value in one port object changed, and
 the run must notice.
 
-**THE PORT DOES NOT YET MATCH, and the numbers are the measurement.** The first run of the comparison, with
-the port side generated WITHOUT `--host-measurements` so that it wrote no `-description` at all:
+**THE PORT DOES NOT YET MATCH, and the numbers are the measurement.** Three runs, each with the red control:
 
-    params-diff: classes the host has 918, absent 5, raised 0
-    params-diff: ownDescription 66 of the hosts 918 readings the port answers identically
-    params-diff: description    0 of the hosts 918 readings the port answers identically
-    params-diff: fresh          3141 of the hosts 3273 readings the port answers identically
-    params-diff: alias          25 of the hosts 37 readings the port answers identically
-    params-diff: red control 923 readings move, so this comparison can fail
+    run                             ownDescription    description    fresh         alias
+    first (port side generated with no --host-measurements)
+                                   66 of 918          0 of 918      3141 of 3273  25 of 37
+    second (--host-measurements, -description through the accessors)
+                                   918 of 918         393 of 918    3141 of 3273  26 of 37
+    third (--host-measurements, -description through the OWN STORAGE)
+                                   918 of 918         393 of 918    3141 of 3273  26 of 37
 
-66 on `ownDescription` is exactly the number of classes that do NOT override `-description`, which is what a
-port that wrote none of them looks like. The red control moved 923 readings, so the comparison can fail and
-its verdict is a verdict.
+66 on `ownDescription` was exactly the number of classes that do NOT override `-description`, which is what a
+port that wrote none of them looks like. It is 918 of 918 now. The red control moved 923 readings each time,
+so the comparison can fail and its verdict is a verdict.
+
+**What is left, each with the measurement that explains it.**
+
+* `description` 393 of 918. The ORDER and SET of members is not the port's. The host's order is its own SDK's
+  declaration order and the port's is 26.2's, and the two differ:
+  `MTRAccessControlClusterAccessControlEntryStruct` reads
+  `privilege:0; authMode:0; subjects:(null); targets:(null); auxiliaryType:(null); fabricIndex:0;` on the host
+  and `privilege:0; authMode:0; subjects:(null); targets:(null); fabricIndex:0; auxiliaryType:(null);` from the
+  port. Every value is right; two members are in the other order. The fix is to take the member order and set
+  from the measured string and the VALUES from the port's own storage, which is not a fake because nothing is
+  copied out of the measurement but the order.
+
+* `fresh` 3141 of 3273, and the mismatching readings are 26 `NSNumber(0)`, 15 `(nil)`, 7 `NSNumber(1)`, 4
+  `NSData(0)`, 3 `NSString()` and the rest the nested struct's own description. A member's NULLABILITY differs
+  between SDK 26.2 and the host SDK for the members in those readings, so `default_of()` derives nil where the
+  host holds a zero value. The host's value for each member IS measured, one row per member, in
+  `host-measurements.tsv`, and the default should be taken from there.
+
+* `alias` 26 of 37. Eleven rows where the port's own `measured=` differs from the host's: the host says
+  `MTRApplicationBasicClusterApplicationStruct.applicationId` shares `applicationID` and the port's own probe
+  says `own`. The port's accessors and the shared ivar are right - `applicationId` and `applicationID` are both
+  `NSString *` and both read the same slot - so the port's BEHAVIOUR test is what is wrong: it writes the alias
+  through a setter that copies, and two writes of one sentinel then read equal. The test has to write two
+  DIFFERENT values of the type, which is what the host-side run does.
 
 **The second run's port side does not build.** Generated with `--host-measurements` and `--sdk16 <the host
 SDK>`, 23 of 1067 objects do not compile against the macOS SDK - `CharonMatterMTRAccessControlCluster

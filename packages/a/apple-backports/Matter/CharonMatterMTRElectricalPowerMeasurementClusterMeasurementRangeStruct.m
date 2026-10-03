@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -84,17 +78,17 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self.measurementType)];
-    [text appendFormat:@"min:%@; ", charonDescribeObject(self.min)];
-    [text appendFormat:@"max:%@; ", charonDescribeObject(self.max)];
-    [text appendFormat:@"startTimestamp:%@; ", charonDescribeObject(self.startTimestamp)];
-    [text appendFormat:@"endTimestamp:%@; ", charonDescribeObject(self.endTimestamp)];
-    [text appendFormat:@"minTimestamp:%@; ", charonDescribeObject(self.minTimestamp)];
-    [text appendFormat:@"maxTimestamp:%@; ", charonDescribeObject(self.maxTimestamp)];
-    [text appendFormat:@"startSystime:%@; ", charonDescribeObject(self.startSystime)];
-    [text appendFormat:@"endSystime:%@; ", charonDescribeObject(self.endSystime)];
-    [text appendFormat:@"minSystime:%@; ", charonDescribeObject(self.minSystime)];
-    [text appendFormat:@"maxSystime:%@; ", charonDescribeObject(self.maxSystime)];
+    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self->_measurementType)];
+    [text appendFormat:@"min:%@; ", charonDescribeObject(self->_min)];
+    [text appendFormat:@"max:%@; ", charonDescribeObject(self->_max)];
+    [text appendFormat:@"startTimestamp:%@; ", charonDescribeObject(self->_startTimestamp)];
+    [text appendFormat:@"endTimestamp:%@; ", charonDescribeObject(self->_endTimestamp)];
+    [text appendFormat:@"minTimestamp:%@; ", charonDescribeObject(self->_minTimestamp)];
+    [text appendFormat:@"maxTimestamp:%@; ", charonDescribeObject(self->_maxTimestamp)];
+    [text appendFormat:@"startSystime:%@; ", charonDescribeObject(self->_startSystime)];
+    [text appendFormat:@"endSystime:%@; ", charonDescribeObject(self->_endSystime)];
+    [text appendFormat:@"minSystime:%@; ", charonDescribeObject(self->_minSystime)];
+    [text appendFormat:@"maxSystime:%@; ", charonDescribeObject(self->_maxSystime)];
     [text appendString:@">"];
     return text;
 }

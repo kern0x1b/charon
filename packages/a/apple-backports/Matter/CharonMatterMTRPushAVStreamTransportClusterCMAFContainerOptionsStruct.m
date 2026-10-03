@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -80,14 +74,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"cmafInterface:%@; ", charonDescribeObject(self.cmafInterface)];
-    [text appendFormat:@"segmentDuration:%@; ", charonDescribeObject(self.segmentDuration)];
-    [text appendFormat:@"chunkDuration:%@; ", charonDescribeObject(self.chunkDuration)];
-    [text appendFormat:@"sessionGroup:%@; ", charonDescribeObject(self.sessionGroup)];
-    [text appendFormat:@"trackName:%@; ", charonDescribeObject(self.trackName)];
-    [text appendFormat:@"cencKey:%@; ", charonDescribeObject(self.cencKey)];
-    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject(self.cencKeyID)];
-    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self.metadataEnabled)];
+    [text appendFormat:@"cmafInterface:%@; ", charonDescribeObject(self->_cmafInterface)];
+    [text appendFormat:@"segmentDuration:%@; ", charonDescribeObject(self->_segmentDuration)];
+    [text appendFormat:@"chunkDuration:%@; ", charonDescribeObject(self->_chunkDuration)];
+    [text appendFormat:@"sessionGroup:%@; ", charonDescribeObject(self->_sessionGroup)];
+    [text appendFormat:@"trackName:%@; ", charonDescribeObject(self->_trackName)];
+    [text appendFormat:@"cencKey:%@; ", charonDescribeObject(self->_cencKey)];
+    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject(self->_cencKeyID)];
+    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self->_metadataEnabled)];
     [text appendString:@">"];
     return text;
 }

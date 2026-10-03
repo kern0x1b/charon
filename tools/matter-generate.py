@@ -1477,11 +1477,6 @@ CONVERTERS = {
 }
 
 
-def bare_type_of(name, kinds=None):
-    """The successor's own type, for the conversion table; None when it is not one of the pairs."""
-    return CONVERSION_TYPES.get(name)
-
-
 def member_accessors(prop, slots, ivar_type=None):
     """The getter and setter of one category-declared property, written out.
 
@@ -1579,6 +1574,32 @@ def default_of(prop):
     return None
 
 
+def describe_helpers():
+    """The two C functions -description prints through, and no more.
+
+    They are C functions and not methods because a method here would be API the framework does not have, and
+    a file that exports no API symbol of its own is where this repository puts such a function (see
+    packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m).
+
+    `charonDescribeObject` deliberately does NOT check for nil: `[nil description]` is nil, and %@ prints a
+    nil argument as `(null)`, which is what the host prints for a nil member - `subjects:(null)` in the
+    measured MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own
+    spelling and it differed from the host's on every nil member.
+    """
+    return """
+static NSString *charonDescribeObject(id value)
+{
+    return [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
+"""
+
+
 def describe_body(name, properties, slots):
     """The host's own -description, built from the class's own members in declaration order.
 
@@ -1589,52 +1610,36 @@ def describe_body(name, properties, slots):
          targets:(null); auxiliaryType:(null); fabricIndex:0; >
 
     so the format is `<` + the class name + `: ` + `name:value; ` per member + `>`, the value is what the host
-    prints, and INHERITED members are not in it. A member's OWN type decides how it prints: `%@` for an
-    object pointer - `0` for the NSNumber zero, nothing at all for the empty NSString, `(null)` for nil -
-    and a member that is not an object pointer is formatted as its own type says. That is what makes
-    MTRReadParams' BOOL and MTRDeviceControllerStartupParams' uint64_t compile at all, and it is what the
-    host's own string for them is compared against.
+    prints, and INHERITED members are not in it.
+
+    EVERY member is printed - there is no skip and no guard - and each one is read from ITS OWN STORAGE rather
+    than through its accessor. That is not a shortcut, it is what makes every member printable against any
+    SDK: the member's spelling is not always available where the port is compiled. SDK 26.2 calls it
+    `thumbnailUrl` and a later SDK calls it `thumbnailURL` and marks the old spelling
+    `API_DEPRECATED`, so `self.thumbnailUrl` is `'thumbnailUrl' is unavailable` and 23 of the objects do not
+    build against the host SDK - all of them that one cause. The IVAR is the port's own, it exists whatever
+    the SDK calls the member, and it holds the member's value either way: the host's own string shows the
+    storage too (`groupID:0`), and a member whose accessor is a custom getter reads the same storage.
+
+    A member that SHARES an ivar with its deprecated alias prints the shared storage through the same
+    conversion its accessors use, so the two spellings in one string are one value - which is what the host
+    does, and what `aliasBack` measures.
     """
     body = ["- (NSString *)description\n{\n",
             "    NSMutableString *text = [NSMutableString stringWithFormat:@\"<%@: \","
             " NSStringFromClass([self class])];\n"]
     for prop in properties:
-        reader = "self.%s" % (prop["getter"] or prop["name"])
+        slot = slots.get(prop["name"], "_" + prop["name"])
         spelling = bare_type(prop)
         if spelling.endswith("*"):
-            value = "charonDescribeObject(%s)" % reader
+            value = "charonDescribeObject(self->%s)" % slot
         elif spelling.split()[-1:] == ["BOOL"]:
-            value = "(%@ ? \"1\" : \"0\")" % reader
+            value = "charonDescribeScalar((long long)(self->%s))" % slot
         else:
-            value = "charonDescribeScalar(%s)" % reader
-        body.append("    [text appendFormat:@\"%s:%%@; \", %s];\n" % (prop["getter"] or prop["name"], value))
+            value = "charonDescribeScalar((long long)(self->%s))" % slot
+        body.append("    [text appendFormat:@\"%s:%%@; \", %s];\n" % (prop["name"], value))
     body.append("    [text appendString:@\">\"];\n    return text;\n}\n")
     return "".join(body)
-
-
-# The value -description prints for one member, as a string: the member's own type decides. It is two C
-# functions and not a method because a method here would be API the framework does not have, and a file that
-# exports no API symbol of its own is where this repository puts such a function (see
-# packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m).
-def describe_helpers():
-    return """
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
-static NSString *charonDescribeObject(id value)
-{
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
-    return [value description];
-}
-
-static NSString *charonDescribeScalar(long long value)
-{
-    return [@(value) stringValue];
-}
-
-"""
 
 
 def emit_params(path, name, info, version, buckets, copying, counts, host=None):
@@ -1786,7 +1791,7 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
         for prop in members:
             shared = prop.get("shares")
             body.append(member_accessors(prop, slots,
-                                         bare_type_of(shared) if shared else None))
+                                         CONVERSION_TYPES.get(shared) if shared else None))
     described = (host or {}).get("own_description")
     if described is None:
         body.append("// -description: the host does not have this class, so the header's answer stands and this\n"

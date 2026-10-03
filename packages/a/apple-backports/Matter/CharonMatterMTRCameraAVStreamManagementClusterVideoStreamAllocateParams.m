@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -92,19 +86,19 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self.streamUsage)];
-    [text appendFormat:@"videoCodec:%@; ", charonDescribeObject(self.videoCodec)];
-    [text appendFormat:@"minFrameRate:%@; ", charonDescribeObject(self.minFrameRate)];
-    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self.maxFrameRate)];
-    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self.minResolution)];
-    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self.maxResolution)];
-    [text appendFormat:@"minBitRate:%@; ", charonDescribeObject(self.minBitRate)];
-    [text appendFormat:@"maxBitRate:%@; ", charonDescribeObject(self.maxBitRate)];
-    [text appendFormat:@"keyFrameInterval:%@; ", charonDescribeObject(self.keyFrameInterval)];
-    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self.watermarkEnabled)];
-    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self.osdEnabled)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
-    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
+    [text appendFormat:@"videoCodec:%@; ", charonDescribeObject(self->_videoCodec)];
+    [text appendFormat:@"minFrameRate:%@; ", charonDescribeObject(self->_minFrameRate)];
+    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self->_maxFrameRate)];
+    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self->_minResolution)];
+    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self->_maxResolution)];
+    [text appendFormat:@"minBitRate:%@; ", charonDescribeObject(self->_minBitRate)];
+    [text appendFormat:@"maxBitRate:%@; ", charonDescribeObject(self->_maxBitRate)];
+    [text appendFormat:@"keyFrameInterval:%@; ", charonDescribeObject(self->_keyFrameInterval)];
+    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self->_watermarkEnabled)];
+    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self->_osdEnabled)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self->_serverSideProcessingTimeout)];
     [text appendString:@">"];
     return text;
 }

@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -81,14 +75,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"deviceName:%@; ", charonDescribeObject(self.deviceName)];
-    [text appendFormat:@"deviceNameLastEdit:%@; ", charonDescribeObject(self.deviceNameLastEdit)];
-    [text appendFormat:@"bridgedEndpoint:%@; ", charonDescribeObject(self.bridgedEndpoint)];
-    [text appendFormat:@"originalEndpoint:%@; ", charonDescribeObject(self.originalEndpoint)];
-    [text appendFormat:@"deviceTypes:%@; ", charonDescribeObject(self.deviceTypes)];
-    [text appendFormat:@"uniqueLocationIDs:%@; ", charonDescribeObject(self.uniqueLocationIDs)];
-    [text appendFormat:@"uniqueLocationIDsLastEdit:%@; ", charonDescribeObject(self.uniqueLocationIDsLastEdit)];
-    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self.fabricIndex)];
+    [text appendFormat:@"deviceName:%@; ", charonDescribeObject(self->_deviceName)];
+    [text appendFormat:@"deviceNameLastEdit:%@; ", charonDescribeObject(self->_deviceNameLastEdit)];
+    [text appendFormat:@"bridgedEndpoint:%@; ", charonDescribeObject(self->_bridgedEndpoint)];
+    [text appendFormat:@"originalEndpoint:%@; ", charonDescribeObject(self->_originalEndpoint)];
+    [text appendFormat:@"deviceTypes:%@; ", charonDescribeObject(self->_deviceTypes)];
+    [text appendFormat:@"uniqueLocationIDs:%@; ", charonDescribeObject(self->_uniqueLocationIDs)];
+    [text appendFormat:@"uniqueLocationIDsLastEdit:%@; ", charonDescribeObject(self->_uniqueLocationIDsLastEdit)];
+    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];
     [text appendString:@">"];
     return text;
 }

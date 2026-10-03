@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -76,12 +70,12 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"arg1:%@; ", charonDescribeObject(self.arg1)];
-    [text appendFormat:@"arg2:%@; ", charonDescribeObject(self.arg2)];
-    [text appendFormat:@"arg3:%@; ", charonDescribeObject(self.arg3)];
-    [text appendFormat:@"arg4:%@; ", charonDescribeObject(self.arg4)];
-    [text appendFormat:@"arg5:%@; ", charonDescribeObject(self.arg5)];
-    [text appendFormat:@"arg6:%@; ", charonDescribeObject(self.arg6)];
+    [text appendFormat:@"arg1:%@; ", charonDescribeObject(self->_arg1)];
+    [text appendFormat:@"arg2:%@; ", charonDescribeObject(self->_arg2)];
+    [text appendFormat:@"arg3:%@; ", charonDescribeObject(self->_arg3)];
+    [text appendFormat:@"arg4:%@; ", charonDescribeObject(self->_arg4)];
+    [text appendFormat:@"arg5:%@; ", charonDescribeObject(self->_arg5)];
+    [text appendFormat:@"arg6:%@; ", charonDescribeObject(self->_arg6)];
     [text appendString:@">"];
     return text;
 }

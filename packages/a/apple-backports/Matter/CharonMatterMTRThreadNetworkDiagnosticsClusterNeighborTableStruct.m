@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -99,20 +93,20 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self.extAddress)];
-    [text appendFormat:@"age:%@; ", charonDescribeObject(self.age)];
-    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self.rloc16)];
-    [text appendFormat:@"linkFrameCounter:%@; ", charonDescribeObject(self.linkFrameCounter)];
-    [text appendFormat:@"mleFrameCounter:%@; ", charonDescribeObject(self.mleFrameCounter)];
-    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self.lqi)];
-    [text appendFormat:@"averageRssi:%@; ", charonDescribeObject(self.averageRssi)];
-    [text appendFormat:@"lastRssi:%@; ", charonDescribeObject(self.lastRssi)];
-    [text appendFormat:@"frameErrorRate:%@; ", charonDescribeObject(self.frameErrorRate)];
-    [text appendFormat:@"messageErrorRate:%@; ", charonDescribeObject(self.messageErrorRate)];
-    [text appendFormat:@"rxOnWhenIdle:%@; ", charonDescribeObject(self.rxOnWhenIdle)];
-    [text appendFormat:@"fullThreadDevice:%@; ", charonDescribeObject(self.fullThreadDevice)];
-    [text appendFormat:@"fullNetworkData:%@; ", charonDescribeObject(self.fullNetworkData)];
-    [text appendFormat:@"isChild:%@; ", charonDescribeObject(self.isChild)];
+    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self->_extAddress)];
+    [text appendFormat:@"age:%@; ", charonDescribeObject(self->_age)];
+    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self->_rloc16)];
+    [text appendFormat:@"linkFrameCounter:%@; ", charonDescribeObject(self->_linkFrameCounter)];
+    [text appendFormat:@"mleFrameCounter:%@; ", charonDescribeObject(self->_mleFrameCounter)];
+    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self->_lqi)];
+    [text appendFormat:@"averageRssi:%@; ", charonDescribeObject(self->_averageRssi)];
+    [text appendFormat:@"lastRssi:%@; ", charonDescribeObject(self->_lastRssi)];
+    [text appendFormat:@"frameErrorRate:%@; ", charonDescribeObject(self->_frameErrorRate)];
+    [text appendFormat:@"messageErrorRate:%@; ", charonDescribeObject(self->_messageErrorRate)];
+    [text appendFormat:@"rxOnWhenIdle:%@; ", charonDescribeObject(self->_rxOnWhenIdle)];
+    [text appendFormat:@"fullThreadDevice:%@; ", charonDescribeObject(self->_fullThreadDevice)];
+    [text appendFormat:@"fullNetworkData:%@; ", charonDescribeObject(self->_fullNetworkData)];
+    [text appendFormat:@"isChild:%@; ", charonDescribeObject(self->_isChild)];
     [text appendString:@">"];
     return text;
 }

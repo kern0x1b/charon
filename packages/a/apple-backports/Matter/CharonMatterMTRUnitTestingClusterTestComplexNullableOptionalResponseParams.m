@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -129,35 +123,35 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"nullableIntWasNull:%@; ", charonDescribeObject(self.nullableIntWasNull)];
-    [text appendFormat:@"nullableIntValue:%@; ", charonDescribeObject(self.nullableIntValue)];
-    [text appendFormat:@"optionalIntWasPresent:%@; ", charonDescribeObject(self.optionalIntWasPresent)];
-    [text appendFormat:@"optionalIntValue:%@; ", charonDescribeObject(self.optionalIntValue)];
-    [text appendFormat:@"nullableOptionalIntWasPresent:%@; ", charonDescribeObject(self.nullableOptionalIntWasPresent)];
-    [text appendFormat:@"nullableOptionalIntWasNull:%@; ", charonDescribeObject(self.nullableOptionalIntWasNull)];
-    [text appendFormat:@"nullableOptionalIntValue:%@; ", charonDescribeObject(self.nullableOptionalIntValue)];
-    [text appendFormat:@"nullableStringWasNull:%@; ", charonDescribeObject(self.nullableStringWasNull)];
-    [text appendFormat:@"nullableStringValue:%@; ", charonDescribeObject(self.nullableStringValue)];
-    [text appendFormat:@"optionalStringWasPresent:%@; ", charonDescribeObject(self.optionalStringWasPresent)];
-    [text appendFormat:@"optionalStringValue:%@; ", charonDescribeObject(self.optionalStringValue)];
-    [text appendFormat:@"nullableOptionalStringWasPresent:%@; ", charonDescribeObject(self.nullableOptionalStringWasPresent)];
-    [text appendFormat:@"nullableOptionalStringWasNull:%@; ", charonDescribeObject(self.nullableOptionalStringWasNull)];
-    [text appendFormat:@"nullableOptionalStringValue:%@; ", charonDescribeObject(self.nullableOptionalStringValue)];
-    [text appendFormat:@"nullableStructWasNull:%@; ", charonDescribeObject(self.nullableStructWasNull)];
-    [text appendFormat:@"nullableStructValue:%@; ", charonDescribeObject(self.nullableStructValue)];
-    [text appendFormat:@"optionalStructWasPresent:%@; ", charonDescribeObject(self.optionalStructWasPresent)];
-    [text appendFormat:@"optionalStructValue:%@; ", charonDescribeObject(self.optionalStructValue)];
-    [text appendFormat:@"nullableOptionalStructWasPresent:%@; ", charonDescribeObject(self.nullableOptionalStructWasPresent)];
-    [text appendFormat:@"nullableOptionalStructWasNull:%@; ", charonDescribeObject(self.nullableOptionalStructWasNull)];
-    [text appendFormat:@"nullableOptionalStructValue:%@; ", charonDescribeObject(self.nullableOptionalStructValue)];
-    [text appendFormat:@"nullableListWasNull:%@; ", charonDescribeObject(self.nullableListWasNull)];
-    [text appendFormat:@"nullableListValue:%@; ", charonDescribeObject(self.nullableListValue)];
-    [text appendFormat:@"optionalListWasPresent:%@; ", charonDescribeObject(self.optionalListWasPresent)];
-    [text appendFormat:@"optionalListValue:%@; ", charonDescribeObject(self.optionalListValue)];
-    [text appendFormat:@"nullableOptionalListWasPresent:%@; ", charonDescribeObject(self.nullableOptionalListWasPresent)];
-    [text appendFormat:@"nullableOptionalListWasNull:%@; ", charonDescribeObject(self.nullableOptionalListWasNull)];
-    [text appendFormat:@"nullableOptionalListValue:%@; ", charonDescribeObject(self.nullableOptionalListValue)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"nullableIntWasNull:%@; ", charonDescribeObject(self->_nullableIntWasNull)];
+    [text appendFormat:@"nullableIntValue:%@; ", charonDescribeObject(self->_nullableIntValue)];
+    [text appendFormat:@"optionalIntWasPresent:%@; ", charonDescribeObject(self->_optionalIntWasPresent)];
+    [text appendFormat:@"optionalIntValue:%@; ", charonDescribeObject(self->_optionalIntValue)];
+    [text appendFormat:@"nullableOptionalIntWasPresent:%@; ", charonDescribeObject(self->_nullableOptionalIntWasPresent)];
+    [text appendFormat:@"nullableOptionalIntWasNull:%@; ", charonDescribeObject(self->_nullableOptionalIntWasNull)];
+    [text appendFormat:@"nullableOptionalIntValue:%@; ", charonDescribeObject(self->_nullableOptionalIntValue)];
+    [text appendFormat:@"nullableStringWasNull:%@; ", charonDescribeObject(self->_nullableStringWasNull)];
+    [text appendFormat:@"nullableStringValue:%@; ", charonDescribeObject(self->_nullableStringValue)];
+    [text appendFormat:@"optionalStringWasPresent:%@; ", charonDescribeObject(self->_optionalStringWasPresent)];
+    [text appendFormat:@"optionalStringValue:%@; ", charonDescribeObject(self->_optionalStringValue)];
+    [text appendFormat:@"nullableOptionalStringWasPresent:%@; ", charonDescribeObject(self->_nullableOptionalStringWasPresent)];
+    [text appendFormat:@"nullableOptionalStringWasNull:%@; ", charonDescribeObject(self->_nullableOptionalStringWasNull)];
+    [text appendFormat:@"nullableOptionalStringValue:%@; ", charonDescribeObject(self->_nullableOptionalStringValue)];
+    [text appendFormat:@"nullableStructWasNull:%@; ", charonDescribeObject(self->_nullableStructWasNull)];
+    [text appendFormat:@"nullableStructValue:%@; ", charonDescribeObject(self->_nullableStructValue)];
+    [text appendFormat:@"optionalStructWasPresent:%@; ", charonDescribeObject(self->_optionalStructWasPresent)];
+    [text appendFormat:@"optionalStructValue:%@; ", charonDescribeObject(self->_optionalStructValue)];
+    [text appendFormat:@"nullableOptionalStructWasPresent:%@; ", charonDescribeObject(self->_nullableOptionalStructWasPresent)];
+    [text appendFormat:@"nullableOptionalStructWasNull:%@; ", charonDescribeObject(self->_nullableOptionalStructWasNull)];
+    [text appendFormat:@"nullableOptionalStructValue:%@; ", charonDescribeObject(self->_nullableOptionalStructValue)];
+    [text appendFormat:@"nullableListWasNull:%@; ", charonDescribeObject(self->_nullableListWasNull)];
+    [text appendFormat:@"nullableListValue:%@; ", charonDescribeObject(self->_nullableListValue)];
+    [text appendFormat:@"optionalListWasPresent:%@; ", charonDescribeObject(self->_optionalListWasPresent)];
+    [text appendFormat:@"optionalListValue:%@; ", charonDescribeObject(self->_optionalListValue)];
+    [text appendFormat:@"nullableOptionalListWasPresent:%@; ", charonDescribeObject(self->_nullableOptionalListWasPresent)];
+    [text appendFormat:@"nullableOptionalListWasNull:%@; ", charonDescribeObject(self->_nullableOptionalListWasNull)];
+    [text appendFormat:@"nullableOptionalListValue:%@; ", charonDescribeObject(self->_nullableOptionalListValue)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -83,14 +77,14 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self.audioStreamID)];
-    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self.streamUsage)];
-    [text appendFormat:@"audioCodec:%@; ", charonDescribeObject(self.audioCodec)];
-    [text appendFormat:@"channelCount:%@; ", charonDescribeObject(self.channelCount)];
-    [text appendFormat:@"sampleRate:%@; ", charonDescribeObject(self.sampleRate)];
-    [text appendFormat:@"bitRate:%@; ", charonDescribeObject(self.bitRate)];
-    [text appendFormat:@"bitDepth:%@; ", charonDescribeObject(self.bitDepth)];
-    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self.referenceCount)];
+    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self->_audioStreamID)];
+    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self->_streamUsage)];
+    [text appendFormat:@"audioCodec:%@; ", charonDescribeObject(self->_audioCodec)];
+    [text appendFormat:@"channelCount:%@; ", charonDescribeObject(self->_channelCount)];
+    [text appendFormat:@"sampleRate:%@; ", charonDescribeObject(self->_sampleRate)];
+    [text appendFormat:@"bitRate:%@; ", charonDescribeObject(self->_bitRate)];
+    [text appendFormat:@"bitDepth:%@; ", charonDescribeObject(self->_bitDepth)];
+    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self->_referenceCount)];
     [text appendString:@">"];
     return text;
 }

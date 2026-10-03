@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -78,15 +72,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"status:%@; ", charonDescribeObject(self.status)];
-    [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self.delayedActionTime)];
-    [text appendFormat:@"imageURI:%@; ", charonDescribeObject(self.imageURI)];
-    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self.softwareVersion)];
-    [text appendFormat:@"softwareVersionString:%@; ", charonDescribeObject(self.softwareVersionString)];
-    [text appendFormat:@"updateToken:%@; ", charonDescribeObject(self.updateToken)];
-    [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self.userConsentNeeded)];
-    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject(self.metadataForRequestor)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
+    [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self->_delayedActionTime)];
+    [text appendFormat:@"imageURI:%@; ", charonDescribeObject(self->_imageURI)];
+    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self->_softwareVersion)];
+    [text appendFormat:@"softwareVersionString:%@; ", charonDescribeObject(self->_softwareVersionString)];
+    [text appendFormat:@"updateToken:%@; ", charonDescribeObject(self->_updateToken)];
+    [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self->_userConsentNeeded)];
+    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject(self->_metadataForRequestor)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }

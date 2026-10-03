@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -89,16 +83,16 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self.extAddress)];
-    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self.rloc16)];
-    [text appendFormat:@"routerId:%@; ", charonDescribeObject(self.routerId)];
-    [text appendFormat:@"nextHop:%@; ", charonDescribeObject(self.nextHop)];
-    [text appendFormat:@"pathCost:%@; ", charonDescribeObject(self.pathCost)];
-    [text appendFormat:@"lqiIn:%@; ", charonDescribeObject(self.lqiIn)];
-    [text appendFormat:@"lqiOut:%@; ", charonDescribeObject(self.lqiOut)];
-    [text appendFormat:@"age:%@; ", charonDescribeObject(self.age)];
-    [text appendFormat:@"allocated:%@; ", charonDescribeObject(self.allocated)];
-    [text appendFormat:@"linkEstablished:%@; ", charonDescribeObject(self.linkEstablished)];
+    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self->_extAddress)];
+    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self->_rloc16)];
+    [text appendFormat:@"routerId:%@; ", charonDescribeObject(self->_routerId)];
+    [text appendFormat:@"nextHop:%@; ", charonDescribeObject(self->_nextHop)];
+    [text appendFormat:@"pathCost:%@; ", charonDescribeObject(self->_pathCost)];
+    [text appendFormat:@"lqiIn:%@; ", charonDescribeObject(self->_lqiIn)];
+    [text appendFormat:@"lqiOut:%@; ", charonDescribeObject(self->_lqiOut)];
+    [text appendFormat:@"age:%@; ", charonDescribeObject(self->_age)];
+    [text appendFormat:@"allocated:%@; ", charonDescribeObject(self->_allocated)];
+    [text appendFormat:@"linkEstablished:%@; ", charonDescribeObject(self->_linkEstablished)];
     [text appendString:@">"];
     return text;
 }

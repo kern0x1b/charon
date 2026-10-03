@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -78,15 +72,15 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"attributeID:%@; ", charonDescribeObject(self.attributeID)];
-    [text appendFormat:@"valueUnsigned8:%@; ", charonDescribeObject(self.valueUnsigned8)];
-    [text appendFormat:@"valueSigned8:%@; ", charonDescribeObject(self.valueSigned8)];
-    [text appendFormat:@"valueUnsigned16:%@; ", charonDescribeObject(self.valueUnsigned16)];
-    [text appendFormat:@"valueSigned16:%@; ", charonDescribeObject(self.valueSigned16)];
-    [text appendFormat:@"valueUnsigned32:%@; ", charonDescribeObject(self.valueUnsigned32)];
-    [text appendFormat:@"valueSigned32:%@; ", charonDescribeObject(self.valueSigned32)];
-    [text appendFormat:@"valueUnsigned64:%@; ", charonDescribeObject(self.valueUnsigned64)];
-    [text appendFormat:@"valueSigned64:%@; ", charonDescribeObject(self.valueSigned64)];
+    [text appendFormat:@"attributeID:%@; ", charonDescribeObject(self->_attributeID)];
+    [text appendFormat:@"valueUnsigned8:%@; ", charonDescribeObject(self->_valueUnsigned8)];
+    [text appendFormat:@"valueSigned8:%@; ", charonDescribeObject(self->_valueSigned8)];
+    [text appendFormat:@"valueUnsigned16:%@; ", charonDescribeObject(self->_valueUnsigned16)];
+    [text appendFormat:@"valueSigned16:%@; ", charonDescribeObject(self->_valueSigned16)];
+    [text appendFormat:@"valueUnsigned32:%@; ", charonDescribeObject(self->_valueUnsigned32)];
+    [text appendFormat:@"valueSigned32:%@; ", charonDescribeObject(self->_valueSigned32)];
+    [text appendFormat:@"valueUnsigned64:%@; ", charonDescribeObject(self->_valueUnsigned64)];
+    [text appendFormat:@"valueSigned64:%@; ", charonDescribeObject(self->_valueSigned64)];
     [text appendString:@">"];
     return text;
 }

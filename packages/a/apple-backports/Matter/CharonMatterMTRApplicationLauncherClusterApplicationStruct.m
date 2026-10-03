@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -71,10 +65,10 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"catalogVendorID:%@; ", charonDescribeObject(self.catalogVendorID)];
-    [text appendFormat:@"catalogVendorId:%@; ", charonDescribeObject(self.catalogVendorId)];
-    [text appendFormat:@"applicationID:%@; ", charonDescribeObject(self.applicationID)];
-    [text appendFormat:@"applicationId:%@; ", charonDescribeObject(self.applicationId)];
+    [text appendFormat:@"catalogVendorID:%@; ", charonDescribeObject(self->_catalogVendorID)];
+    [text appendFormat:@"catalogVendorId:%@; ", charonDescribeObject(self->_catalogVendorID)];
+    [text appendFormat:@"applicationID:%@; ", charonDescribeObject(self->_applicationID)];
+    [text appendFormat:@"applicationId:%@; ", charonDescribeObject(self->_applicationID)];
     [text appendString:@">"];
     return text;
 }

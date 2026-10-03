@@ -20,14 +20,8 @@
 #import "CharonMatterTypes.h"
 
 
-// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
-// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
 static NSString *charonDescribeObject(id value)
 {
-    // Deliberately NOT a nil check: `[nil description]` is nil, and %@ prints a nil argument as `(null)`,
-    // which is what the host prints for a nil member - `subjects:(null)` in the measured
-    // MTRAccessControlClusterAccessControlEntryStruct string. A `(nil)` here was the port's own spelling and
-    // it differed from the host's on every nil member.
     return [value description];
 }
 
@@ -74,13 +68,13 @@ static NSString *charonDescribeScalar(long long value)
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
-    [text appendFormat:@"credentialExists:%@; ", charonDescribeObject(self.credentialExists)];
-    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self.userIndex)];
-    [text appendFormat:@"creatorFabricIndex:%@; ", charonDescribeObject(self.creatorFabricIndex)];
-    [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self.lastModifiedFabricIndex)];
-    [text appendFormat:@"nextCredentialIndex:%@; ", charonDescribeObject(self.nextCredentialIndex)];
-    [text appendFormat:@"credentialData:%@; ", charonDescribeObject(self.credentialData)];
-    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"credentialExists:%@; ", charonDescribeObject(self->_credentialExists)];
+    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self->_userIndex)];
+    [text appendFormat:@"creatorFabricIndex:%@; ", charonDescribeObject(self->_creatorFabricIndex)];
+    [text appendFormat:@"lastModifiedFabricIndex:%@; ", charonDescribeObject(self->_lastModifiedFabricIndex)];
+    [text appendFormat:@"nextCredentialIndex:%@; ", charonDescribeObject(self->_nextCredentialIndex)];
+    [text appendFormat:@"credentialData:%@; ", charonDescribeObject(self->_credentialData)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self->_timedInvokeTimeoutMs)];
     [text appendString:@">"];
     return text;
 }
