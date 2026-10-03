@@ -123,6 +123,18 @@ NS_ASSUME_NONNULL_BEGIN
     [self charon_setTitleVariants:titleVariants];
 }
 
+// CPGridButton.h:86 declares `image` readonly and :87 `-updateImage:` as its only writer, API_AVAILABLE
+// (ios(26.0)), so it is in this object and not in the 12.0 one that defines the class. What it says is
+// the whole of it: "Updates the image displayed by the grid button." The button draws itself - every
+// grid button in this port goes through the class's own -charon_drawInRect:, which reads the image -
+// so this changes what the class draws and needs no drawing of its own.
+- (void)updateImage:(UIImage *)image
+{
+    // Kept as given, nil included: a grid button with no image is the empty state the class's own
+    // drawing already draws, and a substituted picture would be something the caller did not ask for.
+    [self charon_setImage:image];
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -368,6 +368,13 @@ static CGRect CharonAspectFit(CGSize size, CGRect rect)
 // API and none of it appears in this object's exports: this file is 12.0 and stays 12.0, and the 26.0
 // selectors live in their own object.
 //
+// The 26.0 `-updateImage:` writes the image, and the class's own drawing is what reads it, so the
+// image stays where the class's own @implementation keeps it.
+- (void)charon_setImage:(UIImage *)image
+{
+    _image = image;
+}
+
 // The message configuration is held as given: CPGridButton.h:71 declares it `readonly, nullable` with no
 // copy attribute, so a nil in is a nil out and nothing is duplicated.
 - (CPMessageGridItemConfiguration *)charon_messageConfiguration

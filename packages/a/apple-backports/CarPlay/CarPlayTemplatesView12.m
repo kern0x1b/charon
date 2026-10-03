@@ -889,6 +889,16 @@ static UINavigationBar *_listNavigationBar;
 
 // ============================ the map template ============================
 
+// The card the navigation alert is drawn in, a class of its own so that dismissing the alert can find it
+// and take it off the map: the release's own MKMapView is the only thing it is ever drawn over. It
+// carries no row and is not API - it is this port's own drawing, the same shape CharonCarPlayBar and
+// CharonMapButtons below already are.
+@interface CharonCarPlayAlertCard : UIView
+@end
+
+@implementation CharonCarPlayAlertCard
+@end
+
 @implementation CPMapTemplate {
     UIColor *_guidanceBackgroundColor;
     NSArray<CPMapButton *> *_mapButtons;
@@ -906,6 +916,15 @@ static UINavigationBar *_listNavigationBar;
     // category cannot add storage. The method that makes one is in CarPlayNavigationSession12.m, the
     // same 12.0 object this class belongs to.
     id _navigationSession;
+    // What CarPlayMapTemplate12.m and CarPlayMapTemplate14.m hold for this class, declared here for the
+    // same reason: a category cannot add an ivar. Reached through the Charon-prefixed accessors at the
+    // end of this @implementation and declared in CharonCarPlayTemplate.h, which is where this tree
+    // keeps a seam two objects share. All of them are Charon's own, so none carries a member row.
+    CPNavigationAlert *_charon_navigationAlert;  // the alert being shown, beside the readonly property
+    NSArray *_charon_tripPreviews;               // the previews shown; the header's limit is 12
+    CPTrip *_charon_selectedTrip;                // the selected one, for the 14.0 member
+    NSMutableDictionary *_charon_estimates;      // CPTravelEstimates, per trip
+    CPTimeRemainingColor _charon_timeRemainingColor;  // the header's own enum; 0 is its Default case
 }
 
 @synthesize guidanceBackgroundColor = _guidanceBackgroundColor;
@@ -988,8 +1007,13 @@ static UINavigationBar *_listNavigationBar;
     }
     NSString *title = alert.titleVariants.firstObject ?: @"";
     NSString *subtitle = alert.subtitleVariants.firstObject ?: @"";
+    // The card's geometry is this port's own and not a measurement: there is no car screen to measure
+    // one on, and the same 420 x 96 is what every alert this port draws has been since the 12.0 object
+    // was written. The 1024 x 600 map it is drawn over is the release's own MKMapView at the frame
+    // above, so the card is a card over something real.
     CGSize size = CGSizeMake(420.0, 96.0);
-    UIView *card = [[UIView alloc] initWithFrame:CGRectMake(20.0, 20.0, size.width, size.height)];
+    CharonCarPlayAlertCard *card = [[CharonCarPlayAlertCard alloc]
+        initWithFrame:CGRectMake(20.0, 20.0, size.width, size.height)];
     card.backgroundColor = _guidanceBackgroundColor;
     card.layer.cornerRadius = 10.0;
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectInset(card.bounds, 12.0, 12.0)];
@@ -1006,6 +1030,97 @@ static UINavigationBar *_listNavigationBar;
 - (UIView *)charon_mapView
 {
     return _mapView;
+}
+
+// The accessors CarPlayMapTemplate12.m and CarPlayMapTemplate14.m reach this class's storage through,
+// because a category cannot write an ivar. The members they serve are the SDK's own and are registered
+// against their own rows; every name here is Charon's own, so it carries none.
+
+// Presenting an alert, and dismissing one. A nil alert takes the card off the map rather than leaving
+// the last one on screen, which is what "Dismiss the currently-visible navigation alert" asks for, and
+// that is the whole reason the card is a class of its own: a dismissal has to be able to find it.
+- (CPNavigationAlert *)charon_navigationAlert
+{
+    return _charon_navigationAlert;
+}
+
+- (void)charon_setNavigationAlert:(CPNavigationAlert *)alert
+{
+    _charon_navigationAlert = alert;
+    if (alert == nil) {
+        _currentNavigationAlert = nil;
+        for (UIView *sub in [_mapView.subviews copy]) {
+            if ([sub isKindOfClass:[CharonCarPlayAlertCard class]]) {
+                [sub removeFromSuperview];
+            }
+        }
+        return;
+    }
+    _currentNavigationAlert = alert;
+    [self charon_showCurrentAlert];
+}
+
+// The view the map buttons are drawn in, which is the class's own CharonMapButtons - so the panning
+// interface the 12.0 object drives and the buttons a caller set are one set of buttons and not two.
+- (UIView *)charon_mapButtons
+{
+    return _charon_map_buttons;
+}
+
+- (BOOL)charon_panningInterfaceVisible
+{
+    return _panningInterfaceVisible;
+}
+
+- (void)charon_setPanningInterfaceVisible:(BOOL)visible
+{
+    _panningInterfaceVisible = visible;
+}
+
+- (NSArray *)charon_tripPreviews
+{
+    return _charon_tripPreviews;
+}
+
+// Copied, because a caller that mutates the array it passed should not change what the template shows;
+// the selected trip is not copied because a trip is the caller's own object either way.
+- (void)charon_setTripPreviews:(NSArray *)previews selectedTrip:(CPTrip *)selectedTrip
+{
+    _charon_tripPreviews = [previews copy];
+    _charon_selectedTrip = selectedTrip;
+}
+
+- (CPTrip *)charon_selectedTrip
+{
+    return _charon_selectedTrip;
+}
+
+- (void)charon_setEstimates:(CPTravelEstimates *)estimates forTrip:(CPTrip *)trip
+{
+    if (_charon_estimates == nil) {
+        _charon_estimates = [NSMutableDictionary dictionary];
+    }
+    if (trip == nil) {
+        return;
+    }
+    _charon_estimates[trip] = estimates;
+}
+
+- (CPTravelEstimates *)charon_estimatesForTrip:(CPTrip *)trip
+{
+    return trip == nil ? nil : _charon_estimates[trip];
+}
+
+// The header's own enumeration, held as the number it is: CPMapTemplate.h:36-41 gives it four cases -
+// Default = 0, Green, Orange, Red - and the drawing below names them by those cases.
+- (void)charon_setTimeRemainingColor:(CPTimeRemainingColor)color
+{
+    _charon_timeRemainingColor = color;
+}
+
+- (CPTimeRemainingColor)charon_timeRemainingColor
+{
+    return _charon_timeRemainingColor;
 }
 
 // The session begun by -startNavigationSessionForTrip:, and how the file that makes one hands it

@@ -429,6 +429,51 @@ int main(int argc, const char *argv[])
         }
         printf("\n");
 
+        // ---- 6b. the map template's members, on Apple's own class ---------------------------------
+        // The twelve rows that said implemented with nothing behind them were CPMapTemplate members, a
+        // CPImageSet initialiser and one CPGridButton member. This asks Apple's own class which of them
+        // it carries, which is the measurement that decides the rows' status: a member Apple's own
+        // framework has and the port does not is a claim about this port, so it cannot be `absent`.
+        //
+        // What the class cannot be asked is a value - with no scene there is no map and nothing to draw -
+        // so this asks only the question the release can answer. The completion's BOOL is not asked here
+        // either: CPMapTemplate.h:176-177 states what it means, and a probe that drove Apple's
+        // dismissal with no alert present would be measuring Apple's implementation of a sentence the
+        // header already writes down.
+        printf("== 6b. CPMapTemplate, with no scene and no map ==\n");
+        {
+            Class map = NSClassFromString(@"CPMapTemplate");
+            static NSString *const members[] = {
+                @"presentNavigationAlert:animated:", @"dismissNavigationAlertAnimated:completion:",
+                @"showPanningInterfaceAnimated:", @"dismissPanningInterfaceAnimated:",
+                @"showTripPreviews:textConfiguration:", @"showRouteChoicesPreviewForTrip:textConfiguration:",
+                @"showTripPreviews:selectedTrip:textConfiguration:", @"hideTripPreviews",
+                @"updateTravelEstimates:forTrip:",
+                @"updateTravelEstimates:forTrip:withTimeRemainingColor:"
+            };
+            NSUInteger total = sizeof(members) / sizeof(members[0]);
+            NSUInteger present = 0;
+            for (NSUInteger i = 0; i < total; i++) {
+                SEL selector = NSSelectorFromString(members[i]);
+                BOOL has = [map instancesRespondToSelector:selector];
+                present += has ? 1 : 0;
+                printf("     -[CPMapTemplate %-52s] %s\n", members[i].UTF8String,
+                       has ? "present" : "ABSENT");
+            }
+            check(@"Apple's own map template carries every one of these members", present == total,
+                  [NSString stringWithFormat:@"%lu of %lu", (unsigned long)present, (unsigned long)total]);
+
+            Class imageSet = NSClassFromString(@"CPImageSet");
+            check(@"Apple's own image set carries its designated initialiser",
+                  [imageSet instancesRespondToSelector:@selector(initWithLightContentImage:darkContentImage:)],
+                  @"present");
+
+            Class grid = NSClassFromString(@"CPGridButton");
+            check(@"Apple's own grid button carries -updateImage:",
+                  [grid instancesRespondToSelector:@selector(updateImage:)], @"present");
+        }
+        printf("\n");
+
         // ---- 7. CPRouteChoice: an ordinary value, and +new is a member of a class the port builds --
         printf("== 7. CPRouteChoice ==\n");
         {

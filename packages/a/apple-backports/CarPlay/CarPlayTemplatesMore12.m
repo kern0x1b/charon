@@ -256,6 +256,16 @@
     return _lightContentImage ?: _darkContentImage;
 }
 
+// The class's own storage, reached from the object that carries
+// -initWithLightContentImage:darkContentImage:, which CPImageSet.h declares and a category cannot
+// write an ivar for. Both images are kept as given, nil included, and the accessor above is what picks
+// between them - so an image set with neither is one with nothing to draw, not a placeholder.
+- (void)charon_setLightContentImage:(UIImage *)lightImage darkContentImage:(UIImage *)darkImage
+{
+    _lightContentImage = lightImage;
+    _darkContentImage = darkImage;
+}
+
 - (void)encodeWithCoder:(NSCoder *)coder
 {
     [coder encodeObject:_lightContentImage forKey:@"CPImageSetLight"];

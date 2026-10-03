@@ -59,6 +59,53 @@
 - (void)charon_setMessageConfiguration:(CPMessageGridItemConfiguration *)messageConfiguration;
 - (void)charon_setTitleVariants:(NSArray<NSString *> *)titleVariants;
 
+/// The 26.0 `-updateImage:`'s storage, reached from CarPlayGrid260.m.
+///
+/// CPGridButton.h:86 declares image `readonly, nullable` and :87 `-updateImage:` as its only writer, so a
+/// category of ours cannot set it. The image is held as given, nil included: a grid button with no image
+/// is the empty state the class's own drawing already draws, and a substituted picture would be
+/// something the caller did not ask for.
+- (void)charon_setImage:(UIImage *)image;
+
+@end
+
+/// CPImageSet's storage, reached from the object that carries its designated initialiser.
+///
+/// CPImageSet.h:15-20 declares lightContentImage and darkContentImage `readonly, nullable`, so a
+/// category of ours cannot set either one and `-initWithLightContentImage:darkContentImage:` needs this.
+/// Both are held as given, nil included, because the class's own `-charon_imageForCurrentAppearance`
+/// answers the light one when there is one and the dark one otherwise - and a nil for both is an image
+/// set with nothing to draw rather than a fabricated placeholder.
+@interface CPImageSet (CharonImageSetState)
+
+- (void)charon_setLightContentImage:(UIImage *)lightImage darkContentImage:(UIImage *)darkImage;
+
+@end
+
+/// CPMapTemplate's own storage, for the members of the 12.0 and 14.0 objects that draw on it.
+///
+/// The class's @implementation is CarPlayTemplatesView12.m and the ivars are there with it; what is
+/// here is how the objects that carry the members reach them. `charon_showCurrentAlert` and
+/// `charon_mapButtons` are the class's own drawing and `charon_mapView` is the map they draw on, so the
+/// members drive that rather than reimplementing it.
+@interface CPMapTemplate (CharonMapTemplateState)
+
+- (CPNavigationAlert *)charon_navigationAlert;
+- (void)charon_setNavigationAlert:(CPNavigationAlert *)navigationAlert;
+- (UIView *)charon_mapButtons;
+- (BOOL)charon_panningInterfaceVisible;
+- (void)charon_setPanningInterfaceVisible:(BOOL)visible;
+- (NSArray *)charon_tripPreviews;
+- (void)charon_setTripPreviews:(NSArray *)previews selectedTrip:(CPTrip *)selectedTrip;
+- (CPTrip *)charon_selectedTrip;
+- (void)charon_setEstimates:(CPTravelEstimates *)estimates forTrip:(CPTrip *)trip;
+- (CPTravelEstimates *)charon_estimatesForTrip:(CPTrip *)trip;
+- (void)charon_setTimeRemainingColor:(CPTimeRemainingColor)color;
+- (CPTimeRemainingColor)charon_timeRemainingColor;
+- (void)charon_drawTripPreviews;
+- (void)charon_showCurrentAlert;
+- (UIView *)charon_mapView;
+
 @end
 
 @interface CPListTemplate (CharonListTemplateState)
