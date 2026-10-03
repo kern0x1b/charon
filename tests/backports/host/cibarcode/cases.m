@@ -55,35 +55,44 @@ static void record(NSString *name, NSString *answer)
 
 // CIBarcodeDescriptor.h:26 declares the base class with no member at all, so each subclass's payload is read
 // through that subclass's own property, which is what the header's declaration allows a caller to do.
+// The class as a caller knows it. The port build renames the five classes so both can be in one process
+// (see run.sh), and the rename is a build detail: a record identifies the descriptor by the name the SDK
+// gives it, so the harness's own prefix is taken off here rather than compared as a difference.
+static const char *apiName(id object)
+{
+    const char *name = class_getName([object class]);
+    return (name && !strncmp(name, "Charon", 6)) ? name + 6 : name;
+}
+
 static NSString *show(id object)
 {
     if (!object)
         return @"nil";
     if ([object isKindOfClass:[CIQRCodeDescriptor class]]) {
         CIQRCodeDescriptor *qr = object;
-        return [NSString stringWithFormat:@"%@ payload=%@ version=%ld mask=%u level=%ld", class_getName([object class]),
+        return [NSString stringWithFormat:@"%s payload=%@ version=%ld mask=%u level=%ld", apiName(object),
                                           hexOf(qr.errorCorrectedPayload), (long)qr.symbolVersion,
                                           (unsigned)qr.maskPattern, (long)qr.errorCorrectionLevel];
     }
     if ([object isKindOfClass:[CIAztecCodeDescriptor class]]) {
         CIAztecCodeDescriptor *aztec = object;
-        return [NSString stringWithFormat:@"%@ payload=%@ compact=%d layers=%ld codewords=%ld",
-                                          class_getName([object class]), hexOf(aztec.errorCorrectedPayload),
+        return [NSString stringWithFormat:@"%s payload=%@ compact=%d layers=%ld codewords=%ld",
+                                          apiName(object), hexOf(aztec.errorCorrectedPayload),
                                           aztec.isCompact, (long)aztec.layerCount, (long)aztec.dataCodewordCount];
     }
     if ([object isKindOfClass:[CIPDF417CodeDescriptor class]]) {
         CIPDF417CodeDescriptor *pdf = object;
-        return [NSString stringWithFormat:@"%@ payload=%@ compact=%d rows=%ld columns=%ld",
-                                          class_getName([object class]), hexOf(pdf.errorCorrectedPayload),
+        return [NSString stringWithFormat:@"%s payload=%@ compact=%d rows=%ld columns=%ld",
+                                          apiName(object), hexOf(pdf.errorCorrectedPayload),
                                           pdf.isCompact, (long)pdf.rowCount, (long)pdf.columnCount];
     }
     if ([object isKindOfClass:[CIDataMatrixCodeDescriptor class]]) {
         CIDataMatrixCodeDescriptor *matrix = object;
-        return [NSString stringWithFormat:@"%@ payload=%@ rows=%ld columns=%ld ecc=%ld", class_getName([object class]),
+        return [NSString stringWithFormat:@"%s payload=%@ rows=%ld columns=%ld ecc=%ld", apiName(object),
                                           hexOf(matrix.errorCorrectedPayload), (long)matrix.rowCount,
                                           (long)matrix.columnCount, (long)matrix.eccVersion];
     }
-    return [NSString stringWithFormat:@"%@ (no member of its own)", class_getName([object class])];
+    return [NSString stringWithFormat:@"%s (no member of its own)", apiName(object)];
 }
 
 // The four error-correction levels, named by index because their values are the CHARACTERS 'L', 'M', 'Q'
@@ -175,9 +184,12 @@ static void qrBoundsGroup(void)
             continue;
         qrBounds(version, 3, CIQRCodeErrorCorrectionLevelQ, [NSString stringWithFormat:@"version %ld", (long)version]);
     }
-    for (NSInteger mask = 0; mask <= 8; mask += 8)
-        qrBounds(5, (uint8_t)mask, CIQRCodeErrorCorrectionLevelM,
-                 [NSString stringWithFormat:@"mask %ld", (long)mask]);
+    // every mask the argument can hold: the header says 0 to 7 and the host answers 8 and 255 as well, so
+    // the mask is the one parameter with no upper bound of its own (a uint8_t cannot hold more)
+    const NSInteger masks[] = { 0, 7, 8, 255 };
+    for (size_t i = 0; i < sizeof masks / sizeof masks[0]; i++)
+        qrBounds(5, (uint8_t)masks[i], CIQRCodeErrorCorrectionLevelM,
+                 [NSString stringWithFormat:@"mask %ld", (long)masks[i]]);
     for (NSInteger level = 0; level < 4; level++)
         qrBounds(7, 5, kLevels[level], [NSString stringWithFormat:@"level %s", kLevelNames[level]]);
 }

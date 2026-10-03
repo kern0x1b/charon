@@ -1,13 +1,21 @@
 # CoreImage's barcode descriptors: what the host answers, and what this family needs
 
 `CIBarcodeDescriptor` and its four subclasses (`CIQRCodeDescriptor`, `CIAztecCodeDescriptor`,
-`CIPDF417CodeDescriptor`, `CIDataMatrixCodeDescriptor`) are 26 of CoreImage's `missing` rows: 5 classes,
-8 initializers and factories, 13 properties. Measured on the host's own CoreImage on 2026-10-03 by
-`tests/backports/host/cibarcode/`, which is the oracle for this page: `run.sh` re-measures it on every run and
-fails if a single answer moved.
+`CIPDF417CodeDescriptor`, `CIDataMatrixCodeDescriptor`) are 25 of CoreImage's `missing` rows - 5 classes,
+8 initializers and factories, 16 properties, of which the base class carries none because
+`CIBarcodeDescriptor.h:26` declares it with no member - and they are carried in
+`Graphics/CIBarcodeDescriptor11.m`. The twenty-sixth row of the family,
+`+[CIQRCodeFeature symbolDescriptor]`, is a member of a feature class the port does not have and belongs to
+the detector family, not here.
 
-    MEASURED: the host still answers every case in host-answers.tsv, unchanged
-    ORACLE: 22 records of the host's own answers, all four ranges swept whole
+`tests/backports/host/cibarcode/` is the differential, and what it took to write one is on this page twice:
+the host's own answers and the way this port's classes can be compared with them at all.
+
+    RENAMED: 5 names the port defines, in this build only
+    COMPARED: 90 records against the host's own answers
+    HOST CRASH: 2 of the 13 groups end the host with a trap, and 0 records are ones the host never reached
+    BINDING: the port's renamed class answered every case above, and the host build has no port object in it
+    cibarcode: 90 records compared against the host's own answers, mutation RED
 
 ## What a descriptor is: the caller's bytes, and no Reed-Solomon
 
@@ -44,14 +52,20 @@ The floors and ceilings are the header's own sentences, and the host agrees with
 `aztec layers 0` answers `nil`. The Data Matrix header states no range and the host has none either, so a
 range check there would refuse inputs the host accepts.
 
-## What the host does not survive, measured
+## What the host does not survive, and what that turned out to be
 
-**Every boundary group ends in a trap.** `qr`, `aztec`, `pdf417-rows`, `pdf417-columns`, `matrix`, `payload`
-and `copy` each print their first record and then exit 133 (SIGTRAP) - the host answers the out-of-range input
-that comes first and traps on the first in-range one after it. The host's own `CIPDF417CodeDescriptor`
-separately dies in its own dealloc (exit 139) with every record already printed. So of this family's cases,
-the comparable ones on this machine are the four sweeps and the handful of `nil` answers above; the rest of
-each boundary group has no host answer to compare with.
+**The host's crashes here were this harness's bug, not ImageIO's.** An earlier reading of this page said every
+boundary group ends in a trap and that the host's own `CIPDF417CodeDescriptor` dies in its own dealloc. Both
+were `cases.m` printing a `class_getName()` result - a `const char *` - with `%@`, which sends
+`-respondsToSelector:` to a stack address where the ObjC runtime traps. With the format fixed, **twelve of the
+thirteen groups survive**, and the only two that still do not are `copy` and `copy-no-pdf417`, which answer
+their seven records and then abort (exit 134) inside the host's own archiving. Nothing in that last one is
+compared beyond the records that were printed, and the run says so.
+
+It is the third time this wave a probe's own format string produced a crash that read as the framework's
+behaviour (the ImageIO property table's `%@` with a C string, and the `CFStringGetCStringPtr` NULL), so the
+rule that came out of it is in the harness itself: a case prints with `%s` for anything that is not an
+object, and a trap in a probe is the probe's answer to check before it is the framework's.
 
 ## Why the port's own object cannot be compared with the host here
 
