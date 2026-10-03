@@ -42,26 +42,37 @@ NaN, and the arithmetic carries it into a NaN in both parts. That is what the ho
 answers (measured: the lower triangular `[[0,0],[0,1]]` against `(1,1)` gives a NaN in both parts of both
 elements).
 
-## The release's complex BLAS does not do a complex alpha
+## The release's complex BLAS, measured
 
-Measured on the host (macOS 27.0), calling it directly with `alpha = 2+i` and the vector element `2+i`:
+The multiply-add and the gather are the release's own `cblas_caxpy` / `cblas_zaxpy` and `cblas_ccopy` /
+`cblas_zcopy`, the same choice the real family makes with `cblas_saxpy` / `cblas_daxpy`. Measured on the
+host, a complex alpha is done properly by all four:
 
-| call | answer | the product |
-| --- | --- | --- |
-| `cblas_caxpy(1, alpha, x+1, 1, y, 1)` | `4+2i` | `3+5i` |
-| `cblas_caxpy(1, alpha={0,1}, x+1, 1, y, 1)` | `0+0i` | `-1+2i` |
-| `cblas_zaxpy(1, alpha, x+1, 1, y, 1)` | `4+2i` | `1+4i` |
+| call | alpha | x | host | the product |
+| --- | --- | --- | --- | --- |
+| `cblas_caxpy(1, &alpha, x, 1, y, 1)` | `2+i` | `3+4i` | `2+11i` | `2+11i` |
+| `cblas_caxpy` | `0+i` | `3+4i` | `-4+3i` | `-4+3i` |
+| `cblas_caxpy` | `2+i` | `3+0i` | `6+3i` | `6+3i` |
+| `cblas_caxpy` | `-1+0.5i` | `2-1i` | `-1.5+2i` | `-1.5+2i` |
+| `cblas_zaxpy` | `2+i` | `3+4i` | `2+11i` | `2+11i` |
+| `cblas_zaxpy` | `0+i` | `3+4i` | `-4+3i` | `-4+3i` |
+| `cblas_ccopy(2, src, 1, dst, 1)` | - | - | `1+1i 2+2i` | the first two |
+| `cblas_ccopy(2, src, 2, dst, 1)` | - | - | `1+1i 3+3i` | the first and the third |
 
-Both read the real part of `alpha` and discard the imaginary one: the first answer is exactly
-`2 * (2+i)`. Every factor in this family is complex, so delegating the multiply-add would drop the
-imaginary part of every product of every level-2 and level-3 call. **The multiply-add is the port's own
-pair arithmetic.** The gather beside it is the release's own `cblas_ccopy` / `cblas_zcopy`, which is
-measured to copy both parts of a value and to honour the increment (two elements at an increment of 2
-give the first and the third).
+**A correction, because it was measured wrong the first time and the wrong answer nearly landed.** An
+earlier version of this file reported that `cblas_caxpy` reads the real part of `alpha` and drops the
+imaginary one, on the strength of a probe that declared
 
-The real family keeps its `cblas_saxpy` / `cblas_daxpy`: its factor is a real `alpha`, which those handle
-correctly, and that is the real family's own measured behaviour. This is the one place where the two
-halves of the family take different routes and the reason is a measurement, not a preference.
+```c
+float _Complex a[2]; a[0] = 2.0f; a[1] = 1.0fi;
+```
+
+which is an array of two `float _Complex`, not one value: `a[0] = 2+0i` and `a[1] = 1+0i`, so the alpha
+that reached the call was `2+0i`, and `2 * (2+i) = 4+2i` is exactly the answer that probe recorded. The
+hand-written "expected" in that probe was wrong as well - `(2+i)(2+i)` is `3+6i`, not the `3+5i` it said.
+Both mistakes pointed the same way, at a defect in the host that is not there. The coordinator checked it
+and was right; the table above is the re-measurement, and the multiply-add is back in the release's BLAS
+where the real family has always kept its own.
 
 ## Two measured rules that are not the real family's
 
@@ -87,50 +98,62 @@ port's answer is also the eigen-decomposition and also the exact one.
 
 ## Where the host cannot be the oracle
 
-Five places, each named in the differential's case names and each checked against the header's own rule
+Six places, each named in the differential's case names and each checked against the header's own rule
 instead. A differential that cannot ask the host is still a differential: the expectation in each of
 these is written out from the header in the test, and it is not the code under test that produces it.
+Every one of the six was measured on the host on 2026-10-03, in one program with each case in a child of
+its own so that a case which ends the process is reported and does not hide the next.
 
-1. **A complex alpha anywhere.** Everything above. The affected cases are the two products, the outer
-   product and the matrix-vector product at a complex `alpha`; every one of them is compared against a
-   product written out by hand in the test.
+1. **The outer product ignores `x`.** Measured, for the complex type at `alpha = 1` with `x = {1, 2, 3}`
+   and `y = {5, -6}` at the columns `{0, 2}`: the host answers `C[0][2] = -6`, which is `y[1]` with no
+   factor of `x[1]` at all, where the header's `C = alpha * x * y'` gives `-12`. The **real type does the
+   same** (measured, the same `-6`), and the real family's differential cannot see it because every one
+   of its outer-product cases passes `x = {1, 1}`. The port multiplies by `x[k * incx]`, as the header
+   says, and the complex differential checks that against the two products written out by hand. The real
+   port does the same thing, so nothing has to change there - but its harness has a blind spot, and the
+   finding is with the coordinator.
 2. **A transpose the enumeration does not name, in a matrix-vector product.** The host hands it to
-   `cblas_cgemv`, which prints `BLAS error: Parameter transpose passed to cblas_cgemv was 77, which is
-   invalid` and ends the process. The port refuses it, which is what the header says.
-3. **A zero increment, in a matrix-vector product.** The host hands it to `cblas_cgemv` and the process
-   ends. The port folds the increments into the addresses, so every row's result lands on the one element
-   the increment names and the elements between are untouched; the differential checks that against a sum
-   of three products written out in the test.
+   `cblas_cgemv`: `BLAS error: Parameter transpose passed to cblas_cgemv was 77, which is invalid`, and
+   the child exits 255. The port refuses it, which is what the header says.
+3. **A zero increment, in a matrix-vector product.** The host hands it to `cblas_cgemv`:
+   `BLAS error: Parameter incY passed to cblas_cgemv was 0`, and the child exits 255. The port folds the
+   increments into the addresses, so every row's result lands on the one element the increment names and
+   the elements between are untouched; the differential checks that against a sum of three products
+   written out in the test.
 4. **A leading dimension below what the layout needs, in either triangular solve, and an order the
-   enumeration does not name.** The host hands it to `cblas_ctrsm` and walks off the caller's buffer.
-   The real family's differential never asks the host for an `ldb` below what the layout needs for the
-   same reason.
-5. **A row permutation whose target is outside the matrix or is the row itself.** Measured: the host
-   answers `SPARSE_SUCCESS` for `{5,5}` on a 2x3 matrix and leaves row 0 holding denormals and a `1e29`
-   - it writes through its own row array - and the matrix then cannot be destroyed either (the run ends
-   with a SIGBUS). The port skips such a target, which is what the swap loop the header writes out does,
-   and the differential checks the port against that loop run over a plain array of the six entries.
+   enumeration does not name.** The host hands it to `cblas_ctrsm`
+   (`lda must be >= MAX(M,1): lda=0 M=0 ... cblas_ctrsm had an invalid value`) and walks off the caller's
+   buffer; the child exits 255. The real family's differential never asks the host for an `ldb` below what
+   the layout needs for the same reason.
+5. **A row permutation whose target is outside the matrix or is the row itself.** The host answers
+   `SPARSE_SUCCESS` for `{5,5}` on a 2x3 matrix and leaves row 0 holding denormals and a `1e29` - it
+   writes through its own row array - and the child then dies on signal 10. The port skips such a target,
+   which is what the swap loop the header writes out does, and the differential checks the port against
+   that loop run over a plain array of the six entries.
+6. **The stored-zero count.** The section below.
 
 Three more, smaller: a matrix that is not one of ours is never handed to either side (the host
 dereferences a foreign pointer - measured: `sparse_elementwise_norm_float_complex` on `0x1234` is a
-SIGBUS), a `row_end` of `NULL` and the trace at an offset of 4 or more on a 3x3 (measured: offsets -6 to
+SIGBUS), a `row_end` of `NULL`, and the trace at an offset of 4 or more on a 3x3 (measured: offsets -6 to
 3 answer, 4 is a SIGBUS).
 
-## One place the host answers two different things
+## One place the host does not answer one thing
 
-A value of exactly zero, inserted into an empty row. With sequenced statements in a fresh process the
-host stores it and counts it - `nz` goes 1, 2, 2 for the insertions `0@(0,1)`, `2@(1,0)` and `0` over
-`(1,0)`, and row 0 holds one entry - and the extract answers `0+0i` for it. Inside the differential's
-process, the same three insertions answer `nz = 1` with row 0 empty, which is the answer as if the zero
-had been dropped; and the host's own **real** family answers the dropped one, where `sparse_insert_entry_float`
-answers `nz = 1` with row 0 empty for the same sequence.
+A value of exactly zero, inserted into an empty row. Measured three ways, all with sequenced statements,
+all on the same build:
 
-A behaviour that differs between two runs of the same calls on the same build is not a contract. The port
-follows the real family's own rule - the entry is stored and counted - which is also what
-`sparse_insert_entry_float_complex` is documented to do, and the differential checks that rule against the
-port and records the host's two answers rather than picking one of them. **The real family has the same
-divergence and its differential does not cover the case**, which is worth a decision of its own and is
-reported to the coordinator.
+| what is asked | host |
+| --- | --- |
+| complex, `0@(0,1)` then `2@(1,0)` then `0` over `(1,0)` | count 1, then 1; row 0 holds 1 |
+| complex, `0@(0,1)`, `5@(0,1)`, `0@(0,1)`, `0@(1,1)`, `0@(0,0)` | count 1, 1, 1, 2, 3 - the entry stored, the extract answering `0+0i` for it |
+| the same three insertions, **real** type | count 1, then 1; row 0 holds 1 |
+
+The second row is what `facts/Accelerate/SparseBLAS.md` records for the real family ("inserting 0.0 into an
+empty matrix leaves its nonzero count at 1") and the first and third are what this family's differential
+saw, and they are not the same answer to the same calls. A behaviour that differs between two programs on
+one build is not a contract, so the port follows the real family's own rule - the entry is stored and
+counted - which is also what `sparse_insert_entry_float_complex` is documented to do, and the differential
+checks that rule against the port and records the host's answers rather than picking one.
 
 Two further measurements came out of writing the harness, both of which cost real rounds and are the kind
 of thing a reader will otherwise repeat:
