@@ -1287,5 +1287,3 @@ echo "ok  $canswers answers agree with Apple's own class on this host, exception
 
 log=$build
 exit 0
-log=$build
-exit 0
