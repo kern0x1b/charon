@@ -20,7 +20,9 @@ needs_arguments="registry cachereader fuzz"
 records_only="naturallanguage-record smallapis2"
 # Directories that hold a helper the differentials use rather than a test of their own: nothing here builds or
 # checks anything, and passing them over silently is the blind spot this sweep exists to close, so each is named.
-helpers="nsdataasset scenekit-defaults"
+# common holds compare.py and mutate.py, which other harnesses import; it builds and checks nothing of
+# its own, so it is a helper and not a test that failed to grow a run.sh.
+helpers="nsdataasset scenekit-defaults common"
 
 alive='^(ok|FAIL|note|skip|stage|record|records:|checks=|[0-9]+ (of|checks))'
 
