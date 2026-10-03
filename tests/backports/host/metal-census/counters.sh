@@ -11,8 +11,8 @@
 # rename Apple's own declarations into the same names, which is a duplicate interface - and NOT
 # renaming the port would bind the case's externs to Apple's and compare Apple's constant with itself.
 #
-# NO DEVICE IS EVER CREATED. These are strings; MTLCreateSystemDefaultDevice() hangs on a machine
-# with no GPU, so nothing here calls it.
+# NO DEVICE IS EVER CREATED. These are strings and a descriptor asks a device nothing, so nothing here
+# calls one (facts/Metal/DeviceOnThisMachine.md measures both).
 #
 # A MUTATION THAT DOES NOT BUILD IS "RUN FAILED", NEVER RED, for the reason it is so in every
 # harness in this directory: a mutation compiled with a wrong -I depth once left the previous binary

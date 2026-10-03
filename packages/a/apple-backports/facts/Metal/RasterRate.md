@@ -17,7 +17,7 @@ They are mutually dependent and land together: the map **owns** the layer array 
 **They are all plain data holders, and that is the whole case for carrying them.** A rasterization-rate
 map says how densely a render target is sampled. A caller writes a screen size, a label and some
 sample rates, and reads the same numbers back. Nothing here asks a device anything, and **no device is
-created** — `MTLCreateSystemDefaultDevice()` hangs on a machine with no GPU.
+created** — a descriptor asks a device nothing (`facts/Metal/DeviceOnThisMachine.md`).
 
 ## `layerCount` is the leading contiguous run, not the array's length
 

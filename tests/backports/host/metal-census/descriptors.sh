@@ -10,7 +10,7 @@
 # the failure looks like a missing main rather than a mismatched architecture.
 #
 # NO DEVICE IS EVER CREATED, and the case is built so that it CANNOT be: a descriptor is
-# [[X alloc] init] on both sides, and MTLCreateSystemDefaultDevice() HANGS on a machine with no GPU.
+# [[X alloc] init] on both sides, and a descriptor asks a device nothing (facts/Metal/DeviceOnThisMachine.md
 # So the oracle is Apple's own object of the same class, and the port is compared to it property by
 # property. The check below refuses a case that has linked a device, because a case that made one
 # would either hang or be measuring something else.

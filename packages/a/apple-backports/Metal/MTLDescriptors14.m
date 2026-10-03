@@ -16,7 +16,7 @@
 //
 // NOTHING HERE CREATES A DEVICE, and the host differential is built on that. Each side is
 // `[[X alloc] init]` - the port's class and Apple's - and a descriptor needs no device to exist.
-// `MTLCreateSystemDefaultDevice()` HANGS on a machine with no GPU, so no case in this family calls
+// A descriptor asks a device nothing, so no case in this family creates one (facts/Metal/DeviceOnThisMachine.md
 // it, and the differential compares two objects that were never made by a device.
 //
 // THE PROPERTIES THAT HOLD A DEVICE-MADE OBJECT - the MTLBuffer, MTLCounterSet, MTLFunction and
