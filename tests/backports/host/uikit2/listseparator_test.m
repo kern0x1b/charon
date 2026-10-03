@@ -7,7 +7,6 @@
 #import <UIKit/UIKit.h>
 #import <objc/message.h>
 #import "check.h"
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
 @interface CharonHostUIListSeparatorConfiguration : NSObject <NSCopying, NSSecureCoding>
 - (instancetype)initWithListAppearance:(UICollectionLayoutListAppearance)listAppearance;

@@ -22,14 +22,14 @@ the held caches:
 
 | cache | the class's own instance methods | the metaclass's own methods |
 | --- | --- | --- |
-| 10.0.1 arm64 | `-_initWithDeviceTypes:mediaType:position:`, `-dealloc`, `-description`, `-devices`, **`-init`** | `+discoverySessionWithDeviceTypes:mediaType:position:` — and nothing else |
+| 10.0.1 arm64 | `-_initWithDeviceTypes:mediaType:position:`, `-dealloc`, `-description`, `-devices`, **`-init`** | `+discoverySessionWithDeviceTypes:mediaType:position:` - and nothing else |
 | 16.0 arm64e | `...`, **`-init`**, `...` (7 entries) | 13 entries, `+initialize` among them, and **never `+new`** |
 
 So the class **implements `-init`** from the first release that has it, and **does not implement `+new`** at any
-release measured. `+new` is `NSObject`'s and every class inherits it — measured on the host as well: `new` is in
+release measured. `+new` is `NSObject`'s and every class inherits it - measured on the host as well: `new` is in
 `NSObject`'s own metaclass list of 115 entries and not in this class's metaclass list of 16.
 
-What that `-init` answers is **nil, with no exception** — measured on the host's own class:
+What that `-init` answers is **nil, with no exception** - measured on the host's own class:
 
 ```
 CLASS AVCaptureDeviceDiscoverySession own-init=1 own-new=0 init=ok nil new=ok nil
@@ -41,7 +41,7 @@ a selector in the port's metadata where Apple's class has none and answer the ca
 already answers. `+[NSObject new]` calls `[[self alloc] init]`, so the inherited `+new` reaches that same `-init` and
 answers nil too, which is what the host answers.
 
-`tests/backports/host/unavailable-init` holds both halves — the row is in `expectations.tsv` as framework
+`tests/backports/host/unavailable-init` holds both halves - the row is in `expectations.tsv` as framework
 `AVFoundation`, with `port-init=nil` (a third value beside `raise` and `none`: owed, and the answer is nil rather
 than a refusal) and `port-new=none`.
 
