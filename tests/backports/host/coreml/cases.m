@@ -728,4 +728,6 @@ void coreml_run(NSString *models, CoreMLRecorder record)
     providers(record);
     keys(record);
     constants(record);
+    /* The compute device family, which needs no container: see devices-cases.m. */
+    coreml_device_cases(record);
 }

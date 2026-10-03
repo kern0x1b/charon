@@ -10,3 +10,7 @@
 typedef void (^CoreMLRecorder)(NSString *name, NSString *value);
 
 void coreml_run(NSString *models, CoreMLRecorder record);
+
+/* The compute device family of iOS 17.0, in its own file: it is a family of five names and nothing of it
+ * needs a container, so it is recorded beside the containers' cases rather than among them. */
+void coreml_device_cases(CoreMLRecorder record);

@@ -52,7 +52,7 @@ fi
 # 1. what the system's own Core ML answers. COREML_HOST tells the cases file to compile each
 #    container with the framework's own compiler first: this host refuses to read an uncompiled
 #    .mlmodel, and the two runs below are of one model in the two forms each framework reads.
-xcrun clang $common -DCOREML_HOST=1 -I"$here" "$here/record.m" "$here/cases.m" $libs -o "$build/system"
+xcrun clang $common -DCOREML_HOST=1 -I"$here" "$here/record.m" "$here/cases.m" "$here/devices-cases.m" $libs -o "$build/system"
 COREML_RECORDS="$build/system.json" "$build/system" "$models"
 
 # 2. the same questions of the port, with every Core ML name it answers behind a Charon prefix so
@@ -81,7 +81,7 @@ port() {
     dir=$2
     mkdir -p "$dir"
     xcrun clang $common -include "$build/rename.h" -I"$here" -I"$src" \
-        "$here/record.m" "$here/cases.m" \
+        "$here/record.m" "$here/cases.m" "$here/devices-cases.m" \
         "$src"/CharonML*.c "$src"/*.m $libs -o "$dir/run"
 }
 mkdir -p "$build/port"
@@ -98,6 +98,25 @@ import json, os, sys
 system, port = json.load(open(sys.argv[1])), json.load(open(sys.argv[2]))
 divergent = os.environ.get("COREML_DIVERGENT", "")
 differences, missing, one_sided = [], [], []
+# The keys whose answer is about hardware THIS RELEASE has none of, each named. iOS 6 has no Metal
+# driver and no neural engine at all, so the port's list of compute devices holds the one unit it has,
+# the CPU, where this host's holds a neural engine, a GPU and a CPU; and the two properties that read a
+# device's own hardware answer what a device of this port's knows, which is nothing. Every other key of
+# the family is compared like any other, and an allowance that stops being needed is a failure: a list
+# nobody checks is a list that hides whatever it names.
+HARDWARE = {
+    "devices/all count": "the count of the compute devices this host has against the one this release has",
+    "devices/all 0": "the first of them, which is a neural engine here and the CPU there",
+    "devices/all 1": "the second of them, which only a host with a GPU or a neural engine has",
+    "devices/all 2": "the third of them, which only a host with a GPU or a neural engine has",
+    "devices/model count": "the same count, asked of MLModel",
+    "devices/model 0": "the same first device, asked of MLModel",
+    "devices/model 1": "the same second device, asked of MLModel",
+    "devices/model 2": "the same third device, asked of MLModel",
+    "devices/gpu listed metal device": "a GPU device's own Metal device, and this release has no Metal",
+    "devices/ane listed core count": "a neural engine's own core count, and this release has no engine",
+}
+stale = [key for key in HARDWARE if key in system and key in port and system[key] == port[key]]
 # The containers the release refused to load, read out of its own record rather than named here: one
 # it refused has a model/<name>/error key and one it loaded has none. For such a container the release
 # has no answer at all, so what the port answers for it is not compared against nothing, and it is not
@@ -116,7 +135,7 @@ for key in sorted(set(system) | set(port)):
     container = parts[1] if len(parts) > 2 else ""
     one_sided.append((key, container, "the port" if key in system else "the release",
                       system.get(key, port.get(key))))
-missing = [row for row in one_sided if row[1] not in refused]
+missing = [row for row in one_sided if row[1] not in refused and row[0] not in HARDWARE]
 # A number may differ by the width of the type it is stored in: the host runs the same arithmetic
 # on its own hardware, in float32, and the port's interpreter is measured against coremltools' own
 # runtime to 1e-5 by tools/coreml/check-predict.sh. Here the tolerance is a float32's, and a number
@@ -147,7 +166,9 @@ for key, want, got in differences:
     # exempts a prefix is a rule that hides a regression in whatever the prefix names.
     recorded = ((key.startswith("value/") and divergent and ("/" + divergent + "/") in key)
                 or str(want).startswith("raised "))
-    if recorded:
+    if key in HARDWARE:
+        informational.append((key, want, got))
+    elif recorded:
         informational.append((key, want, got))
     elif key.startswith("value/") and numeric(key, want, got):
         pass  # within the tolerance of the type, which is not a difference
@@ -165,9 +186,19 @@ for key, container, side, value in one_sided:
         print("one side only:", key, "- no answer on", side, "; the release refused", container,
               "with", repr(refused[container])[:120], "and answered nothing else for it")
 for key, want, got in informational:
-    print("divergent (recorded):", key)
+    if key in HARDWARE:
+        print("hardware (this release has none of it):", key, "-", HARDWARE[key])
+    else:
+        print("divergent (recorded):", key)
     print("  system", want[:200])
     print("  port  ", got[:200])
+for key, container, side, value in one_sided:
+    if key in HARDWARE and side == "the release":
+        print("hardware (this release has none of it):", key, "-", HARDWARE[key],
+              "- and no answer on the port's side either")
+for key in stale:
+    print("STALE ALLOWANCE", key, "- both sides now answer", repr(system[key])[:120],
+          "so the difference this release's hardware causes is gone and the allowance must go with it")
 unanswered = len(one_sided) - len(missing)
 print("compared %d keys, %d differ, %d missing, %d recorded divergences, %d for a container the release refused"
       % (len(set(system) | set(port)), len(hard), len(missing), len(informational), unanswered))
@@ -176,7 +207,7 @@ print("compared %d keys, %d differ, %d missing, %d recorded divergences, %d for 
 # red for any reason never reached its controls, so a dead mutant could not be seen for as long as the
 # comparison stayed red. The two verdicts are reported together and either one fails the run.
 with open(sys.argv[3], "w") as out:
-    out.write("differs\n" if hard or missing else "same\n")
+    out.write("differs\n" if hard or missing or stale else "same\n")
 PY
 verdict=$(cat "$build/verdict")
 echo "comparison: $verdict"
