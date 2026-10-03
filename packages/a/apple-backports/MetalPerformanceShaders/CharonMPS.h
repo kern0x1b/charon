@@ -329,6 +329,9 @@ static inline void CharonMPSBatch(NSUInteger batchStart, NSUInteger batchSize, N
 @interface MPSState (CharonMPS)
 - (void)charon_mps_appendBuffer:(size_t)size;
 - (void)charon_mps_appendTexture:(MTLTextureDescriptor *)descriptor;
+// A state that already HAS its resources - MPSState11.m builds these two and MPSNNStates12.m puts them in
+// the list, which is what makes the state answer -resource and -bufferSizeAtIndex: for them.
+- (void)charon_mps_appendResource:(id<MTLResource>)resource;
 @end
 
 @interface MPSTemporaryMatrix (CharonMPS)
