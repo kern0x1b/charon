@@ -134,6 +134,58 @@ the block. That case is placed so an unclamped index would land on a cell the se
 on a band with no AddressSanitizer: a two-section two-channel setup and a one-section four-channel window at channel one, and
 the two answers are 10 and 140 with the guard and 8 and 63 without it.
 
+## The single-section setters of 15.0: vDSP_biquad_SetCoefficientsDouble and _Single
+
+Two rows the ledger carried as `missing`, and `facts/Accelerate/vDSPPlacement.md` recorded as **blocked for
+want of a guest probe**, on the grounds that "a port cannot construct one [a `vDSP_biquad_Setup`], so the host
+differential has nothing to call it on". That reasoning does not hold and this section is the measurement that
+shows it: **each side builds its own setup with its own `vDSP_biquad_CreateSetup` and reads the change back
+through its own `vDSP_biquad`. Nothing crosses, so nothing needs a layout the two sides agree on.** The setup
+is never read on either side - vDSP.h declares `struct vDSP_biquad_SetupStruct` with no published layout and
+says the contents are to be touched only through the setup routines - and that is what the case in
+`tests/backports/host/vdspbiquad15` does. No guest probe was needed and none is pending.
+
+What they do, measured against the host with three runs of the same input over the same saved delay:
+
+| run | what it is |
+| --- | --- |
+| `after` | the setup the setter ran on, over the delay a first run with the old coefficients left |
+| `fresh` | a setup made from the window's blocks in the old ones' places, over that same delay |
+| `old` | the same setup with no setter at all, over that same delay |
+
+`after` equals `fresh` on both sides and differs from `old`, so **the setter replaces the five coefficients of
+each section the window names and touches nothing else**: the caller's delay is the filter's state and this
+single-section form keeps none of its own. Over setups of one, two and three sections and every window inside
+them - 20 windows per precision, both precisions - the port matches the host element for element, and the
+mutant that also cleared the delay (`fresh` over a zero delay) is required to differ from the rule first.
+
+`vDSP_biquad_SetCoefficientsSingle` takes the caller's five as floats and a setup made from the same five as
+doubles answers the same, so the values are widened once on the way in, which is what the declaration's
+element type says and what the case asks of both sides.
+
+**A window that reaches past the setup is not asked of the host.** It reads and writes outside its own object,
+and what comes back depends on the window: over one section, `start_sec` 1 answers coefficients the setup never
+had and `nsec` 4 answers values out of uninitialised memory; over two sections, `start_sec` 1 with `nsec` 2
+ends the process with a trap (rc 133) and `start_sec` 2 ends it with a segfault (rc 139) - five windows, one
+call per process. The port's answer is the rule the multiple-biquad setters of this package already answer for
+a cell outside the window (measured on the 9.0 rows, "The setters" above): **the sections the window names and
+the setup has change, and the ones it does not have do not**, so a window that names nothing writes nothing.
+The case asserts that against a setup the port made from the coefficients the window should leave behind, so it
+is the port against itself with the arithmetic spelled out, and it says which of the two each window is.
+
+A NULL setup and a NULL array are undefined by the declaration's `__nonnull`; both are asked of the port alone,
+each in a child process so that a port writing through either ends a process the case reports, and the NULL
+array is asked again in this process, where the case says the coefficients did not move.
+
+A setup of **no** sections is not asked of either setter: the port's own `vDSP_biquad_CreateSetup` answers NULL
+for `M = 0`, which is that row's answer and not this one's, and the host answers a setup and writes no output
+at all for a cascade of no sections. The case says so rather than inventing a setup to ask about.
+
+`gates: coordinator`. The differential is `75 checks, 0 failures`, clean under AddressSanitizer with
+`SAN=1`, and the mutation proof is one line of `vDSPBiquad15.m` - `into[1] = into[0]` after the copy, which
+puts b0 in b1's place - giving `75 checks, 43 failures`, every one of them a window case. Reverted
+byte-identically: `75 checks, 0 failures`.
+
 ## What has not been run
 
 The device test for this group is `tests/backports/device/vdspbiquad.m`, and it has not been run: no device or emulator
