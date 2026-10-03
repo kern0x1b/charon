@@ -198,6 +198,19 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
 
 // The nine /Ff bit members, one line each and each with its OWN value, because a line carrying all nine
 // registers as one key - which is how the outline facts were lost the first time round.
+// The fixtures whose widgets a PDF STRING /T names - host.m's copy of this comment carries the list and
+// why it is spelled out rather than a prefix test, and it is the same list on both sides.
+static BOOL charonFixtureNamesItsWidgets(const char *name)
+{
+    static const char *const named[] = {
+        "widget-t-literal", "widget-t-empty", "widget-t-merged", "widget-t-mergedname",
+    };
+    for (unsigned i = 0; i < sizeof(named) / sizeof(*named); i++)
+        if (strncmp(name, named[i], strlen(named[i])) == 0 && name[strlen(named[i])] == '.')
+            return YES;
+    return strncmp(name, "widget-t-extra-", 15) == 0;
+}
+
 static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotation)
 {
     printf("%s.flags.readOnly=%d\n", prefix, (int)[annotation isReadOnly]);
@@ -209,6 +222,9 @@ static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotati
     printf("%s.flags.listChoice=%d\n", prefix, (int)[annotation isListChoice]);
     printf("%s.flags.widgetControlType=%ld\n", prefix, (long)[annotation widgetControlType]);
     printf("%s.flags.activatableTextField=%d\n", prefix, (int)[annotation isActivatableTextField]);
+    if (charonFixtureNamesItsWidgets(prefix))
+        printf("%s.flags.fieldName=%s\n", prefix,
+               [annotation fieldName] ? [[annotation fieldName] UTF8String] : "(nil)");
 }
 
 // ---- the action family and PDFDestination -------------------------------------------------------

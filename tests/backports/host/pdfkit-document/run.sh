@@ -494,7 +494,12 @@ for key in \
     widget-ftch4.pdf.page0.annotations.count \
     widget-ftch5.pdf.page0.annotations.count \
     widget-ftbtn0.pdf.page0.annotation0.flags.activatableTextField \
-    act-goto-fit.pdf.page0.annotation0.flags.activatableTextField
+    act-goto-fit.pdf.page0.annotation0.flags.activatableTextField \
+    widget-t-literal.pdf.page0.annotation0.flags.fieldName \
+    widget-t-empty.pdf.page0.annotation0.flags.fieldName \
+    widget-t-merged.pdf.page0.annotation0.flags.fieldName \
+    widget-t-mergedname.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

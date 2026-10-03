@@ -113,6 +113,32 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
 
 // The nine /Ff bit members, one line each and each with its OWN value, because a line carrying all nine
 // registers as one key - which is how the outline facts were lost the first time round.
+// The fixtures whose widgets a PDF STRING /T names, and -fieldName is compared only over those.  The list
+// is of FIXTURES and not of annotations so that both sides apply the same rule without either reading an
+// annotation dictionary the other cannot reach: PDFKit exposes no accessor for one, and a gate that asked
+// each side's own -fieldName and checked whether it LOOKED synthesised would be comparing the member's
+// opinion of itself.
+//
+// widget-t-name.pdf is deliberately NOT in it: its /T is a PDF NAME, which the host does not read, so the
+// widget names nothing and the host synthesises.  A prefix test swept it in and the differential caught
+// that, which is why the list is spelled out.
+//
+// Over every other fixture the host answers a name synthesised from a counter that runs ACROSS DOCUMENTS
+// in one process - four fixtures loaded in order answer text0..text2, text3..text4, text5..text6 and
+// text7 - so no port can reproduce it and no key is printed there.  facts/PDFKit/Annotation11.md has the
+// measurement and the three fixtures that make the counter's subject visible.
+static BOOL charonFixtureNamesItsWidgets(const char *name)
+{
+    static const char *const named[] = {
+        "widget-t-literal", "widget-t-empty", "widget-t-merged", "widget-t-mergedname",
+    };
+    for (unsigned i = 0; i < sizeof(named) / sizeof(*named); i++)
+        if (strncmp(name, named[i], strlen(named[i])) == 0 &&
+            name[strlen(named[i])] == '.' )
+            return YES;
+    return strncmp(name, "widget-t-extra-", 15) == 0;
+}
+
 static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotation)
 {
     printf("%s.flags.readOnly=%d\n", prefix, (int)annotation.isReadOnly);
@@ -124,6 +150,8 @@ static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotati
     printf("%s.flags.listChoice=%d\n", prefix, (int)annotation.isListChoice);
     printf("%s.flags.widgetControlType=%ld\n", prefix, (long)annotation.widgetControlType);
     printf("%s.flags.activatableTextField=%d\n", prefix, (int)annotation.isActivatableTextField);
+    if (charonFixtureNamesItsWidgets(prefix))
+        printf("%s.flags.fieldName=%s\n", prefix, annotation.fieldName.UTF8String ?: "(nil)");
 }
 
 // ---- the action family and PDFDestination -------------------------------------------------------

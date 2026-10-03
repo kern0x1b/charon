@@ -47,7 +47,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "the NEGATION of bit 15 (NoToggleToOff) AND of bit 17 (Pushbutton).  Measured: the bit-15 fixture answers NO and so does the bit-17 one, while the other eleven answer YES - so it is neither bit, and bit 17 clearing it is not something the format's own name suggests - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "effect": "the NEGATION of bit 15 (NoToggleToOff) AND of bit 17 (Pushbutton).  The table says bit 15 and nothing about a pushbutton, so the second half is the HOST's own and is what the fixtures add: the bit-15 fixture and the bit-17 fixture each answer NO while the other eleven answer YES",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
   },
@@ -57,7 +57,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "/Ff bit 26, and NOT bit 16 whose name in Table 8.39 IS RadioInUnison.  Measured: bit 16 alone answers NO and bit 26 alone answers YES, and the all-bits fixture - which carries both - answers YES - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "effect": "/Ff bit 26 - which is RadiosInUnison in Table 8.39's BUTTON field table and RichText in its TEXT field table, and the host reads it either way: the bit-26 fixture carries /FT /Tx and answers YES.  It is NOT bit 16, whose name is Radio.  Measured on widget-flags.pdf's one-annotation-per-bit shape: bit 16 alone answers NO and bit 26 alone answers YES, and the all-bits fixture - which carries both - answers YES",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
   },
@@ -77,7 +77,7 @@
    "introduced": "11.0",
    "minimum": "6.0",
    "status": "implemented",
-   "effect": "a PRIORITY over bits 16 and 17 and not a two-bit field read as a shift: neither bit answers 2 (CheckBox), bit 17 alone answers 0 (PushButton), bit 16 alone answers 1 (RadioButton), and both at once answers 1.  So bit 16 wins, else bit 17, else the CheckBox default - and a shift by 16 would answer 0, 1, 2 and 3 for those four, which is what told the two rules apart - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "effect": "THE TABLE'S RULE for bits 16 (Radio) and 17 (Pushbutton): Pushbutton -> kPDFWidgetPushButtonControl, Radio -> kPDFWidgetRadioButtonControl, NEITHER -> kPDFWidgetCheckBoxControl.  What the fixtures add is the collision: BOTH bits at once answer RadioButton, measured on widget-allflags.pdf, which carries every bit.  A two-bit field read as a shift would answer 0, 1, 2 and 3 for the four shapes rather than 0, 1, 2 and 1, and the CheckBox default is what tells the two rules apart",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
   },

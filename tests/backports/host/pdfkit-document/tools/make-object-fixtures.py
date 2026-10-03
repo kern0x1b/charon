@@ -346,16 +346,114 @@ WIDGET_STATES = [widget([(b"FT", b"/Btn"), (b"V", b"(off)"), (b"AS", state)])
 
 # the VALUE keys, one annotation per key, because a key that is ABSENT and a key that is present with
 # the wrong type are two different answers and the port has to tell them apart
+# /FT is written ONCE here too: the first version of this list passed /FT as an extra AND let the helper
+# write it, so every dictionary carried /FT /Tx twice - and the host then answered a SYNTHESISED fieldName
+# for a widget that had /T (the field) in plain sight, which read as "fieldName is not /T".  See
+# widget-t-literal.pdf, which carries one /FT and answers "the field".
 WIDGET_VALUES = [
-    widget([(b"FT", b"/Tx"), (b"V", b"(typed)"), (b"DV", b"(preset)"), (b"MaxLen", b"7"),
+    widget([(b"V", b"(typed)"), (b"DV", b"(preset)"), (b"MaxLen", b"7"),
             (b"Q", b"2"), (b"Opt", b"[(one) (two) (three)]"), (b"T", b"(the field)"),
             (b"TU", b"(alternate)"), (b"DA", b"/Helv 12 Tf 0 g")]),
     # the same with the value keys of the wrong type, one each, so the reader has to refuse them
-    widget([(b"FT", b"/Tx"), (b"V", b"7"), (b"DV", b"[1 2]"), (b"MaxLen", b"(seven)"),
+    widget([(b"V", b"7"), (b"DV", b"[1 2]"), (b"MaxLen", b"(seven)"),
             (b"Q", b"(two)"), (b"Opt", b"(not an array)")]),
     # and with none of them, so the absent answer is measured on the same shape
-    widget([(b"FT", b"/Tx")]),
+    widget([]),
 ]
+
+# /T (the field) PLUS one other key, one annotation each, because widget-t-literal.pdf reads its /T and
+# widget-values.pdf does not - and both carry the SAME literal /T string on the same dictionary, so
+# something else in the second is what stops the read.  One key per fixture finds which.
+# The list is a LIST OF PAIRS and each extra key is APPENDED to it - the first version wrote
+# (b"T", b"(the field)") + extra, which concatenates two TUPLES and makes a three-element one, so the
+# fixture writer unpacked a pair and raised.  Silent until it did not, which is this family's habit.
+T_WITH_ONE_MORE_NAMES = ("nothing", "DA", "TU", "Opt", "Q", "MaxLen", "V", "DV", "F")
+# each entry is a LIST of one annotation, because build() takes a list and the loop below hands it
+# [annotations[0]] - a bare annotation is BYTES, and indexing into it gives an int, which is how the first
+# version of this raised inside the fixture writer rather than in the probe
+T_WITH_ONE_MORE = [
+    [widget([(b"T", b"(the field)")] + list(extra))]
+    for extra in ((), ((b"DA", b"/Helv 12 Tf 0 g"),), ((b"TU", b"(alternate)"),), ((b"Opt", b"[(one)]"),),
+                 ((b"Q", b"2"),), ((b"MaxLen", b"7"),), ((b"V", b"(typed)"),),
+                 ((b"DV", b"(preset)"),), ((b"F", b"4"),))]
+
+# A page whose annotations are NOT all widgets, so the number in a synthesised name says what it counts:
+# three annotations, only one of them a widget, and the widget is the THIRD.  A synthesised "text2" means
+# it counts annotations, "text0" means it counts widgets, and the two differ here.
+WIDGET_MIXED = [
+    annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4"), (b"Contents", b"(a link)")]),
+    annot(b"Square", [(b"Rect", b"[40 40 140 140]"), (b"F", b"4"), (b"Contents", b"(a square)")]),
+    widget([]),
+    annot(b"Popup", [(b"Rect", b"[60 60 160 160]"), (b"F", b"4"), (b"Contents", b"(a popup)")]),
+    widget([]),
+]
+
+# The number in a SYNTHESISED field name, which is what a nameless widget answers.  Three shapes, so
+# the counter's subject is visible: three widgets alone, a link before two widgets, and a link BETWEEN
+# two widgets.  If it counts annotations the first is 0,1,2 and the others shift; if it counts widgets the
+# three are all 0,1,2.
+SYNTH_COUNT_WIDGETS_ONLY = [widget([]), widget([]), widget([])]
+SYNTH_COUNT_LINK_FIRST = [annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4")]),
+                          widget([]), widget([])]
+SYNTH_COUNT_LINK_MIDDLE = [widget([]), annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4")]),
+                           widget([])]
+
+# /T, spelled four ways, because -[PDFAnnotation fieldName] answers a SYNTHESISED name on the first
+# version of the widget fixtures and the coordinator's challenge is right that this fits the
+# fixture-defect pattern rather than a host behaviour: a widget that DOES carry /T must be read first,
+# with /T as a literal string on the widget's own dictionary, then as a NAME, then on a PARENT field
+# dictionary with the widget as its /Kid - which is the MERGED field+widget shape of PDF 1.7 Table 8.62,
+# and the shape a /T is really written in.
+T_LITERAL = [widget([(b"T", b"(the field)")])]
+T_NAME = [widget([(b"T", b"/TheField")])]
+T_EMPTY = [widget([(b"T", b"()")])]
+
+def merged_field_child(field_extra, child_extra):
+    """A FIELD dictionary holding /T with a WIDGET that names it as its /Parent, the other half of the
+    merged shape.  The field is not in the page's /Annots: it is an indirect object the widget points at.
+    """
+    widget_body = annot(b"Widget", [(b"Rect", b"[40 40 240 70]"), (b"F", b"4"), (b"FT", b"/Tx")]
+                        + child_extra)
+    return widget_body, field_extra
+
+
+def build_merged_field(directory, name, child_extra, field_extra=b"/T (parent field)"):
+    """One page whose /Annots holds a WIDGET whose /Parent is a FIELD dictionary, the merged shape.
+
+    Laid out by hand because the two dictionaries reference each other: the field is object 7 and the
+    widget object 8, the widget names 7 and the catalog is 1.  Both /Lengths and both xref offsets are
+    measured as they are written, like every other fixture here.
+    """
+    font = b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"
+    text = b"BT /F1 12 Tf 72 720 Td (merged) Tj ET\n"
+    objects = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"",                       # the page, filled in once the widget's number is known
+        b"<< /Length " + str(len(text)).encode() + b" >>\nstream\n" + text + b"\nendstream",
+        b"",                       # the widget, filled in below
+        font,
+        b"",                       # the field, filled in below
+    ]
+    objects[4] = (b"<< /Type /Annot /Subtype /Widget /Rect [40 40 240 70] /F 4 /FT /Tx /Parent 7 0 R "
+                  + child_extra + b" >>")
+    objects[6] = (b"<< /FT /T " + field_extra + b" /Kids [5 0 R] >>")
+    objects[2] = (b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Annots [5 0 R] "
+                  b"/Resources << /Font << /F1 6 0 R >> >> /Contents 4 0 R >>")
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for number, body in enumerate(objects, start=1):
+        offsets.append(len(out))
+        out += str(number).encode() + b" 0 obj\n" + body + b"\nendobj\n"
+    start = len(out)
+    out += b"xref\n0 " + str(len(objects) + 1).encode() + b"\n0000000000 65535 f \n"
+    for offset in offsets:
+        out += b"%010d 00000 n \n" % offset
+    out += (b"trailer\n<< /Size " + str(len(objects) + 1).encode() + b" /Root 1 0 R >>\nstartxref\n"
+            + str(start).encode() + b"\n%%EOF\n")
+    open(os.path.join(directory, name), "wb").write(bytes(out))
+    return len(objects)
+
 
 # ---- /Outlines: the outline tree of PDF 1.7 Table 8.2 -------------------------------------------
 #
@@ -776,12 +874,29 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
+    for index, annotations in enumerate(T_WITH_ONE_MORE):
+        name = "widget-t-extra-%s.pdf" % T_WITH_ONE_MORE_NAMES[index]
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, /T plus one more key" % (name, count))
+    for name, annotations in (("widget-t-literal.pdf", T_LITERAL),
+                              ("widget-t-name.pdf", T_NAME),
+                              ("widget-t-empty.pdf", T_EMPTY)):
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
+    for name, child_extra in (("widget-t-merged.pdf", b""),
+                              ("widget-t-mergedname.pdf", b"/T (child too)")):
+        count = build_merged_field(directory, name, child_extra)
+        print("  wrote %-20s %d objects, a widget whose /Parent is a field" % (name, count))
     for name, annotations in (("widget-flags.pdf", WIDGET_FLAGS),
                               ("widget-noflags.pdf", WIDGET_NO_FLAGS),
                               ("widget-allflags.pdf", WIDGET_ALL_FLAGS),
                               ("widget-fieldtypes.pdf", WIDGET_FIELD_TYPES),
                               ("widget-states.pdf", WIDGET_STATES),
-                              ("widget-values.pdf", WIDGET_VALUES)):
+                              ("widget-values.pdf", WIDGET_VALUES),
+                              ("widget-mixed.pdf", WIDGET_MIXED),
+                              ("synth-widgets.pdf", SYNTH_COUNT_WIDGETS_ONLY),
+                              ("synth-linkfirst.pdf", SYNTH_COUNT_LINK_FIRST),
+                              ("synth-linkmiddle.pdf", SYNTH_COUNT_LINK_MIDDLE)):
         count, _ = build(os.path.join(directory, name), annotations)
         print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
     for position, (field_type, annotations) in enumerate(WIDGET_FIELD_TYPES_ONE):

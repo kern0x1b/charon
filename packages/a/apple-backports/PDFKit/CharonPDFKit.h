@@ -170,6 +170,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PDFAnnotation (CharonInternals)
 - (nullable instancetype)initWithCharonDictionary:(CGPDFDictionaryRef)annotation
                                           onPage:(nullable PDFPage *)page;
+// The annotation's own dictionary in the CGPDFDocument, or NULL.  The harness reads it to decide WHICH
+// keys are comparable - -fieldName is asked only where the document names the widget - and a port that
+// made the harness ask each member and hope would compare a member's own opinion of its state instead of
+// the bytes both sides are reading.
+- (CGPDFDictionaryRef)charon_CGPDFDictionary;
 // The /Ff FLAG WORD of this annotation, or 0 when it names none.  Shared by the nine bit members below,
 // which each read one bit of it, and declared here so the category implementation that defines them can
 // reach it.
@@ -269,30 +274,41 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 // ONE ANNOTATION PER BIT with only that bit set - thirteen bits and a fixture with every bit at once -
 // because a fixture with all the bits set answers every member YES and proves nothing.
 //
-//   bit 1  ReadOnly        1          -> readOnly
-//   bit 13 Multiline       4096       -> multiline
-//   bit 14 Password        8192       -> isPasswordField
-//   bit 15 NoToggleToOff   16384      -> allowsToggleToOff is the NEGATION of it
-//   bit 16 RadioInUnison   32768      -> widgetControlType's low bit: 1 answers RadioButton, not unison
-//   bit 17 Pushbutton      65536      -> widgetControlType's high bit: 0 answers PushButton, and it
-//                                         clears allowsToggleToOff as well
-//   bit 18 Combo           131072     -> isListChoice is the NEGATION of it
-//   bit 25 Comb            16777216   -> comb
-//   bit 26 RichText        33554432   -> radiosInUnison - NOT bit 16, which is what the table's name
-//                                         suggests and what this row's effect says
+//   bit 1  ReadOnly         1        -> readOnly
+//   bit 13 Multiline        4096     -> multiline
+//   bit 14 Password         8192     -> isPasswordField
+//   bit 15 NoToggleToOff    16384    -> allowsToggleToOff is the NEGATION of it
+//   bit 16 Radio            32768    -> widgetControlType: 1, and NOT radiosInUnison
+//   bit 17 Pushbutton       65536    -> widgetControlType: 0, and it CLEARS allowsToggleToOff
+//   bit 18 Combo            131072   -> isListChoice is the NEGATION of it
+//   bit 25 Comb             16777216 -> comb
+//   bit 26 RadiosInUnison   33554432 -> radiosInUnison   (in a BUTTON field; in a TEXT field of the
+//                                                            same name, Table 8.39 calls bit 26 RichText,
+//                                                            and the host reads it either way)
 //
-// and the members that are not a bit at all: activatableTextField is !readOnly (measured: the bit-1
-// fixture answers NO and the other twelve answer YES), and widgetControlType with no bits answers
-// kPDFWidgetCheckBoxControl - 2 - which is the default and not the zero a shift of nothing would give.
+// THE NAMES ABOVE ARE THE FORMAT'S OWN, and an earlier version of this comment had two of them wrong:
+// it called bit 16 "RadioInUnison" and bit 26 "RichText" as if each had one name everywhere.  Table 8.39's
+// bit 16 is Radio, and bit 26 is RadiosInUnison in the BUTTON field table and RichText in the TEXT field
+// table.  So two of the three members this file calls "not what the table says" ARE the table's rule -
+// radiosInUnison reading bit 26, and widgetControlType's Pushbutton -> 0 / Radio -> 1 / neither -> 2 -
+// and the fixtures add only what the table cannot say:
 //
-// NOT declared here, each for the reason its row repeats: fieldName, which the host SYNTHESISES rather
-// than reads - a widget with no /T answers "text0", "text1" and "button0" by document position, and one
-// WITH a /T answers the synthesised name too, so it is not /T and not derivable from the document;
-// widgetStringValue and widgetDefaultStringValue, whose /V and /DV the host does not read on these
-// fixtures; buttonWidgetState and buttonWidgetStateString, which need their own /AS matrix; maximumLength,
-// alignment, choices, values, open, caption, URL, the three colours, font, the line styles, the two points,
-// paths and quadrilateralPoints.  See facts/PDFKit/Annotation11.md, which carries the host's measured
-// answer for every one of them.
+//   BOTH bit 16 and bit 17 at once answer kPDFWidgetRadioButtonControl.  The table names the bits and not
+//     their collision, and widget-allflags.pdf is the fixture that answers 1.
+//   bit 17 CLEARS allowsToggleToOff.  The table says bit 15 NoToggleToOff and nothing about a pushbutton,
+//     and the bit-15 and bit-17 fixtures each answer NO while the other eleven answer YES.
+//
+// And activatableTextField is not a bit at all: it is a TEXT field that is not read-only - /FT /Tx with
+// bit 1 clear, measured on six one-field-type fixtures, on the thirteen /Tx fixtures, and on every /Link in
+// the harness.
+//
+// NOT declared here, each for the reason its row repeats: widgetStringValue and widgetDefaultStringValue,
+// whose /V and /DV the host does not read on these fixtures; buttonWidgetState and
+// buttonWidgetStateString, which need their own /AS matrix; maximumLength, alignment, choices, values,
+// open, caption, URL, the three colours, font, the two line styles, the two points, paths,
+// quadrilateralPoints, iconType, markupType and stampName.  fieldName is implemented for a widget the
+// document NAMES and its row says what it cannot answer for one it does not.  See
+// facts/PDFKit/Annotation11.md, which carries the host's measured answer for every one of them.
 @interface PDFAnnotation (PDFAnnotationUtilitiesSubset)
 @property (nonatomic, getter=isReadOnly) BOOL readOnly;
 @property (nonatomic, getter=isMultiline) BOOL multiline;
@@ -303,6 +319,10 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @property (nonatomic, getter=isListChoice) BOOL listChoice;
 @property (nonatomic) PDFWidgetControlType widgetControlType;
 @property (readonly, getter=isActivatableTextField) BOOL activatableTextField;
+// The /T of the MERGED FIELD AND WIDGET: the parent's first, then the widget's own, joined with a dot
+// when both name something, and read as PDF STRINGS only.  A widget that NAMES nothing is not answered
+// here, and the row says why.
+@property (nonatomic, readonly, copy, nullable) NSString *fieldName;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------

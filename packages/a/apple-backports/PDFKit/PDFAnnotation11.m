@@ -545,6 +545,13 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @dynamic listChoice;
 @dynamic widgetControlType;
 @dynamic activatableTextField;
+@dynamic fieldName;
+
+// The dictionary the harness reads to decide which keys are comparable - see CharonPDFKit.h.
+- (CGPDFDictionaryRef)charon_CGPDFDictionary
+{
+    return _annotation;
+}
 
 // The /Ff FLAG WORD, or 0 when the annotation names none.  Table 8.39 makes it an integer, and
 // CGPDFDictionaryGetInteger refuses anything else, so a /Ff that is a string or an array leaves every
@@ -622,6 +629,62 @@ static const CGFloat kTextAnnotationSize = 24.0;
     if ((flags & (1 << 16)) != 0)
         return kPDFWidgetPushButtonControl;
     return kPDFWidgetCheckBoxControl;
+}
+
+// The /T of the MERGED FIELD AND WIDGET, which is what -fieldName reads when the pair names anything,
+// and nil when neither does.  Four fixtures, and the shape that makes this a rule and not a guess:
+//
+//   widget-t-literal.pdf   /T (the field) on the widget            -> "the field"
+//   widget-t-empty.pdf     /T ()                                    -> ""   the empty string, read
+//   widget-t-name.pdf      /T /TheField, a NAME not a string        -> nil  NOT read, and the member
+//                                                                          falls back to its own name
+//   widget-t-merged.pdf    the widget's /Parent is a FIELD carrying /T (parent field)
+//                                                                  -> "parent field"
+//   widget-t-mergedname.pdf the same, and the widget carries /T (child too) too
+//                                                                  -> "parent field.child too"
+//
+// So a widget's own /T is APPENDED to the parent's with a DOT between them, rather than overriding it,
+// and both are read as PDF STRINGS only.  That is measured; what the host does when NEITHER names anything
+// is not - see -fieldName's row.
+- (NSString *)fieldName
+{
+    if (_annotation == NULL)
+        return nil;
+    // the parent's /T first, then the widget's own, joined with a dot when both are there
+    NSString *own = nil;
+    CGPDFObjectRef title = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "T", &title) && title != NULL
+        && CGPDFObjectGetType(title) == kCGPDFObjectTypeString) {
+        CGPDFStringRef string = NULL;
+        if (CGPDFObjectGetValue(title, kCGPDFObjectTypeString, &string) && string != NULL) {
+            CFStringRef text = CGPDFStringCopyTextString(string);
+            if (text != NULL)
+                own = (__bridge_transfer NSString *)text;
+        }
+    }
+    // and the parent's, which is where a field written apart from its widget keeps it.  BOTH are joined
+    // with a dot when both are there - widget-t-mergedname.pdf answers "parent field.child too" - so
+    // neither half may be returned early.  The first version returned the widget's own as soon as it had
+    // one and answered "child too" where the host answers both, and the differential found it.
+    NSString *inherited = nil;
+    CGPDFDictionaryRef parent = NULL;
+    if (CGPDFDictionaryGetDictionary(_annotation, "Parent", &parent) && parent != NULL) {
+        CGPDFObjectRef parentTitle = NULL;
+        if (CGPDFDictionaryGetObject(parent, "T", &parentTitle) && parentTitle != NULL
+            && CGPDFObjectGetType(parentTitle) == kCGPDFObjectTypeString) {
+            CGPDFStringRef string = NULL;
+            if (CGPDFObjectGetValue(parentTitle, kCGPDFObjectTypeString, &string) && string != NULL) {
+                CFStringRef text = CGPDFStringCopyTextString(string);
+                if (text != NULL)
+                    inherited = (__bridge_transfer NSString *)text;
+            }
+        }
+    }
+    if (inherited == nil)
+        return own;
+    if (own == nil)
+        return inherited;
+    return [NSString stringWithFormat:@"%@.%@", inherited, own];
 }
 
 - (BOOL)isActivatableTextField
