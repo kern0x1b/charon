@@ -228,7 +228,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "NOT IMPLEMENTED, and the key is not the one the format suggests.  Measured on annotation-colours.pdf's first six annotations - /MK << /BC [1 0 0] >>, [0.5], [0 0 0 0], [0.1 0.2 0.3 0.4] and (a string), the four component counts Table 8.40 defines and one of the wrong type - and the host answers NIL for every one of them, on a /Tx widget.  So /MK /BC is NOT this member's key even though it IS the key -[PDFAnnotation border] reads to decide whether a widget has a border at all.  What the key is has not been measured, and this row waits for that rather than guessing at /C",
+   "reason": "the key is ESTABLISHED and the row is inert for two other reasons.  It reads /MK /BG - /BC is the BORDER colour of Table 8.40 and is the key -[PDFAnnotation border] reads, so the two members were never in conflict and the nil answers of an earlier batch were the wrong key, as PDFAnnotationUtilities.h:280 says of backgroundColor ('Used by annotations type(s): /Widget').  Measured over a widget's /MK /BG: [1 0 0] answers 0.9860, 0.0000, 0.0269, 1 and [0.5] answers 0.4247 - both in DEVICE RGB, so a port building an sRGB colour would differ in the third decimal; [0 0 0 0] answers WHITE, because no-colour means unpainted; [0.1 0.2 0.3 0.4] answers 0.4707, 0.4192, 0.3551; (a string) answers nil; a /Btn with [0 0 1] answers DeviceRGB blue; and a /Ch with [0 0 1] answers 0.1353, 1.0000, 0.0249 - a GREEN THE ARRAY DOES NOT CONTAIN.  So writing this needs the DeviceRGB conversion to three decimals AND the /Ch field's own green, and neither is reproduced yet",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -239,7 +239,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "NOT IMPLEMENTED, and it has a DEFAULT rather than answering nil: every annotation with NO /DA answers opaque BLACK, measured on seven annotations of annotation-colours.pdf.  What is measured of the /DA is that its lowercase colour operand is read - (/Helv 12 Tf 0 g) answers black and (1 g) answers white, both in a gray space, and (1 0 0 rg) answers red in an RGB space - and that the UPPERCASE operand is NOT: (0 1 0 RG) answers black.  What is not measured is whether k and K are read: (1 0 0 1 k) answers black, which is consistent both with a CMYK value that converts to black and with the operator being ignored, and one discriminating CMYK value would tell them apart.  The remaining five operators of Table 8.68, the operand's POSITION within the /DA, and what a non-numeric operand does are unmeasured too",
+   "reason": "it reads the /DA's FILL OPERAND, and not the stroke one, and that is the format's rule rather than a gap: text is painted with the fill colour.  Measured: (/Helv 12 Tf 0 g) answers black and (1 g) white, so the operand's VALUE is read; (1 0 0 rg) answers red; and (0 1 0 RG), (0 1 0 K) and (0 1 0 G) all answer black, which is the no-/DA default, so all three STROKE operands are un-read.  TWO DISCRIMINATING CMYK VALUES SETTLED k: (0 1 1 0 k), which converts to red, and (1 0 0 0 k), which converts to cyan, both answer BLACK - so k is NOT read either, and the fill set is g and rg alone.  That is a fact about the host and not about the format, which paints text with k.  An annotation with no /DA at all answers OPAQUE BLACK rather than nil, measured on seven annotations.  What is missing: the operand's POSITION inside the /DA string, and whether a colour operator with a wrong operand count is refused",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -250,7 +250,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "NOT IMPLEMENTED.  Measured: /MK << /IC [0 1 0] >> answers nil and so does /MK << /IC [0.25] /BC [1 0 0] >>, on the same /Tx widgets whose /MK /BC the border reader does act on.  So /MK /IC is not established as this member's key either, and no fixture in the harness writes a /C or any other colour key that this member answers from",
+   "reason": "the key is ESTABLISHED - the annotation's OWN /IC, which is not an /MK key, as PDFAnnotationUtilities.h:131 says ('Interior color of the annotation') - and the host reads it on MORE SUBTYPES than the header names: a /Square and a /Circle answer it, and so do a /Link and a /Tx /Widget, all answering the array's own colour, while a /Square with no /IC answers nil.  What is missing is the same DEVICE RGB conversion - [0.25] answers 0.1912 where an sRGB gray would be 0.25 - so the row waits on that rather than on the key",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },
@@ -261,7 +261,7 @@
    "minimum": "6.0",
    "status": "inert",
    "effect": "not implemented",
-   "reason": "NOT IMPLEMENTED, and it also has a DEFAULT: every annotation with no /DA at all answers Helvetica at 12 points, measured on the same seven annotations, and so does (/Helv 12 Tf) with no colour operand.  What is not measured is the half that matters: the three shapes that separate the default from a read - (12 Tf) with no font name, (/Helv Tf) with no size, and (/Nonexistent 9 Tf) for a font the system does not have - are all in annotation-colours.pdf but were not separated before this batch ran out of room, and neither was whether the name is mapped (Helvetica for /Helv) or taken verbatim",
+   "reason": "it reads the /DA's name and size and MAPS the name.  Measured: (/Courier 7 Tf 0 g) answers COURIER at 7, so the PDF abbreviation is mapped to the PostScript name and not taken verbatim; (12 Tf 0 g) with no name answers Helvetica 12; (/Helv Tf 0 g) with no size answers Helvetica 12; and (/Nonexistent 9 Tf 0 g) answers HELVETICA AT 9 - an unrecognised name falls back to Helvetica and the SIZE IS KEPT.  An annotation with no /DA at all answers Helvetica 12.  So the defaults are Helvetica and 12 and the size is read independently of the name; what is missing is the full abbreviation map and how a name the map does not have is recognised as unrecognised",
    "facts": "facts/PDFKit/Annotation11.md",
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
   },

@@ -216,39 +216,74 @@ the string member answers `Yes` and `Marked` and not `/Yes`. The first version o
 against `@"/Off"`, never matched, and answered 1 for the three shapes where one of the two keys is `/Off`.
 
 
-## The colours and the font: measured, and stopped where the measurement stops
+## The colours and the font: the KEYS are established, and two answers were the format all along
 
-`annotation-colours.pdf` carries sixteen annotations, one spelling of one of the four members each, and
-what the host answers is this - measured, and it does not match the reading I expected:
+My previous batch wrote the wrong keys and read the nil answers as surprises. **They were not
+surprises, they were the format**, and the 26.2 header says which key each member uses in so many words:
+`PDFAnnotationUtilities.h:280` "Background color characteristics. Used by annotations type(s): /Widget
+(field type(s): /Btn, /Ch, /Tx)", and `:131` "Interior color of the annotation. Used by annotations
+type(s): /Circle, /Line, /Square". Rewritten over the right keys, all twenty-seven annotations of
+`annotation-colours.pdf` answer:
 
-**`backgroundColor` and `interiorColor` answer NIL for every `/MK` spelling written.** `/MK << /BC
-[1 0 0] >>`, `[0.5]`, `[0 0 0 0]` and `[0.1 0.2 0.3 0.4]` - the four component counts Table 8.40 defines -
-and `(a string)` all answer nil, and so does `/MK << /IC [0 1 0] >>`. So **`/MK` `/BC` is not
-`backgroundColor`'s key**, even though it **is** the key `-[PDFAnnotation border]` reads to decide whether
-a widget has a border at all. What the key is, is not measured.
+**`-backgroundColor` reads `/MK` `/BG`** - `/BC` is the BORDER colour of Table 8.40, which is the key
+`-[PDFAnnotation border]` reads, and the two members were never in conflict:
 
-**`fontColor` and `font` have DEFAULTS, not nil.** Every annotation carrying no `/DA` at all - seven of
-them - answers **opaque black** and **Helvetica 12**. And of the `/DA`:
+| `/MK /BG` | field type | answered (sRGB, from a DeviceRGB colour) |
+| --- | --- | --- |
+| `[1 0 0]` | `/Tx` | 0.9860, 0.0000, 0.0269, 1 - **DeviceRGB** red, not sRGB red |
+| `[0.5]` | `/Tx` | 0.4247 gray |
+| `[0 0 0 0]` | `/Tx` | **white** 1, 0.9982, 0.9953 - "no colour" means unpainted |
+| `[0.1 0.2 0.3 0.4]` | `/Tx` | 0.4707, 0.4192, 0.3551 - CMYK converted |
+| `(a string)` | `/Tx` | **nil** - the wrong type is refused |
+| `[0 0 1]` | `/Btn` | 0, 0, 0.9982 - DeviceRGB blue |
+| `[0 0 1]` | `/Ch` | **0.1353, 1.0000, 0.0249 - a GREEN the array does not contain** |
+| `/BC [1 0 0] /BG [0 1 0]` | `/Tx` | green, i.e. the `/BG` - so `/BC` is ignored here |
 
-| `/DA` | `fontColor` |
+Two things the numbers say that the shapes do not: the host makes a **DeviceRGB** colour, so a port that
+built an sRGB one would differ in the third decimal, and **a `/Ch` field answers a green of its own**
+rather than its `/BG`. Neither is written yet.
+
+**`-interiorColor` reads the annotation's own `/IC`**, which is not an `/MK` key at all - and the host
+reads it on **more subtypes than the header names**: a `/Square` and a `/Circle` answer it, and so do a
+`/Link` and a `/Tx` `/Widget`, all four answering red or the array's own colour. A `/Square` with no `/IC`
+answers nil.
+
+**`-fontColor` reads the `/DA`'s FILL operand**, and not the stroke one. That is the format's rule and not
+a gap: text is painted with the fill colour, so `g`, `rg` and `k` are read and `G`, `RG` and `K` - which
+set the stroke - are not:
+
+| `/DA` | answered |
 | --- | --- |
-| *absent* | opaque black, a custom space |
 | `(/Helv 12 Tf 0 g)` | black, a gray space |
-| `(/Helv 12 Tf 1 g)` | white, a gray space |
+| `(/Helv 12 Tf 1 g)` | white - so the operand's VALUE is read, not just its presence |
 | `(/Helv 12 Tf 1 0 0 rg)` | red, an RGB space |
-| `(/Helv 12 Tf 0 1 0 RG)` | **black** - the UPPERCASE operand is not read |
-| `(/Helv 12 Tf 1 0 0 1 k)` | black - which is both what a CMYK value can convert to and what ignoring the operator gives, and one discriminating value would tell them apart |
-| `(/Helv 12 Tf)` | black, and Helvetica 12 - a font and a size with no colour |
+| `(/Helv 12 Tf 0 1 1 0 k)` | **black**, where CMYK(0,1,1,0) converts to RED |
+| `(/Helv 12 Tf 1 0 0 0 k)` | **black**, where CMYK(1,0,0,0) converts to CYAN |
+| `(/Helv 12 Tf 0 1 0 RG)` / `K` / `G` | black, a gray space - the three STROKE operands |
 
-So the lowercase `g` and `rg` are read and the uppercase `RG` is not; the `k`/`K` pair, the other five
-operators of Table 8.68, the operand's position inside the `/DA`, and what a non-numeric operand does are
-all unmeasured. And `font`'s three separating shapes - `(12 Tf)` with no name, `(/Helv Tf)` with no size,
-and `(/Nonexistent 9 Tf)` for a font the system lacks - are in the fixture and were not separated.
+**So `k` is NOT read either**: two CMYK values whose conversions are red and cyan both answer black, and
+black is the no-`/DA` default. The fill set is `g` and `rg`; `k`, `K`, `G` and `RG` are all un-read, which
+is a fact about the host and not the format - the format paints text with `k`.
 
-All four rows are therefore registered `inert` with these measurements as their reasons, which is the
-honest state: two of them have an unexpected answer that a reader needs, and two have a default and a
-half-read rule. Implementing a colour reader from this would be guessing at the key for the first two and
-at half the operator table for the third.
+**`-font` reads the `/DA`'s name and size, and MAPS the name**:
+
+| `/DA` | answered |
+| --- | --- |
+| `(/Courier 7 Tf 0 g)` | **Courier at 7** - so `/Courier` is mapped to the PostScript name, not taken verbatim |
+| `(12 Tf 0 g)` | Helvetica 12 - no name, so the default font at the size that IS given |
+| `(/Helv Tf 0 g)` | Helvetica 12 - no size, so the default size |
+| `(/Nonexistent 9 Tf 0 g)` | **Helvetica at 9** - an unknown name falls back to Helvetica and the SIZE IS KEPT |
+| *no `/DA` at all* | Helvetica 12 |
+
+So the defaults are Helvetica and 12, the size is read independently of the name, and an unrecognised name
+falls back to Helvetica rather than being taken verbatim.
+
+**What is still open, and it is a list and not a shrug:** the DeviceRGB conversion the port would have to
+reproduce to the third decimal; the `/Ch` field's own green; whether the `/DA` operand's POSITION inside
+the string matters; and one dropped annotation - the host keeps 26 of the 27 this fixture writes and which
+one it drops was not identified, so the indices above are read off the host's own order and are shifted by
+one from the fixture's after the eighth annotation. All four rows therefore stay `inert` with this table as
+their reasons.
 
 ## The 25 rows that are not implemented, and why each one waits
 
@@ -269,8 +304,10 @@ Each of the 27 carries the host's measured answer in its `reason` in
   (`/Q 2` -> 0), `choices` and `values` (`/Opt [(one) (two) (three)]` -> empty), `open`, `caption`, `URL`.
   Each is written in a fixture and the host does not answer it from there, which says the key or the scale
   is something else and not what I assumed.
-* **the three colours and the font**, measured above and stopped there: `/MK` `/BC` turns out not to be
-  `backgroundColor`'s key, and `fontColor` and `font` have defaults rather than answering nil.
+* **the three colours and the font**, measured above: every key is now established - `/MK` `/BG`,
+  the annotation's own `/IC`, the `/DA`'s fill operand and its font name and size - and what is missing is
+  the DeviceRGB conversion, the `/Ch` field's own green, and the position question. `fontColor`'s fill set
+  is `g` and `rg`; `k` is not read, which is the host's behaviour and not the format's.
 * **the geometry six** - `startPoint`, `endPoint`, `startLineStyle`, `endLineStyle`, `paths`,
   `quadrilateralPoints`. `/InkList` is a list of variable-length point runs and needs a bezier-path object
   the port does not carry; `PDFLineStyle` is a class the port does not carry; `/QuadPoints` is a flat array

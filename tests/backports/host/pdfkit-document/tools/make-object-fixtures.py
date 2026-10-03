@@ -460,32 +460,54 @@ BUTTON_AS_OFF_V_ON = [
     widget([(b"AS", b"/On"), (b"V", b"/Yes")], field=b"/Btn"),
 ]
 
-# The THREE COLOURS and the FONT, one annotation per key.  -backgroundColor reads /MK /BC and
-# -interiorColor reads /MK /IC, which are the colour arrays of Table 8.40; -fontColor reads the COLOUR
-# OPERAND of the /DA string, which is a content-stream fragment; and -font reads the /DA's font name and
-# size.  Each annotation carries one spelling of one of them, so a rule is measured against a file that sets
-# that key and nothing else.
+# The THREE COLOURS and the FONT, one annotation per key, over the keys the 26.2 header NAMES.
 #
-# The /DA colour operators are the six of PDF 1.7 Table 8.68: g and G for gray, rg and RG for RGB, k and K
-# for CMYK.  Both cases of each letter are here because /DA is written with lowercase in practice and the
-# format allows both.
+# PDFAnnotationUtilities.h:280 says of -backgroundColor "Background color characteristics. Used by
+# annotations type(s): /Widget (field type(s): /Btn, /Ch, /Tx)", and :131 says of -interiorColor
+# "Interior color of the annotation. Used by annotations type(s): /Circle, /Line, /Square".  The first
+# version of this fixture wrote /MK /BC for the background - and /BC is the BORDER colour of Table 8.40,
+# which is the key -[PDFAnnotation border] reads - and /MK << /IC >> for the interior, and /IC is not an
+# /MK key at all.  Both answered nil, which said nothing except that the wrong keys had been written.
+#
+# So: the background off /MK /BG on a widget, the interior off a /Square's and a /Circle's own /IC, and
+# the /DA's FILL colour operand - g, rg and k - because text is painted with the fill colour and RG, G and
+# K set the stroke (Table 8.68), which is why the first version's uppercase shapes answering black was the
+# format and not a gap.
 COLOUR_SHAPES = [
-    widget([(b"MK", b"<< /BC [1 0 0] >>")], field=b"/Tx"),          # -backgroundColor, RGB
-    widget([(b"MK", b"<< /BC [0.5] >>")], field=b"/Tx"),            # gray
-    widget([(b"MK", b"<< /BC [0 0 0 0] >>")], field=b"/Tx"),        # no colour
-    widget([(b"MK", b"<< /BC [0.1 0.2 0.3 0.4] >>")], field=b"/Tx"),# CMYK
-    widget([(b"MK", b"<< /BC (a string) >>")], field=b"/Tx"),        # the wrong type
-    widget([(b"MK", b"<< /IC [0 1 0] >>")], field=b"/Tx"),          # -interiorColor, RGB
-    widget([(b"MK", b"<< /IC [0.25] /BC [1 0 0] >>")], field=b"/Tx"),
-    widget([(b"DA", b"(/Helv 12 Tf 0 g)")], field=b"/Tx"),           # -fontColor, gray 0
-    widget([(b"DA", b"(/Helv 12 Tf 1 g)")], field=b"/Tx"),
-    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg)")], field=b"/Tx"),      # RGB red
-    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 RG)")], field=b"/Tx"),      # RGB green, stroking case
-    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 1 k)")], field=b"/Tx"),     # CMYK
-    widget([(b"DA", b"(/Helv 12 Tf)")], field=b"/Tx"),               # a font and a size, no colour
-    widget([(b"DA", b"(12 Tf)")], field=b"/Tx"),                     # a size with no font name
-    widget([(b"DA", b"(/Helv Tf 0 g)")], field=b"/Tx"),              # a font with no size
-    widget([(b"DA", b"(/Nonexistent 9 Tf 0 g)")], field=b"/Tx"),     # a font the system does not have
+    # -backgroundColor, off /MK /BG, one annotation per component count of Table 8.40
+    widget([(b"MK", b"<< /BG [1 0 0] >>")], field=b"/Tx"),
+    widget([(b"MK", b"<< /BG [0.5] >>")], field=b"/Tx"),
+    widget([(b"MK", b"<< /BG [0 0 0 0] >>")], field=b"/Tx"),
+    widget([(b"MK", b"<< /BG [0.1 0.2 0.3 0.4] >>")], field=b"/Tx"),
+    widget([(b"MK", b"<< /BG (a string) >>")], field=b"/Tx"),
+    # and off a /Btn and a /Ch, since the header names those field types too
+    widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Btn"),
+    widget([(b"MK", b"<< /BG [0 0 1] >>")], field=b"/Ch"),
+    # and with /BC beside it, to show the two keys are not confused with one another
+    widget([(b"MK", b"<< /BC [1 0 0] /BG [0 1 0] >>")], field=b"/Tx"),
+    # -interiorColor, off a geometry annotation's own /IC
+    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0 1 0]")]),
+    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0.25]")]),
+    annot(b"Square", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4")]),
+    annot(b"Circle", [(b"Rect", b"[40 40 240 140]"), (b"F", b"4"), (b"IC", b"[0.1 0.2 0.3 0.4]")]),
+    annot(b"Link", [(b"Rect", b"[20 700 60 720]"), (b"F", b"4"), (b"IC", b"[1 0 0]")]),
+    annot(b"Widget", [(b"Rect", b"[40 40 240 70]"), (b"F", b"4"), (b"FT", b"/Tx"), (b"IC", b"[1 0 0]")]),
+    # -fontColor off the FILL operands, with one CMYK value whose conversion is NOT black, and the
+    # stroking operands beside them to show the pair is not confused with one another
+    widget([(b"DA", b"(/Helv 12 Tf 0 g)")]),
+    widget([(b"DA", b"(/Helv 12 Tf 1 g)")]),
+    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 rg)")]),
+    widget([(b"DA", b"(/Helv 12 Tf 0 1 1 0 k)")]),      # CMYK -> red, not black
+    widget([(b"DA", b"(/Helv 12 Tf 1 0 0 0 k)")]),      # CMYK -> cyan
+    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 RG)")]),      # stroking
+    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 K)")]),       # stroking CMYK
+    widget([(b"DA", b"(/Helv 12 Tf 0 1 0 G)")]),       # stroking gray
+    widget([(b"DA", b"(/Helv 12 Tf)")]),
+    # and -font's four shapes: a real font, no name, no size, and a font the system does not have
+    widget([(b"DA", b"(/Courier 7 Tf 0 g)")]),
+    widget([(b"DA", b"(12 Tf 0 g)")]),
+    widget([(b"DA", b"(/Helv Tf 0 g)")]),
+    widget([(b"DA", b"(/Nonexistent 9 Tf 0 g)")]),
 ]
 
 # /T, spelled four ways, because -[PDFAnnotation fieldName] answers a SYNTHESISED name on the first
