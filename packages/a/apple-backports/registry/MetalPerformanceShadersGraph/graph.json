@@ -690,6 +690,186 @@
       "effect": "the operation is walked on the CPU element by element, and this case is one of the twelve of the thirteen hex cases tests/backports/host/mpsgraph/run.sh reaches that are byte-identical to the release; the run's exit 1 is over the square root case alone, which is named in the row of -squareRootWithTensor:name: and in facts/MetalPerformanceShadersGraph/Core.md.",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4, and the 26.2 headers for the four names 16.4 does not declare; the behaviour measured against the system's own MPSGraph (tests/backports/host/mpsgraph)"
+    },
+    {
+      "api": "-[MPSGraph charon_mps_predicate:operands:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's own builder for the operations whose answer is a truth rather than a number, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph acosWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph acoshWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph clampWithTensor:minValueTensor:maxValueTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph equalWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph isFiniteWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph isInfiniteWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph isNaNWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalANDWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalNANDWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalORWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalNORWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalXORWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph logicalXNORWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph moduloWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph notWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph notEqualWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph rintWithTensor:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the operation is walked on the CPU element by element, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in both MPSDataTypeFloat32 and MPSDataTypeFloat16 over the file's sixteen input classes; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature and default, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
     }
   ]
 }

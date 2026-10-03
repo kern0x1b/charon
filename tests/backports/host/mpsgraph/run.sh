@@ -17,11 +17,13 @@ mkdir -p "$build"
 xcrun clang -fobjc-arc $target $quiet "$here/graph-cases.m" \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/system"
 set +e
-"$build/system" > "$build/system.txt" 2> "$build/system.err"
+"$build/system" > "$build/system.raw" 2> "$build/system.err"
 status=$?
 set -e
+# Only the lines the case file marks are cases; the framework's own diagnostics share the stream.
+grep -a '^#case ' "$build/system.raw" > "$build/system.txt" || true
 echo "system: $(wc -l < "$build/system.txt") lines, exit $status"
-[ "$status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c1-70)"
+[ "$status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c2-71)"
 
 # The names this library carries, each under a name of its own.
 python3 - "$graph" "$build/rename.h" <<'PY'
@@ -72,11 +74,12 @@ echo "compiled: $(echo "$objects" | wc -w) objects"
 xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/port"
 set +e
-"$build/port" > "$build/port.txt" 2> "$build/port.err"
+"$build/port" > "$build/port.raw" 2> "$build/port.err"
 port_status=$?
 set -e
+grep -a '^#case ' "$build/port.raw" > "$build/port.txt" || true
 echo "port: exit $port_status"
-[ "$port_status" -ne 0 ] && echo "port: stopped at: $(tail -1 "$build/port.txt" | cut -c1-70)"
+[ "$port_status" -ne 0 ] && echo "port: stopped at: $(tail -1 "$build/port.txt" | cut -c2-71)"
 
 # The red control: the same sources with every stored element off by one. It exists because a comparison
 # that cannot see a wrong kernel is not a comparison, and this file's own history is the reason - the
@@ -85,9 +88,10 @@ plant_objects=$(build_objects 1)
 xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $plant_objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/port-plant1"
 set +e
-"$build/port-plant1" > "$build/port-plant1.txt" 2> "$build/port-plant1.err"
+"$build/port-plant1" > "$build/port-plant1.raw" 2> "$build/port-plant1.err"
 plant_status=$?
 set -e
+grep -a '^#case ' "$build/port-plant1.raw" > "$build/port-plant1.txt" || true
 echo "port-plant1: exit $plant_status"
 
 n=$(wc -l < "$build/system.txt" | tr -d ' ')
@@ -100,8 +104,8 @@ HOST_CANNOT_ANSWER=1
 if [ "$m" -ne "$((n + HOST_CANNOT_ANSWER))" ]; then
     echo "the two runs produced different numbers of lines: system $n, port $m, and only $HOST_CANNOT_ANSWER is expected to be extra"
     echo "the last case either side reached:"
-    echo "  system: $(tail -1 "$build/system.txt" | cut -d' ' -f1-3)"
-    echo "  port:   $(tail -1 "$build/port.txt" | cut -d' ' -f1-3)"
+    echo "  system: $(tail -1 "$build/system.txt" | cut -d' ' -f2-4)"
+    echo "  port:   $(tail -1 "$build/port.txt" | cut -d' ' -f2-4)"
     exit 1
 fi
 if [ "$n" -eq 0 ]; then
@@ -143,20 +147,25 @@ for number, line in enumerate(open(sys.argv[3]), 1):
 hard, seen, differing, checked = [], set(), set(), 0
 for one, other in zip(open(sys.argv[1]), open(sys.argv[2])):
     a, b = one.split(), other.split()
-    # Four fields is a case with a result buffer in it: the operation, the data type, the length and the
-    # bytes. Anything shorter is a line of its own - the graph device type, a shaped type data type -
-    # and it is compared as the whole line it is.
-    if len(a) < 4 or len(b) < 4 or a[0] != b[0]:
+    # Five fields is a case with a result buffer in it: the marker, the operation, the data type, the
+    # length and the bytes. Anything shorter is a line of its own - the graph device type, a shaped type
+    # data type - and it is compared as the whole line it is.
+    if len(a) < 5 or len(b) < 5 or a[1] != b[1]:
         if one != other:
             hard.append(" ".join(a))
         continue
     checked += 1
     # How many hex characters one element of this data type is: two per byte, and the bytes of the
-    # types this file asks for.
-    width = 2 * {"float32": 4, "float16": 2, "int32": 4}.get(a[1], 4)
-    for i in range(0, len(a[3]), width):
-        key = (a[0], a[1], i // width)
-        want = (a[3][i:i + width], b[3][i:i + width])
+    # types this file asks for. A predicate's result is a boolean - MPSSizeofMPSDataType(MPSDataTypeBool)
+    # is 1, measured - and the case names carry that as "bool-from-<the operand's type>", so a boolean
+    # cell is one byte and is compared like any other.
+    if a[2].startswith("bool"):
+        width = 2
+    else:
+        width = 2 * {"float32": 4, "float16": 2, "int32": 4}.get(a[2], 4)
+    for i in range(0, len(a[4]), width):
+        key = (a[1], a[2], i // width)
+        want = (a[4][i:i + width], b[4][i:i + width])
         listed = recorded.get(key)
         if want[0] == want[1]:
             if listed is not None:
