@@ -154,7 +154,12 @@ LIBRARIES = {
     {name = "VideoToolboxBackports", folder = "VideoToolbox", frameworks = {"VideoToolbox", "CoreMedia", "CoreVideo", "CoreFoundation", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "ModelIOBackports", folder = "ModelIO", frameworks = {"ModelIO", "CoreGraphics", "ImageIO", "MobileCoreServices", "Foundation"}, libraries = {"FoundationBackports", "MetalKitBackports"}},
     {name = "GameplayKitBackports", folder = "GameplayKit", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
-    {name = "PDFKitBackports", folder = "PDFKit", frameworks = {"PDFKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
+    -- UIKit because two of PDFKit's own classes need it and there is no Foundation class for either:
+    -- PDFAppearanceCharacteristics' two colour members are UIColor and PDFAnnotation's three colours and
+    -- its font are UIColor and UIFont, which is what the 26.2 header calls PDFKitPlatformColor and
+    -- PDFKitPlatformFont.  Both are iOS 2.0, and Apple's own PDFKit on iOS is a UIKit framework - its
+    -- PDFView is a UIView - so this is the dependency the port's own header already implies.
+    {name = "PDFKitBackports", folder = "PDFKit", frameworks = {"PDFKit", "UIKit", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}},
     {name = "NetworkExtensionBackports", folder = "NetworkExtension", frameworks = {"NetworkExtension", "Foundation"}, libraries = {"FoundationBackports"}},
 }
 PACKAGE = "org.charon.apple-backports"
