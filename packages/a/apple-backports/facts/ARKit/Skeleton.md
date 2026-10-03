@@ -50,7 +50,7 @@ Controls, without which a read of eight strings means nothing:
 So the seven names that this repository had without a `_joint` suffix, and the two that had no `_1`,
 were wrong, and are now the release's own strings.
 
-## The two-dimensional skeleton: 19 joints, and their parents
+## The two-dimensional skeleton: seventeen joints, and their parents
 
 `-[ARSkeletonDefinition defaultBody2DSkeletonDefinition]` is `0x1af1a93dc` in that image (the
 function's own start, from ARKitCore's `LC_FUNCTION_STARTS`: the neighbours are `0x1af1a939c` and
@@ -59,8 +59,9 @@ parent table in a constant `CFArray`, so both are read out of the image rather t
 
 - **Names, in source order.** The list is nineteen `__cfstring` constants stored pairwise on the
   stack and handed to `[NSArray arrayWithObjects:count:]` with `w3 = 0x13`; seventeen of them when
-  the count is `0x11`, which is the same list without the two ear joints. Resolved through each
-  constant's chars pointer, in the order the stores put them:
+  the count is `0x11`, which is the same list without the two ear joints, and **the seventeen is what
+  Apple answers** (see the host below). Resolved through each constant's chars pointer, in the order
+  the stores put them:
 
   | index | joint | index | joint |
   | --- | --- | --- | --- |
@@ -83,7 +84,36 @@ parent table in a constant `CFArray`, so both are read out of the image rather t
   1, 16, 1, 2, 3, 1, 5, 6, 16, 8, 9, 16, 11, 12, 0, 0, -1, 14, 15
   ```
 
-Two reads of the same table, which agree:
+**Which of the two is the default, and the host settles it.** The initialiser asks one question of
+its own (`bl 0x1af0c2c28` at `0x1af1a9430`) and builds the nineteen-joint list when the answer is
+yes and the seventeen-joint list when it is not. This Mac's own ARKit answers seventeen:
+
+```
+$ xcrun clang -fobjc-arc -w probe.m -framework Foundation -o probe && ./probe
+handle=0x36c5c0b48
+class=0x2d9eb4bb0 name=ARSkeletonDefinition
+definition=0x1014318e0
+  [0] head_joint        [6]  left_forearm_joint   [12] left_leg_joint
+  [1] neck_1_joint      [7]  left_hand_joint      [13] left_foot_joint
+  [2] right_shoulder_1_joint  [8] right_upLeg_joint  [14] right_eye_joint
+  [3] right_forearm_joint     [9] right_leg_joint     [15] left_eye_joint
+  [4] right_hand_joint        [10] right_foot_joint   [16] root
+  [5] left_shoulder_1_joint   [11] left_upLeg_joint
+parentIndices count=17
+  [0] 1    [4] 3    [8] 16   [12] 11   [16] -1
+  [1] 16   [5] 1    [9] 8    [13] 12
+  [2] 1    [6] 5    [10] 9   [14] 0
+  [3] 2    [7] 6    [11] 16  [15] 0
+```
+
+Three independent reads of the seventeen, and all three agree: the count `w3 = 0x11` the initialiser
+uses on that branch; the constant `CFArray` at `0x1e0be6b08` (count 17, values `0x1d6d90928`, integers
+`1, 16, 1, 2, 3, 1, 5, 6, 16, 8, 9, 16, 11, 12, 0, 0, -1`); and the host above. The nineteen-joint
+parent table is the seventeen-joint one with `14` and `15` appended, which is what appending
+`right_ear_joint` and `left_ear_joint` at the end of the names does to it -- the two tables are one
+table and a pair of ears.
+
+Two further reads of the same seventeen, which agree:
 
 1. Reading the table and the name order together, every parent is an ancestor of its joint in a way
    a body has to have: `head` hangs off `neck_1` (0 -> 1), `neck_1` off `root` (1 -> 16), each
