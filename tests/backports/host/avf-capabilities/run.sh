@@ -38,7 +38,7 @@ mkdir -p "$build/src" "$build/o"
 
 for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AVCaptureDeviceCapabilities18.m \
             AVCaptureDeviceRectsOfInterest26.m AVCaptureDeviceCinematicVideo26.m \
-            AVCaptureDeviceExternalSync26.m AVCaptureDeviceDynamic26.m; do
+            AVCaptureDeviceExternalSync26.m AVCaptureDeviceDynamic26.m AVCaptureDeferredStart26.m; do
     [ -f "$avf/$source" ] || {
         echo "FAIL: $avf/$source does not exist, so the surface this run checks for is not there"
         exit 1
@@ -46,7 +46,8 @@ for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AV
 done
 for header in CharonAVCaptureDeviceReactions17.h CharonAVCaptureDeviceCapabilities18.h \
             CharonAVCaptureDeviceRectsOfInterest26.h CharonAVCaptureDeviceCinematicVideo26.h \
-            CharonAVCaptureDeviceExternalSync26.h CharonAVCaptureDeviceDynamic26.h; do
+            CharonAVCaptureDeviceExternalSync26.h CharonAVCaptureDeviceDynamic26.h \
+            CharonAVCaptureDeferredStart26.h; do
     [ -f "$avf/$header" ] || {
         echo "FAIL: $avf/$header does not exist, so these members are declared nowhere"
         exit 1
@@ -57,6 +58,11 @@ done
 # SELECTOR THE HEADER DECLARES is asked for, so a row whose getter= is something other than the property's
 # name asks a selector both sides have. A property the header does not declare is reported, not guessed at.
 #
+# The pair with no registry file is CharonAVFoundationProtocols.h: the two protocol methods of the deferred-start
+# family are declared THERE and not in the slice's own header, and a row whose declaration is not in a header
+# this generator reads is reported as undeclared rather than asked. Its prefix (protocols) matches no registry
+# file, so it contributes declarations and no rows.
+#
 # One header and one registry prefix per argument pair, because each slice of this family is one release's API
 # in its own header and its own registry file (AVCaptureDeviceReactions17.h + reactions*.json carry the 17.0 and
 # 17.2 rows, CharonAVCaptureDeviceCapabilities18.h + capabilities18.json the 18.0 ones,
@@ -64,13 +70,16 @@ done
 # CharonAVCaptureDeviceCinematicVideo26.h + cinematicvideo26.json the 26.0 Cinematic Video ones and
 # CharonAVCaptureDeviceExternalSync26.h + externalsync26.json the 26.0 external-sync ones and
 # CharonAVCaptureDeviceDynamic26.h + dynamic26.json the 26.0 dynamic-aspect-ratio, smudge-detection and
-# aperture ones), and a row is asked for through the header that declares it.
-python3 - 6 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
+# aperture ones, and CharonAVCaptureDeferredStart26.h + deferredstart26.json the 26.0 deferred-start ones), and
+# a row is asked for through the header that declares it.
+python3 - 8 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
         "$avf/CharonAVCaptureDeviceCapabilities18.h:capabilities18" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h:rectsofinterest26" \
         "$avf/CharonAVCaptureDeviceCinematicVideo26.h:cinematicvideo26" \
         "$avf/CharonAVCaptureDeviceExternalSync26.h:externalsync26" \
         "$avf/CharonAVCaptureDeviceDynamic26.h:dynamic26" \
+        "$avf/CharonAVCaptureDeferredStart26.h:deferredstart26" \
+        "$avf/CharonAVFoundationProtocols.h:protocols" \
         "$root/packages/a/apple-backports/registry/AVFoundation" \
         "$build/members.tsv" <<'MEMBERS'
 import json, os, re, sys
@@ -96,6 +105,15 @@ for pair in pairs:
         if owner:
             current = (owner.group(1), owner.group(2))
             continue
+        # A PROTOCOL is an owner too: the two deferred-start delegate methods are declared inside
+        # @protocol AVCaptureSessionDeferredStartDelegate <NSObject> in CharonAVFoundationProtocols.h, and a
+        # generator that only knows @interface owners skips every line of a protocol body - which it did, and the
+        # run then reported those two rows as undeclared while holding the header that declares them. A forward
+        # declaration (`@protocol X;`) is not a body and sets no context.
+        protocol = re.match(r"@protocol\s+(\w+)\s*<?", line.strip())
+        if protocol and not line.strip().endswith(";"):
+            current = (protocol.group(1), "protocol")
+            continue
         if current is None:
             continue
         attributes = line.split("@property", 1)[1] if "@property" in line else None
@@ -117,7 +135,14 @@ for pair in pairs:
             declared.setdefault((current[0], signature.group(2)),
                                 (signature.group(2), "class" if signature.group(1).startswith("instancetype") is False
                                  and signature.group(0).startswith("+") else "instance"))
-    # and the rows of this header's own registry file(s), which is what the prefix names
+
+# THE ROWS, and in a SECOND LOOP on purpose: a declaration in ANY header this run reads has to be visible to
+# every registry file, not only to the one whose pair names that header. The two deferred-start delegate methods
+# are declared in CharonAVFoundationProtocols.h and their rows are in deferredstart26.json, and with one loop the
+# second pair's declarations did not exist yet when the first pair's rows were read - so the run reported two
+# rows as undeclared while holding both of the files that declare them (measured, 2026-10-03).
+for pair in pairs:
+    header, prefix = pair.rsplit(":", 1)
     for name in sorted(os.listdir(registry)):
         if not name.startswith(prefix) or not name.endswith(".json"):
             continue
@@ -188,18 +213,20 @@ MEMBERS
 python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$avf/CharonAVCaptureDeviceCapabilities18.h" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h" "$avf/CharonAVCaptureDeviceCinematicVideo26.h" \
         "$avf/CharonAVCaptureDeviceExternalSync26.h" "$avf/CharonAVCaptureDeviceDynamic26.h" \
+        "$avf/CharonAVCaptureDeferredStart26.h" "$avf/CharonAVFoundationProtocols.h" \
         "$build/src/prologue.h" <<'PROLOGUE'
 import re, sys
 out = sys.argv[-1]
 headers = sys.argv[1:-1]
 text = "".join(open(header).read() for header in headers)
 categories = re.findall(r"@interface\s+(\w+)\s+\((\w+)\)", text)
-if len(categories) != 15:
-    raise SystemExit("expected the fifteen categories these six headers declare (three, three, one, three, two"
-                     " and three) and found %d: %s" % (len(categories), categories))
+if len(categories) != 18:
+    raise SystemExit("expected the eighteen categories these seven headers declare (three, three, one, three, two,"
+                     " three and three) and found %d: %s" % (len(categories), categories))
 owners = sorted(set(owner for owner, _ in categories))
-if owners != ["AVCaptureDevice", "AVCaptureDeviceFormat", "AVCaptureDeviceInput"]:
-    raise SystemExit("expected the three owners these categories sit on and found %s" % owners)
+if owners != ["AVCaptureDevice", "AVCaptureDeviceFormat", "AVCaptureDeviceInput", "AVCaptureOutput",
+              "AVCaptureSession", "AVCaptureVideoPreviewLayer"]:
+    raise SystemExit("expected the six owners these categories sit on and found %s" % owners)
 lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + " ".join(headers) + ": stand-in",
          "// owners for the port's categories, because those classes are Apple's classes on this host and a copy",
          "// compiled here unchanged would replace their own methods in this process.",
@@ -257,6 +284,18 @@ lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + 
          "// support flag asks: that flag is the header's rule about the session's configuration, so the port",
          "// reads the device's active format. The harness hands it the same stand-in device the device rows",
          "// are asked of.",
+         "// The deferred-start family's three owners. They carry NOTHING of their own: the port's categories on",
+         "// them refuse or answer the header's absent case without asking the release anything, so what is",
+         "// asked here is the port's own answer and Apple's, side by side.",
+         "@interface charon_host_AVCaptureOutput : NSObject",
+         "@end",
+         "",
+         "@interface charon_host_AVCaptureSession : NSObject",
+         "@end",
+         "",
+         "@interface charon_host_AVCaptureVideoPreviewLayer : NSObject",
+         "@end",
+         "",
          "@interface charon_host_AVCaptureDeviceInput : NSObject",
          "+ (void)charon_host_setDevice:(id)device;",
          "- (id)device;",
@@ -268,6 +307,9 @@ lines += ["// The rename. Defined after every declaration above, which already c
           "#define AVCaptureDevice charon_host_AVCaptureDevice",
           "#define AVCaptureDeviceFormat charon_host_AVCaptureDeviceFormat",
           "#define AVCaptureDeviceInput charon_host_AVCaptureDeviceInput",
+         "#define AVCaptureOutput charon_host_AVCaptureOutput",
+         "#define AVCaptureSession charon_host_AVCaptureSession",
+         "#define AVCaptureVideoPreviewLayer charon_host_AVCaptureVideoPreviewLayer",
           ""]
 open(out, "w").write("\n".join(lines) + "\n")
 print("the host build's prologue declares %d stand-in categories over %d stand-in owners, and renames their"
@@ -422,6 +464,21 @@ static id charon_host_input_device;
 }
 
 @end
+
+// The deferred-start family's three owners. Empty on purpose: the port's categories on them refuse or answer
+// the header's absent case without asking the release anything, so the harness asks the PORT's answer of the
+// stand-in and Apple's of Apple's own class, and there is nothing to model.
+@implementation charon_host_AVCaptureOutput
+
+@end
+
+@implementation charon_host_AVCaptureSession
+
+@end
+
+@implementation charon_host_AVCaptureVideoPreviewLayer
+
+@end
 STANDINS
 } > "$build/src/standins.rn"
 
@@ -442,7 +499,8 @@ for triple in "AVCaptureDeviceReactions17.m:CharonAVCaptureDeviceReactions17.h:r
              "AVCaptureDeviceRectsOfInterest26.m:CharonAVCaptureDeviceRectsOfInterest26.h:rects26.rn:2:0" \
              "AVCaptureDeviceCinematicVideo26.m:CharonAVCaptureDeviceCinematicVideo26.h:cinematic26.rn:3:0" \
              "AVCaptureDeviceExternalSync26.m:CharonAVCaptureDeviceExternalSync26.h:externalsync26.rn:3:0" \
-             "AVCaptureDeviceDynamic26.m:CharonAVCaptureDeviceDynamic26.h:dynamic26.rn:3:0"; do
+             "AVCaptureDeviceDynamic26.m:CharonAVCaptureDeviceDynamic26.h:dynamic26.rn:3:0" \
+             "AVCaptureDeferredStart26.m:CharonAVCaptureDeferredStart26.h:deferredstart26.rn:3:0"; do
     src=$(printf '%s\n' "$triple" | cut -d: -f1)
     header=$(printf '%s\n' "$triple" | cut -d: -f2)
     python3 - "$avf/$src" "$header" "$build/src/prologue.h" \
@@ -457,7 +515,7 @@ if text.count(drop) != 1:
     raise SystemExit("%s imports its own header %s %d time(s), so this copy is not the one the harness was "
                      "written against" % (source, header, text.count(drop)))
 text = text.replace(drop, "")
-owners = re.findall(r"^@(?:implementation|interface)\s+(AVCaptureDevice|AVCaptureDeviceFormat|AVCaptureDeviceInput)\b",
+owners = re.findall(r"^@(?:implementation|interface)\s+(AVCaptureDevice|AVCaptureDeviceFormat|AVCaptureDeviceInput|AVCaptureOutput|AVCaptureSession|AVCaptureVideoPreviewLayer)\b",
                     text, re.M)
 if len(owners) != expected:
     raise SystemExit("%s names %d owner line(s) at an @implementation/@interface and this copy is written for "
@@ -485,7 +543,8 @@ objects=""
 for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
             "capabilities18.rn:capabilities18.o" "rects26.rn:rects26.o" \
             "cinematic26.rn:cinematic26.o" "externalsync26.rn:externalsync26.o" \
-            "dynamic26.rn:dynamic26.o" "standins.rn:standins.o"; do
+            "dynamic26.rn:dynamic26.o" "deferredstart26.rn:deferredstart26.o" \
+            "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
@@ -510,9 +569,11 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     rectsupport)  plant=rectsupport;  target=rects26 ;;
     syncmin)      plant=syncmin;      target=externalsync26 ;;
     smudge)       plant=smudge;       target=dynamic26 ;;
+    deferred)     plant=deferred;     target=deferredstart26 ;;
     cinematic)    plant=cinematic;    target=cinematic26 ;;
     *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
-       echo "      capabilities, as multichannel, as rectsupport, as cinematic, as syncmin or as smudge"
+       echo "      capabilities, as multichannel, as rectsupport, as cinematic, as syncmin, as smudge or as"
+       echo "      deferred"
        exit 1 ;;
     esac
     python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
@@ -583,6 +644,16 @@ plants = {
 {
     return 2.0f; /* PLANTED */
 }"""),
+    # The deferred-start family's plant: a session that supports a deferred start by hand. Everything the
+    # header ties to that flag has to move with it - the flag itself, and -setAutomaticallyRunsDeferredStart:
+    # false, which refuses exactly because the flag is NO.
+    "deferred": ("""- (BOOL)isManualDeferredStartSupported
+{
+    return NO;
+}""", """- (BOOL)isManualDeferredStartSupported
+{
+    return YES; /* PLANTED */
+}"""),
     "cinematic": ("""- (BOOL)isCinematicVideoCaptureSupported
 {
     return NO;
@@ -612,6 +683,8 @@ print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects ans
                                                 " input's support flag answers YES as well",
                                      "smudge": "a format with a real minimum aperture, so the input's aperture"
                                                " is settable and kept",
+                                     "deferred": "a session that supports a deferred start by hand, so"
+                                                 " -setAutomaticallyRunsDeferredStart: false stops refusing",
                                      "cinematic": "every format claims Cinematic Video support, so the input's"
                                                   " flag, its setter and the three focus methods follow"}[plant])
 PERTURB

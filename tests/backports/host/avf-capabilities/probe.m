@@ -142,6 +142,10 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                 long mode = (long)((NSInteger (*)(id, SEL))objc_msgSend)(object, selector);
                 snprintf(out, room, "%ld %s", mode, mode == 0 ? "None" : mode == 1 ? "Stereo" :
                          mode == 2 ? "FirstOrderAmbisonics" : "(not one of the three)");
+            } else if (selector == @selector(deferredStartDelegate) ||
+                       selector == @selector(deferredStartDelegateCallbackQueue)) {
+                id held = ((id (*)(id, SEL))objc_msgSend)(object, selector);
+                snprintf(out, room, "%s", held ? "set" : "nil");
             } else if (selector == @selector(systemPreferredCamera) || selector == @selector(userPreferredCamera)) {
                 id camera = ((id (*)(id, SEL))objc_msgSend)(object, selector);
                 snprintf(out, room, "%s", camera ? "a camera" : "nil");
@@ -673,6 +677,86 @@ static void dynamic_phase(id hostCamera, id portCamera, id hostInput, id portInp
     }
 }
 
+/* A delegate for the deferred-start setter. Any object will do: the port's setter refuses before it looks at
+ * it, and Apple's does too on this host (measured), so the case below is about the refusal and not about what
+ * would be stored. The class conforms to the protocol so the host's own setter would accept it if the feature
+ * were supported, which is what makes the case a fair one. */
+@interface AvfProbeDelegate : NSObject <AVCaptureSessionDeferredStartDelegate>
+@end
+@implementation AvfProbeDelegate
+- (void)sessionWillRunDeferredStart:(AVCaptureSession *)session { }
+- (void)sessionDidRunDeferredStart:(AVCaptureSession *)session { }
+@end
+
+/* THE 26.0 DEFERRED START PHASE: the two session methods and the three setters, each asked of both sides.
+ * Every one of them refuses on this release and two of the five refuse with Apple's own reason character for
+ * character; the output's and the layer's flag are the two rows where the host and the port differ, and both
+ * columns are in the table. */
+static void deferred_phase(id hostSession, id portSession, id hostOutput, id portOutput, id hostLayer,
+                            id portLayer)
+{
+    AvfProbeDelegate *delegate = [[AvfProbeDelegate alloc] init];
+    dispatch_queue_t queue = dispatch_queue_create("org.charon.probe.avf-deferred", DISPATCH_QUEUE_SERIAL);
+    struct { const char *label; id hostObject; id portObject; SEL selector; int kind; } cases[] = {
+        {"-[AVCaptureSession setDeferredStartDelegate:deferredStartDelegateCallbackQueue:] with a delegate and a queue",
+         hostSession, portSession, @selector(setDeferredStartDelegate:deferredStartDelegateCallbackQueue:), 0},
+        {"-[AVCaptureSession setDeferredStartDelegate:deferredStartDelegateCallbackQueue:] with a delegate and NULL",
+         hostSession, portSession, @selector(setDeferredStartDelegate:deferredStartDelegateCallbackQueue:), 2},
+        {"-[AVCaptureSession runDeferredStartWhenNeeded]", hostSession, portSession,
+         @selector(runDeferredStartWhenNeeded), 1},
+        {"AVCaptureSession.setAutomaticallyRunsDeferredStart: false", hostSession, portSession,
+         @selector(setAutomaticallyRunsDeferredStart:), 3},
+        {"AVCaptureOutput.setDeferredStartEnabled: true", hostOutput, portOutput,
+         @selector(setDeferredStartEnabled:), 4},
+        {"AVCaptureVideoPreviewLayer.setDeferredStartEnabled: true", hostLayer, portLayer,
+         @selector(setDeferredStartEnabled:), 4},
+    };
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; i++) {
+        char hostAnswer[512], portAnswer[512];
+        for (int side = 0; side < 2; side++) {
+            id object = side ? cases[i].portObject : cases[i].hostObject;
+            char *out = side ? portAnswer : hostAnswer;
+            @autoreleasepool {
+                @try {
+                    switch (cases[i].kind) {
+                    case 0:
+                        ((void (*)(id, SEL, id, id))objc_msgSend)(object, cases[i].selector, delegate, (id)queue);
+                        break;
+                    case 2:
+                        ((void (*)(id, SEL, id, id))objc_msgSend)(object, cases[i].selector, delegate, (id)0);
+                        break;
+                    case 1:
+                        ((void (*)(id, SEL))objc_msgSend)(object, cases[i].selector);
+                        break;
+                    case 3:
+                        ((void (*)(id, SEL, BOOL))objc_msgSend)(object, cases[i].selector, 0);
+                        break;
+                    default:
+                        ((void (*)(id, SEL, BOOL))objc_msgSend)(object, cases[i].selector, 1);
+                        break;
+                    }
+                    snprintf(out, 512, "returned");
+                } @catch (NSException *exception) {
+                    snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                             exception.reason ? exception.reason.UTF8String : "(no reason)");
+                }
+            }
+        }
+        printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", cases[i].label, hostAnswer, portAnswer);
+    }
+    /* What the session holds after all of that: nothing, on either side, because nothing could be set. */
+    char hostAnswer[128], portAnswer[128];
+    for (int side = 0; side < 2; side++) {
+        id object = side ? portSession : hostSession;
+        char *out = side ? portAnswer : hostAnswer;
+        id held = ((id (*)(id, SEL))objc_msgSend)(object, @selector(deferredStartDelegate));
+        id heldQueue = ((id (*)(id, SEL))objc_msgSend)(object, @selector(deferredStartDelegateCallbackQueue));
+        snprintf(out, 128, "delegate=%s queue=%s", held ? "set" : "nil", heldQueue ? "set" : "nil");
+    }
+    printf("ANSWER\tAVCaptureSession.deferredStartDelegate after every refused set\thost=[%s]\tport=[%s]\n",
+           hostAnswer, portAnswer);
+}
+
 static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
 {
     /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
@@ -749,6 +833,9 @@ int main(int argc, char **argv)
         Class portDevice = objc_getClass(PORT_PREFIX "AVCaptureDevice");
         Class portFormat = objc_getClass(PORT_PREFIX "AVCaptureDeviceFormat");
         Class portInputClass = objc_getClass(PORT_PREFIX "AVCaptureDeviceInput");
+        Class portSessionClass = objc_getClass(PORT_PREFIX "AVCaptureSession");
+        Class portOutputClass = objc_getClass(PORT_PREFIX "AVCaptureOutput");
+        Class portLayerClass = objc_getClass(PORT_PREFIX "AVCaptureVideoPreviewLayer");
         AVCaptureDevice *camera = hostDevice ? [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo] : nil;
         AVCaptureDeviceFormat *format = camera ? [camera activeFormat] : nil;
         printf("CONTROL\tAVCaptureNoSuchClass\t%s\n",
@@ -760,6 +847,9 @@ int main(int argc, char **argv)
         printf("CONTROL\tcharon_host_AVCaptureDevice\t%s\n", portDevice ? "HAS" : "ABSENT");
         printf("CONTROL\tcharon_host_AVCaptureDeviceFormat\t%s\n", portFormat ? "HAS" : "ABSENT");
         printf("CONTROL\tcharon_host_AVCaptureDeviceInput\t%s\n", portInputClass ? "HAS" : "ABSENT");
+        printf("CONTROL\tcharon_host_AVCaptureSession\t%s\n", portSessionClass ? "HAS" : "ABSENT");
+        printf("CONTROL\tcharon_host_AVCaptureOutput\t%s\n", portOutputClass ? "HAS" : "ABSENT");
+        printf("CONTROL\tcharon_host_AVCaptureVideoPreviewLayer\t%s\n", portLayerClass ? "HAS" : "ABSENT");
         /* The microphone and its input, for the 18.0 slice's three AVCaptureDeviceInput rows. Both columns
          * need one: without the host's own input every one of those rows would be read off the port alone,
          * which is the comparison this run does not make. */
@@ -773,7 +863,8 @@ int main(int argc, char **argv)
                microphone ? "one" : "NONE",
                hostInput ? "one" : (inputError ? inputError.description.UTF8String : "NONE"));
         if (hostDevice == nil || camera == nil || format == nil || portDevice == nil || portFormat == nil ||
-            portInputClass == nil || hostInput == nil) {
+            portInputClass == nil || hostInput == nil || portSessionClass == nil || portOutputClass == nil ||
+            portLayerClass == nil) {
             fprintf(stderr, "FAIL: a side of this run is missing, so every row below would be read off "
                             "nothing\n");
             return 1;
@@ -791,6 +882,14 @@ int main(int argc, char **argv)
            two cameras, on each side. And the history is cleared here rather than in the phase that writes it,
            because the member loop below asks +userPreferredCamera too and must not see a previous run's choice. */
         id portInput = [portInputClass new];
+        /* The deferred-start family's three owners, on both sides, and BOTH sets are made HERE because the
+         * member table below asks their rows and has to ask them of these objects and not of the camera. */
+        AVCaptureSession *hostSession = [[AVCaptureSession alloc] init];
+        AVCaptureVideoDataOutput *hostOutput = [[AVCaptureVideoDataOutput alloc] init];
+        AVCaptureVideoPreviewLayer *hostLayer = [AVCaptureVideoPreviewLayer layerWithSession:hostSession];
+        id portSession = [portSessionClass new];
+        id portOutput = [portOutputClass new];
+        id portLayer = [portLayerClass new];
         /* and the device the 26.0 Cinematic Video support flag reads the active format of, which is the
          * release's own member of the release's own input */
         ((void (*)(Class, SEL, id))objc_msgSend)(portInputClass, @selector(charon_host_setDevice:), portCamera);
@@ -848,8 +947,12 @@ int main(int argc, char **argv)
             if (!hostMethod && !classMember) {
                 printf("NOHOST\t%s\n", api);
                 char portAnswer[512];
-                answer_of(onInputOwner(owner) ? (id)portInput : !strcmp(owner, "AVCaptureDeviceFormat")
-                                              ? (id)portFormatObject : (id)portCamera,
+                answer_of(onInputOwner(owner) ? (id)portInput
+                                              : !strcmp(owner, "AVCaptureDeviceFormat") ? (id)portFormatObject
+                                              : !strcmp(owner, "AVCaptureSession") ? (id)portSession
+                                              : !strcmp(owner, "AVCaptureOutput") ? (id)portOutput
+                                              : !strcmp(owner, "AVCaptureVideoPreviewLayer") ? (id)portLayer
+                                                                                     : (id)portCamera,
                           asked, portAnswer, sizeof portAnswer);
                 printf("ANSWER\t%s\thost=[]\tport=[%s]\n", api, portAnswer);
                 continue;
@@ -865,10 +968,15 @@ int main(int argc, char **argv)
                    of the device rows of the camera and the port's stand-in device. */
                 int onFormat = !strcmp(owner, "AVCaptureDeviceFormat");
                 int onInput = !strcmp(owner, "AVCaptureDeviceInput");
-                answer_of(onFormat ? (id)format : onInput ? (id)hostInput : (id)camera, asked, hostAnswer,
-                          sizeof hostAnswer);
-                answer_of(onFormat ? (id)portFormatObject : onInput ? (id)portInput : (id)portCamera, asked,
-                          portAnswer, sizeof portAnswer);
+                int onSession = !strcmp(owner, "AVCaptureSession");
+                int onOutput = !strcmp(owner, "AVCaptureOutput");
+                int onLayer = !strcmp(owner, "AVCaptureVideoPreviewLayer");
+                answer_of(onFormat ? (id)format : onInput ? (id)hostInput : onSession ? (id)hostSession
+                          : onOutput ? (id)hostOutput : onLayer ? (id)hostLayer : (id)camera,
+                          asked, hostAnswer, sizeof hostAnswer);
+                answer_of(onFormat ? (id)portFormatObject : onInput ? (id)portInput : onSession ? (id)portSession
+                          : onOutput ? (id)portOutput : onLayer ? (id)portLayer : (id)portCamera,
+                          asked, portAnswer, sizeof portAnswer);
             }
             printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", api, hostAnswer, portAnswer);
             answers++;
@@ -891,6 +999,10 @@ int main(int argc, char **argv)
 
         /* The 26.0 dynamic family's three setters. */
         dynamic_phase(camera, portCamera, hostInput, portInput);
+
+        /* The 26.0 deferred-start family's two methods and three setters, over stand-ins for the session, the
+         * output and the preview layer. */
+        deferred_phase(hostSession, portSession, hostOutput, portOutput, hostLayer, portLayer);
 
         /* The members whose answer is a refusal rather than a value, asked of both sides. */
         raise_of(camera, portCamera, @selector(performEffectForReaction:), @"ReactionHeart",
