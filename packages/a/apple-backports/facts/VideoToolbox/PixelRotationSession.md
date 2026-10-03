@@ -113,28 +113,79 @@ come from the port's own Accelerate, and what the port carries there is narrower
   naming them. The two flips, which the header applies after the rotation, have no vImage entry point in
   this tree at all.
 
+## There IS a fourth route, and the release owns it: the session callbacks table
+
+`VTSessionSetProperty` refuses the port's session because it looks the session's callbacks up by `CFTypeID`
+in a table that the sessions themselves fill, and the release exports the function that fills it. Measured
+in every band this port builds:
+
+```
+$ grep _VTSessionRegisterCallbacksForTypeID <4.3 armv7 cache, tools/corpus/dump-cache.lua, read-only>
+_VTSessionRegisterCallbacksForTypeID	VideoToolbox
+_VTSessionGetCallbacksWithTypeID	VideoToolbox
+$ grep _VTSession coordination/corpus/caches/6.0.tsv      # and the 6.1.3 armv7 dump, the same seven names
+```
+
+so 4.3, 6.0 and 6.1.3 all have it, and the port's own floor is covered. **The host has no oracle for it**,
+which is why the layout cannot be taken from a differential:
+
+```
+$ dlsym(VT) VTSessionRegisterCallbacksForTypeID 0x0
+$ dlsym(VT) VTSessionGetCallbacksWithTypeID     0x0
+$ dlsym(VT) VTSessionSetProperty               0x19ddca6fc
+$ dlsym(VT) VTSessionCopyProperty               0x19ddcebac
+$ dlsym(VT) VTSessionCopySupportedPropertyDictionary 0x19dfc9fac
+$ dlsym(VT) VTSessionSetProperties             0x19dfca0a0
+$ dlsym(VT) VTSessionCopySerializableProperties 0x19dfca1e4
+```
+
+`VTSessionRegisterCallbacksForTypeID` and `VTSessionGetCallbacksWithTypeID` are absent from the macOS 27
+host while the five property functions are present, so the table is still the mechanism underneath
+`VTSessionSetProperty` on the host too - only the way in and the way out were dropped.
+
+**What is still needed is the callbacks structure's layout**, and neither the SDK nor this tree's cache
+reader gives it: no header in the 16.4 SDK, the 26.2 SDK or the macOS SDK declares either function, and
+`apple.dyld` reads a cache's export TRIE for the SET of exported names, which is not where an address is.
+Two routes to the layout, neither of which has produced it yet:
+
+- disassembly of the 6.1.3 cache, which needs a symbol's ADDRESS first: the image's own export trie is
+  there (10 012 bytes for VideoToolbox, at the address `apple.dyld`'s image walk computes), its size and
+  its label bytes check out, and the format does not parse with the layout `apple.dyld` uses for the tries
+  it does parse - a brute force over the header shapes, the payload position and the child-offset base
+  finds no path to `_VTSessionSetProperty` in those bytes, so what is at that address is not the trie this
+  reader's parser expects. `llvm-objdump` refuses a bare byte file ("the file was not recognized as a valid
+  object file") and this tree ships no disassembler, so a function is read by wrapping its bytes in a
+  one-section `MH_OBJECT` whose `__TEXT` vmaddr is the cache address, which is what
+  `.agent-work/v-audio2/cache-disasm.lua` does for an image and a byte range.
+- **the release's own getter, on the release.** `VTSessionGetCallbacksWithTypeID` is exported by 4.3, 6.0
+  and 6.1.3, so a program built against the port's toolchain and run on 6.1.3 can create a compression
+  session with the release's own `VTCompressionSessionCreate`, ask the release's own
+  `VTSessionGetCallbacksWithTypeID(VTCompressionSessionGetTypeID())` for the pointer, and print that
+  structure's bytes. That measures the release's struct for the release, which is what the port has to
+  fill in, and it does it for 4.3 as well as 6.1.3 in one run each - rather than reading a layout out of
+  armv7 machine code and hoping the fields were read right.
+
 ## What that means for the four rows, and the open question
 
 The four rows - `VTPixelRotationSessionCreate`, `...GetTypeID`, `...Invalidate`, `...RotateImage` - are
 implementable: the session object, its type ID, its invalidation and the rotation loop over the release's
-vImage (`_vImageRotate90_ARGB8888`, `_vImageHorizontalReflect_ARGB8888`, `_vImageVerticalReflect_ARGB8888`
-and `_vImagePermuteChannels_ARGB8888` are all in the 6.1.3 armv7 dump, so nothing has to be invented) are
-all native. What cannot be delivered on the port's bands is the **choice** of angle and flip, because the
-only route to it is a function the release owns and refuses to answer for this session type.
+vImage (and over `CharonGeometry.h`'s own byte mover where the release has no entry point) are all native.
+What the port does with them is settled:
 
-Three answers are possible and which one the ledger records is a ruling, not a measurement:
+- the port registers its own session type with the release's `VTSessionRegisterCallbacksForTypeID` at the
+  first `Create`, so the public `VTSessionSetProperty` selects the angle and the flips exactly as on a real
+  release;
+- one shared helper serves the rotation session, `VTMotionEstimation`, `VTFrameSilo` and the pixel transfer
+  session - not four;
+- the flips and every 4.3 operation go through `charon_turn`/`charon_turn_run`, the port's own byte mover,
+  and the release's vImage only where it exists at that band;
+- the port answers what the header and the measured codes say for what it carries: `kVTParameterErr` for a
+  geometry the header forbids and for a cross-format destination, and **kVTPixelRotationNotSupportedErr
+  (-12914)** for a `OneComponent8` or `444YpCbCr8` destination, because that is this host's own measured
+  answer and that code is the release's own constant.
 
-1. the four rows `implemented`, `RotateImage` doing the real rotation for the one configuration the session
-   can be in, and every registry row saying in as many words that the angle and the flips cannot be selected
-   on any band floor because `VTSessionSetProperty` refuses the port's session type;
-2. the four rows left `missing` with this cause, which costs the port a rotation session it could mostly
-   have;
-3. the port carries the property table on an object of its own and the caller reaches it through a seam -
-   which is a value nothing reads, and the coordinator has already rejected that shape twice in this wave
-   (`NSURLSessionConfiguration.proxyConfigurations`, `MPSeekCommandEvent`'s host check).
-
-Nothing here is a crutch, and nothing has been landed: the measurement is the deliverable, and the loop over
-vImage is not written until the shape of the API is settled.
+Nothing here is a crutch, and nothing is landed yet: the layout of the callbacks structure is still the one
+thing missing, and it is measured, not guessed (see above).
 
 ## Source
 
