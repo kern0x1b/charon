@@ -98,6 +98,51 @@ scale for one has nothing measured behind it. It is the behaviour the specificat
 the behaviour the crop-and-scale path in `tests/backports/host/vision/` is built around; it is
 left as it was rather than removed with the array case.
 
+## The compute device family of 17.0, and the one compute unit this release has
+
+Measured on this host's own Core ML by `tests/backports/host/coreml/probe-devices.m` and held case by case
+of both sides by `tests/backports/host/coreml/devices-cases.m`, which the Core ML differential records into
+the same file as the containers' cases:
+
+| what was asked | what this host answers |
+| --- | --- |
+| `MLAllComputeDevices()` | **three devices: a neural engine, a GPU and a CPU**, in that order |
+| `+[MLModel availableComputeDevices]` | **the same three in the same order**, and `[a isEqual:b]` is **YES** for the two arrays |
+| the function called twice | **another array** with the same contents |
+| `+new` and `-init` on each of `MLCPUComputeDevice`, `MLGPUComputeDevice`, `MLNeuralEngineComputeDevice` | **an object** on all six, though each header marks both unavailable (`MLCPUComputeDevice.h:19-21` and its two siblings) |
+| `conformsToProtocol:@protocol(MLComputeDeviceProtocol)` on each of them | **YES** for all three |
+| the neural engine's `-totalCoreCount`, for a device of the list | **16** |
+| the GPU's `-metalDevice`, for a device of the list | **a real `MTLDevice`**, and it conforms to `@protocol(MTLDevice)` |
+| the same two properties, for a device made by `+new` | **0** and **nil** |
+
+The last row is the one that decides the port: **a device that was not made over a device knows nothing
+about hardware**, so the port's GPU device answers nil for `-metalDevice` and its neural engine answers 0
+for `-totalCoreCount` - which is what the host answers for a device made by `+new` on any machine, and not
+only where there is none.
+
+**What this release has.** iOS 6 has no Metal driver and no neural engine at all, so the list is the one
+compute unit it has, the CPU: `MLAllComputeDevices()` and `+[MLModel availableComputeDevices]` both answer a
+list of that one device, and they answer the *same* device, so that a program comparing the two with
+`-isEqual:` gets the framework's own answer of YES. That is the rule the API worker brief states for
+hardware a device physically lacks, and the one `MLCompute`'s `MLCDevice` already follows
+(`facts/MLCompute/Device.md`: the GPU and the neural engine are carried and answer as a device with
+neither). The GPU and the neural engine classes are still carried, because a program asks for them by class
+and by property and the corpus of SDK 26.2 names them.
+
+**Ten keys of the family are the same question asked of two machines, and the differential names each of
+them.** Six are answers that differ (the count and the first device of each of the two lists) and four exist
+on one side only (the second and third devices, and the two properties read off a device of the list). Each
+is in `run.sh`'s `HARDWARE` table with the hardware it is about, and **an allowance that stops being needed
+fails the run**: a table nobody checks is a table that hides whatever it names.
+
+**One thing this measurement caught that is worth naming.** The first version of the cases file reached the
+function through `dlsym(RTLD_DEFAULT, "MLAllComputeDevices")`, and every one of its ten answers came out
+identical on both sides - because the port's own definition is renamed in the port's build (the row is a
+function row, so `rename.h` maps the name), and the plain name in a `dlsym` finds the **framework's** copy.
+So the port's own list was never asked, and the comparison said so by reporting all ten allowances as stale
+at once. The cases file calls the function by name, which the rename reaches on the port's side and the
+framework's declaration reaches on the host's.
+
 ## Carried but not measured
 
 Each of these is refused with a line naming the layer, not approximated:
