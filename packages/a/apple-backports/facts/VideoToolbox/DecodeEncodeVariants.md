@@ -40,40 +40,27 @@ argument and did nothing with it would be the silent fake the brief forbids; the
 own codes, before any work, and each `infoFlagsOut` is set to 0 with the file saying why - the two flags the
 header names are set by a decoder or encoder as it runs, and nothing ran.
 
-## The two that are NOT written: VTDecompressionSessionDecodeFrameWithOptions and its handler twin
+## The two options variants: WRITTEN, over the release's own decode
 
-`VTDecompressionSessionDecodeFrameWithOptions` is `VTDecompressionSessionDecodeFrame` with two parameters
-added, and the obvious implementation is to forward to the release's own decode. **That forwarding cannot be
-written as one object across the port's bands, and the reason is mechanical rather than a matter of taste:
-the release changed the arity of `VTDecompressionSessionDecodeFrame` itself.**
+They were owed here for two stated reasons and **both reasons are gone**, so this section is now a record of
+why they changed rather than of why they are missing.
 
-```
-16.4 SDK, VTDecompressionSession.h:184-190      API_AVAILABLE(macosx(10.8), ios(8.0), tvos(10.2))
-  VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, sourceFrameRefCon, infoFlagsOut)
-```
+**The arity reason was backwards and is retracted.** This page said the 4.3 release's
+`VTDecompressionSessionDecodeFrame` takes four arguments and that the port's five-argument forward would "call
+a four-argument function with five arguments at 4.3". On ARM an EXTRA argument is harmless and a MISSING one
+is not, so calling the 16.4 SDK's five-parameter form at 4.3 is safe. The `API_AVAILABLE(macosx(10.8),
+ios(8.0), tvos(10.2))` annotation on `infoFlagsOut` says when the symbol became public, not how many arguments
+the 4.3 code reads.
 
-The `infoFlagsOut` parameter did not exist before iOS 8, so the 4.3 symbol takes FOUR arguments and the 8.0+
-symbol takes five. The 4.3 and the 6.1.3 caches both export `_VTDecompressionSessionDecodeFrame`, so an
-object that calls the five-argument form links at every band and **calls a four-argument function with five
-arguments at 4.3**. `backports.lua`'s `band()` keys on a symbol's presence in the band, not on its signature,
-so nothing in the build can catch it. The two rows stay owed rather than being written with a call that is
-wrong on the port's lowest band.
+**The options reason pointed at the wrong thing.** This page said "there is no dictionary to ask, so a caller's
+options cannot be passed anywhere" - and the measurement shows the opposite: the dictionary can be passed and
+is dropped. `VTDecompressionSessionDecodeFrameWithOptions` is written as the release's own
+`VTDecompressionSessionDecodeFrame` with the same flags, the same `sourceFrameRefCon` and the same
+`infoFlagsOut` forwarded, and with `frameOptions` not even looked at. `...AndOutputHandler` answers
+`kVTParameterErr` for all five dictionaries, with the block neither retained nor called and `infoFlagsOut` not
+written.
 
-The second reason the row is owed, which would apply even with a per-band forward: **`frameOptions` has
-nothing to be honoured with.** The header says it "contains key/value pairs specifying additional options for
-decoding this frame" and that "only keys with `kVTDecodeFrameOptionKey_` prefix should be used" - and there is
-no `kVTDecodeFrameOptionKey_` of any kind in the 4.3 or the 6.1.3 cache (zero hits, above). No release
-function takes such a dictionary, so a caller's options cannot be passed anywhere; forwarding the decode and
-dropping them would answer `noErr` for a request the release never honoured.
-
-What would clear both: a release whose `VTDecompressionSessionDecodeFrame` has the five-argument shape
-throughout the port's bands (measured: it does not, at 4.3), and a release that defines a
-`kVTDecodeFrameOptionKey_` (measured: none does, at either band the port builds).
-
-`VTDecompressionSessionDecodeFrameWithOptionsAndOutputHandler` is owed for the same arity reason plus the one
-the 9.0 output-handler pair already established: `_VTDecompressionSessionDecodeFrameWithOutputHandler` is
-absent at both bands, so a block handed to the port could only be called by the port itself, from a decode it
-cannot reach.
+The two rows' registry entries are in `registry/VideoToolbox/ios18.json`.
 
 ## What the HOST answers, measured with a real H264 sample
 

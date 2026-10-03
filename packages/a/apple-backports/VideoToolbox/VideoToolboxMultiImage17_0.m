@@ -74,9 +74,21 @@ OSStatus VTDecompressionSessionSetMultiImageCallback(
     return noErr;
 }
 
-// VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler. The header is explicit that the block
-// "will not be called" if this returns an error, so refusing is the documented shape of the answer and not
-// a way of hiding one: the caller is told, and the block it passed is not retained.
+// VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler.
+//
+// MEASURED on this host with a REAL H264 sample, 2026-10-03 - a 221-byte avc1 frame at 64x48, encoded here
+// and handed over by an H264 compression session, because a NULL sample buffer makes every variant answer
+// the same -12902 as plain DecodeFrame and measures nothing:
+//
+//   decompression session                                    -> 0 with a session
+//   DecodeFrameWithMultiImageCapableOutputHandler             -> -12902  handler calls=0 infoFlags=0x5a5a5a5a
+//   DecodeFrame (the control, same session, same sample)      -> 0  single-image calls=1  infoFlags=0
+//
+// So the host REFUSES with kVTParameterErr (-12902), does not call the handler, and does not write
+// infoFlagsOut - the word handed in came back as 0x5a5a5a5a. It is a refusal about the variant and not about
+// the session or the sample: the control decode on the same session answers noErr and fires the callback.
+// Its own header says "If the VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler call
+// returns an error, the block will not be called", so refusing is the documented shape of the answer.
 OSStatus VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(
     VTDecompressionSessionRef CM_NONNULL session,
     CMSampleBufferRef CM_NONNULL sampleBuffer,
@@ -87,15 +99,32 @@ OSStatus VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler(
     (void)session;
     (void)sampleBuffer;
     (void)decodeFlags;
-    // Nothing has been decoded, so there is no flag to report. Saying so beats writing a value nothing
-    // measured: the two flags the header names are set by the decoder, and this call did not reach one.
-    if (infoFlagsOut)
-        *infoFlagsOut = 0;
+    // infoFlagsOut is left ALONE rather than set to zero, because the host leaves it alone: a word written
+    // here would be a value this port invented, and the measurement says the release does not write one.
     (void)multiImageCapableOutputHandler;
-    return kVTVideoDecoderNotAvailableNowErr;
+    return kVTParameterErr;
 }
 
-// VTCompressionSessionEncodeMultiImageFrame: the multi-image ENCODE, whose source is the group itself.
+// VTCompressionSessionEncodeMultiImageFrame, and this one ACCEPTS.
+//
+// MEASURED on this host with a real group - built the documented way, CMTagCollectionCreate(NULL, 0) then
+// CMTaggedBufferGroupCreate over one buffer, matches=1 - and a real session:
+//
+//   CMTaggedBufferGroupCreate(1 buffer) -> 0 with a group  [matches=1]
+//   EncodeMultiImageFrame(real group)    -> 0  encode callbacks=2  infoFlags=0x1
+//   encode callback: calls=2 status=-12902 flags=0 sample=(null)
+//
+// The host answers **noErr**, writes `kVTEncodeInfo_FrameDropped` (bit 0 of VTEncodeInfoFlags, so 0x1) into
+// infoFlagsOut, and calls the session's output callback ONCE with status -12902 and no sample. The "2" in
+// the callback count is CUMULATIVE across the probe's two compression sessions - the first session's own
+// successful encode is calls=1 - so this frame's contribution is exactly one call.
+//
+// What this port cannot reproduce is the call. The session is the RELEASE's session and the caller's output
+// callback is inside it, with no public route out: the release's own encode refuses to make the call on
+// request, which is measured - `EncodeFrame(NULL image)` answers -12902 with ZERO callbacks and leaves
+// infoFlagsOut untouched - so there is no release call whose effect is "call the caller's callback once with
+// -12902". So this reproduces the two things the host does that a caller can read, noErr and the dropped
+// frame, and NOT the third, and the registry row says so in those words.
 OSStatus VTCompressionSessionEncodeMultiImageFrame(
     VTCompressionSessionRef CM_NONNULL session,
     CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
@@ -105,20 +134,27 @@ OSStatus VTCompressionSessionEncodeMultiImageFrame(
     void * CM_NULLABLE sourceFrameRefcon,
     VTEncodeInfoFlags * CM_NULLABLE infoFlagsOut)
 {
-    (void)session;
-    (void)taggedBufferGroup;
+    if (!session || !taggedBufferGroup)
+        return kVTParameterErr;
     (void)presentationTimeStamp;
     (void)duration;
     (void)frameProperties;
     (void)sourceFrameRefcon;
     if (infoFlagsOut)
-        *infoFlagsOut = 0;
-    return kVTVideoEncoderNotAvailableNowErr;
+        *infoFlagsOut = kVTEncodeInfo_FrameDropped;
+    return noErr;
 }
 
-// VTCompressionSessionEncodeMultiImageFrameWithOutputHandler: the same source, delivered by a block. Its
-// header says the block "may be called asynchronously, on a different thread from the one that calls" it,
-// which is another promise this port cannot keep: there is no encode to run the block after.
+// VTCompressionSessionEncodeMultiImageFrameWithOutputHandler.
+//
+// MEASURED on the same session and the same real group:
+//
+//   EncodeMultiImageFrameWithOutputHandler(real) -> -12902  encode callbacks=0
+//
+// No callback, and infoFlagsOut NOT written: the 0x1 in that probe line is the value the previous call left
+// in the same variable, because the probe reused one word across the two calls - which is the shape of
+// index-by-hand error that has bitten this family twice already, so it is named rather than quoted as a
+// measurement. The host refuses with kVTParameterErr.
 OSStatus VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(
     VTCompressionSessionRef CM_NONNULL session,
     CMTaggedBufferGroupRef CM_NONNULL taggedBufferGroup,
@@ -128,13 +164,11 @@ OSStatus VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(
     VTEncodeInfoFlags * CM_NULLABLE infoFlagsOut,
     VTCompressionOutputHandler CM_NONNULL outputHandler)
 {
-    (void)session;
-    (void)taggedBufferGroup;
+    if (!session || !taggedBufferGroup)
+        return kVTParameterErr;
     (void)presentationTimeStamp;
     (void)duration;
     (void)frameProperties;
-    if (infoFlagsOut)
-        *infoFlagsOut = 0;
     (void)outputHandler;
-    return kVTVideoEncoderNotAvailableNowErr;
+    return kVTParameterErr;
 }

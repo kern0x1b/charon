@@ -19,7 +19,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "the 16.4 SDK does not declare it and no release this port builds exports it (_VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler is absent from the 4.3 and the 6.1.3 armv7 caches), so the port has to export it. What decides it is not the missing symbol but the callback's argument: the handler receives a CMTaggedBufferGroupRef, and the release's own decode callback has no parameter that could receive one",
-   "effect": "kVTVideoDecoderNotAvailableNowErr (-12913), with the caller's block neither retained nor called and *infoFlagsOut set to 0 because nothing was decoded. The header sanctions the refusal - 'If the VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler call returns an error, the block will not be called' - so the caller sees the refusal in the status instead of a callback that never arrives",
+   "effect": "kVTParameterErr (-12902), with the caller's block neither retained nor called and infoFlagsOut LEFT ALONE. MEASURED on this host with a REAL H264 sample (a 221-byte avc1 frame at 64x48, encoded here), because a NULL sample buffer makes every variant answer the same -12902 as plain DecodeFrame and measures nothing: 'DecodeFrameWithMultiImageCapableOutputHandler -> -12902 handler calls=0 infoFlags=0x5a5a5a5a' against 'DecodeFrame (the control) -> 0 single-image calls=1 infoFlags=0' on the SAME session and the SAME sample. The refusal is therefore about the variant, not about the session or the sample, and the header sanctions it - 'If the VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler call returns an error, the block will not be called'",
    "facts": "facts/VideoToolbox/DecodeEncodeVariants.md",
    "source": "SDK 26.2, VTDecompressionSession.h:444-480 for the declaration; CMTaggedBufferGroup arrived with iOS 14 and no release the port builds has it, which is the measured cause"
   },
@@ -30,7 +30,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "the 16.4 SDK does not declare it and no release this port builds exports it (_VTCompressionSessionEncodeMultiImageFrame is absent from the 4.3 and the 6.1.3 armv7 caches), so the port has to export it. Its SOURCE is a CMTaggedBufferGroupRef and no release function reads one: the release's own encode entry point takes a CVImageBuffer",
-   "effect": "kVTVideoEncoderNotAvailableNowErr (-12915), with *infoFlagsOut set to 0 because nothing was encoded and the group neither read nor retained. The same code and the same reason as the 9.0 output-handler variant this branch already refuses in VTSessionOutputHandler9_0.m",
+   "effect": "noErr, with kVTEncodeInfo_FrameDropped (bit 0 of VTEncodeInfoFlags, so 0x1) written into infoFlagsOut. MEASURED with a real group - CMTagCollectionCreate(NULL, 0) then CMTaggedBufferGroupCreate over one buffer, matches=1 - and a real session: 'EncodeMultiImageFrame(real group) -> 0 encode callbacks=2 infoFlags=0x1', where the host's own output callback fired ONCE with status -12902 and no sample ('encode callback: calls=2 status=-12902 flags=0 sample=(null)'). NOT REPRODUCED: that callback. The session is the release's and the caller's callback is inside it with no public route out; the release's own encode will not make the call on request, which is measured - 'EncodeFrame(NULL image) -> -12902 callbacks=0 infoFlags=0x5a5a5a5a' - so there is no release call whose effect is to call the caller's callback once with -12902. The two things a caller can read, noErr and the dropped frame, are reproduced; the third is not, and a caller waiting on its output callback for this frame will not hear about it",
    "facts": "facts/VideoToolbox/DecodeEncodeVariants.md",
    "source": "SDK 26.2, VTCompressionSession.h:349-384; VTErrors.h:45 for -12915"
   },
@@ -41,7 +41,7 @@
    "minimum": "6.0",
    "status": "implemented",
    "reason": "the 16.4 SDK does not declare it and no release this port builds exports it (_VTCompressionSessionEncodeMultiImageFrameWithOutputHandler is absent from the 4.3 and the 6.1.3 armv7 caches), so the port has to export it. Same source as the function above - a CMTaggedBufferGroupRef - and the block adds a promise this port cannot keep",
-   "effect": "kVTVideoEncoderNotAvailableNowErr (-12915), with the caller's block neither retained nor called and *infoFlagsOut set to 0. The header says the block 'may be called asynchronously, on a different thread from the one that calls' it, which needs an encode to run it after",
+   "effect": "kVTParameterErr (-12902), with the caller's block neither retained nor called. MEASURED on the same real session and the same real group: 'EncodeMultiImageFrameWithOutputHandler(real) -> -12902 encode callbacks=0'. infoFlagsOut is NOT written, and the 0x1 in that probe line is the value the previous call left in the same word - the probe reused one variable across the two calls, which is the shape of index-by-hand error that has bitten this family twice, so it is named rather than quoted as a measurement",
    "facts": "facts/VideoToolbox/DecodeEncodeVariants.md",
    "source": "SDK 26.2, VTCompressionSession.h:392-428; VTErrors.h:45 for -12915"
   }
