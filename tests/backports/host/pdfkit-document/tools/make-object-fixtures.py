@@ -280,6 +280,83 @@ SQUARE_T = annot(b"Square", [(b"Rect", b"[40 40 140 140]"), (b"F", b"4"), (b"T",
                              (b"MK", b"<< /BC [0 0 1] >>")])
 
 
+# ---- the widget dictionary of PDF 1.7 Table 8.39, one fixture per group of keys -------------------
+#
+# A /Widget's state is its /FT field type, its /Ff FLAGS as bits, and a handful of value keys, and every
+# member of PDFAnnotation (PDFAnnotationUtilities) that reads a widget is a question about one of them.
+# The flags are the part that cannot be guessed: Table 8.39 gives each a bit and a name, and the fixture
+# carries one annotation PER BIT with only that bit set, so each member is measured against a file that
+# sets its own bit and nothing else.  A fixture with all the bits at once would answer every member YES
+# and prove nothing.
+def widget(extra, field=b"/Tx", rect=b"[40 40 240 70]"):
+    return annot(b"Widget", [(b"Rect", rect), (b"F", b"4"), (b"FT", field)] + extra)
+
+
+# bit 1 ReadOnly, 2 Required, 3 NoExport, 13 Multiline, 14 Password, 15 NoToggleToOff, 16 Radio in
+# unison, 17 Pushbutton, 18 Combo, 19 Edit, 20 Sort, 21 FileSelect, 22 MultiSelect, 23 DoNotSpellCheck,
+# 24 DoNotScroll, 25 Comb, 26 RichText - each on an annotation of its own, named for its bit
+# Each bit is the INTEGER, not a list holding it: the first version of this table wrote lists, so
+# str(bits) produced "[1]" and the fixtures carried /Ff [1] - an ARRAY where the format wants an integer -
+# and the host then answered every flag member NO for every fixture, which read as "the host ignores
+# /Ff".  A fixture that cannot fail is not a fixture, and this one failed silently for a whole round.
+WIDGET_FLAG_BITS = [
+    (b"bit1-readonly", 1),
+    (b"bit2-required", 2),
+    (b"bit13-multiline", 1 << 12),
+    (b"bit14-password", 1 << 13),
+    (b"bit15-notoggletooff", 1 << 14),
+    (b"bit16-radioinunison", 1 << 15),
+    (b"bit17-pushbutton", 1 << 16),
+    (b"bit18-combo", 1 << 17),
+    (b"bit19-edit", 1 << 18),
+    (b"bit21-fileselect", 1 << 20),
+    (b"bit22-multiselect", 1 << 21),
+    (b"bit25-comb", 1 << 24),
+    (b"bit26richtext", 1 << 25),
+]
+WIDGET_FLAGS = [widget([(b"Ff", str(bits).encode()),
+                        (b"V", b"(value)"), (b"DV", b"(default)"), (b"AS", b"/Yes")])
+                for _title, bits in WIDGET_FLAG_BITS]
+# no /Ff at all, so every flag member's ABSENT answer is measured on the same shape
+WIDGET_NO_FLAGS = [widget([(b"V", b"(value)"), (b"DV", b"(default)"), (b"AS", b"/Yes")])]
+# a flags word with EVERY bit the table names, so a member that reads more than one bit is measured
+# against all of them at once as well as one at a time
+WIDGET_ALL_FLAGS = [widget([(b"Ff", str((1 << 0) | (1 << 1) | (1 << 12) | (1 << 13) | (1 << 14) |
+                                     (1 << 15) | (1 << 16) | (1 << 17) | (1 << 18) | (1 << 20) |
+                                     (1 << 21) | (1 << 24) | (1 << 25)).encode())])]
+
+# the field TYPES of Table 8.39, one annotation each, and the button-widget STATES beside them
+# AND the same four one at a time, each ALONE on its page, because a fixture carrying all four can only
+# say that one of them is missing and not which - and the answer turned out to be one of them.
+WIDGET_FIELD_TYPES_ONE = [(ft, [widget([], field=ft)]) for ft in
+                          (b"/Btn", b"/Tx", b"/Ch", b"/Sig")]
+WIDGET_FIELD_TYPES_ONE += [
+    (b"/Ch", [widget([(b"Opt", b"[(one) (two)]")], field=b"/Ch")]),
+    (b"/Ch", [widget([(b"Opt", b"(not an array)")], field=b"/Ch")]),
+]
+
+# one /FT each, written ONCE: the first version of this passed the field type both as the helper's
+# `field` argument and as an extra pair, so every dictionary carried /FT twice - and the host then
+# answered three of the four field types rather than four, which read as "the host drops a choice widget"
+# and was this fixture writing a duplicate key.
+WIDGET_FIELD_TYPES = [widget([], field=ft) for ft in
+                      (b"/Btn", b"/Tx", b"/Ch", b"/Sig")]
+WIDGET_STATES = [widget([(b"FT", b"/Btn"), (b"V", b"(off)"), (b"AS", state)])
+                 for state in (b"/Yes", b"/Off", b"/On")]
+
+# the VALUE keys, one annotation per key, because a key that is ABSENT and a key that is present with
+# the wrong type are two different answers and the port has to tell them apart
+WIDGET_VALUES = [
+    widget([(b"FT", b"/Tx"), (b"V", b"(typed)"), (b"DV", b"(preset)"), (b"MaxLen", b"7"),
+            (b"Q", b"2"), (b"Opt", b"[(one) (two) (three)]"), (b"T", b"(the field)"),
+            (b"TU", b"(alternate)"), (b"DA", b"/Helv 12 Tf 0 g")]),
+    # the same with the value keys of the wrong type, one each, so the reader has to refuse them
+    widget([(b"FT", b"/Tx"), (b"V", b"7"), (b"DV", b"[1 2]"), (b"MaxLen", b"(seven)"),
+            (b"Q", b"(two)"), (b"Opt", b"(not an array)")]),
+    # and with none of them, so the absent answer is measured on the same shape
+    widget([(b"FT", b"/Tx")]),
+]
+
 # ---- /Outlines: the outline tree of PDF 1.7 Table 8.2 -------------------------------------------
 #
 # An outline is a LINKED structure and not a tree of nested dictionaries: every item names its /Parent,
@@ -699,6 +776,23 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
+    for name, annotations in (("widget-flags.pdf", WIDGET_FLAGS),
+                              ("widget-noflags.pdf", WIDGET_NO_FLAGS),
+                              ("widget-allflags.pdf", WIDGET_ALL_FLAGS),
+                              ("widget-fieldtypes.pdf", WIDGET_FIELD_TYPES),
+                              ("widget-states.pdf", WIDGET_STATES),
+                              ("widget-values.pdf", WIDGET_VALUES)):
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
+    for position, (field_type, annotations) in enumerate(WIDGET_FIELD_TYPES_ONE):
+        # numbered, because the three /Ch fixtures share a field type and the first version of this named
+        # them all widget-ftch.pdf, so each overwrote the last and only the first was ever measured
+        name = "widget-ft%s%d.pdf" % (field_type.decode().strip("/").lower(), position)
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
+    for _name, _annotations in []:
+        count, _ = build(os.path.join(directory, name), annotations)
+        print("  wrote %-20s %d objects, %d annotations" % (name, count, len(annotations)))
     for name, spec, sign, signs, extra in (("outline-collapsed.pdf", OUTLINE_OPEN, -1, None, 0),
                                     ("outline-expanded.pdf", OUTLINE_CLOSED, 1, None, 0),
                                     ("outline-shapes.pdf", OUTLINE_SHAPES, -1, None, 0),

@@ -320,6 +320,7 @@ static const CGFloat kTextAnnotationSize = 24.0;
 // is present; PDFBorder11.m then finds no array and answers the default width, which is what
 // border-on-nontype's five subtypes answer for a /Border that is an array.
 //
+
 // -setBorder: stores the object BY REFERENCE, measured: -border answers the very object that was set,
 // a change made to that object afterwards is visible through -border, and setting nil makes -border
 // answer nil again.  So the annotation holds the object and does not copy it, and a border that was
@@ -522,5 +523,119 @@ static const CGFloat kTextAnnotationSize = 24.0;
 //                      that cannot be read back would be untestable.
 //   -toolTip, -mouseUpAction, -removeAllAppearanceStreams, -drawWithBox:  deprecated members of the
 //                      same unwritten or undrawn surface.
+
+@end
+
+// The nine /Ff bit members live in their own CATEGORY IMPLEMENTATION because that is where their
+// properties are declared: a property declared in a category cannot be implemented in the class's own
+// @implementation, and clang says so.  -charon_flags is the one thing they share, so it is declared in
+// CharonPDFKit.h's CharonInternals category and defined here with them.
+//
+@implementation PDFAnnotation (PDFAnnotationUtilitiesSubset)
+
+// Each is COMPUTED from the /Ff word on every call, so @dynamic says "not an ivar" and NOTHING else - a
+// @dynamic property with no body raises at run time, which is what the first version of PDFPage's -label
+// did and what the harness's crash was.
+@dynamic readOnly;
+@dynamic multiline;
+@dynamic isPasswordField;
+@dynamic comb;
+@dynamic allowsToggleToOff;
+@dynamic radiosInUnison;
+@dynamic listChoice;
+@dynamic widgetControlType;
+@dynamic activatableTextField;
+
+// The /Ff FLAG WORD, or 0 when the annotation names none.  Table 8.39 makes it an integer, and
+// CGPDFDictionaryGetInteger refuses anything else, so a /Ff that is a string or an array leaves every
+// bit clear - which is the measured answer for an annotation that carries no /Ff at all
+// (widget-noflags.pdf) and the answer the port gives for a /Ff of the wrong type.
+- (long)charon_flags
+{
+    long flags = 0;
+    if (_annotation == NULL)
+        return 0;
+    if (!CGPDFDictionaryGetInteger(_annotation, "Ff", &flags))
+        return 0;
+    return flags;
+}
+
+// The PDFAnnotation (PDFAnnotationUtilities) members that are /Ff bit reads.  Each names the fixture
+// that fixes it: widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set, and
+// widget-allflags.pdf carries every bit at once, so a member is measured both against its own bit alone
+// and against the lot.
+//
+// Three of them are the NEGATION of a bit, which is measured and not a convenience: bit 15 alone answers
+// allowsToggleToOff NO and every other single-bit fixture answers YES; bit 18 alone answers listChoice NO
+// and the rest YES.
+//
+// And radiosInUnison is NOT bit 16, whose name in Table 8.39 is RadioInUnison: bit 16 alone answers NO
+// and bit 26 alone answers YES, so it is bit 26 - RichText - that this member reads.
+- (BOOL)isReadOnly
+{
+    return ([self charon_flags] & (1 << 0)) != 0;
+}
+
+- (BOOL)isMultiline
+{
+    return ([self charon_flags] & (1 << 12)) != 0;
+}
+
+- (BOOL)isPasswordField
+{
+    return ([self charon_flags] & (1 << 13)) != 0;
+}
+
+- (BOOL)hasComb
+{
+    return ([self charon_flags] & (1 << 24)) != 0;
+}
+
+- (BOOL)allowsToggleToOff
+{
+    // bit 15 NoToggleToOff is the negation, AND bit 17 Pushbutton clears it as well - measured on the
+    // two single-bit fixtures that each answer NO while the other eleven answer YES.  So this is
+    // "neither bit 15 nor bit 17", which is what the fixtures say and not a reading of the table.
+    return ([self charon_flags] & ((1 << 14) | (1 << 16))) == 0;
+}
+
+- (BOOL)radiosInUnison
+{
+    return ([self charon_flags] & (1 << 25)) != 0;
+}
+
+- (BOOL)isListChoice
+{
+    return ([self charon_flags] & (1 << 17)) == 0;
+}
+
+- (PDFWidgetControlType)widgetControlType
+{
+    // NOT a two-bit field read as a shift.  Measured on four fixtures: neither bit answers 2
+    // (CheckBox), bit 17 alone answers 0 (PushButton), bit 16 alone answers 1 (RadioButton), and both at
+    // once - widget-allflags - answers 1.  So it is a PRIORITY: bit 16 wins, else bit 17, else the
+    // CheckBox default.  A shift of the pair by 16 would answer 0, 1, 2 and 3 for those four, so the
+    // default of 2 is what told the two rules apart.
+    long flags = [self charon_flags];
+    if ((flags & (1 << 15)) != 0)
+        return kPDFWidgetRadioButtonControl;
+    if ((flags & (1 << 16)) != 0)
+        return kPDFWidgetPushButtonControl;
+    return kPDFWidgetCheckBoxControl;
+}
+
+- (BOOL)isActivatableTextField
+{
+    // NOT a bit and NOT just the absence of bit 1: it is a TEXT field that is not read-only.  Measured on
+    // widget-fttx1 (/Tx answers YES), widget-ftbtn0 (/Btn NO), widget-ftsig3 (/Sig NO), widget-ftch4 (a
+    // /Ch with an /Opt NO), the thirteen /Tx fixtures of widget-flags.pdf - of which the bit-1 one
+    // answers NO and the other twelve YES - and every /Link in the harness, which has no /FT and answers
+    // NO.  So the field type has to be /Tx as well as the flag being clear.
+    const char *fieldType = NULL;
+    if (_annotation == NULL || !CGPDFDictionaryGetName(_annotation, "FT", &fieldType)
+        || fieldType == NULL || strcmp(fieldType, "Tx") != 0)
+        return NO;
+    return ![self isReadOnly];
+}
 
 @end

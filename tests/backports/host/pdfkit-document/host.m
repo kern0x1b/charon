@@ -110,6 +110,22 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
     (void)depth;
 }
 
+
+// The nine /Ff bit members, one line each and each with its OWN value, because a line carrying all nine
+// registers as one key - which is how the outline facts were lost the first time round.
+static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotation)
+{
+    printf("%s.flags.readOnly=%d\n", prefix, (int)annotation.isReadOnly);
+    printf("%s.flags.multiline=%d\n", prefix, (int)annotation.isMultiline);
+    printf("%s.flags.isPasswordField=%d\n", prefix, (int)annotation.isPasswordField);
+    printf("%s.flags.comb=%d\n", prefix, (int)annotation.hasComb);
+    printf("%s.flags.allowsToggleToOff=%d\n", prefix, (int)annotation.allowsToggleToOff);
+    printf("%s.flags.radiosInUnison=%d\n", prefix, (int)annotation.radiosInUnison);
+    printf("%s.flags.listChoice=%d\n", prefix, (int)annotation.isListChoice);
+    printf("%s.flags.widgetControlType=%ld\n", prefix, (long)annotation.widgetControlType);
+    printf("%s.flags.activatableTextField=%d\n", prefix, (int)annotation.isActivatableTextField);
+}
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // Printed once per annotation, after the border facts, in the same keys on both sides.  Three things
@@ -595,6 +611,7 @@ int main(int argc, char **argv)
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];
                     NSString *prefix = [NSString stringWithFormat:@"%s.page0.annotation%u", name, a];
+                    printAnnotationFlagFacts([prefix UTF8String], each);
                     printActionFacts([prefix UTF8String], each.action);
                     printDestinationFacts([prefix UTF8String], each.destination);
                 }

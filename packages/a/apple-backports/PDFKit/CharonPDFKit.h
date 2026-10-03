@@ -164,11 +164,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable) PDFBorder *border;
 @end
 
+
 // The port's own constructor, over a dictionary already in the object graph.  Not Apple's
 // -initWithBounds:forType:withProperties:, which builds a new annotation and writes it into a document.
 @interface PDFAnnotation (CharonInternals)
 - (nullable instancetype)initWithCharonDictionary:(CGPDFDictionaryRef)annotation
                                           onPage:(nullable PDFPage *)page;
+// The /Ff FLAG WORD of this annotation, or 0 when it names none.  Shared by the nine bit members below,
+// which each read one bit of it, and declared here so the category implementation that defines them can
+// reach it.
+- (long)charon_flags;
 @end
 
 // ---- PDFBorder, and the two enumerations the port has to spell because the release has no header
@@ -255,6 +260,49 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @property (nonatomic, copy, nullable) NSString *rolloverCaption;
 @property (nonatomic, copy, nullable) NSString *downCaption;
 @property (nonatomic, readonly, copy) NSDictionary *appearanceCharacteristicsKeyValues;
+@end
+
+// ---- PDFAnnotation (PDFAnnotationUtilities): the widget members that are /Ff BIT reads ------------
+//
+// The 26.2 SDK declares these in a CATEGORY, PDFAnnotationUtilities.h:120, and one member per group of
+// them is implemented here.  Every bit below is measured on the host over widget-flags.pdf, which carries
+// ONE ANNOTATION PER BIT with only that bit set - thirteen bits and a fixture with every bit at once -
+// because a fixture with all the bits set answers every member YES and proves nothing.
+//
+//   bit 1  ReadOnly        1          -> readOnly
+//   bit 13 Multiline       4096       -> multiline
+//   bit 14 Password        8192       -> isPasswordField
+//   bit 15 NoToggleToOff   16384      -> allowsToggleToOff is the NEGATION of it
+//   bit 16 RadioInUnison   32768      -> widgetControlType's low bit: 1 answers RadioButton, not unison
+//   bit 17 Pushbutton      65536      -> widgetControlType's high bit: 0 answers PushButton, and it
+//                                         clears allowsToggleToOff as well
+//   bit 18 Combo           131072     -> isListChoice is the NEGATION of it
+//   bit 25 Comb            16777216   -> comb
+//   bit 26 RichText        33554432   -> radiosInUnison - NOT bit 16, which is what the table's name
+//                                         suggests and what this row's effect says
+//
+// and the members that are not a bit at all: activatableTextField is !readOnly (measured: the bit-1
+// fixture answers NO and the other twelve answer YES), and widgetControlType with no bits answers
+// kPDFWidgetCheckBoxControl - 2 - which is the default and not the zero a shift of nothing would give.
+//
+// NOT declared here, each for the reason its row repeats: fieldName, which the host SYNTHESISES rather
+// than reads - a widget with no /T answers "text0", "text1" and "button0" by document position, and one
+// WITH a /T answers the synthesised name too, so it is not /T and not derivable from the document;
+// widgetStringValue and widgetDefaultStringValue, whose /V and /DV the host does not read on these
+// fixtures; buttonWidgetState and buttonWidgetStateString, which need their own /AS matrix; maximumLength,
+// alignment, choices, values, open, caption, URL, the three colours, font, the line styles, the two points,
+// paths and quadrilateralPoints.  See facts/PDFKit/Annotation11.md, which carries the host's measured
+// answer for every one of them.
+@interface PDFAnnotation (PDFAnnotationUtilitiesSubset)
+@property (nonatomic, getter=isReadOnly) BOOL readOnly;
+@property (nonatomic, getter=isMultiline) BOOL multiline;
+@property (nonatomic, readonly, getter=isPasswordField) BOOL isPasswordField;
+@property (nonatomic, getter=hasComb) BOOL comb;
+@property (nonatomic) BOOL allowsToggleToOff;
+@property (nonatomic) BOOL radiosInUnison;
+@property (nonatomic, getter=isListChoice) BOOL listChoice;
+@property (nonatomic) PDFWidgetControlType widgetControlType;
+@property (readonly, getter=isActivatableTextField) BOOL activatableTextField;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------

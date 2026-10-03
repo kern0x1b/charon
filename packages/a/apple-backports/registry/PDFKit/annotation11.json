@@ -1,0 +1,392 @@
+{
+ "framework": "PDFKit",
+ "entries": [
+  {
+   "api": "PDFAnnotation.readOnly",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "/Ff bit 1, ReadOnly in Table 8.39.  The bit-1 fixture answers YES and the other twelve answer NO - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.multiline",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "/Ff bit 13, Multiline.  The bit-13 fixture answers YES and the other twelve answer NO - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.isPasswordField",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "/Ff bit 14, Password.  The bit-14 fixture answers YES and the other twelve answer NO - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.comb",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "/Ff bit 25, Comb.  The bit-25 fixture answers YES and the other twelve answer NO - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.allowsToggleToOff",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the NEGATION of bit 15 (NoToggleToOff) AND of bit 17 (Pushbutton).  Measured: the bit-15 fixture answers NO and so does the bit-17 one, while the other eleven answer YES - so it is neither bit, and bit 17 clearing it is not something the format's own name suggests - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.radiosInUnison",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "/Ff bit 26, and NOT bit 16 whose name in Table 8.39 IS RadioInUnison.  Measured: bit 16 alone answers NO and bit 26 alone answers YES, and the all-bits fixture - which carries both - answers YES - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.listChoice",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the NEGATION of bit 18 (Combo).  The bit-18 fixture answers NO and the other twelve answer YES - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.widgetControlType",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a PRIORITY over bits 16 and 17 and not a two-bit field read as a shift: neither bit answers 2 (CheckBox), bit 17 alone answers 0 (PushButton), bit 16 alone answers 1 (RadioButton), and both at once answers 1.  So bit 16 wins, else bit 17, else the CheckBox default - and a shift by 16 would answer 0, 1, 2 and 3 for those four, which is what told the two rules apart - widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set - thirteen bits - and widget-allflags.pdf carries every bit at once, so each member is measured against its own bit alone and against the lot",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.activatableTextField",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a TEXT field that is not read-only, and not a bit: /FT must be /Tx AND bit 1 must be clear.  Measured on six fixtures with one field type each alone on its page - /Tx YES, /Btn NO, /Sig NO, a /Ch with an /Opt NO - on the thirteen /Tx fixtures of widget-flags.pdf, of which the bit-1 one answers NO and the other twelve YES, and on every /Link in the harness, which has no /FT and answers NO",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures, with 128 red controls - one automatic and 127 naming a border, appearance, identity, action, copy, initializer, outline or flag key"
+  },
+  {
+   "api": "PDFAnnotation.fieldName",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the host SYNTHESISES it and does not read it.  Measured: a /Widget with NO /T answers \"text0\", \"text1\", \"text12\" and \"button0\", \"button1\" by DOCUMENT POSITION, a /FT /Sig widget answers nil, and a widget that DOES carry /T (the field) answers the synthesised name anyway - so it is not /T, and the number is an index into an enumeration the document does not carry.  A port cannot reproduce a number it cannot derive, and inventing one would be a different answer wearing the same name",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.widgetStringValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the /V key is not what this member reads on the fixtures measured: widget-values.pdf's first annotation carries /V (typed) and answers nil.  What /V needs - an appearance stream, a /DA, or the widget tree above it - is not measured, so the row waits for it rather than claiming a reading",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.widgetDefaultStringValue",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the same boundary as -widgetStringValue beside it: widget-values.pdf carries /DV (preset) and the host answers an EMPTY STRING for it while answering nil for the /V on the same annotation, which is not a rule this port can write from one fixture",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.buttonWidgetState",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "needs its own /AS matrix before it can be written.  Measured so far: /AS /Yes on a /Btn answers 1, /AS /Off answers 0, /AS /On answers 0, and a /Tx widget with /AS /Yes answers -1 - so the mapping is not the format's off/on pair and needs fixtures per (/FT, /AS) combination before it is a rule",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.buttonWidgetStateString",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the string form of -buttonWidgetState and it answers \"Yes\" for every /AS measured - /Yes, /Off and /On alike - which is not a value the document carries.  It waits with -buttonWidgetState, whose enum it would follow",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.maximumLength",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/MaxLen (integer) answers 0 on every fixture measured, including the one that writes /MaxLen 7, so the key this member reads is not established",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.alignment",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Q answers 0 on every fixture measured, including the one that writes /Q 2, so the key or the scale this member reads is not established",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.choices",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Opt answers an empty array on the fixtures measured, including the one that writes /Opt [(one) (two) (three)], so the key or the shape this member reads is not established",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.values",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the same boundary as -choices beside it, and measured the same way",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.open",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Open answers NO on every fixture measured; no fixture writes it, so its effect on the answer is not established",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.caption",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Cap answers nil on every fixture measured; no fixture writes it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.URL",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "no fixture writes the key this member reads and it answers nil throughout",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.backgroundColor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a UIColor read out of /MK /BC, which the Mac Catalyst third binary can compare by its four components - and the key is the one already measured for -[PDFAnnotation border], where a widget's /BC decides whether it has a border at all",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.fontColor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a UIColor out of the /DA colour string, which needs the /DA's operands and the colour reader; neither is measured",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.interiorColor",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a UIColor out of /MK /IC, which no fixture writes and whose spelling the port has not confirmed",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.font",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a UIFont out of the /DA font name, and the /DA fixtures in this harness do not name a font the walk resolves",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.startLineStyle",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/BS and /BE on an ink or line annotation; no fixture writes them and the PDFLineStyle this member returns is a class the port does not carry",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.endLineStyle",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the same boundary as -startLineStyle beside it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.startPoint",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/L on a line annotation: the two numbers need the LINE ENDING names and the dash phase to be right, and no fixture writes an /L with them",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.endPoint",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the same boundary as -startPoint beside it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.paths",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "the /InkList of PDF 1.7 Table 8.17, which is a list of variable-length point runs and needs a bezier-path object the port does not carry; no fixture writes an /InkList",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "-[PDFAnnotation addBezierPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a WRITE path, and it needs -paths' object first: it appends to an annotation's ink, which means writing one back into the document",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "-[PDFAnnotation removeBezierPath:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a WRITE path, for the same reason as -addBezierPath: beside it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.quadrilateralPoints",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/QuadPoints, a flat array of eight numbers for the four corners of a markup; no fixture writes one",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.iconType",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Name on a text annotation, where the name is one of seven PDFAnnotationTextIconType strings; no fixture writes it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.markupType",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Subtype /Highlight, /Underline and /Squiggly carry an /NM name; no fixture writes one",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  },
+  {
+   "api": "PDFAnnotation.stampName",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "/Name on a stamp annotation, one of the PDFAnnotationStampName strings; no fixture writes it",
+   "facts": "facts/PDFKit/Annotation11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 10251 MISMATCHES 0 over 133 fixtures"
+  }
+ ]
+}

@@ -471,7 +471,30 @@ for key in \
     cgfixture-pair-same.pdf.page0.string \
     cgfixture-pair-up.pdf.page0.string \
     cgfixture-lines.pdf.page0.string \
-    cgfixture-lines.pdf.page0.numberOfCharacters
+    cgfixture-lines.pdf.page0.numberOfCharacters \
+    widget-flags.pdf.page0.annotation0.flags.readOnly \
+    widget-flags.pdf.page0.annotation0.flags.multiline \
+    widget-flags.pdf.page0.annotation0.flags.isPasswordField \
+    widget-flags.pdf.page0.annotation0.flags.comb \
+    widget-flags.pdf.page0.annotation0.flags.allowsToggleToOff \
+    widget-flags.pdf.page0.annotation0.flags.radiosInUnison \
+    widget-flags.pdf.page0.annotation0.flags.listChoice \
+    widget-flags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation0.flags.activatableTextField \
+    widget-flags.pdf.page0.annotation5.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation6.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation7.flags.listChoice \
+    widget-flags.pdf.page0.annotation12.flags.radiosInUnison \
+    widget-flags.pdf.page0.annotation4.flags.allowsToggleToOff \
+    widget-noflags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-allflags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-allflags.pdf.page0.annotation0.flags.readOnly \
+    widget-fttx1.pdf.page0.annotations.count \
+    widget-ftch2.pdf.page0.annotations.count \
+    widget-ftch4.pdf.page0.annotations.count \
+    widget-ftch5.pdf.page0.annotations.count \
+    widget-ftbtn0.pdf.page0.annotation0.flags.activatableTextField \
+    act-goto-fit.pdf.page0.annotation0.flags.activatableTextField
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

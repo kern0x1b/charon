@@ -415,8 +415,15 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 //
 // A /Widget with no /FT is KEPT (the same fixture, one annotation), which is what stops the rule from
 // being "an annotation missing a required key is dropped": /FT is required of a widget by Table 8.39
-// and the host does not enforce it.  So the two shapes above are the measured rule and not the
-// format's.
+// and the host does not enforce it.
+//
+//   a CHOICE widget without a usable /Opt   dropped, which IS the format's requirement and the host
+//     enforcing it, the same shape as /Rect.  Six fixtures, one field type each and ALONE on its page,
+//     because a fixture carrying all four can only say that ONE of them is missing: /Btn, /Tx and /Sig
+//     are surfaced and /Ch is not.  And the /Opt decides: a /Ch beside /Opt [(one) (two)] IS surfaced
+//     while a /Ch beside /Opt (a string) is not.
+//
+// So three shapes are skipped, and each is measured rather than read off the format.
 - (NSArray *)annotations
 {
     if (_annotations == nil)
@@ -463,6 +470,21 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
             CGPDFArrayRef endpoints = NULL;
             if (!CGPDFDictionaryGetArray(annotation, "L", &endpoints) || endpoints == NULL)
                 continue;
+        }
+        // and a CHOICE widget whose /Opt is missing or is not an array, which is the THIRD measured skip
+        // and is the format's own requirement: Table 8.39 makes /Opt required for a choice field, and
+        // the host enforces it the way it enforces /Rect.  Six fixtures, one field type each and ALONE on
+        // its page, because a fixture carrying all four field types can only say that ONE of them is
+        // missing - and it is /Ch.  A /Ch beside /Opt [(one) (two)] IS surfaced; a /Ch beside
+        // /Opt (a string) is not.
+        if (subtype != NULL && strcmp(subtype, "Widget") == 0) {
+            const char *fieldType = NULL;
+            if (CGPDFDictionaryGetName(annotation, "FT", &fieldType) && fieldType != NULL
+                && strcmp(fieldType, "Ch") == 0) {
+                CGPDFArrayRef options = NULL;
+                if (!CGPDFDictionaryGetArray(annotation, "Opt", &options) || options == NULL)
+                    continue;
+            }
         }
         PDFAnnotation *built = [[PDFAnnotation alloc] initWithCharonDictionary:annotation onPage:self];
         if (built != nil)
