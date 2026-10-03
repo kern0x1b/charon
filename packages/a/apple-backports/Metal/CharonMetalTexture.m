@@ -1,7 +1,6 @@
 #import "CharonMetal.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // GL_HALF_FLOAT and its linear form are named by GL_OES_texture_half_float, not by ES 2.0's own

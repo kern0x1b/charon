@@ -1,6 +1,5 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 // The 12.0 blits. -optimizeContentsFor{CPU,GPU}Access: is a hint about where a resource's bytes
 // should live for speed, and on this device the answer is already the case for every resource: a

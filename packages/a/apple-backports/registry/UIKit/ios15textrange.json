@@ -300,30 +300,33 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the line under a point, which is what a tap and a mouse-down select, and what a word at a point is enclosed from",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextSelectionDataSource' and '^@interface NSTextSelectionDataSource' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextSelectionNavigation15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextRange15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextSelectionDataSource locationFromLocation:withOffset:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "a location that many characters on, which is how a move over one character or paragraph separator is placed",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextSelectionDataSource' and '^@interface NSTextSelectionDataSource' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentStorage15.m, NSTextElement15.m and NSTextSelectionNavigation15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextRange15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextSelectionDataSource offsetFromLocation:toLocation:]",
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the offset between two locations, which is what a paragraph asks to place its two derived ranges in the document",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextSelectionDataSource' and '^@interface NSTextSelectionDataSource' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on CharonTextLocation.m, NSTextContentStorage15.m and NSTextElement15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextRange15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextSelectionDataSource textLayoutOrientationAtLocation:]",
@@ -341,10 +344,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the range a granularity encloses at a location, which is where a move over a word, a line, a sentence or a paragraph lands",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextSelectionDataSource' and '^@interface NSTextSelectionDataSource' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextSelectionNavigation15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextRange15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextSelectionNavigation deletionRangesForTextSelection:direction:destination:allowsDecomposition:]",
@@ -631,10 +635,11 @@
       "kind": "property",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextRange15.md",
-      "effect": "the navigation object reads it to move a selection to the start or the end of the document, and a nil or empty one means there is nowhere to move to",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by the probes under .agent-work/runs/textkit2 and held by tests/backports/host/uikit2/textkit2_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextSelectionDataSource' and '^@interface NSTextSelectionDataSource' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextSelectionDataSource> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentManager15.m, NSTextContentStorage15.m, NSTextElement15.m and NSTextSelectionNavigation15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextRange15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "NSTextSelectionNavigation.allowsNonContiguousRanges",

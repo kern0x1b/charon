@@ -704,6 +704,39 @@
       "effect": "the version the revision was made with, nil where none was",
       "facts": "facts/HealthKit/HealthKit.md",
       "source": "the armv7 shared cache of iOS 9.0, HealthKit.framework, extracted with modules/apple/dyld.lua's extract()"
+    },
+    {
+      "api": "-[HKDevice init]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKDevice\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "HKDevice.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+    },
+    {
+      "api": "-[HKSourceRevision init]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKSourceRevision\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+      "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "HKSourceRevision.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+    },
+    {
+      "api": "-[HKDeletedObject init]",
+      "kind": "method",
+      "introduced": "9.0",
+      "minimum": "6.0",
+      "status": "absent",
+      "reason": "Apple's own class carries neither selector: own-init is 0 and own-new is 0, so it inherits NSObject's pair and a caller that reaches them gets a new empty object - measured on the host's own HealthKit, confirmed in the iOS 16.0 cache, and held to by tests/backports/host/unavailable-init. The port defines nothing here either, because the rule the coordinator settled on 2026-10-03 (coordination/wave-2026-10-03/QUEUE.md): a definition would put the selector in the port's metadata where Apple's has none, changing what the class is and answering the caller exactly what NSObject's already answers",
+      "effect": "not defined by the port; the class inherits NSObject's -init and +new",
+      "facts": "facts/HealthKit/HealthKit.md",
+      "source": "HKSourceRevision.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
     }
   ]
 }

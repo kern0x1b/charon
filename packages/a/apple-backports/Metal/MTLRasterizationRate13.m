@@ -2,7 +2,6 @@
 #import "CharonMetalProtocols.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 // The header marks -init API_UNAVAILABLE and -initWithSampleCount: the DESIGNATED initializer, so the
 // port has to override -init to give a fresh layer its two sample arrays and cannot say so in an
@@ -23,8 +22,8 @@
 // samples are not the family. MTLRasterizationRateMap - the object a device makes out of a map - is
 // NOT here; it is a reader over device-made state and belongs with the device work.
 //
-// NO DEVICE IS CREATED anywhere in this file or its case, and MTLCreateSystemDefaultDevice() hangs
-// on a machine with no GPU, so nothing calls it.
+// NO DEVICE IS CREATED anywhere in this file or its case: a descriptor asks a device nothing, which
+// facts/Metal/DeviceOnThisMachine.md measures.
 
 @interface MTLRasterizationRateSampleArray ()
 {

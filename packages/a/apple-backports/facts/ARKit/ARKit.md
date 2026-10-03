@@ -258,3 +258,128 @@ spellings meet: the C surface declares them as pointers and the Swift surface, w
 refines, as arrays. A plane that has only been **detected** has no mesh, so the C answer is a null
 pointer with a count of zero and the Swift answer an empty array, and both are the truth rather than
 a fabricated mesh.
+
+## The sixty-eight `-init` and `+new` rows, decided from Apple's own metadata and not from a header
+
+**This section replaces an earlier one that decided these rows from the header alone. That was
+wrong, and the correction is the measurement below.**
+
+`NS_UNAVAILABLE` on a declaration says the SDK does not want a caller to use it. It does **not** say
+the method is absent from the class, and for ARKit the two come apart. Measured over ARKit of the
+arm64e shared cache of iOS 16.0 with `modules/apple/objc.lua`'s own inventory
+(`CHARON_ROOT=$PWD xmake l tools/corpus/objc-inventory.lua ~/.charon/dyld/16.0/dyld_shared_cache_arm64e`,
+143137 classes read), each class's **own** method list answers:
+
+| | rows | what Apple's own metadata says | status |
+| --- | --- | --- | --- |
+| `-[X init]` on a class that defines it | 8 | `-init` IS in the class's own instance selector list | **implemented** |
+| `-[X init]` on a class that does not | 26 | `-init` is NOT in the class's own instance selector list | absent |
+| `+[X new]`, every class | 34 | `+new` is in the OWN class selector list of **0 of 143137** classes | absent |
+
+The eight classes that define `-init` of their own, and so the eight implemented rows:
+
+`ARConfiguration`, `ARWorldTrackingConfiguration`, `AROrientationTrackingConfiguration`,
+`ARFaceTrackingConfiguration`, `ARImageTrackingConfiguration`, `ARObjectScanningConfiguration`,
+`ARGeoTrackingConfiguration`, `ARCamera`.
+
+`ARConfiguration` is the one that shows why the header alone could not decide it. Its own header says
+
+```objc
+- (instancetype)init NS_UNAVAILABLE;      // ARConfiguration.h:211
++ (instancetype)new NS_UNAVAILABLE;      // ARConfiguration.h:212
+```
+
+and Apple's runtime metadata has `-init` in the class's own list all the same. Both are true at once:
+the mark is the SDK telling a caller not to build the abstract base directly, and the method is there
+underneath, which is exactly what the six configuration subclasses chain to - their own blocks
+re-declare `- (instancetype)init;` with no mark at `ARConfiguration.h:114`. So `ARConfiguration.m`
+now defines `-init`, and `initCharonCommon` - the private seam the subclasses already chained to -
+goes through it.
+
+**The controls, without which the read means nothing.** 28851 of the cache's classes carry `-init` in
+their own instance list and `NSObject` carries it too, so the reader does see a class's own methods;
+and `+new` is in the own class list of 0 of 143137 classes, which is the whole point - `+new` is
+`NSObject`'s and is inherited rather than redeclared, so no Apple class has ever defined one and the
+port must not either. Both numbers come from the same pass over the same cache.
+
+Where the header and Apple's own metadata agree - the 26 rows whose class does not define `-init`,
+and all 34 `+new` rows - the port follows the **metadata**: defining the method would put a selector
+in the port's class that Apple's class does not have, changing no behaviour (`alloc` reaches the
+`-init` `NSObject` inherits either way) while moving a status. Those rows are `absent`, which is the
+registry's word for "measured, and not carried".
+
+Nothing here rests on the hardware. The release carries no ARKit at all - 0 of the 11378 class names
+of the 6.1.3 armv7 cache begin `AR`, as this file's `ARDepthData` row records - so what these rows
+answer is the port's own metadata against Apple's, and Apple's answer is now read off Apple's own
+image rather than off a header.
+
+## The skeleton joint names, read out of a held cache with charon's own reader
+
+`ARSkeletonDefinition`'s table is **data inside `ARKitCore`**, not symbols and not in any header, so
+the ObjC inventory cannot reach it. Read here with `modules/apple/dyld.lua`'s `open_cache` through a
+new reader, `tools/corpus/cfstring-run.lua` - one 32-byte record at a time, bounded memory, in
+process, no `ipsw`:
+
+```
+CHARON_ROOT=$PWD xmake l tools/corpus/cfstring-run.lua \
+    ~/.charon/dyld/16.0/dyld_shared_cache_arm64e 1e0be3550 20
+```
+
+### The eight exported constants, and their values
+
+`tools/corpus/cache-value.lua` over the same cache, one line per symbol, naming the image it found
+each in:
+
+| symbol | image | value |
+| --- | --- | --- |
+| `ARSkeletonJointNameRoot` | `ARKitCore.framework/ARKitCore` | `root` |
+| `ARSkeletonJointNameHead` | same | `head_joint` |
+| `ARSkeletonJointNameLeftHand` | same | `left_hand_joint` |
+| `ARSkeletonJointNameRightHand` | same | `right_hand_joint` |
+| `ARSkeletonJointNameLeftFoot` | same | `left_foot_joint` |
+| `ARSkeletonJointNameRightFoot` | same | `right_foot_joint` |
+| `ARSkeletonJointNameLeftShoulder` | same | `left_shoulder_1_joint` |
+| `ARSkeletonJointNameRightShoulder` | same | `right_shoulder_1_joint` |
+
+**The `_1` in both shoulders is the part only the measurement gives.** The header names the constants
+`LeftShoulder` and `RightShoulder` with no ordinal, and there is no way to guess that the value is the
+`..._1_joint` of a numbered family.
+
+### The run those eight sit in
+
+They are 32 bytes apart, `0x1e0be3550` through `0x1e0be3630`, every record the same `isa`
+(`0x80156ae15cedfba0`, the constant-string class) and the same `flags` (`0x7c8`). Reading past them,
+the run continues with more joint names and then stops being joint names:
+
+```
+root   head_joint   left_hand_joint   right_hand_joint
+left_foot_joint   right_foot_joint   left_shoulder_1_joint   right_shoulder_1_joint
+neck_1_joint   right_forearm_joint   left_forearm_joint   right_upLeg_joint
+right_leg_joint   left_upLeg_joint   left_leg_joint   right_eye_joint
+left_eye_joint   Warning   Critical   interpolateBicubic   maxFilter
+```
+
+**Seventeen joint names, then the constant pool carries on with strings that are not joints.** So the
+91-entry table is NOT one contiguous run of this array: the rest is elsewhere in `ARKitCore`'s constant
+pool, in one or more further runs. A fresh session should scan the whole `__DATA_CONST` for that `isa`
+and collect every value matching `^root$|^[a-z][A-Za-z0-9_]*_joint$` - the `_1` family shows the
+numbering is per joint and there are more members of it than this run holds.
+
+### What is NOT measured, and it is the half that matters
+
+`parentIndices` is not a string and not a symbol: it is an `NSArray` of `NSNumber` reached through
+`-[ARSkeletonDefinition parentIndices]`, whose backing array is found by disassembling the getter's
+`adrp`/`add` in `ARKitCore` and reading the `__data` it names. **That was not done.** So the table's
+names are partly measured and its hierarchy is not measured at all, and a half-measured skeleton is
+worse than an unmeasured one, because the port would ship a hierarchy guessed from the names. The 44
+rows of the body-tracking family stay open.
+
+### The three mistakes this cost, written down so they are not repeated
+
+1. `dyld.load(cachefile)` returns a **summary** - `{architecture, count, exports, images, libraries}` -
+   and has no `read_address`. `dyld.open_cache(cachefile)` is the reader. `assertion failed!` with no
+   line is what the summary gives.
+2. `__CFConstantString`'s `str` is at **+16**, not +8. +8 is `flags`, which is the same small constant
+   (`0x7c8`) in every record, so the mistake reads as "every record points at 0x7c8".
+3. A stored pointer carries slide and tag above the address bits and must be masked with `0xFFFFFFFFF`
+   before it is read - the rule `tools/cache-value.lua` already applies (its line 107).

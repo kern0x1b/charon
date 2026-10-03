@@ -286,6 +286,18 @@ local function member_and_protocol_rows(backports, found)
     if said:find("FixClass") then
         table.insert(found, "a category method with a row of its own must pass, and it is red: " .. said)
     end
+    -- a property whose name starts with a lower-case acronym, read through the getter its header declares:
+    -- NSProcessInfo.iOSAppOnVision is getter=isiOSAppOnVision, and the gate of land-w5 (2026-10-03) read the
+    -- built -isiOSAppOnVision as rowless and the row as unbuilt, because "is" + lower-case was not an accessor
+    -- Both directions, on a class the port only adds a category to (so the owner being built answers nothing):
+    -- the built selector must find the row, and the row must find the built selector.
+    inventory.classes.FixCategory = {image = true, instance = {}, ["+"] = {}}
+    rows(class .. ',{"api": "FixCategory.iOSAppOnFix", "kind": "property", "introduced": "9.0", "minimum": "6.0", "status": "implemented", "facts": "f"}')
+    said = asked({["-[FixCategory isiOSAppOnFix]"] = true})
+    if said:find("FixCategory", 1, true) then
+        table.insert(found, "a getter=isiOSAppOnFix accessor must answer the row FixCategory.iOSAppOnFix both ways, and it is red: " .. said)
+    end
+    inventory.classes.FixCategory = nil
     rows(protocol)
     -- the metadata symbol is one the object *defines*, so the rule reads the defined set: with the symbol in
     -- the imported set instead - where a class's names live - the row stays unbuilt, which is how 73 rows
@@ -359,7 +371,9 @@ local function own_rows(backports, found)
     for _, pair in ipairs({{"Alpha", "AlphaOne"}, {"Beta", "BetaOne"}}) do
         local folder, name = pair[1], pair[2]
         local library = {name = folder .. "Backports", folder = folder}
-        local written = backports.protocol_sources(root, library, out, folder)
+        -- no sdkdir: these two libraries have no frameworks and no sources, so every protocol they have a row
+        -- for is one nothing conforms to and every one of them is forced
+        local written = backports.protocol_sources({root = root}, library, out, folder)
         local text = written[1] and io.readfile(written[1]) or ""
         if not text:find("@protocol(" .. name .. ")", 1, true) then
             table.insert(found, folder .. " does not generate its own protocol row: " .. text:gsub("\n", " "):sub(1, 90))
@@ -397,7 +411,7 @@ end
 local function protocol_headers(backports, root, found)
     local out = fixtures.scratch()
     for _, library in ipairs(backports.libraries()) do
-        local written = backports.protocol_sources(root, library, out, library.folder)
+        local written = backports.protocol_sources({root = root, sdkdir = os.getenv("BP_SDK")}, library, out, library.folder)
         local header = path.join(root, library.folder, "Charon" .. library.folder .. "Protocols.h")
         if #written > 0 and not os.isfile(header) then
             table.insert(found, string.format("%s has %d generated protocol sources and no %s for them to import",
@@ -423,7 +437,7 @@ local function protocol_declarations(backports, root, found)
         if os.isdir(folder) then
             -- the names the generated sources emit, read from what the build itself generates
             local carried, count = {}, 0
-            for _, written in ipairs(backports.protocol_sources(root, library, out, library.folder)) do
+            for _, written in ipairs(backports.protocol_sources({root = root, sdkdir = os.getenv("BP_SDK")}, library, out, library.folder)) do
                 for line in io.lines(written) do
                     local name = line:match("@protocol%(([%w_]+)%)")
                     if name then carried[name] = true; count = count + 1 end
@@ -441,6 +455,54 @@ local function protocol_declarations(backports, root, found)
                                 relative, declared, relative))
                         end
                     end
+                end
+            end
+        end
+    end
+    os.tryrm(out)
+end
+
+
+-- Two objects of one library must not define one protocol's metadata object. ld64 keeps whichever of two
+-- weak definitions comes first on the link line and says nothing, so the duplicate was invisible: the two
+-- definitions were the same bytes and nothing observable depended on the order, which is exactly why
+-- nothing caught it, and Core ML's MLFeatureProvider and MLBatchProvider each had two.
+--
+-- This is the invariant that keeps it out: the generated <Library>Protocols<release>.m forces the object
+-- only where no other object of the library emits it, so a protocol that a source of the folder or a header
+-- of one of the library's frameworks declares a conformance to must NOT also be forced. What emits the
+-- object is a conformance and nothing else - importing the header, using id<name> and @protocol(name) do
+-- not - which is measured and is why the search is for a protocol list on a declaration line; see
+-- conforms_in() in modules/apple/backports.lua and facts/CoreML/CoreML.md, "Which translation units emit a
+-- protocol's metadata object".
+--
+-- The two halves of the invariant are both checked: a protocol nothing conforms to has to be forced, or
+-- objc_getProtocol and conformsToProtocol: have nothing to answer with, and one something does is refused.
+local function one_protocol_object(backports, root, found)
+    local out = fixtures.scratch()
+    for _, library in ipairs(backports.libraries()) do
+        local opt = {root = root, sdkdir = os.getenv("BP_SDK")}
+        local folder = path.join(root, library.folder)
+        if os.isdir(folder) then
+            -- the names the generated sources force, read from what the build itself generates
+            local forced = {}
+            for _, written in ipairs(backports.protocol_sources(opt, library, out, library.folder)) do
+                for line in io.lines(written) do
+                    local name = line:match("@protocol%(([%w_]+)%)")
+                    if name then forced[name] = true end
+                end
+            end
+            -- and every conformance in the library's own sources and in its frameworks' headers, which is
+            -- what makes the two halves of the invariant decidable without compiling anything
+            local wanted = {}
+            for name in pairs(forced) do wanted[name] = true end
+            local carriers = {}
+            backports.conforming_protocols(opt, library, wanted, carriers)
+            for name in pairs(forced) do
+                if carriers[name] then
+                    table.insert(found, string.format(
+                        "%s has an implemented protocol row for %s and %s declares a conformance to it, so two objects of this library define __OBJC_PROTOCOL_$_%s and ld64 keeps whichever comes first: the generated protocol source must not force it",
+                        library.name, name, carriers[name], name))
                 end
             end
         end
@@ -837,6 +899,7 @@ function failures(opt)
     own_rows(backports, found)
     generated_includes(backports, found)
     protocol_headers(backports, root, found)
+    one_protocol_object(backports, root, found)
     protocol_declarations(backports, root, found)
     message_names(backports, found)
     real_object(backports, opt.modules, found)

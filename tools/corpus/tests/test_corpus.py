@@ -21,6 +21,7 @@ import importlib.util
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -159,6 +160,169 @@ def _a_real_api_unavailable_ios(sd):
             except OSError:
                 continue
     return None
+
+
+def _a_clang():
+    """The compiler the ledger's own walk resolves, so the test reads the storage class off the same
+    -ast-dump the classification does: LEDGER_CLANG, else the toolchain's clang under the shared
+    xmake store, else whatever is on PATH. They agree on the ANSWER the test asserts and do not
+    print the same words for it, which is why scan_storage reads clang's linkage token when it is
+    printed and the keyword otherwise."""
+    named = os.environ.get("LEDGER_CLANG")
+    if named:
+        return named
+    import glob
+    found = sorted(glob.glob(os.path.expanduser("~/.xmake/packages/l/llvm/*/*/bin/clang")))
+    if found:
+        return found[-1]
+    return shutil.which("clang") or shutil.which("cc")
+
+
+def _dump(source, sdk=None):
+    """clang's own -ast-dump lines for a source given as text, at the target the ledger's walk uses."""
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "storage_probe.c")
+        with open(path, "w") as f:
+            f.write(source)
+        clang = _a_clang()
+        if not clang:
+            check(False, "no clang to read the storage class with")
+            return []
+        command = [clang, "-fsyntax-only", "-w", "-target", "armv7-apple-ios6.1.3"]
+        if sdk:
+            command += ["-isysroot", sdk]
+        out = subprocess.run(command + ["-Xclang", "-ast-dump", path],
+                             capture_output=True, text=True)
+        return (out.stdout + out.stderr).splitlines()
+
+
+def test_a_row_whose_line_does_not_compile_is_reported_as_failing():
+    """Defect 5: `header-ok` was reported for rows whose own line carried an error. The generated
+    unit's line map was keyed by the int line number and a diagnostic's line arrives as a string, so
+    `line not in line_of` was true for every line of every unit and `verdict` stayed "" throughout.
+
+    Pinned on a header of the test's own, with one row that names something the header does not
+    declare and one that names something it does: the first must come back with a diagnostic and the
+    second must come back clean. Before the fix both came back clean."""
+    ledger = load("api_ledger", os.path.join(TOOLS, "api-ledger.py"))
+    clang = _a_clang()
+    if not clang:
+        check(False, "no clang to compile the generated unit with")
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        header = os.path.join(tmp, "charon_probe.h")
+        with open(header, "w") as f:
+            f.write("#define CHARON_PROBE_TWICE 2\n")
+        rows = [("constant", "CHARON_PROBE_TWICE"), ("constant", "CHARON_PROBE_MISSING")]
+        out = ledger.compile_named_rows(["charon_probe.h"],
+                                        [clang, "-w", "-target", "armv7-apple-ios6.1.3",
+                                         "-I", tmp],
+                                        rows, tmp, "charon_probe")
+    check(out.get("CHARON_PROBE_TWICE") == "",
+          "a row whose line compiles comes back clean (got %r)" % (out.get("CHARON_PROBE_TWICE"),))
+    missing = out.get("CHARON_PROBE_MISSING")
+    check(bool(missing),
+          "a row whose line does NOT compile comes back with the diagnostic on it (got %r)" % (missing,))
+    check(missing and "undeclared" in missing,
+          "and the diagnostic is the compiler's own (got %r)" % (missing,))
+
+
+def test_static_inline_through_a_macro_is_header_only():
+    """Defect 4: `static inline` behind a macro read as neither extern nor static, so every row of a
+    header-only C API was placed `missing` and 640 functions Apple never exports were handed out as
+    work. Measured on the real compiler's own output, never on a string the test made up.
+
+    The shape is Spatial's. `SPATIAL_INLINE` is `static inline` (Spatial/Base.h:34), the DECLARATION
+    carries it, and the DEFINITION hundreds of lines later is preceded by the refined-for-swift and
+    overloadable attributes only. clang 23.1.1 prints the declaration
+    `static inline internal-linkage` and the definition `implicit-inline internal-linkage` - no
+    `static` token on that line, and `implicit-inline` hyphenated where `" inline"` looks for a
+    space - so the scan that read a keyword and kept the last line per name saw (extern, static) as
+    (false, false) for all 640 and the classification's `if is_extern or not is_static` sent every
+    one of them to `missing`, "the port has to export it".
+
+    Two reads are pinned and neither is sufficient alone, which is why both are in scan_storage: the
+    linkage token clang prints on every line, and the keyword on the declaration that the later
+    definition omits. Either alone is enough on clang 23.1.1 and neither is on a compiler that prints
+    no linkage token, and the test fails if BOTH are removed - which is the code that was there.
+
+    A real extern function and a real extern variable must still read extern, so the fix is not
+    "everything is header-only now"."""
+    ledger = load("api_ledger", os.path.join(TOOLS, "api-ledger.py"))
+    source = ["#define CH_M static inline\n",
+              "CH_M int charon_header_only(int);\n",
+              "int charon_header_only(int x) { return x; }\n",   # repeats neither `static` nor `inline`
+              "extern int charon_extern_function(int);\n",
+              "extern int charon_extern_variable;\n",
+              "int main(void) { return charon_extern_function(0); }\n"]
+    lines = _dump("".join(source))
+    decl = [l for l in lines if l.startswith("|-FunctionDecl") and " charon_header_only " in l]
+    check(len(decl) == 2, "the dump prints the header-only function twice, once per declaration and "
+                           "once per definition (got %d)" % len(decl))
+    if len(decl) == 2:
+        check(" static" in decl[0] and "static" not in decl[1].split("'")[0].split("'")[0][:0] + decl[1],
+              "the declaration line carries `static`")
+        check(" static" not in decl[1],
+              "and the DEFINITION line does not, so the declaration is the only place the keyword "
+              "appears - which is the whole defect (got %r)" % decl[1][-70:])
+        check(" implicit-inline" in decl[1] or " inline" in decl[1],
+              "the definition line says inline in the hyphenated form, where a `\" inline\"` test "
+              "finds nothing (got %r)" % decl[1][-70:])
+    flags = {}
+    ledger.scan_storage(lines, flags)
+    # the same flags under the name the classification row uses, so the two halves of the test are
+    # the same measurement rather than two
+    flags["CharonInlineMacro"] = flags["charon_header_only"]
+    check(flags.get("charon_header_only", (None,))[1] is True,
+          "a function declared `static inline` through a macro reads static (got %r)"
+          % (flags.get("charon_header_only"),))
+    check(flags.get("charon_header_only", (True,))[0] is False, "and not extern")
+    check(flags.get("charon_extern_function", (None,))[0] is True,
+          "a real extern function still reads extern (got %r)" % (flags.get("charon_extern_function"),))
+    check(flags.get("charon_extern_function", (None, None))[1] is False,
+          "and does not read static")
+    check(flags.get("charon_extern_variable", (None,))[0] is True,
+          "a real extern variable still reads extern (got %r)" % (flags.get("charon_extern_variable"),))
+
+    # The classification the flag feeds: a static declaration is header-only, so the row is not
+    # `missing`. classify_from_headers returns (status, reason, introduced, needs).
+    row = {"api": "CharonInlineMacro()", "kind": "function", "lang": "objc", "framework": "SomeFramework"}
+    index = {"rows": {"CharonInlineMacro()": ["function", None, None, False]},
+             "macros": {}, "flags": flags, "typedefs": {}, "compiled": {"CharonInlineMacro": ""},
+             "failed": []}
+    status, reason, _, _ = ledger.classify_from_headers("CharonInlineMacro()", row, index, "6.1.3",
+                                                        {}, {})
+    check(status == "header-ok",
+          "a function declared `static inline` through a macro is header-ok, not missing "
+          "(got %r: %r)" % (status, reason))
+    check("no run-time symbol" in reason,
+          "and the reason says there is no run-time symbol to export (got %r)" % reason)
+
+    _every_spatial_function_is_header_only(ledger)
+
+
+def _every_spatial_function_is_header_only(ledger):
+    """The defect end to end, on the headers that produced it: all 640 of Spatial's C functions read
+    static and not extern. This is the row set that was handed out as 640 units of missing work, so
+    it is the assertion worth having; the synthetic probe above is what says why."""
+    sdk = os.environ.get("LEDGER_SDK") or os.path.join(
+        os.path.expanduser("~"), "Git", "projects", "ios", "charon", ".agent-work", "sdk-26.2",
+        "iPhoneOS26.2.sdk")
+    umbrella = os.path.join(sdk, "usr", "include", "Spatial", "Spatial.h")
+    if not os.path.isfile(umbrella):
+        check(False, "the 26.2 SDK's Spatial umbrella is not at %s, so the 640 rows cannot be checked"
+              % umbrella)
+        return
+    lines = _dump("#import <Spatial/Spatial.h>\n", sdk)
+    flags = {}
+    ledger.scan_storage(lines, flags)
+    names = sorted(n for n in flags if n.startswith("SP"))
+    static = [n for n in names if flags[n][1] and not flags[n][0]]
+    check(len(names) >= 640, "the dump names Spatial's functions (%d)" % len(names))
+    check(len(static) == len(names) and len(names) >= 640,
+          "every one of them reads static and not extern, so none is a symbol the port must export "
+          "(%d of %d static; extern: %s)"
+          % (len(static), len(names), ", ".join(n for n in names if flags[n][0])[:120]))
 
 
 def test_surface_fold():
@@ -572,6 +736,8 @@ def main():
     print("testing the corpus tools against %s\n" % os.path.basename(args.cache))
     test_pointer_width_round_trip(args.cache)
     test_platform_check()
+    test_static_inline_through_a_macro_is_header_only()
+    test_a_row_whose_line_does_not_compile_is_reported_as_failing()
     test_surface_fold()
     test_package_registries()
     test_swift_index_file_is_loaded_from_disk()

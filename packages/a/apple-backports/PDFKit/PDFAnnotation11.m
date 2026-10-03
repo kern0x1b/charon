@@ -26,6 +26,15 @@ static const CGFloat kTextAnnotationSize = 24.0;
     NSString *_contents;
     NSString *_userName;
     NSDate *_modificationDate;
+    // The border, built once over the dictionary below, and REPLACEABLE by -setBorder:.  Held strongly:
+    // a border is a value of this annotation, and a border handed to -setBorder: is held by reference,
+    // so a change to it is visible through this annotation - which is what the host does.
+    PDFBorder *_border;
+    // Whether -setBorder: has been called at all, INCLUDING with nil.  It has to be its own flag and
+    // not a test of _border: on a /Square, whose dictionary answers a border, the host answers nil after
+    // -setBorder:nil and does NOT build one again - measured, annot-square answers border.set.nil = 1
+    // where a rebuild would answer 0.  So a border that was set, to an object or to nil, is final.
+    BOOL _borderSet;
 }
 
 // The port's own constructor, over the dictionary CoreGraphics already parsed out of the page's
@@ -67,6 +76,7 @@ static const CGFloat kTextAnnotationSize = 24.0;
 @synthesize userName = _userName;
 @synthesize modificationDate = _modificationDate;
 @synthesize page = _page;
+@synthesize border = _border;
 
 // The /SUBTYPE, as the name the header's PDFAnnotationSubtype is: "Text", "Link", "Square",
 // "Highlight" - the dictionary's name object without its leading slash.
@@ -180,10 +190,23 @@ static const CGFloat kTextAnnotationSize = 24.0;
 
 // The /T, the annotation's title in the format and its author in the host's own words: measured "the
 // annotator" for a /T of (the annotator), and nil for an annotation that names none.
+//
+// A /Widget answers nil whatever it names, which the format does not predict and the port's first
+// version got wrong: widget-names carries five /Widget annotations - one with /FT /Btn and a /T, one
+// with a /T and no /FT, one with /FT /Tx and a /T, one with /FT /Tx and a /TU (the alternate field name
+// of PDF 2.0 Table 227) and one with neither - and the host answers nil for all five, while the same
+// /T on a /Square (widget-names' sixth annotation) answers "square T".  So the key is read for an
+// annotation that is not a widget and the member answers nil for one that is.  /TU is measured
+// separately so that "a widget reads a different key" is not left standing unmeasured: it answers nil
+// as well.
 - (NSString *)userName
 {
     if (_userName != nil)
         return _userName;
+    if (_type == nil)
+        [self type];
+    if ([_type isEqualToString:@"Widget"])
+        return nil;
     _userName = [self charon_stringForKey:"T"];
     return _userName;
 }
@@ -215,6 +238,12 @@ static const CGFloat kTextAnnotationSize = 24.0;
 // port's own first version - which read a missing integer as zero - answered NO for a /Link the host
 // prints.  The differential named the two fixtures and the default is in the code because of it.
 //
+// A /Popup is the exception and the port's first version did not have it: popup-flags carries four
+// /Popup annotations with /F 4, /F 0, /F 2 and no /F at all, and the host answers shouldPrint=NO for
+// ALL FOUR - so no reading of the Print bit fits, and "the bit, except never for a popup" is what the
+// four fixtures between them establish.  The same fixture carries a /Square and a /Stamp with /F 4, and
+// both answer YES, so the exception is the subtype and not the file.
+//
 // -shouldDisplay is NOT the companion of that bit and is not implemented: /F 2 answers YES for it, so
 // the format's Hidden bit is not what it reads, and it answered YES for every /F measured here (0, 2,
 // 4) across nine fixtures.  What turns it off is not identified, and a constant YES would be a
@@ -222,6 +251,10 @@ static const CGFloat kTextAnnotationSize = 24.0;
 - (BOOL)shouldPrint
 {
     if (_annotation == NULL)
+        return NO;
+    if (_type == nil)
+        [self type];
+    if ([_type isEqualToString:@"Popup"])
         return NO;
     // An ABSENT /F answers YES, and the differential is what found that: the /Link fixtures write no
     // /F at all and the host answers shouldPrint=1 for them, so reading a missing integer as 0 and
@@ -245,6 +278,104 @@ static const CGFloat kTextAnnotationSize = 24.0;
     return _page;
 }
 
+// -border, and nil is a MEASURED answer here and not a missing one.  Two rules, both fixed by
+// fixtures whose dictionaries the harness writes, and the second is only visible because the first
+// exists:
+//
+//   a /Border array or a /BS dictionary in the annotation  answers a border, for EVERY subtype.
+//     border-plain (/Square with /Border [0 0 3]) answers W 3, and border-on-nontype puts a /Border
+//     on /Highlight, /Text, /Link, /Stamp and /Popup - the five subtypes that answer nil without one -
+//     and every one of them answers W 6.  bs-on-nontype does the same with a /BS instead, on a
+//     /Highlight, and answers a dashed W 6.  So "the file names one" is the whole of it, and it does
+//     not depend on the subtype.
+//
+//   NEITHER, and the subtype decides.  A DEFAULT border - solid, lineWidth 1 - is answered by the
+//     geometry annotations /Circle, /FreeText, /Ink, /Line and /Square (noborder-circle,
+//     noborder-freetext, noborder-ink, noborder-line-l, noborder-none, all answering W 1), which is
+//     the set PDFAnnotation.h:165 names ("the geometry annotations (Circle, Ink, Line, Square)") with
+//     /FreeText measured alongside them.  And a /Widget answers one exactly when its /MK names a
+//     BORDER COLOUR the format allows: widget-bc writes four /Widget annotations whose /BC are, in
+//     order, [0 0 0 1] (CMYK, four components), (a string), 0.5 (a bare number) and [0.25 0.5 0.75]
+//     (RGB, three), and the host answers a border for the first and the last and nil for the middle
+//     two.  With noborder-widget-bc ([0 0 1]), noborder-widget-bc-gray ([1]), noborder-widget-bc-empty
+//     ([]) and mk-two ([0.25 0.5]) that is every component count the format defines - none, one, three
+//     and four give a border - plus the two it does not.  The reading is the host's own: a /BC it
+//     cannot make a colour of leaves no border colour, and it logs "Cannot create color from given
+//     array of component count 2" while doing it.  A /BG, a BACKGROUND colour, is not a border colour:
+//     noborder-widget-bg (/MK << /BG [1 0 0] >>) answers nil, and so do noborder-widget (no /MK),
+//     noborder-widget-t (a /T) and noborder-widget-tm (a /Tm).  /MK is where PDF 1.7 Table 8.40 puts
+//     /BC, and a widget with a border colour is a widget with a border to draw.
+//
+//   every other subtype answers nil with neither: /Highlight, /Link, /Popup, /Stamp, /Text,
+//     /Underline and /StrikeOut (noborder-highlight, border-link, noborder-popup, noborder-stamp,
+//     noborder-text, noborder-underline, noborder-strikeout).
+//
+// A /Border of the wrong type - neither array nor dictionary - takes the first branch, because the KEY
+// is present; PDFBorder11.m then finds no array and answers the default width, which is what
+// border-on-nontype's five subtypes answer for a /Border that is an array.
+//
+// -setBorder: stores the object BY REFERENCE, measured: -border answers the very object that was set,
+// a change made to that object afterwards is visible through -border, and setting nil makes -border
+// answer nil again.  So the annotation holds the object and does not copy it, and a border that was
+// set is not rebuilt from the dictionary.
+- (void)setBorder:(PDFBorder *)border
+{
+    _border = border;
+    _borderSet = YES;
+}
+- (PDFBorder *)border
+{
+    if (_borderSet)
+        return _border;
+    if (_annotation == NULL)
+        return nil;
+    if (_border != nil)
+        return _border;
+    // the subtype, read once: -type is the annotation's own /Subtype as a string
+    NSString *type = [self type];
+    BOOL named = NO;
+    CGPDFObjectRef object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "Border", &object) && object != NULL)
+        named = YES;
+    object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "BS", &object) && object != NULL)
+        named = YES;
+    if (!named) {
+        // the default cases, and nothing else answers a border without the file naming one
+        if ([type isEqualToString:@"Square"] || [type isEqualToString:@"Circle"]
+            || [type isEqualToString:@"Ink"] || [type isEqualToString:@"Line"]
+            || [type isEqualToString:@"FreeText"]) {
+            named = YES;
+        } else if ([type isEqualToString:@"Widget"]) {
+            // a /Widget with a border COLOUR, which is /MK's /BC - and only a colour the format's
+            // four component counts describe, which is the whole of the difference between widget-bc
+            // and mk-two.
+            CGPDFObjectRef mark = NULL;
+            if (CGPDFDictionaryGetObject(_annotation, "MK", &mark) && mark != NULL
+                && CGPDFObjectGetType(mark) == kCGPDFObjectTypeDictionary) {
+                CGPDFDictionaryRef appearance = NULL;
+                if (CGPDFObjectGetValue(mark, kCGPDFObjectTypeDictionary, &appearance)
+                    && appearance != NULL) {
+                    CGPDFArrayRef colour = NULL;
+                    if (CGPDFDictionaryGetArray(appearance, "BC", &colour) && colour != NULL) {
+                        size_t components = CGPDFArrayGetCount(colour);
+                        // PDF 1.7 Table 8.40: none of them is no colour, one is gray, three is RGB and
+                        // four is CMYK.  Anything else is not a colour, and a widget without a border
+                        // colour has no border to draw - measured on all four counts and on the two
+                        // shapes that are not arrays at all.
+                        if (components == 0 || components == 1 || components == 3 || components == 4)
+                            named = YES;
+                    }
+                }
+            }
+        }
+    }
+    if (!named)
+        return nil;
+    _border = [[PDFBorder alloc] initWithCharonAnnotationDictionary:_annotation];
+    return _border;
+}
+
 // Members that are measured and NOT implemented here, each with the boundary that keeps it out.  They
 // are listed so the omission is a decision on the record and not an oversight, and their rows carry
 // the same reasons.
@@ -253,14 +384,13 @@ static const CGFloat kTextAnnotationSize = 24.0;
 //                      the ABSENT answer is subtype-dependent: /Highlight answers a default sRGB
 //                      yellow (0.980392 0.803922 0.352941 1) where /Link and /Square answer nil.  A
 //                      plain read of /C would answer nil for a highlight the host paints.
-//   -border            the host answers a DEFAULT border for a /Square with no /Border (solid, 1.0)
-//                      and nil for a /Link with none, so the absent answer is subtype-dependent here
-//                      too, and PDFBorder is a class of its own with four more rows of its own.
 //   -shouldDisplay     measured YES for /F 0, 2 and 4, and not the Hidden bit; see above.
 //   -hasAppearanceStream, -isHighlighted  measured NO on all nine fixtures and nothing in the writer
 //                      sets an /AP or a /H, so NO is the only answer measured and the keys that
 //                      change it are not.
 //   -popup, -action    PDFAnnotationPopup and PDFAction are classes of their own; nothing measured.
+//   -border            NOT here any more: it is implemented below, over PDFBorder11.m, because the
+//                      subtype-dependent absent answer it was waiting for is measured - see -border.
 //   -annotationKeyValues and the five -setValue:/-valueForAnnotationKey: members  the annotation-key
 //                      API is its own family, and -setValue: is a WRITE path this port does not have.
 //   -drawWithBox:inContext:  draws, and a windowless host answers nothing to compare against.

@@ -120,12 +120,18 @@ NSString *const WKWebExtensionContextNotificationUserInfoKeyMatchPatterns = @"ma
     return _uniqueIdentifier;
 }
 
-- (BOOL)loaded
+/* -isLoaded and -isInspectable, not -loaded and -inspectable: Apple's own header declares
+   `@property (nonatomic, readonly, getter=isLoaded) BOOL loaded` and `@property (nonatomic,
+   getter=isInspectable) BOOL inspectable` (WKWebExtensionContext.h:172 and :202), and the getter the
+   header names is the API. CharonWebExtension.h now carries the same two attributes, so the property
+   and the method that answers it agree with the release. */
+
+- (BOOL)isLoaded
 {
     return _loaded;
 }
 
-- (BOOL)inspectable
+- (BOOL)isInspectable
 {
     return _inspectable;
 }

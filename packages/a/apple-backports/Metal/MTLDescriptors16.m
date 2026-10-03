@@ -2,7 +2,6 @@
 #import "CharonMetalProtocols.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // THE DESCRIPTORS THAT ARRIVED IN iOS 16, and they are the same kind of thing as the twenty in
@@ -13,15 +12,19 @@
 // siblings are carried.
 //
 // NOTHING HERE CREATES A DEVICE, and the host differential is built on that. Each side is
-// `[[X alloc] init]`, the port's class and Apple's, and `MTLCreateSystemDefaultDevice()` HANGS on a
-// machine with no GPU, so no case in this file calls it.
+// `[[X alloc] init]`, the port's class and Apple's, and a descriptor asks a device nothing - which
+// facts/Metal/DeviceOnThisMachine.md measures - so no case in this file creates one.
 //
-// THE SAMPLE BUFFER EACH ATTACHMENT CARRIES IS A DEVICE-MADE OBJECT and there is no facility in this
-// port that makes one - not this release's and not the port's - so it is CARRIED AND NOT MEASURED:
-// a fresh attachment reads nil on both sides, which is all a no-device comparison can say, and a
-// round trip with a real MTLCounterSampleBuffer would need a device to make one. That is the same
-// line the 14.0 file draws for its own attachment descriptors, and facts/Metal/Descriptors16.md names
-// every member it is a statement about.
+// THE SAMPLE BUFFER EACH ATTACHMENT CARRIES IS A DEVICE-MADE OBJECT and this port makes none - not
+// this release's and not the port's - but the DESCRIPTOR's handling of one is measured, because a
+// device to make one with is no longer a wall: tests/backports/host/metal-census/descriptors16.sh
+// makes a real MTLCounterSampleBuffer on Apple's own device (the timestamp counter set,
+// MTLCounters.h:65), hands that one object to both sides, and compares what each returns, what each
+// copy carries, and what each side's array holds after the attachment goes through it and a nil takes
+// it away again. 57 checks (43 before this section), and the reset mutant M7 is the one only that section can
+// catch. What is
+// still NOT measured is what a sample buffer's CONTENTS are, which needs a command encoder this port
+// vends no ray tracing path for; facts/Metal/Descriptors16.md says so.
 //
 // WHAT IS NOT HERE, and it is the half a caller has to know: this port vends no acceleration
 // structure command encoder and no IO command queue, so nothing in it ever reads a descriptor made

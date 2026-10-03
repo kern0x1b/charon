@@ -16,6 +16,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PDFPage;
+@class PDFBorder;
+@class UIColor;
 
 // -init is the third way the header's own comment names a document being made ("either the init
 // method, initWithURL:, or initWithData:"), so it is a convenience initializer here and it reaches
@@ -141,6 +143,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy, nullable) NSDate *modificationDate;
 @property (nonatomic) BOOL shouldPrint;
 @property (nonatomic, weak, nullable) PDFPage *page;
+// The border, a PDFBorder of its own below, over this annotation's /Border array and its /BS
+// dictionary.  nil is a measured answer and not a missing one: see the rule on -border in
+// PDFAnnotation11.m, which is the whole of what the absent case is.  Readwrite, as PDFAnnotation.h:167
+// has it: -setBorder: stores the object BY REFERENCE, so -border hands back the same object it was
+// given and a later change to that object is visible through the annotation.
+@property (nonatomic, nullable) PDFBorder *border;
 @end
 
 // The port's own constructor, over a dictionary already in the object graph.  Not Apple's
@@ -148,6 +156,92 @@ NS_ASSUME_NONNULL_BEGIN
 @interface PDFAnnotation (CharonInternals)
 - (nullable instancetype)initWithCharonDictionary:(CGPDFDictionaryRef)annotation
                                           onPage:(nullable PDFPage *)page;
+@end
+
+// ---- PDFBorder, and the two enumerations the port has to spell because the release has no header
+// that declares them -------------------------------------------------------
+//
+// Neither band carries a PDFKit header at all - the port declares its own surface here, and
+// PDFKitConstants11.m is the one file that imports the SDK's, because a constant's VALUE has to be
+// the host's and its TYPE only has to compile.  So the two enumerations below are transcribed from
+// the 26.2 headers, PDFBorder.h:15-21 and PDFAnnotationUtilities.h:20-25, with the values in the
+// headers' own order.
+
+// PDFBorderStyle, PDFBorder.h:15.  The five names, in the header's order.  Which /BS /S name answers
+// which value is MEASURED, one fixture per name plus one the format does not list (PDFBorder11.m).
+typedef NS_ENUM(NSInteger, PDFBorderStyle) {
+    kPDFBorderStyleSolid = 0,
+    kPDFBorderStyleDashed = 1,
+    kPDFBorderStyleBeveled = 2,
+    kPDFBorderStyleInset = 3,
+    kPDFBorderStyleUnderline = 4,
+};
+
+// PDFWidgetControlType, PDFAnnotationUtilities.h:20.  -1 is the header's own kPDFWidgetUnknownControl,
+// and it is also what PDFAppearanceCharacteristics answers before anything is set (measured).
+typedef NS_ENUM(NSInteger, PDFWidgetControlType) {
+    kPDFWidgetUnknownControl = -1,
+    kPDFWidgetPushButtonControl = 0,
+    kPDFWidgetRadioButtonControl = 1,
+    kPDFWidgetCheckBoxControl = 2,
+};
+
+// The key names, declared here because the class files cannot import the SDK's PDFKit.h and the
+// values are the ones PDFKitConstants11.m exports: @"W", @"S", @"D" and @"BG", @"BC", @"R", @"CA",
+// @"RC", @"AC", read out of the host's own PDFKit by tests/backports/host/pdfkit-constants.
+extern NSString *const PDFBorderKeyLineWidth;
+extern NSString *const PDFBorderKeyStyle;
+extern NSString *const PDFBorderKeyDashPattern;
+extern NSString *const PDFAppearanceCharacteristicsKeyBackgroundColor;
+extern NSString *const PDFAppearanceCharacteristicsKeyBorderColor;
+extern NSString *const PDFAppearanceCharacteristicsKeyRotation;
+extern NSString *const PDFAppearanceCharacteristicsKeyCaption;
+extern NSString *const PDFAppearanceCharacteristicsKeyRolloverCaption;
+extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
+
+// PDFBorder, a value object over one border: three settable members and the dictionary they are read
+// out of.  PDFBorder.h:28 declares no initializer of its own, so -init is NSObject's - and what it
+// makes is the host's fresh object, measured: style 0, lineWidth 1, a nil pattern and the key values
+// {S = 0, W = 1}.  All three setters are implemented, because the host's setters change the OBJECT
+// rather than the file: -setStyle: and -setLineWidth: change their own member and nothing else, and
+// -setDashPattern: publishes the pattern AND sets the style - dashed for a non-empty array, solid for
+// an empty one and for nil - without touching the width.
+@interface PDFBorder : NSObject
+@property (nonatomic) PDFBorderStyle style;
+@property (nonatomic) CGFloat lineWidth;
+@property (nonatomic, copy, nullable) NSArray *dashPattern;
+@property (nonatomic, readonly, copy) NSDictionary *borderKeyValues;
+@end
+
+// The port's own constructor, over the annotation dictionary a border is read out of.  Not Apple's
+// API: the dictionary is an implementation's, and -[PDFAnnotation border] is what reaches this from
+// the outside.
+@interface PDFBorder (CharonInternals)
+- (nullable instancetype)initWithCharonAnnotationDictionary:(CGPDFDictionaryRef)annotation;
+@end
+
+// PDFAppearanceCharacteristics, the /MK dictionary of PDF 1.7 Table 8.40 as a value object.
+//
+// Nothing in the 26.2 SDK hands one out - there is no -[PDFAnnotation appearanceCharacteristics], and
+// grep for appearanceCharacteristics across PDFKit.framework/Headers finds this class's own
+// key-values property and nothing else - so the object is its own thing here too, built with -init and
+// read back through the same members.  Every member is implemented on both sides of every pair, which
+// is what makes it comparable at all: the host's setter and its getter were measured against each
+// other (set every member, read every member, read the key values) and the port answers the same.
+//
+// -controlType is the one member with no key of its own.  The host keeps it, answers it back for every
+// value from -1 to 3, and -appearanceCharacteristicsKeyValues does NOT gain a key for it (measured:
+// six keys with all six dictionary members set, and still none of them controlType).  So it is an ivar
+// here and not an entry in the dictionary, which is what the host does.
+@interface PDFAppearanceCharacteristics : NSObject
+@property (nonatomic) PDFWidgetControlType controlType;
+@property (nonatomic, copy, nullable) UIColor *backgroundColor;
+@property (nonatomic, copy, nullable) UIColor *borderColor;
+@property (nonatomic) NSInteger rotation;
+@property (nonatomic, copy, nullable) NSString *caption;
+@property (nonatomic, copy, nullable) NSString *rolloverCaption;
+@property (nonatomic, copy, nullable) NSString *downCaption;
+@property (nonatomic, readonly, copy) NSDictionary *appearanceCharacteristicsKeyValues;
 @end
 
 NS_ASSUME_NONNULL_END

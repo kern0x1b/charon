@@ -38,9 +38,19 @@
 @synthesize worldAlignment = _worldAlignment;
     @synthesize lightEstimationEnabled = _lightEstimationEnabled;
     @synthesize providesAudioData = _providesAudioData;
-- (instancetype)initCharonCommon
+// Apple's own ARConfiguration defines -init even though its header marks it NS_UNAVAILABLE:
+// measured over ARKit of the arm64e shared cache of iOS 16.0 with modules/apple/objc.lua's
+// inventory, `-init` is in ARConfiguration's OWN instance selector list, and so it is in the port's.
+// The mark is the SDK telling a caller not to build the abstract base directly; the method is there
+// and the subclasses below chain to it. See facts/ARKit/ARKit.md.
+- (instancetype)init
 {
     return [super init];
+}
+
+- (instancetype)initCharonCommon
+{
+    return [self init];
 }
 
 + (BOOL)supportsFrameSemantics:(ARFrameSemantics)frameSemantics

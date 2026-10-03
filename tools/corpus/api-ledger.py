@@ -69,7 +69,7 @@ CHARON_ROOT = os.path.realpath(os.path.join(HERE, "..", ".."))
 TARGET = "armv7-apple-ios6.1.3"
 
 SURFACE_COLUMNS = ["framework", "kind", "lang", "api", "introduced", "deprecated", "obsoleted",
-                   "unavailable", "via", "registry", "owner-registry", "demand-rank",
+                   "unavailable", "via", "getter", "registry", "owner-registry", "demand-rank",
                    "demand-severity", "demand-apps", "demand-telegram", "impl-lead", "impl-file-lead"]
 
 # The run-time kinds resolve against the built libraries and the release cache; the header-only and
@@ -394,15 +394,27 @@ def _selector_present(entry, selector):
     return selector in entry["instance"] or selector in entry["class"]
 
 
-def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None):
+def classify_method(api, built_classes, release_classes, built_protocols=None, release_protocols=None,
+                    decided=None):
     """A method row's owner is named without saying whether it is a class or a protocol, and the
     surface has both, so both are searched: a protocol that declares the selector is the release
     carrying that API. Looking only at classes read `-[CLLocationManagerDelegate
-    locationManager:didDetermineState:forRegion:]` missing while the 6.1.3 cache declares it."""
+    locationManager:didDetermineLocation:error:]` missing while the 6.1.3 cache declares it.
+
+    One selector is answered without the owner declaring it: `+new`. It is NSObject's, and every
+    class inherits it -- measured in the release's own 6.1.3 cache, 2 of 11378 classes declare
+    `+new` in their own metaclass list (NSObject and _PFCachedNumber) and 11376 inherit it, so a row
+    whose owner is a class that does not declare it reads "selector new is not" for a selector the
+    release carries. The port's own libraries do not declare it either, and do not need to: they are
+    loaded beside the device's libSystem, whose NSObject has it. `decided` holds the rows a registry
+    has decided, and this never applies to one of them -- `+[VNFaceLandmarkRegion new]` is answered
+    by NSObject's `+new` only to call the class's own NS_UNAVAILABLE `-init`, which is a measurement
+    somebody took, and an inference from the release's metadata does not overrule it. Protocols are
+    not reached this way: a protocol has no metaclass chain to inherit from."""
     m = METHOD_RE.match(api)
     if not m:
         return "undecided", "method api does not parse as +/-[Class sel]: %r" % api
-    _, owner, selector = m.groups()
+    sign, owner, selector = m.groups()
     key = "-" + selector
     built = built_classes.get(owner)
     if built and _selector_present(built, key):
@@ -411,23 +423,46 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     if released and _selector_present(released, key):
         return "implemented", "release-native: 6.1.3 dyld cache"
     for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
-                                                           "release-native: 6.1.3 dyld cache")):
+                                                                   "release-native: 6.1.3 dyld cache")):
         entry = protocols.get(owner)
         if entry and _selector_present(entry, key):
             label = why + (entry.get("library", "") if why == "built: " else "")
             return "implemented", label + " (the protocol %s declares it)" % owner
+    if sign == "+" and selector == "new" and api not in (decided or ()) \
+            and (owner in built_classes or owner in release_classes):
+        # The owner is a class -- a protocol is answered or excluded above, and a name in neither
+        # inventory falls to the line below -- and the release's own NSObject carries `+new`, which
+        # every class inherits. The reason names the measurement rather than the port, because the
+        # port is not what answers it: the device's libSystem NSObject is.
+        return "implemented", ("+new is NSObject's and every class inherits it: the 6.1.3 cache's "
+                               "own NSObject declares it and 2 of its 11378 classes declare one of "
+                               "their own")
     if not built and not released and not (built_protocols or {}).get(owner) \
             and not (release_protocols or {}).get(owner):
         return "missing", "owner %s is neither a class nor a protocol in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, selector %s is not" % (owner, selector)
 
 
-def classify_property(api, built_classes, release_classes):
+def classify_property(api, built_classes, release_classes, built_protocols=None,
+                      release_protocols=None, getter=None, setter=None):
+    """A property row's owner is named without saying whether it is a class or a protocol, and the
+    surface has both, so both are searched -- the same question classify_method answers, and for the
+    same reason. A property is read through its accessors, so it is the accessors that are looked
+    for, in the instance set and in the class set: a `@property (class, readonly)` is read through a
+    class method, and its getter is a class selector and never an instance one.
+
+    `getter` and `setter` are what the header declared (`@property (readonly, getter=isSupported)`),
+    which the surface records and which is the only way to know the accessor is not the property's own
+    name: `AVAudioSessionCapability.supported` is read through `-isSupported`, and a selector derived
+    from the name alone asks for `-supported`, which no release declares. They arrive as clang prints
+    them (`isSupported`, `setSupported:`) and are turned into selectors here, the same leading dash
+    the inventories carry. Where the header declared nothing the accessor is derived as it was before."""
     m = PROPERTY_RE.match(api)
     if not m:
         return "undecided", "property api does not parse as Class.prop: %r" % api
     owner, prop = m.groups()
-    getter, setter = "-" + prop, "-set" + prop[0].upper() + prop[1:] + ":"
+    getter = "-" + getter if getter else "-" + prop
+    setter = "-" + setter if setter else "-set" + prop[0].upper() + prop[1:] + ":"
     for classes, why in ((built_classes, None), (release_classes, "release-native: 6.1.3 dyld cache")):
         entry = classes.get(owner)
         if not entry:
@@ -442,7 +477,14 @@ def classify_property(api, built_classes, release_classes):
             return "implemented", (why or built_why(entry, carried)) + (
                 " (a class property: read through %s)" % getter
                 if getter in entry["class"] and getter not in entry["instance"] else "")
-    if owner not in built_classes and owner not in release_classes:
+    for protocols, why in ((built_protocols or {}, "built: "), (release_protocols or {},
+                                                              "release-native: 6.1.3 dyld cache")):
+        entry = protocols.get(owner)
+        if entry and any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
+            label = why + (entry.get("library", "") if why == "built: " else "")
+            return "implemented", label + " (the protocol %s declares it)" % owner
+    if owner not in built_classes and owner not in release_classes \
+            and not (built_protocols or {}).get(owner) and not (release_protocols or {}).get(owner):
         return "missing", "owner class %s not in the built libraries or the 6.1.3 cache" % owner
     return "missing", "%s is there, neither %s nor %s is an instance or a class selector" % (
         owner, getter, setter)
@@ -472,6 +514,31 @@ def classify_symbol(api, built_exports, release_exports):
 STORAGE_KINDS = ("VarDecl", "FunctionDecl")
 TYPEDEF_KIND = "TypedefDecl"
 QUOTED_RE = re.compile(r"'([^']*)'")
+# What decides internal linkage, and where the answer is read from. clang prints the entity's linkage
+# on EVERY line it prints for it, whether or not that line repeated the source's keyword, and that is
+# the compiler's own answer rather than a keyword this tool happens to spell. Measured 2026-10-03 with
+# clang 23.1.1 (`charon@llvm`, the one the ledger's own clang_command resolves) over link.c, one
+# declaration per storage form:
+#   int extern_fn(void);                          -> "extern external-linkage"
+#   static int static_fn(void);                  -> "static internal-linkage"
+#   static inline int inline_fn(void) {...}       -> "static inline internal-linkage"
+#   inline int plain_inline_fn(void) {...}        -> "inline external-linkage"
+# The CLT's /usr/bin/clang prints NO linkage token at all -- the same four declarations come out as
+# "extern", "static", "static inline", "inline" and nothing more -- so the keyword stays as the
+# fallback and the answer is the same under either compiler.
+#
+# Neither answer alone was enough, because the defect was not the spelling but WHICH LINE was read.
+# A function declared `static inline` through a macro and DEFINED later without repeating it is
+# printed `implicit-inline internal-linkage` on its definition and `static inline internal-linkage`
+# on its declaration: no `static` token anywhere on the definition line, and `implicit-inline` has a
+# hyphen where `" inline"` looks for a space. That is every one of Spatial's 640 C functions -
+# Spatial/Base.h:34 `#define SPATIAL_INLINE static inline`, and the definition at
+# SPAffineTransform3D.h:879 is preceded by SPATIAL_REFINED_FOR_SWIFT and SPATIAL_OVERLOADABLE only.
+# The scan kept the LAST line per name, so all 640 read (extern, static) as (false, false) and the
+# classification's `if is_extern or not is_static` placed every one of them `missing`, "the port has
+# to export it", for an API no Apple binary exports and every caller inlines.
+INTERNAL_LINKAGE = "internal-linkage"
+EXTERNAL_LINKAGE = "external-linkage"
 
 
 def scan_storage(lines, flags, typedefs=None):
@@ -480,7 +547,11 @@ def scan_storage(lines, flags, typedefs=None):
     skipped on a prefix test instead of a regex. An enum case is a depth-1 EnumConstantDecl and so
     is absent here -- which is how the classification tells a case (header-only) from an extern
     variable. The declared type is the first quoted token after the name, and it is what says how
-    wide the constant's value is when const-values.py reads it out of a dyld cache."""
+    wide the constant's value is when const-values.py reads it out of a dyld cache.
+
+    The flags MERGE across every line that names the same entity rather than the last one winning: a
+    declaration and its definition are one function, so a later line that omits what an earlier one
+    carried must not uncarry it."""
     for line in lines:
         if not line.startswith("|-"):
             continue
@@ -506,8 +577,18 @@ def scan_storage(lines, flags, typedefs=None):
         # walk reads, CGFloat's canonical type is a 4-byte float, and a value read out of a 64-bit
         # cache is 8 bytes wide.
         quoted = QUOTED_RE.findall(rest)
-        flags[name] = (" extern" in rest, " static" in rest, " inline" in rest,
-                       quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        found = (EXTERNAL_LINKAGE in rest or " extern" in rest,
+                 INTERNAL_LINKAGE in rest or " static" in rest,
+                 " inline" in rest or " implicit-inline" in rest,
+                 quoted[0] if quoted else "", quoted[-1] if quoted else "")
+        seen = flags.get(name)
+        if seen is None:
+            flags[name] = found
+        else:
+            # the wider answer stands: a name one entity carries keeps what any of its lines said,
+            # and the types are the first line's, which is the declaration rather than the definition
+            flags[name] = (seen[0] or found[0], seen[1] or found[1], seen[2] or found[2],
+                           seen[3] or found[3], seen[4] or found[4])
 
 
 class _HeaderSurface:
@@ -616,7 +697,15 @@ def compile_named_rows(imports, command, rows, workdir, tag):
         for slot, (kind, api) in enumerate(rows):
             f.write(naming_line(kind, api, slot) + "\n")
             number += 1
-            line_of[number] = slot
+            # keyed by the STRING a diagnostic carries, because DIAGNOSTIC_RE hands the line over as
+            # one. This was keyed by the int, so `line not in line_of` was true for every line of
+            # every unit this tool has ever compiled: `verdict` stayed "" for every row, `named_ok`
+            # was `name in compiled and True`, and a header-only row of any framework read
+            # `header-ok` whether or not its line compiled. Measured on Spatial, where 19 names are
+            # SPATIAL_OVERLOADABLE and `&NAME` does not resolve: 19 lines of the generated unit carry
+            # "reference to overloaded function could not be resolved", and this function returned 0
+            # of 647 rows as failing.
+            line_of[str(number)] = slot
     out = subprocess.run(command + ["-fsyntax-only", "-ferror-limit=0", source],
                          capture_output=True, text=True, errors="replace", timeout=900)
     verdict = {api: "" for _, api in rows}
@@ -1174,6 +1263,11 @@ def main():
     registries = read_package_registries(args.registries or default_checkout(args.surface))
     note("package registries: %d entries, of which %d record a decision"
          % (len(registries), sum(1 for v in registries.values() if v[0] in DECIDED_STATUSES)))
+    # The rows a registry has decided, handed to classify_method so that an answer it infers from the
+    # release's own metadata -- `+new` is NSObject's and every class inherits it -- cannot overrule a
+    # decision somebody measured. decide() still runs after the classification and still stands; this
+    # only keeps the classification from making the question moot.
+    decided_apis = {api for api, entry in registries.items() if entry[0] in DECIDED_STATUSES}
 
     # Pass 1: everything the built artifacts and the release cache can place on their own.
     results = []
@@ -1195,9 +1289,11 @@ def main():
                 status, reason = classify_class(api, built_classes, built_protocols, release_classes, release_protocols)
             elif kind == "method":
                 status, reason = classify_method(api, built_classes, release_classes,
-                                                 built_protocols, release_protocols)
+                                                 built_protocols, release_protocols,
+                                                 decided=decided_apis)
             else:
-                status, reason = classify_property(api, built_classes, release_classes)
+                status, reason = classify_property(api, built_classes, release_classes, built_protocols,
+                                            release_protocols, getter=row["getter"])
             # The decide pass: a registry that records this row absent/inert/ignored has decided it,
             # with a reason, so it is not a row anybody is going to build.
             decided = decide(row, registries, diagnostics) if status == "missing" else None

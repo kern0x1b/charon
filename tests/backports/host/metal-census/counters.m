@@ -15,7 +15,7 @@
  *     that is a prefix of Apple's.
  *
  * NO DEVICE IS CREATED. These are strings; a device is not involved and MTLCreateSystemDefaultDevice
- * hangs on a machine with no GPU.
+ * and a descriptor asks a device nothing (facts/Metal/DeviceOnThisMachine.md measures both).
  */
 #import <Foundation/Foundation.h>
 #import <dlfcn.h>

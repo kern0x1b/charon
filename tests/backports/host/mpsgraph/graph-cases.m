@@ -84,22 +84,33 @@ static MPSGraphTensorData *feed(const void *values, NSArray<NSNumber *> *shape, 
 // 1, -1, -0.0, 0.0, +inf, -inf, qNaN, -qNaN, 0x1p-149, -0x1p-149, 0x1.fffffep-127, 0x1p-126, 0x1p-20,
 // 0x1.fffffep-1, -0x1p-20, 1e-20. facts/MetalPerformanceShadersGraph/Core.md carries what each
 // operation answers for each of them.
-static float leftValues[16] = {
+static float leftValues[32] = {
     1.0f, -1.0f, -0.0f, 0.0f, INFINITY, -INFINITY, NAN, -NAN,
     0x1p-149f, -0x1p-149f, 0x1.fffffep-127f, 0x1p-126f, 0x1p-20f, 0x1.fffffep-1f, -0x1p-20f, 1e-20f,
+    // Sixteen ordinary values after the sixteen classes, because a tolerance is measured over inputs and
+    // sixteen inputs are not enough to measure one: they are the inputs whose answer was looked at once.
+    // These are a fixed walk - 2^(-16 + i/2) and its negative, then the same with 1 added - so the sweep is
+    // the same on every machine and every run and does not need a seed.
+    0x1p-16f, -0x1p-16f, 0x1.8p-16f, -0x1.8p-16f, 0x1p-15f, -0x1p-15f, 0x1.8p-15f, -0x1.8p-15f,
+    1.0f + 0x1p-16f, 1.0f + 0x1.8p-16f, 1.0f + 0x1p-15f, 1.0f + 0x1.8p-15f,
+    -(1.0f + 0x1p-16f), -(1.0f + 0x1.8p-16f), -(1.0f + 0x1p-15f), -(1.0f + 0x1.8p-15f),
 };
 // The second operand carries the classes the divisor column needs - a positive zero, a negative zero, an
 // infinity of each sign, a NaN, a denormal - and ordinary values elsewhere, so a division is checked
 // against every kind of divisor and not only against ones that divide.
-static float rightValues[16] = {
+static float rightValues[32] = {
     0.0f, -0.0f, INFINITY, -INFINITY, NAN, -NAN, 0x1p-149f, 2.0f,
     4.0f, -4.0f, 0.5f, 8.0f, 16.0f, 3.0f, 1.0f, 1.0f,
+    0x1p-16f, -0x1p-16f, 0x1.8p-16f, -0x1.8p-16f, 0x1p-15f, -0x1p-15f, 0x1.8p-15f, -0x1.8p-15f,
+    2.0f + 0x1p-16f, -(2.0f + 0x1p-15f), 1.0f / 3.0f, 7.0f,
 };
-static unsigned char resultBytes[64];
+static unsigned char resultBytes[256];
 static float constantValues[4] = {0.25f, -0.25f, 0.5f, 2};
 // The bounds a clamp case is asked over: a pair of ordinary values either side of zero, so that every
 // class of the operand decides which of the two it is clamped to.
-static float bounds[16] = {
+static float bounds[32] = {
+    -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
+    -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
     -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
     -0.5f, -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f, 0.5f,
 };
@@ -115,15 +126,22 @@ static int32_t integerResult[4];
 // Measured against this host's own MPSGraph, macOS 27.0 build 26A428 (M4 Pro, Metal 4). The buffer
 // is sixteen halves, which is 32 bytes: MPSNDArray refuses a shorter one ("buffer is not large
 // enough. Must be 32 bytes", MPSNDArray.mm:893), so a half tensor here cannot be smaller.
-static uint16_t halfValues[16] = {
+static uint16_t halfValues[32] = {
     0x3c00, 0xbc00, 0x0000, 0x8000, 0x7c00, 0xfc00, 0x7e00, 0xfe00,
     0x0001, 0x8001, 0x03ff, 0x0400, 0x3800, 0x1400, 0x3c01, 0x3555,
+    // The same sixteen ordinary values as the float vector, narrowed to a half. They are written as bits
+    // because the rounding of each is the question: the sixteen values either side of 1.0 are the ones a
+    // kernel's last bit is decided on.
+    0x2800, 0xa800, 0x2c00, 0xac00, 0x3000, 0xb000, 0x3400, 0xb400,
+    0x3c01, 0x3c02, 0x3c04, 0x3c08, 0xbc01, 0xbc02, 0xbc04, 0xbc08,
 };
 // The second operand, in halves, carrying the classes a divisor column needs - a positive zero, a
 // negative zero, an infinity of each sign, a NaN, a denormal - and ordinary values elsewhere.
-static uint16_t halfRightValues[16] = {
+static uint16_t halfRightValues[32] = {
     0x0000, 0x8000, 0x7c00, 0xfc00, 0x7e00, 0xfe00, 0x0001, 0x4000,
     0xc000, 0x3800, 0x3555, 0x4400, 0x4800, 0x4200, 0x3c00, 0x3c00,
+    0x2800, 0xa800, 0x2c00, 0xac00, 0x3000, 0xb000, 0x3400, 0xb400,
+    0x4001, 0xc004, 0x3555, 0x4700,
 };
 
 // The unary family, over the classes above, so each one of them is answered for every operation of
@@ -256,11 +274,11 @@ static void unary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, MP
                        MPSDataType type, const void *values)
 {
     MPSGraph *one = [MPSGraph new];
-    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:type name:@"a"];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:type name:@"a"];
     MPSGraphTensor *t = build(one, a);
-    size_t bytes = 16 * MPSSizeofMPSDataType(type);
+    size_t bytes = 32 * MPSSizeofMPSDataType(type);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a], @[feed(values, @[@4, @4], type)], t, resultBytes, bytes, type, type);
+    run(one, @[a], @[feed(values, @[@8, @4], type)], t, resultBytes, bytes, type, type);
     put(name, resultBytes, bytes);
 }
 
@@ -269,12 +287,12 @@ static void binary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, M
                         MPSDataType type, const void *left, const void *right)
 {
     MPSGraph *one = [MPSGraph new];
-    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:type name:@"a"];
-    MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:type name:@"b"];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:type name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:type name:@"b"];
     MPSGraphTensor *t = build(one, a, b);
-    size_t bytes = 16 * MPSSizeofMPSDataType(type);
+    size_t bytes = 32 * MPSSizeofMPSDataType(type);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a, b], @[feed(left, @[@4, @4], type), feed(right, @[@4, @4], type)], t, resultBytes, bytes, type, type);
+    run(one, @[a, b], @[feed(left, @[@8, @4], type), feed(right, @[@8, @4], type)], t, resultBytes, bytes, type, type);
     put(name, resultBytes, bytes);
 }
 
@@ -285,10 +303,10 @@ static void predicate_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *
                            MPSDataType operandType, const void *values)
 {
     MPSGraph *one = [MPSGraph new];
-    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"a"];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:operandType name:@"a"];
     MPSGraphTensor *t = build(one, a);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a], @[feed(values, @[@4, @4], operandType)], t, resultBytes, 16, operandType, MPSDataTypeBool);
+    run(one, @[a], @[feed(values, @[@8, @4], operandType)], t, resultBytes, 32, operandType, MPSDataTypeBool);
     put(name, resultBytes, 16);
 }
 
@@ -296,11 +314,11 @@ static void binary_predicate_case(const char *name, MPSGraphTensor *(^build)(MPS
                                   MPSDataType operandType, const void *left, const void *right)
 {
     MPSGraph *one = [MPSGraph new];
-    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"a"];
-    MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:operandType name:@"b"];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:operandType name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:operandType name:@"b"];
     MPSGraphTensor *t = build(one, a, b);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a, b], @[feed(left, @[@4, @4], operandType), feed(right, @[@4, @4], operandType)], t, resultBytes, 16, operandType, MPSDataTypeBool);
+    run(one, @[a, b], @[feed(left, @[@8, @4], operandType), feed(right, @[@8, @4], operandType)], t, resultBytes, 32, operandType, MPSDataTypeBool);
     put(name, resultBytes, 16);
 }
 
@@ -309,14 +327,14 @@ static void ternary_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, 
                          MPSDataType type, const void *first, const void *second, const void *third)
 {
     MPSGraph *one = [MPSGraph new];
-    MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:type name:@"a"];
-    MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:type name:@"b"];
-    MPSGraphTensor *c = [one placeholderWithShape:@[@4, @4] dataType:type name:@"c"];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:type name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:type name:@"b"];
+    MPSGraphTensor *c = [one placeholderWithShape:@[@8, @4] dataType:type name:@"c"];
     MPSGraphTensor *t = build(one, a, b, c);
-    size_t bytes = 16 * MPSSizeofMPSDataType(type);
+    size_t bytes = 32 * MPSSizeofMPSDataType(type);
     memset(resultBytes, 0, sizeof(resultBytes));
-    run(one, @[a, b, c], @[feed(first, @[@4, @4], type), feed(second, @[@4, @4], type),
-                          feed(third, @[@4, @4], type)], t, resultBytes, bytes, type, type);
+    run(one, @[a, b, c], @[feed(first, @[@8, @4], type), feed(second, @[@8, @4], type),
+                          feed(third, @[@8, @4], type)], t, resultBytes, bytes, type, type);
     put(name, resultBytes, bytes);
 }
 
@@ -381,7 +399,7 @@ int main(void)
         // MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
         // so the shape, the data type and the graph's placeholder count are what is compared here, and
         // the rest of the builder side is checked in a program of its own.
-        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@4, @4] dataType:MPSDataTypeFloat32];
+        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@8, @4] dataType:MPSDataTypeFloat32];
         printf("shaped dataType %d\n", (int)shaped.dataType);
 
         // The unary family and the arithmetic family, over the sixteen classes above, in float32 and
@@ -402,13 +420,13 @@ int main(void)
         // A chain, so the walk over the operations in order is checked too.
         {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"b"];
+            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"b"];
             MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
             MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
             MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
             memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@4, @4], MPSDataTypeFloat32)], root, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+            run(one, @[a, b], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@8, @4], MPSDataTypeFloat32)], root, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
             put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
         }
         // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
@@ -416,12 +434,12 @@ int main(void)
         // family it was taking seven cases down with it.
         {
             MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@4, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *c = [one constantWithShape:@[@4, @4] dataType:MPSDataTypeFloat32
+            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+            MPSGraphTensor *c = [one constantWithShape:@[@8, @4] dataType:MPSDataTypeFloat32
                                              values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
             MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
             memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a], @[feed(&leftValues[0], @[@4, @4], MPSDataTypeFloat32)], t, resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+            run(one, @[a], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32)], t, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
             put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
         }
 

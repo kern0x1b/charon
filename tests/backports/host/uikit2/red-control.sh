@@ -31,6 +31,8 @@ build="$root/.agent-work/runs/uikit2-red-control"
 scratch="$build/sources"
 source_file="UIContentUnavailableProperties.m"
 config_file="UIContentUnavailableConfiguration.m"
+attr_file="UIEventAttribution145.m"
+attr_group="eventattribution"
 logdir="$build/logs"
 
 fail() { echo "RED CONTROL FAILED: $1" >&2; exit 1; }
@@ -66,6 +68,23 @@ plant_value() {
 # the configuration half.  The anchor is the measured default of the text-to-secondary-text padding, which
 # the case asks as "the %@ text-to-secondary-text padding" on all three factories - so one planted value
 # has to be reported three times, and the control looks for all of them.
+# The THIRD plant, on the 14.5 attribution. It is here because a control that only proves the empty-state
+# group responds says nothing about a group added later. The anchor is the measured identifier the copy
+# builds from, and the case asks it as "the source identifier reads back".
+plant_attr_value() {
+    src=$1
+    dst=$2
+    awk '
+        /_sourceIdentifier = sourceIdentifier;/ && !done {
+            sub(/_sourceIdentifier = sourceIdentifier;/, "_sourceIdentifier = sourceIdentifier + 1;")
+            print
+            print "            // RED CONTROL: an identifier no caller passed"
+            done = 1
+            next
+        }
+        { print }' "$src" > "$dst"
+}
+
 plant_config_value() {
     src=$1
     dst=$2
@@ -83,7 +102,8 @@ plant_config_value() {
 run_group() {
     label=$1
     sources=$2
-    UIKIT2_SOURCES="$sources" UIKIT2_ONLY=contentunavailable \
+    group=${3:-contentunavailable}
+    UIKIT2_SOURCES="$sources" UIKIT2_ONLY="$group" \
         sh "$here/run.sh" > "$logdir/$label.txt" 2>&1 || true
 }
 
@@ -166,5 +186,40 @@ cmp -s "$build/source.before.m" "$root/packages/a/apple-backports/UIKit/$source_
     || fail "the run left the repository's source changed"
 cmp -s "$build/config.before.m" "$root/packages/a/apple-backports/UIKit/$config_file" \
     || fail "the run left the repository's configuration source changed"
+
+# 4. The attribution group, the same three steps. Kept in the same script because a control is worth
+#    exactly as much as the run that reads it: a group with no plant is a group nobody has shown responds.
+echo "== the unplanted attribution group, which must be green"
+run_group attr-green "$root/packages/a/apple-backports/UIKit" "$attr_group"
+attr_green_line=$(grep -E "^$attr_group: exit=" "$logdir/attr-green.txt" | tail -1 || true)
+[ -n "$attr_green_line" ] || { cat "$logdir/attr-green.txt"; fail "could not find the attribution group's result line"; }
+echo "   $attr_green_line"
+case "$attr_green_line" in
+    *"exit=0"*) : ;;
+    *) sed -n '1,40p' "$logdir/attr-green.txt"; fail "the attribution group is red BEFORE any plant" ;;
+esac
+
+cp "$root/packages/a/apple-backports/UIKit/$attr_file" "$build/attr.before.m"
+plant_attr_value "$root/packages/a/apple-backports/UIKit/$attr_file" "$scratch/$attr_file"
+cmp -s "$build/attr.before.m" "$scratch/$attr_file" && fail "the attribution plant did not change its file, so it is not a plant"
+cmp -s "$build/attr.before.m" "$root/packages/a/apple-backports/UIKit/$attr_file" \
+    || fail "the attribution plant edited the repository instead of the scratch copy"
+
+echo "== planting an identifier no caller passed, in the same scratch copy"
+run_group attr-red "$scratch" "$attr_group"
+attr_red_line=$(grep -E "^$attr_group: exit=" "$logdir/attr-red.txt" | tail -1 || true)
+[ -n "$attr_red_line" ] || { sed -n '1,40p' "$logdir/attr-red.txt"; fail "the planted attribution run produced no result line"; }
+echo "   $attr_red_line"
+case "$attr_red_line" in
+    *"exit=0"*) sed -n '1,40p' "$logdir/attr-red.txt"; fail "the attribution plant left the group GREEN" ;;
+esac
+grep -E "^FAIL the source identifier reads back" "$logdir/attr-red.txt" | sed 's/^/     /' || true
+if ! grep -qE "^FAIL the source identifier reads back" "$logdir/attr-red.txt"; then
+    fail "the attribution group went red without naming the source-identifier key, so it is not attributable"
+fi
+echo "   the planted attribution run names the source-identifier key"
+
+cmp -s "$build/attr.before.m" "$root/packages/a/apple-backports/UIKit/$attr_file" \
+    || fail "the run left the repository's attribution source changed"
 
 echo "RED CONTROL OK: green before, red after, naming the key, tree untouched"

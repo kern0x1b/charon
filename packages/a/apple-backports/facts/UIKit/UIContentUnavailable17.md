@@ -251,6 +251,40 @@ and it is deliberate: the header declares the four bag properties nonnull, and a
 write to it into a silent no-op on this release. So a caller that ignored the unavailability gets zeros,
 as on the host, and an object whose bags it can use, which the host's does not offer.
 
+### `UIContentUnavailableConfigurationState`'s own `+new` and `-init`: absent, by Apple's metadata
+
+The section above is about `UIContentUnavailableConfiguration`, whose object answers both. The **state**
+class is the other half, and its two rows are decided by what Apple's own class metadata says, not by the
+header and not by what a call reaches.
+
+Measured over `UIKitCore` of the arm64e shared cache of iOS 18.0, read with `modules/apple/objc.lua`'s
+`inventory` (one pass, seven classes at once):
+
+| read | result |
+| --- | --- |
+| `-init` in `UIContentUnavailableConfigurationState`'s own instance list | **no** (`no-own-init`) |
+| `+new` in the own metaclass list of any class of that cache | **no**, 0 of 190858 |
+| control: `-init` in a class's own instance list | yes, 37248 of 190858, `NSObject` among them, and `ARConfiguration`, whose header marks `-init` `NS_UNAVAILABLE` all the same |
+| control: `+new` in `NSObject`'s own metaclass list | no - it is inherited rather than redeclared |
+
+So Apple's class defines neither, and the port defines neither: `UIContentUnavailableProperties.m` carries
+`initWithTraitCollection:`, `initWithCoder:` and the six `UIConfigurationState` members, and no `-init` or
+`+new`. What a call reaches is `NSObject`'s, on this release and on Apple's alike.
+
+The header half, measured so the row can say why no definition is needed.
+`UIContentUnavailableConfigurationState.h:21-22` redeclares both `NS_UNAVAILABLE`, and an **`NS_UNAVAILABLE`
+redeclaration forces nothing**: with `clang -fsyntax-only -fobjc-arc -Wall
+-Werror=objc-missing-property-synthesis` at `armv7-apple-ios6.0` and `armv7-apple-ios4.3` against the 16.4
+SDK, an `@interface` carrying `- (instancetype)init NS_UNAVAILABLE;` and
+`+ (instancetype)new NS_UNAVAILABLE;` draws no `-Wincomplete-implementation`, while an `@interface` that
+redeclares `+ (instancetype)new;` **available** draws `method definition for 'new' not found`. The 16.4
+SDK does not carry this class at all (it is 17.0); the declaration read is the 26.2 one above.
+
+That is the whole difference from the ARKit configurations, and it is what decides them too:
+`ARWorldTrackingConfiguration` and its four siblings redeclare `+ (instancetype)new;` **available**, lifting
+`ARConfiguration`'s `NS_UNAVAILABLE`, so the compiler requires a definition and the port carries one. Here
+both redeclarations are `NS_UNAVAILABLE`, so requiring one would add a selector Apple's class does not have.
+
 ### `NSSecureCoding`: what the archive holds and what it does not
 
 Measured: `+[UIContentUnavailableConfiguration supportsSecureCoding]` is `YES` on the host, a search

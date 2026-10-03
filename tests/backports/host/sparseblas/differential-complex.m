@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 #define RENAME(name) charon_host_##name
 

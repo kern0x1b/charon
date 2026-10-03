@@ -585,10 +585,12 @@
             charon_ml_features_release(outputs);
             free(inputs);
             free(outputs);
+            /* The release's own wording for a required feature the caller left out, measured
+             * against this host's own Core ML over tools/coreml's vision_image container:
+             * "Feature image is required but not specified." The type of the feature is not part of
+             * it, so it is not in this sentence either. */
             charon_ml_error(error, CHARON_ML_ERROR_GENERIC,
-                            [NSString stringWithFormat:@"the model needs an input of type %ld for the feature "
-                                                       @"'%@' and it was not given one",
-                                                       (long)charon_ml_feature_type_of(described->type), wanted]);
+                            [NSString stringWithFormat:@"Feature %@ is required but not specified.", wanted]);
             return nil;
         }
     }

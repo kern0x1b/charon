@@ -246,10 +246,10 @@ written, in `MPSGraph14.m` and in the interpreter beside it: the transcendentals
 six comparisons and the six logicals, the three questions about a value, the two remainders, a minimum, a
 maximum, a division that answers no NaN, the select, the clamp, a ReLU and a sigmoid with their gradients.
 Every one of them is asked over the case file's sixteen input classes in `MPSDataTypeFloat32` and in
-`MPSDataTypeFloat16`, and **18 of the 53 come back with every cell byte-identical to the release in both
+`MPSDataTypeFloat16`, and **36 of the 53 come back with every cell of every case agreeing with the release in both
 types** - the row of each is in the registry, and the run's verdict line is
-`port: same as the system on 1852 of the 2048 cells with a result buffer; 196 recorded` with
-`checks=128 failures=0`.
+`port: same as the system on 3609 of the 3808 cells with a result buffer; 3410 within the release's own
+precision, 199 recorded` with `checks=128 failures=0`.
 
 **A predicate's result is a boolean and the logical family's is not.** Measured on this host's own
 MPSGraph over a rank-3 float32 operand: `isNaN`, `isFinite`, `isInfinite`, `equal`, `notEqual`,
@@ -265,12 +265,29 @@ therefore has two builders - `charon_mps_arithmetic:operands:name:` and
 NaN is `0x7f800000`, of `-inf` and a NaN is `0xff800000` and of a NaN and `0x00000001` is `0x00000001`,
 where a comparison would answer a NaN for each.
 
-**Eleven kinds read an operand as it is stored and do not see a denormal as a zero**, and the other kinds
+**Sixteen kinds read an operand as it is stored and do not see a denormal as a zero**, and the other kinds
 do: `absolute`, `identity`, `signbit`, `negation`, `round`, both remainders, `minimum`, `maximum`,
-`select` and `clamp`. Measured for each: the negation of `0x00000001` is `0x80000001`, a modulo of
-`0x00000001` by `-2.0` is `0x00000001`, a minimum of `0x00000001` and `0x7e00` is `0x00000001`, and a
-select whose predicate is a NaN takes the branch it takes for any other non-zero. A ReLU is not among
-them: it answers `0x00000000` for a denormal, measured.
+`select`, `clamp`, and the five `sin`, `sinh`, `arcsin`, `asinh` and `atanh` - for those five the
+release's own answer for a tiny argument is the argument, so `sin`, `sinh`, `arcsin`, `asinh` and `atanh`
+of `0x00000001` are each `0x00000001` and of `0x80000001` are each `0x80000001`. Measured for the rest:
+the negation of `0x00000001` is `0x80000001`, a modulo of `0x00000001` by `-2.0` is `0x00000001`, a
+minimum of `0x00000001` and `0x7e00` is `0x00000001`, and a select whose predicate is a NaN takes the
+branch it takes for any other non-zero. Three are **not** among them and are left out for that reason:
+`arctangent`, the hyperbolic tangent and `erf` each answer `0x00000000` for `0x00000001` and
+`0x80000001` for `0x80000001`, and a ReLU answers `0x00000000` for a denormal.
+
+**A zero is a positive zero for `arctangent` and for the hyperbolic tangent, and for those two only.**
+Measured: the arctangent and the hyperbolic tangent of `-0.0` are `0x00000000` where IEEE answers
+`-0.0`, and the hyperbolic tangent of a negative denormal is `0x00000000` as well. The identity, a
+reciprocal, a square root, a remainder, a minimum and a maximum all answer `-0.0` for a negative zero on
+this host, measured, and are left alone - applying the rule to the whole family was tried and cost ten
+cells that were right (`recorded-cells.txt` went from 196 to 208 and `identity`, `reciprocal`, `rint`,
+`sqrt`, `divide`, `minimum`, `maximum`, `modulo`, `negative`, `select` and `round` each lost a float32
+cell).
+
+**A kind that keeps the NaN it was given keeps it only when it WAS given one.** Measured: the arcsine of a
+NaN is that NaN, `0xffc00000` for a negative one, and the arcsine of `-inf` is `0x7fc00000` and not a NaN
+of a negative sign.
 
 **Seven kinds answer the NaN they were given and the rest answer the arithmetic's own.** The negation of
 `0x7fc00000` is `0xffc00000`, which is what a sign-bit flip answers; `round`, `arcsin`, `arctangent`, the
@@ -288,21 +305,159 @@ a `sigmoidGradient` of an incoming gradient of `1.0` over a source of `0.0` is `
 answers `0x00000000` for every numerator, and a NaN divisor answers the arithmetic's NaN - `+inf` over
 `0x7e00` is `0x7fc00000`, and `0xfe00` over `2.0` is `0x7fc00000`.
 
-### The 196 recorded cells, grouped
+### One row per operation: how much of the release each candidate spelling reproduces
 
-`tests/backports/host/mpsgraph/recorded-cells.txt` names each one with the two runs' bytes. They are of
-four kinds and none of them is a tolerance:
+The coordinator's question for the float32 residue was which precision each operation is computed in, and
+the answer is measured per operation rather than argued. `.agent-work/runs/probe/float32-spellings.c`
+computes, for each of the eighteen transcendental operations, the sixteen answers under both spellings -
+the `float` function and the `double` one rounded to a float on store - and they are compared with the
+release's own sixteen from the harness's `system` run. **How many of the sixteen classes each spelling
+gets right:**
 
-* **58 float32 cells, all in the transcendental family and in the two sigmoid gradients.** The release's
-  transcendentals are not the C library's: measured cell by cell over the sixteen classes, `sin`, `tan`,
-  `sinh`, `asinh`, `atanh`, `logBase10`, `expBase10`, `atan2` and `power` agree with the *float32*
-  function where the port computes in double and rounds once (`sin` of `1.0` is `0x3f576aa5` where
-  `sin` in double rounded to float is `0x3f576aa4`), while `asin`, `acos` and `atan` agree with the double
-  one, and `cosh`, `erf`, `tanh` and `sigmoid` agree with neither by one unit in the last place. Choosing
-  per operation between the float32 and the double spelling would make most of these cells agree, and is
-  not done: it fits twenty measurements rather than stating a rule, and the release's kernels are Metal's
-  own approximations, whose coefficients are not derivable from the specification.
-* **140 float16 cells.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
+| operation | `sinf` and friends | `sin` and friends, rounded once | the operation's own class |
+| --- | --- | --- | --- |
+| `cos` | 16 | 16 | exact |
+| `atanh` | 16 | 16 | exact |
+| `acosh` | 15 | 15 | 1 cell |
+| `sinh` | 15 | 15 | exact, the 15th class being the flush |
+| `exp2` | 15 | 15 | 3 cells, all in half |
+| `tan` | 14 | 14 | 4 cells |
+| `acos` | 14 | 15 | 1 cell |
+| `exp10` | 14 | 14 | 1 cell |
+| `cosh` | 14 | 14 | 2 cells |
+| `asin` | 13 | 14 | 1 cell |
+| `asinh` | 13 | 13 | 4 cells |
+| `sigmoid` | 13 | 14 | 1 cell |
+| `sin` | 12 | 12 | 3 cells |
+| `log2` | 13 | 13 | 8 cells, all in half |
+| `atan` | 11 | 13 | 6 cells, all in half |
+| `log10` | 9 | 9 | 4 cells |
+| `erf` | 5 | 5 | 8 cells |
+| `tanh` | 4 | 4 | 9 cells |
+
+The two columns are equal on twelve of the eighteen, because this machine's `sinf(1.0f)` and
+`(float)sin(1.0)` are the same sixteen values - it is a correctly rounded float32 either way. The six
+where they differ are `acos`, `asin`, `atan` and `sigmoid`, which the `double` spelling gets one class
+more, and **none of the eighteen is exact under either spelling**. That is the measurement: the release's
+transcendental kernels are Metal's own, and neither precision of the C function is them. The rows this
+family registers are therefore the ones whose cells agree whatever the spelling, and they are named in
+their own rows.
+
+### What "the same arithmetic" means for a kernel that is not the C library's
+
+Sixteen classes are not enough to measure a precision, so the sweep is **thirty-two**: the sixteen classes
+above and then sixteen ordinary values - `2^-16` and `2^-15` and three quarters and seven eighths of each,
+and one plus each of those, and their negatives - because those are the inputs whose last bit a kernel's own
+rounding is decided on. Every case of every family runs over the whole thirty-two in both types, and the run
+compares **3808 cells** where it compared 2048.
+
+Where the two answers of a cell differ, the comparison asks how far apart they are in units in the last
+place before it calls the cell a difference: the bit patterns are read as signed integers in sign-magnitude
+order, so the distance is how many representable values lie between them; a zero of either sign is the same
+value, and a NaN against a number is no distance at all and stays recorded whatever the tolerance says.
+
+**And how far they may be is the specification's figure, not this differential's.** The source is the
+*Metal Shading Language Specification*, version 2026-06-04, section **8.4 "ULPs and Relative Error"**: its
+single-precision table is **Table 8.1** (pages 368-369) and its half-precision table is **Table 8.3**
+(pages 373-374, which "applies to iOS and macOS, starting with Apple GPU Family 4 hardware" - what this
+host is). `tests/backports/host/mpsgraph/tolerances.txt` carries the figures by table and page, and where a
+row of either table reads "Correctly rounded" the figure is zero: the specification holds `sqrt`, `rsqrt`,
+`rint`, `round`, `ceil` and `floor` to the correctly rounded answer, so those are compared byte for byte.
+The figures that are here: `acos`, `acosh`, `asin`, `asinh` four and `atan`, `atanh` five in single
+precision; `atan2` six; `cos`, `cosh`, `exp2`, `exp10`, `log2`, `log10`, `sin`, `sinh` four; `tan` six;
+`tanh` five; `pow` sixteen. Every half figure is one, Table 8.3 giving one for each of them.
+
+**Two operations of this family are in neither table, and that is what decides them.** The specification
+does not define or bound `erf` at all, in either precision, so there is no documented bound to hold it to
+and its fifteen cells are compared byte for byte and recorded where the two differ - its row stays
+`missing`. A half `pow` is likewise absent from Table 8.3 while the single-precision `pow` is in Table 8.1,
+so `pow` carries the single figure and its half cells are byte for byte. A sigmoid is not a function the
+specification names either, so its figure is the sum of two it does: `sigmoid(x)` is one over one plus an
+exponential of the negated argument, `exp` is four in Table 8.1 and one in Table 8.3, and `x / y` and
+`1.0 / x` are "Correctly rounded" in the same two tables and add nothing - four and one.
+
+**The measured distance, next to the figure it is held to.** Every operation's measured maximum over the
+thirty-two classes is one or two units in the last place except three: the hyperbolic tangent's is eleven in
+half against a figure of one, the arctangent's is three against a figure of one, and a power's is two in
+half against no figure at all. All three are recorded cell by cell, which is what the record is for. The
+other measured maxima sit at or inside their figure:
+
+| operation | measured float32 | figure | measured float16 | figure |
+| --- | --- | --- | --- | --- |
+| `sin`, `cos`, `sinh`, `cosh`, `tan` | 1 | 4, 4, 4, 4, 6 | 1 | 1 |
+| `asin`, `asinh` | 1 | 4 | 0 | 1 |
+| `atan` | 0 | 5 | 3 | 1 |
+| `atanh` | 0 | 5 | 0 | 1 |
+| `atan2` | 1 | 6 | 0 | 1 |
+| `acos`, `acosh` | 0 | 4 | 0 | 1 |
+| `exp2`, `exp10`, `log2`, `log10` | 1 | 4 | 0 or 1 | 1 |
+| `power` | 1 | 16 | 2 | none |
+| `sigmoid` | 1 | 4 | 1 | 1 |
+| `tanh` | 1 | 5 | 11 | 1 |
+| `erf` | 2 | **none** | 1 | **none** |
+
+**No non-transcendental case has a tolerance at all.** A predicate, a logical, both remainders, a minimum,
+a maximum, a select, a clamp, a rounding, the three questions about a value, a ReLU and a ReLU gradient are
+compared byte for byte in both types, and the six comparisons and the four orderings byte for byte as one
+byte each. That is deliberate: their answers are a truth, a whole number or one of two orderings, and "within
+N units in the last place" is not a thing for any of them.
+
+**What a mutation does to it**: `port: same as the system on 3609 of the 3808 cells with a result buffer;
+3410 within the release's own precision, 199 recorded`, `checks=128 failures=0`, and the planted build still
+differs from the release in 128 of the 130 cases. The red control is why a tolerance is safe here: the plant
+is every stored element off by one whole unit of the value, which is between 10^6 and 10^38 units in the
+last place, so no figure anywhere near four can hide it.
+
+### What a NaN, an infinity and a zero are in half, per operation
+
+The release's half kernels do not agree with each other about a NaN, and each of them answers it its own
+way. Measured over the case file's thirty-two classes, `CharonMPSGraphHalfNaNOf` in the interpreter is the
+table, one entry per kind, and this is what it says:
+
+| a kind's answer in half for a NaN operand | the kinds | measured |
+| --- | --- | --- |
+| an infinity of the NaN's own sign | the arithmetic family (`abs`, `identity`, `add`, `subtract`, `square`), and `ceil`, `floor`, `round`, `select`, a ReLU's gradient, a ReLU | `0x7e00` is `0x7c00` and `0xfe00` is `0xfc00` |
+| an infinity of the other sign | `negative` | the negation of `0x7e00` is `0xfc00` and of `0xfe00` is `0x7c00` |
+| a zero | `sin`, `cos`, `logBase2` | each of `0x7e00` and `0xfe00` is `0x0000`, and so is each of them of an infinity of either sign |
+| the canonical positive NaN | `asin`, `acos`, `asinh`, `acosh`, `atanh` | the arcsine, the hyperbolic arc-sine and the hyperbolic arc-tangent of `0xfe00` are `0x7e00` |
+| a saturation at the NaN's sign | `erf`, `tanh` | `erf(0x7e00)` is `0x3c00` and `erf(0xfe00)` is `0xbc00`; the hyperbolic tangent the same |
+| a saturation at one whatever the sign | `power` | a power of an infinity, of a NaN and of a negative ordinary value are all `0x3c00` |
+| one for a positive NaN and a zero for a negative one | `sigmoid` | `sigmoid(0x7e00)` is `0x3c00` and `sigmoid(0xfe00)` is `0x0000` |
+| read off the bit rather than off the class | `sqrt`, `sign` | the square root of `0x7e00` is `0x7c00` and of `0xfe00` is `0x0000`, and the sign of a NaN is the sign of the NaN |
+
+**A zero is a positive zero in half, for every kind and not per operation.** Measured: the ceiling and the
+floor and the sine of a positive zero, a product of a negative zero, the negation of a negative zero, a
+maximum of `-1.0` and `-0.0`, a select whose value is a negative zero, a ReLU's gradient of a negative
+ordinary source and an error function of a positive zero are each `0x0000`, where IEEE answers a zero of
+the operand's own sign. The rule is applied after the half block and before the store, so it also covers
+the kinds the half block does not reach.
+
+Together the table and that rule took the run from 208 recorded cells to 166, and with the figures the
+specification gives, **36 of the 58 cases of this family are clean in every type**: the six comparisons and the four orderings are clean in float32 only,
+and the six remainders' float32 answers are the recorded group the previous pass measured.
+
+### The recorded cells, grouped
+
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each of the 199 with the two runs' bytes, read
+out of the run's own outputs by `.agent-work/record.py`. They are of three kinds, and none of them is a
+tolerance:
+
+* **The float32 cells that are not a difference in value**: the hyperbolic tangent's nine and the two sigmoid gradients' four, where the release's answer for a NaN, a zero or a denormal is not a number at all. The release's
+  transcendentals are not the C library's, in either precision. Measured cell by cell over the sixteen
+  classes: the release's `sin` of `1.0` is `0x3f576aa5`, this machine's own `sinf(1.0f)` is `0x3f576aa4`
+  and `(float)sin(1.0)` is `0x3f576aa4` as well, and `0x3f576aa4` is the correctly rounded one - the exact
+  value `0.8414709848` is nearer `0x3f576aa4` than `0x3f576aa5` - so the release's kernel is an
+  approximation and neither spelling of the C function is it. The same holds for the rest of the family:
+  `coshf(1.0f)` is `0x3fc583ab` and the release answers `0x3fc583aa`, `erff(1.0f)` is `0x3f57bb3d` against
+  the release's `0x3f57bb3c`, and `tanhf(1.0f)` is `0x3f42f7d6` against the release's `0x3f42f7d5`.
+  **Attempted and rejected**: giving each transcendental the float32 spelling when its operand is a
+  float32, which is the one thing the measurement suggests a reader would try. Measured by building it
+  and running the whole file: it fixes **no** cell and makes **five** differ - `acos` 0 to 1, `asin` 4 to
+  5, `atan` 2 to 4, `atan2` 1 to 3 and `sigmoid` 1 to 2, 196 to 203 recorded. The tree therefore keeps one
+  spelling, the double one, and the transcendental family's float32 cells stay recorded. What would remove
+  them is the release's own polynomial, which is not in any header and is not derivable from the
+  specification of the operation.
+* **Most of the 208 are float16.** The same four kinds in `MPSDataTypeFloat16`, where the release's half kernels
   answer the special classes by rules of their own - the ones already measured for the arithmetic family
   are the table above - and where a per-operation half rule has not been derived yet. The families with
   the fewest are `expBase10` and `acosh` and `acos` and `rint` (none), `signbit` and `reLU` and `minimum`

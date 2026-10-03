@@ -57,3 +57,40 @@ SDK's own HomeKit types are marked `API_UNAVAILABLE(macos)`, so nothing of the m
 at all. `xcrun simctl list runtimes` is empty, so there is no simulator either. The native fix is the
 armv7 emulator, which is a heavy job to run when a slot is free; the registry rows' `source` and
 `coordination/crutches.md` both say so. The crutch names it as the native fix.
+
+## The `-init` and `+new` of thirty HomeKit classes, read out of a real release's own metadata
+
+This host has no HomeKit binary at all - `/System/Library/Frameworks/HomeKit.framework` holds only a
+`PlugIns` directory and there is no simulator - so the oracle for HomeKit is the release's own metadata,
+read with the repository's own `tools/corpus/objc-inventory.lua` over the **arm64e cache of iOS 16.0**,
+which is the newest held cache that still exports HomeKit's public classes (`_OBJC_CLASS_$_HMHome` is in
+it; the cache of 18.0 exports none of them). It is a real release's own class list, which answers the
+corpus row's question - is the selector in the class's own method list - and not the other one, what a
+caller reaches at run time.
+
+Thirty of this package's classes carry such a row today, and the cache splits them twenty and ten.
+
+| what iOS 16.0's own class carries | classes | what the port does |
+| --- | --- | --- |
+| neither selector | 20 | carries neither; NSObject's pair answers, which is what the framework's own class answers |
+| `-init` only | 10 | **undecided** - see below |
+
+The ten are `HMAccessControl`, `HMAction`, `HMActionSet`, `HMHome`, `HMHomeManager`, `HMRoom`,
+`HMServiceGroup`, `HMTimerTrigger`, `HMUser` and `HMZone`. Their ten rows stay `missing` and the decision
+is not this page's: the measurement says Apple's class implements `-init` and says nothing about what it
+returns, and there is nothing on this machine that can say more - no host framework, no simulator, and a
+dyld cache carries method lists rather than answers. What the table
+(`tests/backports/host/unavailable-init/expectations.tsv`) can hold for such a class is already there: an
+`oracle` column naming where the answer came from, and `port-init`/`port-new` read off `own-init` and
+`own-new`. When the answer is known, a row is one line.
+
+**Two of the twenty were not true when this was measured**, and both are fixed:
+`HMCharacteristicWriteAction` defined an `-init` that only forwarded to NSObject's, and `HMEvent` defined
+one that invented a fresh UUID for the event - a value no framework produces, since an event's
+identifier is the framework's and one made through `-init` has none. Nothing in the tree called either, and
+neither definition matches Apple's class; both are gone, and their rows say why.
+
+The rule the port follows, from the coordinator's answer of 2026-10-03: where Apple's own class carries a
+selector the port carries it with the measured body; where Apple's own class does not, the port does not
+either, because a definition would change what the class is and answer the caller exactly what NSObject's
+already answers.

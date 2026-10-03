@@ -14,6 +14,7 @@
     NSString *_charonProductType;
     NSOperatingSystemVersion _charonOperatingSystemVersion;
 }
+CHARON_HEALTHKIT_UNCREATABLE_INIT
 
 // The port's own constructor, which the 11.0 initialiser of the class goes through, so that the two
 // release's forms share one path and the facts of the 9.0 one are set in one place.

@@ -1,6 +1,5 @@
 #import "CharonMetal.h"
-
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
+#import <objc/runtime.h>
 
 @implementation MTLVertexAttributeDescriptor
 
@@ -122,6 +121,48 @@
 {
     _attributes = [[MTLVertexAttributeDescriptorArray alloc] init];
     _layouts = [[MTLVertexBufferLayoutDescriptorArray alloc] init];
+}
+
+// VALUE EQUALITY, and it is here because of what it makes possible two releases away: Apple's own
+// MTL4RenderPipelineDescriptor compares its vertexDescriptor, and Apple's own MTLVertexDescriptor has
+// value equality - measured, two freshly made ones are equal - so a Metal 4 render pipeline descriptor
+// can compare equal against a fresh one. Without this, two fresh render descriptors on this port are
+// not equal where Apple's are, and the difference is this class's.
+//
+// It compares the two ARRAYS ELEMENT BY ELEMENT through their own getters, member by member, rather
+// than asking the arrays whether they are equal: the two array classes are the SDK's PROTOCOLS here
+// (their instances are objects Apple's own framework makes) and carry no -isEqual: of their own, so
+// there is nothing to ask. The bound is THIRTY ONE, which is what -copyWithZone: above walks and what
+// MTLVertexDescriptor.h's own table has rows for.
+- (BOOL)isEqual:(id)object
+{
+    if (self == object) return YES;
+    if (![object isKindOfClass:[MTLVertexDescriptor class]]) return NO;
+    MTLVertexDescriptor *other = object;
+    for (int index = 0; index < 31; index++) {
+        MTLVertexAttributeDescriptor *mine = self.attributes[index];
+        MTLVertexAttributeDescriptor *theirs = other.attributes[index];
+        if (mine.format != theirs.format || mine.offset != theirs.offset || mine.bufferIndex != theirs.bufferIndex)
+            return NO;
+        MTLVertexBufferLayoutDescriptor *myLayout = self.layouts[index];
+        MTLVertexBufferLayoutDescriptor *theirLayout = other.layouts[index];
+        if (myLayout.stride != theirLayout.stride || myLayout.stepFunction != theirLayout.stepFunction ||
+            myLayout.stepRate != theirLayout.stepRate)
+            return NO;
+    }
+    return YES;
+}
+
+- (NSUInteger)hash
+{
+    NSUInteger hash = (NSUInteger)object_getClass(self);
+    for (int index = 0; index < 31; index++) {
+        MTLVertexAttributeDescriptor *attribute = self.attributes[index];
+        hash = hash * 31u + (uint32_t)attribute.format + (uint32_t)attribute.offset + (uint32_t)attribute.bufferIndex;
+        MTLVertexBufferLayoutDescriptor *layout = self.layouts[index];
+        hash = hash * 31u + (uint32_t)layout.stride + (uint32_t)layout.stepFunction + (uint32_t)layout.stepRate;
+    }
+    return hash;
 }
 
 - (id)copyWithZone:(NSZone *)zone

@@ -66,10 +66,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "made, checked and archived as UIKit's: a property list that is not one, and alternates with no or equal modifier flags, raise the system's exceptions",
+   "status": "absent",
+   "effect": "no -init is defined on UICommand: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is a command with nothing on it, and the port's own construction of one is checked and archived as UIKit's: a property list that is not one, and alternates with no or equal modifier flags, raise the system's exceptions",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the header of SDK 16.4 and the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and `+new` is in the own metaclass list of 0 of them, because +new is NSObject's and is inherited rather than redeclared. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
+   "reason": "`-init` is not in UICommand's own instance list: no-own-init. The 16.4 SDK header redeclares it NS_UNAVAILABLE in that class's own @interface (UICommand.h:82-83), which needs no definition, and the port defines none"
   },
   {
    "api": "-[UICommand initWithCoder:]",
@@ -106,10 +107,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "made, checked and archived as UIKit's: a property list that is not one, and alternates with no or equal modifier flags, raise the system's exceptions",
+   "status": "absent",
+   "effect": "no -init is defined on UICommandAlternate: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is an alternate with nothing on it, and the port's own construction of one is checked and archived as UIKit's: a property list that is not one, and alternates with no or equal modifier flags, raise the system's exceptions",
    "facts": "facts/UIKit/UICommand.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); the header of SDK 16.4"
+   "source": "the header of SDK 16.4 and the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the commands group); UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and `+new` is in the own metaclass list of 0 of them, because +new is NSObject's and is inherited rather than redeclared. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
+   "reason": "`-init` is not in UICommandAlternate's own instance list: no-own-init. The 16.4 SDK header redeclares it NS_UNAVAILABLE in that class's own @interface (UICommand.h:22-23), which needs no definition, and the port defines none"
   },
   {
    "api": "-[UICommandAlternate initWithCoder:]",
@@ -336,10 +338,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "made from objects or providers; nil objects raise the system's exception",
+   "status": "absent",
+   "effect": "no -init is defined on UIActivityItemsConfiguration: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is a configuration built from no objects or providers; the port's own construction of one from objects or providers raises the system's exception for nil objects, as UIKit's does",
    "facts": "facts/UIKit/UIActivityItemsConfiguration.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the activityitems group); the header of SDK 16.4"
+   "source": "the header of SDK 16.4 and the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the activityitems group); UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and `+new` is in the own metaclass list of 0 of them, because +new is NSObject's and is inherited rather than redeclared. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
+   "reason": "`-init` is not in UIActivityItemsConfiguration's own instance list: no-own-init. The 16.4 SDK header redeclares it NS_UNAVAILABLE in that class's own @interface (UIActivityItemsConfiguration.h:16-17), which needs no definition, and the port defines none"
   },
   {
    "api": "-[UIActivityItemsConfiguration initWithItemProviders:]",

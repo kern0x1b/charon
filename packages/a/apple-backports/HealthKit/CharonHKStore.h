@@ -459,4 +459,30 @@ extern void charon_hk_say_once(NSString *key, NSString *text);
 // Application Support of its own to create it in.
 extern NSString *CharonHKStorePath(void);
 
+// -init, for the classes whose own framework closes it. Seven of this framework's classes declare
+// `- (instancetype)init NS_UNAVAILABLE;` in their SDK 26.2 header, and NS_UNAVAILABLE decides nothing at
+// run time, so what Apple's own class does is the question. Measured on the host's own HealthKit, over
+// all seven, in tests/backports/host/unavailable-init:
+//
+//   - six implement -init and it raises NSInvalidArgumentException whose reason is Apple's own text and
+//     names the class: "The -init method is not available on HKClinicalRecord", and the same sentence
+//     with each of the other five. The macro below is that sentence, with the class read off the
+//     receiver, because the framework builds it the same way;
+//   - one, HKDeletedObject, implements neither selector, so the port defines nothing there either - a
+//     definition would put -init in the port's metadata where Apple's has none and answer the caller
+//     exactly what NSObject's already answers.
+//
+// +new is not in the macro and not in any of the six blocks, and that is the other half of the
+// measurement: own-new is 0 for all seven, so Apple's classes inherit NSObject's +new, which is
+// +alloc/-init and therefore reaches the raise above. The iOS 16.0 cache agrees with the host on both
+// questions for all seven (tools/corpus/objc-inventory.lua over the arm64e cache).
+#define CHARON_HEALTHKIT_UNCREATABLE_INIT                                                  \
+    -(instancetype)init                                                                    \
+    {                                                                                     \
+        [NSException raise:NSInvalidArgumentException                                      \
+                        format:@"The -init method is not available on %@",                 \
+                               NSStringFromClass([self class])];                            \
+        return nil;                                                                       \
+    }
+
 NS_ASSUME_NONNULL_END

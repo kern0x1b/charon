@@ -399,6 +399,14 @@ NSUInteger CharonMLCNextTensorID(void)
 // same - a live object with nothing of its own to answer.
 @implementation MLCTensorOptimizerDeviceData
 
++ (instancetype)new
+{
+    // The header marks it unavailable, and what the release answers when a program asks for it anyway is
+    // an MLCTensorOptimizerDeviceData with nothing of its own set (measured on this host's own
+    // MLCompute: +[MLCTensorOptimizerDeviceData new] answers an MLCTensorOptimizerDeviceData).
+    return [[self alloc] init];
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
     // The buffers are the framework's own and are not readable here either, so a copy is another live

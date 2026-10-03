@@ -55,7 +55,7 @@ LIBRARIES = {
     -- UMFPACK and the rest of SuiteSparse are not in that package: they are LGPL and GPL and this one is
     -- BSD-3.
     {name = "AccelerateBackports", folder = "Accelerate", frameworks = {"Accelerate", "CoreGraphics", "Foundation"}, libraries = {"FoundationBackports"}, archives = {"suitesparse-ordering"}, c_archives = {"suitesparse-ordering"}},
-    {name = "AVFoundationBackports", folder = "AVFoundation", frameworks = {"AVFoundation", "CoreMedia", "CoreVideo", "AudioToolbox", "CoreImage", "ImageIO", "CoreGraphics", "QuartzCore", "Accelerate", "UIKit", "Foundation"}, libraries = {"FoundationBackports", "GraphicsBackports", "AccelerateBackports"}},
+    {name = "AVFoundationBackports", folder = "AVFoundation", frameworks = {"AVFoundation", "CoreMedia", "CoreVideo", "AudioToolbox", "CoreImage", "ImageIO", "CoreGraphics", "QuartzCore", "Accelerate", "UIKit", "Foundation"}, libraries = {"FoundationBackports", "GraphicsBackports", "AccelerateBackports"}, archives = {"charon-coding"}, c_archives = {"charon-coding"}},
     {name = "AVFAudioBackports", folder = "AVFAudio", frameworks = {"AudioToolbox", "CoreAudio", "AVFoundation", "UIKit", "Foundation", "Accelerate", "QuartzCore"}, libraries = {"FoundationBackports", "GraphicsBackports", "AccelerateBackports", "AVFoundationBackports"}},
     {name = "WebKitBackports", folder = "WebKit", frameworks = {"UIKit", "Foundation"}, libraries = {"FoundationBackports", "UIKitBackports"}},
     {name = "LocalAuthenticationBackports", folder = "LocalAuthentication", frameworks = {"Foundation"}, libraries = {"FoundationBackports"}},
@@ -723,11 +723,71 @@ end
 -- band - <Library>Protocols<release>.m - that names every protocol the band carries, which is what makes clang
 -- emit __OBJC_PROTOCOL_$_<name> into the object. One file per band, so every symbol in it first appears in one
 -- release and release-split has nothing to flag; one io.writefile per file, so no redirection can truncate it.
-function protocol_sources(root, library, folder, umbrella)
+-- The protocols a folder's own objects emit the metadata object for, and which file emits each.
+--
+-- What makes clang emit __OBJC_PROTOCOL_$_<name> is a CONFORMANCE - an @interface or an @protocol whose
+-- protocol list names it - and nothing else: importing the header that declares it, using id<name>, and
+-- naming it in @protocol(name) all emit none of it. So the search is for a protocol list on a declaration
+-- line and for nothing else, and each name is looked for inside such a list rather than in the file at
+-- large, because a property of type id<name> or NSArray<name *> mentions the name in a line with no
+-- declaration in it and would be a second, wrong answer.
+--
+-- The SDK's own headers are read as well as the folder's, and they have to be: the conformance that makes
+-- CoreML's MLFeatureProvider.m emit __OBJC_PROTOCOL_$_MLFeatureProvider is in no source of this
+-- repository. It is in Apple's MLFeatureProvider.h, where MLDictionaryFeatureProvider is declared as
+-- conforming, and the port gets it by importing <CoreML/CoreML.h>. A search over this repository's sources
+-- alone finds nothing there, which is what the first version of this did and why it changed nothing for the
+-- framework it was written for.
+local function conforms_in(text, wanted, found, filename)
+    for declaration in text:gmatch("@interface%s+[%w_]+[^\n]*") do
+        local list = declaration:match("<([^>]*)>%s*$") or declaration:match("<([^>]*)>")
+        if list then
+            for conformed in list:gmatch("[%w_]+") do
+                if wanted[conformed] and not found[conformed] then found[conformed] = filename end
+            end
+        end
+    end
+    for declaration in text:gmatch("@protocol%s+[%w_]+[^\n]*") do
+        local list = declaration:match("<([^>]*)>%s*$") or declaration:match("<([^>]*)>")
+        if list then
+            for conformed in list:gmatch("[%w_]+") do
+                if wanted[conformed] and not found[conformed] then found[conformed] = filename end
+            end
+        end
+    end
+    return found
+end
+
+function conforming_protocols(opt, library, names, found)
+    found = found or {}
+    local wanted = {}
+    for name in pairs(names) do wanted[name] = true end
+    for _, file in ipairs(os.files(path.join(opt.root, library.folder, "*"))) do
+        local filename = path.filename(file)
+        if filename:endswith(".h") or filename:endswith(".m") or filename:endswith(".c") or filename:endswith(".mm") then
+            local text = io.readfile(file)
+            if text then conforms_in(text, wanted, found, library.folder .. "/" .. filename) end
+        end
+    end
+    -- The frameworks' own headers, where a framework declares a class that conforms to one of its
+    -- protocols: this repository's sources hold the conformance only when they declare the class themselves,
+    -- and for the frameworks they do not, the header the port imports is where it is.
+    if not opt.sdkdir then return found end
+    for _, framework in ipairs(library.frameworks or {}) do
+        for _, file in ipairs(os.files(path.join(opt.sdkdir, "System/Library/Frameworks", framework .. ".framework/Headers/*.h"))) do
+            local text = io.readfile(file)
+            if text then conforms_in(text, wanted, found, framework .. ".framework/Headers/" .. path.filename(file)) end
+        end
+    end
+    return found
+end
+
+function protocol_sources(opt, library, folder, umbrella)
     -- Only this library's own rows: a framework's rows live under registry/<folder>/, so the library whose
     -- folder is that framework is the one that carries them, and a framework no library builds (PhotosUI, whose
     -- protocols ride in PhotosBackports) is not read into any library at all. Reading the whole registry put all
     -- 73 rows into every library.
+    local root = opt.root
     local bands, floors_of = {}, {}
     for _, file in ipairs(table.join(os.files(path.join(root, "registry", library.folder, "*.json")),
                                  os.files(path.join(root, "registry", library.folder .. ".json")))) do
@@ -747,6 +807,26 @@ function protocol_sources(root, library, folder, umbrella)
             end
         end
     end
+    -- Which of them this library's own sources already carry, and where. A translation unit emits
+    -- __OBJC_PROTOCOL_$_<name> when it CONFORMS to the protocol, not when it merely imports the header or
+    -- uses id<name> or @protocol(name) - measured on this tree with three objects compiled for
+    -- armv7-apple-ios6.0 against the SDK of iOS 16.4, each reading <CoreML/MLFeatureProvider.h> and nothing
+    -- else, and each nm -g-ed: one that declares nothing that uses the protocol exports 0 of the symbol, one
+    -- that uses id<name> and @protocol(name) exports 0, and one that declares
+    -- @interface X : NSObject <name> exports 1 (facts/CoreML/CoreML.md, "Which translation units emit a
+    -- protocol's metadata object").
+    --
+    -- Forcing the object here as well is what made two objects of one library define the same protocol, both
+    -- weak private external, and ld64 keeps whichever comes first on the link line without a word. The two
+    -- definitions were the same symbol and the same bytes, so nothing observable depended on the order -
+    -- which is exactly why nothing caught it. A protocol one of the library's own sources conforms to is
+    -- emitted there and is not forced here; one nothing conforms to is forced here, because nothing else
+    -- would emit it and objc_getProtocol and conformsToProtocol: have to answer.
+    local wanted = {}
+    for _, names in pairs(bands) do
+        for _, name in ipairs(names) do wanted[name] = true end
+    end
+    local carried = conforming_protocols(opt, library, wanted)
     local written, floor = {}, {}
     for introduced, names in pairs(bands) do
         table.sort(names)
@@ -755,6 +835,8 @@ function protocol_sources(root, library, folder, umbrella)
 // Every @protocol() below is named so clang emits __OBJC_PROTOCOL_$_<name> into this object, which is the
 // metadata the release carries for that protocol in %s.framework itself. One file per release the rows
 // arrived in, so every symbol here first appears in one release and release-split is clean.
+// A protocol this library's own sources already emit is NOT named here, and the comment says which file
+// emits it: naming it in both places is what two definers of one symbol meant.
 #import "Charon%sProtocols.h"
 
 static void charon_%s_protocols(void) __attribute__((used));
@@ -762,7 +844,11 @@ static void charon_%s_protocols(void)
 {
 ]], library.name, introduced, library.name, library.folder, library.name, library.name)
         for _, name in ipairs(names) do
-            text = text .. string.format("    (void)@protocol(%s);\n", name)
+            if carried[name] then
+                text = text .. string.format("    // __OBJC_PROTOCOL_$_%s is emitted by %s\n", name, carried[name])
+            else
+                text = text .. string.format("    (void)@protocol(%s);\n", name)
+            end
         end
         text = text .. "}\n"
         io.writefile(file, text)
@@ -830,7 +916,7 @@ local function compiled(opt)
         -- the protocol metadata the framework carries and the port does not: one generated source per band
         local generated = path.join(opt.builddir, "protocols", library.folder)
         os.mkdir(generated)
-        local written, floor = protocol_sources(opt.root, library, generated, library.frameworks[1])
+        local written, floor = protocol_sources(opt, library, generated, library.frameworks[1])
         for _, source in ipairs(written) do
             local object = path.join(opt.builddir, "objects", library.folder, "protocols", path.filename(source) .. ".o")
             os.mkdir(path.directory(object))
@@ -1585,6 +1671,14 @@ local function property_of(selector)
     if getter then
         table.insert(found, getter:sub(1, 1):lower() .. getter:sub(2))
     end
+    -- a property whose own name already starts lower-case and continues upper-case, the way Apple spells an
+    -- acronym at the front: NSProcessInfo.h:247-248 declare iOSAppOnMac and iOSAppOnVision with
+    -- getter=isiOSAppOnMac and getter=isiOSAppOnVision, so the property is what follows "is", unchanged. The
+    -- upper-case second letter is the condition, so a selector such as -issue is not read as a property "sue".
+    local acronym = selector:match("^is(%l%u[%w_]*)$")
+    if acronym then
+        table.insert(found, acronym)
+    end
     local literal = selector:match("^([%w_]+)$")
     if literal then
         table.insert(found, literal)
@@ -1607,6 +1701,12 @@ spellings = function(api)
         -- already paired it with the property name it belongs to.
         if member:match("^[%a][%w_]*$") and not member:match("^is%u") then
             table.insert(accessors, "is" .. member:sub(1, 1):upper() .. member:sub(2))
+        end
+        -- and a name that begins with a lower-case acronym keeps its case after "is": NSProcessInfo.h:247-248
+        -- declare iOSAppOnMac and iOSAppOnVision with getter=isiOSAppOnMac and getter=isiOSAppOnVision, the
+        -- spelling property_of() reads back the other way
+        if member:match("^%l%u[%w_]*$") then
+            table.insert(accessors, "is" .. member)
         end
         for _, selector in ipairs(accessors) do
             found[string.format("-[%s %s]", class, selector)] = true

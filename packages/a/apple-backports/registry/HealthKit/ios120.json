@@ -561,6 +561,61 @@
    "effect": "the sum, exactly as the library's own initialiser was given it",
    "facts": "facts/HealthKit/HealthKit.md",
    "source": "the header of iOS 26.2 for the contract, which declares the class with no availability line of its own, so its property inherits the class's; the arm64 image of 12.0 for the values, which carries the class 7 times as a real class, and its 13.0 superclass 0 times"
+  },
+  {
+   "api": "-[HKClinicalRecord init]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKClinicalRecord\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+   "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "HKClinicalRecord.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+  },
+  {
+   "api": "-[HKFHIRResource init]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKFHIRResource\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+   "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "HKFHIRResource.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+  },
+  {
+   "api": "-[HKQuantitySeriesSampleBuilder init]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKQuantitySeriesSampleBuilder\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+   "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "HKQuantitySampleBuilder.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+  },
+  {
+   "api": "-[HKWorkoutBuilder init]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "reason": "the header closes it, and NS_UNAVAILABLE decides nothing at run time, so what Apple's own class does is the question: it implements -init, and that raises NSInvalidArgumentException with Apple's own sentence naming the class, \"The -init method is not available on HKWorkoutBuilder\" - measured on the host's own HealthKit over these seven classes and held to by tests/backports/host/unavailable-init",
+   "effect": "-init raises that exception, and the class is made by the initialiser its header names, so a caller that follows the header never meets this one",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "HKWorkoutBuilder.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
+  },
+  {
+   "api": "+[HKClinicalRecord new]",
+   "kind": "method",
+   "introduced": "12.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "reason": "Apple's own class carries no +new of its own: own-new is 0 for all seven of these classes on the host and in the iOS 16.0 cache, so the class inherits NSObject's +new, which is +alloc/-init and therefore reaches the -init that raises. The port does not define +new either, because the rule the coordinator settled on 2026-10-03 (coordination/wave-2026-10-03/QUEUE.md): a definition would put the selector in the port's metadata where Apple's has none, changing what the class is and answering the caller exactly what NSObject's already answers",
+   "effect": "not defined by the port; +new is NSObject's, so it allocates and sends -init, which raises the exception above, which is what the framework's own class answers",
+   "facts": "facts/HealthKit/HealthKit.md",
+   "source": "HKClinicalRecord.h of SDK 26.2 for the declaration; the host's own HealthKit.framework, asked over these seven classes by tests/backports/host/unavailable-init, whose expectations.tsv holds the answer and whose run holds this file to it; the arm64e cache of iOS 16.0 agrees with the host on both questions for all seven, read with tools/corpus/objc-inventory.lua"
   }
  ]
 }

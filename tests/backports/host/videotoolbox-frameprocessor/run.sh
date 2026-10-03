@@ -7,12 +7,14 @@
 #      because a bracketed call will not compile against the annotation), and what +isSupported says.
 #   2. check_port.py holds the PORT to all of it, and to the registry: the domain string in the
 #      compiled object rather than in the source, the fourteen code values in the port's own header,
-#      the seven VTFrameProcessor methods in VTFrameProcessor.o, the two methods the other two classes
+#      the six VTFrameProcessor methods in VTFrameProcessor.o, the two methods the other two classes
 #      gained, and the NS_UNAVAILABLE classes carrying neither -init nor +new.
 #   3. three plants, each of which must turn step 2 red: an error code mistyped in the header, the
 #      error domain's string written from the constant's name instead of measured, and an NS_UNAVAILABLE
 #      class given an -init.
-#   4. the check's own control: an object carrying none of the seven must not look green.
+#   4. the check's own control: an object carrying none of the six must not look green. Six and not seven
+#      because -[VTFrameProcessor init] is absent: Apple's class implements no -init of its own, so the
+#      port's must not either, and the empty object now trips six assertions rather than seven.
 #
 # WHAT IT DELIBERATELY DOES NOT ASSERT: that +isSupported answers what the host answers. This host is an
 # M4 Pro with the Neural Engine these processors need and answers 1; the port answers NO because no
@@ -137,11 +139,11 @@ plant "an NS_UNAVAILABLE class given an -init" VTFrameProcessorFrame.m \
 
 - (CVPixelBufferRef)buffer"
 
-echo "--- the check's own control: an object carrying none of the seven must not look green"
+echo "--- the check's own control: an object carrying none of the six must not look green"
 cp "$build/VTFrameProcessor.o" "$build/VTFrameProcessor.o.saved"
 : > "$build/VTFrameProcessor.o"
 if python3 "$here/check_port.py" "$build/host.out" "$appledir" "$build" > "$build/empty.out" 2>&1; then
-    echo "FAIL an object carrying none of the seven selectors was accepted"
+    echo "FAIL an object carrying none of the six selectors was accepted"
     survived=$((survived + 1))
 else
     echo "  caught: $(grep -c '^FAIL' "$build/empty.out") failures reported against the empty object"
@@ -149,6 +151,6 @@ fi
 cp "$build/VTFrameProcessor.o.saved" "$build/VTFrameProcessor.o"
 
 if [ "$survived" -ne 0 ]; then echo "$survived plants survived; this check proves nothing"; exit 1; fi
-echo "videotoolbox-frameprocessor: OK - 14 codes, the measured domain string, 7 VTFrameProcessor methods,"
-echo "  2 more on the other two classes, the two protocols' accessors on 14 conforming classes, the HDR"
-echo "  session's 3 functions and its measured constant, 16 NS_UNAVAILABLE classes, 3 plants caught"
+echo "videotoolbox-frameprocessor: OK - 14 codes, the measured domain string, 6 VTFrameProcessor methods"
+echo "  and no -init, 2 more on the other two classes, the two protocols' accessors on 14 conforming classes,"
+echo "  the HDR session's 3 functions and its measured constant, 16 NS_UNAVAILABLE classes, 3 plants caught"

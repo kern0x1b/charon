@@ -1,7 +1,7 @@
 /* The 14.0 descriptors, compared PROPERTY BY PROPERTY against Apple's own objects.
  *
- * NO DEVICE IS EVER CREATED. `MTLCreateSystemDefaultDevice()` HANGS on a machine with no GPU - it
- * was measured hanging and killed - so nothing here calls it, and nothing in this family needs it:
+ * NO DEVICE IS EVER CREATED. A descriptor asks a device nothing - both sides are [[X alloc] init - so
+ * nothing here calls one, and nothing in this family needs it:
  * a descriptor is `[[X alloc] init]` on both sides. The host object is APPLE'S, made by Apple's
  * class, and it is the oracle: the port's value is compared against what Apple's own object answers
  * for the same property after the same write. A round trip of the port's object against ITSELF would

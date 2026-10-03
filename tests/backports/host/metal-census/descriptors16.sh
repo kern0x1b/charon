@@ -10,7 +10,8 @@
 # the failure looks like a missing main rather than a mismatched architecture.
 #
 # NO DEVICE IS EVER CREATED, and the case is built so that it CANNOT be: a descriptor is [[X alloc]
-# init] on both sides, and MTLCreateSystemDefaultDevice() HANGS on a machine with no GPU. So the oracle
+# init] on both sides, and a descriptor asks a device nothing (facts/Metal/DeviceOnThisMachine.md
+# measures that, and the machine). So the oracle
 # is Apple's own object of the same class, and the port is compared to it property by property.
 #
 # ONE INDEX IS ASKED OF ONE SIDE ONLY, and this script is where that is worth saying again: Apple's own
@@ -256,6 +257,17 @@ mutate_scoped m6 MTLIOCommandQueueDescriptor \
 build mutant-m6 "$here/descriptors16.m" "$work/m6.m"
 expect_red "M6 the queue descriptor's copy, which carries three of the four" mutant-m6
 
-echo "descriptors16: the differential is green, the control is RUN FAILED, and all six mutants are red"
+# M7 IS THE ONE ONLY THE DEVICE-BACKED SECTION CAN CATCH. The nil at a legal index resets that
+# attachment's state to its defaults (MTLAccelerationStructurePassSampleBufferAttachment.h says so),
+# and "what its defaults are after a reset" is only observable once a sample buffer has been set and
+# taken away again - which needs a device to make one. A section that cannot fail is a section that
+# measures nothing, and this is the mutation that says so.
+mutate_scoped m7 MTLAccelerationStructurePassSampleBufferAttachmentDescriptorArray \
+    "_slots[index] = attachment ? [attachment copy] : nil;" \
+    "_slots[index] = attachment ? [attachment copy] : _slots[index];"
+build mutant-m7 "$here/descriptors16.m" "$work/m7.m"
+expect_red "M7 the array's reset of a slot set to nil" mutant-m7
+
+echo "descriptors16: the differential is green, the control is RUN FAILED, and all seven mutants are red"
 # THE SCRATCH IS REMOVED HERE.
 rm -rf "$work"

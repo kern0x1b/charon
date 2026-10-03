@@ -38,10 +38,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
+   "status": "absent",
+   "effect": "no -init is defined on UICollectionViewDiffableDataSource: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is a data source with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
    "facts": "facts/UIKit/UICollectionViewDiffableDataSource.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+   "source": "the header of SDK 16.4 and the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and `+new` is in the own metaclass list of 0 of them, because +new is NSObject's and is inherited rather than redeclared. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
+   "reason": "`-init` is not in UICollectionViewDiffableDataSource's own instance list: no-own-init. The 16.4 SDK header redeclares it NS_UNAVAILABLE in that class's own @interface (UIDiffableDataSource.h:133-134), which needs no definition, and the port defines none"
   },
   {
    "api": "+[UICollectionViewDiffableDataSource new]",
@@ -58,10 +59,11 @@
    "kind": "method",
    "introduced": "13.0",
    "minimum": "6.0",
-   "status": "implemented",
-   "effect": "the header marks it unavailable and the release has no such method: the call reaches NSObject's, which makes an object with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
+   "status": "absent",
+   "effect": "no -init is defined on UITableViewDiffableDataSource: the inherited -init of NSObject is what a call reaches, which is what it reaches in Apple's UIKit too. What that answers is a data source with no view, whose snapshot is empty and whose applySnapshot only keeps what it is given",
    "facts": "facts/UIKit/UITableViewDiffableDataSource.md",
-   "source": "the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); the header of SDK 16.4"
+   "source": "the header of SDK 16.4 and the host's own UIKit under Mac Catalyst (macOS 27.0), held against the backport by tests/backports/host/uikit2 (the diffabledatasource group); UIKitCore of the arm64e shared cache of iOS 18.0, read with modules/apple/objc.lua's inventory, one pass for the whole set of rows. The controls of that read, because a reader that answered nothing would answer these too: 37248 of the cache's 190858 classes carry `-init` in their own instance list (NSObject among them, and ARConfiguration, whose header marks -init NS_UNAVAILABLE all the same), and `+new` is in the own metaclass list of 0 of them, because +new is NSObject's and is inherited rather than redeclared. The header half, measured here with clang -fsyntax-only -fobjc-arc -Wall -Werror=objc-missing-property-synthesis at armv7-apple-ios6.0 and armv7-apple-ios4.3 against the 16.4 SDK: an NS_UNAVAILABLE redeclaration in a class's own @interface draws no -Wincomplete-implementation and an available one does, so an NS_UNAVAILABLE redeclaration forces no definition in the port",
+   "reason": "`-init` is not in UITableViewDiffableDataSource's own instance list: no-own-init. The 16.4 SDK header redeclares it NS_UNAVAILABLE in that class's own @interface (UIDiffableDataSource.h:198-199), which needs no definition, and the port defines none"
   },
   {
    "api": "+[UITableViewDiffableDataSource new]",
