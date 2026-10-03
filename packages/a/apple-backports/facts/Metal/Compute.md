@@ -15,13 +15,33 @@ compiler on the host, runs each kernel, turns the AIR that compiler wrote into C
 runs that through the same call convention this encoder uses. **It compares two answers, and one of the
 two is Apple's.**
 
-**As of 2026-09-29 that comparison does not run on this machine, so most of what follows is a PAST
-measurement and is marked as one.** The host's `MTLCompilerService` is in a crash loop —
-`EXC_BAD_ACCESS / SIGSEGV / KERN_INVALID_ADDRESS at 0x8`, four reports inside one second, sixteen in all
-— so the oracle produces no library and `compare.sh` stops at
+**As of 2026-10-03 that comparison does not finish on this machine, so most of what follows is a PAST
+measurement and is marked as one.** `compare.sh` stops at
 
     the oracle did not produce …/kernels.metallib, so there is no AIR to read and the differential has
     nothing to compare.
+
+**The cause is one kernel and one Metal call, and the earlier reading of it was wrong.** An earlier
+version of this file said the host's `MTLCompilerService` was in a crash loop and therefore compiled
+nothing. Measured on 2026-10-03, with `tests/backports/host/air2cpu/run.sh` splitting the fixture and
+asking for a dynamic library one kernel at a time:
+
+* `-[MTLDevice newLibraryWithSource:]` **compiles all 21 kernels**, `localArray` included, and so does
+  the oracle's first step;
+* `-[MTLDevice newDynamicLibrary:]` — the step that turns the compiled library into the
+  `MTLDynamicLibrary` whose `serializeToURL:` writes the `.metallib` `tools/air2cpu` reads — links
+  **20 of the 21** and refuses one, with `Compilation failed due to an interrupted connection:
+  XPC_ERROR_CONNECTION_INTERRUPTED. This error occurred after multiple retries.`;
+* the one it refuses is `localArray`, the only kernel that declares a threadgroup array as a local
+  (`threadgroup atomic_uint block[16]`). Reduced on its own it still refuses; so does the same
+  declaration without the `mem_flags::mem_threadgroup` argument, and so does a `threadgroup uint[16]`
+  with no atomics in it at all. The kernels that declare a threadgroup *pointer* (`argBarrier`,
+  `argNoBar`) link.
+
+So Apple's own toolchain will not link a kernel that declares a threadgroup array as a local, on this
+machine. Nothing in this repository owns that, and no spelling of the fixture avoids it without giving
+up the AIR shape the kernel was added for. `localArray`'s answer is therefore **uncompared**, and the
+run says so by name rather than only that the file did not come out.
 
 ### MEASURED, and still reproducible
 
@@ -76,8 +96,8 @@ rather than a match.
 sixteen-kernel fixture and one is the mutant run, which is red by design; neither carries this block,
 and neither is cited.
 
-**It is a past measurement.** The host's `MTLCompilerService` is in a crash loop, so the oracle
-produces no library now and `compare.sh` stops with "the differential has nothing to compare". Nothing
+**It is a past measurement.** The oracle produces no library now, for the one kernel named at the
+head of this file, and `compare.sh` stops with "the differential has nothing to compare". Nothing
 here is independently checkable from this repository, and the digest is what a reader with the worktree
 checks the log against.
 
@@ -94,7 +114,9 @@ checks the log against.
 * The three-way probe that would have settled it — one thread writing a slot and reading its own back, to
   separate a lost write from a lost share — was written and never run.
 * `atomicFamilyKernel`, `spillKernel`, `shareProbe`, `blockProbe`, `argNoBar`, `argBarrier` and
-  `localArray` were added after the last good run; their answers are unmeasured.
+  `localArray` were added after the last good run; their answers are unmeasured. For `localArray` there
+  is now a second reason it cannot be answered even if the run were fixed: Apple has none, because its
+  own compiler will not link that kernel here (head of this file). The other six link one at a time.
 
 ## What the atomics do not yet reach, and why
 
