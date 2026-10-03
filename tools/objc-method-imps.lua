@@ -153,8 +153,11 @@ local function literal_at(cache, address)
     end
     local _, _, pointer, length = string.unpack("<I8I8I8I8", held, 1)
     local target = pointer & 0x7FFFFFFFFFF
-    -- The same question of the text the record names, for the same reason.
-    if target == 0 or target <= address or not cache.mapped(target, 1) then
+    -- The same question of the text the record names, for the same reason. Nothing here asks whether the
+    -- text sits above or below its record: in a cache it sits BELOW, because a framework's text comes
+    -- before its data, and a guard that reads "backwards" as "not a pointer" rejects every literal in
+    -- the cache (measured: the guard was in the first version and all ten bodies read "not text").
+    if target == 0 or not cache.mapped(target, 1) then
         return nil
     end
     local text = cache.read_address(target, 256)
