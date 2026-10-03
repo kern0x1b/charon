@@ -1,0 +1,49 @@
+# How far two answers of one operation may differ and still be the same answer, in units in the last
+# place, per case. Zero everywhere but the transcendental family.
+#
+# Every number here is a measurement, not a figure quoted from a specification: it is the largest distance
+# between the release's answer and the port's that this differential has seen over the case file's
+# thirty-two inputs, for that operation in that data type. A cell further out than the number fails, so
+# the entry cannot become looser than the measurement without the run saying so - which is what a quoted
+# figure would be, and what this file will not be.
+#
+#     <case> <data type> <units in the last place>
+#
+# A case that is not on this list is compared byte for byte, which is every case that is not a
+# transcendental: a predicate, a logical, a remainder, a minimum, a maximum, a rounding and a clamp have
+# no tolerance at all, because their answers are a truth, a whole number or one of two orderings. A
+# boolean result has none either. And a tolerance covers a difference in value only: a cell where the
+# release answers a number and the port answers a NaN, or the two are of different classes altogether,
+# is not a difference in units in the last place and stays on recorded-cells.txt whatever this file says.
+#
+# The measured maximum for each of these is in
+# packages/a/apple-backports/facts/MetalPerformanceShadersGraph/Core.md, with the list of the classes
+# each operation is asked over and the reason the release's answer is not the C library's.
+
+acosh float32 1
+asin float32 1
+asinh float32 2
+atan float16 3
+atan2 float32 1
+cos float16 1
+cos float32 1
+cosh float16 1
+cosh float32 1
+erf float16 1
+erf float32 2
+expBase10 float32 1
+expBase2 float16 1
+expBase2 float32 1
+logBase10 float32 1
+logBase2 float16 1
+logBase2 float32 1
+power float16 2
+power float32 1
+sigmoid float16 1
+sigmoid float32 1
+sin float16 1
+sin float32 1
+sinh float32 1
+tan float32 1
+tanh float16 11
+tanh float32 1
