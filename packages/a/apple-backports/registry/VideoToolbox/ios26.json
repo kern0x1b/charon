@@ -191,6 +191,270 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTFrameProcessorFrame new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameProcessorFrame init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameProcessorFrame, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTFrameProcessorOpticalFlow new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameProcessorOpticalFlow init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameProcessorOpticalFlow, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTFrameRateConversionConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameRateConversionConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameRateConversionConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTFrameRateConversionParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameRateConversionParameters init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameRateConversionParameters, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTLowLatencyFrameInterpolationConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencyFrameInterpolationConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencyFrameInterpolationConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTLowLatencyFrameInterpolationParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencyFrameInterpolationParameters init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencyFrameInterpolationParameters, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTLowLatencySuperResolutionScalerConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencySuperResolutionScalerConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencySuperResolutionScalerConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTLowLatencySuperResolutionScalerConfiguration supportedScaleFactorsForFrameWidth:frameHeight:]",
+   "kind": "method",
+   "reason": "SDK 26.2 gives this method's whole contract in one sentence: an array of supported scale factors, OR AN EMPTY LIST if the processor does not support the dimensions. +isSupported on this class is NO for the measured reason in facts/VideoToolbox/FrameProcessorClasses.md, so no dimensions are supported and the empty list is the documented answer",
+   "effect": "an empty NSArray for every pair of dimensions, which is what the header says a processor that supports no dimensions returns",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:85"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTLowLatencySuperResolutionScalerParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencySuperResolutionScalerParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencySuperResolutionScalerParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTMotionBlurConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTMotionBlurConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTMotionBlurConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTMotionBlurParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTMotionBlurParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTMotionBlurParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTOpticalFlowConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTOpticalFlowConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTOpticalFlowConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTOpticalFlowParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTOpticalFlowParameters init NS_UNAVAILABLE, so it is not API a caller writes: a optical-flow pair has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTOpticalFlowParameters, so the class inherits NSObject's and a program that sends it anyway gets a optical-flow pair with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTSuperResolutionScalerConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTSuperResolutionScalerConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTSuperResolutionScalerConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTSuperResolutionScalerParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTSuperResolutionScalerParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTSuperResolutionScalerParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTTemporalNoiseFilterConfiguration new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTTemporalNoiseFilterConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTTemporalNoiseFilterConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "+[VTTemporalNoiseFilterParameters new]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTTemporalNoiseFilterParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTTemporalNoiseFilterParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor endSession]",
+   "kind": "method",
+   "reason": "no session was ever started, so there is nothing to flush or invalidate; -startSessionWithConfiguration:error: returns NO on every call, which is why this is a no-op by construction and not by omission",
+   "effect": "nothing happens, and calling it on a processor that never started a session is the documented safe order",
+   "source": "SDK 26.2, VTFrameProcessor.h:126"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor init]",
+   "kind": "method",
+   "reason": "SDK 26.2's VTFrameProcessor.h:51 declares it and does not mark it NS_UNAVAILABLE, so it is the one way to make a frame processor and the port carries it; it is the one of the family's initialisers that is not NS_UNAVAILABLE, and the other fifteen classes are recorded absent for that reason",
+   "effect": "a frame processor with nothing started on it, which is what -startSessionWithConfiguration:error: then refuses to start",
+   "source": "SDK 26.2, VTFrameProcessor.h:51"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor processWithCommandBuffer:parameters:]",
+   "kind": "method",
+   "reason": "there is no Metal command buffer to insert anything into on this release, and NO error channel is invented for it: the header returns void, takes no NSError, and SDK 26.2 says only that it performs effects in a Metal command buffer. The gap is Apple's and it is written up in coordination/crutches.md, and every armv7 device answers +isSupported NO before a caller can reach it",
+   "effect": "nothing is added to the command buffer and nothing is reported; the port cannot report through a channel the header does not have",
+   "source": "SDK 26.2, VTFrameProcessor.h:120"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor processWithParameters:completionHandler:]",
+   "kind": "method",
+   "reason": "the same refusal as -processWithParameters:error:, reported through the block. SDK 26.2 says of this method that the completion handler is CALLED when frame processing is completed, so the port RUNS it once with the error rather than leaving a caller waiting; that is a call the header's own words require, not a convenience",
+   "effect": "the completion runs once, synchronously, with the parameters object that was given and the same NSError -processWithParameters:error: reports",
+   "source": "SDK 26.2, VTFrameProcessor.h:82"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor processWithParameters:error:]",
+   "kind": "method",
+   "reason": "a session never starts on this release, so no processor is ever started, and VTFrameProcessorSessionNotStarted is the code SDK 26.2 defines for exactly that case: the session is used to process frames without being started. A nil parameter is answered first, with the invalid-parameter code, because that answer does not depend on the hardware",
+   "effect": "NO, with VTFrameProcessorSessionNotStarted (-19732) or VTFrameProcessorInvalidParameterError (-19741) for nil parameters",
+   "source": "SDK 26.2, VTFrameProcessor.h:71 and VTFrameProcessorErrors.h:20"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor processWithParameters:frameOutputHandler:]",
+   "kind": "method",
+   "reason": "the same refusal, reported per output. SDK 26.2 says the handler is called once for each destination frame IF NO ERRORS ARE ENCOUNTERED and that the NSError parameter carries an error code; there are no destination frames here, so the one call the handler sees is the one carrying the error, and it is marked as the final output of the request because nothing follows it",
+   "effect": "the handler runs once with the parameters, kCMTimeInvalid, YES and the same NSError -processWithParameters:error: reports",
+   "source": "SDK 26.2, VTFrameProcessor.h:104"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessor startSessionWithConfiguration:error:]",
+   "kind": "method",
+   "reason": "a release with no VideoToolbox frame processor at all: objc-inventory.lua over the armv7 6.1.3 dyld cache finds no VTFrameProcessor class and no VTFrameProcessor* symbol, so there is no pipeline to build. A nil configuration is answered first and with the invalid-parameter code, because that answer does not depend on the hardware",
+   "effect": "NO, with VTFrameProcessorInitializationFailed (-19736) in VTFrameProcessorErrorDomain - the code SDK 26.2 gives a pipeline that fails to initialize - or VTFrameProcessorInvalidParameterError (-19741) for a nil configuration",
+   "source": "SDK 26.2, VTFrameProcessor.h:59 and VTFrameProcessorErrors.h:39"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameProcessorFrame initWithBuffer:presentationTimeStamp:]",
@@ -198,6 +462,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessorFrame.h:3739"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessorFrame init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameProcessorFrame init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameProcessorFrame, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -213,6 +488,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameProcessorOpticalFlow init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameProcessorOpticalFlow init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameProcessorOpticalFlow, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessorFrame.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameRateConversionConfiguration initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:]",
@@ -224,6 +510,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameRateConversionConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameRateConversionConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameRateConversionConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTFrameRateConversionParameters initWithSourceFrame:nextFrame:opticalFlow:interpolationPhase:submissionMode:destinationFrames:]",
@@ -231,6 +528,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3992"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTFrameRateConversionParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTFrameRateConversionParameters init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTFrameRateConversionParameters, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -257,6 +565,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTLowLatencyFrameInterpolationConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencyFrameInterpolationConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencyFrameInterpolationConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencyFrameInterpolationParameters initWithSourceFrame:previousFrame:interpolationPhase:destinationFrames:]",
@@ -264,6 +583,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h:4165"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTLowLatencyFrameInterpolationParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencyFrameInterpolationParameters init NS_UNAVAILABLE, so it is not API a caller writes: a frame has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencyFrameInterpolationParameters, so the class inherits NSObject's and a program that sends it anyway gets a frame with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencyFrameInterpolation.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -279,6 +609,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTLowLatencySuperResolutionScalerConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencySuperResolutionScalerConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencySuperResolutionScalerConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTLowLatencySuperResolutionScalerParameters initWithSourceFrame:destinationFrame:]",
@@ -286,6 +627,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h:4302"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTLowLatencySuperResolutionScalerParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTLowLatencySuperResolutionScalerParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTLowLatencySuperResolutionScalerParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_LowLatencySuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -301,6 +653,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTMotionBlurConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTMotionBlurConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTMotionBlurConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTMotionBlurParameters initWithSourceFrame:nextFrame:previousFrame:nextOpticalFlow:previousOpticalFlow:motionBlurStrength:submissionMode:destinationFrame:]",
@@ -308,6 +671,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h:4469"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTMotionBlurParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTMotionBlurParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTMotionBlurParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -323,6 +697,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTOpticalFlowConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTOpticalFlowConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTOpticalFlowConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTOpticalFlowParameters initWithSourceFrame:nextFrame:submissionMode:destinationOpticalFlow:]",
@@ -330,6 +715,28 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4671"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTOpticalFlowParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTOpticalFlowParameters init NS_UNAVAILABLE, so it is not API a caller writes: a optical-flow pair has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTOpticalFlowParameters, so the class inherits NSObject's and a program that sends it anyway gets a optical-flow pair with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTSuperResolutionScalerConfiguration downloadConfigurationModelWithCompletionHandler:]",
+   "kind": "method",
+   "reason": "no request is made because there is nothing to download from: the port has no VideoToolbox frame processor and no model asset. SDK 26.2 says the completion is invoked with an NSError when the download fails and that configurationModelStatus then reads DownloadRequired, which is the enumeration's own first value, so the error and the status agree",
+   "effect": "the completion runs once with VTFrameProcessorAssetDownloadFailed (-19743) in VTFrameProcessorErrorDomain, and no network request is made",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h:175 and VTFrameProcessorErrors.h:51"
   },
   {
    "introduced": "26.0",
@@ -345,6 +752,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTSuperResolutionScalerConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTSuperResolutionScalerConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTSuperResolutionScalerConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTSuperResolutionScalerParameters initWithSourceFrame:previousFrame:previousOutputFrame:opticalFlow:submissionMode:destinationFrame:]",
@@ -356,6 +774,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTSuperResolutionScalerParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTSuperResolutionScalerParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTSuperResolutionScalerParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_SuperResolutionScaler.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "-[VTTemporalNoiseFilterConfiguration initWithFrameWidth:frameHeight:sourcePixelFormat:]",
@@ -363,6 +792,17 @@
    "reason": "the designated initialiser of a class the release does not have; each argument is stored under the property the SDK declares for it, resolved per class",
    "effect": "constructs the object and puts each argument in the store under that property's own name, so the value comes back out of the property's own accessor",
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:4994"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTTemporalNoiseFilterConfiguration init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTTemporalNoiseFilterConfiguration init NS_UNAVAILABLE, so it is not API a caller writes: a configuration has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTTemporalNoiseFilterConfiguration, so the class inherits NSObject's and a program that sends it anyway gets a configuration with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   },
   {
    "introduced": "26.0",
@@ -517,6 +957,17 @@
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
    "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h:3916"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTFrameRateConversionConfiguration.processorSupported",
+   "kind": "property",
+   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
+   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
+   "source": "SDK 26.2, VTFrameProcessor_FrameRateConversion.h, the declaration's own API_UNAVAILABLE(ios)"
   },
   {
    "introduced": "26.0",
@@ -1038,6 +1489,17 @@
   {
    "introduced": "26.0",
    "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTMotionBlurConfiguration.processorSupported",
+   "kind": "property",
+   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
+   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
+   "source": "SDK 26.2, VTFrameProcessor_MotionBlur.h, the declaration's own API_UNAVAILABLE(ios)"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
    "status": "implemented",
    "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
    "api": "VTMotionBlurConfiguration.qualityPrioritization",
@@ -1265,6 +1727,17 @@
    "reason": "a property of a class the release does not have",
    "effect": "answers from the port's own store under this property's name",
    "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h:4601"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "VTOpticalFlowConfiguration.processorSupported",
+   "kind": "property",
+   "reason": "SDK 26.2 marks this property API_DEPCRECATED_WITH_REPLACEMENT(\"isSupported\") API_UNAVAILABLE(ios), so there is no iOS property to carry: it is macOS's, deprecated in favour of +isSupported, and declaring it on the armv7 build would also collide with the host's own header",
+   "effect": "not declared and not carried; the supported value on this release is +isSupported, which answers NO for the measured reason in this family",
+   "source": "SDK 26.2, VTFrameProcessor_OpticalFlow.h, the declaration's own API_UNAVAILABLE(ios)"
   },
   {
    "introduced": "26.0",
@@ -1883,6 +2356,17 @@
    "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h:5063"
   },
   {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "facts": "facts/VideoToolbox/FrameProcessorErrors.md",
+   "api": "VTFrameProcessorErrorDomain",
+   "kind": "constant",
+   "reason": "an error domain the header declares as a name and never spells: SDK 26.2 writes `extern NSErrorDomain _Nonnull const VTFrameProcessorErrorDomain` with no string anywhere, so writing it from the name would be a guess. The string is APPLE'S OWN and MEASURED by dlsym on the host's VideoToolbox, which exports the symbol",
+   "effect": "the port DEFINES VTFrameProcessorErrorDomain under Apple's own measured string, builds every VTFrameProcessor error in it, and tests/backports/host/videotoolbox-frameprocessor compares the bytes against the host's own copy on every run",
+   "source": "SDK 26.2, VTFrameProcessorErrors.h:17 for the declaration; the string measured from /System/Library/Frameworks/VideoToolbox.framework by dlsym on 2026-10-03, which reads \"VTFrameProcessorErrorDomain\""
+  },
+  {
    "api": "kVTCameraCalibrationExtrinsicOriginSource_StereoCameraSystemBaseline",
    "kind": "constant",
    "introduced": "26.0",
@@ -2332,6 +2816,17 @@
    "effect": "the string the header's own constant is documented to have, answered from the port",
    "facts": "facts/VideoToolbox/FrameProcessorConstants.md",
    "source": "SDK 26.2, VideoToolbox/Headers/VTCompressionProperties.h, the declaration's own availability"
+  },
+  {
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/VideoToolbox/FrameProcessorClasses.md",
+   "api": "-[VTTemporalNoiseFilterParameters init]",
+   "kind": "method",
+   "reason": "Apple's own header declares -VTTemporalNoiseFilterParameters init NS_UNAVAILABLE, so it is not API a caller writes: a parameters object has no public initialiser, because the processor builds it and an application only hands it to a session.",
+   "effect": "not carried, and the port implements no -init on VTTemporalNoiseFilterParameters, so the class inherits NSObject's and a program that sends it anyway gets a parameters object with nothing in it rather than a diagnostic - which is precisely what the annotation exists to warn about. Measured on this host's own VideoToolbox (an M4 Pro, tests/backports/host/videotoolbox-frameprocessor): +new responds and answers, -init answers the same object, and a configuration answers frameWidth 0. The failure is silent, which is why the header refuses to compile the send",
+   "source": "SDK 26.2, VTFrameProcessor_TemporalNoiseFilter.h, the NS_UNAVAILABLE on -init; the host's own answer measured through objc_msgSend on 2026-10-03 (a bracketed call will not compile against the annotation)"
   }
  ]
 }

@@ -71,6 +71,33 @@ typedef NS_ENUM(NSInteger, VTFrameProcessorError) {
     VTFrameProcessorAssetDownloadFailed = -19743,
 };
 
+// The HDR per-frame metadata generation session of SDK 26.2, which arrived with iOS 18.0 and which the
+// 16.4 SDK this package builds against does not declare at all - not the type, not the three functions,
+// not the format constant. They are declared here for the same reason the seventeen classes above are:
+// without a declaration a caller cannot name the function, so there is nothing to export a symbol FOR.
+//
+// The types are spelled as SDK 26.2 spells them. VTHDRPerFrameMetadataGenerationSessionRef is a
+// CF-bridged opaque type there, and the armv7 build has no ObjC class of that name to bridge to, so it
+// is the plain CF spelling - an opaque struct pointer - which is what every other non-bridged CF type in
+// CoreFoundation is.
+typedef CFStringRef VTHDRPerFrameMetadataGenerationHDRFormatType;
+
+typedef struct OpaqueVTHDRPerFrameMetadataGenerationSession *VTHDRPerFrameMetadataGenerationSessionRef;
+
+extern const VTHDRPerFrameMetadataGenerationHDRFormatType
+    kVTHDRPerFrameMetadataGenerationHDRFormatType_DolbyVision;
+
+extern CFTypeID VTHDRPerFrameMetadataGenerationSessionGetTypeID(void);
+
+extern OSStatus VTHDRPerFrameMetadataGenerationSessionCreate(
+    CM_NULLABLE CFAllocatorRef allocator, float framesPerSecond, CM_NULLABLE CFDictionaryRef options,
+    CM_RETURNS_RETAINED_PARAMETER CM_NULLABLE VTHDRPerFrameMetadataGenerationSessionRef * CM_NONNULL
+        hdrPerFrameMetadataGenerationSessionOut);
+
+extern OSStatus VTHDRPerFrameMetadataGenerationSessionAttachMetadata(
+    VTHDRPerFrameMetadataGenerationSessionRef hdrPerFrameMetadataGenerationSession,
+    CVPixelBufferRef pixelBuffer, Boolean sceneChange);
+
 @class VTFrameProcessor;
 @class VTFrameProcessorFrame;
 @class VTFrameProcessorOpticalFlow;

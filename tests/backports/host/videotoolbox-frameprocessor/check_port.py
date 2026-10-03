@@ -99,9 +99,17 @@ def numbers_in_header(path):
 
 
 def read_registry(backports):
-    path = os.path.join(backports, "registry", "VideoToolbox", "ios26.json")
-    entries = json.load(open(path, encoding="utf-8"))["entries"]
-    return {(e["api"], e["kind"]): e for e in entries}
+    """Every row VideoToolbox's registry holds, over all of its files - ios26.json for the frame
+    processor and ios18.json for the HDR per-frame metadata session. Reading one file would have made
+    this check blind to a family it is meant to hold."""
+    folder = os.path.join(backports, "registry", "VideoToolbox")
+    rows = {}
+    for name in sorted(os.listdir(folder)):
+        if not name.endswith(".json"):
+            continue
+        for entry in json.load(open(os.path.join(folder, name), encoding="utf-8"))["entries"]:
+            rows[(entry["api"], entry["kind"])] = entry
+    return rows
 
 
 def main():
@@ -239,6 +247,33 @@ def main():
             if row is None or row["status"] != "implemented":
                 failures.append("no implemented registry row for %s" % api)
 
+    # The HDR per-frame metadata session: the constant's string in the compiled object, and the three
+    # functions as symbols. nm, not otool: these are C functions, and a C function has no ObjC method
+    # list to read, so the only place its name lives is the symbol table.
+    hdr = os.path.join(build, "VTHDRPerFrameMetadataGenerationSession18_0.o")
+    if not os.path.exists(hdr):
+        failures.append("no compiled object for the HDR per-frame metadata session")
+    else:
+        defined = subprocess.run(["nm", "-gU", hdr], check=True, capture_output=True,
+                                 text=True).stdout.split()
+        for symbol in ("_VTHDRPerFrameMetadataGenerationSessionGetTypeID",
+                       "_VTHDRPerFrameMetadataGenerationSessionCreate",
+                       "_VTHDRPerFrameMetadataGenerationSessionAttachMetadata",
+                       "_kVTHDRPerFrameMetadataGenerationHDRFormatType_DolbyVision"):
+            if symbol not in defined:
+                failures.append("%s.o does not export %s" % (os.path.basename(hdr), symbol))
+        if "DolbyVision" not in literal_strings(hdr):
+            failures.append("%s.o carries no literal \"DolbyVision\", which is what the host's own "
+                            "kVTHDRPerFrameMetadataGenerationHDRFormatType_DolbyVision holds"
+                            % os.path.basename(hdr))
+        for api in ("VTHDRPerFrameMetadataGenerationSessionGetTypeID()",
+                    "VTHDRPerFrameMetadataGenerationSessionCreate()",
+                    "VTHDRPerFrameMetadataGenerationSessionAttachMetadata()",
+                    "kVTHDRPerFrameMetadataGenerationHDRFormatType_DolbyVision"):
+            row = registry.get((api, "constant" if api.startswith("kVT") else "function"))
+            if row is None or row["status"] != "implemented":
+                failures.append("no implemented registry row for %s" % api)
+
     # What the host said about +isSupported, and what the port answers, side by side and asserted
     # against neither: this host is an M4 Pro and the port's releases are armv7, so the two numbers are
     # SUPPOSED to differ and a check that demanded they agree would be demanding a lie.
@@ -258,8 +293,9 @@ def main():
             print("FAIL " + failure)
         print("videotoolbox-frameprocessor: %d failure(s)" % len(failures))
         return 1
-    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods, and %d "
-          "NS_UNAVAILABLE classes agree with the host and with the registry"
+    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods, the HDR"
+          " session's 3 functions and its measured constant, and %d NS_UNAVAILABLE classes agree with the"
+          " host and with the registry"
           % (len(codes), len(PROCESSOR_METHODS), len(NS_UNAVAILABLE_CLASSES)))
     return 0
 

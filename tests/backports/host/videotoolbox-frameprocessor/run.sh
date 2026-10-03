@@ -51,7 +51,7 @@ armv7() {
 # The unit whose object a header plant replaces. A header plant mutates nothing on disk under its own
 # name, so it needs a unit to rebuild; this is the one that carries the header's codes.
 ONE=VTFrameProcessorErrors26_0
-UNITS="VTFrameProcessor VTFrameProcessorErrors26_0 VTFrameProcessorFrame VTFrameProcessorOpticalFlow \
+UNITS="VTFrameProcessor VTFrameProcessorErrors26_0 VTHDRPerFrameMetadataGenerationSession18_0 VTFrameProcessorFrame VTFrameProcessorOpticalFlow \
 VTFrameRateConversionConfiguration VTFrameRateConversionParameters \
 VTLowLatencyFrameInterpolationConfiguration VTLowLatencyFrameInterpolationParameters \
 VTLowLatencySuperResolutionScalerConfiguration VTLowLatencySuperResolutionScalerParameters \
@@ -150,4 +150,5 @@ cp "$build/VTFrameProcessor.o.saved" "$build/VTFrameProcessor.o"
 
 if [ "$survived" -ne 0 ]; then echo "$survived plants survived; this check proves nothing"; exit 1; fi
 echo "videotoolbox-frameprocessor: OK - 14 codes, the measured domain string, 7 VTFrameProcessor methods,"
-echo "  2 more on the other two classes, 16 NS_UNAVAILABLE classes, and 3 plants caught"
+echo "  2 more on the other two classes, the HDR session's 3 functions and its measured constant,"
+echo "  16 NS_UNAVAILABLE classes, and 3 plants caught"
