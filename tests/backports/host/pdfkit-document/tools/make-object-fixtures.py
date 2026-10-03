@@ -353,7 +353,7 @@ WIDGET_STATES = [widget([(b"FT", b"/Btn"), (b"V", b"(off)"), (b"AS", state)])
 WIDGET_VALUES = [
     widget([(b"V", b"(typed)"), (b"DV", b"(preset)"), (b"MaxLen", b"7"),
             (b"Q", b"2"), (b"Opt", b"[(one) (two) (three)]"), (b"T", b"(the field)"),
-            (b"TU", b"(alternate)"), (b"DA", b"/Helv 12 Tf 0 g")]),
+            (b"TU", b"(alternate)"), (b"DA", b"(/Helv 12 Tf 0 g)")]),
     # the same with the value keys of the wrong type, one each, so the reader has to refuse them
     widget([(b"V", b"7"), (b"DV", b"[1 2]"), (b"MaxLen", b"(seven)"),
             (b"Q", b"(two)"), (b"Opt", b"(not an array)")]),
@@ -367,13 +367,21 @@ WIDGET_VALUES = [
 # The list is a LIST OF PAIRS and each extra key is APPENDED to it - the first version wrote
 # (b"T", b"(the field)") + extra, which concatenates two TUPLES and makes a three-element one, so the
 # fixture writer unpacked a pair and raised.  Silent until it did not, which is this family's habit.
-T_WITH_ONE_MORE_NAMES = ("nothing", "DA", "TU", "Opt", "Q", "MaxLen", "V", "DV", "F")
+# /DA IS ITS OWN ROW HERE and it is written as the format makes it: a TEXT STRING,
+# /DA (/Helv 12 Tf 0 g).  The first version of this matrix wrote the content-stream operators
+# BARE into the dictionary - /DA /Helv 12 Tf 0 g - which is a syntax error: CG_PDF_VERBOSE then
+# says "encountered unexpected symbol `Tf'" and the host answers NO ANNOTATIONS for the page.
+# That read as "a /DA is not readable in an annotation dictionary at all", which is a statement
+# about the fixture and not about the host, and it is what made fieldName look synthesised on a
+# widget that had /T in plain sight.
+T_WITH_ONE_MORE_NAMES = ("nothing", "DAstring", "TU", "Opt", "Q", "MaxLen", "V", "DV", "F")
 # each entry is a LIST of one annotation, because build() takes a list and the loop below hands it
 # [annotations[0]] - a bare annotation is BYTES, and indexing into it gives an int, which is how the first
 # version of this raised inside the fixture writer rather than in the probe
 T_WITH_ONE_MORE = [
     [widget([(b"T", b"(the field)")] + list(extra))]
-    for extra in ((), ((b"DA", b"/Helv 12 Tf 0 g"),), ((b"TU", b"(alternate)"),), ((b"Opt", b"[(one)]"),),
+    for extra in ((), ((b"DA", b"(/Helv 12 Tf 0 g)"),), ((b"TU", b"(alternate)"),),
+                 ((b"/Opt", b"[(one)]"),),
                  ((b"Q", b"2"),), ((b"MaxLen", b"7"),), ((b"V", b"(typed)"),),
                  ((b"DV", b"(preset)"),), ((b"F", b"4"),))]
 

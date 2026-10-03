@@ -101,12 +101,22 @@ and the `/T` is a **literal PDF string**, so "written as a name" was never the c
 line are, and they are the third and fourth fixture bugs of this family:
 
 * **`/FT /Tx` twice** - the helper writes the field type and the fixture's extra pairs wrote it again.
-* **`/DA /Helv 12 Tf 0 g`** - and this is the one that mattered. `CG_PDF_VERBOSE=1` on a fixture carrying
-  a `/DA` in an annotation dictionary says **`encountered unexpected symbol 'Tf'`**, and the host then
-  answers **NO ANNOTATIONS AT ALL** for the page. So the widget carrying `/T` was not in `-annotations`
-  at all, and the two widgets that remained named nothing, so the synthesised names were the only ones on
-  offer. A `/DA` is not readable in an annotation dictionary here at all, and every other key in the
-  same matrix is.
+* **`/DA /Helv 12 Tf 0 g`** - and this is the one that mattered, though not for the reason the first
+  version of this page said. **`/DA` is a TEXT STRING**, so the format spells it
+  `/DA (/Helv 12 Tf 0 g)`, and this fixture wrote the content-stream operators **bare into the dictionary**.
+  That is a syntax error rather than a reading: `CG_PDF_VERBOSE=1` says **`encountered unexpected symbol
+  'Tf'`** and the host then answers **NO ANNOTATIONS AT ALL** for the page - so the widget carrying `/T`
+  was not in `-annotations`, and the two that remained named nothing.
+
+  **Written the way the format makes it, a `/DA` is read like any other key.** `widget-t-extra-DAstring`
+  carries `/DA (/Helv 12 Tf 0 g)` beside `/T (the field)`, and the host answers **one annotation and the
+  field name "the field"**, with nothing on `CG_PDF_VERBOSE`. And `widget-values.pdf` with its `/DA` as a
+  string keeps **all three** of its annotations, and its first - the one carrying `/T (the field)` -
+  answers **"the field"**.
+
+  So the earlier sentence here, that a `/DA` is not readable in an annotation dictionary at all, was a
+  statement about the fixture and not about the host, and it is withdrawn. The reading the `/DA` rows need
+  - `font`, `fontColor` and the `/DA` colour - is measured against this spelling.
 
 With the `/DA` gone, six fixtures fix the rule:
 
@@ -117,7 +127,7 @@ With the `/DA` gone, six fixtures fix the rule:
 | `widget-t-name` | `/T /TheField`, a PDF **name** | not read - it synthesises |
 | `widget-t-merged` | the widget's `/Parent` is a field with `/T (parent field)` | `parent field` |
 | `widget-t-mergedname` | both, and the widget has `/T (child too)` too | `parent field.child too` |
-| `widget-t-extra-*` | `/T (the field)` plus one of `TU`, `Opt`, `Q`, `MaxLen`, `V`, `DV`, `F` | `the field` in all eight |
+| `widget-t-extra-*` | `/T (the field)` plus one of `DA`, `TU`, `Opt`, `Q`, `MaxLen`, `V`, `DV`, `F` | `the field` in all nine |
 
 So the `/T` of the merged field and widget is read, **the parent's first and the widget's own appended
 with a dot**, both as PDF strings only. The port implements that reading and the harness compares it
@@ -175,7 +185,7 @@ Each of the 27 carries the host's measured answer in its `reason` in
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/.../PDFKit.framework/.../PDFKit
                                       port=.../runs/pdfkit-document/port-side
-      COMPARED 11455 MISMATCHES 0  (not compared: 151, expected to differ: 453, of which 72 compared from the Catalyst side)
+      COMPARED 11511 MISMATCHES 0  (not compared: 152, expected to differ: 456, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
 133 fixtures. **Twenty-three named red controls name a flag or skip key**, among them one per member over

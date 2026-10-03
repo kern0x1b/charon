@@ -119,9 +119,12 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
 // each side's own -fieldName and checked whether it LOOKED synthesised would be comparing the member's
 // opinion of itself.
 //
-// widget-t-name.pdf is deliberately NOT in it: its /T is a PDF NAME, which the host does not read, so the
-// widget names nothing and the host synthesises.  A prefix test swept it in and the differential caught
-// that, which is why the list is spelled out.
+// TWO fixtures are deliberately NOT in it.  widget-t-name.pdf, whose /T is a PDF NAME and so names
+// nothing - a prefix test swept it in and the differential caught that, which is why the list is spelled
+// out.  And widget-values.pdf, whose FIRST widget carries /T (the field) and answers "the field" while its
+// other two name nothing and answer synthesised names: a gate is of fixtures and cannot split a file, so
+// adding it would compare two keys that cannot agree.  The named case with a /DA beside it is covered by
+// widget-t-extra-DAstring instead.
 //
 // Over every other fixture the host answers a name synthesised from a counter that runs ACROSS DOCUMENTS
 // in one process - four fixtures loaded in order answer text0..text2, text3..text4, text5..text6 and

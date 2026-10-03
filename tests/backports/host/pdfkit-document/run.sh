@@ -499,7 +499,9 @@ for key in \
     widget-t-empty.pdf.page0.annotation0.flags.fieldName \
     widget-t-merged.pdf.page0.annotation0.flags.fieldName \
     widget-t-mergedname.pdf.page0.annotation0.flags.fieldName \
-    widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName
+    widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-DAstring.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-DAstring.pdf.page0.annotations.count
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then
