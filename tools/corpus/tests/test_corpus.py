@@ -196,6 +196,37 @@ def _dump(source, sdk=None):
         return (out.stdout + out.stderr).splitlines()
 
 
+def test_a_row_whose_line_does_not_compile_is_reported_as_failing():
+    """Defect 5: `header-ok` was reported for rows whose own line carried an error. The generated
+    unit's line map was keyed by the int line number and a diagnostic's line arrives as a string, so
+    `line not in line_of` was true for every line of every unit and `verdict` stayed "" throughout.
+
+    Pinned on a header of the test's own, with one row that names something the header does not
+    declare and one that names something it does: the first must come back with a diagnostic and the
+    second must come back clean. Before the fix both came back clean."""
+    ledger = load("api_ledger", os.path.join(TOOLS, "api-ledger.py"))
+    clang = _a_clang()
+    if not clang:
+        check(False, "no clang to compile the generated unit with")
+        return
+    with tempfile.TemporaryDirectory() as tmp:
+        header = os.path.join(tmp, "charon_probe.h")
+        with open(header, "w") as f:
+            f.write("#define CHARON_PROBE_TWICE 2\n")
+        rows = [("constant", "CHARON_PROBE_TWICE"), ("constant", "CHARON_PROBE_MISSING")]
+        out = ledger.compile_named_rows(["charon_probe.h"],
+                                        [clang, "-w", "-target", "armv7-apple-ios6.1.3",
+                                         "-I", tmp],
+                                        rows, tmp, "charon_probe")
+    check(out.get("CHARON_PROBE_TWICE") == "",
+          "a row whose line compiles comes back clean (got %r)" % (out.get("CHARON_PROBE_TWICE"),))
+    missing = out.get("CHARON_PROBE_MISSING")
+    check(bool(missing),
+          "a row whose line does NOT compile comes back with the diagnostic on it (got %r)" % (missing,))
+    check(missing and "undeclared" in missing,
+          "and the diagnostic is the compiler's own (got %r)" % (missing,))
+
+
 def test_static_inline_through_a_macro_is_header_only():
     """Defect 4: `static inline` behind a macro read as neither extern nor static, so every row of a
     header-only C API was placed `missing` and 640 functions Apple never exports were handed out as
@@ -706,6 +737,7 @@ def main():
     test_pointer_width_round_trip(args.cache)
     test_platform_check()
     test_static_inline_through_a_macro_is_header_only()
+    test_a_row_whose_line_does_not_compile_is_reported_as_failing()
     test_surface_fold()
     test_package_registries()
     test_swift_index_file_is_loaded_from_disk()

@@ -668,7 +668,15 @@ def compile_named_rows(imports, command, rows, workdir, tag):
         for slot, (kind, api) in enumerate(rows):
             f.write(naming_line(kind, api, slot) + "\n")
             number += 1
-            line_of[number] = slot
+            # keyed by the STRING a diagnostic carries, because DIAGNOSTIC_RE hands the line over as
+            # one. This was keyed by the int, so `line not in line_of` was true for every line of
+            # every unit this tool has ever compiled: `verdict` stayed "" for every row, `named_ok`
+            # was `name in compiled and True`, and a header-only row of any framework read
+            # `header-ok` whether or not its line compiled. Measured on Spatial, where 19 names are
+            # SPATIAL_OVERLOADABLE and `&NAME` does not resolve: 19 lines of the generated unit carry
+            # "reference to overloaded function could not be resolved", and this function returned 0
+            # of 647 rows as failing.
+            line_of[str(number)] = slot
     out = subprocess.run(command + ["-fsyntax-only", "-ferror-limit=0", source],
                          capture_output=True, text=True, errors="replace", timeout=900)
     verdict = {api: "" for _, api in rows}
