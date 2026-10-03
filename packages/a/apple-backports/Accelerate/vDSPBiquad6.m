@@ -50,6 +50,13 @@ struct vDSP_biquad_SetupStructD {
 
 // 2 * (M + 1) delay elements, from the pseudocode's inclusive `s <= S` loop. The caller's buffer must be this
 // long; the port writes every one of them, and a shorter one is the caller's buffer overflowing.
+//
+// **This is where the kernel's bound comes from, and it was an unused function until now.** The kernel's
+// shift loop below writes slots `2*row_` and `2*row_+1` for row_ from 1 to the section count, so its last
+// slot is `2 * sections + 1` and the buffer must be `2 * (sections + 1)` elements - which is what this
+// returns and what the comment above it says, in three places that were three separate spellings of the same
+// number. The loop now takes its bound from here, so the two cannot drift apart: if the definition and the
+// loop ever disagree the loop writes fewer rows instead of running past the end of the caller's buffer.
 static vDSP_Length charon_biquad_delay_length(vDSP_Length sections)
 {
     return 2 * (sections + 1);
@@ -171,7 +178,11 @@ void vDSP_biquad_DestroySetupD(vDSP_biquad_SetupD __setup)
                 previous_section_ = acc_;                                                                        \
             }                                                                                                     \
             /* the sample is done, so every row's pair can move up by one - and only now */                       \
-            for (row_ = 1; row_ <= sections_; row_++) {                                                             \
+            /* The bound is the caller's buffer length, from the one definition of it, and it is the same     \
+             * count as `row_ <= sections_`: the loop touches slot 2*row_+1, so it runs while that slot is   \
+             * inside 2*(sections_+1) elements. Spelled out here it was a second answer to the same question \
+             * and a compiler could not see that the two agreed. */                                                \
+            for (row_ = 1; (vDSP_Length)(2 * row_ + 1) < charon_biquad_delay_length(sections_); row_++) {        \
                 delay_[2 * row_] = delay_[2 * row_ + 1];   /* n-1 becomes n-2's slot after the call */             \
                 delay_[2 * row_ + 1] = fresh_[row_ - 1];                                                          \
             }                                                                                                         \
