@@ -32,8 +32,14 @@ BUILD=${BUILD:-$(mktemp -d)}
 sdk=$(xcrun --show-sdk-path)
 target="-target arm64-apple-ios15.0-macabi -isysroot $sdk -iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 
+# MetalKit is named on the link line because the header alone did not link it. The comment above
+# says `#import <MetalKit/MetalKit.h>` auto-links the framework, which it does with modules on;
+# this harness compiles the translation unit without them, so the two MTKTextureLoaderCubeLayout
+# constants the port's own texture loader reads came back as `Undefined symbols
+# _MTKTextureLoaderCubeLayoutVertical, _MTKTextureLoaderOptionCubeLayout` - and both are declared
+# (MTKTextureLoader.h:91 and :94) and exported by the SDK's own stub, measured.
 xcrun clang $target -fobjc-arc -Wno-incomplete-implementation -Wno-unguarded-availability-new \
     -I"$METALKIT" -include "$METALKIT/MTKTextureLoader9.m" \
     -o "$BUILD/mesh-differential" "$here/mesh-differential.m" \
-    -framework Foundation -framework CoreGraphics -framework UIKit -framework Metal
+    -framework Foundation -framework CoreGraphics -framework UIKit -framework Metal -framework MetalKit
 "$BUILD/mesh-differential"
