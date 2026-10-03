@@ -123,17 +123,55 @@ the same shape `-isAutoFocusEnabled` / `-setAutoFocusEnabled:` already uses in `
 for the setting the hardware *does* have. `-copyWithZone:` lost its `copy.frameSemantics` line with
 them, because copying a constant is not copying anything.
 
-## A defect found and NOT fixed here, because it is not one of these rows
+## RETRACTED: there is no auto-synthesised `automaticImageScaleEstimationEnabled` on the third configuration
 
-`ARImageTrackingConfiguration.automaticImageScaleEstimationEnabled` gets an **auto-synthesised**
-accessor in `ARKit/ARConfiguration3.m` - it stores and returns whatever the caller set - while
-`ARWorldTrackingConfiguration`'s and `ARBodyTrackingConfiguration`'s of the same name are `@dynamic`.
-So the same setting is answered honestly on two configurations and dishonestly on a third, and
-`ARImageTrackingConfiguration.automaticImageScaleEstimationEnabled` is not a missing row of this
-ledger, so this series has no row to change and no business changing a row it was not asked for.
-Reported to the coordinator instead. `ARWorldTrackingConfiguration.environmentTexturing` is already an
-`implemented` row that stores a value nothing builds a texture from; it was decided and landed before
-this series and is recorded here rather than reopened.
+An earlier version of this page reported a defect: that
+`ARImageTrackingConfiguration.automaticImageScaleEstimationEnabled` gets an auto-synthesised accessor
+in `ARKit/ARConfiguration3.m`, storing and returning whatever the caller set, while the same setting
+is `@dynamic` on the other two configurations. **That was wrong, and the compiler says so.**
+
+The property is not declared on `ARImageTrackingConfiguration` at all. In the 16.4 build SDK's
+`ARKit.framework/Headers/ARConfiguration.h` it is declared three times, and on three *different*
+classes:
+
+| line | enclosing `@interface` | the declaration |
+| --- | --- | --- |
+| 275 | `ARWorldTrackingConfiguration` | `@property (nonatomic, assign) BOOL automaticImageScaleEstimationEnabled API_AVAILABLE(ios(13.0));` |
+| 524 | `ARBodyTrackingConfiguration` | `@property (nonatomic, assign) BOOL automaticImageScaleEstimationEnabled;` |
+| 629 | `ARGeoTrackingConfiguration` | `@property (nonatomic, assign) BOOL automaticImageScaleEstimationEnabled;` |
+
+`ARImageTrackingConfiguration`'s own interface in that header does not declare it, so clang had
+nothing to synthesise from. Adding `@dynamic automaticImageScaleEstimationEnabled;` to
+`ARKit/ARConfiguration3.m` to test the claim is what settled it, and the answer is the compiler's:
+
+```
+packages/a/apple-backports/ARKit/ARConfiguration3.m:82:10: error: property implementation must
+have its declaration in interface 'ARImageTrackingConfiguration' or one of its extensions
+   82 | @dynamic automaticImageScaleEstimationEnabled;
+```
+
+That edit is not in the tree. The release agrees: `ARImageTrackingConfiguration`'s own instance list
+in ARKitCore of the arm64e shared cache of iOS 16.0 is **ten** twelve-byte entries and none of them is
+`automaticImageScaleEstimationEnabled` (list `0x1af214430`, read with
+`tools/corpus/skeleton-table.lua impls ARImageTrackingConfiguration`), while the two that do declare it
+carry the accessor at named addresses: `0x1af11bf90` in `ARWorldTrackingConfiguration`'s own list of
+eighty-six and `0x1af168518` in `ARBodyTrackingConfiguration`'s own list of thirty-nine (and
+`0x1af168538` for that class's `automaticSkeletonScaleEstimationEnabled`). The ten entries it does
+have are `.cxx_destruct`, `description`, `init`, `isEqual:`, `copyWithZone:`,
+`createTechniques:`, `setMaximumNumberOfTrackedImages:`, `trackingImages`, `setTrackingImages:` and
+`maximumNumberOfTrackedImages`.
+
+So the three configurations that declare the setting are all `@dynamic` in this port, and the one that
+does not declare it never answered it. There was no defect to fix, and the coordinator's request to
+"make it answer honestly on all three configurations" is answered by the measurement rather than by a
+commit: it already answers honestly everywhere it exists.
+
+## Still not reopened
+
+`ARWorldTrackingConfiguration.environmentTexturing` is an `implemented` row that stores a value nothing
+builds a texture from: there is no `AREnvironmentProbeAnchor` in this tree and no member of
+`CharonARTracker.h` that takes a probe. It was decided and landed before this series, so it is
+recorded here rather than changed by a series that was not asked about it.
 
 ## The harness
 
