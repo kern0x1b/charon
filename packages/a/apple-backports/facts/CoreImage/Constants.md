@@ -47,3 +47,27 @@ The same run resolves 136 names to 136 strings, every one of which matches the s
 header gives the key (`kCIInputAngleKey` -> `inputAngle`, `kCISupportedDecoderVersionsKey` ->
 `CISupportedDecoderVersions`, `kCIAttributeFilterAvailable_iOS` -> `CIAttributeFilterAvailable_iOS`).
 A run that resolved nothing would link nothing and say so.
+
+## The four pixel-format codes of iOS 14.2 and 17.0
+
+Added in this pass, in two objects of the family the eleven CIConstants objects already belong to:
+`CIConstants142.m` (`kCIFormatRGBX16`, 1804) and `CIConstants170.m` (`kCIFormatRGB10` 775, `kCIFormatRGBXh`
+2060, `kCIFormatRGBXf` 2316).
+
+`CIFormat` is an `OSType`, so these are plain data — an application writes the code into a context, a
+destination or a bitmap and the release reads it there. iOS 6 exports none of them: the header declares each as an
+exported constant rather than as an enum case, so a strong reference to one is a link failure on the release.
+
+None of the four codes can be derived. They are not the characters of the name — `kCIFormatRGBX16` is 1804, which
+is not `RGBX` in any order — and `kCIFormatA16` of the 9.0 band is 1793, which is none of them either.
+
+`tests/backports/host/ciimageformats` compiles the two objects and **links them into its reader**, so the codes
+compared against Apple's are the port's own and not numbers the harness already had, and then runs one mutant per
+code:
+
+    GREEN (port vs host): 4 agree, 0 differ
+    ciimageformats: 4 codes, 4 mutants run, 4 RED
+
+The band of each code is its own annotation, not a measurement: no held rung exports any of the four symbols — the
+ladder ends at 10.3.4 — so `NS_AVAILABLE(11_0, 14_2)` places `kCIFormatRGBX16` at iOS 14.2 and
+`NS_AVAILABLE(14_0, 17_0)` places the other three at iOS 17.0.
