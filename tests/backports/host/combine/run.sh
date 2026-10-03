@@ -20,23 +20,15 @@ sources=${COMBINE_SOURCES:-}
 swifc=${SWIFTC:-/usr/bin/swiftc}
 clangxx=${CLANGXX:-clang++}
 
-# The fork's own sources are not in this repository - the recipe fetches them - so they come
-# from the xmake source cache when the package has been built, or from $COMBINE_SOURCES.
-# Both name the same thing: the directory that holds `Combine`, `CombineHelpers` and so on,
-# which is the repository's top-level `Sources` directory. The check below is that
-# "$sources/Combine" is a directory, and the message says exactly that.
-if [ -z "$sources" ]; then
-    sources=$(ls -d "$HOME"/.xmake/cache/packages/*/s/styx/*/source/styx/Sources 2>/dev/null | head -1 || true)
-fi
-if [ -z "$sources" ] || [ ! -d "$sources/Combine" ]; then
-    # Said in the words the host sweep reads. Without a line beginning FAIL/note/skip a run that exits 1
-    # is counted DEAD, which reads as "nobody has run this lately" rather than "the input is not on this
-    # machine" - and this test's input genuinely is not here: neither ~/.xmake/packages/s/styx nor the
-    # package cache holds styx on this machine (measured, both globs match nothing).
-    echo "FAIL: styx sources not found - set COMBINE_SOURCES to the top-level Sources/ directory of"
-    echo "      kern0x1b/styx at the commit packages/s/styx/xmake.lua pins, the one holding Combine/ and"
-    echo "      CombineHelpers/, or build charon@styx once so the xmake package cache holds it"
-    exit 1
+# The pin is read out of the recipe rather than written here, so there is one commit and not two.
+# `git archive` reads the tree at that commit without a checkout and without moving styx's HEAD,
+# which is why it and not `git worktree` or `git checkout`.
+recipe="$repo/packages/s/styx/xmake.lua"
+styx=${STYX_REPO:-$HOME/Git/projects/ios/styx}
+pinned=$(sed -n 's/.*add_versions([^,]*, *"\{0,1\}\([0-9a-f]\{40\}\)"\{0,1\}).*/\1/p' "$recipe" | head -1 || true)
+have_pinned=no
+if [ -d "$styx/.git" ] && [ -n "$pinned" ] && git -C "$styx" cat-file -e "$pinned^{commit}" 2>/dev/null; then
+    have_pinned=yes
 fi
 if [ ! -d "$repo/packages/s/styx/files/CombineKit" ]; then
     echo "no layer at $repo/packages/s/styx/files/CombineKit; this is a worktree of charon."
@@ -45,6 +37,35 @@ fi
 
 rm -rf "$build"
 mkdir -p "$build/stage/Combine" "$build/swift/CombineKit.swiftmodule" "$build/objects"
+
+# The fork's own sources are not in this repository - the recipe fetches them - so they come
+# from $COMBINE_SOURCES, from the xmake source cache when the package has been built, or from
+# this machine's own styx repository at the commit the recipe pins. All three name the same
+# thing: the directory that holds `Combine`, `CombineHelpers` and so on, which is the repository's
+# top-level `Sources` directory. The check below is that "$sources/Combine" is a directory, and the
+# message says exactly that. Nothing is staged before the build directory is emptied, so the copy
+# below cannot be the one `rm -rf` takes.
+if [ -z "$sources" ]; then
+    sources=$(ls -d "$HOME"/.xmake/cache/packages/*/s/styx/*/source/styx/Sources 2>/dev/null | head -1 || true)
+fi
+if [ -z "$sources" ] && [ "$have_pinned" = yes ]; then
+    mkdir -p "$build/styx"
+    if git -C "$styx" archive "$pinned" Sources | tar -x -C "$build/styx"; then
+        sources="$build/styx/Sources"
+    fi
+fi
+if [ -z "$sources" ] || [ ! -d "$sources/Combine" ]; then
+    # Said in the words the host sweep reads. Without a line beginning FAIL/note/skip a run that exits 1
+    # is counted DEAD, which reads as "nobody has run this lately" rather than "the input is not on this
+    # machine" - and this test's input is not in the xmake package cache here, so the run says where it can
+    # be: this machine's own styx repository holds the commit the recipe pins, and one fetch brings it.
+    echo "FAIL: styx sources not found - set COMBINE_SOURCES to the top-level Sources/ directory of"
+    echo "      kern0x1b/styx at the commit packages/s/styx/xmake.lua pins, or build charon@styx once so the"
+    echo "      xmake package cache holds it, or fetch the pin into this machine's styx repository with"
+    echo "      git -C $styx fetch origin $pinned"
+    exit 1
+fi
+echo "sources: $sources"
 
 # ---------------------------------------------------------------- the module
 
