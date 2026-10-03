@@ -8,7 +8,7 @@
 @interface PDFPage ()
 - (CGPDFPageRef)charon_CGPDFPage;
 - (void)charon_buildAnnotations;
-- (PDFPageText *)charon_textLayout;
+- (CharonPDFPageText *)charon_textLayout;
 @end
 
 @implementation PDFPage {
@@ -25,7 +25,7 @@
     NSArray *_annotations;
     // The page's text layout, built once by -charon_textLayout and read by -string, by
     // -numberOfCharacters and by every PDFSelection over this page.
-    PDFPageText *_layout;
+    CharonPDFPageText *_layout;
 }
 
 @synthesize pageIndex = _index;
@@ -420,7 +420,7 @@ static void charonOpFontSize(CGPDFScannerRef scanner, void *info)
 
 // One drawn run, as the layout's own object: the characters, where they were drawn, the text state, and
 // ONE RECT PER CHARACTER - which is the whole of -[PDFSelection boundsForPage:]'s substrate.
-// PDFTextRun is declared in PDFPageText11.h because a selection reads it for its font and its position.
+// CharonPDFTextRun is declared in PDFPageText11.h because a selection reads it for its font and its position.
 //
 // The rects are filled HERE, at the show operator, rather than by a pass over the runs afterwards,
 // because a character the line rule later drops still moved the pen.  A line drawn " alpha bravo " has
@@ -440,15 +440,14 @@ static CGFloat collectRun(NSMutableArray *runs, NSString *text, CGFloat x, CGFlo
 {
     if (text == nil || text.length == 0)
         return x;
-    PDFTextRun *run = [[PDFTextRun alloc] init];
-    run.text = text;
+    CharonPDFTextRun *run = [[CharonPDFTextRun alloc] init];    run.text = text;
     run.x = x;
     run.y = y;
     run.size = sizeY;
     run.fontName = font;
     // The rects, built on the C stack and handed over: a run with a font that resolved has one rect per
     // character, and a run without one has none at all - which -rectAtIndex: answers as CGRectNull and
-    // the union in PDFPageText skips, rather than a zero-width rect that would drag the rect's left edge
+    // the union in CharonPDFPageText skips, rather than a zero-width rect that would drag the rect's left edge
     // to the origin.
     NSUInteger count = text.length;
     CGRect *rects = count > 0 ? malloc(sizeof(CGRect) * count) : NULL;
@@ -523,7 +522,7 @@ static CGFloat collectRun(NSMutableArray *runs, NSString *text, CGFloat x, CGFlo
 // rows that depend on a position say so rather than inventing one.
 typedef struct { CGFloat x; CGFloat y; CGFloat size; } CharonTextState;
 
-static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
+static CharonPDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 {
     if (state != NULL) {
         state->x = 0;
@@ -677,7 +676,7 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
     if (exhausted) {
         return nil;
     }
-    PDFPageText *layout = [PDFPageText layoutWithRuns:runs];
+    CharonPDFPageText *layout = [CharonPDFPageText layoutWithRuns:runs];
     if (layout.string.length == 0)
         return nil;
     return layout;
@@ -687,7 +686,7 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
 // read it, and they have to agree character for character because a selection's range is an offset into
 // it - so it is built here, once, rather than walked twice.  It is strong: it holds no reference back to
 // the page, and the page holding it is the same arrangement every other memoised array on this page uses.
-- (PDFPageText *)charon_textLayout
+- (CharonPDFPageText *)charon_textLayout
 {
     if (_layout == nil)
         _layout = charonScanPageText(_page, NULL);
@@ -724,8 +723,15 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
 //
 // A /Widget with no /FT is KEPT (the same fixture, one annotation), which is what stops the rule from
 // being "an annotation missing a required key is dropped": /FT is required of a widget by Table 8.39
-// and the host does not enforce it.  So the two shapes above are the measured rule and not the
-// format's.
+// and the host does not enforce it.
+//
+//   a CHOICE widget without a usable /Opt   dropped, which IS the format's requirement and the host
+//     enforcing it, the same shape as /Rect.  Six fixtures, one field type each and ALONE on its page,
+//     because a fixture carrying all four can only say that ONE of them is missing: /Btn, /Tx and /Sig
+//     are surfaced and /Ch is not.  And the /Opt decides: a /Ch beside /Opt [(one) (two)] IS surfaced
+//     while a /Ch beside /Opt (a string) is not.
+//
+// So three shapes are skipped, and each is measured rather than read off the format.
 - (NSArray *)annotations
 {
     if (_annotations == nil)
@@ -772,6 +778,21 @@ static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state
             CGPDFArrayRef endpoints = NULL;
             if (!CGPDFDictionaryGetArray(annotation, "L", &endpoints) || endpoints == NULL)
                 continue;
+        }
+        // and a CHOICE widget whose /Opt is missing or is not an array, which is the THIRD measured skip
+        // and is the format's own requirement: Table 8.39 makes /Opt required for a choice field, and
+        // the host enforces it the way it enforces /Rect.  Six fixtures, one field type each and ALONE on
+        // its page, because a fixture carrying all four field types can only say that ONE of them is
+        // missing - and it is /Ch.  A /Ch beside /Opt [(one) (two)] IS surfaced; a /Ch beside
+        // /Opt (a string) is not.
+        if (subtype != NULL && strcmp(subtype, "Widget") == 0) {
+            const char *fieldType = NULL;
+            if (CGPDFDictionaryGetName(annotation, "FT", &fieldType) && fieldType != NULL
+                && strcmp(fieldType, "Ch") == 0) {
+                CGPDFArrayRef options = NULL;
+                if (!CGPDFDictionaryGetArray(annotation, "Opt", &options) || options == NULL)
+                    continue;
+            }
         }
         PDFAnnotation *built = [[PDFAnnotation alloc] initWithCharonDictionary:annotation onPage:self];
         if (built != nil)

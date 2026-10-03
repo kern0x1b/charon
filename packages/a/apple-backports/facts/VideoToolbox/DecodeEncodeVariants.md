@@ -127,6 +127,34 @@ backwards and it is gone.** On ARM an extra argument is harmless and a missing o
 SDK's five-parameter form at 4.3 is safe. What the iOS 8.0 annotation on `infoFlagsOut` says is when the symbol
 became public, not how many arguments the 4.3 code reads.
 
+## Why the one remaining divergence in this family cannot be closed, measured
+
+`VTCompressionSessionEncodeMultiImageFrame` answers noErr and marks the frame dropped, as the host does, and does
+NOT make the host's one output-callback call for that frame. Recorded in `coordination/crutches.md` as an open
+crutch. The removal proposed there - "a per-session record of the caller's output callback taken at
+VTCompressionSessionCreate with a lifetime tied to the session, an interposed create/invalidate pair" - **cannot be
+built on this port's mechanism**, and the two reasons are measurements rather than opinions:
+
+- **An interposed create cannot live in a band the port builds.** `_VTCompressionSessionCreate`,
+  `_VTCompressionSessionInvalidate` and `_VTCompressionSessionCompleteFrames` are all exported by BOTH the 4.3
+  and the 6.1.3 armv7 caches (`4.3=1 6.1.3=1` for each). `modules/apple/backports.lua`'s `band()` drops an
+  object whose every exported symbol the band's release already exports, and raises if it exports such a symbol
+  together with one the release lacks - so an object defining only `VTCompressionSessionCreate` is dropped from
+  every band, and one defining it with anything else raises. `attach.c` interposes Objective-C classes and
+  categories and has no C-symbol interposition. This is the same wall `VTSessionSetProperty` meets, measured, and
+  it is why the rotation session's callbacks go through the registrar instead.
+- **There is no public route to a session's output callback, even as a property.** Every property key the 4.3
+  release exports, in full: `_kVTCompressionPropertyKey _kVTDecompressionProperty _kVTDecompressionPropertyKey
+  _kVTImageRotationPropertyKey _kVTPixelTransferPropertyKey _kVTPropertyDocumentationKey
+  _kVTPropertyReadWriteStatus _kVTPropertyReadWriteStatusKey _kVTPropertyShouldBeSerializedKey
+  _kVTPropertySupportedValueListKey _kVTPropertySupportedValueMaximumKey _kVTPropertySupportedValueMinimumKey
+  _kVTPropertyType _kVTPropertyTypeKey _kVTPropertyUserInterfaceKey`. Sixteen names, none of which carries a
+  callback, and the four `kVTPropertyType`-shaped ones are the ATTRIBUTE vocabulary of a property dictionary, not
+  a way to read one.
+
+So the divergence stands, the row stays `implemented` with it named, and the crutch stays open with this reason
+attached rather than with a remedy that would fail the same way twice.
+
 ## Source
 
 - The ladder: `tools/corpus/dump-cache.lua` over `~/.charon/dyld/4.3/dyld_shared_cache_armv7` (read-only) and

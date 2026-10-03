@@ -13,7 +13,7 @@
 // by one double ULP. The kernel below is therefore the header's own, in the caller's precision.
 //
 // **The pseudocode, and the two things in it that a paraphrase gets wrong.** vDSP.h gives it directly, and the
-// loop that fills the delay runs `for (s = 0; s <= S; ++s)` — inclusive, so a cascade of M sections has **M+1**
+// loop that fills the delay runs `for (s = 0; s <= S; ++s)` - inclusive, so a cascade of M sections has **M+1**
 // rows and the caller's delay buffer is **2 * (M + 1)** elements, not 2 * M. And the recurrence is Direct Form
 // II as printed, accumulated **left to right and in the caller's type**, with the two `A` terms subtracted:
 //
@@ -50,6 +50,13 @@ struct vDSP_biquad_SetupStructD {
 
 // 2 * (M + 1) delay elements, from the pseudocode's inclusive `s <= S` loop. The caller's buffer must be this
 // long; the port writes every one of them, and a shorter one is the caller's buffer overflowing.
+//
+// **This is where the kernel's bound comes from, and it was an unused function until now.** The kernel's
+// shift loop below writes slots `2*row_` and `2*row_+1` for row_ from 1 to the section count, so its last
+// slot is `2 * sections + 1` and the buffer must be `2 * (sections + 1)` elements - which is what this
+// returns and what the comment above it says, in three places that were three separate spellings of the same
+// number. The loop now takes its bound from here, so the two cannot drift apart: if the definition and the
+// loop ever disagree the loop writes fewer rows instead of running past the end of the caller's buffer.
 static vDSP_Length charon_biquad_delay_length(vDSP_Length sections)
 {
     return 2 * (sections + 1);
@@ -149,18 +156,33 @@ void vDSP_biquad_DestroySetupD(vDSP_biquad_SetupD __setup)
                  * wrong, and it saved its state swapped against the host's. */                             \
                 const value before1_ = delay_[2 * (row_ - 1) + 1], before2_ = delay_[2 * (row_ - 1)];            \
                 const value yp1_ = delay_[2 * row_ + 1], yp2_ = delay_[2 * row_];                               \
-                /* ONE expression, as the measured probe writes it, and not five statements. clang's          \
-                 * -ffp-contract is on by default for C, so a single expression may be contracted into a    \
-                 * fused multiply-add and a chain of assignments cannot - and a fused form rounds once where \
-                 * a multiply-then-add rounds twice. That is the shape of a one-ULP difference, and the      \
-                 * probe's single expression matches the host bit for bit while this chain was 1 ULP out. */  \
+                /* ONE expression, the header's own recurrence left to right and in the caller's type,    \
+                 * and not five statements - a fused form rounds once where a multiply-then-add rounds     \
+                 * twice, so the statement form is a different filter wherever a fused multiply-add exists. \
+                 * What the compiler MAKES of the expression is the flags', and it is measured rather      \
+                 * than assumed: clang's -ffp-contract is on by default, so this becomes a chain of          \
+                 * multiply-adds on a target that has them and the plain sum with `FPC=off`.              \
+                 * tests/backports/host/vdspbiquad6 asks the whole space of associations which one        \
+                 * reproduces this file's output bit for bit and prints the one it found - on the stable    \
+                 * filter with this build, `fma(t4, +(t3, fma(t1, +(t0, t2))))`, and with `FPC=off` the    \
+                 * printed left-to-right unfused sum. **An earlier version of this comment said the         \
+                 * expression was "the one measured against the host bit for bit". That was wrong and is  \
+                 * withdrawn**: it agrees with the host's own vImage for the first two samples of a       \
+                 * well-conditioned filter and differs from sample 2 on, and the host cannot be held to at  \
+                 * all - facts/Accelerate/vDSPBiquad6.md has the measurement, which is that with           \
+                 * byte-identical coefficients, input and delay this host answers with thirteen different \
+                 * float values depending only on where in memory the caller's buffers sit. */  \
                 const value acc_ = b0_ * previous_section_ + b1_ * before1_ + b2_ * before2_                  \
                                  - a1_ * yp1_ - a2_ * yp2_;                                                      \
                 fresh_[row_ - 1] = acc_;                                                                         \
                 previous_section_ = acc_;                                                                        \
             }                                                                                                     \
             /* the sample is done, so every row's pair can move up by one - and only now */                       \
-            for (row_ = 1; row_ <= sections_; row_++) {                                                             \
+            /* The bound is the caller's buffer length, from the one definition of it, and it is the same     \
+             * count as `row_ <= sections_`: the loop touches slot 2*row_+1, so it runs while that slot is   \
+             * inside 2*(sections_+1) elements. Spelled out here it was a second answer to the same question \
+             * and a compiler could not see that the two agreed. */                                                \
+            for (row_ = 1; (vDSP_Length)(2 * row_ + 1) < charon_biquad_delay_length(sections_); row_++) {        \
                 delay_[2 * row_] = delay_[2 * row_ + 1];   /* n-1 becomes n-2's slot after the call */             \
                 delay_[2 * row_ + 1] = fresh_[row_ - 1];                                                          \
             }                                                                                                         \

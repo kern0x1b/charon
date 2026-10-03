@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 // Every property is @synthesize'd EXPLICITLY: the port's compile line carries
 // -Werror=objc-missing-property-synthesis, which is there because a member the port does not carry needs
 // @dynamic rather than a silent ivar, and auto-synthesis would give one whether it was asked for or not.
-@interface PDFTextRun : NSObject
+@interface CharonPDFTextRun : NSObject
 // The run's own characters, after the control-byte mapping the walk applies.
 @property (nonatomic, copy) NSString *text;
 // Where this run's text begins in the page's -string, which is what makes the string and the runs two
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 // Foundation's, so a Foundation-only file - and this one is compiled into a macOS process that links no
 // UIKit at all - cannot use them.  -rectAtIndex: answers CGRectNull past the end, which is what an empty
 // run answers for every index, and the union below skips it.
-@interface PDFTextRun (CharonGeometry)
+@interface CharonPDFTextRun (CharonGeometry)
 - (void)charon_setGlyphRects:(const CGRect *)rects count:(NSUInteger)count;
 - (CGRect)rectAtIndex:(NSUInteger)index;
 @end
@@ -61,11 +61,16 @@ NS_ASSUME_NONNULL_BEGIN
 // facts/PDFKit/Selection11.md has the table and the run output.
 //
 // WHAT IS NOT READ, each because a fixture refutes it: the embedded /FontFile2 program through
-// CGFontCreateWithDataProvider, and the /BaseFont name through CGFontCreateWithFontName.  The base
-// fourteen are the exception and the boundary: a font with NO /Widths answers the standard metrics of
-// PDF 1.7 Annex F, which are the FORMAT's data rather than anything this file can read out of the
-// document, so `widths` is nil there and -advanceForCode: answers 0.  Measured: 43.2000 where
-// CGFontCreateWithFontName("Courier") answers 43.2070.
+// CGFontCreateWithDataProvider, and the /BaseFont name through CGFontCreateWithFontName - measured, the
+// host answers the /Widths on four fixtures whose program disagrees with it by eighteen points.
+//
+// THE BASE FOURTEEN ARE THE EXCEPTION, and they are answered rather than left at zero.  A font with NO
+// /Widths and a /BaseFont naming one of the fourteen is the shape every document relying on a standard
+// font has, and the metrics are the FORMAT's data (PDF 1.7 Annex F) with no API on this release to hand
+// them over: CGFontCreateWithFontName("Courier") answers 43.2070 for "page 1" where the host answers
+// 43.2000.  So they are read out of CharonBase14Widths, measured per character and generated - see that
+// file.  A font with neither /Widths nor one of the fourteen is the row's boundary, and -advanceForCode:
+// answers 0 there, which is `hasWidths` answering NO.
 @interface CharonPDFFontMetrics : NSObject
 
 // nil for a font dictionary that is not there, or that names no /Widths: see the note above.
@@ -85,17 +90,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface PDFPageText : NSObject
+@interface CharonPDFPageText : NSObject
 
 // The page's -[PDFPage string], or nil for a page whose walk was DISCARDED for taking fewer shows than
 // its content stream holds.  The runs and the lines are empty in that case too.
 @property (nonatomic, readonly, copy, nullable) NSString *string;
 // The runs, in the order the string is built from them: sorted by y DESCENDING, a tie in drawing order.
-@property (nonatomic, readonly, copy) NSArray<PDFTextRun *> *runs;
+@property (nonatomic, readonly, copy) NSArray<CharonPDFTextRun *> *runs;
 
 // Built from runs the walk already collected in DRAWING order; the ordering above is applied here, so the
 // walk does not care and the string is a property of the runs rather than a second thing to keep.
-+ (nullable instancetype)layoutWithRuns:(NSArray<PDFTextRun *> *)drawnRuns;
++ (nullable instancetype)layoutWithRuns:(NSArray<CharonPDFTextRun *> *)drawnRuns;
 
 // The page's text over a range, or nil for a range outside it.
 - (nullable NSString *)substringForRange:(NSRange)range;
@@ -121,13 +126,13 @@ NS_ASSUME_NONNULL_BEGIN
 // a range across two answers two.
 - (NSArray<NSValue *> *)lineRangesForRange:(NSRange)range;
 // The run a character came from, or nil for an offset the string does not have.
-- (nullable PDFTextRun *)runForOffset:(NSUInteger)offset;
+- (nullable CharonPDFTextRun *)runForOffset:(NSUInteger)offset;
 
 @end
 
 // THE LINE RULE, and where it lives.  A line is trimmed of U+0020 at both ends and every run of U+0020
 // inside it collapses to one - measured, and facts/PDFKit/Document11.md has the five fixtures.  It is
-// applied in -[PDFPageText layoutWithRuns:] rather than exposed, because the layout is the only thing that
+// applied in -[CharonPDFPageText layoutWithRuns:] rather than exposed, because the layout is the only thing that
 // builds page text out of runs and it needs the CHARACTER MAPPING as well as the string: a collapse or a
 // trim moves every character after it, so a run's offset into the finished string is not its offset into
 // the line it was drawn in.

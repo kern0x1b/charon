@@ -320,6 +320,7 @@ static const CGFloat kTextAnnotationSize = 24.0;
 // is present; PDFBorder11.m then finds no array and answers the default width, which is what
 // border-on-nontype's five subtypes answer for a /Border that is an array.
 //
+
 // -setBorder: stores the object BY REFERENCE, measured: -border answers the very object that was set,
 // a change made to that object afterwards is visible through -border, and setting nil makes -border
 // answer nil again.  So the annotation holds the object and does not copy it, and a border that was
@@ -522,5 +523,294 @@ static const CGFloat kTextAnnotationSize = 24.0;
 //                      that cannot be read back would be untestable.
 //   -toolTip, -mouseUpAction, -removeAllAppearanceStreams, -drawWithBox:  deprecated members of the
 //                      same unwritten or undrawn surface.
+
+@end
+
+// The nine /Ff bit members live in their own CATEGORY IMPLEMENTATION because that is where their
+// properties are declared: a property declared in a category cannot be implemented in the class's own
+// @implementation, and clang says so.  -charon_flags is the one thing they share, so it is declared in
+// CharonPDFKit.h's CharonInternals category and defined here with them.
+//
+@implementation PDFAnnotation (PDFAnnotationUtilitiesSubset)
+
+// Each is COMPUTED from the /Ff word on every call, so @dynamic says "not an ivar" and NOTHING else - a
+// @dynamic property with no body raises at run time, which is what the first version of PDFPage's -label
+// did and what the harness's crash was.
+@dynamic readOnly;
+@dynamic multiline;
+@dynamic isPasswordField;
+@dynamic comb;
+@dynamic allowsToggleToOff;
+@dynamic radiosInUnison;
+@dynamic listChoice;
+@dynamic widgetControlType;
+@dynamic activatableTextField;
+@dynamic fieldName;
+@dynamic buttonWidgetStateString;
+@dynamic buttonWidgetState;
+
+// The /AP /N walk's context, and the applier itself.  C rather than a block because the release's block
+// form of this call is iOS 12 and neither band carries it - see the note at the call.
+typedef struct { NSString *onState; } CharonOnState;
+
+// The release's applier function returns VOID - only the iOS 12 block form returns bool - so there is
+// no early exit, and the loop stops mattering once a name is found because the guard below does.
+static void charonTakeOnState(const char *key, CGPDFObjectRef value, void *info)
+{
+    CharonOnState *state = (CharonOnState *)info;
+    if (key == NULL || state == NULL || state->onState != nil)
+        return;                     // one is enough: the first non-/Off key names the on state
+    if (strcmp(key, "Off") == 0)
+        return;
+    state->onState = [[NSString alloc] initWithUTF8String:key];
+}
+
+// The NAME of this widget's on-state, which is the /AP /N key that is not /Off and "Yes" when there is
+// no /AP at all.
+//
+// Eighteen fixtures that carry no /AP answer "Yes" - every /Btn and every /Tx shape in the widget
+// fixtures, whatever /AS and /V say - so "Yes" is the DEFAULT and not the answer.  button-ap-states.pdf
+// has five annotations whose /AP /N is keyed on /On, /Yes and /Marked, and it answers those names:
+//
+//   /AS /Off, /N keyed /On      -> "On"
+//   /AS /On,  /N keyed /On      -> "On"
+//   /AS /Yes, /N keyed /Yes     -> "Yes"
+//   /AS /Yes, /N keyed /Marked  -> "Marked"     <- and its STATE is 0, because /AS does not name it
+//   /AS /Marked, /N keyed /Marked -> "Marked"  <- and its STATE is 1
+//
+// So the name is read out of the /AP's own /N keys - the one that is not /Off - and not from /AS and not
+// from /V.  Two of the five are what make it a rule rather than an echo of /AS: an /N keyed /Marked gives
+// "Marked" whatever /AS says.
+- (NSString *)buttonWidgetStateString
+{
+    if (_annotation == NULL)
+        return @"Yes";
+    CGPDFDictionaryRef appearance = NULL;
+    if (!CGPDFDictionaryGetDictionary(_annotation, "AP", &appearance) || appearance == NULL)
+        return @"Yes";
+    CGPDFDictionaryRef normal = NULL;
+    if (!CGPDFDictionaryGetDictionary(appearance, "N", &normal) || normal == NULL)
+        return @"Yes";
+    // The /N keys are walked with CGPDFDictionaryApplyFunction and NOT with
+    // CGPDFDictionaryApplyBlock: the block form is CG_AVAILABLE_STARTING(10.14, 12.0) and this port's
+    // bands are 6.1.3 and 4.3, so a block here would not link.  The function form is
+    // CG_AVAILABLE_STARTING(10.3, 2.0) and carries its context in an `info` pointer.
+    CharonOnState state = {nil};
+    CGPDFDictionaryApplyFunction(normal, charonTakeOnState, &state);
+    return state.onState ?: @"Yes";
+}
+
+// Whether this widget is ON.  Three clauses, and the 31 measured shapes they predict are:
+//
+//   1  /AS names the on-state, OR /V names it.  Each half is needed and each has a fixture that says so:
+//      /AS /Yes with no /V is 1 (button-as-alone), and /V /Yes with no /AS is ALSO 1 (button-v-only), and
+//      a reading in which only /AS counts is refuted by that second fixture.
+//
+//   2  BOTH name a state that is not /Off.  Needed for the two shapes where neither names the on-state
+//      and the answer is still 1: /AS /On with /V /On (button-as-and-v) and /AS /On with /V /Yes
+//      (button-asoff-von).  The coordinator's hypothesis - "/V names the SAME state /AS names" - is
+//      REFUTED by the second of those, where /AS names /On and /V names /Yes, and the two do not match.
+//      A /V of /Off does not count, which button-asoff-von's /AS /On with /V /Off (0) fixes.
+//
+//   3  the widget must be a BUTTON, and the /FT must be ON THE WIDGET.  Every /Tx answers -1 whatever it
+//      carries (text-as, four states), and so do all six button-merged-* shapes, whose /Btn FIELD carries
+//      the /FT while the widget reaches it through /Parent.  So the field type is not inherited.
+//
+// and the on-state itself is -buttonWidgetStateString's answer, which is the /AP /N key that is not /Off
+// and "/Yes" when there is no /AP.
+- (NSInteger)buttonWidgetState
+{
+    if (_annotation == NULL)
+        return -1;
+    const char *fieldType = NULL;
+    if (!CGPDFDictionaryGetName(_annotation, "FT", &fieldType) || fieldType == NULL)
+        return -1;
+    if (strcmp(fieldType, "Btn") != 0)
+        return -1;
+    NSString *onState = [self buttonWidgetStateString];
+    NSString *appearance = nil;
+    NSString *value = nil;
+    CGPDFObjectRef object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "AS", &object) && object != NULL
+        && CGPDFObjectGetType(object) == kCGPDFObjectTypeName) {
+        const char *name = NULL;
+        if (CGPDFObjectGetValue(object, kCGPDFObjectTypeName, &name) && name != NULL)
+            appearance = [[NSString alloc] initWithUTF8String:name];
+    }
+    object = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "V", &object) && object != NULL
+        && CGPDFObjectGetType(object) == kCGPDFObjectTypeName) {
+        const char *name = NULL;
+        if (CGPDFObjectGetValue(object, kCGPDFObjectTypeName, &name) && name != NULL)
+            value = [[NSString alloc] initWithUTF8String:name];
+    }
+    if (appearance != nil && [appearance isEqualToString:onState])
+        return 1;
+    if (value != nil && [value isEqualToString:onState])
+        return 1;
+    // NAMES CARRY NO LEADING SLASH: CGPDFDictionaryGetName strips it and CGPDFDictionaryApplyFunction's
+    // key has none either, which is why -buttonWidgetStateString answers "Yes" and "Marked" and not
+    // "/Yes".  The first version compared against @"/Off" and so never matched it, and the three shapes
+    // where one of the two keys is /Off came out 1 where the host answers 0 - the differential found all
+    // three at once.
+    if (appearance != nil && ![appearance isEqualToString:@"Off"] && value != nil
+        && ![value isEqualToString:@"Off"])
+        return 1;
+    return 0;
+}
+
+// The dictionary the harness reads to decide which keys are comparable - see CharonPDFKit.h.
+- (CGPDFDictionaryRef)charon_CGPDFDictionary
+{
+    return _annotation;
+}
+
+// The /Ff FLAG WORD, or 0 when the annotation names none.  Table 8.39 makes it an integer, and
+// CGPDFDictionaryGetInteger refuses anything else, so a /Ff that is a string or an array leaves every
+// bit clear - which is the measured answer for an annotation that carries no /Ff at all
+// (widget-noflags.pdf) and the answer the port gives for a /Ff of the wrong type.
+- (long)charon_flags
+{
+    long flags = 0;
+    if (_annotation == NULL)
+        return 0;
+    if (!CGPDFDictionaryGetInteger(_annotation, "Ff", &flags))
+        return 0;
+    return flags;
+}
+
+// The PDFAnnotation (PDFAnnotationUtilities) members that are /Ff bit reads.  Each names the fixture
+// that fixes it: widget-flags.pdf carries ONE ANNOTATION PER BIT with only that bit set, and
+// widget-allflags.pdf carries every bit at once, so a member is measured both against its own bit alone
+// and against the lot.
+//
+// Three of them are the NEGATION of a bit, which is measured and not a convenience: bit 15 alone answers
+// allowsToggleToOff NO and every other single-bit fixture answers YES; bit 18 alone answers listChoice NO
+// and the rest YES.
+//
+// And radiosInUnison is NOT bit 16, whose name in Table 8.39 is RadioInUnison: bit 16 alone answers NO
+// and bit 26 alone answers YES, so it is bit 26 - RichText - that this member reads.
+- (BOOL)isReadOnly
+{
+    return ([self charon_flags] & (1 << 0)) != 0;
+}
+
+- (BOOL)isMultiline
+{
+    return ([self charon_flags] & (1 << 12)) != 0;
+}
+
+- (BOOL)isPasswordField
+{
+    return ([self charon_flags] & (1 << 13)) != 0;
+}
+
+- (BOOL)hasComb
+{
+    return ([self charon_flags] & (1 << 24)) != 0;
+}
+
+- (BOOL)allowsToggleToOff
+{
+    // bit 15 NoToggleToOff is the negation, AND bit 17 Pushbutton clears it as well - measured on the
+    // two single-bit fixtures that each answer NO while the other eleven answer YES.  So this is
+    // "neither bit 15 nor bit 17", which is what the fixtures say and not a reading of the table.
+    return ([self charon_flags] & ((1 << 14) | (1 << 16))) == 0;
+}
+
+- (BOOL)radiosInUnison
+{
+    return ([self charon_flags] & (1 << 25)) != 0;
+}
+
+- (BOOL)isListChoice
+{
+    return ([self charon_flags] & (1 << 17)) == 0;
+}
+
+- (PDFWidgetControlType)widgetControlType
+{
+    // NOT a two-bit field read as a shift.  Measured on four fixtures: neither bit answers 2
+    // (CheckBox), bit 17 alone answers 0 (PushButton), bit 16 alone answers 1 (RadioButton), and both at
+    // once - widget-allflags - answers 1.  So it is a PRIORITY: bit 16 wins, else bit 17, else the
+    // CheckBox default.  A shift of the pair by 16 would answer 0, 1, 2 and 3 for those four, so the
+    // default of 2 is what told the two rules apart.
+    long flags = [self charon_flags];
+    if ((flags & (1 << 15)) != 0)
+        return kPDFWidgetRadioButtonControl;
+    if ((flags & (1 << 16)) != 0)
+        return kPDFWidgetPushButtonControl;
+    return kPDFWidgetCheckBoxControl;
+}
+
+// The /T of the MERGED FIELD AND WIDGET, which is what -fieldName reads when the pair names anything,
+// and nil when neither does.  Four fixtures, and the shape that makes this a rule and not a guess:
+//
+//   widget-t-literal.pdf   /T (the field) on the widget            -> "the field"
+//   widget-t-empty.pdf     /T ()                                    -> ""   the empty string, read
+//   widget-t-name.pdf      /T /TheField, a NAME not a string        -> nil  NOT read, and the member
+//                                                                          falls back to its own name
+//   widget-t-merged.pdf    the widget's /Parent is a FIELD carrying /T (parent field)
+//                                                                  -> "parent field"
+//   widget-t-mergedname.pdf the same, and the widget carries /T (child too) too
+//                                                                  -> "parent field.child too"
+//
+// So a widget's own /T is APPENDED to the parent's with a DOT between them, rather than overriding it,
+// and both are read as PDF STRINGS only.  That is measured; what the host does when NEITHER names anything
+// is not - see -fieldName's row.
+- (NSString *)fieldName
+{
+    if (_annotation == NULL)
+        return nil;
+    // the parent's /T first, then the widget's own, joined with a dot when both are there
+    NSString *own = nil;
+    CGPDFObjectRef title = NULL;
+    if (CGPDFDictionaryGetObject(_annotation, "T", &title) && title != NULL
+        && CGPDFObjectGetType(title) == kCGPDFObjectTypeString) {
+        CGPDFStringRef string = NULL;
+        if (CGPDFObjectGetValue(title, kCGPDFObjectTypeString, &string) && string != NULL) {
+            CFStringRef text = CGPDFStringCopyTextString(string);
+            if (text != NULL)
+                own = (__bridge_transfer NSString *)text;
+        }
+    }
+    // and the parent's, which is where a field written apart from its widget keeps it.  BOTH are joined
+    // with a dot when both are there - widget-t-mergedname.pdf answers "parent field.child too" - so
+    // neither half may be returned early.  The first version returned the widget's own as soon as it had
+    // one and answered "child too" where the host answers both, and the differential found it.
+    NSString *inherited = nil;
+    CGPDFDictionaryRef parent = NULL;
+    if (CGPDFDictionaryGetDictionary(_annotation, "Parent", &parent) && parent != NULL) {
+        CGPDFObjectRef parentTitle = NULL;
+        if (CGPDFDictionaryGetObject(parent, "T", &parentTitle) && parentTitle != NULL
+            && CGPDFObjectGetType(parentTitle) == kCGPDFObjectTypeString) {
+            CGPDFStringRef string = NULL;
+            if (CGPDFObjectGetValue(parentTitle, kCGPDFObjectTypeString, &string) && string != NULL) {
+                CFStringRef text = CGPDFStringCopyTextString(string);
+                if (text != NULL)
+                    inherited = (__bridge_transfer NSString *)text;
+            }
+        }
+    }
+    if (inherited == nil)
+        return own;
+    if (own == nil)
+        return inherited;
+    return [NSString stringWithFormat:@"%@.%@", inherited, own];
+}
+
+- (BOOL)isActivatableTextField
+{
+    // NOT a bit and NOT just the absence of bit 1: it is a TEXT field that is not read-only.  Measured on
+    // widget-fttx1 (/Tx answers YES), widget-ftbtn0 (/Btn NO), widget-ftsig3 (/Sig NO), widget-ftch4 (a
+    // /Ch with an /Opt NO), the thirteen /Tx fixtures of widget-flags.pdf - of which the bit-1 one
+    // answers NO and the other twelve YES - and every /Link in the harness, which has no /FT and answers
+    // NO.  So the field type has to be /Tx as well as the flag being clear.
+    const char *fieldType = NULL;
+    if (_annotation == NULL || !CGPDFDictionaryGetName(_annotation, "FT", &fieldType)
+        || fieldType == NULL || strcmp(fieldType, "Tx") != 0)
+        return NO;
+    return ![self isReadOnly];
+}
 
 @end

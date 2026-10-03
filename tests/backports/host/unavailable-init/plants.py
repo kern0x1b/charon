@@ -10,11 +10,15 @@ is written by hand: the file is the one the table names for the class, the needl
 call of the macro the table names, and the replacement is the mistake. A plant written by hand stops
 applying the moment a row moves, and a plant that does not apply proves nothing.
 
-Three mistakes, one per framework that owes anything:
+Four mistakes, one per answer a measured -init was found to give:
 
   1. a class that must refuse is left to NSObject instead - the macro's call commented out;
   2. a class that must NOT be defined gets a definition anyway - the macro's call added;
-  3. the macro raises an exception that was not measured - the name in its own raise replaced.
+  3. the macro raises an exception that was not measured - the name in its own raise replaced;
+  4. a class whose measured -init answers nil raises instead, or forwards to NSObject's - the macro's
+     call replaced with the raise that is not its body. HomeKit is where that body was measured (six of
+     its classes: the body is `[self release]; return nil`), so without it a nil-shaped answer would
+     never be proved able to turn this check red.
 """
 import os
 import re
@@ -134,7 +138,8 @@ def main():
         # port's, and what it answers - a refusal or nil - is the row's `answer`, not whether it is owed.
         owes = [r for r in mine if r["port-init"] in ("raise", "nil")]
         none = [r for r in mine if r["port-init"] == "none"]
-        if not owes and not none:
+        nils = [r for r in mine if r["port-init"] == "nil"]
+        if not owes and not none and not nils:
             continue
         macro = owes[0]["port-macro"] if owes else "-"
         # The call as the class writes it: with the literal reason when the measurement gave one.
@@ -188,6 +193,20 @@ def main():
                                  none[0]["port-source"].split("/")[-1],
                                  anchor.replace("\n", "\\n"),
                                  (anchor + "\n" + insert).replace("\n", "\\n")]))
+        # The nil-shaped answer proved able to turn the check red: the macro's own call replaced with the
+        # raise of another framework's shape, which is the mistake this check has to notice.
+        for row in nils:
+            call = row["port-macro"]
+            source = os.path.join(package, row["port-source"])
+            if call in open(source, encoding="utf-8").read():
+                # A whole method, because the macro is used where a method goes: a replacement that is a
+                # bare statement does not compile there, and a mutant that does not build has proved
+                # nothing about the check.
+                print("\t".join(["a class whose measured -init answers nil raises instead", framework,
+                                 row["port-source"].split("/")[-1], call,
+                                 "- (instancetype)init { [NSException raise:"
+                                 "NSInternalInconsistencyException format:@\"raised\"]; return nil; }"]))
+                break
         if not owes:
             continue
         header = header_of(package, macro)

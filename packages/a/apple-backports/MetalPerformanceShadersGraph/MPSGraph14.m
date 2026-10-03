@@ -588,16 +588,23 @@ typedef enum {
 //   - nil reduces every axis and an empty array reduces none. Measured: axes:nil over the 2x4 answers a
 //     1x1 of 110, and axes:@[] answers the 2x4 the operand already was, byte for byte.
 //
+// `parameters` is what tells the walk in MPSGraphInterpreter14.m which fold to run, so that this object
+// and every later release's object share one walk and neither names the other's operations: what is
+// added here on top of the axes and the result's shape is only what this release's own eight differ in,
+// which is the two that latch a NaN.
 // An axis outside the rank is a graph that cannot be built, and the framework refuses it in a way a
 // caller cannot catch: measured on this host's own MPSGraph, reductionSumWithTensor:axis:5 over a 2x4
 // writes "invalid axes: 5" and then dies with "LLVM ERROR: Failed to infer result type(s)", so the
 // process is gone before any answer. There is no way to reproduce that from a port, and returning a
 // tensor for it would be an answer the release does not give at all, so this raises instead - which is
 // the one form of "this graph is not buildable" a caller can handle and is decided when the graph is
-// built rather than left to be discovered as a wrong number later.
+// built rather than left to be discovered as a wrong number later. Every later release's reduction goes
+// through the same seam and is refused the same way: the argument reductions of 15.0 were measured
+// refused the same way, and the truth folds of 15.3 with them.
 - (MPSGraphTensor *)charon_mps_reduction:(CharonMPSGraphOperationKind)kind
                                     axes:(NSArray<NSNumber *> *)axes
                                   tensor:(MPSGraphTensor *)tensor
+                             parameters:(NSDictionary *)parameters
                                     name:(NSString *)name
 {
     NSArray<NSNumber *> *shape = tensor.shape;
@@ -612,8 +619,8 @@ typedef enum {
                 [NSException raise:NSInvalidArgumentException
                             format:@"MPSGraph: %@ was asked to reduce axis %ld of a rank-%lu tensor, and "
                                    @"axis 0 to %lu is all it has",
-                                   name, (long)axis.integerValue, (unsigned long)rank,
-                                   (unsigned long)rank];
+                                    name, (long)axis.integerValue, (unsigned long)rank,
+                                    (unsigned long)rank];
             }
             [dropped addIndex:(NSUInteger)value];
         }
@@ -630,9 +637,250 @@ typedef enum {
         else
             [kept addObject:shape[axis]];
     }
+    NSMutableDictionary *all = [NSMutableDictionary dictionary];
+    all[@"axes"] = reduced;
+    all[@"shape"] = kept;
+    if (parameters)
+        [all addEntriesFromDictionary:parameters];
+    return [self charon_mps_operation:kind inputs:@[tensor] parameters:all name:name];
+}
+
+// What the eight of 14.0 differ in is the combination they fold with, and the two that latch a NaN say
+// so here. The walk reads both out of the parameters, so a later release's reduction needs no name here.
+- (MPSGraphTensor *)charon_mps_reductionOf:(NSArray<NSNumber *> *)axes
+                                    tensor:(MPSGraphTensor *)tensor
+                             combination:(NSString *)combination
+                                     kind:(CharonMPSGraphOperationKind)kind
+                          propagatesNaN:(BOOL)propagatesNaN
+                                     name:(NSString *)name
+{
+    return [self charon_mps_reduction:kind
+                                axes:axes
+                              tensor:tensor
+                         parameters:@{@"combination": combination, @"propagateNaN": @(propagatesNaN)}
+                                name:name];
+}
+
+- (MPSGraphTensor *)transposeTensor:(MPSGraphTensor *)tensor
+                           dimension:(NSUInteger)dimension
+                        withDimension:(NSUInteger)withDimension
+                                name:(NSString *)name
+{
+    // The one shape operation that arrived with the framework itself, and the row-major transpose it is:
+    // measured over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) it answers (1, 10, 2, 20, 3, 30, 4, 40) into a
+    // 4x2, and a negative dimension is counted from the end, so dimension:-1 withDimension:0 answers what
+    // dimension:0 withDimension:1 answers. The walk refuses an axis outside the rank, which is the same
+    // refusal the reduction family's axis is.
+    // The two axes are exchanged and the result KEEPS THE OPERAND'S RANK, measured: dimension:0
+    // withDimension:2 of a 2x3x4 answers a 4x3x2, and dimension:0 withDimension:0 answers the operand itself.
+    // So the permutation handed to the walk is the identity with those two entries exchanged rather than a
+    // two-entry ordering, which would answer a rank of two whatever the operand's rank was. Both axes are read
+    // back as the signed numbers the header's own NSUInteger was written as, because the release counts a
+    // negative one from the end (measured, dimension:-1 withDimension:0 answers what dimension:0
+    // withDimension:1 answers).
+    NSUInteger rank = tensor.shape.count;
+    NSInteger first = (NSInteger)(int32_t)(uint32_t)dimension;
+    NSInteger second = (NSInteger)(int32_t)(uint32_t)withDimension;
+    if (first < 0) first += (NSInteger)rank;
+    if (second < 0) second += (NSInteger)rank;
+    if ((NSUInteger)first >= rank || (NSUInteger)second >= rank) {
+        // An axis outside the rank is the walk's refusal, so the two are handed over as they were written and
+        // the walk names them: the release builds a tensor whose shape is nil here and writes nothing, which
+        // is the named divergence every axis outside the rank in this library carries.
+        return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
+                                 tensor:tensor
+                            parameters:@{@"gather": @"transpose",
+                                         @"gatherPermutation": @[@(first), @(second)]}
+                                   name:name];
+    }
+    NSMutableArray<NSNumber *> *permutation = [NSMutableArray arrayWithCapacity:rank];
+    for (NSUInteger axis = 0; axis < rank; axis++)
+        [permutation addObject:@((NSInteger)axis)];
+    [permutation exchangeObjectAtIndex:(NSUInteger)first withObjectAtIndex:(NSUInteger)second];
+    return [self charon_mps_gather:CharonMPSGraphOperationKindTranspose
+                             tensor:tensor
+                        parameters:@{@"gather": @"transpose", @"gatherPermutation": permutation}
+                               name:name];
+}
+
+// The reshape, which arrived with the framework itself: the operand's elements in the same order at another
+// extent, which is one gather with the axes left alone and the result's shape the caller's. The header allows
+// a dynamic extent (-1) where the result type can be inferred unambiguously, and the walk resolves it; the
+// volumes have to match or the release cannot build the graph at all (measured: "LLVM ERROR: Failed to infer
+// result type(s)" takes the process down), so the port refuses that where the graph is built.
+- (MPSGraphTensor *)reshapeTensor:(MPSGraphTensor *)tensor
+                        withShape:(NSArray<NSNumber *> *)shape
+                             name:(NSString *)name
+{
+    return [self charon_mps_gather:CharonMPSGraphOperationKindReshape
+                             tensor:tensor
+                        parameters:@{@"gather": @"reshape", @"gatherShape": shape ?: @[]}
+                               name:name];
+}
+
+// The slice, which arrived with the framework itself: one axis of the operand from a start for a length, or
+// every axis at once from starts, ends and strides. It is one gather with an OFFSET and a STRIDE, which is the
+// only thing it adds to the walk, and the header's two forms are the same walk - the simple one is a single
+// axis with a stride of one and an end of start + length, which is how the factory spells it here. A negative
+// start counts from the end of that axis, as the header says and as the walk measures.
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor
+                      dimension:(NSUInteger)dimensionIndex
+                          start:(NSInteger)start
+                         length:(NSInteger)length
+                           name:(NSString *)name
+{
+    NSUInteger rank = tensor.shape.count;
+    NSMutableArray<NSNumber *> *starts = [NSMutableArray arrayWithCapacity:rank];
+    NSMutableArray<NSNumber *> *strides = [NSMutableArray arrayWithCapacity:rank];
+    NSMutableArray<NSNumber *> *ends = [NSMutableArray arrayWithCapacity:rank];
+    for (NSUInteger axis = 0; axis < rank; axis++) {
+        // The axis named takes the caller's start and the axes this form does not name start at zero and keep
+        // the operand's own extent, which is what a stride of one and an end of that extent say. A negative
+        // start is counted from the end by the walk, as the header says.
+        [starts addObject:@(axis == dimensionIndex ? start : 0)];
+        [strides addObject:@1];
+        // An axis this form does not name keeps the operand's own extent, which is what a start of zero, a
+        // stride of one and an end of the extent say.
+        [ends addObject:@(axis == dimensionIndex ? start + length : tensor.shape[axis].integerValue)];
+    }
+    return [self charon_mps_gather:CharonMPSGraphOperationKindSlice
+                             tensor:tensor
+                        parameters:@{@"gather": @"slice",
+                                     @"sliceStarts": starts, @"sliceEnds": ends, @"sliceStrides": strides,
+                                     @"sliceAxis": @(dimensionIndex), @"sliceLength": @(length)}
+                               name:name];
+}
+
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor
+                         starts:(NSArray<NSNumber *> *)starts
+                           ends:(NSArray<NSNumber *> *)ends
+                        strides:(NSArray<NSNumber *> *)strides
+                           name:(NSString *)name
+{
+    return [self charon_mps_gather:CharonMPSGraphOperationKindSlice
+                             tensor:tensor
+                        parameters:@{@"gather": @"slice",
+                                     @"sliceStarts": starts ?: @[], @"sliceEnds": ends ?: @[],
+                                     @"sliceStrides": strides ?: @[]}
+                               name:name];
+}
+
+#pragma mark - the gather family: the one seam every release's shape factory goes through
+
+// What a gather is: the result's shape, and the parameters that say which transformation produces it. The
+// walk in MPSGraphInterpreter14.m is one function for the whole family - the squeeze and the expanded
+// dimension and the flatten are the same gather with the axes left alone, and the transpose, the broadcast
+// and the reverse are the same gather with them not - so this only has to hand the parameters over and to
+// put the result's own shape where the factory computed it, which is the @shape every operation in this
+// framework already carries.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name
+{
+    MPSGraphTensor *result = [self charon_mps_operation:kind inputs:@[tensor] parameters:parameters name:name];
+    // The result's shape goes on the output tensor here, when the parameter is written down and the operand's
+    // own shape is known - which is what a caller reads off the tensor before it runs anything, and what the
+    // release can always answer because it infers the result's type when the graph is built. A fed parameter
+    // is data and arrives when the graph runs, so the interpreter puts the shape on then.
+    NSArray<NSNumber *> *shape = [self charon_mps_gatherShapeOfTensor:tensor
+                                                          parameters:parameters
+                                                                 named:name];
+    if (shape != nil)
+        [result charon_mps_setShape:shape];
+    return result;
+}
+
+// The gather whose parameter is fed rather than written down: the axis, the axes or the shape arrives as the
+// operation's second input, and the walk reads it when the graph runs. Measured, an int32 and an int64 of
+// shape [1] both answer for an axis, and a floating point one is refused by the factory because the release
+// cannot build the graph over it at all.
+- (MPSGraphTensor *)charon_mps_gather:(CharonMPSGraphOperationKind)kind
+                                tensor:(MPSGraphTensor *)tensor
+                         fedParameter:(MPSGraphTensor *)fedParameter
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name
+{
+    MPSDataType type = fedParameter.dataType;
+    if (type == MPSDataTypeFloat32 || type == MPSDataTypeFloat16 || type == MPSDataTypeBool) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked for a parameter fed as a tensor of data type 0x%x, and "
+                           @"an axis, a set of axes and a shape are all indices: measured, the release's own "
+                           @"compiler refuses a floating point operand and the process goes down with it",
+                            name, (unsigned)type];
+    }
+    // Nothing is added to the parameters here: the shape of a fed parameter is not known until the graph runs,
+    // so the count of its elements is read out of the fed tensor data itself then, and the parameters say
+    // only which of the operation's inputs carries it.
+    return [self charon_mps_operation:kind inputs:@[tensor, fedParameter] parameters:parameters name:name];
+}
+
+#pragma mark - the cumulative family, whose seam every release's scan factory goes through
+
+// The axis of a scan is the caller's and is normalised the way the reduction family's is: a negative axis
+// is counted from the end of the rank, and an axis outside it is refused when the graph is built rather
+// than left to be discovered as a wrong number. Measured on this host's own MPSGraph, an axis outside the
+// rank is refused by the release too and by a form no caller can catch: MPSGraphNDArrayScan.mm:253 writes
+// "Axis = ... This class only supports axis = 0, 1, 2, 3" and takes the process down with it, so there is
+// no answer to record and a tensor for it would be an answer the release never gives.
+- (NSInteger)charon_mps_scanAxis:(NSInteger)axis ofRank:(NSUInteger)rank named:(NSString *)name
+{
+    NSInteger normalised = axis;
+    if (normalised < 0)
+        normalised += (NSInteger)rank;
+    if (normalised < 0 || normalised >= (NSInteger)rank) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to scan axis %ld of a rank-%lu tensor, and axis 0 to "
+                           @"%lu is all it has",
+                            name, (long)axis, (unsigned long)rank, (unsigned long)rank];
+    }
+    return normalised;
+}
+
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                               axis:(NSInteger)axis
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name
+{
+    NSUInteger rank = tensor.shape.count;
+    NSInteger normalised = [self charon_mps_scanAxis:axis ofRank:rank named:name];
     return [self charon_mps_operation:kind
                                inputs:@[tensor]
-                           parameters:@{@"axes": reduced, @"shape": kept}
+                           parameters:@{@"scanCombination": combination, @"scanAxis": @(normalised),
+                                        @"scanExclusive": @(exclusive), @"scanReverse": @(reverse)}
+                                  name:name];
+}
+
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                         axisTensor:(MPSGraphTensor *)axisTensor
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name
+{
+    // The axis is data here, so there is no axis to normalise at build time: the walk reads it when the
+    // graph runs and refuses it there, the way the reduction family refuses an axis outside the rank.
+    // What can be asked now is the axis tensor's own type, and a floating point one is refused now for
+    // the reason in the header: the release cannot build the graph over one at all.
+    MPSDataType axisType = axisTensor.dataType;
+    if (axisType != MPSDataTypeInt32 && axisType != MPSDataTypeInt64 && axisType != MPSDataTypeUInt32 &&
+        axisType != MPSDataTypeUInt64 && axisType != MPSDataTypeInt16 && axisType != MPSDataTypeUInt16 &&
+        axisType != MPSDataTypeInt8 && axisType != MPSDataTypeUInt8) {
+        [NSException raise:NSInvalidArgumentException
+                    format:@"MPSGraph: %@ was asked to scan along an axis tensor of data type 0x%x, and an "
+                           @"axis is an index: measured, the release's own compiler refuses the operand "
+                           @"('mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values "
+                           @"or ... shape equal to [1]) and the process goes down with it",
+                            name, (unsigned)axisType];
+    }
+    return [self charon_mps_operation:kind
+                               inputs:@[tensor, axisTensor]
+                           parameters:@{@"scanCombination": combination, @"scanAxisTensor": @YES,
+                                        @"scanExclusive": @(exclusive), @"scanReverse": @(reverse)}
                                   name:name];
 }
 
@@ -640,34 +888,32 @@ typedef enum {
                                        axis:(NSInteger)axis
                                        name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionSum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"sum"
+                                    kind:CharonMPSGraphOperationKindReductionSum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionSumWithTensor:(MPSGraphTensor *)tensor
                                        axes:(NSArray<NSNumber *> *)axes
                                        name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionSum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"sum"
+                                    kind:CharonMPSGraphOperationKindReductionSum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionProductWithTensor:(MPSGraphTensor *)tensor
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionProduct
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"product"
+                                    kind:CharonMPSGraphOperationKindReductionProduct propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionProductWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionProduct axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"product"
+                                    kind:CharonMPSGraphOperationKindReductionProduct propagatesNaN:NO name:name];
 }
 
 // The two maxima and the two minima differ in one thing only, and it is the one a reduction of floating
@@ -682,74 +928,64 @@ typedef enum {
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumWithTensor:(MPSGraphTensor *)tensor
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axis:(NSInteger)axis
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximumPropagateNaN
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axes:(NSArray<NSNumber *> *)axes
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximumPropagateNaN
-                                 axes:axes
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axis:(NSInteger)axis
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimumPropagateNaN
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axes:(NSArray<NSNumber *> *)axes
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimumPropagateNaN
-                                 axes:axes
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimumPropagateNaN propagatesNaN:YES name:name];
 }
 
 // The mean and the variance are the reduction family in the two forms every framework of arithmetic has
@@ -764,7 +1000,8 @@ typedef enum {
                             axes:(NSArray<NSNumber *> *)axes
                             name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMean axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"mean"
+                                    kind:CharonMPSGraphOperationKindReductionMean propagatesNaN:NO name:name];
 }
 
 // The variance is the only member of the family that can be given the mean it is to be taken about,
@@ -776,7 +1013,8 @@ typedef enum {
                                 axes:(NSArray<NSNumber *> *)axes
                                 name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"variance"
+                                    kind:CharonMPSGraphOperationKindReductionVariance propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)varianceOfTensor:(MPSGraphTensor *)tensor
@@ -784,15 +1022,12 @@ typedef enum {
                                 axes:(NSArray<NSNumber *> *)axes
                                 name:(NSString *)name
 {
-    MPSGraphTensor *result = [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance
-                                                  axes:axes
-                                                tensor:tensor
-                                                  name:name];
-    MPSGraphOperation *operation = result.operation;
-    [operation charon_mps_setParameters:@{@"axes": operation.charon_mps_parameters[@"axes"],
-                                         @"shape": operation.charon_mps_parameters[@"shape"],
-                                         @"mean": meanTensor}];
-    return result;
+    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance
+                                 axes:axes
+                               tensor:tensor
+                          parameters:@{@"combination": @"variance", @"propagateNaN": @NO,
+                                       @"mean": meanTensor}
+                                 name:name];
 }
 
 #pragma mark - running it

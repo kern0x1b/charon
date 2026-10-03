@@ -6,15 +6,14 @@
 // spaces inside a line collapse to one, a line ends with the break that joins it to the next) are the
 // walk's and are written down in facts/PDFKit/Document11.md.
 
-@implementation PDFTextRun {
+@implementation CharonPDFTextRun {
     // ONE RECT PER CHARACTER of `text`, in the order the characters were drawn, owned by the run.  They
     // are the substrate of -[PDFSelection boundsForPage:] and they are here rather than in the category
     // below because a CATEGORY CANNOT ADD AN IVAR - it would be a compile error, and the accessor pair
     // exists only so that the walk, which is in another file, can hand them over.
     CGRect *_charon_rects;
     NSUInteger _charon_rectCount;
-}
-@synthesize text = _text;
+}@synthesize text = _text;
 @synthesize offset = _offset;
 @synthesize x = _x;
 @synthesize y = _y;
@@ -30,7 +29,7 @@
 
 // A run's per-character rects, as a C array the run OWNS.  Copied rather than pointed at, because the
 // walk builds them on the stack of a callback and the run outlives that stack by a long way.
-@implementation PDFTextRun (CharonGeometry)
+@implementation CharonPDFTextRun (CharonGeometry)
 
 - (void)charon_setGlyphRects:(const CGRect *)rects count:(NSUInteger)count
 {
@@ -189,7 +188,7 @@
 
 @end
 
-@implementation PDFPageText {
+@implementation CharonPDFPageText {
     // The offsets of the line-break characters in _string, ascending.  Computed once, because a
     // selection asks for a line range per line and a page with many lines would otherwise walk them again.
     NSUInteger *_breaks;
@@ -247,14 +246,14 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     return closed;
 }
 
-+ (instancetype)layoutWithRuns:(NSArray<PDFTextRun *> *)drawnRuns
++ (instancetype)layoutWithRuns:(NSArray<CharonPDFTextRun *> *)drawnRuns
 {
     if (drawnRuns == nil)
         return nil;
-    PDFPageText *layout = [[PDFPageText alloc] init];
-    NSArray<PDFTextRun *> *ordered = [drawnRuns sortedArrayWithOptions:NSSortStable
+    CharonPDFPageText *layout = [[CharonPDFPageText alloc] init];
+    NSArray<CharonPDFTextRun *> *ordered = [drawnRuns sortedArrayWithOptions:NSSortStable
                                                         usingComparator:^NSComparisonResult(id a, id b) {
-        PDFTextRun *left = a, *right = b;
+        CharonPDFTextRun *left = a, *right = b;
         if (left.y > right.y)
             return NSOrderedAscending;      // higher on the page first
         if (left.y < right.y)
@@ -262,7 +261,7 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
         return NSOrderedSame;                // a tie keeps drawing order
     }];
     NSMutableString *text = [NSMutableString string];
-    NSMutableArray<PDFTextRun *> *runs = [NSMutableArray arrayWithCapacity:ordered.count];
+    NSMutableArray<CharonPDFTextRun *> *runs = [NSMutableArray arrayWithCapacity:ordered.count];
     NSMutableArray<NSNumber *> *breaks = [NSMutableArray array];
     // WHERE EACH CHARACTER ENDED UP, in the same order the runs are, and built by the same pass that
     // remaps the runs' offsets - see _charOffsets.
@@ -270,7 +269,7 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     // The line being built, and the runs in it with their offsets INSIDE it - which are not their offsets
     // in the string, because the line is trimmed and collapsed when it closes.
     NSMutableString *line = [NSMutableString string];
-    NSMutableArray<PDFTextRun *> *lineRuns = [NSMutableArray array];
+    NSMutableArray<CharonPDFTextRun *> *lineRuns = [NSMutableArray array];
     CGFloat previousY = 0;
     BOOL first = YES;
     // Close the line, put it in the string, and hand every run in it the offset it ends up at.
@@ -281,7 +280,7 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
         NSUInteger lineStart = text.length;
         if (closed != nil)
             [text appendString:closed];
-        for (PDFTextRun *run in lineRuns) {
+        for (CharonPDFTextRun *run in lineRuns) {
             // The run's first character INSIDE THE LINE, which is the index `mapping` is written against.
             // It is read BEFORE the remap and kept, because the remap overwrites run->offset with the
             // FINISHED string's offset and reading it afterwards indexes the mapping with a number from
@@ -301,16 +300,14 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
                 if (mappingCount > at && at != NSUIntegerMax)
                     [charOffsets addObject:@(lineStart + mapping[at])];
                 else
-                    [charOffsets addObject:@(NSNotFound)];
-            }
+                    [charOffsets addObject:@(NSNotFound)];            }
         }
         // AFTER both loops: the second one reads the mapping, and freeing it before that is what made the
         // answer depend on the heap.
-        free(mapping);
-        [lineRuns removeAllObjects];
+        free(mapping);        [lineRuns removeAllObjects];
         [line setString:@""];
     };
-    for (PDFTextRun *run in ordered) {
+    for (CharonPDFTextRun *run in ordered) {
         if (run.text == nil || run.text.length == 0)
             continue;
         if (!first && run.y != previousY) {
@@ -394,7 +391,7 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     NSUInteger last = NSMaxRange(range);
     CGRect answer = CGRectNull;
     NSUInteger at = 0;
-    for (PDFTextRun *run in _runs) {
+    for (CharonPDFTextRun *run in _runs) {
         NSUInteger count = run.text.length;
         for (NSUInteger i = 0; i < count && at < _charOffsets.count; i++, at++) {
             NSUInteger offset = [[_charOffsets objectAtIndex:at] unsignedIntegerValue];
@@ -418,11 +415,11 @@ static NSString *charonCloseLine(NSString *line, NSUInteger **mapping, NSUIntege
     return [_string substringWithRange:range];
 }
 
-- (PDFTextRun *)runForOffset:(NSUInteger)offset
+- (CharonPDFTextRun *)runForOffset:(NSUInteger)offset
 {
     if (_string == nil || offset >= _string.length)
         return nil;
-    for (PDFTextRun *run in _runs) {
+    for (CharonPDFTextRun *run in _runs) {
         if (offset >= run.offset && offset < run.offset + run.text.length)
             return run;
     }

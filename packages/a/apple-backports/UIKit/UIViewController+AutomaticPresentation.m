@@ -1,28 +1,16 @@
 #import <UIKit/UIKit.h>
-#import <crt_externs.h>
-#import <mach-o/loader.h>
 #import <objc/runtime.h>
+#import "../CharonProgramSDK.h"
 
 /* iOS 13 makes UIModalPresentationAutomatic the style of a new view controller when the program was
    linked with SDK 13.0 or later, and answers the style it resolves to (UIKitCore 16.0: the ivar is
    written in -initWithNibName:bundle: 0x188fd7770 and in -initWithCoder: 0x18917aba8 when the archive
    has no UIModalPresentationStyle, behind dyld_program_sdk_at_least(iOS 13.0); -modalPresentationStyle
    0x188e97f50 never answers Automatic). A release without it gets the same, decided by the same fact:
-   the SDK the main image's load commands record, 0 where they record none. */
-static uint32_t charon_program_sdk(void)
-{
-    const struct mach_header *header = (const struct mach_header *)_NSGetMachExecuteHeader();
-    const char *command = (const char *)header + (header->magic == MH_MAGIC_64 ? sizeof(struct mach_header_64) : sizeof(struct mach_header));
-    for (uint32_t index = 0; index < header->ncmds; index++) {
-        const struct load_command *load = (const struct load_command *)command;
-        if (load->cmd == LC_VERSION_MIN_IPHONEOS)
-            return ((const struct version_min_command *)load)->sdk;
-        if (load->cmd == LC_BUILD_VERSION && ((const struct build_version_command *)load)->platform == PLATFORM_IOS)
-            return ((const struct build_version_command *)load)->sdk;
-        command += load->cmdsize;
-    }
-    return 0;
-}
+   the SDK the main image's load commands record, 0 where they record none - and that read now lives in
+   packages/a/apple-backports/CharonProgramSDK.h, because two frameworks of this package need it (the UIKit
+   caller here and the 26.0 deferred-start defaults in AVFoundation) and a file-static could not serve both.
+   The implementation there is this one, character for character. */
 
 /* The controller's own preference, as UIKit asks -_preferredModalPresentationStyle: Automatic for a
    view controller (0x188e987d0), and whatever a class that prefers a style answers. The image picker

@@ -110,6 +110,57 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
     (void)depth;
 }
 
+
+// The nine /Ff bit members, one line each and each with its OWN value, because a line carrying all nine
+// registers as one key - which is how the outline facts were lost the first time round.
+// The fixtures whose widgets a PDF STRING /T names, and -fieldName is compared only over those.  The list
+// is of FIXTURES and not of annotations so that both sides apply the same rule without either reading an
+// annotation dictionary the other cannot reach: PDFKit exposes no accessor for one, and a gate that asked
+// each side's own -fieldName and checked whether it LOOKED synthesised would be comparing the member's
+// opinion of itself.
+//
+// TWO fixtures are deliberately NOT in it.  widget-t-name.pdf, whose /T is a PDF NAME and so names
+// nothing - a prefix test swept it in and the differential caught that, which is why the list is spelled
+// out.  And widget-values.pdf, whose FIRST widget carries /T (the field) and answers "the field" while its
+// other two name nothing and answer synthesised names: a gate is of fixtures and cannot split a file, so
+// adding it would compare two keys that cannot agree.  The named case with a /DA beside it is covered by
+// widget-t-extra-DAstring instead.
+//
+// Over every other fixture the host answers a name synthesised from a counter that runs ACROSS DOCUMENTS
+// in one process - four fixtures loaded in order answer text0..text2, text3..text4, text5..text6 and
+// text7 - so no port can reproduce it and no key is printed there.  facts/PDFKit/Annotation11.md has the
+// measurement and the three fixtures that make the counter's subject visible.
+static BOOL charonFixtureNamesItsWidgets(const char *name)
+{
+    static const char *const named[] = {
+        "widget-t-literal", "widget-t-empty", "widget-t-merged", "widget-t-mergedname",
+    };
+    for (unsigned i = 0; i < sizeof(named) / sizeof(*named); i++)
+        if (strncmp(name, named[i], strlen(named[i])) == 0 &&
+            name[strlen(named[i])] == '.' )
+            return YES;
+    return strncmp(name, "widget-t-extra-", 15) == 0;
+}
+
+static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotation)
+{
+    printf("%s.flags.readOnly=%d\n", prefix, (int)annotation.isReadOnly);
+    printf("%s.flags.multiline=%d\n", prefix, (int)annotation.isMultiline);
+    printf("%s.flags.isPasswordField=%d\n", prefix, (int)annotation.isPasswordField);
+    printf("%s.flags.comb=%d\n", prefix, (int)annotation.hasComb);
+    printf("%s.flags.allowsToggleToOff=%d\n", prefix, (int)annotation.allowsToggleToOff);
+    printf("%s.flags.radiosInUnison=%d\n", prefix, (int)annotation.radiosInUnison);
+    printf("%s.flags.listChoice=%d\n", prefix, (int)annotation.isListChoice);
+    printf("%s.flags.widgetControlType=%ld\n", prefix, (long)annotation.widgetControlType);
+    printf("%s.flags.activatableTextField=%d\n", prefix, (int)annotation.isActivatableTextField);
+    if (charonFixtureNamesItsWidgets(prefix))
+        printf("%s.flags.fieldName=%s\n", prefix, annotation.fieldName.UTF8String ?: "(nil)");
+    // -buttonWidgetStateString is compared on EVERY annotation: it is the /AP /N on-state name, or "Yes"
+    // when there is no /AP, and the harness's button-ap-states.pdf is what tells those apart.
+    printf("%s.state.onName=%s\n", prefix, annotation.buttonWidgetStateString.UTF8String ?: "(nil)");
+    printf("%s.state.on=%ld\n", prefix, (long)annotation.buttonWidgetState);
+}
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // Printed once per annotation, after the border facts, in the same keys on both sides.  Three things
@@ -353,6 +404,84 @@ static void printAppearanceColour(const char *label, const char *member, id colo
     [(id)colour getRed:&r green:&g blue:&b alpha:&a];
     printf("appearance.%s.%s=%.6f,%.6f,%.6f,%.6f\n", label, member, (double)r, (double)g, (double)b,
            (double)a);
+}
+
+// ---- PDFAnnotation's three colours and its font, keyed by the annotation's /NM --------------------
+//
+// The keys carry `.colours.' and NOT `.page0.' on purpose: compare() treats any key containing ".page0."
+// whose value is four numbers as a RECTANGLE and compares it with a 0.001 tolerance, which is right for a
+// rectangle and wrong for a colour - the difference this family is about is in the THIRD decimal, and a
+// tolerance there would be exactly the thing that hides it.  These keys are compared as text.
+//
+// A colour is printed as its SPACE NAME and its COMPONENTS IN THAT SPACE, not as four RGBA numbers,
+// because most of these colours have no RGB: a gray answers two components and a CMYK five, and
+// -[NSColor getRed:green:blue:alpha:] is VOID on macOS and raises on a space with no RGB.  Both sides
+// read the same two facts off CoreGraphics, which is the one thing they share.
+static void printAnnotationColour(const char *label, const char *member, id colour)
+{
+    if (colour == nil) {
+        printf("%s.%s=(nil)\n", label, member);
+        return;
+    }
+    CGColorRef cgcolour = [(NSColor *)colour CGColor];
+    // CGColorGetColorSpace and not cgcolour->colorSpace: struct CGColor is an OPAQUE type in this SDK -
+    // CF_BRIDGED_TYPE(id) - so its member is not readable and the accessor is the only way to the space.
+    CGColorSpaceRef space = cgcolour != NULL ? CGColorGetColorSpace(cgcolour) : NULL;
+    printf("%s.%s.space=%s\n", label, member,
+           space != NULL ? [(__bridge NSString *)CGColorSpaceGetName(space) UTF8String] : "(nil)");
+    size_t count = cgcolour != NULL ? CGColorGetNumberOfComponents(cgcolour) : 0;
+    NSMutableArray *parts = [NSMutableArray array];
+    const CGFloat *raw = cgcolour != NULL ? CGColorGetComponents(cgcolour) : NULL;
+    for (size_t i = 0; i < count; i++)
+        [parts addObject:[NSString stringWithFormat:@"%.6f", (double)raw[i]]];
+    printf("%s.%s.components=%s\n", label, member,
+           [[parts componentsJoinedByString:@","] UTF8String]);
+}
+
+// The /NM of an annotation, as the format's own unique-name key (PDF 1.7 Table 8.16) and as a C string,
+// or NULL when the annotation does not carry one.  This is the whole of the re-keying: an annotation that
+// names itself can be found in -annotations' output whatever the host has dropped, and one that does not
+// is not printed at all rather than printed under a position that could shift.
+static const char *charonAnnotationName(PDFAnnotation *annotation)
+{
+    id name = [annotation valueForAnnotationKey:@"NM"];
+    if (![name isKindOfClass:[NSString class]] || [(NSString *)name length] == 0)
+        return NULL;
+    return [(NSString *)name UTF8String];
+}
+
+// The whole block for one fixture: the names it surfaced - which is where a dropped annotation shows up
+// as a MISSING NAME rather than as a shift - and then the four members of each named annotation.
+static void printAnnotationColourFacts(const char *fixture, PDFPage *page)
+{
+    NSMutableArray *names = [NSMutableArray array];
+    for (unsigned a = 0; a < page.annotations.count; a++) {
+        const char *name = charonAnnotationName(page.annotations[a]);
+        if (name != NULL)
+            [names addObject:@(name)];
+    }
+    if (names.count == 0)
+        return;
+    printf("%s.colours.names=%s\n", fixture, [[names componentsJoinedByString:@","] UTF8String]);
+    for (unsigned a = 0; a < page.annotations.count; a++) {
+        PDFAnnotation *annotation = page.annotations[a];
+        const char *name = charonAnnotationName(annotation);
+        if (name == NULL)
+            continue;
+        char label[512];
+        snprintf(label, sizeof(label), "%s.colours.nm%s", fixture, name);
+        printAnnotationColour(label, "backgroundColor", annotation.backgroundColor);
+        printAnnotationColour(label, "interiorColor", annotation.interiorColor);
+        printAnnotationColour(label, "fontColor", annotation.fontColor);
+        NSFont *font = annotation.font;
+        if (font == nil) {
+            printf("%s.font.name=(nil)\n", label);
+            printf("%s.font.size=(nil)\n", label);
+        } else {
+            printf("%s.font.name=%s\n", label, [font.fontName UTF8String]);
+            printf("%s.font.size=%.6f\n", label, (double)font.pointSize);
+        }
+    }
 }
 
 // One appearance-characters object, printed under one label, so the two sides' blocks are the same
@@ -701,9 +830,11 @@ int main(int argc, char **argv)
                 // compared against the port's nil by accident - it is compared like anything else, and
                 // the subtypes that answer one where the port does not would show up here.
                 printOutlineWalk(name, document.outlineRoot, 0);
+                printAnnotationColourFacts(name, first);
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];
                     NSString *prefix = [NSString stringWithFormat:@"%s.page0.annotation%u", name, a];
+                    printAnnotationFlagFacts([prefix UTF8String], each);
                     printActionFacts([prefix UTF8String], each.action);
                     printDestinationFacts([prefix UTF8String], each.destination);
                 }

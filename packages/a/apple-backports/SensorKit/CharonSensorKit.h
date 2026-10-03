@@ -90,7 +90,7 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibility *accessibilitySettings;
 @property (nonatomic, readonly, strong, nullable) SRAcousticSettingsMusicEQ *musicEQSettings;
 @property (nonatomic, readonly, assign) SRAcousticSettingsSampleLifetime audioExposureSampleLifetime;
-@property (nonatomic, readonly, assign) BOOL environmentalSoundMeasurementsEnabled;
+@property (nonatomic, readonly, assign, getter=isEnvironmentalSoundMeasurementsEnabled) BOOL environmentalSoundMeasurementsEnabled;
 @property (nonatomic, readonly, strong, nullable) NSNumber *headphoneSafetyAudioLevel;
 @end
 
@@ -98,14 +98,14 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityBackgroundSounds *backgroundSounds;
 @property (nonatomic, readonly, strong, nullable) SRAcousticSettingsAccessibilityHeadphoneAccommodations *headphoneAccommodations;
 @property (nonatomic, readonly, assign) double leftRightBalance;
-@property (nonatomic, readonly, assign) BOOL monoAudioEnabled;
+@property (nonatomic, readonly, assign, getter=isMonoAudioEnabled) BOOL monoAudioEnabled;
 @end
 
 @interface SRAcousticSettingsAccessibilityBackgroundSounds : NSObject
 @property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityBackgroundSoundsName soundName;
-@property (nonatomic, readonly, assign) BOOL enabled;
-@property (nonatomic, readonly, assign) BOOL playWithMediaEnabled;
-@property (nonatomic, readonly, assign) BOOL stopOnLockEnabled;
+@property (nonatomic, readonly, assign, getter=isEnabled) BOOL enabled;
+@property (nonatomic, readonly, assign, getter=isPlayWithMediaEnabled) BOOL playWithMediaEnabled;
+@property (nonatomic, readonly, assign, getter=isStopOnLockEnabled) BOOL stopOnLockEnabled;
 @property (nonatomic, readonly, assign) double relativeVolume;
 @property (nonatomic, readonly, assign) double relativeVolumeWithMedia;
 @end
@@ -114,12 +114,12 @@ typedef NSUInteger SRWristTemperatureCondition;
 @property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceApplication mediaEnhanceApplication;
 @property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceBoosting mediaEnhanceBoosting;
 @property (nonatomic, readonly, assign) SRAcousticSettingsAccessibilityHeadphoneAccommodationsMediaEnhanceTuning mediaEnhanceTuning;
-@property (nonatomic, readonly, assign) BOOL enabled;
+@property (nonatomic, readonly, assign, getter=isEnabled) BOOL enabled;
 @end
 
 @interface SRAcousticSettingsMusicEQ : NSObject
-@property (nonatomic, readonly, assign) BOOL lateNightModeEnabled;
-@property (nonatomic, readonly, assign) BOOL soundCheckEnabled;
+@property (nonatomic, readonly, assign, getter=isLateNightModeEnabled) BOOL lateNightModeEnabled;
+@property (nonatomic, readonly, assign, getter=isSoundCheckEnabled) BOOL soundCheckEnabled;
 @end
 
 // A loudness reading over a stretch of audio, and the stretch it covers.

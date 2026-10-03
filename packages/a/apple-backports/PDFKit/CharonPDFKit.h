@@ -16,10 +16,11 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @class PDFPage;
-@class PDFPageText;
+@class CharonPDFPageText;
 @class PDFSelection;
 @class PDFBorder;
 @class UIColor;
+@class UIFont;
 @class PDFAction;
 @class PDFDestination;
 @class PDFOutline;
@@ -130,7 +131,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (nullable CGPDFPageRef)charon_CGPDFPage;
 // The page's own text layout, which PDFSelection reads: a selection's range is an offset into it, so the
 // two must not be two walks that can disagree.  See PDFPageText11.h.
-- (nullable PDFPageText *)charon_textLayout;
+- (nullable CharonPDFPageText *)charon_textLayout;
 @end
 
 // PDFAnnotation, over the annotation dictionary CoreGraphics already parsed out of a page's /Annots.
@@ -180,11 +181,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable) PDFBorder *border;
 @end
 
+
 // The port's own constructor, over a dictionary already in the object graph.  Not Apple's
 // -initWithBounds:forType:withProperties:, which builds a new annotation and writes it into a document.
 @interface PDFAnnotation (CharonInternals)
 - (nullable instancetype)initWithCharonDictionary:(CGPDFDictionaryRef)annotation
                                           onPage:(nullable PDFPage *)page;
+// The annotation's own dictionary in the CGPDFDocument, or NULL.  The harness reads it to decide WHICH
+// keys are comparable - -fieldName is asked only where the document names the widget - and a port that
+// made the harness ask each member and hope would compare a member's own opinion of its state instead of
+// the bytes both sides are reading.
+- (CGPDFDictionaryRef)charon_CGPDFDictionary;
+// The /Ff FLAG WORD of this annotation, or 0 when it names none.  Shared by the nine bit members below,
+// which each read one bit of it, and declared here so the category implementation that defines them can
+// reach it.
+- (long)charon_flags;
 @end
 
 // ---- PDFBorder, and the two enumerations the port has to spell because the release has no header
@@ -271,6 +282,125 @@ extern NSString *const PDFAppearanceCharacteristicsKeyDownCaption;
 @property (nonatomic, copy, nullable) NSString *rolloverCaption;
 @property (nonatomic, copy, nullable) NSString *downCaption;
 @property (nonatomic, readonly, copy) NSDictionary *appearanceCharacteristicsKeyValues;
+@end
+
+// ---- PDFAnnotation (PDFAnnotationUtilities): the widget members that are /Ff BIT reads ------------
+//
+// The 26.2 SDK declares these in a CATEGORY, PDFAnnotationUtilities.h:120, and one member per group of
+// them is implemented here.  Every bit below is measured on the host over widget-flags.pdf, which carries
+// ONE ANNOTATION PER BIT with only that bit set - thirteen bits and a fixture with every bit at once -
+// because a fixture with all the bits set answers every member YES and proves nothing.
+//
+//   bit 1  ReadOnly         1        -> readOnly
+//   bit 13 Multiline        4096     -> multiline
+//   bit 14 Password         8192     -> isPasswordField
+//   bit 15 NoToggleToOff    16384    -> allowsToggleToOff is the NEGATION of it
+//   bit 16 Radio            32768    -> widgetControlType: 1, and NOT radiosInUnison
+//   bit 17 Pushbutton       65536    -> widgetControlType: 0, and it CLEARS allowsToggleToOff
+//   bit 18 Combo            131072   -> isListChoice is the NEGATION of it
+//   bit 25 Comb             16777216 -> comb
+//   bit 26 RadiosInUnison   33554432 -> radiosInUnison   (in a BUTTON field; in a TEXT field of the
+//                                                            same name, Table 8.39 calls bit 26 RichText,
+//                                                            and the host reads it either way)
+//
+// THE NAMES ABOVE ARE THE FORMAT'S OWN, and an earlier version of this comment had two of them wrong:
+// it called bit 16 "RadioInUnison" and bit 26 "RichText" as if each had one name everywhere.  Table 8.39's
+// bit 16 is Radio, and bit 26 is RadiosInUnison in the BUTTON field table and RichText in the TEXT field
+// table.  So two of the three members this file calls "not what the table says" ARE the table's rule -
+// radiosInUnison reading bit 26, and widgetControlType's Pushbutton -> 0 / Radio -> 1 / neither -> 2 -
+// and the fixtures add only what the table cannot say:
+//
+//   BOTH bit 16 and bit 17 at once answer kPDFWidgetRadioButtonControl.  The table names the bits and not
+//     their collision, and widget-allflags.pdf is the fixture that answers 1.
+//   bit 17 CLEARS allowsToggleToOff.  The table says bit 15 NoToggleToOff and nothing about a pushbutton,
+//     and the bit-15 and bit-17 fixtures each answer NO while the other eleven answer YES.
+//
+// And activatableTextField is not a bit at all: it is a TEXT field that is not read-only - /FT /Tx with
+// bit 1 clear, measured on six one-field-type fixtures, on the thirteen /Tx fixtures, and on every /Link in
+// the harness.
+//
+// NOT declared here, each for the reason its row repeats: widgetStringValue and widgetDefaultStringValue,
+// whose /V and /DV the host does not read on these fixtures; maximumLength, alignment, choices, values,
+// open, caption, URL, the two line styles, the two points, paths, quadrilateralPoints, iconType,
+// markupType and stampName.  buttonWidgetState, buttonWidgetStateString and the three colours and the
+// font ARE declared: the /AS matrix is measured, and the colour and font keys are measured below.  fieldName is implemented for a widget the
+// document NAMES and its row says what it cannot answer for one it does not.  See
+// facts/PDFKit/Annotation11.md, which carries the host's measured answer for every one of them.
+@interface PDFAnnotation (PDFAnnotationUtilitiesSubset)
+@property (nonatomic, getter=isReadOnly) BOOL readOnly;
+@property (nonatomic, getter=isMultiline) BOOL multiline;
+@property (nonatomic, readonly, getter=isPasswordField) BOOL isPasswordField;
+@property (nonatomic, getter=hasComb) BOOL comb;
+@property (nonatomic) BOOL allowsToggleToOff;
+@property (nonatomic) BOOL radiosInUnison;
+@property (nonatomic, getter=isListChoice) BOOL listChoice;
+@property (nonatomic) PDFWidgetControlType widgetControlType;
+@property (readonly, getter=isActivatableTextField) BOOL activatableTextField;
+// The /T of the MERGED FIELD AND WIDGET: the parent's first, then the widget's own, joined with a dot
+// when both name something, and read as PDF STRINGS only.  A widget that NAMES nothing is not answered
+// here, and the row says why.
+@property (nonatomic, readonly, copy, nullable) NSString *fieldName;
+
+// The NAME of this widget's on-state: the /AP /N key that is not /Off, and "Yes" when there is no /AP at
+// all.  Measured on eighteen fixtures that carry no /AP and answer "Yes", and on button-ap-states.pdf,
+// whose five annotations have /AP /N keyed /On, /Yes and /Marked and answer those names - including the
+// two that make it a rule and not an echo of /AS: an /N keyed /Marked answers "Marked" beside an /AS /Yes
+// and beside an /AS /Marked, and an /N keyed /On answers "On" beside an /AS /Off.  So this is the /AP's
+// own key, and the "Yes" of the nameless fixtures is the DEFAULT rather than the answer.
+@property (nonatomic, readonly, copy) NSString *buttonWidgetStateString;
+// Whether this widget is ON: 1 when /AS or /V names its on-state, or when BOTH name a state that is not
+// /Off; and -1 for a widget that is not a BUTTON.  Three clauses and 31 measured shapes, with each
+// fixture that discriminates one of them named in PDFAnnotation11.m.
+@property (nonatomic, readonly) NSInteger buttonWidgetState;
+
+@end
+
+// ---- PDFAnnotation's three colours and its font, in a category of their own ------------------------
+//
+// A SEPARATE CATEGORY, and a separate object, for the reason PDFAnnotationColours11.m's own header gives:
+// UIColor and UIFont are UIKit's and there is no Foundation class for either on iOS, so these four are
+// the only members in this header a macOS process cannot compile and the only ones the Catalyst side of
+// the harness carries.  Everything else about them is as measured:
+//
+// All four are DECLARED READ-ONLY where PDFAnnotationUtilities.h declares them readwrite, because each
+// one's setter writes back into a document and this port reads documents.  Each row says so.
+//
+// Every reading is keyed by the annotation's /NM rather than by its position, over
+// annotation-colours.pdf, and the shape of the answer is the answer:
+//
+//   backgroundColor   /MK's /BG (Table 8.40's /BG, not /BC - /BC is the BORDER colour, which is the key
+//                     -[PDFAnnotation border] reads), in the DEVICE colour space its COMPONENT COUNT names:
+//                     one is DeviceGray, three is DeviceRGB, four is DeviceCMYK, and the components are
+//                     the ARRAY'S OWN.  A /BG that is not an array is nil.
+//   interiorColor     the annotation's OWN /IC, which is not an /MK key at all, in the same three Device
+//                     spaces by the same component count, and nil when the annotation carries no /IC.
+//                     The 26.2 header names /Circle, /Line and /Square as the subtypes that use it; the
+//                     host answers it on every subtype measured, /Link and a /Tx /Widget included.
+//   fontColor         the /DA's FIRST fill operand, and only a fill one - text is painted with the fill
+//                     colour, so g and rg are read and G, RG and K, which set the stroke, are not, and k
+//                     is not read either.  The colours are GENERIC and not device ones, and an annotation
+//                     with NO /DA at all answers a generic gray at gamma 2.2 while a /DA with no readable
+//                     fill answers a generic gray at gamma 1.0 - two different defaults, measured apart.
+//   font              the /DA's font NAME and SIZE, read independently.  The name is used as written when
+//                     the platform's own font has it, and then through an exact table of THREE
+//                     abbreviations - Helv, HeBo and Cour - which is the whole of what the host resolves
+//                     out of the standard fourteen's fourteen.  Anything else is Helvetica, with the size
+//                     kept; the default size is 12.
+//
+// THE DERIVATION IS NOT IN THE OBJECT and not here either: it is in CharonPDFKitColours.h, as `static
+// inline` functions over the annotation's CGPDFDictionary, which this file's four members call and which
+// the harness's Catalyst side calls DIRECTLY.  That is because the platform's own PDFKit loads in that
+// binary and its category would answer these four selectors - which file holds the derivation is the
+// measured consequence, and its comment says so.
+//
+// facts/PDFKit/Annotation11.md carries the table, the fixtures that pin every clause of it, and the
+// retracted readings of the version that read this fixture by index and was one annotation out of step
+// from the seventh on.
+@interface PDFAnnotation (PDFAnnotationColours)
+@property (nonatomic, readonly, copy, nullable) UIColor *backgroundColor;
+@property (nonatomic, readonly, copy, nullable) UIColor *interiorColor;
+@property (nonatomic, readonly, copy, nullable) UIColor *fontColor;
+@property (nonatomic, readonly, copy, nullable) UIFont *font;
 @end
 
 // ---- PDFDestination, and the action family --------------------------------------------------

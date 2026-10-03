@@ -251,6 +251,14 @@ static inline BOOL CharonValueDecode(id value, NSCoder *coder, NSSet<Class> *all
 #define CHARON_DOUBLE_PROPERTY(Type, name)                                                  \
     -(Type)name { return (Type)[[self charon_valueForKey:@ #name] doubleValue]; }
 
+// A property the release declares with a getter of its own: Apple's SRAcousticSettings.h renames the
+// getter of eight BOOL properties to the is... form and leaves the property's own name alone, so the
+// selector the class carries is not the one the property is spelled with. Both spellings are needed and
+// neither may be written twice, so the macro takes both - the name is what the store is keyed by and
+// what a caller writes, the getter is the selector Apple's class carries.
+#define CHARON_SCALAR_GETTER(Type, name, getter)                                           \
+    -(Type)getter { return (Type)[[self charon_valueForKey:@ #name] longLongValue]; }
+
 // The door a value class keeps for itself when its public -init refuses, which is what a class whose
 // own framework raises for -init does (see SensorKit's CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT):
 // -copyWithZone: must hand back a NEW object holding the same values, and the only way to make one

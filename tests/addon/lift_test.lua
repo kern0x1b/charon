@@ -121,6 +121,14 @@ function failures(opt)
         {{kind = "ObjCPropertyDecl", readwrite = true, nonatomic = true, assign = true, unsafe_unretained = true,
           getter = {kind = "ObjCMethodDecl", name = "isEnabled"}, type = {qualType = "BOOL"}},
          "enabled", "6.1.3", "@property (nonatomic, readwrite, assign, unsafe_unretained, getter=isEnabled) BOOL enabled API_AVAILABLE(ios(6.1.3));"},
+        -- AVQueuedSampleBufferRendering's timebase, whose type the SDK marks as an object with the attribute rather
+        -- than with an @interface: @property (retain, readonly) __attribute__((NSObject)) CMTimebaseRef timebase;
+        -- every one of the 20 the 16.4 SDK spells is a property, and the redeclaration has to carry it or clang
+        -- refuses the `retain` (it is also what keeps uncarried_attributes() from refusing the redeclaration)
+        {{kind = "ObjCPropertyDecl", readonly = true, retain = true, atomic = true, type = {qualType = "CMTimebaseRef _Nonnull"},
+          inner = {{kind = "ObjCNSObjectAttr"}}},
+         "timebase", "6.1.3",
+         "@property (atomic, readonly, retain) __attribute__((NSObject)) CMTimebaseRef _Nonnull timebase API_AVAILABLE(ios(6.1.3));"},
         -- refused: a block property needs a declarator around its name, and a type that keeps another macro's attribute
         -- would lose it
         {{kind = "ObjCPropertyDecl", copy = true, nonatomic = true, type = {qualType = "void (^)(void)"}}, "handler", "6.1.3", nil},
@@ -490,6 +498,17 @@ function failures(opt)
                  table.concat(lift.uncarried_attributes(others), ","), "SwiftObjCMembersAttr")
     expect_equal(found, "and availability alone is carried",
                  table.concat(lift.uncarried_attributes({inner = {{kind = "AvailabilityAttr"}}}), ","), "")
+    -- __attribute__((NSObject)) is carried on a property, which is where member_declaration() writes it, and refused
+    -- on a method, where the dump says the attribute is there but not which of its types it belongs to
+    local object = property_with({{kind = "ObjCNSObjectAttr"}})
+    expect_equal(found, "a property the SDK marks as an object by the attribute carries it",
+                 table.concat(lift.uncarried_attributes(object), ","), "")
+    expect_equal(found, "and the redeclaration spells it where the SDK does",
+                 lift.member_declaration(object, "destinationFrame", "6.0"),
+                 "@property (readonly) __attribute__((NSObject)) id destinationFrame API_AVAILABLE(ios(6.0));")
+    expect_equal(found, "a method carrying it is refused by name",
+                 table.concat(lift.uncarried_attributes({kind = "ObjCMethodDecl", inner = {{kind = "ObjCNSObjectAttr"}}}), ","),
+                 "ObjCNSObjectAttr")
 
     -- The redeclaration clang accepts, asked of clang and not of a string: a comparison let two
     -- compiler-confirmed defects through a green suite - NS_REFINED_FOR_SWIFT inside the property's attribute
@@ -546,6 +565,208 @@ function failures(opt)
                 }
             }
         end
+    end
+
+    -- A framework inside another's Frameworks folder, which clang resolves from the directory of the header that
+    -- asks for it and not from a framework search path. The copy the lift stages of a header sits outside its own
+    -- framework, so an import of a nested framework out of it is looked for where the SDK keeps it, where the
+    -- staged tree has none, and the whole lift stops on that one import - measured on iPhoneOS16.4.sdk, whose
+    -- MetalPerformanceShaders.h imports <MPSCore/MPSCore.h>. So the overlay carries each nested framework at the
+    -- path a staged header reaches it by, every header of it, and the case reads the overlay the lift wrote and
+    -- asks clang to resolve the import over it.
+    --
+    -- The fixture's folder carries a hash of its own text and not a fixed name, because this machine's ccache can
+    -- hand back the dump of a fixture SDK whose headers changed where the last run left them: measured, the same
+    -- fixture under the same folder with a header rewritten between two runs gave the lift the declarations of the
+    -- earlier text (a mark at line 4 where the fixture as written has none), and both the same fixture under a
+    -- folder no run had used and the same fixture with CCACHE_DISABLE=1 gave the lift the fixture as written.
+    local swiftc = os.getenv("LIFT_SWIFTC")
+    if not swiftc or #swiftc == 0 then
+        for _, bin in ipairs(os.dirs(path.join(store, "s/swift/*/*/bin"))) do
+            if os.isfile(path.join(bin, "swiftc")) then
+                swiftc = path.join(bin, "swiftc")
+                break
+            end
+        end
+    end
+    if not clang or not swiftc then
+        print("skipped: the overlay of a nested framework needs both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        -- the macros in a header of their own, as the SDK has them: clang gives a mark the file and the line the
+        -- macro is used at only where the macro was spelled somewhere else (the same reason the fixture lift
+        -- overlay test writes Avail.h). The last two are a release passed by position, which no lift_macro branch
+        -- rewrites in place: the lift preprocesses the header to expand it, which is the lift's second overlay and
+        -- the other one that has to carry the nested framework.
+        local fixture = {"#define ios(version) ios, introduced=version\n" ..
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n" ..
+                         "#define __MAC_10_9 100900\n#define __IPHONE_7_0 70000\n" ..
+                         "#define __OSX_AVAILABLE_STARTING(_mac, _ios)" ..
+                         " __attribute__((availability(macos,introduced=_mac)))" ..
+                         " __attribute__((availability(ios,introduced=_ios)))\n",
+                         "@protocol NSObject @end\n@protocol NSCopying @end\n" ..
+                         "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n",
+                         -- the three shapes a nested framework is reached by: its own umbrella, a header of it the
+                         -- lift rewrote, a header of it the lift did not (there is no staged copy to find), and one
+                         -- in a folder below its Headers (vecLib keeps BNNS, LinearAlgebra, Quadrature, Sparse)
+                         "#import <Fix/Avail.h>\n#import <Nested/Nested.h>\n#import <Nested/Other.h>\n" ..
+                         "#import <Nested/Sub/Deep.h>\nvoid FixOwnUse(void) API_AVAILABLE(ios(9.0));\n" ..
+                         "void FixExpanded(void) __OSX_AVAILABLE_STARTING(__MAC_10_9, __IPHONE_7_0);\n",
+                         "#import <Fix/Avail.h>\nvoid FixNestedUse(void) API_AVAILABLE(ios(9.0));\n",
+                         "void FixNestedOther(void);\n",
+                         "void FixNestedDeep(void);\n",
+                         '[{"api": "FixOwnUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixNestedUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixExpanded", "kind": "function", "introduced": "7.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"}]'}
+        local root = path.join(os.tmpdir(), "charon-lift-nested-" .. hash.strhash128(table.concat(fixture, "")))
+        os.tryrm(root)
+        local frameworks = path.join(root, "sdk", "System", "Library", "Frameworks")
+        local fix, nested = path.join(frameworks, "Fix.framework", "Headers"),
+                               path.join(frameworks, "Fix.framework", "Frameworks", "Nested.framework", "Headers")
+        io.writefile(path.join(frameworks, "Foundation.framework", "Headers", "Foundation.h"), fixture[2])
+        io.writefile(path.join(fix, "Avail.h"), fixture[1])
+        io.writefile(path.join(fix, "Fix.h"), fixture[3])
+        io.writefile(path.join(nested, "Nested.h"), fixture[4])
+        io.writefile(path.join(nested, "Other.h"), fixture[5])
+        io.writefile(path.join(nested, "Sub", "Deep.h"), fixture[6])
+        io.writefile(path.join(root, "registry", "Fix.json"), fixture[7])
+        local json = import("core.base.json", {anonymous = true})
+        local lifted, failure
+        try {function ()
+            lifted = lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                                minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+        end, catch {function (why) failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK with a nested framework", failure, nil)
+        -- and it staged a copy of the nested header as well, which is the premise of the whole case
+        expect_equal(found, "the staged headers", tostring(lifted and lifted.headers), "2")
+        -- the overlay's structure, as written: the nested framework under the staged path a header of the outer
+        -- framework reaches it by, the staged copy where the lift wrote one and the SDK's own file where it did not
+        local vfs = path.join(root, "out", "vfs.yaml")
+        local overlay = os.isfile(vfs) and json.decode(io.readfile(vfs)) or {}
+        -- the SDK's own path carries the nested framework's staged header already (the rewrite's own roots); what is
+        -- new here is the staged tree's, which is where a staged header of the outer framework looks for it
+        local staged_headers = path.join(root, "out", "headers", "System", "Library", "Frameworks", "Fix.framework",
+                                         "Frameworks", "Nested.framework", "Headers")
+        local carried = {}
+        for _, entry in ipairs(overlay.roots or {}) do
+            if entry.name == staged_headers then
+                table.join2(carried, entry.contents or {})
+            end
+        end
+        local function carried_header(name)
+            for _, header in ipairs(carried) do
+                if header.name == name then
+                    return header
+                end
+            end
+        end
+        local function contents_of(name, field)
+            local header = carried_header(name)
+            return header and header[field]
+        end
+        local names = {}
+        for _, header in ipairs(carried) do
+            table.insert(names, tostring(header.name))
+        end
+        expect_equal(found, "the nested framework is carried at the path a staged header of the outer one reaches",
+                     table.concat(names, ","), "Nested.h,Other.h,Sub")
+        expect_equal(found, "its own header is the staged copy",
+                     contents_of("Nested.h", "external-contents"), path.join(staged_headers, "Nested.h"))
+        expect_equal(found, "the header the lift did not rewrite is the SDK's own file",
+                     contents_of("Other.h", "external-contents"), path.join(nested, "Other.h"))
+        local below = carried_header("Sub")
+        expect_equal(found, "and a folder below its Headers is carried as a folder",
+                     tostring(below and below.type) .. "/" .. tostring(below and #below.contents or 0), "directory/1")
+        expect_equal(found, "with the header in it the SDK's own",
+                     below and below.contents and below.contents[1] and below.contents[1]["external-contents"],
+                     path.join(nested, "Sub", "Deep.h"))
+        -- the expander's own overlay, which preprocesses the same umbrella out of the same staged headers and
+        -- carries the same nested frameworks at the staged tree it reads them from; the fixture stages a header
+        -- through it, so this is the second site and not a reading of the first
+        local expand = os.isfile(path.join(root, "out", "expand.yaml")) and json.decode(io.readfile(path.join(root, "out", "expand.yaml"))) or nil
+        local expanded = {}
+        for _, entry in ipairs((expand or {}).roots or {}) do
+            if entry.name == path.join(root, "out", "expand", "System", "Library", "Frameworks", "Fix.framework",
+                                       "Frameworks", "Nested.framework", "Headers") then
+                expanded = entry
+            end
+        end
+        expect_equal(found, "the expander's overlay carries the nested framework as well",
+                     tostring(expanded.type) .. "/" .. tostring(#(expanded.contents or {})), "directory/3")
+        -- and what that overlay is for: the import resolves, which is the wall the whole lift stopped at
+        local errors
+        try {
+            function ()
+                errors = os.iorunv(clang, {"-target", "armv7-apple-ios6.1.3", "-isysroot", path.join(root, "sdk"),
+                                           "-Wno-incompatible-sysroot", "-fsyntax-only", "-x", "objective-c",
+                                           path.join(root, "out", "umbrella.m"), "-ivfsoverlay", vfs})
+            end,
+            catch {
+                function (why) errors = tostring(why) end
+            }
+        }
+        expect_equal(found, "the import of the nested framework resolves over the overlay the lift wrote",
+                     (errors or ""):gsub("[\r\n]", " "), "")
+        os.tryrm(root)
+    end
+
+    -- A type the registry names itself, and a case of a type the registry names, are not types the headers alone
+    -- declare, and a name the registry does not implement keeps its release: the rule a class entry already follows
+    -- for the members of its surface. CoreML's MLMultiArrayDataType is what the rule is measured on - the 16.4 lift
+    -- refused "MLMultiArrayDataTypeFloat is inert and was lowered from iOS 14.0 to 6.1.3", and the type and its other
+    -- three cases beside it. The fixture declares two enumerations above the port's release and one implemented
+    -- function that names both, so the lift looks at both types: FixOpen has no row of its own and comes down whole
+    -- except the case a row keeps, and FixKind has a row of its own and nothing of it moves.
+    if not clang or not swiftc then
+        print("skipped: a type the registry names needs both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        local fixture = {"#define ios(version) ios, introduced=version\n" ..
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n",
+                         "@protocol NSObject @end\n@protocol NSCopying @end\n" ..
+                         "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n",
+                         "#import <Fix/Avail.h>\ntypedef enum FixOpen FixOpen;\nenum FixOpen {\n" ..
+                         "FixOpenPlain API_AVAILABLE(ios(9.0)),\nFixOpenHeld API_AVAILABLE(ios(9.0))\n};\n" ..
+                         "typedef enum FixKind FixKind;\nenum FixKind {\n" ..
+                         "FixKindPlain API_AVAILABLE(ios(9.0)),\nFixKindOne API_AVAILABLE(ios(9.0))\n};\n" ..
+                         "void FixTake(FixOpen open, FixKind kind) API_AVAILABLE(ios(9.0));\n",
+                         '[{"api": "FixTake", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixOpenHeld", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"},' ..
+                         '{"api": "FixKind", "kind": "enum", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumeration the port carries"},' ..
+                         '{"api": "FixKindOne", "kind": "constant", "introduced": "9.0", "minimum": "6.0", "status": "inert",' ..
+                         ' "effect": "a fixture entry", "reason": "a header-only enumerator the port carries"}]'}
+        local root = path.join(os.tmpdir(), "charon-lift-types-" .. hash.strhash128(table.concat(fixture, "")))
+        os.tryrm(root)
+        local headers = path.join(root, "sdk", "System", "Library", "Frameworks")
+        local fix = path.join(headers, "Fix.framework", "Headers")
+        io.writefile(path.join(headers, "Foundation.framework", "Headers", "Foundation.h"), fixture[2])
+        io.writefile(path.join(fix, "Avail.h"), fixture[1])
+        io.writefile(path.join(fix, "Fix.h"), fixture[3])
+        io.writefile(path.join(root, "registry", "Fix.json"), fixture[4])
+        local failure
+        try {function ()
+            lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                       minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+        end, catch {function (why) failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK whose registry names a type and a case of one", failure, nil)
+        -- the staged header is the answer: what came down and what kept its release
+        local staged = io.readfile(path.join(root, "out", "headers", "System", "Library", "Frameworks", "Fix.framework",
+                                            "Headers", "Fix.h")) or ""
+        local function at(name)
+            return staged:match(name .. " API_AVAILABLE%(ios%(([%d%.]+)%)%)") or "(no mark)"
+        end
+        expect_equal(found, "a type no row names comes down", at("FixOpenPlain"), "6.1.3")
+        expect_equal(found, "and the case of it a row keeps keeps its release", at("FixOpenHeld"), "9.0")
+        expect_equal(found, "a type the registry names itself does not come down",
+                     at("FixKindPlain"), "9.0")
+        expect_equal(found, "and neither does its case a row names", at("FixKindOne"), "9.0")
+        os.tryrm(root)
     end
 
     -- The three spellings that name a carried property, and the case that is the whole of this change: a row

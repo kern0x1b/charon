@@ -90,15 +90,18 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
 
-# side C: the port's appearance characteristics in a process that HAS a UIColor.  Mac Catalyst carries
-# UIKit in a macOS process, which is the only way both platforms' own colour class can answer the two
-# colour members - see color.m's header for why this is a third binary and not part of port.m.
+# side C: the port's appearance characteristics and PDFAnnotation's three colours and its font, in a
+# process that HAS a UIColor and a UIFont.  Mac Catalyst carries UIKit in a macOS process, which is the
+# only way both platforms' own colour class can answer them - see color.m's header for why this is a
+# third binary and not part of port.m.  PDFAnnotationColours11.m is on THIS line and not the macOS one for
+# the same reason: it is the only object of the port that imports UIKit.
 catalyst_sdk=$(xcrun --show-sdk-path)
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
     -target arm64-apple-ios15.0-macabi -isysroot "$catalyst_sdk" \
     -iframework "$catalyst_sdk/System/iOSSupport/System/Library/Frameworks" \
     -I "$port" "$here/color.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
+    "$port/PDFAnnotationColours11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
     "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
     "$port/PDFPageText11.m" "$port/PDFSelection11.m" "$port/Base14Widths11.m" \
@@ -113,7 +116,7 @@ set +e
 "$build/host-side" "$build"/fixtures/*.pdf > "$build/host.txt" 2>&1; hoststatus=$?
 "$build/port-side" "$build"/fixtures/*.pdf > "$build/port.txt" 2>&1; portstatus=$?
 : > "$build/color.txt"
-"$build/port-color-side" > "$build/color.txt" 2>&1; colorstatus=$?
+"$build/port-color-side" "$build"/fixtures/*.pdf > "$build/color.txt" 2>&1; colorstatus=$?
 set -e
 # each side's own status, not a pipeline's: a crash is a failure whatever the file says
 if [ "$hoststatus" -ne 0 ] || [ "$portstatus" -ne 0 ] || [ "$colorstatus" -ne 0 ]; then
@@ -121,7 +124,8 @@ if [ "$hoststatus" -ne 0 ] || [ "$portstatus" -ne 0 ] || [ "$colorstatus" -ne 0 
     exit 1
 fi
 # The Catalyst side must have answered something, or the merge below would silently leave the
-# appearance keys to a port side that cannot compile the type they hold.
+# appearance keys to a port side that cannot compile the type they hold - and it must have answered the
+# ANNOTATION colour keys too, which is the only place a UIColor exists for -[PDFAnnotation backgroundColor].
 if ! grep -q '^appearance.full.key.BG=' "$build/color.txt"; then
     echo "the Catalyst side printed no appearance key values; its output:"
     head -5 "$build/color.txt" | sed 's/^/    /'
@@ -202,21 +206,35 @@ def read(path, side):
 
 host, port = read(sys.argv[1], "host"), read(sys.argv[2], "port")
 
-# The appearance keys come from the CATALYST side, which is the only one of the three that has a
-# UIColor.  Its answers override the macOS port side's for those keys and only those, and the count is
-# printed in the verdict so a reader can see how much of the comparison came from the third binary.
-# Everything the Catalyst side prints is an appearance key: it prints nothing else by construction
-# (color.m has no other printf), which is the check that this override cannot reach anything else.
+# The appearance keys and the ANNOTATION COLOUR keys come from the CATALYST side, which is the only one of
+# the three binaries that has a UIColor and a UIFont.  Its answers override the macOS port side's for those
+# keys and only those, and the count is printed in the verdict so a reader can see how much of the
+# comparison came from the third binary.
+#
+# What it may print is a LIST, and the list is the check that this override cannot reach anything else: a
+# third binary whose answers were merged into the port's map could silently take over a document fact, so
+# every key it prints has to be one of the two namespaces it exists for.  Both are namespaced on purpose -
+# `appearance.' for the appearance-characters object and `.colours.' for -[PDFAnnotation]'s own four
+# members, whose keys carry `.colours.' and NOT `.page0.' because compare() reads any ".page0." key of four
+# numbers as a RECTANGLE and gives it a 0.001 tolerance, which is right for a rectangle and would hide the
+# third-decimal difference this family is about.
+CATALYST_NAMESPACES = ("appearance.", ".colours.")
 catalyst = read(sys.argv[3], "portcolor")
-unwanted = [k for k in catalyst if not k.startswith("appearance.")]
+unwanted = [k for k in catalyst if not any(s in k for s in CATALYST_NAMESPACES)]
 if unwanted:
-    print(f"MERGE REFUSED: the Catalyst side printed {len(unwanted)} key(s) that are not appearance"
-          f" keys, so overriding the port's answers with them would reach facts it was not built for:"
+    print(f"MERGE REFUSED: the Catalyst side printed {len(unwanted)} key(s) outside the namespaces it"
+          f" exists for, so overriding the port's answers with them would reach facts it was not built for:"
           f" {unwanted[:4]}")
     sys.exit(1)
 if not catalyst:
     print("MERGE REFUSED: the Catalyst side printed nothing, so every appearance key would be compared"
           " against a port side that has no UIColor to answer it")
+    sys.exit(1)
+if not [k for k in catalyst if ".colours." in k]:
+    print("MERGE REFUSED: the Catalyst side printed no annotation colour key, so -[PDFAnnotation"
+          " backgroundColor, -interiorColor, -fontColor and -font would be compared against a port side"
+          " that cannot compile UIColor or UIFont at all - which is the same silent gap the appearance"
+          " guard above exists for")
     sys.exit(1)
 port.update(catalyst)
 catalyst_facts = len(catalyst)
@@ -371,6 +389,7 @@ BOUNDARY_BASE14_REASON = (
 # a difference.
 EXPECTED_DIVERGENT = ("documentAttribute.supported", "page0.pageIndex.supported",
                      "view.window.supported")
+
 # and the ones this run cannot compare at all, with the reason it prints for each
 NOT_COMPARED = {
     "dataRepresentation.length": ("the port's own bytes against the host's REWRITTEN document, and a "
@@ -563,7 +582,6 @@ for key in \
     initoutline.class \
     initoutline.dest \
     initoutline.root \
-    initoutline.root \
     outline-collapsed.pdf.outline.label \
     outline-collapsed.pdf.outline.children \
     outline-collapsed.pdf.outline.isOpen \
@@ -597,6 +615,54 @@ for key in \
     cgfixture-pair-up.pdf.page0.string \
     cgfixture-lines.pdf.page0.string \
     cgfixture-lines.pdf.page0.numberOfCharacters \
+    widget-flags.pdf.page0.annotation0.flags.readOnly \
+    widget-flags.pdf.page0.annotation0.flags.multiline \
+    widget-flags.pdf.page0.annotation0.flags.isPasswordField \
+    widget-flags.pdf.page0.annotation0.flags.comb \
+    widget-flags.pdf.page0.annotation0.flags.allowsToggleToOff \
+    widget-flags.pdf.page0.annotation0.flags.radiosInUnison \
+    widget-flags.pdf.page0.annotation0.flags.listChoice \
+    widget-flags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation0.flags.activatableTextField \
+    widget-flags.pdf.page0.annotation5.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation6.flags.widgetControlType \
+    widget-flags.pdf.page0.annotation7.flags.listChoice \
+    widget-flags.pdf.page0.annotation12.flags.radiosInUnison \
+    widget-flags.pdf.page0.annotation4.flags.allowsToggleToOff \
+    widget-noflags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-allflags.pdf.page0.annotation0.flags.widgetControlType \
+    widget-allflags.pdf.page0.annotation0.flags.readOnly \
+    widget-fttx1.pdf.page0.annotations.count \
+    widget-ftch2.pdf.page0.annotations.count \
+    widget-ftch4.pdf.page0.annotations.count \
+    widget-ftch5.pdf.page0.annotations.count \
+    widget-ftbtn0.pdf.page0.annotation0.flags.activatableTextField \
+    act-goto-fit.pdf.page0.annotation0.flags.activatableTextField \
+    widget-t-literal.pdf.page0.annotation0.flags.fieldName \
+    widget-t-empty.pdf.page0.annotation0.flags.fieldName \
+    widget-t-merged.pdf.page0.annotation0.flags.fieldName \
+    widget-t-mergedname.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-DAstring.pdf.page0.annotation0.flags.fieldName \
+    widget-t-extra-DAstring.pdf.page0.annotations.count \
+    button-ap-states.pdf.page0.annotation0.state.onName \
+    button-ap-states.pdf.page0.annotation1.state.onName \
+    button-ap-states.pdf.page0.annotation2.state.onName \
+    button-ap-states.pdf.page0.annotation3.state.onName \
+    button-ap-states.pdf.page0.annotation4.state.onName \
+    button-as-alone.pdf.page0.annotation0.state.onName \
+    widget-flags.pdf.page0.annotation0.state.onName \
+    button-as-and-v.pdf.page0.annotation1.state.on \
+    button-as-and-v.pdf.page0.annotation2.state.on \
+    button-asoff-von.pdf.page0.annotation0.state.on \
+    button-asoff-von.pdf.page0.annotation3.state.on \
+    button-v-only.pdf.page0.annotation3.state.on \
+    button-v-only.pdf.page0.annotation2.state.on \
+    button-ap-states.pdf.page0.annotation1.state.on \
+    button-ap-states.pdf.page0.annotation3.state.on \
+    button-ap-states.pdf.page0.annotation4.state.on \
+    text-as.pdf.page0.annotation3.state.on \
+    button-merged-vyes-asyes.pdf.page0.annotation0.state.on \
     cgfixture-lines2.pdf.page0.string \
     cgfixture-lines2.pdf.page0.numberOfCharacters \
     cgfixture-words.pdf.page0.string \
@@ -633,7 +699,22 @@ for key in \
     act-goto-bad-page.pdf.find.line.backwards.0.boundsLast \
     cgfixture-gap.pdf.find.alpha.0.string \
     cgfixture-blank.pdf.find.alpha.0.string \
-    cgfixture-lead.pdf.find.bravo.0.range0
+    cgfixture-lead.pdf.find.bravo.0.range0 \
+    annotation-colours.pdf.colours.names \
+    annotation-colours.pdf.colours.nmbg-rgb.backgroundColor.space \
+    annotation-colours.pdf.colours.nmbg-rgb.backgroundColor.components \
+    annotation-colours.pdf.colours.nmbg-cmyk.backgroundColor.space \
+    annotation-colours.pdf.colours.nmbg-notarray.backgroundColor \
+    annotation-colours.pdf.colours.nmic-square-gray.interiorColor.space \
+    annotation-colours.pdf.colours.nmic-circle-cmyk.interiorColor.components \
+    annotation-colours.pdf.colours.nmda-fill-rgb.fontColor.space \
+    annotation-colours.pdf.colours.nmda-fill-rgb.fontColor.components \
+    annotation-colours.pdf.colours.nmda-fill-badcount.fontColor.components \
+    annotation-colours.pdf.colours.nmda-stroke-k.fontColor.space \
+    annotation-colours.pdf.colours.nmfont-courier-7.font.name \
+    annotation-colours.pdf.colours.nmfont-courier-7.font.size \
+    annotation-colours.pdf.colours.nmfont-abbrev-hebo.font.name \
+    annotation-colours.pdf.colours.nmfont-unknown.font.size
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

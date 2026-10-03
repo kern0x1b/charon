@@ -1,0 +1,71 @@
+# refusals.txt - what the system's own MPSGraph does with the questions of the gather family that
+# graph-cases.m cannot ask, one process each. It is the measurement behind the rows of the methods that take
+# their parameter fed and behind the rows of the ones the port refuses with NSInvalidArgumentException.
+#
+#   question  the exit status of the process (134 is SIGABRT, 139 is SIGSEGV)
+#   what      the text the framework's own diagnostic must carry, or - for a process that answers - the
+#             shape it answers
+#
+# run.sh asks each of these in a process of its own and fails a question whose exit status or whose
+# diagnostic is not the one written here, so a release that starts answering one of the five fed forms is as
+# much a failure as one that starts refusing another. facts/MetalPerformanceShadersGraph/Core.md carries what
+# each of them means and which row it is in.
+
+# The broadcast of an axis the shape makes WIDER than the operand's: the release answers its own eight
+# elements and then eight zeros, and the pattern the destination was filled with is not among them.
+broadcast-wider 0 4x4
+# An axis the shape ADDS at the front repeats the whole operand.
+broadcast-added 0 2x2x4
+# An aligned axis NARROWER than the operand's: the release keeps the operand's own extent and answers the
+# operand's bytes, which is what "the result takes the larger of the two extents" is measured on.
+broadcast-narrower 0 2x4
+# An extent of zero is a shape with no elements in it, and the release takes the process down building it.
+broadcast-zero-extent 134 device may not be nil
+
+# The five FED forms. Each takes the release down, so none of them is a case and each is a measurement in the
+# row of its own method.
+fed-flatten-axis 134 NDArray dimension length > INT_MAX
+fed-broadcast-shape 139 -
+fed-reverse-axes 134 non constant axes tensor
+fed-squeeze-axes 134 NDArray dimension length > INT_MAX
+fed-expand-axes 139 -
+
+# The forms the port refuses, each with the release's own words.
+squeeze-not-unit 134 Failed to infer result type(s)
+flatten-axis-outside 134 Failed to infer result type(s)
+expand-axis-outside 134 Failed to infer result type(s)
+# A transpose naming an axis outside the rank is the one the release does NOT refuse: it builds a tensor whose
+# shape is nil and writes nothing at all, which the port cannot reproduce and raises instead.
+transpose-axis-outside 0 (null)
+reverse-axis-outside 134 invalid axis: 5, axis must be in range
+# A permutation that is not a permutation of the operand's axes.
+transpose-short-permutation 134 perm tensor length must equal input tensor rank
+
+# The forms with an empty array or no axes at all, each of which the port answers and each of which says what
+# "none" means in this family - unlike the reduction family, where a nil is every axis and an empty array none.
+reverse-axes-empty 0 2x4
+squeeze-axes-empty 0 1x2x4
+expand-axes-empty 0 2x4
+# A transpose naming the same axis twice is the identity.
+transpose-same-axis 0 2x3x4
+
+# The reshape's own three questions. The fed form is a fed parameter like the five above and is asked here for
+# the same reason; the other two are the shapes the header's own words rule out.
+reshape-fed-shape 139 -
+# A volume that does not match: the release builds the tensor the caller asked for - the shape line prints 1x7 -
+# and its own compiler refuses it, "the result shape is not compatible with the input shape"
+# (MPSGraphUtilities.mm:310), and the process is gone.
+reshape-volume-mismatch 134 not compatible with the input shape
+# Two dynamic extents is not the one the header allows, and the release does not resolve it either: the shape
+# line prints -1x-1 and the NDArray assertion takes the process down.
+reshape-two-dynamic 134 NDArray dimension length > INT_MAX
+# And the one the header allows where the result type can be inferred unambiguously: a 2x4 into a single -1
+# answers a shape of 8 - a rank of one, which prints without an x - and the operand's own bytes.
+reshape-dynamic-only 0 8
+
+# The slice's four. A length of zero is a result of no elements, and the release builds the shape (2x0) and
+# then cannot make an NDArray for it; the other three are its own compiler's refusals.
+slice-length-zero 134 device may not be nil
+slice-start-past-end 134 start value 9 does not fit dimension size
+slice-stride-zero 134 stride cannot be 0
+slice-length-past-end 134 does not fit within the dimension size

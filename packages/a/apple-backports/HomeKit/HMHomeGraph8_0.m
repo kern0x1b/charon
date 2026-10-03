@@ -19,7 +19,12 @@
 
 @implementation HMRoom
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier;
+
+CHARON_HOMEKIT_NIL_INIT
 
 // The port's own designated initialiser; see CharonHomeKitConstruction.h for why this is
 // not -init and what the method-family attribute is for.
@@ -84,7 +89,12 @@ HMRoom *CharonHomeKitRoom(NSString *identifier, NSString *homeIdentifier)
 
 @implementation HMZone
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier;
+
+CHARON_HOMEKIT_NIL_INIT
 
 // The port's own designated initialiser; see CharonHomeKitConstruction.h for why this is
 // not -init and what the method-family attribute is for.
@@ -183,7 +193,12 @@ HMZone *CharonHomeKitZone(NSString *identifier, NSString *homeIdentifier)
 
 @implementation HMUser
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier;
+
+CHARON_HOMEKIT_UNAVAILABLE_INIT
 
 // The port's own designated initialiser; see CharonHomeKitConstruction.h for why this is
 // not -init and what the method-family attribute is for.
@@ -225,7 +240,12 @@ HMUser *CharonHomeKitUser(NSString *identifier, NSString *homeIdentifier)
 
 @implementation HMServiceGroup
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier;
+
+CHARON_HOMEKIT_NIL_INIT
 
 // The port's own designated initialiser; see CharonHomeKitConstruction.h for why this is
 // not -init and what the method-family attribute is for.
@@ -327,7 +347,12 @@ HMServiceGroup *CharonHomeKitServiceGroup(NSString *identifier, NSString *homeId
 
 @implementation HMActionSet
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
 @synthesize charon_identifier = _charon_identifier, charon_homeIdentifier = _charon_homeIdentifier;
+
+CHARON_HOMEKIT_NIL_INIT
 
 - (void)charon_setHomeIdentifier:(NSString *)homeIdentifier
 {
@@ -548,6 +573,10 @@ HMTrigger *CharonHomeKitTrigger(NSString *identifier, NSString *homeIdentifier)
 
 @implementation HMTimerTrigger
 
+// -init, as the release's own class answers it: the body read out of the
+// arm64e cache of iOS 16.0, and what it does is written down in
+// facts/HomeKit/HMAccessoryProfile.md. The header closes -init; Apple's class does not.
+CHARON_HOMEKIT_NIL_INIT
 - (instancetype)initWithName:(NSString *)name fireDate:(NSDate *)fireDate recurrence:(NSDateComponents *)recurrence
 {
     // HMTrigger's -init is unavailable in the release's header, so the timer trigger is built through

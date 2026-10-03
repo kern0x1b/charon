@@ -75,6 +75,21 @@ static UIVisualEffect *charon_separator_visual_effect(UIListSeparatorConfigurati
     [self setVisualEffect:charon_separator_visual_effect(other)];
 }
 
+// The equality the 14.5 object answers includes the effect: measured, a pair differing only in the effect
+// is NOT equal (isEqual 0), and two effects that are equal by value and not the same object ARE equal
+// (measured, isEqual 1) - so the comparison is by -isEqual: and not by identity, the same rule the colours
+// follow.
+- (BOOL)charon_visualEffectIsEqualTo:(UIListSeparatorConfiguration *)other
+{
+    UIVisualEffect *mine = charon_separator_visual_effect(self);
+    UIVisualEffect *theirs = charon_separator_visual_effect(other);
+    if (mine == theirs)
+        return YES;
+    if (!mine || !theirs)
+        return NO;
+    return [mine isEqual:theirs];
+}
+
 // The host's key is the property's own name, read out of the host's plist. The class of the value is
 // declared for the unarchiver rather than left to the archiver: +supportsSecureCoding is YES on the host
 // and this object answers YES, so the decode has to name a class the value can be.

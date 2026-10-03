@@ -1499,6 +1499,116 @@
    "source": "the arm64e cache of iOS 16.0, read with the repository's own tools/corpus/objc-inventory.lua: the class has no -init in its own instance list; the port's own folder for the definition that is gone",
    "reason": "Apple's own class carries no -init of its own - the arm64e cache of iOS 16.0, read with the repository's own tools/corpus/objc-inventory.lua: the class has no -init in its own instance list - and the port carried one that invented a fresh UUID for the event. That was a value no framework produces: on a device an event's identifier is the framework's, and an event made through -init has none. It is removed: nothing in the tree called it (every event the model builds goes through HMEvent's own -charon_initWithStore:identifier:), and the rule the coordinator settled on 2026-10-03 (coordination/wave-2026-10-03/QUEUE.md): a definition would put the selector in the port's metadata where Apple's has none, changing what the class is and answering the caller exactly what NSObject's already answers",
    "facts": "facts/HomeKit/HomeKit.md"
+  },
+  {
+   "api": "-[HMActionSet init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMActionSet alloc] init], or [HMActionSet new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0ea29c, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMHome init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMHome alloc] init], or [HMHome new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeManager8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0142c0, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMRoom init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMRoom alloc] init], or [HMRoom new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19cfc4f90, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMServiceGroup init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMServiceGroup alloc] init], or [HMServiceGroup new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19cfd76b8, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMTimerTrigger init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMTimerTrigger alloc] init], or [HMTimerTrigger new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19cfe30dc, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMZone init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a caller that reaches [[HMZone alloc] init], or [HMZone new] - which is NSObject's +new, = [[self alloc] init], and the metaclass of this class carries no +new of its own in the same cache - gets nil. The port makes one through its own -charon_initWithStore:identifier:, which is what the model calls",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_NIL_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which returns nil",
+   "reason": "Apple's own class carries -init in its instance list and answers nil. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0a3e1c, is seven instructions: it calls _objc_release with the receiver in x0 - the stub for it sits in the cache's own region between the images and resolves to _objc_release through that call - and then moves 0 into x0, which is [self release]; return nil. facts/HomeKit/HMAccessoryProfile.md carries the body, the address and the name the call resolves to, read with tools/objc-method-imps.lua. The port answers nil, which is what that body makes observable; the [self release] has no ARC equivalent and the port does not perform one, so that half of the body is stated rather than approximated.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMAccessControl init]",
+   "kind": "method",
+   "introduced": "11.2",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "[[HMAccessControl alloc] init], and [HMAccessControl new] through NSObject's +new, raise NSInternalInconsistencyException whose reason is \"init is unavailable\"",
+   "source": "HomeKit/HMAccessControl11_2.m through CHARON_HOMEKIT_UNAVAILABLE_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which raises NSInternalInconsistencyException with the reason built from the selector",
+   "reason": "Apple's own class carries -init in its instance list and raises. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0dcc84, sends _cmd to _NSStringFromSelector, builds the reason with +[NSString stringWithFormat:] - the format is a __cfstring of HomeKit's own __AUTH_CONST at 0x1dff71458 whose own length field is 17, and 17 is the length of \"%@ is unavailable\" - and hands an NSException to _objc_exception_throw through +[NSException exceptionWithName:reason:userInfo:] with userInfo nil. The name is NSInternalInconsistencyException: a __cfstring of CoreFoundation at 0x1de2bc558, read through two hops. So a caller sees the framework's own sentence for the selector, \"init is unavailable\", and the port builds it from the selector rather than writing it out, because that is how the framework builds it. facts/HomeKit/HMAccessoryProfile.md carries the body, the literal and every name in it.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMUser init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "[[HMUser alloc] init], and [HMUser new] through NSObject's +new, raise NSInternalInconsistencyException whose reason is \"init is unavailable\"",
+   "source": "HomeKit/HMHomeGraph8_0.m through CHARON_HOMEKIT_UNAVAILABLE_INIT, defined in HomeKit/CharonHomeKitConstruction.h, which raises NSInternalInconsistencyException with the reason built from the selector",
+   "reason": "Apple's own class carries -init in its instance list and raises. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0aef98, sends _cmd to _NSStringFromSelector, builds the reason with +[NSString stringWithFormat:] - the format is a __cfstring of HomeKit's own __AUTH_CONST at 0x1dff71458 whose own length field is 17, and 17 is the length of \"%@ is unavailable\" - and hands an NSException to _objc_exception_throw through +[NSException exceptionWithName:reason:userInfo:] with userInfo nil. The name is NSInternalInconsistencyException: a __cfstring of CoreFoundation at 0x1de2bc558, read through two hops. So a caller sees the framework's own sentence for the selector, \"init is unavailable\", and the port builds it from the selector rather than writing it out, because that is how the framework builds it. facts/HomeKit/HMAccessoryProfile.md carries the body, the literal and every name in it.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMAction init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "[[HMAction alloc] init] and [HMAction new] answer an action with a fresh uniqueIdentifier and a record of its own, which is what the release's own -init builds",
+   "source": "HomeKit/HMAction8_0.m: -init writes CharonHomeKitNewIdentifier() into the identifier and the record",
+   "reason": "Apple's own class carries -init in its instance list and constructs. The body, read out of the arm64e cache of iOS 16.0 at 0x19d0b62d8, sends UUID to NSUUID - the class read out of HomeKit's own data, the selector out of its own selector table - and sends initWithUUID: to self, so an action made through it carries an identifier nobody supplied, which is what a fresh action has, and it neither raises nor answers nil. facts/HomeKit/HMAccessoryProfile.md carries the body and the names in it. The port's own -init already was that shape: a fresh identifier out of CharonHomeKitNewIdentifier() and a record of its own in the store.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
+  },
+  {
+   "api": "-[HMHomeManager init]",
+   "kind": "method",
+   "introduced": "8.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "[[HMHomeManager alloc] init] and [HMHomeManager new] answer a manager whose homes, rooms, zones, users, actions and service groups are the shared store's",
+   "source": "HomeKit/HMHomeManager8_0.m: -init is [super init], and +new is not defined by the port",
+   "reason": "Apple's own class carries -init in its instance list and constructs. The body, read out of the arm64e cache of iOS 16.0 at 0x19d048be0, sends defaultConfiguration to HMHomeManagerConfiguration and initWithHomeMangerConfiguration: to self - Apple's own spelling of that word - so the manager comes up on its default configuration rather than bare, and it neither raises nor answers nil. What that configuration holds on a device is the daemon's settings for the process; the port's manager reads and writes the shared store, which is the same role, and every one of its accessors already answers from it, so the default configuration is what this object answers from and there is nothing else for -init to store. facts/HomeKit/HMAccessoryProfile.md carries the body and the names in it.",
+   "facts": "facts/HomeKit/HMAccessoryProfile.md"
   }
  ]
 }

@@ -195,6 +195,40 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
     (void)depth;
 }
 
+
+// The nine /Ff bit members, one line each and each with its OWN value, because a line carrying all nine
+// registers as one key - which is how the outline facts were lost the first time round.
+// The fixtures whose widgets a PDF STRING /T names - host.m's copy of this comment carries the list and
+// why it is spelled out rather than a prefix test, and it is the same list on both sides.
+static BOOL charonFixtureNamesItsWidgets(const char *name)
+{
+    static const char *const named[] = {
+        "widget-t-literal", "widget-t-empty", "widget-t-merged", "widget-t-mergedname",
+    };
+    for (unsigned i = 0; i < sizeof(named) / sizeof(*named); i++)
+        if (strncmp(name, named[i], strlen(named[i])) == 0 && name[strlen(named[i])] == '.')
+            return YES;
+    return strncmp(name, "widget-t-extra-", 15) == 0;
+}
+
+static void printAnnotationFlagFacts(const char *prefix, PDFAnnotation *annotation)
+{
+    printf("%s.flags.readOnly=%d\n", prefix, (int)[annotation isReadOnly]);
+    printf("%s.flags.multiline=%d\n", prefix, (int)[annotation isMultiline]);
+    printf("%s.flags.isPasswordField=%d\n", prefix, (int)[annotation isPasswordField]);
+    printf("%s.flags.comb=%d\n", prefix, (int)[annotation hasComb]);
+    printf("%s.flags.allowsToggleToOff=%d\n", prefix, (int)[annotation allowsToggleToOff]);
+    printf("%s.flags.radiosInUnison=%d\n", prefix, (int)[annotation radiosInUnison]);
+    printf("%s.flags.listChoice=%d\n", prefix, (int)[annotation isListChoice]);
+    printf("%s.flags.widgetControlType=%ld\n", prefix, (long)[annotation widgetControlType]);
+    printf("%s.flags.activatableTextField=%d\n", prefix, (int)[annotation isActivatableTextField]);
+    if (charonFixtureNamesItsWidgets(prefix))
+        printf("%s.flags.fieldName=%s\n", prefix,
+               [annotation fieldName] ? [[annotation fieldName] UTF8String] : "(nil)");
+    printf("%s.state.onName=%s\n", prefix, [[annotation buttonWidgetStateString] UTF8String]);
+    printf("%s.state.on=%ld\n", prefix, (long)[annotation buttonWidgetState]);
+}
+
 // ---- the action family and PDFDestination -------------------------------------------------------
 //
 // The same keys, the same order and the same prints as host.m's, on the port's own classes.  Two things
@@ -646,6 +680,7 @@ int main(int argc, char **argv)
                     PDFAnnotation *each = first.annotations[a];
                     char prefix[512];
                     snprintf(prefix, sizeof(prefix), "%s.page0.annotation%u", name, a);
+                    printAnnotationFlagFacts(prefix, each);
                     printActionFacts(prefix, [each action]);
                     printDestinationFacts(prefix, [each destination]);
                 }
