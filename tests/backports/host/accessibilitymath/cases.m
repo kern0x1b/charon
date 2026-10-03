@@ -89,6 +89,30 @@ int main(void)
         out(@"cc.marked.label.underlines", @(underlines(markedContent.attributedLabel)));
         out(@"cc.marked.attributedLabel.underlines", @(underlines(markedContent.attributedLabel)));
         out(@"cc.marked.value.underlines", @(underlines(markedContent.attributedValue)));
+        // Both factories COPY what they are handed. Measured on the host: a mutable string given to
+        // either factory and mutated afterwards leaves what the content answers unchanged, so a caller
+        // that reuses a buffer cannot change a content it has already handed to the system. That is a
+        // rule about object identity over time and not about the text, and a port that held the
+        // caller's string instead of copying it would answer differently for as long as the caller
+        // kept the string alive - so the case mutates and then asks.
+        NSMutableString *mutableLabel = [NSMutableString stringWithString:@"Orientation"];
+        NSMutableString *mutableValue = [NSMutableString stringWithString:@"Portrait"];
+        AXCustomContent *copied =
+            [AXCustomContent customContentWithLabel:mutableLabel value:mutableValue];
+        [mutableLabel appendString:@" and mutated"];
+        [mutableValue appendString:@" and mutated"];
+        out(@"cc.plain.factory.copies.label", copied.label);
+        out(@"cc.plain.factory.copies.value", copied.value);
+        NSMutableAttributedString *mutableLabelA = [[NSMutableAttributedString alloc] initWithString:@"Shutter"];
+        NSMutableAttributedString *mutableValueA = [[NSMutableAttributedString alloc] initWithString:@"1/250"];
+        AXCustomContent *copiedAttr =
+            [AXCustomContent customContentWithAttributedLabel:mutableLabelA attributedValue:mutableValueA];
+        [mutableLabelA.mutableString appendString:@" and mutated"];
+        [mutableValueA.mutableString appendString:@" and mutated"];
+        out(@"cc.attr.factory.copies.label", copiedAttr.label);
+        out(@"cc.attr.factory.copies.value", copiedAttr.value);
+        out(@"cc.attr.factory.copies.is.not.the.caller.s.object", @(copiedAttr.attributedLabel == mutableLabelA));
+
         // importance: the header's default, and the two numbers the enum gives
         out(@"cc.importance.default.number", @(AXCustomContentImportanceDefault));
         out(@"cc.importance.high.number", @(AXCustomContentImportanceHigh));

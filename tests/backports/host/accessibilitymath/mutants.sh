@@ -31,6 +31,17 @@
 #   M11 the coder does not carry the importance, so a High content comes back at the default
 #   M12 the coder drops the attributed strings, so both plain spellings come back nil
 #   M13 the description names the importance, which the system's own description does not print
+# The rule that +customContentWithLabel:value: and +customContentWithAttributedLabel:attributedValue:
+# COPY what they are given has no mutant here, and the reason is worth writing down rather than leaving
+# as a gap. Measured: a mutable string given to either factory and mutated afterwards leaves what the
+# host's own content answers unchanged (four cases, `cc.plain.factory.copies.*` and
+# `cc.attr.factory.copies.*`, on both sides, 0 undeclared differences), so the port copies too. The only
+# mutation that breaks it is to store the caller's NSString under the ivar the header types as an
+# NSAttributedString, and that raises in -label rather than printing a different value - measured: the
+# mutant dies with `-[NSObject(NSObject) __retain_OA]` from `-[CharonPortAXCustomContent label] + 36`.
+# This suite counts a mutant that dies any way other than an undeclared difference plus the diff as a
+# mutant that did not die in the required way, which is the rule M13's comment below is about. So the
+# rule is held by the comparison against the host and there is no mutant for it.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
