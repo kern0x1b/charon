@@ -27,9 +27,6 @@
 
 #import "CharonMPSGraph.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
 @implementation MPSGraph (CharonMPSGraphTensorShapeOps182)
 
 // The data types a fed index is refused in, and why: a start, an end, a stride and a size are all indices,
