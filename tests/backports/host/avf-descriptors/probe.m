@@ -83,6 +83,13 @@ static void row(const char *key, NSString *v)
     } @catch (NSException *e) {
         text = NO_ORACLE;
     }
+    // A VALUE THAT SPANS LINES IS INDENTED, so a table is one row header per line and nothing else. An
+    // NSArray describes itself as "(\n    en\n)" and that closing bracket sits at column 0, which is where a
+    // row's key starts: a reader that took every line at column 0 for a row read this table's rows wrongly,
+    // truncated the two arrays below the criteria row to their first line, and reported the mutant aimed at
+    // that row as "the mutation left the tables equal". The continuation lines are indented here so no reader
+    // has to know what -description looks like to tell a row from the rest of a row's value.
+    text = [text stringByReplacingOccurrencesOfString:@"\n" withString:@"\n  "];
     printf("%-76s = %s\n", key, [text UTF8String] ?: "(unprintable)");
     fflush(stdout);
 }

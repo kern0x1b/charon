@@ -74,12 +74,20 @@ PERTURB
         # scenario the host cannot run here, so its rows carry the marker, and a join that skipped them
         # before comparing hid the port. The plant is in the port's own getter for what it STORES, so the
         # row's value moves and nothing else does.
+        #
+        # IT READS THE STORED OBJECT, NOT ITSELF. The replacement used to be
+        # `[self.charon_preferredLanguages count] ? @[@"PLANTED"] : @[]`, which is a call into the very
+        # getter it was substituting for: the probe builds a criteria object through the factory, reads
+        # -preferredLanguages, and the process died of unbounded recursion (SIGSEGV) before a single row was
+        # written, so this mutant could never have fired and the run said "the port probe did not run" rather
+        # than that. A plant has to change the value without changing the shape.
         python3 - "$build/src/AVPlayerMediaSelectionCriteria7.m" <<'PERTURB'
 import sys
 path = sys.argv[1]
 text = open(path).read()
 before = 'return objc_getAssociatedObject(self, "charon.avf.criteria.preferredLanguages") ?: @[];'
-after = 'return [self.charon_preferredLanguages count] ? @[@"PLANTED"] : @[];'
+after = ('return [objc_getAssociatedObject(self, "charon.avf.criteria.preferredLanguages") count] '
+         '? @[@"PLANTED"] : @[];')
 if text.count(before) != 1:
     raise SystemExit("the mutant target is not unique (%d matches), so this run proves nothing" % text.count(before))
 open(path, "w").write(text.replace(before, after))
@@ -153,6 +161,12 @@ else
     "$build/port" > "$build/port.table" 2> "$build/port.stderr" || { echo "FAIL: the port probe did not run"; head -10 "$build/port.stderr"; exit 1; }
 fi
 
+# WHICH CLASSES THE PORT DOES NOT CARRY is READ from the registry below rather than listed here, so the
+# eleven names the probe asks about cannot drift away from the rows that record them, and a name the
+# registry says nothing about is compared and goes red.
+reg=$root/packages/a/apple-backports/registry/AVFoundation
+[ -d "$reg" ] || { echo "FAIL: no AVFoundation registry at $reg, so a row about a class the port does not carry cannot be told from a defect"; exit 1; }
+
 # The baseline is the port's own UNMUTATED table, written beside the build directory (which is wiped
 # on every run) and read by the join for the port-only rows. A mutant with no baseline beside it is a
 # failure: it would be judging a mutation against nothing.
@@ -193,7 +207,11 @@ if [ -z "$rows_host" ] || [ -z "$rows_port" ]; then
     exit 1
 fi
 for side in host port; do
-    rows=$(grep -c ' = ' "$build/$side.table" || true)
+    # ONE ROW PER LINE, and the same rule the join below reads the table with: a line that does not begin with
+    # a space. probe.m indents the lines of a value that spans lines, so a line at column 0 is a row, and
+    # counting " = " anywhere in a line would also count a continuation line of a value that happens to
+    # contain that pair.
+    rows=$(grep -c '^[^ ].* = ' "$build/$side.table" || true)
     if [ "$side" = host ]; then want=$rows_host; else want=$rows_port; fi
     if [ "$rows" -ne "$want" ]; then
         echo "FAIL: the $side table has $rows rows but the probe reported emitting $want on that side,"
@@ -220,7 +238,8 @@ AVMediaSelection RESPONDS selectedMediaOptions	the header declares it; this host
 AVMediaSelection RESPONDS mediaSelectionGroups	the header declares it; same measurement - the host's own list has the one selector, and an instance answers no to this
 ALLOWED
 
-counts=$(python3 - "$build/host.table" "$build/port.table" "$baseline_dir/port.baseline" "$build/rows.log" "$build/allowed.tsv" <<'PYEOF'
+counts=$(python3 - "$build/host.table" "$build/port.table" "$baseline_dir/port.baseline" "$build/rows.log" "$build/allowed.tsv" "$reg" <<'PYEOF'
+import json
 import os
 import sys
 
@@ -232,19 +251,71 @@ NO_ORACLE = "no-oracle-forwarding-object"
 # NO_ORACLE, which describes the port.
 NOT_ON_THIS_HOST = "scenario-not-applicable-on-this-host"
 
+# WHICH CLASSES THE PORT DOES NOT CARRY, and this is READ, never listed. A row the probe writes under a
+# class name is compared against the host unless the registry says the port carries no class of that name,
+# and the row that says so travels with the row's own reason: `absent` is a class the release does not have
+# and the port does not make one, `ignored` is a class the release carries itself. Eleven class names typed
+# into this script is how the list and the tree drift apart without either noticing, and a class the probe
+# asks about that the registry says nothing about is excused by nothing at all: it is compared, and it goes
+# red.
+def not_carried(registry_dir):
+    classes = {}
+    for name in sorted(os.listdir(registry_dir)):
+        if not name.endswith(".json"):
+            continue
+        for entry in json.load(open(os.path.join(registry_dir, name))).get("entries", []):
+            if entry.get("kind") == "class" and entry.get("status") in ("absent", "ignored"):
+                classes[entry["api"]] = (entry["status"], entry.get("reason") or "")
+    return classes
+
+# WHAT "THE PORT DOES NOT CARRY IT" LOOKS LIKE, per row shape. Every shape is asked for explicitly, and a
+# shape this list does not know is NOT excused: the row is compared like any other, so a row of a kind
+# nobody wrote a case for fails rather than passing.
+def carried_nothing(key, value):
+    what = key.split(None, 1)[1] if " " in key else ""
+    head = what.split(None, 1)[0] if what else ""
+    if head == "PRESENT":
+        return value == "NO"
+    if head == "SUPERCLASS":
+        return value == "(no class)"
+    if head in ("ALLOC-INIT", "RESPONDS", "METHOD"):
+        return value in ("no", "does not respond")
+    return False
+
 def load(path):
-    rows = {}
-    if not path:
-        return rows
+    """{row key: value} for a table, and a value MAY SPAN LINES.
+
+    A row is a line that does not begin with a space, because probe.m indents every line of a value that
+    describes itself across lines - an NSArray is "(\\n    en\\n)" and that closing bracket sits at column 0,
+    which is where a row's key starts. Reading line by line instead, as this did, truncated such a value to
+    its first line, so two tables whose arrays held DIFFERENT strings compared equal: the mutant aimed at the
+    criteria marker row - the one this harness exists to be able to prove fires - reported "the mutation left
+    the tables equal, so this check cannot fail and proves nothing", and the run was green with the port
+    storing "PLANTED" beside a baseline that said "en". The same rule is what the row count above uses.
+    """
+    rows, key, value = {}, None, []
     for line in open(path):
-        if " = " in line:
-            key, _, value = line.rstrip("\n").partition(" = ")
-            rows[key.strip()] = value.strip()
+        # The probe's own last line, "rows: N plants: M", is not a row and is not part of the last row's
+        # value either. run.sh reads the count off it above; appended to the final row it made two tables
+        # whose ROWS agree compare unequal the moment the plant count differs, which is how plant-one
+        # reported two differing rows for the one it plants.
+        if line.startswith("rows: "):
+            break
+        if line[:1] not in (" ", "") and " = " in line:
+            if key is not None:
+                rows[key] = "\n".join(value).strip()
+            key, _, first = line.rstrip("\n").partition(" = ")
+            key, value = key.strip(), [first.strip()]
+        elif key is not None:
+            value.append(line.rstrip("\n"))
+    if key is not None:
+        rows[key] = "\n".join(value).strip()
     return rows
 
 host = load(sys.argv[1])
 port = load(sys.argv[2])
 base = load(sys.argv[3]) if len(sys.argv) > 3 else {}
+unc = not_carried(sys.argv[6]) if len(sys.argv) > 6 and os.path.isdir(sys.argv[6]) else {}
 # The differing rows go to a FILE and only the two counts come back on stdout: mixed output here made
 # `set --` bind a diagnostic line as the count, and `set -u` then failed on $2.
 allowed_more = {}
@@ -260,6 +331,7 @@ differs = 0
 portonly = 0
 inapplicable = 0
 allowed = 0        # rows where the port answers a header-declared member and this host does not
+notcarried = 0     # rows about a class the registry says the port carries no class of its own for
 for k in set(host) | set(port):
     hv, pv, bv = host.get(k), port.get(k), base.get(k)
     # A ~ row is PORT-ONLY: it is about a value the port stores, for which there is no host oracle,
@@ -304,12 +376,34 @@ for k in set(host) | set(port):
             % (k, hv, pv, bv, allowed_more[k]))
         differs += 1
         continue
+    # A CLASS THE PORT DOES NOT CARRY. Both sides were asked the same question and the host has the class while
+    # the port answers "not there": that is the port's answer rather than a defect - but only for a class the
+    # registry says the port carries no class of its own for, and the row that says so is named. A row the two
+    # sides agree on is never routed here, so the exemption's surface is exactly the set of rows that differ.
+    # The port's own answer is still held against its baseline, so a change here is reported and the run goes
+    # red; and a port that DOES carry the class has to answer the host, which is what carried_nothing()
+    # failing on this row means.
     if hv != pv:
-        say("DIFFERS    %-70s host=[%s] port=[%s] baseline=[%s]\n" % (k, hv, pv, bv))
-        differs += 1
+        row = unc.get(k.split(None, 1)[0])
+        if row is None:
+            say("DIFFERS    %-70s host=[%s] port=[%s] baseline=[%s]\n" % (k, hv, pv, bv))
+            differs += 1
+        elif pv is None or not carried_nothing(k, pv):
+            say("CARRIES-IT %-70s host=[%s] port=[%s] - the registry says %s, so the port does not carry this\n"
+                "                  class and its answer has to be NO / (no class) / no / does not respond\n"
+                % (k, hv, pv, row[0]))
+            differs += 1
+        elif bv is not None and pv != bv:
+            say("CARRIED-ANYWAY %-66s host=[%s] port=[%s] baseline=[%s] - the registry says %s, so the port\n"
+                "                  carries no such class and its answer must be the one below\n"
+                % (k, hv, pv, bv, row[0]))
+            differs += 1
+        else:
+            notcarried += 1
+            say("NOT-CARRIED %-69s host=[%s] port=[%s] - registry says %s: %s\n" % (k, hv, pv, row[0], row[1]))
 if report is not sys.stdout:
     report.close()
-print("%d %d %d %d" % (differs, portonly, allowed, inapplicable))
+print("%d %d %d %d %d" % (differs, portonly, allowed, inapplicable, notcarried))
 PYEOF
 )
 set -- $counts
@@ -317,8 +411,9 @@ differs_n=$1
 portonly_n=$2
 allowed_n=$3
 inapplicable_n=$4
+notcarried_n=$5
 [ -s "$build/rows.log" ] && cat "$build/rows.log"
-echo "rows that differ: $differs_n   port-only rows (no host oracle, held against the baseline): $portonly_n   allowed (the port answers more): $allowed_n   inapplicable here (the scenario did not happen on this host): $inapplicable_n"
+echo "rows that differ: $differs_n   port-only rows (no host oracle, held against the baseline): $portonly_n   allowed (the port answers more): $allowed_n   inapplicable here (the scenario did not happen on this host): $inapplicable_n   not carried (the registry says the port has no such class): $notcarried_n"
 
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     if [ "$differs_n" = 0 ]; then
