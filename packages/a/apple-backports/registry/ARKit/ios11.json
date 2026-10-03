@@ -1799,17 +1799,6 @@
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
-      "api": "+[ARSkeletonDefinition new]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, and no class does: `+new` is in the OWN class selector list of 0 of the 143137 classes of the arm64e shared cache of iOS 16.0, because +new is NSObject's and is inherited rather than redeclared - the same read finds 28851 classes that define `-init` of their own. The port defines none",
-      "effect": "no +new is defined on ARSkeletonDefinition: the inherited +new of NSObject is what a call reaches, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory: 0 of 143137 classes carry `+new` in their own class selector list. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
-    },
-    {
       "api": "+[ARVideoFormat new]",
       "kind": "method",
       "introduced": "11.3",
@@ -2115,17 +2104,6 @@
       "facts": "facts/ARKit/ARKit.md",
       "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeleton3D's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
       "effect": "no -init is defined on ARSkeleton3D: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
-      "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
-    },
-    {
-      "api": "-[ARSkeletonDefinition init]",
-      "kind": "method",
-      "introduced": "13.0",
-      "minimum": "6.0",
-      "status": "absent",
-      "facts": "facts/ARKit/ARKit.md",
-      "reason": "Apple's ARKit does not define it, measured rather than read off a header: `-init` is NOT in ARSkeletonDefinition's own instance selector list in ARKit of the arm64e shared cache of iOS 16.0. The 16.4 header marks it NS_UNAVAILABLE and where the header and Apple's own metadata agree the port follows the metadata: defining it would put a selector in the port's class that Apple's class does not have, changing no behaviour - alloc reaches the -init NSObject inherits either way - and moving a status",
-      "effect": "no -init is defined on ARSkeletonDefinition: respondsToSelector: answers NO for it, an unchecked call raises, and alloc reaches the -init NSObject inherits, which is what it reaches in Apple's ARKit too",
       "source": "ARKit of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory. The controls of that read, because a reader that answered nothing would answer this too: 28851 of the cache's classes carry `-init` in their own instance list and NSObject carries it too, so a class's own methods are visible"
     },
     {
