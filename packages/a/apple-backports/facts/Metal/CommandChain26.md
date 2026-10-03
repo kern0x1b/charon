@@ -249,3 +249,50 @@ nothing ran is the same defect as one that fails for the wrong reason.
 * **`dlsym` READ THE ADDRESS OF A VARIABLE AS AN OBJECT POINTER.** The error domain's value was first
   fetched with `dlsym` and `[(__bridge id)symbol description]`, which is a Bus error before any output at
   all. It is declared through an asm label now, which reaches the exported variable itself.
+
+## The port's queue, and what is still unverified about it
+
+`Metal/MTL4CommandQueue26.m` carries the Metal 4 queue: the class itself, the device's two factories
+and the capture scope over one. It is a **separate file from the two descriptors** because it imports
+`CharonMetal.h`, which reaches `OpenGLES/EAGL.h` — so the descriptors are host-measurable and this is
+not, and the split is the honest shape of the thing:
+
+```
+$ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandChain26.m   -> builds on a host
+$ clang -target arm64-apple-macos26.0 ... -fsyntax-only MTL4CommandQueue26.m   -> does NOT build on a host, as it must not
+```
+
+Both files compile for the device with **0 diagnostics**.
+
+**The queue is the port's own `CharonMetalQueue` under a Metal 4 name.** There is one queue in this port
+and it is the one that holds the EAGL context every draw goes through, so a Metal 4 caller asking for a
+Metal 4 queue gets the queue that works. `device` answers the port's shared device — the same answer a
+Metal 3 caller gets — and `label` is nil on a fresh queue and copied when set.
+
+**`commit:count:` COMMITS rather than refusing**, through to the queue underneath, and the C array is
+spelled as MTL4CommandQueue.h:231 declares it. That is the row whose three earlier answers were all
+wrong, and the measured answer is that the call returns.
+
+**Every other member of the protocol is refused by name**: the residency sets, the sparse buffer and
+texture mappings, and the event and drawable waits and signals. Each names the facility it would need —
+a residency set, an `MTLHeap`, an `MTLEvent`, a drawable of the queue's own — and this port has none of
+them. **There is no `-waitForCommandBuffers:`**, because Metal 4's queue has none either.
+
+### What is NOT verified, and it is not a small thing
+
+**The device case is WRITTEN AND HAS NOT BEEN RUN.** `tests/backports/device/metalchain-expectations.h`
+holds Apple's fourteen measured answers as constants, each naming the header line it came from, and
+`tests/backports/device/metalchain.m` holds the port to them — the same shape
+`tests/backports/host/metalblit/` records into `tests/backports/device/metalblit-expectations.h`.
+
+It has not been run because **no device is attached** (`idevice_id -l` prints nothing) and I did not
+start an emulator run: a gate is using this machine, and an emulator run is a heavy job that goes
+through `heavy.sh` and takes a slot from the gate. So the five queue rows carry the honest wording:
+
+> the CHECK against those expectations is the device case `tests/backports/device/metalchain.m` — and that
+> case is WRITTEN AND NOT YET RUN, so nothing here claims it green
+
+`Metal/MTL4CommandChain26.m` and `Metal/MTL4CommandQueue26.m` compile clean, the host differential over
+the two descriptors is green with its two mutants red, and release-split puts each object in one
+release. **What is unverified is the port's queue against the fourteen expectations**, and that is a
+device run away.
