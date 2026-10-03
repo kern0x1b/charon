@@ -706,12 +706,121 @@ So the port answers each `+new` with NSObject's own `+new`, reached through its 
 reason the `-init` above is: the header forbids naming the selector. `INObject` is in that table as
 the control, and it is the one class of the four whose header marks nothing.
 
+## What the host was measured to answer, on all 110 of them
+
+The twenty-one above were measured by `tests/backports/host/intents/init-rows.m`, which prints its
+table and compares it against nothing: the other ninety were "the same rule applied to the same
+header, which is a claim and not a measurement", and the `source` of their 73 registry rows said so
+in as many words — that the per-class harness "is OWED, and is not in the tree". That claim was
+false of the tree and is now discharged: `sh tests/backports/host/intents-init/run.sh` passes with
+111 golden lines and 0 differing, and the plant is red.
+
+`tests/backports/host/intents-init/` is the harness that measures all of them, and it is built to be
+checked rather than read. Three runs, each worthless if the one before it did not pass:
+
+    $ sh tests/backports/host/intents-init/run.sh
+    host   macOS 27.0 build 26A428, arm64
+    guard  111 implemented -init rows in registry/Intents, 111 in init-classes.inc, 111 in expected.txt
+
+    provenance: the control, and what a zero looks like when it is real
+    control, 4 classes a blind reader would miss or invent:
+      NSObject / NSString / INCar / INListCarsIntent          found
+
+    the forwarding trampoline, and three selectors beside it:
+      +[INSendMessageAttachment noSuchSelector:]             _objc_msgForward    libobjcMsgSend.dylib
+      +[INSendMessageAttachment attachmentWithAudioMessageFile:]
+                                        +[INSendMessageAttachment attachmentWithAudioMessageFile:]
+                                        Intents
+      -[INCar setMaximumPower:forChargingConnectorType:]     -[INCar setMaximumPower:...]  Intents
+      -[INListCarsIntent init]                               -[INListCarsIntent init]      Intents
+    provenance: ->  PASS every control found, so an absent class is the host's own
+    intents-init: 111 golden lines, 0 differ -> PASS
+    # intents-init: 111 classes, 108 answered, 0 absent, 0 no IMP, 1 raised, 2 nil;
+    #                -init own 63, inherited 48; 332 property reads, 5 classes with a non-nil property
+    # intents-init: PLANT=one-wrong on INPaymentRecord
+    intents-init: PLANT=one-wrong forced one line to disagree
+    intents-init: 111 golden lines, 1 differ -> FAIL
+    intents-init: the plant is red, as it must be
+    intents-init: ->  PASS on macOS 27.0 arm64
+
+The reader is `class_getInstanceMethod(Cls, @selector(init))` and then `[[Cls alloc] init]` through
+that IMP, for the same reason the emitted body is: the header forbids naming the selector at compile
+time, so a call could not be the measurement. `provenance.m` runs first and fails if NSObject,
+NSString, INCar or INListCarsIntent is not found, and prints the forwarding trampoline beside three
+real IMPs — INCar is in that list because its header says `API_UNAVAILABLE(macos, tvos)` and a
+reader that trusted the macro would have skipped it. `PLANT=one-wrong` is the negative control: the
+same binary with one line forced to disagree, which must go red, and the script stops if it does not.
+
+`expected.txt` is the golden file, one line per class: name, `own` or `inherit`, what the call
+answered, the property reads and how many of those read non-nil, and which. **A row's `source`
+quotes its own class's line**, so the claim is checkable at the row rather than asserted for a
+population — `-[INObjectCollection init]`'s carries
+`INObjectCollection\tinheritobject\t3\t1\tallItems` and `-[INPerson init]`'s carries
+`INPerson\tinheritobject\t8\t1\tdisplayName`.
+
+What that population is, and it is not what the twenty-one showed:
+
+- **`-init` is declared by the class for 63 of the 111, and inherited from NSObject for 48.** The 63
+  are the rows whose `implemented` status rests on a body that is *not* the answer the host gives,
+  because the port's generated body always forwards to the superclass's IMP. That difference was
+  invisible in the header and invisible in the registry, and it is the reason a row now names its own
+  golden line instead of a shape.
+- **108 classes answer an object, 2 answer nil, 1 raises.** `INRelevanceProvider` **raises**, with the
+  framework's own reason — *"INRelevanceProvider cannot be initialized directly with -init, initialize
+  a subclass instead"* — which is `NS_UNAVAILABLE` in the header and a refusal in the body, in the
+  same breath. The port answers with an object instead; that is the row's `effect` and a deliberate
+  difference. `INCancelRideIntentResponse` and `INSendRideFeedbackIntentResponse` answer **nil**, with
+  the system's own *"Unable to initialize '<name>'. Please make sure that your intent definition file
+  is valid."* Both are intent *responses* whose class the framework wants an `.intent` definition for.
+- **Five classes answer an object with a property that is not nil**, against a row that says every
+  property is nil: `INListRideOptionsIntentResponse.rideOptions`, `INObjectCollection.allItems`,
+  `INPerson.displayName`, `INSearchForMessagesIntentResponse.messages`,
+  `INSendMessageIntentResponse.sentMessages`. Each is the one property its class computes rather than
+  stores; `INPerson.displayName` and `INSearchForMessagesIntentResponse.messages` come from a
+  superclass that keeps state the header declares read-only, and the other three are derived. Five of
+  the 110 synthesize no property at all and are measured on the IMP and the call alone:
+  `INIntentDonationMetadata`, `INRelevanceProvider`, `INRelevantShortcutStore`, `INUserContext` and
+  `INVoiceShortcutCenter`.
+- **332 property reads over 106 classes**, which is the harness's own count of what it read off a
+  fresh object, and it fails if it and the `@synthesize` lines in the port's own objects disagree — so
+  a row added to the registry cannot pass unmeasured. A row added to neither is invisible.
+
+`init-classes.inc` is every `implemented` `-[<class> init]` row the registry carries, with the
+properties the port's own objects synthesize for each, and `tools/intents/gen-init-classes.py` writes
+it — the tool its own header named and the tree did not have. The run prints **three** counts before
+it compares anything, and the third is the one that matters:
+
+    guard  111 implemented -init rows in registry/Intents, 111 in init-classes.inc, 111 in expected.txt
+
+The first is the registry's own count and the other two are the harness's, and comparing those two
+with each other only shows that two files written from the same place agree. `INListCarsIntent` is
+what that hid: its body moved into the generator's `EXTRA_METHODS`, its row was added, and neither
+file was regenerated, so **110 of the 111 rows were being measured** and the guard was 110 against
+110. It is the eleventh class now, with an empty property set and a golden line of
+`INListCarsIntent	ownobject	0	0` — the class declares its own `-init`, as
+`INListCarsIntent.h:17`'s `NS_DESIGNATED_INITIALIZER` says it does.
+
+The one thing the twenty-one measured that this one does not is the **zero case of an enumeration
+property**: `INMediaDestination`'s `mediaDestinationType` reads `NSNumber 0` rather than nil, and the
+eleven such properties read their enumeration's zero case. The golden file records how many reads
+were non-nil and which, not what an enumeration read, so the 21 rows of `registry/Intents/ios16.json`
+that quote the zero case keep citing `init-rows.m` for it. Two harnesses, one fact each — that is the
+debt, and it is written down here rather than settled by deleting whichever row is inconvenient.
+
 ## What is NOT proven here, and is owed
 
-- **The twenty-one are measured; the other eighty-nine are still the same rule applied to the same
-  header.** `init-classes.txt` names the classes of one slice, and a class is added to it by being
-  added to the slice. The harness itself is not slice-specific: given the rest of the classes it
-  answers the same way for them, and nothing about it would have to change.
+- **The ninety are measured now; the twenty-one's enumeration zero case is measured twice.** 74 rows'
+  `source` names `intents-init` and quotes their own golden line. The 21 rows of `ios16.json` that
+  quote `init-rows.m` for the zero case of an enumeration property keep citing it, because
+  `intents-init`'s golden line records how many property reads were non-nil and which, and not what
+  an enumeration read — see the section above for why that is left as it is. The 16 rows of
+  `ios11.json` cite the same older harness and are set out in `Init11.md`.
+- **`run.sh --write` used to drop two lines of the golden file's own header.** It cut the comment at
+  the host line, so the two comment lines a reader had put below that line were removed by a write
+  and the file and its writer could not both be right. Measured on 2026-10-03: a `--write` on an
+  unchanged host rewrote all 110 data lines identically and removed those two. The writer now
+  carries the header above the host line verbatim, writes the host line and the prose below it
+  itself, and a second `--write` is a no-op — checked by running it twice and diffing.
 - **The port's own `-init` has not been run against the system's.** The harness above reads the
   system's class; the port's side is proven by the compile, the presence of each `-init` per `nm`,
   and the registry's own text. Comparing the two needs `tests/backports/host/prefix_selectors.py`,

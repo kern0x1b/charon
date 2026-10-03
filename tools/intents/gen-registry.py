@@ -28,6 +28,7 @@ import collections
 import json
 import os
 import re
+import sys
 
 HAND_WRITTEN = {
     "INParameter",
@@ -195,17 +196,97 @@ SOURCE = ("the header of iPhoneOS 16.4 for the contract, and the armv7 release c
 # not what was made and could not be: the marker forbids naming the selector, so the measurement
 # reads class_getMethodImplementation instead.  A row whose source does not name it is claiming a
 # behaviour on the header's authority, and the header says the opposite.
+#
+# The measurement is tests/backports/host/intents-init/run.sh, which measures EVERY class the
+# registry carries a -init row for - not eight of them by hand and the rest by the same rule
+# applied to the same header, which is a claim and not a measurement.  The golden file it compares
+# against is read here, per class, so a row names its own line rather than the shape of one: what
+# the host answered for THIS class is what the row is about.
+INIT_GOLDEN = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+    "tests", "backports", "host", "intents-init", "expected.txt")
+
 INIT_SOURCE = SOURCE + (
-    "; and for the -init this header marks unavailable, the host's own answer, measured on eight of "
-    "them by hand: INMessage, INPerson, INBillDetails, INBalanceAmount, INCurrencyAmount, INCallRecord, "
-    "INCar and INFile - class_getMethodImplementation(Cls, @selector(init)) is non-NULL on every one and "
-    "[[Cls alloc] init] through that IMP returns an object, with no exception and "
-    "respondsToSelector:init 1, every property present and nil. The IMP is how it was read, and is "
-    "how the emitted body reaches the superclass, because the marker is what forbids naming the "
-    "selector at compile time. The per-class harness that would keep all 110 of these honest on every "
-    "run is OWED, and is not in the tree: these eight are the measurement, and the other hundred and "
-    "two are the same rule applied to the same header, which is a claim and not a measurement until "
-    "that harness runs")
+    "; and for the -init, which the header marks unavailable on some of these classes and declares "
+    "on others, the host's own answer, measured for every class this framework carries a -init row "
+    "for by tests/backports/host/intents-init/run.sh: it "
+    "reads class_getInstanceMethod(Cls, @selector(init)) and calls [[Cls alloc] init] through that "
+    "IMP, because a compile-time call to the selector is unavailable and could not be the "
+    "measurement; it looks up NSObject, NSString, INCar and INListCarsIntent first and fails if any "
+    "is missing, and prints the forwarding trampoline beside three real IMPs, so a zero it reports "
+    "is the host's answer and not the reader's; it compares every line against expected.txt and "
+    "then re-runs itself with PLANT=one-wrong, which must FAIL. The IMP is how the answer was read, "
+    "and is how the emitted body reaches the superclass, because the marker is what forbids naming "
+    "the selector at compile time")
+
+
+def init_golden():
+    """The harness's golden lines by class, read once.
+
+    A missing file or a line is a hard error rather than a fallback: the row's claim is that a
+    measurement exists, and writing the old "it is owed" text once the harness is in the tree is
+    the false claim this replaced.  Refusing is the same rule the registry check itself enforces.
+    """
+    global INIT_GOLDEN_LINES
+    try:
+        return INIT_GOLDEN_LINES
+    except NameError:
+        pass
+    lines = {}
+    try:
+        with open(INIT_GOLDEN, encoding="utf-8") as handle:
+            for line in handle:
+                line = line.rstrip("\n")
+                if not line or line.startswith("//") or line.startswith("#"):
+                    continue
+                fields = line.split("\t")
+                lines[fields[0]] = fields[1:]
+    except OSError as error:
+        sys.exit("gen-registry.py: no host measurement to cite for a -init row: %s (%s). Run "
+                 "sh tests/backports/host/intents-init/run.sh" % (INIT_GOLDEN, error))
+    INIT_GOLDEN_LINES = lines
+    return lines
+
+
+def init_source(owner):
+    """The source of a `-[<owner> init]` row: the harness, and this class's own line of it.
+
+    One line of the golden file says four things the row's own claim rests on: whether the class
+    DECLARES -init or takes NSObject's, what `[[Cls alloc] init]` answered through that IMP, how
+    many of the properties the port synthesizes for the class were read and how many of those read
+    non-nil.  A class whose line says `own` is one whose body differs from the host's, and a row
+    that hid that behind "the same rule applied to the same header" was hiding a difference it was
+    written to record.
+    """
+    fields = init_golden().get(owner)
+    if not fields or len(fields) < 3:
+        sys.exit("gen-registry.py: %s has no line in %s, so a -[%s init] row would cite a "
+                 "measurement that does not cover it. Run sh tests/backports/host/intents-init/"
+                 "run.sh --write if the host changed, and put the class in init-classes.inc if it "
+                 "is new." % (owner, INIT_GOLDEN, owner))
+    # The golden file spells the two facts of one line as one word: `own`/`inherit` says where the
+    # IMP came from and `object`/`nil`/`threw` says what the call through it answered.
+    word = fields[0]
+    if not word.startswith("own") and not word.startswith("inherit"):
+        sys.exit("gen-registry.py: %s reads %r in %s, which is neither an `own` nor an `inherit` "
+                 "line. Re-read the header of that file before trusting a row built on it."
+                 % (owner, word, INIT_GOLDEN))
+    declared = "DECLARES" if word.startswith("own") else "INHERITS"
+    answered = word[len("inherit"):] if word.startswith("inherit") else word[len("own"):]
+    properties, non_nil = fields[1], fields[2]
+    which = fields[3].strip() if len(fields) > 3 else ""
+    named = which and which != "-"
+    return INIT_SOURCE + (
+        ". Its golden line for this class is %s, which says the class %s -init and [[%s alloc] init] "
+        "through that IMP answered %s, so respondsToSelector:init is 1 by the same lookup, and the %s "
+        "properties the port synthesizes for this class were read off that fresh object: %s. The "
+        "harness's own counts for the whole population, and the argument behind every figure here, "
+        "are in facts/Intents/Intents.md"
+        % ("\\t".join([owner] + fields), declared, owner,
+           {"object": "an object", "nil": "nil", "threw": "an exception it did not catch"}[answered],
+           properties,
+           ("%s of them read non-nil, and they are %s" % (non_nil, which)) if named and non_nil != "0"
+           else ("all %s read non-nil" % non_nil if named else "none of them read non-nil")))
 
 
 # The (class, selector) pairs whose body is written by hand in the generator's EXTRA_METHODS,
@@ -580,7 +661,7 @@ def main():
                     entries.append(implemented(api, "method", intro, owner, options.facts,
                                                where="%s's own @implementation answers it"
                                                      % owner if owner in hand_written else None,
-                                               source=INIT_SOURCE if marked_init else None,
+                                               source=init_source(owner) if marked_init else None,
                                                hand=(owner, member_name(api)) in HAND_WRITTEN_BODIES))
                     continue
                 if api.endswith("] init") or api == "-[%s init]" % owner:

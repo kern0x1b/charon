@@ -40,8 +40,42 @@ host=$(sw_vers -productVersion)
 build=$(sw_vers -buildVersion)
 arch=$(uname -m)
 echo "host   macOS $host build $build, $arch"
-echo "guard  $(grep -c '^    { \"IN' "$here/init-classes.inc") classes in init-classes.inc, \
-$(grep -c '^[A-Za-z]' "$here/expected.txt") data lines in expected.txt"
+# Three counts and not two, because the file and the golden file are written from the same place and
+# comparing them with each other only shows that they agree. The population the claim is about is
+# the REGISTRY's: every `implemented` row naming -[<class> init]. A row added there and not here is
+# a claim no run of this harness can reach, and INListCarsIntent was exactly that - its body moved
+# into gen-intents.py's EXTRA_METHODS, the row was added, and neither file was regenerated, so 110
+# of the 111 rows were being measured and the guard below was 110 against 110.
+registry=$root/packages/a/apple-backports/registry/Intents
+claimed=$(python3 - "$registry" <<'PY'
+import glob, json, os, re, sys
+names = set()
+for path in sorted(glob.glob(os.path.join(sys.argv[1], "ios*.json"))):
+    document = json.load(open(path, encoding="utf-8"))
+    for entry in document["entries"] if isinstance(document, dict) else document:
+        if entry.get("status") == "implemented":
+            match = re.match(r"^-\[(\w+) init\]$", entry["api"])
+            if match:
+                names.add(match.group(1))
+print(len(names))
+PY
+)
+listed=$(grep -c '^    { "IN' "$here/init-classes.inc")
+golden=$(grep -c '^[A-Za-z]' "$here/expected.txt")
+echo "guard  $claimed implemented -init rows in registry/Intents, $listed in init-classes.inc, $golden in expected.txt"
+# --write is how a short golden file is filled, so the golden count is only a failure when the run
+# is not the one that fills it. The .inc count is checked either way: --write reads that file, and a
+# population that does not match the registry would write a golden file for the wrong classes.
+[ "$listed" -eq "$claimed" ] || {
+    echo "  FAIL  the registry carries $claimed -init rows and init-classes.inc lists $listed" >&2
+    echo "        regenerate it: python3 tools/intents/gen-init-classes.py -o tests/backports/host/intents-init/init-classes.inc" >&2
+    exit 1
+}
+if [ "${1:-}" != "--write" ] && [ "$golden" -ne "$claimed" ]; then
+    echo "  FAIL  the registry carries $claimed -init rows and expected.txt holds $golden" >&2
+    echo "        the host may have changed, or a row may be new: sh tests/backports/host/intents-init/run.sh --write" >&2
+    exit 1
+fi
 
 # 1. the controls
 xcrun clang $flags "$here/provenance.m" -framework Foundation -framework Intents -o "$BUILD/provenance"
@@ -58,7 +92,17 @@ if [ "${1:-}" = "--write" ]; then
         exit 1
     }
     {
-        sed -n '1,/^\/\/ macOS/p' "$here/expected.txt"
+        # The comment header above the host line is carried verbatim and everything from the host
+        # line down is written out, rather than the header being cut at the host line: a write on
+        # an unchanged host then changes nothing at all, and a write on a NEW host says which host
+        # these numbers are from. Measured 2026-10-03: cutting at the host line dropped two
+        # comment lines a reader had put below it, so the file and its writer could not both be
+        # right - and carrying them verbatim duplicates them, so the prose belongs here.
+        awk '/^\/\/ macOS/{exit} {print}' "$here/expected.txt"
+        echo "// macOS $host build $build, $arch, Foundation + Intents, measured with sw_vers on the run that"
+        echo "// wrote these lines. run.sh prints the host it measured on beside the verdict, so a reader can tell a"
+        echo "// stale golden from a host that changed without being told which one it is. A different host answers"
+        echo "// with its own numbers and the guard above fails until this file is rewritten."
         cat "$BUILD/body.txt"
     } > "$BUILD/expected.txt"
     mv "$BUILD/expected.txt" "$here/expected.txt"

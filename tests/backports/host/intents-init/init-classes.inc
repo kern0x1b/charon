@@ -5,8 +5,8 @@
 //
 //     python3 - <<'EOF'
 //     import re, glob, json
-//     for f in sorted(glob.glob('packages/a/apple-backports/registry/Intents/*.json')):
-//         for x in json.load(open(f)).get('entries', []):
+//     for f in sorted(glob.glob('packages/a/apple-backports/registry/Intents/ios*.json')):
+//         for x in json.load(open(f))['entries']:
 //             m = re.match(r'^-\[(\w+) init\]$', x['api'])
 //             if m and x['status'] == 'implemented':
 //                 print(m.group(1))
@@ -27,12 +27,16 @@
 // row claims stay nil. Asking the runtime instead yields NSObject's hash/description/debugDescription/
 // superclass repeated four times over plus the framework's private accessors - measured, 48
 // properties for INActivateCarSignalIntentResponse - which is neither the population the claim is
-// about nor safe to call. Five of the 110 classes synthesize nothing and are listed with an empty
-// set: INIntentDonationMetadata, INRelevanceProvider, INRelevantShortcutStore, INUserContext and
-// INVoiceShortcutCenter, whose -init is measured on the IMP and the call alone.
+// about nor safe to call. A class that synthesizes nothing is listed with an empty set and its
+// -init is measured on the IMP and the call alone.
 //
-// A class added to the registry and not here is invisible to the harness. run.sh fails when the
-// counts disagree, which is what keeps this file honest.
+// A class added to the registry and not here is invisible to the harness. run.sh prints the
+// registry's own count of these rows beside this file's, and fails when the two disagree, which is
+// what keeps this file honest: both this file and expected.txt are written from here, so comparing
+// them with each other would only show that they agree.
+//
+// 111 classes, 6 of which synthesize no property: INIntentDonationMetadata, INListCarsIntent, INRelevanceProvider, INRelevantShortcutStore, INUserContext, INVoiceShortcutCenter
+
     { "INActivateCarSignalIntentResponse", { "code", "signals", NULL } },
     { "INAddMediaIntentResponse", { "code", NULL } },
     { "INAddTasksIntentResponse", { "addedTasks", "code", "modifiedTaskList", NULL } },
@@ -73,6 +77,7 @@
     { "INGetVisualCodeIntentResponse", { "code", "visualCodeImage", NULL } },
     { "INHangUpCallIntentResponse", { "code", NULL } },
     { "INIntentDonationMetadata", { NULL } },
+    { "INListCarsIntent", { NULL } },
     { "INListCarsIntentResponse", { "cars", "code", NULL } },
     { "INListRideOptionsIntentResponse", { "code", "expirationDate", "paymentMethods", "rideOptions", NULL } },
     { "INMediaDestination", { "mediaDestinationType", "playlistName", NULL } },

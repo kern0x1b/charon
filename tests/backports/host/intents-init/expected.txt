@@ -29,8 +29,9 @@
 //   the answer each one computes rather than stores.
 //
 // macOS 27.0 build 26A428, arm64, Foundation + Intents, measured with sw_vers on the run that
-// wrote these lines. run.sh prints the host it measured on beside the verdict, so a reader
-// can tell a stale golden from a host that changed without being told which it is. A different host answers with its own numbers and the
+// wrote these lines. run.sh prints the host it measured on beside the verdict, so a reader can tell a
+// stale golden from a host that changed without being told which one it is. A different host answers
+// with its own numbers and the guard above fails until this file is rewritten.
 INActivateCarSignalIntentResponse	ownobject	2	0	
 INAddMediaIntentResponse	ownobject	1	0	
 INAddTasksIntentResponse	ownobject	3	0	
@@ -71,6 +72,7 @@ INGetRideStatusIntentResponse	ownobject	2	0
 INGetVisualCodeIntentResponse	ownobject	2	0	
 INHangUpCallIntentResponse	ownobject	1	0	
 INIntentDonationMetadata	inheritobject	0	0	
+INListCarsIntent	ownobject	0	0	
 INListCarsIntentResponse	ownobject	2	0	
 INListRideOptionsIntentResponse	ownobject	4	1	rideOptions
 INMediaDestination	inheritobject	2	0	
