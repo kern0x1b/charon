@@ -81,18 +81,33 @@
     return [self charon_children].count;
 }
 
-// -childAtIndex: answers the item at that position.
+// -childAtIndex: answers the item at that position, and there are TWO out-of-range answers on the host,
+// not one.  Both are measured on outline-collapsed.pdf's whole tree, every node asked at every index from
+// 0 to its own child count:
 //
-// OUT OF RANGE THE HOST RAISES: -[PDFOutline childAtIndex:] with an index past the last child throws
-// NSRangeException, "childAtIndex: 2 out of bounds", measured.  The port answers nil there instead, and
-// that is a boundary rather than a match: a differential cannot compare a raised exception against an
-// answer, so the harness does not ask one past the end, and a program that gets nil can say so where a
-// program that gets an exception cannot.  The row and the facts both say so.
+//   a node WITH children raises past the end: "childAtIndex: 2 out of bounds" on the root, which has two,
+//   and "childAtIndex: 1 out of bounds" on "Two One"'s parent, which has one.
+//
+//   a node with NO children answers NIL, even at index 0 - "One One One" and "One Two" and "Two One" all
+//   answer nil and none of them raises.  So the rule is not "past the end raises": it is that a node with
+//   a /First chain raises when the index runs off it, and a node with no chain at all has nothing to walk
+//   and answers nil.
+//
+// The earlier version of this answered nil everywhere.  The coordinator's correction is right that a
+// counted sequence raises out of range, and this is the whole of what it takes: raise only where the
+// chain exists, and answer nil where it does not.  The harness compares both answers through @try, so a
+// side that raises where the host answers nil - or the reverse - names itself.
 - (PDFOutline *)childAtIndex:(NSUInteger)index
 {
     NSArray *children = [self charon_children];
-    if (index >= children.count)
-        return nil;
+    if (index >= children.count) {
+        if (children.count > 0) {
+            [NSException raise:NSRangeException
+                        format:@"childAtIndex: %lu out of bounds", (unsigned long)index];
+            return nil;                 // unreachable: raise does not return
+        }
+        return nil;                     // no /First chain to walk, and the host answers nil
+    }
     return children[index];
 }
 

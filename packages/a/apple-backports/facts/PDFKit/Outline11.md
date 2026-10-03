@@ -31,11 +31,19 @@ it — which is exactly how `-outlineRoot` finds the `/Outlines`. Every fixture 
 
 ## `-[PDFDocument outlineRoot]`, and the catalog
 
-**There is no `CGPDFDocumentGetDictionary` in this SDK** — not in `CGPDFDocument.h`, and not in the
-release's export table — so the trailer is not reachable directly and the catalog cannot be asked for by
-name. The port walks **up**: `CGPDFPageGetDictionary` of page 1, then `/Parent` to the `/Pages` node, then
-`/Parent` again to the object whose `/Type` is `/Catalog`, bounded at 64 steps. Every step is the
-release's own dictionary reader.
+The catalog comes from **`CGPDFDocumentGetCatalog`** — `CGPDFDocument.h:172`, `CG_AVAILABLE_STARTING(10.3,
+2.0)`, in the release SDK this port builds against. That is the whole of it, and this page first said
+otherwise: I took `CGPDFDocumentGetDictionary` — a name I had half-remembered — to be absent from both the
+header and the export table, concluded the trailer was unreachable, and **walked up from page 1 through
+`/Parent` instead**.
+
+The walk was worse than unnecessary, and the reason matters more than the mistake: **it only ever worked
+because the same commit had given the root `/Pages` node a `/Parent`.** A real PDF does not put one there
+— the catalog is the parent of the page tree in that the *trailer's* `/Root` names it — so on any real
+document `-outlineRoot` would have answered `nil`, and the differential would have said so had the fixtures
+been real. That fixture change is reverted, every fixture in the harness is an ordinary document again, and
+`run.sh` now removes its run directory before generating, so a renamed fixture cannot leave a ghost of its
+old name behind to be walked and compared.
 
 The root is then an outline like any other — measured: it answers an **empty** `-label` because it carries
 no `/Title`, `-numberOfChildren` from its `/First` chain, `-index` 0, a nil `-parent` and a `-document` —
@@ -56,12 +64,21 @@ so it is built by the same constructor the items are, with no parent and index 0
 | `-destination` | the `/Dest`: an array is the destination, a name or string builds one with a nil page, anything else nil |
 | `-action` | see below — the opposite order from an annotation's |
 
-## `-isOpen`: the sign the other way round, and a rule about two keys
+## `-isOpen`: a positive `/Count` means OPEN, and a rule about two keys
 
-**PDF 1.7 Table 8.2 says a positive `/Count` means the item is CLOSED. The host reads it the other way
-round.** `outline-signs.pdf` carries two items of the *same shape* — two children each — one with
-`/Count +4` and one with `/Count -4`, and the positive one answers `isOpen` **YES** and the negative one
-**NO**. So the first clause is: *an item with a `/Count` answers YES when the count is positive.*
+**A positive `/Count` means OPEN, and the host agrees with Table 8.2.** This page first said the host read
+the sign the other way round; that was my reading of the specification, not the host's behaviour, and it
+was wrong. Table 8.2's `/Count` entry says a positive count means expanded and a negative one collapsed, so
+`isOpen` answering **YES** for a positive count is the format's own reading.
+
+The measurement is unchanged and it is what fixes the rule: `outline-signs.pdf` carries two items of the
+*same shape* — two children each — one with `/Count +4` and one with `/Count -4`, and the positive one
+answers `isOpen` **YES** and the negative one **NO**. So the first clause is: *an item with a `/Count`
+answers YES when the count is positive.*
+
+The two fixtures that carry one whole shape each are named for the sign rather than for open and closed,
+because the earlier names were **backwards**: `outline-collapsed.pdf` is the one whose root carries a
+negative `/Count` — collapsed — and `outline-expanded.pdf` the positive one.
 
 The second clause took four fixtures, because "no `/Count`" turned out not to be enough. An item with no
 `/Count` answers YES only when it has no `/Title` either:
@@ -99,12 +116,23 @@ So: a `/Dest` gives a GoTo synthesised over it (Table 8.2: an item's `/Dest` *is
 go-to action), and an `/A` is read only by an item with no `/Dest` — measured on `outline-open`'s "Two", a
 `/URI` action, which answers `PDFActionURL`. An item with neither answers nil for both.
 
-## `-childAtIndex:` out of range: the host RAISES
+## `-childAtIndex:` out of range: there are TWO answers, and only one of them is a raise
 
-`-[PDFOutline childAtIndex:]` with an index past the last child throws `NSRangeException`, `"childAtIndex:
-2 out of bounds"`. Measured, and it is a **boundary and not a match**: a differential cannot compare a
-raised exception against an answer, so the harness does not ask one past the end, and a caller that gets
-`nil` can say so where a caller that gets an exception cannot. The row says the same.
+Measured on `outline-collapsed.pdf`'s whole tree — every node asked at every index from 0 to its own child
+count:
+
+| node | at index = its child count |
+| --- | --- |
+| the root, two children | **raises** `NSRangeException`, `"childAtIndex: 2 out of bounds"` |
+| "Two One"'s parent, one child | **raises**, `"childAtIndex: 1 out of bounds"` |
+| "One One One", "One Two", "Two One" — **no children** | **nil**, even at index 0 |
+
+So the rule is not "past the end raises". It is: **a node with a `/First` chain raises when the index runs
+off it, and a node with no chain answers nil.** The port implements exactly that, and the harness compares
+both answers through `@try`, printing the **exception's name** for a raise and `nil`/`an-object`
+otherwise — so a side that raises where the host answers nil, or the reverse, names itself.
+
+Both the raise and the nil have red controls over them, at a node with children and at a leaf.
 
 ## What is NOT here, and why
 
@@ -112,21 +140,21 @@ raised exception against an answer, so the harness does not ask one past the end
   with that reason: nothing in this port writes a PDF, so a method that changed an outline would either
   answer without changing the file behind it or have to grow a writer. It is the same boundary
   `PDFAnnotation`'s `-setValue:forAnnotationKey:` rows name.
-* **`-childAtIndex:`'s exception**, as above.
+* **Nothing else.** `-childAtIndex:`'s two out-of-range answers are implemented, as above.
 
 ## The run
 
     $ sh tests/backports/host/pdfkit-document/run.sh
       images differ by construction: host=/System/…/PDFKit.framework/…/PDFKit
                                       port=…/runs/pdfkit-document/port-side
-      COMPARED 7505 MISMATCHES 0  (not compared: 115, expected to differ: 345, of which 72 compared from the Catalyst side)
+      COMPARED 7752 MISMATCHES 0  (not compared: 117, expected to differ: 351, of which 72 compared from the Catalyst side)
       RED CONTROL ok: the comparison goes red on a mutated port, and names the key
 
-113 fixtures, 98 of them this series' — 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
+115 fixtures, 100 of them this series' — 3 box, 3 hand-written text, 9 annotation and 2 conforming-writer
 text from before, plus 98 from `tools/make-object-fixtures.py`, each with every xref offset measured from
 the object bytes as they are written.
 
-94 named red controls, 22 of them naming an outline key. Two of them exist because this family got two
+98 named red controls, 26 of them naming an outline key. Two of them exist because this family got two
 things wrong that a control has to catch:
 
 * `outline-signs.pdf.c0.outline.isOpen` and `outline-signs.pdf.c1.outline.isOpen` — the two items of the
