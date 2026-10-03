@@ -56,15 +56,47 @@ Two more, found by the check and fixed:
   ReferenceClass and a field set to it is not written at all, so absent and ReferenceClass are
   the same value here.
 
-## A divergence, and what is not known about it
+## A divergence, and what it turned out to be
 
-`nn_image`, a convolution, a ReLU and a global pool, does not match the host. What has been
-ruled out by measurement: the input with and without the network's own scale and per-channel
-bias, the weight axes in all six orders with the output channel inner and outer, and both pool
-kinds after a ReLU. None reproduces the host's four numbers, whose second is exactly zero. The
-port's own values are in `nn_image.actual` beside the host's. The check prints this as a
-recorded divergence and **fails if the two ever come to agree**, so a stale explanation is
-caught.
+`nn_image`, a convolution, a ReLU and a global pool, did not match the host, and the cause is
+now known: **this port put an array input through the network's own `scaler` preprocessing and
+neither Core ML nor coremltools does.** The scale is a picture's. It is a per-channel scale and
+a bias named for a colour — `channelScale`, `redBias`, `greenBias`, `blueBias` — and the release
+puts it through for a feature the specification declares as an image and not for an array.
+
+Measured on macOS 27.0 build 26A428, over `nn_image.mlmodel` and the input pattern
+`tests/backports/host/coreml/cases.m` feeds (a five-element pattern `((element % 5) - 2) * 0.25`
+repeated over the 192 elements), the release answers `0.3570, 0.3338, 0.3595, 0.3827`, which is
+the global maximum of the convolution over the values **as they were fed**; this port answered
+`0.4189, 0.0000, 0.0000, 0.0000`, which is the same convolution over the values after
+`x / 255 - 1`. Both numbers are reproduced to the last digit by computing the convolution over
+the model's own weights, read `(outputChannel, kernelChannel, kernelRow, kernelColumn)` as the
+specification writes them, followed by a ReLU and a 6x6 global max — so the weights, the axes,
+the kernel and the pool were never in question and the scale was the whole of it.
+
+coremltools 9.0's own runtime agrees with the release and not with this port: for the
+container's own input it answers `0.35275915265083313, 0, 0.495936781167984, 1.953547477722168`,
+which is the same convolution over the raw pixels. So two independent runtimes put an array
+through no scale.
+
+What the earlier note had "ruled out" was the input with and without the scale, the weight axes
+in six orders and both pool kinds — and it drew the wrong conclusion from them, because both
+preprocessed readings were computed with a ReLU over a *pool*, and the one that matched the port
+did match: `0.4189, 0, 0, 0`. It was read as "the port's answer is a reading of the model" rather
+than "the port applies something the release does not", and the second is what the numbers say.
+The check no longer records a divergence: `tools/coreml/check-predict.sh` prints `nn_image OK - 3
+answers within 1e-05 of coremltools' own runtime`.
+
+That check was also comparing two different inputs, which is how the stale note survived a fix:
+the two array inputs it fed were a second, hand-written copy of the convolutional model's pixels,
+kept from when the corpus sample was a PIL image, and they had drifted from the sample. It now
+reads the values out of `make-models.py`'s own `SAMPLES`.
+
+Unmeasured, and unchanged by any of this: **an image feature's own scale.** No container in the
+corpus declares an image input that this host's Core ML will load, so the branch that keeps the
+scale for one has nothing measured behind it. It is the behaviour the specification describes and
+the behaviour the crop-and-scale path in `tests/backports/host/vision/` is built around; it is
+left as it was rather than removed with the array case.
 
 ## Carried but not measured
 
@@ -88,14 +120,22 @@ Each of these is refused with a line naming the layer, not approximated:
 
 Two more, and both are about what the build measures rather than what it carries:
 
-- **`vision_image` is written and never compared.** `tools/coreml/make-models.py` emits it and
-  reports it as `no host input`: this host's Core ML does not run an image model, so its
-  description keys are in the host's record and not in the port's, and the run reports 48 of
-  them missing and is red. The image constructors this port DOES carry are measured a different
-  way -- against Core ML's own image constructor, by pixels, in
-  `tests/backports/host/vision/run-crop.sh` -- and that measurement is red for the crop-and-scale
-  rules; `registry/CoreML/absent_CoreML.json` states which cells differ. What is unmeasured is
-  the container, not the conversion.
+- **`vision_image` is written, and the release will not load it.** `tools/coreml/make-models.py`
+  emits it and reports it as `no host input`. Measured on macOS 27.0 build 26A428: asked to compile
+  the container, this host's own `+[MLModel compileModelAtURL:error:]` answers `com.apple.CoreML`,
+  code 0, **"compiler error: Invalid height and width for the image input."** — the input's declared
+  `imageSizeRange` of 16 to 256 on both axes is what it refuses. So the release has no description,
+  no prediction and no answer of any kind for that container: `tests/backports/host/coreml/run.sh`
+  reads which containers the release refused out of its own record (a container it refused has a
+  `model/<name>/error` key and one it loaded has none), prints the 48 keys the port answers for
+  `vision_image` by name with the refusal beside each, and passes on the nine containers it did
+  load: `compared 770 keys, 0 differ, 0 missing, 0 recorded divergences, 48 for a container the
+  release refused`. `tests/backports/host/vision/run.sh` measures the same container through
+  Vision, which is the framework that runs an image model, and expects exactly this compile
+  failure. The image constructors this port DOES carry are measured a different way -- against Core
+  ML's own image constructor, by pixels, in `tests/backports/host/vision/run-crop.sh` -- and that
+  measurement is red for the crop-and-scale rules; `registry/CoreML/absent_CoreML.json` states
+  which cells differ. What is unmeasured is the container, not the conversion.
 - **`__OBJC_PROTOCOL_$_MLFeatureProvider` is defined by two objects.** `MLFeatureProvider.m` and
   the generated `CoreMLBackportsProtocols11.0.m` both emit it, because any translation unit that
   sees a protocol's definition and references it emits the object, and `MLFeatureProvider.m`

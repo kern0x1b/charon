@@ -41,15 +41,10 @@ TOLERANCES = {
 # A model the port's answers differ from the host's on, with what is known about the difference.
 # This is not a pass and not a failure: the check prints the difference, and fails if the two
 # ever come to agree, because then whatever caused it has gone and the port's answer is no
-# longer explained. The cause of this one is not known yet; what has been ruled out is written
-# down, so the next person does not measure it again.
-DIVERGENCES = {
-    "nn_image": ("the pooled convolution does not match the host's. Ruled out by measurement: the "
-                 "input with and without the network's own scale and per-channel bias, the weight "
-                 "axes in all six orders with the output channel inner and outer, and both pool "
-                 "kinds after a ReLU -- none reproduces the host's four numbers, whose second is "
-                 "exactly zero. The port's own values are recorded in nn_image.actual."),
-}
+# longer explained. There is none: nn_image was in here until 2026-10-03, and the cause was that
+# this port put an array input through the network's own scaler, which neither Core ML nor
+# coremltools does. The four numbers are in facts/CoreML/CoreML.md.
+DIVERGENCES = {}
 
 # The specification version a model declares, by the values the CoreML specification gives:
 # 1 came with 11.0, 2 with 11.1, 3 with 11.2, 4 with 12.0, 5 with 12.2, 6 with 13.0.

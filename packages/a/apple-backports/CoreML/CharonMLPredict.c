@@ -826,6 +826,22 @@ static int run_preprocessing(const charon_ml_model *model, const charon_ml_node 
     return 1;
 }
 
+/* The preprocessing a network's specification declares for one of its features, and the feature type
+ * that decides whether the scale is put through at all. */
+static int input_is_image(const charon_ml_model *model, const char *feature)
+{
+    size_t index;
+    for (index = 0; index < model->input_count; index++) {
+        const char *name = model->inputs[index].name;
+        if (name != NULL && strcmp(name, feature) == 0) {
+            return model->inputs[index].type == CHARON_ML_FEATURE_IMAGE;
+        }
+    }
+    /* A feature the description does not name is not an image's pixels, and a scaler named for the
+     * colours of a picture is not a scaler an array of numbers is put through. */
+    return 0;
+}
+
 /* A neural network: the values its inputs name are put in, its layers are run in order, and
  * its outputs are read out. A classifier's scores are the output the description names as its
  * probabilities, or the one output that is a vector of more than one number. */
@@ -862,7 +878,20 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
     {
         /* The network's own preprocessing, which runs before its first layer: the scale and the
          * per-channel bias an image's pixels are put through, or a mean to take off them. It is
-         * named per feature, and a network that names none has none. */
+         * named per feature, and a network that names none has none.
+         *
+         * The scale is a picture's, and it goes through for a feature the specification declares
+         * as an image and not for an array. Measured on macOS 27.0 build 26A428 against
+         * nn_image.mlmodel - a convolution, a ReLU and a global pool over a 3x8x8 feature, declared
+         * as an array and carrying exactly this scale and these three colour biases - over the
+         * input pattern tests/backports/host/coreml/cases.m feeds, a five-element pattern repeated
+         * over the elements: the release answers 0.3570, 0.3338, 0.3595, 0.3827, which is the
+         * global maximum of the convolution over the values as they were fed, and this port
+         * answered 0.4189, 0.0000, 0.0000, 0.0000, which is the same convolution over the values
+         * after the scale. coremltools 9.0's own runtime answers the same four numbers for the
+         * container's own input, so neither runtime puts an array through the scale and this one
+         * did. facts/CoreML/CoreML.md carries the tables and the port's own numbers.
+         */
         size_t steps = charon_ml_count_field(kind_node, "preprocessing"), step;
         for (step = 0; step < steps; step++) {
             const charon_ml_node *step_node = charon_ml_node_at_field(kind_node, "preprocessing", step);
@@ -877,7 +906,7 @@ static int run_neural_network(const charon_ml_node *kind_node, const charon_ml_m
             if (value == NULL || value->data == NULL) {
                 continue;
             }
-            if (scaler != NULL) {
+            if (scaler != NULL && input_is_image(model, feature)) {
                 double scale = charon_ml_number_of(scaler, "channelScale", 1.0);
                 double red = charon_ml_number_of(scaler, "redBias", 0.0);
                 double green = charon_ml_number_of(scaler, "greenBias", 0.0);

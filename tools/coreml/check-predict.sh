@@ -57,27 +57,33 @@ run_case tree_classifier --set a 1 0.25 --set b 1 1.0
 # The models whose input is not one flat vector: a multi-dimensional array, and an embedding's
 # integer indices. The harness takes a flat vector, so their numbers are laid out here in the
 # order the shape says, which for a channels-first array is the last dimension varying fastest.
-python3 - "$OUT" <<'PYTHON'
-import json, os, subprocess, sys
-out = sys.argv[1]
+python3 - "$OUT" "$ROOT" <<'PYTHON'
+import importlib.util, json, os, subprocess, sys
+out, root = sys.argv[1], sys.argv[2]
 manifest = json.load(open(os.path.join(out, "models", "manifest.json")))
 harness = os.path.join(out, "ml-predict")
-# (field, shape, values), for the inputs that are not one flat vector: an embedding's single
-# word index, and the convolutional model's 192 pixels, which are the same bytes its PIL image
-# was made of.
-extra = {
-    "nn_embedding": ("index", "1x1x1", [2]),
-    "nn_image": ("img", "3x8x8", [(at * 37 % 256) / 255.0 for at in range(3 * 8 * 8)]),
-}
-for name, spec in sorted(extra.items()):
+# The models whose input is not one flat vector of numbers: an embedding's single word index, and a
+# channels-first array. Which models they are is named here; what they are fed is read from the
+# generator's own SAMPLES. They used to be a second, hand-written copy of the numbers, and the two
+# had drifted - the convolutional model's sample stopped being a PIL image and became
+# arange(192)/255 while the copy kept the bytes that PIL image had been made of - so the check held
+# the port's answer for one input against coremltools' answer for another, and no arithmetic change
+# could ever have satisfied it. One source, read once: see the comment above this block.
+spec = importlib.util.spec_from_file_location(
+    "make_models", os.path.join(root, "tools", "coreml", "make-models.py"))
+make_models = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(make_models)
+for name in ("nn_embedding", "nn_image"):
     if name not in manifest or manifest[name]["prediction"] is None:
         continue
-    field, shape, values = spec
-    with open(os.path.join(out, name + ".actual"), "w") as f:
-        f.write(name + "\n")
-        subprocess.run([harness, os.path.join(out, "models", name + ".mlmodel"),
-                        "--setr", field, shape, str(len(values))] + ["%.9g" % v for v in values],
-                       stdout=f, stderr=subprocess.STDOUT)
+    for field, value in sorted(make_models.sample_of(name).items()):
+        shape = "x".join(str(extent) for extent in value.shape)
+        values = list(value.reshape(-1))
+        with open(os.path.join(out, name + ".actual"), "w") as f:
+            f.write(name + "\n")
+            subprocess.run([harness, os.path.join(out, "models", name + ".mlmodel"),
+                            "--setr", field, shape, str(len(values))] + ["%.9g" % float(v) for v in values],
+                           stdout=f, stderr=subprocess.STDOUT)
 PYTHON
 
 # coremltools prints its own answers the same way, from the same models and the same inputs,
