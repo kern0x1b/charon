@@ -40,7 +40,9 @@ static double CharonMPSGraphOwnNaN(double value)
 
 // One element of an arithmetic operation. The data type of the operands decides the arithmetic, as it
 // does everywhere else in this framework: an integer type rounds on store and a floating point one
-// rounds on store too, through the same CharonMPSStore both families use.
+// rounds on store too, through the same store both families use. The store is asked for the release's
+// own rounding of a halfway half - CharonMPSStoreRounded with the last argument set - which is this
+// family's measured behaviour and no other family's: see CharonMPSFloatToHalfRounded.
 static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, double b,
                                   MPSDataType operandType, MPSDataType resultType)
 {
@@ -257,15 +259,15 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     [result charon_mps_bytes];
     if (right) {
         for (NSUInteger i = 0; i < count; i++)
-            CharonMPSStore([result charon_mps_bytes], dataType, i,
+            CharonMPSStoreRounded([result charon_mps_bytes], dataType, i,
                            CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], left.dataType, i),
                                                CharonMPSLoad([right charon_mps_bytes], right.dataType, i),
-                                               left.dataType, dataType));
+                                               left.dataType, dataType), 1);
     } else {
         for (NSUInteger i = 0; i < count; i++)
-            CharonMPSStore([result charon_mps_bytes], dataType, i,
+            CharonMPSStoreRounded([result charon_mps_bytes], dataType, i,
                            CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], left.dataType, i), 0.0,
-                                               left.dataType, dataType));
+                                               left.dataType, dataType), 1);
     }
     values[output] = result;
 }

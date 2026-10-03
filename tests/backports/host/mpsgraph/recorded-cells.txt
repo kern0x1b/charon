@@ -1,0 +1,33 @@
+# The cells of this differential that the release and the port do not answer alike, one per line:
+#
+#     <case> <data type> <element index> <the release's bytes> <the port's bytes>
+#
+# The bytes are written as the case file writes them, in the order they sit in the buffer, so the two
+# halves of a half are the two the buffer holds.
+#
+# Every other cell of every case is compared and must agree byte for byte. A cell on this list is
+# compared too, and it fails if either side's bytes are not the two written here: a recorded divergence
+# that stops being one has to come off the list, and one that changes shape has to be looked at again.
+# This is a record of measurements, not an allowance - nothing here excuses a data type, an operation or
+# an element count, and a case of a data type that is absent from this file is compared like any other.
+#
+# Measured on macOS 27.0 build 26A428 (M4 Pro, Metal 4). What each group is, and the rule attempted and
+# rejected for it, is in packages/a/apple-backports/facts/MetalPerformanceShadersGraph/Core.md.
+sqrt float16 14 013c 003c
+rsqrt float16 15 ef3e ee3e
+log float16 10 dbc8 dac8
+log float16 11 dbc8 dac8
+log float16 13 efc6 eec6
+log float16 14 2914 ff13
+log float16 15 66bc 65bc
+subtract float16 4 00f8 007c
+subtract float16 5 0078 00fc
+multiply float16 2 0000 007e
+multiply float16 3 0000 007e
+multiply float16 4 007c 0000
+multiply float16 5 007c 0000
+multiply float16 6 001e 0000
+multiply float16 7 00fc 0000
+divide float16 1 00fc 007c
+divide float16 6 007c 0000
+divide float16 7 00fa 0000

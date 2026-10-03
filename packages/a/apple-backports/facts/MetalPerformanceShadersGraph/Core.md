@@ -169,26 +169,54 @@ answers the same way:
 | anything else that is not a positive number, to a logarithm | `0000` | `log(0xbc00)`, `log(0x7c00)`, `log(0xfc00)` and `log(0xfe00)` are all `0000`, where IEEE answers a NaN, an infinity and two NaNs |
 | a denormal | kept | `identity(0x0001)` is `0001` and `abs(0x8001)` is `0001`, where float32 answers `00000000` |
 
-**The 22 cells that are still not the release's, and why no rule reaches them.** Five are the release's
-own approximation and are within one unit in the last place of a half or near it: `log(0x03ff)` and
-`log(0x0400)` are `c8db` where the correctly rounded half of the exact logarithm is `c8da`, `log(0x1400)`
-is `c6ef` against `c6ee`, `log(0x3555)` is `bc66` against `bc65` and `rsqrt(0x3555)` is `3eef` against
-`3eee`; `log(0x3c01)` is `1429` where the exact answer is `13ff`, which is four percent out. Three are
-the narrowing's rounding of a halfway case: the release answers `4201` and `4001` for the two additions
-whose exact sums are exactly halfway between two halves, and `3c01` for a square root of `3c01` whose
-exact value is exactly halfway too, where `CharonMPSFloatToHalf` rounds a halfway case to even. That is
-a rule and it is not applied here because the converter is `../MetalPerformanceShaders/CharonMPS.h`'s,
-shared with the matrix and image families, where no measurement says which way a halfway case rounds.
-**Owed.** Fourteen are the release's half binary arithmetic answering something no operation of the
-specification produces: a zero times an infinity is `0000` where IEEE answers a NaN, an infinity times a
-NaN is `7c00`, a multiply of a positive NaN and a denormal is `1e00` (`0.00585938`), a subtract of `+inf`
-and a NaN is `f800` (`-32768`) and of `-inf` and a NaN is `7800` (`32768`), a division of a NaN is `7c00`
+**A halfway half rounds away from zero here, and now does in the port's MPSGraph path.**
+`CharonMPSFloatToHalfRounded` in `../MetalPerformanceShaders/CharonMPS.h` takes the rounding as an
+argument, `CharonMPSStoreRounded` passes it on to the narrowing, and the interpreter's two stores ask
+for it; `CharonMPSFloatToHalf` and `CharonMPSStore` are the same functions with the even rounding and
+every other family keeps calling those, so the matrix and image kernels do not move. Measured: an
+addition of `2^-10` to 3.0 is exactly halfway between two halves and the release answers `4201`, and
+a square root of `3c01` — `sqrt(1 + 2^-14 * 2)` — is exactly halfway and the release answers `3c01`,
+where round-to-even gives `3c00`. **Four cells left the record when this was applied, not three**: it
+also fixed a multiply of a half denormal by 0.5 and a division of one by -0.5, whose exact answers are
+both halfway between two halves.
+
+**The 18 cells that are still not the release's, and the rule attempted for each group.**
+`tests/backports/host/mpsgraph/recorded-cells.txt` names each of them with the two sets of bytes, and the
+comparison is per cell: a cell that is not on that list fails, and so does a cell on it whose bytes are
+not the two written there, so neither a new divergence nor a stale record can pass.
+
+**Seven are the release's own approximation**, within one unit in the last place of a half or near it:
+`log(0x03ff)` and `log(0x0400)` are `c8db` where the correctly rounded half of the exact logarithm is
+`c8da`, `log(0x1400)` is `c6ef` against `c6ee`, `log(0x3555)` is `bc66` against `bc65`, `rsqrt(0x3555)` is
+`3eef` against `3eee`, and `sqrt(0x3c01)` is `3c01` against `3c00`. **Attempted and rejected**: that the
+kernels keep their intermediate in a half, which is the shape the coordinator suggested. Three models
+were measured against all sixteen cells of each kind — the operation narrowed once, `x` times a reverse
+square root narrowed to a half, and a reverse square root of the narrowed reciprocal — and each explains
+*fewer* cells than the single narrowing the port already does: 6, 7 and 7 of 16 against 8 for the square
+root, 5 and 7 of 16 against 8 for the reverse square root. For the logarithm, three models — one
+narrowing, a `log2` narrowed to a half and then multiplied by `ln2`, and a `log2` narrowed twice —
+explain **0 of the 5** recorded cells. A half-precision intermediate is therefore not what is happening,
+and what is left is the compiler's own approximation, whose coefficients are not derivable from the
+specification. **Owed, not attempted further.**
+
+**Eleven are the release's half binary arithmetic answering what no operation of the specification
+produces**, and every one of them has an operand that is a zero, an infinity, a NaN or a denormal: a zero
+times an infinity is `0000` where IEEE answers a NaN, an infinity times a NaN is `7c00` and a negative
+infinity times a negative NaN is also `7c00` — the sign of the infinity gone — a positive NaN times a
+denormal is `1e00` (`0.00585938`) and a negative NaN times 2.0 is `fc00`, a division of a NaN is `7c00`
 and of a negative NaN is `fa00` (`-49152`), a division of `-1.0` by `-0.0` is `fc00` where IEEE answers
-a positive infinity, and a multiply or a division with a denormal operand answers the operand's own
-magnitude: `-dn * 0.5` is `8001` and `dn / -0.5` is `8001`, both of which are twice the exact answer.
-A kernel that answers these is not a function of the operations the specification names, and reproducing
-it bit for bit would be a table of its answers rather than an implementation of it, which is what the
-contract forbids. **Owed, and not attempted here.**
+a positive infinity, and a subtraction of `+inf` and a NaN is `f800` (`-32768`) and of `-inf` and a NaN
+is `7800` (`32768`). **Attempted and rejected**: the two suggestions, in the form each can be measured.
+A half denormal read with the wrong exponent bias is ruled out by the ratios — the release's answers for
+an operation with a denormal operand were 2×, 2× and 4× the exact value and `0.00585938`, and no single
+exponent field gives a fixed ratio across them. A clamped or fast-math float path is ruled out by the
+group's own answers: within one class of operand — one that is not a finite non-zero normal — the release
+answers `0000`, `7c00`, `fc00`, `1e00` and `0000`, and no rule over the class produces five different
+values. Five substitutions were measured against all eleven cells: IEEE itself explains 3, "a NaN operand
+becomes the largest finite half" 1, "a NaN operand becomes an infinity" 2, "a zero operand makes the
+product a zero" 5, and "computed in a float32 with denormals flushed" 2. Nothing explains a group.
+**Owed, not attempted further**: a kernel that answers these is not a function of the operations the
+specification names, and reproducing it bit for bit would be a table of its answers.
 
 The buffer a half case needs is sixteen elements: `MPSNDArray` refuses a shorter one — "buffer is not
 large enough. Must be 32 bytes", `MPSNDArray.mm:893` — so a half tensor in this harness cannot be

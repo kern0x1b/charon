@@ -121,52 +121,65 @@ if cmp -s "$build/port.prefix" "$build/port-plant1.prefix"; then
 fi
 plant_wrong=$(diff "$build/system.prefix" "$build/port-plant1.prefix" | grep '^<' | wc -l | tr -d ' ')
 echo "red control: the planted build differs from the release in $plant_wrong of $n cases"
-# The verdict. A data type named in MPSGRAPH_RECORDED has its differences reported rather than failed,
-# and the only one is float16: this host's half kernels are an approximation of the arithmetic rather
-# than the arithmetic, 170 of the 192 half cells are byte-identical to the port's, and the 22 that are
-# not are not reachable from any rule over the operations - the release answers a logarithm 4% out
-# near one, a multiply of a zero and a NaN with 0x1e00, and a subtraction of an infinity and a NaN with
-# -32768. facts/MetalPerformanceShadersGraph/Core.md carries the whole table. The name is a data type
-# and nothing else: a case of a type that is not named here is a failure whatever it answers.
-MPSGRAPH_RECORDED=${MPSGRAPH_RECORDED:-float16}
-if cmp -s "$build/system.prefix" "$build/port.prefix"; then
-    echo "port: same as the system, case for case and bit for bit"
-    echo "checks=$n failures=0"
-    exit 0
-fi
-diff "$build/system.prefix" "$build/port.prefix" | head -40
-# The cases that differ, and for each of them how many of its cells, which is the number a reader needs
-# and the number the release's own approximation is measured in.
-python3 - "$build/system.prefix" "$build/port.prefix" "$MPSGRAPH_RECORDED" <<'PY'
+# The verdict, cell by cell. Every cell of every case is compared, and a difference is a failure unless
+# the cell is in recorded-cells.txt WITH the two sets of bytes the release and the port answer there -
+# and that file is a record of measurements, not an allowance: it names no data type, no operation and no
+# element count, and a cell on it whose bytes are not the ones written there fails as surely as one that
+# is not on it at all. That is the difference from the exemption this replaced, which excused a whole
+# data type and so passed any new float16 divergence as "recorded"; here a new one is a new line, or a
+# failure. What each recorded group is, and the rule attempted and rejected for it, is in
+# facts/MetalPerformanceShadersGraph/Core.md.
+python3 - "$build/system.prefix" "$build/port.prefix" "$here/recorded-cells.txt" <<'PY'
 import sys
-recorded = sys.argv[3]
-hard, recorded_cases, recorded_cells, checked = [], [], 0, 0
+recorded = {}
+for number, line in enumerate(open(sys.argv[3]), 1):
+    if line.startswith("#") or not line.strip():
+        continue
+    fields = line.split()
+    if len(fields) != 5:
+        print("recorded-cells.txt line %d is not five fields:" % number, line.strip())
+        raise SystemExit(1)
+    recorded[(fields[0], fields[1], int(fields[2]))] = (fields[3], fields[4])
+hard, seen, differing, checked = [], set(), set(), 0
 for one, other in zip(open(sys.argv[1]), open(sys.argv[2])):
     a, b = one.split(), other.split()
-    # Four fields is a case with a result buffer in it: the operation, the data type, the length and
-    # the bytes. Anything shorter is a line of its own - the graph device type, a shaped type data
-    # type - and it is compared as the whole line it is.
+    # Four fields is a case with a result buffer in it: the operation, the data type, the length and the
+    # bytes. Anything shorter is a line of its own - the graph device type, a shaped type data type -
+    # and it is compared as the whole line it is.
     if len(a) < 4 or len(b) < 4 or a[0] != b[0]:
         if one != other:
             hard.append(" ".join(a))
         continue
     checked += 1
-    if a[3] == b[3]:
-        continue
-    # Four hex characters are one element: two bytes, whatever width the data type is.
-    cells = sum(1 for i in range(0, len(a[3]), 4) if a[3][i:i + 4] != b[3][i:i + 4])
-    if a[1] == recorded:
-        recorded_cases.append(a[0])
-        recorded_cells += cells
-        print("recorded (%s):" % recorded, a[0], "-", cells, "of its cells differ from the release's")
-    else:
-        hard.append(" ".join(a[:2]))
-print("port: same as the system on %d of the %d cases with a result buffer; %d %s cases differ in"
-      " %d of their cells, recorded"
-      % (checked - len(recorded_cases), checked, len(recorded_cases), recorded, recorded_cells))
+    # How many hex characters one element of this data type is: two per byte, and the bytes of the
+    # types this file asks for.
+    width = 2 * {"float32": 4, "float16": 2, "int32": 4}.get(a[1], 4)
+    for i in range(0, len(a[3]), width):
+        key = (a[0], a[1], i // width)
+        want = (a[3][i:i + width], b[3][i:i + width])
+        listed = recorded.get(key)
+        if want[0] == want[1]:
+            if listed is not None:
+                hard.append("%s %s element %d is on recorded-cells.txt and the two now agree" % key)
+            continue
+        differing.add(key)
+        if listed is None:
+            hard.append("%s %s element %d: release %s, port %s, and it is not recorded"
+                        % (key[0], key[1], key[2], want[0], want[1]))
+        elif listed != want:
+            hard.append("%s %s element %d is recorded as release %s and port %s and answered %s and %s"
+                        % (key[0], key[1], key[2], listed[0], listed[1], want[0], want[1]))
+        else:
+            seen.add(key)
+for key, value in sorted(recorded.items()):
+    if key not in differing:
+        hard.append("%s %s element %d is recorded as release %s and port %s and the two now agree"
+                    % (key[0], key[1], key[2], value[0], value[1]))
+print("port: same as the system on %d of the %d cells with a result buffer; %d recorded"
+      % (checked * 16 - len(seen), checked * 16, len(seen)))
 for name in hard:
     print("  DIFFERS:", name)
-print("checks=%d failures=%d recorded=%d" % (checked, len(hard), len(recorded_cases)))
+print("checks=%d failures=%d recorded=%d" % (checked, len(hard), len(seen)))
 raise SystemExit(1 if hard else 0)
 PY
 verdict=$?

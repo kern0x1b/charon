@@ -71,7 +71,14 @@ static inline float CharonMPSHalfToFloat(uint16_t half)
     return value;
 }
 
-static inline uint16_t CharonMPSFloatToHalf(float value)
+// Two roundings, and which of them a caller gets is its own question. `awayFromZero` rounds a value
+// that is exactly halfway between two halves away from zero; without it a halfway value rounds to the
+// one with an even mantissa, which is what every family here has always done and what nothing has ever
+// measured otherwise. The MPSGraph family asks for the other one, because the release's own half
+// arithmetic rounds a halfway case away from zero - measured on macOS 27.0 build 26A428, an addition
+// of 2^-10 to 3.0 answers 0x4201 where that sum is exactly halfway between 0x4200 and 0x4201 - and
+// nothing else in this package is measured to want it.
+static inline uint16_t CharonMPSFloatToHalfRounded(float value, int awayFromZero)
 {
     uint32_t bits, sign, mantissa, half, rest, halfway;
     int32_t biased, exponent;
@@ -97,15 +104,20 @@ static inline uint16_t CharonMPSFloatToHalf(float value)
         half = mantissa >> (14 - exponent);
         rest = mantissa & ((1u << (14 - exponent)) - 1u);
         halfway = 1u << (13 - exponent);
-        if (rest > halfway || (rest == halfway && (half & 1)))
+        if (rest > halfway || (rest == halfway && (awayFromZero || (half & 1))))
             half++;
         return (uint16_t)(sign | half);
     }
     half = ((uint32_t)exponent << 10) | (mantissa >> 13);
     rest = mantissa & 0x1FFFu;
-    if (rest > 0x1000u || (rest == 0x1000u && (half & 1)))
+    if (rest > 0x1000u || (rest == 0x1000u && (awayFromZero || (half & 1))))
         half++;
     return (uint16_t)(sign | half);
+}
+
+static inline uint16_t CharonMPSFloatToHalf(float value)
+{
+    return CharonMPSFloatToHalfRounded(value, 0);
 }
 
 // One element of a matrix, vector or state, read and written through the data type it is stored as.
@@ -139,7 +151,11 @@ static inline double CharonMPSLoad(const void *bytes, MPSDataType type, size_t i
     }
 }
 
-static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, double value)
+// The store, and the narrowing of a half is the release's own rounding for the MPSGraph family and the
+// even one for every other, which is why the rounding is a parameter here and not a change to it: see
+// CharonMPSFloatToHalfRounded. Every other data type is written the same either way.
+static inline void CharonMPSStoreRounded(void *bytes, MPSDataType type, size_t index, double value,
+                                         int awayFromZero)
 {
 #if defined(CHARON_PLANT)
     // THE RED CONTROL. Compiled only into the harness's planted builds, never into the library: this
@@ -163,7 +179,7 @@ static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, d
         break;
     }
     case MPSDataTypeFloat16:
-        ((uint16_t *)bytes)[index] = CharonMPSFloatToHalf((float)value);
+        ((uint16_t *)bytes)[index] = CharonMPSFloatToHalfRounded((float)value, awayFromZero);
         break;
     case MPSDataTypeInt8:
         ((int8_t *)bytes)[index] = (int8_t)value;
@@ -186,6 +202,11 @@ static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, d
     default:
         break;
     }
+}
+
+static inline void CharonMPSStore(void *bytes, MPSDataType type, size_t index, double value)
+{
+    CharonMPSStoreRounded(bytes, type, index, value, 0);
 }
 
 // A matrix as the kernels walk it: the first byte of the data, and the three strides the header names.
