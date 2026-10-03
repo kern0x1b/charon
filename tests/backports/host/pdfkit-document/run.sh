@@ -248,18 +248,35 @@ if MUTATION:
         planted = host[key] + "-PLANTED"
     # WHERE the key is planted is the file that printed it, not a fixed one: the appearance facts come
     # from the Catalyst side and the rest from the macOS port side, and a mutation written into
-    # port.txt would never be read for a key port.txt does not hold.  The prefix each file writes is
-    # the side name it is read under, so the scratch copy keeps that prefix and is read the same way.
+    # port.txt would never be read for a key port.txt does not hold.
+    #
+    # WHICH LINE is the key is NOT decided by a prefix, and that is the whole of a defect this family
+    # found in the harness: read() above takes a line's key to be its name with the side's prefix
+    # removed WHEN THERE IS ONE, because the class-level facts are printed as "port.<key>" and
+    # "portcolor.<key>" while every per-fixture fact is printed as a BARE "<key>".  This writer used to
+    # look for the prefix, so for every per-fixture key it found no line at all, wrote the file through
+    # unchanged, and the comparison then reported "MUTATION failed: the comparison is blind" and exited
+    # non-zero - which the loop below read as a PASS.  All 116 named controls were doing that, and the
+    # automatic one passed only because the key it happened to choose is a prefixed one.  So the line is
+    # found by its KEY, the prefix it carries is kept as it is, and a key that is in no line is a refusal
+    # rather than a silent no-op.
     in_port = key in read(sys.argv[2], "port")
-    source_index, source_prefix, scratch_prefix = (
-        (2, "port.", "port.") if in_port else (3, "portcolor.", "portcolor."))
+    source_index, source_prefix = (2, "port.") if in_port else (3, "portcolor.")
     scratch = os.path.join(tempfile.mkdtemp(prefix="pdfkit-mutation-"), "planted.txt")
+    replaced = 0
     with open(sys.argv[source_index]) as original, open(scratch, "w") as copy:
         for line in original:
-            if line.startswith(source_prefix) and line.partition("=")[0][len(source_prefix):].strip() == key:
-                copy.write(f"{scratch_prefix}{key}={planted}\n")
+            name = line.partition("=")[0]
+            bare = name[len(source_prefix):] if name.startswith(source_prefix) else name
+            if bare.strip() == key:
+                copy.write(f"{name}={planted}\n")
+                replaced += 1
             else:
                 copy.write(line)
+    if replaced == 0:
+        print(f"MUTATION REFUSED: {key!r} is in no line of the file it should be planted in, and a"
+              " control that plants nothing must fail rather than report a clean run")
+        sys.exit(1)
     if in_port:
         port = read(scratch, "port")
     else:
@@ -355,6 +372,13 @@ fi
 grep -q "^MUTATION planted on " "$control_log" || {
     echo "RED CONTROL FAILED: the mutated run went non-zero without saying which key it planted,"
     echo "  so the failure is not the control's. Its output:"
+    sed 's/^/    /' "$control_log"
+    exit 1
+}
+# and the same requirement as the named controls below: a DIFFERENCE, not only a non-zero exit
+grep -q "^  DIFFER " "$control_log" || {
+    echo "RED CONTROL FAILED: the mutated comparison reported no difference, so it would pass a port"
+    echo "  that is wrong on this key. Its output:"
     sed 's/^/    /' "$control_log"
     exit 1
 }
@@ -501,7 +525,20 @@ for key in \
     widget-t-mergedname.pdf.page0.annotation0.flags.fieldName \
     widget-t-extra-TU.pdf.page0.annotation0.flags.fieldName \
     widget-t-extra-DAstring.pdf.page0.annotation0.flags.fieldName \
-    widget-t-extra-DAstring.pdf.page0.annotations.count
+    widget-t-extra-DAstring.pdf.page0.annotations.count \
+    cgfixture-lines2.pdf.page0.string \
+    cgfixture-lines2.pdf.page0.numberOfCharacters \
+    cgfixture-words.pdf.page0.string \
+    cgfixture-gap.pdf.page0.string \
+    cgfixture-gap.pdf.page0.numberOfCharacters \
+    cgfixture-lead.pdf.page0.string \
+    cgfixture-tail.pdf.page0.string \
+    cgfixture-tail.pdf.page0.numberOfCharacters \
+    cgfixture-tailpair.pdf.page0.string \
+    cgfixture-blank.pdf.page0.string \
+    cgfixture-inline.pdf.page0.string \
+    cgfixture-tab.pdf.page0.string \
+    cgfixture-cross.pdf.page0.string
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then
@@ -513,6 +550,15 @@ do
     grep -q "^MUTATION planted on " "$family_log" || {
         echo "RED CONTROL FAILED for $key: the mutated run went non-zero without saying which key it"
         echo "  planted, so the failure is not the control's. Its output:"
+        sed 's/^/    /' "$family_log"
+        exit 1
+    }
+    # AND IT HAS TO GO RED ON THE DIFFERENCE, not merely exit non-zero: the defect this family found is
+    # that a control which planted nothing at all exited non-zero with "MUTATION failed" and was read as
+    # a pass, so a non-zero exit alone is not evidence that the comparison saw anything.
+    grep -q "^  DIFFER " "$family_log" || {
+        echo "RED CONTROL FAILED for $key: the mutated comparison reported no difference, so planting on"
+        echo "  this key proves nothing about the comparison seeing one. Its output:"
         sed 's/^/    /' "$family_log"
         exit 1
     }
