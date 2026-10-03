@@ -103,3 +103,33 @@ resolvable on its own account, and it is **16.0**; the other ten take the class'
 corpus prices at 16.0 (`getUserVisibleURLForItemIdentifier:`, `removeDomain:mode:`,
 `getIdentifierForUserVisibleFileAtURL:`, `temporaryDirectoryURLWithError:`, `globalProgressForKind:`,
 `signalErrorResolved:`) each carry their own attribute, so they are not among the seven.
+
+## What the host registers under this prefix, and where the 25 comes from
+
+`tools/corpus/spec/FileProvider.json` carries `expect_classes: 25`, and every run of
+`tests/backports/host/inventory/run.sh FileProvider` compares the host's own count against it, so a
+host that answers fewer classes fails instead of quietly reading smaller. **25 classes and 34
+protocols** is what the host registers under the `NSFileProvider` prefix, measured:
+
+```
+sh tests/backports/host/inventory/run.sh FileProvider
+
+  HOST: NSFileProvider -> 25 classes, 34 protocols
+  COUNT: 25 classes, as the spec expects
+  PORT: 5 objects built and read
+  CARRIED: 8 never_call names present as an exact nm symbol in the built object
+  inventory: FileProvider green
+```
+
+The prefix is `NSFileProvider` and not the framework's name, because the framework is `FileProvider`
+and its classes are `NSFileProvider*`: a probe matching on the framework name finds nothing and
+reports 0 of 0, which is why that harness fails a prefix that matches nothing rather than passing it.
+
+The harness sits **beside** this framework's own differential rather than in place of it, and its
+own header says so: `differential.m`/`run.sh` compare the port's `NSFileProviderManager.m` with the
+host line by line (`VERDICT: green` above), which the inventory cannot do — it counts names, and it
+reads the eight `never_call` names out of the built object rather than out of the source tree,
+because the port keeps no `.o` files there and a check that read `$pkg/*.o` was comparing an empty
+set. One measures the answers, the other measures that the band objects exist and carry what the
+spec says they carry; neither answers for the other.
+
