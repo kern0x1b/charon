@@ -81,33 +81,80 @@ harness rather than in the library:
   and read every remembered buffer back into the array it came from, so after the first case each input
   array held the previous case's output and both sides agreed on the wrong numbers. Only the result
   buffer is read back now.
-* **A square root of a negative, twice.** I read the chain case — where the product is positive even
+* **A square root of a negative, three times.** I read the chain case — where the product is positive even
   where the sum is not, so no negative ever reaches the root — as the release's root answering a
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
-  release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, and it is one again.
+  release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, it is one again, and
+  `MPSGraphOperationKindSqrt` now takes `sqrt(a)`: over the sixteen classes below the whole row is
+  byte-identical to the release's, element for element.
+* **A branch that decided a division, a reciprocal, a square root and a logarithm by itself.** Each of the
+  four had a case for the values the arithmetic is undefined at — `b == 0.0`, `a == 0.0`, `a < 0.0`,
+  `a <= 0.0` — and each of the first two chose its infinity from the sign of the dividend alone, so it had
+  one answer where the arithmetic has two: `-1 / -0.0` is `+inf` and the division branch had only `-inf`
+  for it, and a reciprocal of `-0.0` is `-inf` where the reciprocal branch had only `+inf`. The measured
+  columns `reciprocal` and `divide` carry both zeroes, `ff800000` and `7f800000`, which is what the case
+  file feeds now. IEEE division answers every one of them, so the four cases are the arithmetic itself.
+* **A denormal, and a NaN of its own.** `CharonMPSGraphAsZero` and `CharonMPSGraphOwnNaN` are what a result
+  leaves the release's arithmetic as, and they are in `CharonMPSGraphApply` rather than in the store,
+  because `CharonMPSStore` is shared with the matrix and image families and because two kinds keep both: the
+  measured table below has `abs` and `identity` returning `0x00000001` and `0x7f800001` unchanged.
 
-**Where it stands, measured on macOS 27.0 build 26A428: `tests/backports/host/mpsgraph/run.sh` exits 1
-with `port: DIFFERS in 1 cases` over `compared: 15 cases`.** The run compares fifteen cases and thirteen
-of them print a result buffer; **twelve of those thirteen are byte-identical to the release** and one,
-`sqrt`, is not. The twelve are `square`, `reciprocal`, **`rsqrt`**, `log`, `abs`, `sign`,
-`integer-divide`, `add`, `subtract`, `multiply`, `divide` and `chain` - named here because the square
-root's neighbour is the row that once carried its divergence, and `rsqrt`'s case is one of the twelve
-that agree. The one that does not is `sqrt`, and it does not agree in the way the sentence above used
-to claim:
+**Where it stands, measured on macOS 27.0 build 26A428 (M4 Pro, Metal 4):
+`tests/backports/host/mpsgraph/run.sh` ends `port: same as the system, case for case and bit for bit` and
+`checks=15 failures=0` over `compared: 15 cases`.** Every case is byte-identical to the release's, and the
+case file feeds all sixteen classes of the table below to each of them rather than the eight values that
+first showed a difference. The planted build beside it is the control: `red control: the planted build
+differs from the release in 13 of 15 cases`, which is every line of the run that is a case - the other two
+are the graph device's type and a shaped type's data type, neither of which is a stored element.
 
-    release  1  0.8333  0.4641  2  NaN  NaN  NaN  NaN
-    port     1  0.8333  0.4641  2  1    0.8333  0.4641  2
+What the release answers for each class, float32, one row per input and one column per unary operation.
+Every cell is the four bytes it wrote:
 
-Both sides answer the same first four. On the last four the release answers four NaNs - the IEEE answer
-for the square root of a negative, which is what the header's own operation means - and this port
-answers a byte-for-byte repeat of its own first four, which is not the magnitude of anything and is not
-explained: the feed is one buffer of eight values, the walk reads element `i` of it for `i` in 0..7, and
-`CharonMPSGraphElementCount` of a 2x4 shape is 8. The two differences are therefore separate: the
-release answers NaN where this port's table takes `sqrt(fabs(a))` (line `MPSGraphOperationKindSqrt` of
-`MPSGraphInterpreter14.m`), and the port's second row is a repeat that this run does not account for.
-Both are **owed**, and the case is named as such rather than counted as agreeing. The port's earlier
-claim on this case - the release answering `1, 1.41421, 1.73205, 2` for a feed of `1, 2, 3, 4, -1, -2,
--3, -4` - does not reproduce on this host either, and is withdrawn above with the rest.
+| input | bits | sqrt | rsqrt | square | reciprocal | log | abs | sign |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| +1 | `3f800000` | `3f800000` | `3f800000` | `3f800000` | `3f800000` | `00000000` | `3f800000` | `3f800000` |
+| -1 | `bf800000` | `7fc00000` | `7fc00000` | `3f800000` | `bf800000` | `7fc00000` | `3f800000` | `bf800000` |
+| -0.0 | `80000000` | `80000000` | `ff800000` | `00000000` | `ff800000` | `ff800000` | `00000000` | `00000000` |
+| 0.0 | `00000000` | `00000000` | `7f800000` | `00000000` | `7f800000` | `ff800000` | `00000000` | `00000000` |
+| +inf | `7f800000` | `7f800000` | `00000000` | `7f800000` | `00000000` | `7f800000` | `7f800000` | `3f800000` |
+| -inf | `ff800000` | `7fc00000` | `7fc00000` | `7f800000` | `80000000` | `7fc00000` | `7f800000` | `bf800000` |
+| qNaN | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `00000000` |
+| -qNaN | `ffc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `00000000` |
+| denormal 0x00000001 | `00000001` | `00000000` | `7f800000` | `00000000` | `7f800000` | `ff800000` | `00000001` | `00000000` |
+| denormal 0x007fffff | `007fffff` | `00000000` | `7f800000` | `00000000` | `7f800000` | `ff800000` | `007fffff` | `00000000` |
+| -denormal 0x80000001 | `80000001` | `80000000` | `ff800000` | `00000000` | `ff800000` | `ff800000` | `00000001` | `00000000` |
+| smallest normal 0x00800000 | `00800000` | `20000000` | `5f000000` | `00000000` | `7e800000` | `c2aeac50` | `00800000` | `3f800000` |
+| 0x00ffffff | `00ffffff` | `203504f3` | `5eb504f4` | `00000000` | `7e000001` | `c2ad496b` | `00ffffff` | `3f800000` |
+| 1e-20 | `0e8d1e59` | `27066639` | `57f3cf8f` | `00000000` | `706833b2` | `c287a965` | `0e8d1e59` | `3f800000` |
+| 0x3f7fffff | `3f7fffff` | `3f7fffff` | `3f800000` | `3f7ffffe` | `3f800001` | `b3800000` | `3f7fffff` | `3f800000` |
+| qNaN payload 0x7f800001 | `7f800001` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7fc00000` | `7f800001` | `00000000` |
+
+Four things in it are worth naming, because each one is a rule rather than a value:
+
+* **A denormal is read as a zero of the same sign and never answered.** `sqrt` of `0x00000001` is
+  `00000000` and of `0x80000001` is `80000000`; `sign` of `0x00000001` is `00000000`; `reciprocal` of
+  `0x00000001` is `7f800000`. The result is flushed as well as the operand, which is a different rule and
+  shows in one row: `square` of `0x00800000` is `00000000`, because the square of the smallest normal is a
+  denormal, while `square` of `0x3f7fffff` is `3f7ffffe`, which is neither.
+* **A NaN a kind computes is the arithmetic's own.** Every computing column answers `7fc00000` for
+  `ffc00000` and for the payload-carrying `7f800001` — the sign and the payload are both gone — and the
+  two copying columns are the two that keep them: `abs` of `7f800001` is `7f800001`, and `identity` of
+  `7f800001` is `7f800001` too.
+* **A negative zero is a negative zero.** `sqrt` of `80000000` is `80000000`, where a `fabs` before the
+  root could not have answered it.
+* **`log` of a zero is `-inf` and `sign` of a NaN is `0`.** Both are in the table and neither needs a case
+  of its own, which is the point of taking them out.
+
+**A half is a different arithmetic, and this host cannot be its oracle.** Measured over the same sixteen
+classes in `MPSDataTypeFloat16`, the release answers the square root of a half `-1.0` with `0000` — a zero
+where IEEE and every float32 column above answer a NaN — the square root of a half `NaN` with `7c00`, an
+infinity, the logarithm of a half `0.0` with `f98c`, which is `-45440` rather than `-inf`, and the sign of a
+half `NaN` with `3c00`. An identity operation that answers an infinity for a NaN is not a copy, so these
+are a different implementation underneath rather than the same arithmetic in a narrower type. **Owed, and
+not attempted here**: the port's half path computes in double and stores through `CharonMPSFloatToHalf`, so
+it answers what the table above calls precise, and matching this host's half kernels means implementing
+them rather than adjusting a threshold. `CharonMPSGraphAsZero` is therefore a float32 answer, and a half
+denormal keeps its value here for the same reason.
 
 Two of the case file's cases are not counted as agreeing:
 
