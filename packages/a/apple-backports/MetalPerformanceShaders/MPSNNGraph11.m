@@ -1,212 +1,67 @@
-// MPSNNGraph and the node layer it walks, from MPSNNGraph.h, MPSNNGraphNodes.h and
-// MPSNeuralNetworkTypes.h of the SDK of iOS 16.4. One object for one release: the band machinery keeps
-// an object whole or drops it whole, so a file here carries the API of exactly one release.
+// MPSNNGraph and the ten of its node classes that the export ladder places at iOS 11.0.
 //
-// FOURTEEN CLASSES AND ONE CATEGORY, and the fourteen is the number settled from the headers rather than
-// from any note. The file implements MPSNNGraph, MPSNNImageNode, MPSNNStateNode, MPSNNFilterNode,
-// MPSNNDefaultPadding, MPSNNBinaryArithmeticNode, MPSNNAdditionNode, MPSNNSubtractionNode,
-// MPSNNMultiplicationNode, MPSNNDivisionNode, MPSNNConcatenationNode, MPSCNNPoolingNode,
-// MPSCNNPoolingAverageNode and MPSCNNPoolingMaxNode, and adds one category on MPSImage. That is eleven
-// MPSNN* classes and three MPSCNNPooling* ones; "fourteen node classes" and "ten classes" are the same
-// list counted at two points of its own history, the ten being the first commit's MPSNN* names before the
-// pooling nodes arrived in the second.
+// ONE OF THREE OBJECTS, and the split is by what a client can BIND, which is what
+// backports.lua's measured_names()/releases_in() measure. A class can be present in a release's ObjC
+// inventory and its class symbol in no export trie of that release, and a client cannot link against what
+// is not exported - so the release the gate places a name at is the first release that EXPORTS it, and
+// that is what this file is named for. Measured with dyld.load + dyld.exported_at over the held ladder,
+// armv7 preferred, taking the EARLIEST of the class symbol and the metaclass symbol as
+// backports.lua:2368-2377 does:
 //
-//   python3 tools/cache-index/first-rung.py MPSNNGraph MPSNNImageNode MPSNNStateNode MPSNNFilterNode \
-//       MPSNNPadding MPSNNDefaultPadding MPSNNBinaryArithmeticNode MPSNNAdditionNode \
-//       MPSNNSubtractionNode MPSNNMultiplicationNode MPSNNDivisionNode MPSNNConcatenationNode \
-//       MPSCNNPoolingNode MPSCNNPoolingAverageNode MPSCNNPoolingMaxNode
+//   MPSNNGraph11.m        11.0   MPSNNGraph MPSNNImageNode MPSNNDefaultPadding MPSNNAdditionNode
+//                                MPSNNSubtractionNode MPSNNMultiplicationNode MPSNNDivisionNode
+//                                MPSNNConcatenationNode MPSCNNPoolingAverageNode MPSCNNPoolingMaxNode
+//   MPSNNFilterNode12.m   12.0   MPSNNFilterNode
+//   MPSNNGraphNodes16.m   16.0   MPSNNStateNode MPSNNBinaryArithmeticNode MPSCNNPoolingNode
 //
-// reads 11.0 for every one of them, and 12.0 for MPSNNGradientFilterNode, MPSNNGradientStateNode,
-// MPSNNLabelsNode and MPSNNReduceRowSum. That is why this file stops at the 11.0 names: the gradient and
-// training half of the graph arrived a release later and belongs to the object for that release. A 12.0
-// name here would make the object carry API of two releases, which `misplaced()` in backports.lua
-// refuses and tools/release-split.lua flags independently - release-split reads band points only, so it
-// would pass a 12.0 name here silently and be wrong.
+// All fourteen agree on class and metaclass, so the earliest is the class's own. `first-rung.py` answers
+// 11.0 for all fourteen and is right about the CLASSES and wrong about what a link needs: it reads the
+// names file, which build.py:8 writes with `strings -a <cache> | grep -xF NAME`, so it finds a class that
+// is in the cache and absent from its export trie. That is the difference this split rests on, and
+// MPSNNFilterNode12.m and MPSNNGraphNodes16.m each carry their own measurement.
 //
-// WHAT THE RELEASE CARRIES THAT THESE NAMES DO NOT: MPSNNGraph is declared MPS_UNAVAILABLE on
-// -initWithDevice:, and MPSNNImageNode, MPSNNStateNode and MPSNNFilterNode all mark -init NS_UNAVAILABLE.
-// Those three node classes are placeholders in the release: an image node is a POSITION in a graph, made
-// by a filter's .resultImage or by the caller for a graph input; a filter node is a virtual base class
-// ("This is a virtual base class. Make MPSNNFilterNode subclass objects instead", MPSNNGraphNodes.h:340).
-// So the three classes below hold names and answers and refuse to be built by name, which is what their
-// own headers say and what MPSKernel does for the framework's other abstract bases.
+// WHAT THIS FILE IS. The graph itself, the padding policy, the elementwise filter nodes, the
+// concatenation node, and the two concrete pooling nodes. Their BASES - MPSNNFilterNode,
+// MPSNNBinaryArithmeticNode, MPSCNNPoolingNode - are in the two later objects, and each of those bases is
+// the superclass of classes that arrive earlier, which is Apple's export history rather than a hierarchy
+// built by name at runtime: a subclass names its superclass as a link-time symbol and a band that keeps
+// this object keeps those too.
+//
+// WHAT THE RELEASE'S OWN HEADERS SAY, and this file follows them rather than the earlier form of it:
+//
+//   * Five of the six `+paddingFor...` methods the earlier form defined are declared by NO Apple header.
+//     MPSNNDefaultPadding declares four methods, in the SDKs of both 16.4 and 26.2: +paddingWithMethod:,
+//     -label, and the two +paddingForTensorflow... . The five that are gone -
+//     +paddingForTensorflowMaxPooling, +paddingForTensorflowConvolution, +paddingForCaffePooling,
+//     +paddingForCaffeConvolution and +paddingForMXNetPadding - answer nothing to a grep over either
+//     SDK's MetalPerformanceShaders headers. The earlier comment claimed the header "names" six pre-rolled
+//     policies. A public class method no release ever had is API the port would be inventing.
+//   * +paddingForTensorflowAveragePooling (MPSNeuralNetworkTypes.h:497) and
+//     +paddingForTensorflowAveragePoolingValidOnly (:500) carry ios(11.3), and -inverse (:455) carries
+//     the same date, so none of the three is here.
+//   * The size policies are the header's own DestSize and Offset, transcribed in CharonMPSNN.h one for
+//     one, and the coefficient is the size BITS MINUS ONE (`:339-341` declares ValidOnly 0, Same 1<<4,
+//     Full 2<<4 and `:397-401` wants -1, 0, 1).
+//
+// THE -Wincomplete-implementation PAIRS THAT REMAIN HERE are the two for the classes in this file that
+// declare methods they do not carry: MPSNNDefaultPadding's two ios(11.3) +paddingForTensorflow... and
+// MPSNNGraph's eight. Each is a push/ignored/pop around one @implementation with its own list of names,
+// header lines and releases - not a file-wide `#pragma clang diagnostic ignored` with no record of what
+// it hides. The other two pairs moved with their classes.
 //
 // WHY THE GRAPH RUNS AT ALL ON iOS 6: nothing here needs Metal. MPSNNGraph walks the node graph it was
 // given, and each node's encode runs the kernel object the node holds - an MPSImageAdd, a pooling
 // kernel - over host memory behind an MTLBuffer, which is the path every other MPS kernel in this
-// package takes (facts/MetalPerformanceShaders/Cnn.md; MPSImageArithmetic13.m says the same of its own
-// four). The graph adds the walk, the shape arithmetic and the intermediate-image lifetime. It adds no
-// arithmetic of its own that a kernel does not already do.
+// package takes (facts/MetalPerformanceShaders/Cnn.md). The graph adds the walk, the shape arithmetic and
+// the intermediate-image lifetime. It adds no arithmetic of its own that a kernel does not already do.
 //
-// THE PADDING ARITHMETIC IS THE HEADER'S OWN, NOT A GUESS. MPSNeuralNetworkTypes.h:379-431 gives the two
-// formulas in full, as the code a padding policy is expected to write. They are transcribed below one for
-// one, including the `style * (filterWindowSize - 1)` term that separates the three size policies from
-// each other and the `readSize = (destSize-1)*stride + filterWindowSize` term that is what makes the
-// offset negative for a centred window. An offset invented here would move every kernel's output by a
-// pixel, and the pooling table in Cnn.md is measured in whole pixels. The host case extracts that C block
-// from the header itself, compiles it and compares it with the two functions below over every shape, so
-// what it compares is the header's compiled code and not a restatement of it.
+// NOT CLAIMED: a concatenation of two or more sources. MPSNNGraphNodes.h:2443-2446 pads EACH source out to
+// a multiple of four channels, so two one-channel sources make an eight-channel destination, and
+// MPSImage13.m holds one, two and four channels and refuses the rest. That limit is MPSImage's row.
 //
-// THE CONCATENATION RULE IS THE HEADER'S TOO, INCLUDING THE FOUR: MPSNNGraphNodes.h:2443-2446 says
-// "As all images are padded out to a multiple of four feature channels, M, N and O here are also
-// multiples of four, even when the MPSImages are not", so a destination sized to the UNpadded sum of the
-// channels would be a different image than the release's, by up to three channels per source.
-//
-// WHAT IS NOT HERE, AND WHY, is listed at each class below, where the warning for it is turned off. The
-// whole of it is seventeen methods, and clang asks for all seventeen:
-//
-//   four at iOS 11.3   +paddingForTensorflowAveragePooling, +paddingForTensorflowAveragePoolingValidOnly,
-//                      -encodeBatchToCommandBuffer:sourceImages:sourceStates:intermediateImages:destinationStates:,
-//                      -[MPSNNBinaryArithmeticNode gradientFiltersWithSources:]
-//   one  at iOS 12.0   -trainingGraphWithSourceGradient:nodeHandler:
-//   two  at iOS 12.1   -readCountForSourceImageAtIndex:, -readCountForSourceStateAtIndex:
-//   two  at iOS 13.0   -initWithDevice:resultImages:resultsAreNeeded:, +graphWithDevice:resultImages:resultsAreNeeded:
-//   five at no date, all of which hand back the 12.0 gradient half:
-//                      -gradientFilterWithSource:, -gradientFilterWithSources:,
-//                      -gradientFiltersWithSource:, -gradientFiltersWithSources:, -gradientClass
-//   one  at no date, whose two arguments are NSArray<MPSImageBatch*>* and NSArray<MPSStateBatch*>*:
-//                      -encodeBatchToCommandBuffer:sourceImages:sourceStates:
-//   two  deprecated    -initWithDevice:resultImage:, +graphWithDevice:resultImage:, both carrying
-//                      MPS_AVAILABLE_STARTING_BUT_DEPRECATED ios(11.0, 11.3) - the pre-11.3 spellings of
-//                      the two initializers this object does implement.
-//
-// Not one of the seventeen is a name this release added, and every one's date is written beside its name
-// where it is listed.
-//
-// The four suppressions are push/pop pairs, one above each @implementation that has one, each with its
-// own list of names and its own reason - not a file-wide `#pragma clang diagnostic ignored` with no
-// record of what it hides. The two ways to have no pragma at all were both measured and both refused:
-// defining the seventeen is the mixed release `misplaced()` in backports.lua raises on (and which
-// tools/release-split.lua cannot see, because it reads band points and not a file's declared release),
-// and `@dynamic` does not silence -Wincomplete-implementation for a method, only for a property
-// (measured: for `@dynamic gamma;` clang answers both "method definition for 'gamma' not found
-// [-Wincomplete-implementation]" and "property implementation must have its declaration in interface").
-// Carrying them would be four more objects, one per release - 11.3, 12.0, 12.1 and 13.0 - each with its
-// own placement to measure and its own rows, which is the right way and is a piece of work of its own.
+// WHAT IS NOT CLAIMED HERE AND WHY is listed at each class, where the warning for it is turned off.
 
-#import "CharonMPS.h"
-#import "CharonMPSCnn.h"
-#import "CharonMPSImage.h"
-
-// The private surface the graph and its nodes share. None of it is a name an SDK header declares: the
-// release reaches a node's kernel and a node's sources through its own internal tables, and a graph in
-// this port needs the same three edges - sources, kernel, result - under names of its own. Each selector
-// is prefixed so that a class the release also carries is not shadowed, and each is declared on the
-// class that owns the edge, so a subclass inherits the default and overrides only what it changes.
-//
-// MPSNNPadding is the one name here that is NOT private: the SDK declares it, it is a protocol, and
-// MPSNNDefaultPadding below CONFORMS to it. The conformance is what emits the protocol's own metadata,
-// which is what a row of kind `protocol` is answered by (backports.lua:1938-1946). A forward declaration
-// would add nothing, because the SDK header already declares the protocol and its methods.
-@interface MPSNNImageNode (CharonMPSNN)
-// The image the walk bound to this position. A node holds its position and the image currently there;
-// the release keeps the same pair in its own node table and the graph walks the nodes, not the images.
-- (MPSImage *)charon_mps_image;
-- (void)charon_mps_setImage:(MPSImage *)image;
-@end
-
-@interface MPSNNStateNode (CharonMPSNN)
-- (MPSState *)charon_mps_state;
-- (void)charon_mps_setState:(MPSState *)state;
-@end
-
-// An MPSImage's own shape as a descriptor. MPSImage carries its shape as width, height, featureChannels
-// and numberOfImages (MPSImage.h:402-417) and has no descriptor property of its own, and a graph has to
-// size one node's result from the shape of the node it reads. So the descriptor is made here, in the one
-// place that does it, from the four properties the image already answers - it is the shape, and not an
-// object with a lifetime of its own.
-@interface MPSImage (CharonMPSNN)
-- (MPSImageDescriptor *)charon_mps_descriptor;
-@end
-
-@interface MPSNNFilterNode (CharonMPSNN)
-// The node's sources, in the order its kernel reads them, and the one result image it produces.
-- (NSArray<MPSNNImageNode *> *)charon_mps_sourceNodes;
-- (void)charon_mps_setSourceNodes:(NSArray<MPSNNImageNode *> *)nodes;
-// Add one source to a node that is being built, which is how every subclass in this file wires itself:
-// the sources are the node's own edge to the nodes it reads, and there is no other way in.
-- (void)charon_mps_addSourceNode:(MPSNNImageNode *)node;
-// The kernel the node stands for, and the images bound to it for one encode.
-- (MPSKernel *)charon_mps_kernel;
-- (MPSImage *)charon_mps_sourceImageAtIndex:(NSUInteger)index;
-- (void)charon_mps_setSourceImages:(NSArray<MPSImage *> *)images;
-- (MPSImage *)charon_mps_destinationImage;
-- (void)charon_mps_setDestinationImage:(MPSImage *)image;
-// The shape the result takes, given the shape the source takes. The graph asks every node for this
-// before any encode, because the intermediate images are allocated up front and a walk that discovered
-// a shape halfway through would have nothing to allocate into.
-- (MPSImageDescriptor *)charon_mps_destinationDescriptorForSource:(MPSImageDescriptor *)source;
-// The device the node's kernel is made against. An MPSImageArithmetic initialiser takes one and the
-// port's kernels do no Metal work with it, so it is the device the graph runs on and nothing else.
-- (void)charon_mps_setDevice:(id<MTLDevice>)device;
-- (id<MTLDevice>)charon_mps_device;
-// This node's share of one encode. The base class has no kernel and says so once; a real node runs its
-// own kernel here.
-- (void)charon_mps_encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer;
-@end
-
-
-// The three size policies MPSNNPaddingMethodSize* names, as the coefficient the header's own DestSize
-// formula takes. MPSNeuralNetworkTypes.h:397-401 gives `sourceSize += style * (filterWindowSize - 1)`
-// with StyleValidOnly = -1, StyleSame = 0 and StyleFull = 1, and MPSNeuralNetworkTypes.h:339-341 puts the
-// three policies in bits 4 and 5 as 0, 1<<4 and 2<<4. The coefficient is therefore the BITS MINUS ONE,
-// and that subtraction is the whole of the translation: without it a ValidOnly window reads one wider
-// than the source and a Full one reads three narrower.
-//
-// MEASURED, and by the header's own code rather than by a restatement of it: the host case extracts the C
-// block from MPSNeuralNetworkTypes.h, compiles and runs it, and compares its DestSize and Offset with the
-// two functions below over every shape from 1 to 32 sources, strides 1-4 and windows 1-5, in all three
-// policies. This line was `bits` rather than `bits - 1` and every ValidOnly and Full shape disagreed.
-static inline long CharonMPSNNDestSize(long sourceSize, long stride, long filterWindowSize, MPSNNPaddingMethod method)
-{
-    long style = (long)((method >> 4) & 0x3) - 1;
-    long size = sourceSize + style * (filterWindowSize - 1);
-    return (size + stride - 1) / stride;   // "sourceSize / stride, round up" - the header's own words
-}
-
-static inline long CharonMPSNNReadSize(long destinationSize, long stride, long filterWindowSize)
-{
-    return (destinationSize - 1) * stride + filterWindowSize;
-}
-
-// The offset in one dimension, MPSNeuralNetworkTypes.h:411-431 verbatim in structure: the correction
-// from the window's left edge to its centre, the destination size that correction is measured against,
-// the extent a walk must read to fill that destination, how much of that extent the source does not
-// have, and how much of the shortfall lands on the left. The header's own centeringPolicy is 0 - "When
-// kernelSize is even: 0 pad bottom right. 1 pad top left" (:388) - which is the plain division by two
-// below with no rounding correction.
-static inline long CharonMPSNNOffset(long sourceSize, long stride, long filterWindowSize, MPSNNPaddingMethod method)
-{
-    long correction = filterWindowSize / 2;
-    long destinationSize = CharonMPSNNDestSize(sourceSize, stride, filterWindowSize, method);
-    long readSize = CharonMPSNNReadSize(destinationSize, stride, filterWindowSize);
-    long extraSize = readSize - sourceSize;
-    long leftExtraPixels = (extraSize + 0) / 2;   // centeringPolicy 0: the leftover goes bottom/right
-    return correction - leftExtraPixels;
-}
-
-// The node every filter's result image names, so that a walk going backwards from a result image can ask
-// "which filter produced this?" without having the list of filters in hand. That question is the whole
-// of the walk - MPSNNGraph.h:64-68 - and a graph is built from nodes the caller made BEFORE the graph
-// exists, so the answer cannot come from the graph: the release keeps the same pairing in its own node
-// table, and this is that table.
-//
-// This was the second defect the differential caught. The walk first searched the list of filters it was
-// building for one whose .resultImage was the node being visited - which finds nothing, because the
-// filter that produced that node is by definition not in the list yet. Every node then read as a graph
-// input, the graph reported no filters at all, and -encodeToCommandBuffer: answered an image nothing had
-// written: all zeros, over the right shape. The pairing is registered where the result node is made, so
-// the walk asks the table rather than the list it is filling.
-static NSMapTable *CharonMPSNNProducers(void)
-{
-    static NSMapTable *table;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        table = [NSMapTable strongToStrongObjectsMapTable];
-    });
-    return table;
-}
-
+#import "CharonMPSNN.h"
 
 @implementation MPSNNImageNode {
     id<MPSHandle> _handle;
@@ -288,185 +143,6 @@ static NSMapTable *CharonMPSNNProducers(void)
 @end
 
 
-@implementation MPSNNStateNode {
-    id<MPSHandle> _handle;
-    BOOL _exportFromGraph;
-    MPSState *_charonState;
-}
-
-@synthesize handle = _handle;
-@synthesize exportFromGraph = _exportFromGraph;
-
-- (MPSState *)charon_mps_state { return _charonState; }
-- (void)charon_mps_setState:(MPSState *)state { _charonState = state; }
-
-@end
-
-
-// WHAT THE -Wincomplete-implementation WARNING IS TURNED OFF FOR, and it is one list and one reason.
-//
-// MPSNNFilterNode's @interface in MPSNNGraphNodes.h:338-486 declares five methods this object does not
-// implement, and every one of them is the training half of the graph:
-//
-//   -gradientFilterWithSource:                                  :404   returns MPSNNGradientFilterNode*
-//   -gradientFilterWithSources:                                 :412   returns MPSNNGradientFilterNode*
-//   -gradientFiltersWithSources:                                :420   returns MPSNNGradientFilterNode*
-//   -gradientFiltersWithSource:                                 :428   returns MPSNNGradientFilterNode*
-//   -trainingGraphWithSourceGradient:nodeHandler:               :466   MPS_AVAILABLE_STARTING ios(12.0)
-//
-// MPSNNGradientFilterNode is 12.0 by the same first-rung.py run printed at the top of this file, so
-// implementing any of the five would put a 12.0 name in an 11.0 object - which `misplaced()` in
-// backports.lua refuses by raising, and which tools/release-split.lua cannot see at all because it reads
-// band points and not a file's declared release. They belong to the object that carries the gradient
-// half; the registry rows for MPSNNGradientFilterNode and its 11.3 slice say so in their own words.
-//
-// The suppression is push/pop around this one @implementation and names its five methods in the comment
-// above, rather than a file-wide `#pragma clang diagnostic ignored` with no record of what it hides. The
-// alternative that needs no pragma at all - defining the five anyway - is the mixed release the check
-// exists to refuse, and the other alternative, a second and third object for the 11.3, 12.0 and 12.1
-// halves, is a piece of work of its own: thirteen methods across three later releases, each with its own
-// placement to measure and its own rows.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
-// MPSNNFilterNode's -init is NS_UNAVAILABLE in the header, so the release refuses to build one by name.
-// Nothing below calls it: every real node here reaches NSObject's own -init, which does not re-enter it.
-@implementation MPSNNFilterNode {
-    MPSNNImageNode *_resultImageNode;
-    NSMutableArray<MPSNNStateNode *> *_resultStates;
-    NSMutableArray<MPSNNImageNode *> *_sourceNodes;
-    NSMutableArray<MPSImage *> *_sourceImages;
-    id<MPSNNPadding> _paddingPolicy;
-    NSString *_label;
-    MPSImage *_destinationImage;
-    id<MTLDevice> _device;
-}
-
-@synthesize paddingPolicy = _paddingPolicy;
-@synthesize label = _label;
-
-- (instancetype)initWithDevice:(id<MTLDevice>)device
-{
-    // This package's own way into a node. -init is unavailable in the header, so this is what a node of
-    // this package is built with, and every subclass in this file reaches it with [super initWithDevice:].
-    if ((self = [super init])) {
-        _sourceNodes = [NSMutableArray array];
-        _sourceImages = [NSMutableArray array];
-        _resultStates = [NSMutableArray array];
-        _device = device;
-    }
-    return self;
-}
-
-- (MPSNNImageNode *)resultImage
-{
-    if (!_resultImageNode) {
-        // A filter always has exactly one result image position. The header says it is readonly and
-        // nonnull (:350), so it is made on first use rather than in an initialiser a caller might not
-        // reach - a node built with a result image already made keeps that one, which is what lets a
-        // caller wire a graph by hand. The pairing a walk reads is registered here, where the node is
-        // made, because the graph does not exist yet: a caller wires the filters first and builds the
-        // graph from the last node.
-        _resultImageNode = [[MPSNNImageNode alloc] initWithHandle:nil];
-        [CharonMPSNNProducers() setObject:self forKey:_resultImageNode];
-    }
-    return _resultImageNode;
-}
-
-- (NSArray<MPSNNStateNode *> *)resultStates { return _resultStates; }
-
-- (MPSNNStateNode *)resultState
-{
-    // "convenience method for resultStates[0]" (MPSNNGraphNodes.h:352), and nil when there are none.
-    return _resultStates.count ? _resultStates[0] : nil;
-}
-
-- (NSArray<MPSNNImageNode *> *)charon_mps_sourceNodes { return _sourceNodes; }
-
-- (void)charon_mps_setSourceNodes:(NSArray<MPSNNImageNode *> *)nodes
-{
-    [_sourceNodes removeAllObjects];
-    [_sourceNodes addObjectsFromArray:nodes];
-}
-
-- (void)charon_mps_addSourceNode:(MPSNNImageNode *)node
-{
-    if (node)
-        [_sourceNodes addObject:node];
-}
-
-- (MPSKernel *)charon_mps_kernel { return nil; }
-
-- (MPSImage *)charon_mps_sourceImageAtIndex:(NSUInteger)index
-{
-    return index < _sourceImages.count ? _sourceImages[index] : nil;
-}
-
-- (void)charon_mps_setSourceImages:(NSArray<MPSImage *> *)images
-{
-    [_sourceImages removeAllObjects];
-    [_sourceImages addObjectsFromArray:images];
-}
-
-- (MPSImage *)charon_mps_destinationImage { return _destinationImage; }
-- (void)charon_mps_setDestinationImage:(MPSImage *)image { _destinationImage = image; }
-- (void)charon_mps_setDevice:(id<MTLDevice>)device { _device = device; }
-- (id<MTLDevice>)charon_mps_device { return _device; }
-
-// The shape of the result, from the shape of the source. What a padding policy decides, in the header's
-// own words: "It principally is responsible for setting the MPSCNNKernel.offset and the size of the
-// image produced" (MPSNNGraphNodes.h:361-363). A node with no padding policy keeps its source's shape,
-// which is what an elementwise node does - MPSNNArithmetic is a per-pixel operation and its header
-// (MPSImageMath.h:34-37) names no spatial term at all.
-//
-// THE POLICY IS HANDED THE NODE'S OWN IMAGES, not the node. MPSNeuralNetworkTypes.h:449 names the first
-// parameter "The list of source images to be used", and an earlier form of this method passed
-// `@[ (MPSImage *)self ]` - the NODE - so the policy asked its first argument for its shape and sent
-// -charon_mps_descriptor to an MPSNNFilterNode. Nothing caught it, because every case until the one that
-// set a paddingPolicy left this branch untaken. It is measured, not reasoned: the host case
-// tests/backports/host/mpsnn sets MPSNNPaddingMethodSizeSame on a pooling node and the port build died of
-// "-[CharonMPSCNNPoolingAverageNode charon_mps_descriptor]: unrecognized selector sent to instance".
-- (MPSImageDescriptor *)charon_mps_destinationDescriptorForSource:(MPSImageDescriptor *)source
-{
-    if (_paddingPolicy && [_paddingPolicy respondsToSelector:@selector(destinationImageDescriptorForSourceImages:sourceStates:forKernel:suggestedDescriptor:)]) {
-        NSMutableArray<MPSImage *> *images = [NSMutableArray array];
-        for (NSUInteger index = 0; index < self.charon_mps_sourceNodes.count; index++) {
-            MPSImage *image = [self charon_mps_sourceImageAtIndex:index];
-            if (image)
-                [images addObject:image];
-        }
-        return [_paddingPolicy destinationImageDescriptorForSourceImages:images
-                                                           sourceStates:nil
-                                                              forKernel:[self charon_mps_kernel]
-                                                   suggestedDescriptor:source];
-    }
-    return source;
-}
-
-// One node's share of a graph encode. The base class carries no kernel, so it refuses once, in the log,
-// and the walk carries on to the next node: the release asserts on a graph with an abstract node in it,
-// and an API in this port never crashes its caller.
-- (void)charon_mps_encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
-{
-    CharonMPSRefuse(@"%@: a virtual base node carries no kernel, so it was not run", NSStringFromClass([self class]));
-}
-
-- (NSString *)description
-{
-    return [NSString stringWithFormat:@"<%@ %p sources=%lu>", NSStringFromClass([self class]), (void *)self,
-            (unsigned long)_sourceNodes.count];
-}
-
-@end
-
-#pragma clang diagnostic pop
-
-
-// MPSNNPadding's required method is -paddingMethod and the sizing method is optional
-// (MPSNeuralNetworkTypes.h:369-455); MPSNNDefaultPadding carries both, and it carries the coding pair
-// because the protocol's own base list is <NSObject, NSSecureCoding> (MPSNeuralNetworkTypes.h:363) and a
-// conformance without -initWithCoder: and -encodeWithCoder: is a claim the runtime cannot keep.
-//
 // The header's class declares four methods and this implements the two 11.0 ones,
 // `+paddingWithMethod:` and `-label`, plus the two coding methods MPSNNPadding's own base list requires.
 // It does NOT implement `+paddingForTensorflowAveragePooling` or `+paddingForTensorflowAveragePoolingValidOnly`
@@ -604,152 +280,6 @@ static NSMapTable *CharonMPSNNProducers(void)
 // already carries (MPSImageArithmetic13.m), over the same two images and into the same destination, so
 // the graph runs them through that kernel rather than repeating the operation here.
 //
-// Two methods of MPSNNBinaryArithmeticNode's own @interface (MPSNNGraphNodes.h:2136-2216) are not
-// implemented here, and both are the training half: `-gradientClass` at :2158 and
-// `-gradientFiltersWithSources:` at :2162, which carries MPS_AVAILABLE_STARTING ios(11.3) and returns
-// MPSNNGradientFilterNode*. So is the pair on the class above. The list and the reason are the one beside
-// MPSNNFilterNode's.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
-@implementation MPSNNBinaryArithmeticNode {
-    MPSKernel *_kernel;
-    float _primaryScale, _secondaryScale, _bias, _minimumValue, _maximumValue;
-    NSUInteger _primaryStrideInPixelsX, _primaryStrideInPixelsY, _primaryStrideInFeatureChannels;
-    NSUInteger _secondaryStrideInPixelsX, _secondaryStrideInPixelsY, _secondaryStrideInFeatureChannels;
-}
-
-@synthesize primaryScale = _primaryScale;
-@synthesize secondaryScale = _secondaryScale;
-@synthesize bias = _bias;
-@synthesize minimumValue = _minimumValue;
-@synthesize maximumValue = _maximumValue;
-@synthesize primaryStrideInPixelsX = _primaryStrideInPixelsX;
-@synthesize primaryStrideInPixelsY = _primaryStrideInPixelsY;
-@synthesize primaryStrideInFeatureChannels = _primaryStrideInFeatureChannels;
-@synthesize secondaryStrideInPixelsX = _secondaryStrideInPixelsX;
-@synthesize secondaryStrideInPixelsY = _secondaryStrideInPixelsY;
-@synthesize secondaryStrideInFeatureChannels = _secondaryStrideInFeatureChannels;
-
-// The one line the four subclasses differ by, the same shape MPSImageArithmetic13.m uses for its own
-// four: a class-level constant naming the operation, and one kernel object holding it.
-+ (Class)charon_mps_kernelClass { return [MPSImageAdd class]; }
-
-- (instancetype)initWithLeftSource:(MPSNNImageNode *)left rightSource:(MPSNNImageNode *)right
-{
-    if ((self = [super initWithDevice:nil])) {
-        // THE HEADER'S DEFAULTS, and the third thing the differential caught. MPSImageMath.h:31-32: "The
-        // default value for primaryScale and secondaryScale is 1.0f. The default value for bias is
-        // 0.0f." MPSImageMath.h:34-37 applies all three: "result = ((primaryScale * x) + (secondaryScale
-        // * y)) + bias". An Objective-C float ivar is zero, and a zero scale answers zero however
-        // correct the kernel underneath is - which is what this node did until the differential compared
-        // it with the same addition run without a graph and got 11 22 33 44 against 0 0 0 0.
-        _primaryScale = 1.0f;
-        _secondaryScale = 1.0f;
-        _bias = 0.0f;
-        _minimumValue = -FLT_MAX;
-        _maximumValue = FLT_MAX;
-        [self charon_mps_addSourceNode:left];
-        [self charon_mps_addSourceNode:right];
-    }
-    return self;
-}
-
-+ (instancetype)nodeWithLeftSource:(MPSNNImageNode *)left rightSource:(MPSNNImageNode *)right
-{
-    return [[self alloc] initWithLeftSource:left rightSource:right];
-}
-
-// MPSNNGraphNodes.h:2150, the 11.0 initialiser of the class. "A valid NSArray containing two sources"
-// (:2139) is what +nodeWithSources: below refuses against, and this is the same rule one level down: an
-// arithmetic node with one operand has no meaning, and an API in this port says so in the log instead of
-// answering with a guess. An earlier form of this file had only the +method and left the -initializer
-// declared and undefined, so a caller who had the initializer and not the convenience method got an
-// unrecognized selector.
-- (instancetype)initWithSources:(NSArray<MPSNNImageNode *> *)sourceNodes
-{
-    if (sourceNodes.count != 2) {
-        CharonMPSRefuse(@"%@: an arithmetic node needs exactly two sources and was given %lu, so none was made",
-                        NSStringFromClass([self class]), (unsigned long)sourceNodes.count);
-        return nil;
-    }
-    return [self initWithLeftSource:sourceNodes[0] rightSource:sourceNodes[1]];
-}
-
-+ (instancetype)nodeWithSources:(NSArray<MPSNNImageNode *> *)sourceNodes
-{
-    return [[self alloc] initWithSources:sourceNodes];
-}
-
-// The kernel, made once and kept, so that two runs of one graph share it and the node carries no second
-// copy of the arithmetic. It is made against the node's own device, which the graph sets before the
-// first encode; a node asked for its kernel before the graph has run gets one against the system default
-// device, which is the one device this port has.
-//
-// NOT MPSGetPreferredDevice, and the reason is a band, not a preference: that function is defined in
-// MPSCommandBuffer16.m, which is the 16.0 object, and a band that leaves a 16.0 file out of its library
-// would leave this call without a definition - the trap AGENTS.md names under "A C function shared
-// between backport files". MPSCommandBuffer16.m:9-16 answers MTLCreateSystemDefaultDevice() for every
-// combination of MPSDeviceOptions anyway ("This port has one device and no removable or low-power choice
-// among several, so the options have nothing to choose between"), so calling it here would be the same
-// value by a route one band cannot take.
-//
-// The initialiser is sent to the CONCRETE class, whose own declaration it is: MPSImageMath.h:112/:132/
-// :152/:172 declare -initWithDevice: on MPSImageAdd, MPSImageSubtract, MPSImageMultiply and
-// MPSImageDivide, and MPSImageMath.h:92 marks only the BASE unavailable, to say it is never built
-// directly. This is the same reach MPSImageArithmetic13.m uses to build its own four.
-- (MPSKernel *)charon_mps_kernel
-{
-    if (!_kernel) {
-        id<MTLDevice> device = [self charon_mps_device];
-        if (!device)
-            device = MTLCreateSystemDefaultDevice();
-        _kernel = [[[self class] charon_mps_kernelClass] alloc];
-        _kernel = [_kernel initWithDevice:device];
-    }
-    return _kernel;
-}
-
-// The whole class, MPSNNGraphNodes.h:144-145 (addition), :148-149 (difference) and :151-152 (product).
-- (void)charon_mps_encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
-{
-    MPSImage *primary = [self charon_mps_sourceImageAtIndex:0];
-    MPSImage *secondary = [self charon_mps_sourceImageAtIndex:1];
-    MPSImage *destination = [self charon_mps_destinationImage];
-    if (!primary || !secondary || !destination) {
-        CharonMPSRefuse(@"%@: an arithmetic node needs two sources and a destination and was not given all three",
-                        NSStringFromClass([self class]));
-        return;
-    }
-    if (!CharonMPSCommandBufferPermits(commandBuffer))
-        return;
-    // The scales, the strides, the bias and the clamp are the kernel's own members, so they are handed
-    // straight across and the operation runs where the rest of this package runs it - one walk, one
-    // store, one place the arithmetic lives.
-    // The kernel is made HERE, not in the initialiser: a node is built before the graph runs, and the
-    // device the kernel is made against is the graph's, which does not exist yet at build time.
-    [self charon_mps_kernel];
-    MPSImageArithmetic *kernel = (MPSImageArithmetic *)_kernel;
-    kernel.primaryScale = self.primaryScale;
-    kernel.secondaryScale = self.secondaryScale;
-    kernel.bias = self.bias;
-    kernel.minimumValue = self.minimumValue;
-    kernel.maximumValue = self.maximumValue;
-    kernel.primaryStrideInPixels = MTLSizeMake(self.primaryStrideInPixelsX, self.primaryStrideInPixelsY,
-                                               self.primaryStrideInFeatureChannels);
-    kernel.secondaryStrideInPixels = MTLSizeMake(self.secondaryStrideInPixelsX, self.secondaryStrideInPixelsY,
-                                                 self.secondaryStrideInFeatureChannels);
-    [kernel encodeToCommandBuffer:commandBuffer
-                     primaryImage:primary
-                   secondaryImage:secondary
-                destinationImage:destination];
-    [self.resultImage charon_mps_setImage:destination];
-}
-
-@end
-
-#pragma clang diagnostic pop
-
 @implementation MPSNNAdditionNode
 + (Class)charon_mps_kernelClass { return [MPSImageAdd class]; }
 @end
@@ -933,117 +463,6 @@ static NSMapTable *CharonMPSNNProducers(void)
 @end
 
 
-// The pooling nodes. Same shape as the arithmetic nodes above and for the same reason: each stands for a
-// kernel this package already carries (MPSCNNPooling10.m), so the graph runs the kernel and the node
-// carries the window the kernel walks. MPSCNNPooling.h's divisor is the window's AREA whatever of it
-// lies outside the image, and facts/MetalPerformanceShaders/Cnn.md carries the measured table for that
-// over a 3x3 source and a 2x2 window; this object does not restate that arithmetic, it hands the window
-// to the kernel that has it.
-//
-// The node's own shape is what the header says it is: MPSCNNGraphNodes.h:1467-1471 calls
-// MPSCNNPoolingNode an abstract base that "does not correspond with any particular MPSCNNKernel. Please
-// make one of the MPSCNNPooling subclasses instead", and the two below are the 11.0 ones of those three
-// subclasses (:1534 and :1546; the third, :1540 MPSCNNPoolingL2NormNode, carries MPS_AVAILABLE_STARTING
-// ios(12.0) and belongs to another object's row). The kernelWidth/kernelHeight/strideInPixelsX/
-// strideInPixelsY accessors the base declares at :1472-1475 are ios(12.0) as well and are NOT here -
-// release-split reads band points, and a 12.0 name in an 11.0 object is the mistake that tool exists to
-// find.
-@implementation MPSCNNPoolingNode {
-    // Typed as the CONCRETE class rather than MPSKernel, because the initialiser this node sends is
-    // declared on MPSCNNPoolingAverage (:488) and MPSCNNPoolingMax (:758) and marked unavailable only on
-    // the MPSCNNPooling base (:71). Naming the base here would name the unavailable one.
-    MPSCNNPooling *_kernel;
-    NSUInteger _kernelWidth, _kernelHeight, _strideX, _strideY;
-}
-
-+ (Class)charon_mps_kernelClass { return nil; }
-
-- (instancetype)initWithSource:(MPSNNImageNode *)sourceNode
-                  kernelWidth:(NSUInteger)kernelWidth
-                 kernelHeight:(NSUInteger)kernelHeight
-              strideInPixelsX:(NSUInteger)strideX
-              strideInPixelsY:(NSUInteger)strideY
-{
-    if ((self = [super initWithDevice:nil])) {
-        _kernelWidth = kernelWidth ? kernelWidth : 1;
-        _kernelHeight = kernelHeight ? kernelHeight : 1;
-        _strideX = strideX ? strideX : 1;
-        _strideY = strideY ? strideY : 1;
-        [self charon_mps_addSourceNode:sourceNode];
-    }
-    return self;
-}
-
-- (instancetype)initWithSource:(MPSNNImageNode *)sourceNode filterSize:(NSUInteger)size
-{
-    return [self initWithSource:sourceNode kernelWidth:size kernelHeight:size strideInPixelsX:size strideInPixelsY:size];
-}
-
-- (instancetype)initWithSource:(MPSNNImageNode *)sourceNode filterSize:(NSUInteger)size stride:(NSUInteger)stride
-{
-    return [self initWithSource:sourceNode kernelWidth:size kernelHeight:size strideInPixelsX:stride strideInPixelsY:stride];
-}
-
-+ (instancetype)nodeWithSource:(MPSNNImageNode *)sourceNode filterSize:(NSUInteger)size
-{
-    return [[self alloc] initWithSource:sourceNode filterSize:size];
-}
-
-+ (instancetype)nodeWithSource:(MPSNNImageNode *)sourceNode filterSize:(NSUInteger)size stride:(NSUInteger)stride
-{
-    return [[self alloc] initWithSource:sourceNode filterSize:size stride:stride];
-}
-
-- (MPSKernel *)charon_mps_kernel
-{
-    if (!_kernel) {
-        Class kernelClass = [[self class] charon_mps_kernelClass];
-        // The abstract base names no kernel, so a caller who built one gets the refusal and no image
-        // rather than a window over nothing. MPSCNNPooling's own -initWithDevice: is unavailable for the
-        // same reason the header gives at MPSCNNPooling.h: the base is not built directly.
-        if (!kernelClass)
-            return nil;
-        id<MTLDevice> device = [self charon_mps_device];
-        if (!device)
-            device = MTLCreateSystemDefaultDevice();
-        // The initialiser is sent to the CONCRETE class, whose own declaration it is:
-        // MPSCNNPooling.h:488 declares it on MPSCNNPoolingAverage and :758 on MPSCNNPoolingMax as their
-        // NS_DESIGNATED_INITIALIZER, and only the BASE at :71 marks it unavailable, to say the base is
-        // never built directly. This is the same reach MPSImageArithmetic13.m and MPSImageWalk13.m use.
-        _kernel = [kernelClass alloc];
-        _kernel = [_kernel initWithDevice:device
-                              kernelWidth:_kernelWidth
-                             kernelHeight:_kernelHeight
-                            strideInPixelsX:_strideX
-                            strideInPixelsY:_strideY];
-    }
-    return _kernel;
-}
-
-- (void)charon_mps_encodeToCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
-{
-    MPSImage *source = [self charon_mps_sourceImageAtIndex:0];
-    MPSImage *destination = [self charon_mps_destinationImage];
-    if (!source || !destination) {
-        CharonMPSRefuse(@"%@: a pooling node needs a source and a destination and was not given both",
-                        NSStringFromClass([self class]));
-        return;
-    }
-    if (!CharonMPSCommandBufferPermits(commandBuffer))
-        return;
-    MPSCNNPooling *kernel = (MPSCNNPooling *)[self charon_mps_kernel];
-    if (!kernel) {
-        CharonMPSRefuse(@"%@: no pooling kernel to run, so it was not run", NSStringFromClass([self class]));
-        return;
-    }
-    // The window arithmetic is the kernel's own - MPSCNNPooling.h and the measured table in Cnn.md - so
-    // the node passes its two images through and does not repeat a divisor here.
-    [kernel encodeToCommandBuffer:commandBuffer sourceImage:source destinationImage:destination];
-    [self.resultImage charon_mps_setImage:destination];
-}
-
-@end
-
 @implementation MPSCNNPoolingAverageNode
 + (Class)charon_mps_kernelClass { return [MPSCNNPoolingAverage class]; }
 @end
@@ -1120,7 +539,7 @@ static NSMapTable *CharonMPSNNProducers(void)
     [seen addObject:node];
     // Which filter produced this node - the table, not the list being built, because the filter that
     // produced the node being visited is by definition not in that list yet.
-    MPSNNFilterNode *producer = [CharonMPSNNProducers() objectForKey:node];
+    MPSNNFilterNode *producer = [[MPSNNFilterNode charon_mps_producers] objectForKey:node];
     if (!producer) {
         [_sources addObject:node];
         return;

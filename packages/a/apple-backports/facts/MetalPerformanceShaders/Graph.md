@@ -3,8 +3,70 @@
 `MPSNNGraph`, `MPSNNImageNode`, `MPSNNStateNode`, `MPSNNFilterNode`, `MPSNNDefaultPadding`,
 `MPSNNBinaryArithmeticNode`, `MPSNNAdditionNode`, `MPSNNSubtractionNode`, `MPSNNMultiplicationNode`,
 `MPSNNDivisionNode`, `MPSNNConcatenationNode`, `MPSCNNPoolingNode`, `MPSCNNPoolingAverageNode` and
-`MPSCNNPoolingMaxNode` — fourteen classes, one object, `MPSNNGraph11.m`, carrying only API that arrived in
-iOS 11.0. It adds one category on `MPSImage`, which holds no API of its own.
+`MPSCNNPoolingMaxNode` — fourteen classes, all of them in the iOS 11.0 inventory of the release, in
+**three objects** and not one:
+
+| object | release | classes |
+| --- | --- | --- |
+| `MPSNNGraph11.m` | 11.0 | `MPSNNGraph` `MPSNNImageNode` `MPSNNDefaultPadding` `MPSNNAdditionNode` `MPSNNSubtractionNode` `MPSNNMultiplicationNode` `MPSNNDivisionNode` `MPSNNConcatenationNode` `MPSCNNPoolingAverageNode` `MPSCNNPoolingMaxNode` |
+| `MPSNNFilterNode12.m` | 12.0 | `MPSNNFilterNode` |
+| `MPSNNGraphNodes16.m` | 16.0 | `MPSNNStateNode` `MPSNNBinaryArithmeticNode` `MPSCNNPoolingNode` |
+
+There is also one category on `MPSImage`, which holds no API of its own, and one shared header,
+`CharonMPSNN.h`, which holds no API either.
+
+## Why three objects and not one, which is the whole of the second half of this work
+
+**The release a name arrived in is not the release the gate places it at, and the difference is whether a
+client can link against it.** All fourteen classes are in the 11.0 release's ObjC inventory — `objc.inventory`
+over `~/.charon/dyld/11.0/dyld_shared_cache_arm64`, 52768 classes, answers PRESENT for every one, each with
+its true superclass. What four of them are *not*, at 11.0, is in any image's **export trie**:
+
+| class | 11.0 inventory | 11.0 trie | 12.0 trie | 16.0 trie | placed at |
+| --- | --- | --- | --- | --- | --- |
+| `MPSNNGraph` | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSNNImageNode` | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSNNDefaultPadding` | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSNNAdditionNode` and its three siblings | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSNNConcatenationNode` | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSCNNPoolingAverageNode`, `MPSCNNPoolingMaxNode` | PRESENT | `MPSNeuralNetwork` | — | — | 11.0 |
+| `MPSNNFilterNode` | PRESENT | **no image** | exported | — | **12.0** |
+| `MPSNNStateNode` | PRESENT | **no image** | **no image** | exported | **16.0** |
+| `MPSNNBinaryArithmeticNode` | PRESENT | **no image** | **no image** | exported | **16.0** |
+| `MPSCNNPoolingNode` | PRESENT | **no image** | **no image** | exported | **16.0** |
+| `MPSNNGradientFilterNode` (not carried) | **ABSENT** | — | — | — | 12.0 |
+
+`backports.lua`'s `measured_names()` reads exactly that trie — `measured_introduced` is
+`dyld.first_releases`, which walks the held ladder calling `dyld.exported_at` (dyld.lua:859) — and the
+registry is consulted **only as a last resort**, and only for a row whose status is `implemented`. So the
+rows saying `introduced 11.0` never got a say, and `misplaced()` refused the single object.
+
+**`first-rung.py` answers a different question and is right about the classes.** It reads
+`~/.charon/cache-index/<release>.names.gz`, which `tools/cache-index/build.py:8` writes with
+`strings -a <cache> | grep -xF NAME` — every string in the cache, in any image, in any section. So it finds
+a class that is *in* the cache and *not exported from* it, and answers 11.0 for all fourteen. That is a
+correct answer to "when did the class arrive" and not the answer `misplaced()` needs, which is "from which
+release can a port that defines this name be linked".
+
+**The placement is the EARLIEST of the class symbol and the metaclass symbol**, because
+`backports.lua:2368-2377` maps both onto one name and keeps the earlier: *"A name arrives with the first of
+its symbols: a release can export a class without its metaclass … and the class is the API."* All fourteen
+were measured both ways and **the two agree for every one**, so the earliest is the class's own — the
+grouping is method, not luck.
+
+**The subclasses arrive before their bases, and that costs nothing.** `MPSNNFilterNode` is the superclass of
+seven of the other thirteen and lands a release later; `MPSNNBinaryArithmeticNode` and `MPSCNNPoolingNode`
+land two later and are the bases of six more. That reads backwards and is Apple's own export history. It is
+harmless here because the hierarchy is **not built by name at runtime**: a subclass names its superclass as
+a link-time symbol, and a band that keeps the 11.0 object keeps the 12.0 and 16.0 objects too — the same way
+main's other MPS objects already reference `CharonMPS` classes across files. `ld -r` over all 77 objects
+leaves no MPS class undefined, which is the mechanical form of that statement.
+
+**What the split cost and what it did not.** The rows' `introduced` stays **11.0** for all fourteen, because
+that is the header's own date and the date `check_registry`'s `held` check accepts; the *export* release is
+recorded in each row's `source` and in the table above, which is where a reader looks for why the object
+was split. The registry's `unlisted` check counts classes and members, not files, so the split needed no
+new rows.
 
 Every claim on this page is produced by one command:
 
@@ -147,22 +209,24 @@ band 12.0 (the 12.0 arm64 cache):                OK, all 17 rows pass
 all — `cache-census.lua MPS 6.1.3 4.3 11.0` reads 0 of 524 and 0 of 354 images naming MPS — so
 `carried_by_release` is false there by the census and not by an assumption.
 
-Implementing any of them would put a later-release name in an 11.0 object, which `misplaced()` in
-`backports.lua` refuses by raising and which `tools/release-split.lua` cannot see at all — it reads band
-points, not a file's declared release. So the object carries **four scoped `push`/`ignored`/`pop` pairs**,
-one above each `@implementation` that has one, each with its own list and its own reason, instead of the
-file-wide `#pragma clang diagnostic ignored "-Wprotocol"` / `"-Wincomplete-implementation"` the earlier form
-carried at line 59.
+Implementing any of them would put a later-release name in an object that is otherwise one release, which
+`misplaced()` in `backports.lua` refuses by raising and which `tools/release-split.lua` cannot see at all
+-- it reads band points, not a file's declared release. So the three objects carry **four scoped
+`push`/`ignored`/`pop` pairs** between them, one above each `@implementation` that has one, each with its
+own list of names and its own reason: two for `MPSNNGraph` and `MPSNNDefaultPadding` in `MPSNNGraph11.m`,
+one for `MPSNNFilterNode` in `MPSNNFilterNode12.m` and one for `MPSNNBinaryArithmeticNode` in
+`MPSNNGraphNodes16.m`. That is instead of the file-wide `#pragma clang diagnostic ignored "-Wprotocol"` /
+`"-Wincomplete-implementation"` the earlier form carried at line 59.
 
 Two ways to have no pragma at all were measured and both refused:
 
 - `@dynamic` does not silence `-Wincomplete-implementation` for a **method**, only for a property. For
   `@dynamic gamma;` clang answers both `method definition for 'gamma' not found` and `property
   implementation must have its declaration in interface`.
-- Carrying the seventeen would be **four more objects**, one per release — 11.3, 12.0, 12.1 and 13.0 —
-  each with its own placement to measure and its own rows. That is the right way and it is a piece of work
-  of its own, not a line in this one.
-
+- Carrying the seventeen would be **four more objects**, one per release - 11.3, 12.0, 12.1 and 13.0 -
+  each with its own placement to measure **by the same export measurement the table above records, and
+  not by the header's clause**, and each with its own registry rows. That is the right way and it is a
+  piece of work of its own, not a line in this one.
 `-Wprotocol` needed nothing: the only two protocol warnings were `MPSNNDefaultPadding`'s
 `+supportsSecureCoding YES` **without** `-initWithCoder:`/`-encodeWithCoder:`, which `MPSNNPadding`'s own
 base list `<NSObject, NSSecureCoding>` (`MPSNeuralNetworkTypes.h:363`) makes a real claim about. Both are
