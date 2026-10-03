@@ -37,8 +37,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
 // The port's five, through the names the runner renames them to.
 vDSP_biquad_Setup charon_host_vDSP_biquad_CreateSetup(const double *coeffs, vDSP_Length M);
 void charon_host_vDSP_biquad_DestroySetup(vDSP_biquad_Setup setup);

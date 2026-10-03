@@ -38,10 +38,6 @@
 
 #import <Accelerate/Accelerate.h>
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
-#pragma clang diagnostic ignored "-Wunguarded-availability"
-#pragma clang diagnostic ignored "-Wnonnull"
-
 // The port's own single-section setup, from vDSPBiquad6.m: a count and five coefficients per section, and
 // no state - the state is the caller's Delay, which is what makes the measurement above possible. The two
 // structs are declared here rather than shared, because a function defined in a file that exports an API
