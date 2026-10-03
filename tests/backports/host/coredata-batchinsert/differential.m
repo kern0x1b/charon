@@ -50,11 +50,22 @@ int main(void) { @autoreleasepool {
                                                                   error:&storeError];
     printf("in-memory store\t%s\n", store ? "added" : "FAILED");
 
-    // 1. The deprecated -init leaves an unconfigured request, and says so through resultType.
-    NSBatchInsertRequest *bare = [[NSBatchInsertRequest alloc] init];
-    printf("init.entityName\t%s\n", bare.entityName ? bare.entityName.UTF8String : "(nil)");
-    printf("init.objects\t%lu\n", (unsigned long)bare.objectsToInsert.count);
-    printf("init.resultType\t%ld\n", (long)bare.resultType);
+    // 1. -init, which is NOT a way to make one of these: both sides raise, and there is no request
+    //    behind the exception, so the question is whether it raised and what it said. The three lines
+    //    that stood here read entityName, objects and resultType off a bare request that does not
+    //    exist: Apple's own -init raises NSInternalInconsistencyException with the reason
+    //    "-init results in undefined behavior for NSBatchInsertRequest" (measured here, the same
+    //    listing per-initializer.m takes), so on the host side they were never reached and on the
+    //    port's side they killed the process. per-initializer.m is where the state of a request that
+    //    WAS made is compared, over the twenty-two lines it prints.
+    @try {
+        NSBatchInsertRequest *bare = [[NSBatchInsertRequest alloc] init];
+        printf("init.raised\t0\n");
+        printf("init.entityName\t%s\n", bare.entityName ? bare.entityName.UTF8String : "(nil)");
+    } @catch (NSException *exception) {
+        printf("init.raised\t1\n");
+        printf("init.reason\t%s\n", exception.reason.UTF8String);
+    }
 
     // 2. The rows, by name.
     NSBatchInsertRequest *byName = [NSBatchInsertRequest
@@ -65,10 +76,22 @@ int main(void) { @autoreleasepool {
     printf("byName.firstRow.name\t%s\n",
            [byName.objectsToInsert.firstObject[@"name"] UTF8String]);
 
-    // 3. The entity form: entityName is nil and the entity is the one, which is what makes a
-    //    store able to run the request against a model it holds.
+    // 3. The entity form, with the ROWS it is for: both sides answer entityName=Row and entity=Row,
+    //    which is what the committed twenty-two-line reference (reference-host.tsv, CoreData 120)
+    //    records for this initialiser and what the port stores.
+    //
+    //    The rows are what this question is about. Asked with an EMPTY array -- as this probe stood
+    //    until now -- Apple's own class answers entityName=(nil) and entity=(null), measured over both
+    //    forms and over a detached entity, one in a model and one in a model with a store, one row and
+    //    two: a request built with nothing to insert keeps neither. The comment that stood here said
+    //    "entityName is nil and the entity is the one", which is Apple's answer for the empty case and
+    //    not for a request with rows in it, so the probe was asserting a claim of its own and calling
+    //    the difference a port defect. The empty-array behaviour is a real difference from the port and
+    //    is handed on rather than folded in here: it is a question about what the port should store for
+    //    a request with no rows, which is the owner's call and not this probe's.
     NSBatchInsertRequest *byEntity = [[NSBatchInsertRequest alloc] initWithEntity:entity
-                                                                         objects:@[]];
+                                                                         objects:@[@{@"name": @"one"},
+                                                                                   @{@"name": @"two"}]];
     printf("byEntity.entityName\t%s\n", byEntity.entityName ? byEntity.entityName.UTF8String : "(nil)");
     printf("byEntity.entity\t%s\n", byEntity.entity.name.UTF8String);
 

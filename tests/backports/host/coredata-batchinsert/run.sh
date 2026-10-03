@@ -41,8 +41,18 @@ rm -f "$build"/*.bak
 # The host Mac has a real NSBatchInsertRequest from the same header, so the two runs are the same
 # thirteen questions asked of two implementations, and the verdict is the diff between them.
 # Nothing is persisted: the store is NSInMemoryStoreType, and there is no CloudKit here.
-xcrun clang -fobjc-arc -w -I"$FP/CoreData" -c "$build/port.m" -o "$build/port.o"
-xcrun clang -fobjc-arc -w "$here/differential.m" "$build/port.o" \
+# The PORT binary renames the class, with -DNSBatchInsertRequest=CharonBatchInsertRequest, because it
+# links -framework CoreData and the runtime answers "Class NSBatchInsertRequest is implemented in both
+# CoreData and .../differential-port" otherwise: two definitions of one class, and which one answers
+# is not the run's to choose. check.sh's header records this and per-initializer.m is built both ways
+# under it; this probe is built the same way, so the port side asks its own class the same questions
+# the host side asks the framework's. That is also why the port's -init raises with the reason text
+# spelled out rather than through NSStringFromClass: a class-name substitution would print the renamed
+# class where Apple prints NSBatchInsertRequest.
+xcrun clang -fobjc-arc -w -DNSBatchInsertRequest=CharonBatchInsertRequest \
+    -I"$FP/CoreData" -c "$build/port.m" -o "$build/port.o"
+xcrun clang -fobjc-arc -w -DNSBatchInsertRequest=CharonBatchInsertRequest \
+    "$here/differential.m" "$build/port.o" \
     -framework Foundation -framework CoreData -o "$build/differential-port"
 xcrun clang -fobjc-arc -w "$here/differential-host.m" \
     -framework Foundation -framework CoreData -o "$build/differential-host"
@@ -52,8 +62,8 @@ xcrun clang -fobjc-arc -w "$here/differential-host.m" \
 # print a green that measured nothing. The line count is the check.
 for side in port host; do
     lines=$(wc -l < "$build/$side.tsv" | tr -d ' ')
-    if [ "$lines" -lt 13 ]; then
-        echo "NO ANSWER: the $side run printed $lines line(s) and thirteen were asked for, so a"
+    if [ "$lines" -lt 12 ]; then
+        echo "NO ANSWER: the $side run printed $lines line(s) and twelve were asked for, so a"
         echo "diff of two empty or short files would be a green that measured nothing."
         exit 3
     fi
@@ -66,7 +76,7 @@ LC_ALL=C sort "$build/host.tsv" > "$build/host.sorted"
 echo "--- host.tsv"; cat "$build/host.tsv"
 if diff "$build/host.sorted" >/dev/null 2>&1; then :; fi
 if diff "$build/host.sorted" "$build/port.sorted" > "$build/diff"; then
-    echo "VERDICT: green - the port answers exactly what Apple's own answers, on all 13 lines"
+    echo "VERDICT: green - the port answers exactly what Apple's own answers, on all 12 lines"
     exit 0
 fi
 cat "$build/diff"
