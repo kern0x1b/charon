@@ -398,16 +398,32 @@ class Rewriter:
                     # from there lands inside the keyword. The `[` is the anchor, the receiver is what
                     # follows it, and the keyword is the first occurrence of the selector's own first
                     # keyword from there.
-                    begin = self.source.rfind("[", 0, node["range"]["begin"]["offset"])
-                    begin = begin + 1 if begin >= 0 else node["range"]["begin"]["offset"]
+                    #
+                    # AND THE RANGE MAY BEGIN AT THAT `[`, which is what this file's
+                    # `if ([self date:cursor matchesComponents:comps])` does: clang reports its begin one
+                    # column before the keyword, ON the bracket. rfind's end is exclusive, so the bracket
+                    # that opens THIS send is not a candidate and the anchor became the `[` of an earlier
+                    # subscript - `given & units[i]` - and the search from there found the first `date` in
+                    # the file, which is the parameter of the enclosing method four lines up. The rewrite
+                    # then inserted `charonHost_` into a plain identifier and the compile failed with
+                    # "use of undeclared identifier 'charonHost_date'" (measured, foundation2, on main).
+                    # The bracket the expression begins on is its own, so it is taken first, and the
+                    # search is bounded by the expression's end so a keyword can never be found past the
+                    # send it belongs to.
+                    offset = node["range"]["begin"]["offset"]
+                    if self.source[offset:offset + 1] == "[":
+                        begin = offset + 1
+                    else:
+                        opened = self.source.rfind("[", 0, offset)
+                        begin = opened + 1 if opened >= 0 else offset
                     first = selector.split(":")[0]
-                    match = re.compile(r"\b" + re.escape(first) + r"\b").search(self.source, begin)
+                    stop = node["range"]["end"]["offset"]
+                    match = re.compile(r"\b" + re.escape(first) + r"\b").search(self.source, begin, stop)
                     if match:
                         self.inserts.add(match.start())
                     else:
                         self.unresolved.append(
-                            (node["range"]["begin"]["offset"],
-                             "%s, whose first keyword the rewrite cannot find" % selector))
+                            (offset, "%s, whose first keyword the rewrite cannot find" % selector))
             elif sign and not receiver and any(entry[2] == selector for entry in self.carried):
                 # A receiver of no class: the send may still be the port's own method, which the host's class
                 # of that name does not answer. Whether the host declares the selector at all decides, and
