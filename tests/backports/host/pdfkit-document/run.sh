@@ -78,7 +78,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
-    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" "$port/PDFPageText11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
@@ -94,7 +94,7 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
     "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
-    "$port/PDFKitConstants11.m" \
+    "$port/PDFPageText11.m" "$port/PDFKitConstants11.m" \
     -framework Foundation -framework UIKit -framework CoreGraphics \
     -o "$build/port-color-side" 2> "$build/color.log" || {
     echo "BUILD the Catalyst side did not compile:"; head -8 "$build/color.log" | sed 's/^/    /'; exit 1; }
