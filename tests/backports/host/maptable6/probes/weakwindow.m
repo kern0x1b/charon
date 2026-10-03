@@ -43,10 +43,13 @@ static void probe(const char *name)
     fflush(stdout);
     @autoreleasepool {
         CharonWeakWindow *object = [[CharonWeakWindow alloc] init];
+        /* ARC forbids @selector(retain), so the selector is made by name: whether the class manages its
+           own retain count is what arclite's own __weak refuses, and it is asked of the IMP. */
+        SEL retain = sel_registerName("retain");
         printf("  class %s, allowsWeakReference %d, retain %s\n", class_getName(object_getClass(object)),
                (int)[(Class)object_getClass(object) allowsWeakReference],
-               class_getMethodImplementation((Class)object_getClass(object), @selector(retain)) ==
-                       [NSObject instanceMethodForSelector:@selector(retain)] ? "NSObject's" : "its own");
+               class_getMethodImplementation((Class)object_getClass(object), retain) ==
+                       [NSObject instanceMethodForSelector:retain] ? "NSObject's" : "its own");
         fflush(stdout);
         charonWindowWeak = object;
         printf("  while held: the weak reference reads %s\n", charonWindowWeak ? "SET" : "nil");
