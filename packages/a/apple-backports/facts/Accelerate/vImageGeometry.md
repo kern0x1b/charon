@@ -1420,7 +1420,8 @@ there is no `vImageNewResamplingFilter` and no `vImageNewResamplingFilterForFunc
 design rests on, and the premise is false for 6.1.3. (The 4.3 claim is not settled either way: the corpus holds
 no 4.3 index.)
 
-**Two consequences, both for the coordinator's ruling rather than for a commit.**
+**Two consequences. The first is the port's; the second is the coordinator's ruling of 2026-10-03, recorded here
+because this page is the durable record and it is about to land.**
 
 1. `CharonResampleFilterOf` refuses every buffer whose tag is not the port's own and `CharonShearReady` answers
    `kvImageInvalidParameter` for the NULL it returns. **A caller on a real device builds its filter with the
@@ -1428,14 +1429,17 @@ no 4.3 index.)
    That is a defect on the 7.0+ band the thirty-six rows are for, and it is independent of the weight question.
    Nothing in the corpus contradicts it: the ledger carries no row for any of the four filter functions, only
    for `vImageGetResamplingFilterExtent()`.
-2. If the filter is the release's, **the Q14 row is inside the caller's buffer and the port reads it**, so the
-   generator question does not arise. Reading it is not a private-structure crutch: `Geometry.h` documents the
-   buffer and the constructor that fills it - "This function writes the kernel values into a preallocated kernel
-   buffer that you provide ... at least the size of the kernel data, which is given by
-   `vImageGetResamplingKernelSize`" - so what is read is what the release wrote through the release's own
-   public mechanism. An earlier section of this page said as much ("the port does not have to reproduce the
-   release's arithmetic to agree with it. It has to read the numbers the release wrote") and
-   `CharonResampling.h` decided the other way on the strength of the premise above.
+2. **The coordinator's ruling: the filter's format is PRIVATE, so reading the Q14 row out of the caller's buffer
+   is a crutch and is recorded as one.** An earlier version of this section argued the opposite - that
+   `Geometry.h` documents the buffer ("This function writes the kernel values into a preallocated kernel buffer
+   that you provide") so the read would be the constructor's own contract rather than a private structure. **That
+   argument is withdrawn**: what the header documents is that the release fills a caller-provided buffer, not
+   the buffer's internal layout, and the layout is not public. So the Q14 row is in the caller's buffer and the
+   port would read it, and that read is a crutch: the measurement and the record belong to v-tail-a10 on the
+   6.1.3 guest and to `coordination/crutches.md`, which stays open until a native fix is merged. The generator
+   question is therefore **deferred, not answered** - see the section above for what is excluded and for the
+   five-lobe measurement that would settle whether the release's integer path evaluates the kernel less
+   accurately than its float path.
 
 **The one oracle caveat that belongs with every measurement on this page.** Everything measured about the Q14
 row, the integer sum, the half-up store and the 14400 of 14400 is **this Mac's macOS Accelerate**, not the
