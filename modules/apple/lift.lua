@@ -1277,7 +1277,7 @@ end
 --
 -- staging is the folder the staged tree hangs from (<outputdir>/headers, <outputdir>/expand), staged the files
 -- of it by the SDK path they were read from.
-function nested_frameworks(sdk, frameworks, staging, staged)
+local function nested_frameworks(sdk, frameworks, staging, staged)
     local function contents(folder)
         local files, folders = {}, {}
         for _, file in ipairs(os.files(path.join(folder, "*"))) do
