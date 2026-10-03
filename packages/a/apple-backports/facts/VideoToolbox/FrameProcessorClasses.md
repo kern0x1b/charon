@@ -236,6 +236,11 @@ protocol	VTFrameProcessorParameters
 
 so every one of the eleven rows is carried and every one has an `implemented` registry row.
 
+The two protocols have `implemented` rows of their own (`kind: protocol`, registry/VideoToolbox/ios26.json).
+They are needed: check_registry (modules/apple/backports.lua) answers a member row whose owner is no class only
+through the owner's protocol row, so without them the 6.1.3 gate read all eleven property rows as "listed as
+implemented, but nothing of that name is built" (gate land-w2, 2026-10-03).
+
 Eight rows are declared with the SDK's own renamed accessor - `getter=isSupported` on seven
 configuration classes and `getter=usesPrecomputedFlow` on `precomputedFlow` - so the selectors a class
 must carry are `+isSupported` and `-usesPrecomputedFlow`, and the built library's class set for each
