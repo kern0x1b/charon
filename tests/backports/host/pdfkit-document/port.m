@@ -520,6 +520,18 @@ static void printSelection(const char *prefix, PDFSelection *selection, PDFDocum
             printf("%s.range%lu=%lu,%lu\n", prefix, (unsigned long)i, (unsigned long)r.location,
                    (unsigned long)r.length);
         }
+        // The same two rects the host is asked for, in the same place and the same format: the rect over
+        // the selection's ranges on page 0, and the rect over a page the selection does NOT cover.
+        // facts/PDFKit/Selection11.md has the measurements behind every number this can print.
+        CGRect b = [selection boundsForPage:page0];
+        printf("%s.bounds0=%.4f,%.4f,%.4f,%.4f\n", prefix, b.origin.x, b.origin.y, b.size.width,
+               b.size.height);
+        if (document.pageCount > 1) {
+            PDFPage *last = [document pageAtIndex:document.pageCount - 1];
+            CGRect o = [selection boundsForPage:last];
+            printf("%s.boundsLast=%.4f,%.4f,%.4f,%.4f\n", prefix, o.origin.x, o.origin.y, o.size.width,
+                   o.size.height);
+        }
     }
     NSAttributedString *attributed = selection.attributedString;
     printf("%s.attributed=%s\n", prefix, attributed == nil ? "(nil)" : "an-object");

@@ -82,6 +82,16 @@
    "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14627 MISMATCHES 0 over 121 fixtures, with 134 red controls - one automatic and 133 naming a border, appearance, identity, action, copy, initializer, outline, text or selection key"
   },
   {
+   "api": "-[PDFSelection boundsForPage:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the rect over the selection's ranges on that page, in that page's own coordinate space, and CGRectNull - +inf,+inf,0,0 - for a page it does not cover, both measured. The geometry is the page's own text layout's: each drawn character carries a rect from its baseline plus the font's /Descent up by the EFFECTIVE size, the width of a character is its /Widths entry over 1000 at that size, and the answer is the union of the characters the range names - so a range over two lines is one rect from the lower line's descent to the upper line's top, 32.0 high for two lines twenty apart, exactly as measured",
+   "facts": "facts/PDFKit/Selection11.md",
+   "source": "three fixtures whose /Widths and whose embedded font program disagree by eighteen points, both directions, plus one with no /FontFile2 and one whose program no reader can open: the host answers the /Widths in all four, so CGFontCreateWithDataProvider and CGFontCreateWithFontName are not read and the row needs no literal table. The standard fourteen, which carry no /Widths, are measured per character over 42 fixtures and generated into Base14Widths11.m. tests/backports/host/pdfkit-document/run.sh, with the character-spacing and line-rule divergences named as stated boundaries"
+  },
+  {
    "api": "-[PDFSelection selectionsByLine]",
    "kind": "method",
    "introduced": "11.0",
