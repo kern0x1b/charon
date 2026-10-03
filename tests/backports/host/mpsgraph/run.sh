@@ -1,10 +1,20 @@
 #!/bin/sh
 # run.sh — is this port's MPSGraph the same arithmetic as the system's own?
 #
-# graph-cases.m is compiled twice and run twice: once against the system's MPSGraph, once against this
-# port's classes with the MPSGraph names mapped to Charon names and their selectors prefixed, so the
-# port's implementations are reached under names of their own and cannot replace the system's. Every
-# case prints the bytes of a buffer the case owns, so the two runs are compared exactly.
+# graph-cases.m is compiled twice: once against the system's own MPSGraph, and once against this port's
+# classes with the MPSGraph names mapped to Charon names and their selectors prefixed, so the port's
+# implementations are reached under names of their own and cannot replace the system's. Each of the two is
+# run ONCE PER FAMILY, one process each, and every case prints the bytes of a buffer the case owns, so the
+# two runs of a family are compared exactly.
+#
+# A family is a process because the release makes it necessary, and the measurement is written down in
+# facts/MetalPerformanceShadersGraph/Core.md: in a process that holds three hundred graphs the release's own
+# gather operations start asserting partway through the family — "Error: NDArray dimension length > INT_MAX"
+# (MPSNDArray.mm:831) over a flatten of a 2x4 that answers in a program of its own — and every FED gather
+# parameter takes the process down whatever else it holds. So each family is run, compared and judged on
+# its own, and the check of the recorded cells is scoped to the cases that family actually ran: a cell
+# another family recorded is not in these two runs, and reading it here would report a divergence that has
+# gone away.
 set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 graph=${GRAPH:-$here/../../../../packages/a/apple-backports/MetalPerformanceShadersGraph}
@@ -14,16 +24,23 @@ target="-target arm64-apple-macos13.0 -isysroot $sdk"
 quiet="-Wno-deprecated-declarations -Wno-unguarded-availability-new -Wno-unguarded-availability -Wno-incomplete-implementation -Wno-nullability-completeness -Wno-objc-protocol-method-implementation"
 mkdir -p "$build"
 
+# The families this differential runs, and for each the number of case lines the PORT is expected to have
+# beyond the release's. It is 1 for "misc" alone, which holds the one case the host of this machine cannot
+# answer at all — -[MPSGraph constantWithShape:dataType:values:name:] aborts it — so the port's extra lines
+# must be that case and nothing else. Every other family holds nothing the host cannot answer, so a family
+# whose two counts differ is a failure and the message names the case either side last reached. A family
+# named here and not in graph-cases.m, or the other way round, is a family that silently stops being run, so
+# the list below is read back off the case file below and the two are compared.
+families="
+misc:1
+arithmetic:0
+reduction:0
+reduction_rest:0
+cumulative:0
+"
+
 xcrun clang -fobjc-arc $target $quiet "$here/graph-cases.m" \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/system"
-set +e
-"$build/system" > "$build/system.raw" 2> "$build/system.err"
-status=$?
-set -e
-# Only the lines the case file marks are cases; the framework's own diagnostics share the stream.
-grep -a '^#case ' "$build/system.raw" > "$build/system.txt" || true
-echo "system: $(wc -l < "$build/system.txt") lines, exit $status"
-[ "$status" -ne 0 ] && echo "system: stopped at: $(tail -1 "$build/system.txt" | cut -c2-71)"
 
 # The names this library carries, each under a name of its own.
 python3 - "$graph" "$build/rename.h" <<'PY'
@@ -73,71 +90,99 @@ echo "compiled: $(echo "$objects" | wc -w) objects"
 
 xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/port"
-set +e
-"$build/port" > "$build/port.raw" 2> "$build/port.err"
-port_status=$?
-set -e
-grep -a '^#case ' "$build/port.raw" > "$build/port.txt" || true
-echo "port: exit $port_status"
-[ "$port_status" -ne 0 ] && echo "port: stopped at: $(tail -1 "$build/port.txt" | cut -c2-71)"
-
 # The red control: the same sources with every stored element off by one. It exists because a comparison
 # that cannot see a wrong kernel is not a comparison, and this file's own history is the reason - the
 # verdict line it printed for a year could not be told apart from a test nobody ran.
 plant_objects=$(build_objects 1)
 xcrun clang -fobjc-arc $target $quiet -include "$build/rename.h" "$here/graph-cases.m" $plant_objects \
     -framework Foundation -framework Metal -framework MetalPerformanceShaders -framework MetalPerformanceShadersGraph -o "$build/port-plant1"
-set +e
-"$build/port-plant1" > "$build/port-plant1.raw" 2> "$build/port-plant1.err"
-plant_status=$?
-set -e
-grep -a '^#case ' "$build/port-plant1.raw" > "$build/port-plant1.txt" || true
-echo "port-plant1: exit $plant_status"
+echo "compiled: $(echo "$plant_objects" | wc -w) objects, planted"
 
-n=$(wc -l < "$build/system.txt" | tr -d ' ')
-m=$(wc -l < "$build/port.txt" | tr -d ' ')
-# One case is known to abort the host of this machine and is asked for last, so the two runs are
-# expected to differ by exactly that one. Anything else - the host dying earlier, the port dying, a case
-# appearing or vanishing - is a failure, and it names the case either side last reached. The port's extra
-# lines must be the case the host cannot answer, and nothing else.
-HOST_CANNOT_ANSWER=1
-if [ "$m" -ne "$((n + HOST_CANNOT_ANSWER))" ]; then
-    echo "the two runs produced different numbers of lines: system $n, port $m, and only $HOST_CANNOT_ANSWER is expected to be extra"
-    echo "the last case either side reached:"
-    echo "  system: $(tail -1 "$build/system.txt" | cut -d' ' -f2-4)"
-    echo "  port:   $(tail -1 "$build/port.txt" | cut -d' ' -f2-4)"
+# The two lists are read against each other, so a family added to one of the two files and not the other is
+# a failure here rather than a family that quietly stops being compared.
+declared=$(for entry in $families; do printf '%s\n' "${entry%%:*}"; done | sort | tr '\n' ' ')
+incase=$(sed -n '/^static const Family kFamilies\[\]/,/^};/p' "$here/graph-cases.m" \
+    | sed -n 's/^ *{ "\([A-Za-z_]*\)",.*/\1/p' | sort | tr '\n' ' ')
+if [ "$declared" != "$incase" ]; then
+    echo "FAILED: run.sh runs [$declared] and graph-cases.m declares [$incase]"
     exit 1
 fi
-if [ "$n" -eq 0 ]; then
-    echo "the host answered no case at all"
-    exit 1
-fi
-head -n "$n" "$build/system.txt" > "$build/system.prefix"
-head -n "$n" "$build/port.txt" > "$build/port.prefix"
-head -n "$n" "$build/port-plant1.txt" > "$build/port-plant1.prefix"
-echo "compared: $n cases"
-# The red control, judged against the same oracle rather than trusted: a plant the comparison cannot see
-# is a comparison that would pass a wrong port, and this file's verdict line was unreadable to the sweep
-# for a year for a reason of the same family.
-if cmp -s "$build/port.prefix" "$build/port-plant1.prefix"; then
-    echo "the red control did not fire: the planted build printed exactly what the plain build printed"
-    exit 1
-fi
-plant_wrong=$(diff "$build/system.prefix" "$build/port-plant1.prefix" | grep '^<' | wc -l | tr -d ' ')
-echo "red control: the planted build differs from the release in $plant_wrong of $n cases"
-# The verdict, cell by cell. Every cell of every case is compared, and a difference is a failure unless
-# the cell is in recorded-cells.txt WITH the two sets of bytes the release and the port answer there, or
-# the two answers of that cell are within the figure tolerances.txt gives for that operation in that data
-# type.
-#
-# Neither file is an allowance. recorded-cells.txt names no data type, no operation and no element count,
-# and a cell on it whose bytes are not the two written there fails as surely as one that is not on it at
-# all. tolerances.txt names an operation and a data type and a number of units in the last place, and a
-# cell outside that number fails; a case not on it is compared byte for byte, which is every case that is
-# not one of the transcendentals, so a predicate, a logical, a remainder or a rounding has no tolerance
-# at all. What each recorded group is, and the rule attempted and rejected for it, and where each
-# tolerance is written down, is in facts/MetalPerformanceShadersGraph/Core.md.
-python3 - "$build/system.prefix" "$build/port.prefix" "$here/recorded-cells.txt" "$here/tolerances.txt" <<'PY'
+echo "families: $declared"
+
+failed=0
+for entry in $families; do
+    family=${entry%:*}
+    extra=${entry#*:}
+    echo
+    echo "== $family"
+    for side in system port port-plant1; do
+        set +e
+        "$build/$side" "$family" > "$build/$side.$family.raw" 2> "$build/$side.$family.err"
+        echo $? > "$build/$side.$family.status"
+        set -e
+        # Only the lines the case file marks are cases; the framework's own diagnostics share the stream.
+        grep -a '^#case ' "$build/$side.$family.raw" > "$build/$side.$family.txt" || true
+    done
+    n=$(wc -l < "$build/system.$family.txt" | tr -d ' ')
+    m=$(wc -l < "$build/port.$family.txt" | tr -d ' ')
+    if [ "$n" -eq 0 ]; then
+        echo "FAILED: the host answered no case of this family (exit $(cat "$build/system.$family.status"))"
+        tail -3 "$build/system.$family.err" | sed 's/^/  host: /'
+        failed=1
+        continue
+    fi
+    if [ "$m" -ne "$((n + extra))" ]; then
+        echo "FAILED: the two runs produced different numbers of cases: host $n, port $m, and only $extra is expected to be extra"
+        echo "  the last case either side reached:"
+        echo "    host: $(tail -1 "$build/system.$family.txt" | cut -d' ' -f2-4)"
+        echo "    port: $(tail -1 "$build/port.$family.txt" | cut -d' ' -f2-4)"
+        failed=1
+        continue
+    fi
+    # Every family ends with the chain, so a family whose last case is not it is a family whose process
+    # did not reach the end - the release's own assertions stop the process and print nothing, and a
+    # shorter run of a family that lost cases to that is exactly what must not read as agreement.
+    last=$(tail -1 "$build/system.$family.txt" | cut -d' ' -f2)
+    if [ "$last" != chain ]; then
+        echo "FAILED: the host's last case of this family is '$last' and not the chain every family ends with"
+        tail -3 "$build/system.$family.err" | sed 's/^/  host: /'
+        failed=1
+        continue
+    fi
+    echo "compared: $n cases (port $m, the host cannot answer $extra of them)"
+    echo "exit status: host $(cat "$build/system.$family.status"), port $(cat "$build/port.$family.status"), planted $(cat "$build/port-plant1.$family.status")"
+    head -n "$n" "$build/system.$family.txt" > "$build/system.$family.prefix"
+    head -n "$n" "$build/port.$family.txt" > "$build/port.$family.prefix"
+    head -n "$n" "$build/port-plant1.$family.txt" > "$build/port-plant1.$family.prefix"
+    # The red control, judged against the same oracle rather than trusted: a plant the comparison cannot
+    # see is a comparison that would pass a wrong port, and this file's verdict line was unreadable to the
+    # sweep for a year for a reason of the same family.
+    if cmp -s "$build/port.$family.prefix" "$build/port-plant1.$family.prefix"; then
+        echo "FAILED: the red control did not fire: the planted build printed exactly what the plain build printed"
+        failed=1
+        continue
+    fi
+    plant_wrong=$(diff "$build/system.$family.prefix" "$build/port-plant1.$family.prefix" | grep '^<' | wc -l | tr -d ' ')
+    echo "red control: the planted build differs from the release in $plant_wrong of $n cases"
+    # The verdict, cell by cell. Every cell of every case is compared, and a difference is a failure unless
+    # the cell is in recorded-cells.txt WITH the two sets of bytes the release and the port answer there, or
+    # the two answers of that cell are within the figure tolerances.txt gives for that operation in that data
+    # type.
+    #
+    # Neither file is an allowance. recorded-cells.txt names no data type, no operation and no element count,
+    # and a cell on it whose bytes are not the two written there fails as surely as one that is not on it at
+    # all. tolerances.txt names an operation and a data type and a number of units in the last place, and a
+    # cell outside that number fails; a case not on it is compared byte for byte, which is every case that is
+    # not one of the transcendentals, so a predicate, a logical, a remainder or a rounding has no tolerance
+    # at all. What each recorded group is, and the rule attempted and rejected for it, and where each
+    # tolerance is written down, is in facts/MetalPerformanceShadersGraph/Core.md.
+    #
+    # The family is the fifth argument: a recorded cell of an operation this family did not run is not
+    # compared here at all, because it is not in either of the two runs, and it is checked in the family
+    # that does run it.
+    set +e
+    python3 - "$build/system.$family.prefix" "$build/port.$family.prefix" "$here/recorded-cells.txt" \
+        "$here/tolerances.txt" "$family" <<'PY'
 import sys
 recorded = {}
 for number, line in enumerate(open(sys.argv[3]), 1):
@@ -163,9 +208,9 @@ for number, line in enumerate(open(sys.argv[4]), 1):
     tolerances[(fields[0], fields[1])] = int(fields[2])
 
 # The distance between two answers of a floating point type, in units in the last place: the bit patterns
-# read as signed integers of the same sign-magnitude order, so the distance is how many representable
-# values lie between them. A zero of either sign is the same value and the distance is zero; two NaNs are
-# the same answer whatever their payloads; a NaN against a number is no distance at all and fails.
+# read as signed integers in sign-magnitude order, so the distance is how many representable values lie
+# between them. A zero of either sign is the same value and the distance is zero; two NaNs are the same
+# answer whatever their payloads; a NaN against a number is no distance at all and fails.
 def value_of(pattern):
     # The bytes are written in the order the buffer holds them and an x86 buffer is little-endian, so the
     # number is those bytes the other way round.
@@ -199,6 +244,14 @@ def distance(one, other, width):
     if is_zero(one) and is_zero(other):
         return 0
     return abs(monotone(one) - monotone(other))
+
+# Which operation and data type this run actually holds, so that a recorded cell of another family is
+# neither counted as seen nor reported as a divergence that has gone away.
+ran = set()
+for line in open(sys.argv[1]):
+    fields = line.split()
+    if len(fields) >= 5:
+        ran.add((fields[1], fields[2]))
 
 hard, seen, differing, checked, cells = [], set(), set(), 0, 0
 for one, other in zip(open(sys.argv[1]), open(sys.argv[2])):
@@ -248,17 +301,28 @@ for one, other in zip(open(sys.argv[1]), open(sys.argv[2])):
         else:
             seen.add(key)
 for key, value in sorted(recorded.items()):
+    if (key[0], key[1]) not in ran:
+        continue
     if key not in differing:
         hard.append("%s %s element %d is recorded as release %s and port %s and the two now agree"
                     % (key[0], key[1], key[2], value[0], value[1]))
-print("port: same as the system on %d of the %d cells with a result buffer; %d within the release's own "
-      "precision, %d recorded" % (cells - len(seen), cells, cells - len(seen) - len(differing), len(seen)))
+print("%s: same as the system on %d of the %d cells with a result buffer; %d within the release's own "
+      "precision, %d recorded" % (sys.argv[5], cells - len(seen), cells, cells - len(seen) - len(differing), len(seen)))
 for name in hard:
     print("  DIFFERS:", name)
 print("checks=%d failures=%d recorded=%d" % (checked, len(hard), len(seen)))
 raise SystemExit(1 if hard else 0)
 PY
-verdict=$?
-if [ "$verdict" -ne 0 ]; then
+    verdict=$?
+    set -e
+    if [ "$verdict" -ne 0 ]; then
+        failed=1
+    fi
+done
+
+echo
+if [ "$failed" -ne 0 ]; then
+    echo "mpsgraph: FAILED"
     exit 1
 fi
+echo "mpsgraph: every family compared, the red control fired in each"

@@ -949,7 +949,145 @@ static void families(MPSDataType type, const void *left, const void *right, cons
     }
 }
 
-int main(void)
+// The three cases that are not a family of operations, each asked last by the family that holds it.
+//
+// THE CHAIN is three operations in the order they were added - an addition, its product with itself and
+// a square root of the result - so it is the walk over the operations in order that every family runs its
+// last case through. It is asked last on purpose: a family whose last case on either side is not the chain
+// is a family whose process did not reach the end, and run.sh fails it. "misc" is the one family that
+// cannot end with it, because the case below is asked after it.
+//
+// THE CONSTANT is -[MPSGraph constantWithShape:dataType:values:name:], which aborts the host of this
+// machine, so it is asked after everything the host does answer - in one family of its own end, not in the
+// middle of the unary family, where it was taking seven cases down with it.
+static void chain_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"b"];
+    MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
+    MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
+    MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a, b], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@8, @4], MPSDataTypeFloat32)], root, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+    put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+}
+
+static void constant_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
+    MPSGraphTensor *c = [one constantWithShape:@[@8, @4] dataType:MPSDataTypeFloat32
+                                     values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
+    MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
+    memset(resultBytes, 0, sizeof(resultBytes));
+    run(one, @[a], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32)], t, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
+    put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+}
+
+// An integer division, which is the only case in this file whose feed is not a class vector: four
+// integers over four divisors, so the truncated quotients and the zero divisor are both in it.
+static void integer_divide_case(void)
+{
+    MPSGraph *one = [MPSGraph new];
+    MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
+    MPSGraphTensor *b = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"b"];
+    MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
+    memset(integerResult, 0, sizeof(integerResult));
+    run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
+                        feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32, MPSDataTypeInt32);
+    put("integer-divide", &integerResult[0], sizeof(integerResult));
+}
+
+// The builder side, as far as the release answers it on this host, and it is compared like every other
+// answer here: two lines of no result buffer, each of them the whole of what the release answers.
+// Reading a shaped type's equality and a placeholder's data type both make the framework call a selector
+// its own MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
+// so the device's type, the shape and the data type are what is compared, and the rest of the builder
+// side is checked in a program of its own.
+static void builder_side(void)
+{
+    printf("#case graph-device %d\n", (int)gGraphDevice.type);
+    MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@8, @4] dataType:MPSDataTypeFloat32];
+    printf("#case shaped-dataType %d\n", (int)shaped.dataType);
+}
+
+// THE FAMILIES, each of which is a process of its own.
+//
+// One family per process because the release makes it necessary, and the measurement is in
+// facts/MetalPerformanceShadersGraph/Core.md: in a process that holds three hundred graphs the release's
+// own gather operations start asserting partway through the family - "Error: NDArray dimension length >
+// INT_MAX" (MPSNDArray.mm:831) over a flatten of a 2x4 that answers in a program of its own - and every
+// FED gather parameter takes the process down whatever else it holds. So this file is asked for one family
+// at a time, run.sh runs and judges each of them separately, and the comparison of the recorded cells is
+// scoped to the cases the family actually ran: a cell another family recorded is not in these two runs and
+// is not a divergence that has gone away.
+//
+// Every family ends with the chain, so a family's two runs both reaching it is what says the process ran
+// to the end of the family rather than dying at a case whose lines happened to be there.
+static void family_misc(void)
+{
+    chain_case();
+    constant_case();
+}
+
+static void family_arithmetic(void)
+{
+    // The unary family and the arithmetic family, over the sixteen classes above, in float32 and then in
+    // float16. Both are asked for every operation of the family, because the two types do not answer alike
+    // and a case in one of them says nothing about the other.
+    families(MPSDataTypeFloat32, &leftValues[0], &rightValues[0], "float32");
+    families(MPSDataTypeFloat16, &halfValues[0], &halfRightValues[0], "float16");
+    integer_divide_case();
+    chain_case();
+}
+
+// The reduction family of 14.0, which is the first thing in this file whose result is not the operand's
+// shape, so it is asked of its own feeds and of the sixteen classes above.
+static void family_reduction(void)
+{
+    reduction_families();
+    chain_case();
+}
+
+// The rest of the reduction family: the two argument reductions and the two binary NaN-propagating
+// extremes of 15.0, the two truth folds of 15.3 and the set of data types the propagating pair refuses.
+static void family_reduction_rest(void)
+{
+    reduction_rest_families();
+    chain_case();
+}
+
+// The cumulative family of 16.0, whose result is the operand's own shape, in float32 and float16 - and the
+// seeds and the NaN rule are asked of the sixteen classes and a row of NaNs inside it.
+static void family_cumulative(void)
+{
+    cumulative_families(MPSDataTypeFloat32, &leftValues[0], "float32");
+    cumulative_families(MPSDataTypeFloat16, &halfValues[0], "float16");
+    chain_case();
+}
+
+typedef struct { const char *name; void (*cases)(void); } Family;
+
+// The table run.sh walks, and the one place a family is named: it prints the list on an unknown argument
+// so a family that is renamed here is renamed there or nowhere.
+static const Family kFamilies[] = {
+    { "misc", family_misc },
+    { "arithmetic", family_arithmetic },
+    { "reduction", family_reduction },
+    { "reduction_rest", family_reduction_rest },
+    { "cumulative", family_cumulative },
+};
+
+static void family_names(void)
+{
+    unsigned i;
+    for (i = 0; i < sizeof(kFamilies) / sizeof(kFamilies[0]); i++)
+        fprintf(stderr, "%s ", kFamilies[i].name);
+    fprintf(stderr, "\n");
+}
+
+int main(int argc, const char *argv[])
 {
     // Line buffering, and it is what makes the comparison trustworthy: the framework this file runs
     // against writes its own diagnostics to this same standard output, and with a block-buffered stream
@@ -958,69 +1096,22 @@ int main(void)
     // buffered stream hands the whole line to one write, so a case is one line or nothing.
     setvbuf(stdout, NULL, _IOLBF, 0);
     @autoreleasepool {
+        unsigned i;
         gDevice = MTLCreateSystemDefaultDevice();
         gGraphDevice = [MPSGraphDevice deviceWithMTLDevice:gDevice];
-        printf("graph-device %d\n", (int)gGraphDevice.type);
-
-        // The builder side, as far as the release answers it on this host. Reading a shaped type's
-        // equality and a placeholder's data type both make the framework call a selector its own
-        // MPSGraphTensor does not declare -[MPSGraphTensor tensorDataType] - and take the process down,
-        // so the shape, the data type and the graph's placeholder count are what is compared here, and
-        // the rest of the builder side is checked in a program of its own.
-        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@8, @4] dataType:MPSDataTypeFloat32];
-        printf("shaped dataType %d\n", (int)shaped.dataType);
-
-        // The unary family and the arithmetic family, over the sixteen classes above, in float32 and
-        // then in float16. Both are asked for every operation of the family, because the two types do not
-        // answer alike and a case in one of them says nothing about the other.
-        families(MPSDataTypeFloat32, &leftValues[0], &rightValues[0], "float32");
-        families(MPSDataTypeFloat16, &halfValues[0], &halfRightValues[0], "float16");
-        // The reduction family, which is the first thing in this file whose result is not the operand's
-        // shape, so it is asked of its own feeds and of the sixteen classes above.
-        reduction_families();
-        // The rest of the reduction family: the two argument reductions and the two binary
-        // NaN-propagating extremes of 15.0, and the two truth folds of 15.3.
-        reduction_rest_families();
-        // The cumulative family of 16.0, whose result is the operand's own shape, in float32 and float16 -
-        // and the seeds and the NaN rule are asked of the sixteen classes and a row of NaNs inside it.
-        cumulative_families(MPSDataTypeFloat32, &leftValues[0], "float32");
-        cumulative_families(MPSDataTypeFloat16, &halfValues[0], "float16");
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"b"];
-            MPSGraphTensor *t = [one divisionWithPrimaryTensor:a secondaryTensor:b name:@"idiv"];
-            memset(integerResult, 0, sizeof(integerResult));
-            run(one, @[a, b], @[feed(&integerValues[0], @[@2, @2], MPSDataTypeInt32),
-                                feed(&integerDivisors[0], @[@2, @2], MPSDataTypeInt32)], t, &integerResult[0], sizeof(integerResult), MPSDataTypeInt32, MPSDataTypeInt32);
-            put("integer-divide", &integerResult[0], sizeof(integerResult));
+        builder_side();
+        if (argc < 2) {
+            fprintf(stderr, "graph-cases.m: name the family to run; these are: ");
+            family_names();
+            return 2;
         }
-        // A chain, so the walk over the operations in order is checked too.
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *b = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"b"];
-            MPSGraphTensor *sum = [one additionWithPrimaryTensor:a secondaryTensor:b name:@"sum"];
-            MPSGraphTensor *doubled = [one multiplicationWithPrimaryTensor:sum secondaryTensor:sum name:@"doubled"];
-            MPSGraphTensor *root = [one squareRootWithTensor:doubled name:@"root"];
-            memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a, b], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32), feed(&rightValues[0], @[@8, @4], MPSDataTypeFloat32)], root, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
-            put("chain", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
+        for (i = 0; i < sizeof(kFamilies) / sizeof(kFamilies[0]); i++) {
+            if (strcmp(argv[1], kFamilies[i].name) != 0) continue;
+            kFamilies[i].cases();
+            return 0;
         }
-        // Last, and on its own: -constantWithShape:dataType:values:name: aborts the host of this
-        // machine, so it is asked for after everything the host does answer. In the middle of the unary
-        // family it was taking seven cases down with it.
-        {
-            MPSGraph *one = [MPSGraph new];
-            MPSGraphTensor *a = [one placeholderWithShape:@[@8, @4] dataType:MPSDataTypeFloat32 name:@"a"];
-            MPSGraphTensor *c = [one constantWithShape:@[@8, @4] dataType:MPSDataTypeFloat32
-                                             values:[NSData dataWithBytes:&constantValues[0] length:sizeof(constantValues)] name:@"c"];
-            MPSGraphTensor *t = [one additionWithPrimaryTensor:a secondaryTensor:c name:@"withConstant"];
-            memset(resultBytes, 0, sizeof(resultBytes));
-            run(one, @[a], @[feed(&leftValues[0], @[@8, @4], MPSDataTypeFloat32)], t, resultBytes, 32 * MPSSizeofMPSDataType(MPSDataTypeFloat32), MPSDataTypeFloat32, MPSDataTypeFloat32);
-            put("constant", resultBytes, 16 * MPSSizeofMPSDataType(MPSDataTypeFloat32));
-        }
-
+        fprintf(stderr, "graph-cases.m: unknown family '%s'; these are: ", argv[1]);
+        family_names();
+        return 2;
     }
-    return 0;
 }
