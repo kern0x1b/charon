@@ -19,11 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTROTASoftwareUpdateProviderClusterQueryImageParams () {
-    NSNumber * _Nonnull _charon_vendorId;
-    NSNumber * _Nonnull _charon_productId;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTROTASoftwareUpdateProviderClusterQueryImageParams
 
@@ -53,35 +60,60 @@
     copied->_metadataForProvider = self->_metadataForProvider;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
     copied->_serverSideProcessingTimeout = self->_serverSideProcessingTimeout;
-    copied->_charon_vendorId = self->_charon_vendorId;
-    copied->_charon_productId = self->_charon_productId;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _vendorID = @0;
+    _productID = @0;
+    _softwareVersion = @0;
+    _protocolsSupported = @[];
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber * _Nonnull)vendorId
 {
-    return _charon_vendorId;
+    return _vendorID;
 }
 
 - (void)setVendorId:(NSNumber * _Nonnull)vendorId
 {
-    _charon_vendorId = vendorId;
+    _vendorID = [vendorId copy];
 }
 
 - (NSNumber * _Nonnull)productId
 {
-    return _charon_productId;
+    return _productID;
 }
 
 - (void)setProductId:(NSNumber * _Nonnull)productId
 {
-    _charon_productId = productId;
+    _productID = [productId copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self.vendorID)];
+    [text appendFormat:@"productID:%@; ", charonDescribeObject(self.productID)];
+    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self.softwareVersion)];
+    [text appendFormat:@"protocolsSupported:%@; ", charonDescribeObject(self.protocolsSupported)];
+    [text appendFormat:@"hardwareVersion:%@; ", charonDescribeObject(self.hardwareVersion)];
+    [text appendFormat:@"location:%@; ", charonDescribeObject(self.location)];
+    [text appendFormat:@"requestorCanConsent:%@; ", charonDescribeObject(self.requestorCanConsent)];
+    [text appendFormat:@"metadataForProvider:%@; ", charonDescribeObject(self.metadataForProvider)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

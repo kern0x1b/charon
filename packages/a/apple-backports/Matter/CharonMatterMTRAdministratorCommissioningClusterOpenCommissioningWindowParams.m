@@ -19,10 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTRAdministratorCommissioningClusterOpenCommissioningWindowParams () {
-    NSData * _Nonnull _charon_pakeVerifier;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTRAdministratorCommissioningClusterOpenCommissioningWindowParams
 
@@ -46,24 +54,48 @@
     copied->_salt = self->_salt;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
     copied->_serverSideProcessingTimeout = self->_serverSideProcessingTimeout;
-    copied->_charon_pakeVerifier = self->_charon_pakeVerifier;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _commissioningTimeout = @0;
+    _pakePasscodeVerifier = [NSData data];
+    _discriminator = @0;
+    _iterations = @0;
+    _salt = [NSData data];
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSData * _Nonnull)pakeVerifier
 {
-    return _charon_pakeVerifier;
+    return _pakePasscodeVerifier;
 }
 
 - (void)setPakeVerifier:(NSData * _Nonnull)pakeVerifier
 {
-    _charon_pakeVerifier = pakeVerifier;
+    _pakePasscodeVerifier = [pakeVerifier copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"commissioningTimeout:%@; ", charonDescribeObject(self.commissioningTimeout)];
+    [text appendFormat:@"pakePasscodeVerifier:%@; ", charonDescribeObject(self.pakePasscodeVerifier)];
+    [text appendFormat:@"discriminator:%@; ", charonDescribeObject(self.discriminator)];
+    [text appendFormat:@"iterations:%@; ", charonDescribeObject(self.iterations)];
+    [text appendFormat:@"salt:%@; ", charonDescribeObject(self.salt)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

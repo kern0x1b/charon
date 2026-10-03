@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRCameraAVStreamManagementClusterAudioStreamStruct
 
 @synthesize audioStreamID = _audioStreamID;
@@ -46,4 +59,35 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _audioStreamID = @0;
+    _streamUsage = @0;
+    _audioCodec = @0;
+    _channelCount = @0;
+    _sampleRate = @0;
+    _bitRate = @0;
+    _bitDepth = @0;
+    _referenceCount = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self.audioStreamID)];
+    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self.streamUsage)];
+    [text appendFormat:@"audioCodec:%@; ", charonDescribeObject(self.audioCodec)];
+    [text appendFormat:@"channelCount:%@; ", charonDescribeObject(self.channelCount)];
+    [text appendFormat:@"sampleRate:%@; ", charonDescribeObject(self.sampleRate)];
+    [text appendFormat:@"bitRate:%@; ", charonDescribeObject(self.bitRate)];
+    [text appendFormat:@"bitDepth:%@; ", charonDescribeObject(self.bitDepth)];
+    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self.referenceCount)];
+    [text appendString:@">"];
+    return text;
+}
 @end

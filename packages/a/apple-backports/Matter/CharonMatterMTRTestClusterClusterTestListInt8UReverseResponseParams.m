@@ -34,4 +34,14 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _arg1 = @[];
+    return self;
+}
+
 @end

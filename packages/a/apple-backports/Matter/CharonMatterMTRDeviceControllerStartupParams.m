@@ -19,10 +19,11 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
+// the members they share it with: a category cannot hold an ivar, so these are the port's
+// own, and they are here because the accessors below are what read and write them.
 @interface MTRDeviceControllerStartupParams () {
     uint64_t _charon_fabricId;
-    NSNumber * _charon_vendorId;
-    NSNumber * _charon_nodeId;
 }
 @end
 
@@ -41,12 +42,21 @@
 @synthesize operationalCertificateIssuer = _operationalCertificateIssuer;
 @synthesize operationalCertificateIssuerQueue = _operationalCertificateIssuerQueue;
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _fabricID = @0;
+    _ipk = [NSData data];
+    return self;
+}
+
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (uint64_t)fabricId
 {
     return _charon_fabricId;
@@ -59,22 +69,22 @@
 
 - (NSNumber *)vendorId
 {
-    return _charon_vendorId;
+    return _vendorID;
 }
 
 - (void)setVendorId:(NSNumber *)vendorId
 {
-    _charon_vendorId = vendorId;
+    _vendorID = [vendorId copy];
 }
 
 - (NSNumber *)nodeId
 {
-    return _charon_nodeId;
+    return _nodeID;
 }
 
 - (void)setNodeId:(NSNumber *)nodeId
 {
-    _charon_nodeId = nodeId;
+    _nodeID = [nodeId copy];
 }
 
 @end

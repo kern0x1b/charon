@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRChannelClusterChannelInfoStruct
 
 @synthesize majorNumber = _majorNumber;
@@ -44,4 +57,28 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _majorNumber = @0;
+    _minorNumber = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"majorNumber:%@; ", charonDescribeObject(self.majorNumber)];
+    [text appendFormat:@"minorNumber:%@; ", charonDescribeObject(self.minorNumber)];
+    [text appendFormat:@"name:%@; ", charonDescribeObject(self.name)];
+    [text appendFormat:@"callSign:%@; ", charonDescribeObject(self.callSign)];
+    [text appendFormat:@"affiliateCallSign:%@; ", charonDescribeObject(self.affiliateCallSign)];
+    [text appendFormat:@"identifier:%@; ", charonDescribeObject(self.identifier)];
+    [text appendFormat:@"type:%@; ", charonDescribeObject(self.type)];
+    [text appendString:@">"];
+    return text;
+}
 @end

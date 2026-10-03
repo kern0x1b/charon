@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTROperationalCredentialsClusterFabricDescriptorStruct
 
 @synthesize rootPublicKey = _rootPublicKey;
@@ -39,15 +52,49 @@
     MTROperationalCredentialsClusterFabricDescriptorStruct *copied = [[MTROperationalCredentialsClusterFabricDescriptorStruct allocWithZone:zone] init];
     copied->_rootPublicKey = self->_rootPublicKey;
     copied->_vendorID = self->_vendorID;
-    copied->_vendorId = self->_vendorId;
+    copied->_vendorID = self->_vendorID;
     copied->_fabricID = self->_fabricID;
-    copied->_fabricId = self->_fabricId;
+    copied->_fabricID = self->_fabricID;
     copied->_nodeID = self->_nodeID;
-    copied->_nodeId = self->_nodeId;
+    copied->_nodeID = self->_nodeID;
     copied->_label = self->_label;
     copied->_vidVerificationStatement = self->_vidVerificationStatement;
     copied->_fabricIndex = self->_fabricIndex;
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _rootPublicKey = [NSData data];
+    _vendorID = @0;
+    _vendorID = @0;
+    _fabricID = @0;
+    _fabricID = @0;
+    _nodeID = @0;
+    _nodeID = @0;
+    _label = @"";
+    _fabricIndex = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"rootPublicKey:%@; ", charonDescribeObject(self.rootPublicKey)];
+    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self.vendorID)];
+    [text appendFormat:@"vendorId:%@; ", charonDescribeObject(self.vendorId)];
+    [text appendFormat:@"fabricID:%@; ", charonDescribeObject(self.fabricID)];
+    [text appendFormat:@"fabricId:%@; ", charonDescribeObject(self.fabricId)];
+    [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self.nodeID)];
+    [text appendFormat:@"nodeId:%@; ", charonDescribeObject(self.nodeId)];
+    [text appendFormat:@"label:%@; ", charonDescribeObject(self.label)];
+    [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject(self.vidVerificationStatement)];
+    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self.fabricIndex)];
+    [text appendString:@">"];
+    return text;
+}
 @end

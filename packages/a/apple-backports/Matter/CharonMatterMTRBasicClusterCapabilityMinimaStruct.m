@@ -34,4 +34,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _caseSessionsPerFabric = @0;
+    _subscriptionsPerFabric = @0;
+    return self;
+}
+
 @end

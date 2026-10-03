@@ -36,4 +36,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _action = @0;
+    _delayedActionTime = @0;
+    return self;
+}
+
 @end

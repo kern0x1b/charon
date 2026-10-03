@@ -36,4 +36,16 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _newTime = @0;
+    return self;
+}
+
+// -description: the host does not have this class, so the header's answer stands and this
+// object does not override it. Named by the run, per class, from the host measurement.
 @end

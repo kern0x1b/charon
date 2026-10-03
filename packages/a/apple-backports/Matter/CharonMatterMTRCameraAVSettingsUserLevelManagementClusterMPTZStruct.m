@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRCameraAVSettingsUserLevelManagementClusterMPTZStruct
 
 @synthesize pan = _pan;
@@ -36,4 +49,22 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"pan:%@; ", charonDescribeObject(self.pan)];
+    [text appendFormat:@"tilt:%@; ", charonDescribeObject(self.tilt)];
+    [text appendFormat:@"zoom:%@; ", charonDescribeObject(self.zoom)];
+    [text appendString:@">"];
+    return text;
+}
 @end

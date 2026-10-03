@@ -19,10 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTROperationalCredentialsClusterAttestationResponseParams () {
-    NSData * _Nonnull _charon_signature;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTROperationalCredentialsClusterAttestationResponseParams
 
@@ -38,24 +46,41 @@
     copied->_attestationElements = self->_attestationElements;
     copied->_attestationSignature = self->_attestationSignature;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
-    copied->_charon_signature = self->_charon_signature;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _attestationElements = [NSData data];
+    _attestationSignature = [NSData data];
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSData * _Nonnull)signature
 {
-    return _charon_signature;
+    return _attestationSignature;
 }
 
 - (void)setSignature:(NSData * _Nonnull)signature
 {
-    _charon_signature = signature;
+    _attestationSignature = [signature copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"attestationElements:%@; ", charonDescribeObject(self.attestationElements)];
+    [text appendFormat:@"attestationSignature:%@; ", charonDescribeObject(self.attestationSignature)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendString:@">"];
+    return text;
+}
 @end

@@ -38,4 +38,16 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _previousState = @0;
+    _newState = @0;
+    _reason = @0;
+    return self;
+}
+
 @end

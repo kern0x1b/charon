@@ -19,10 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTRColorControlClusterMoveToColorTemperatureParams () {
-    NSNumber * _Nonnull _charon_colorTemperature;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTRColorControlClusterMoveToColorTemperatureParams
 
@@ -44,24 +52,46 @@
     copied->_optionsOverride = self->_optionsOverride;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
     copied->_serverSideProcessingTimeout = self->_serverSideProcessingTimeout;
-    copied->_charon_colorTemperature = self->_charon_colorTemperature;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _colorTemperatureMireds = @0;
+    _transitionTime = @0;
+    _optionsMask = @0;
+    _optionsOverride = @0;
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber * _Nonnull)colorTemperature
 {
-    return _charon_colorTemperature;
+    return _colorTemperatureMireds;
 }
 
 - (void)setColorTemperature:(NSNumber * _Nonnull)colorTemperature
 {
-    _charon_colorTemperature = colorTemperature;
+    _colorTemperatureMireds = [colorTemperature copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"colorTemperatureMireds:%@; ", charonDescribeObject(self.colorTemperatureMireds)];
+    [text appendFormat:@"transitionTime:%@; ", charonDescribeObject(self.transitionTime)];
+    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self.optionsMask)];
+    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self.optionsOverride)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

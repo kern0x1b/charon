@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRElectricalPowerMeasurementClusterMeasurementAccuracyStruct
 
 @synthesize measurementType = _measurementType;
@@ -40,4 +53,29 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _measurementType = @0;
+    _measured = @0;
+    _minMeasuredValue = @0;
+    _maxMeasuredValue = @0;
+    _accuracyRanges = @[];
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self.measurementType)];
+    [text appendFormat:@"measured:%@; ", charonDescribeObject(self.measured)];
+    [text appendFormat:@"minMeasuredValue:%@; ", charonDescribeObject(self.minMeasuredValue)];
+    [text appendFormat:@"maxMeasuredValue:%@; ", charonDescribeObject(self.maxMeasuredValue)];
+    [text appendFormat:@"accuracyRanges:%@; ", charonDescribeObject(self.accuracyRanges)];
+    [text appendString:@">"];
+    return text;
+}
 @end

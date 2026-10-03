@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRThreadNetworkDiagnosticsClusterRouteTableStruct
 
 @synthesize extAddress = _extAddress;
@@ -50,4 +63,39 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _extAddress = @0;
+    _rloc16 = @0;
+    _routerId = @0;
+    _nextHop = @0;
+    _pathCost = @0;
+    _lqiIn = @0;
+    _lqiOut = @0;
+    _age = @0;
+    _allocated = @0;
+    _linkEstablished = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self.extAddress)];
+    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self.rloc16)];
+    [text appendFormat:@"routerId:%@; ", charonDescribeObject(self.routerId)];
+    [text appendFormat:@"nextHop:%@; ", charonDescribeObject(self.nextHop)];
+    [text appendFormat:@"pathCost:%@; ", charonDescribeObject(self.pathCost)];
+    [text appendFormat:@"lqiIn:%@; ", charonDescribeObject(self.lqiIn)];
+    [text appendFormat:@"lqiOut:%@; ", charonDescribeObject(self.lqiOut)];
+    [text appendFormat:@"age:%@; ", charonDescribeObject(self.age)];
+    [text appendFormat:@"allocated:%@; ", charonDescribeObject(self.allocated)];
+    [text appendFormat:@"linkEstablished:%@; ", charonDescribeObject(self.linkEstablished)];
+    [text appendString:@">"];
+    return text;
+}
 @end

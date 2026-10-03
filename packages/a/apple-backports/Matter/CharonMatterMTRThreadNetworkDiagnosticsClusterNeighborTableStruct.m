@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRThreadNetworkDiagnosticsClusterNeighborTableStruct
 
 @synthesize extAddress = _extAddress;
@@ -58,4 +71,45 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _extAddress = @0;
+    _age = @0;
+    _rloc16 = @0;
+    _linkFrameCounter = @0;
+    _mleFrameCounter = @0;
+    _lqi = @0;
+    _frameErrorRate = @0;
+    _messageErrorRate = @0;
+    _rxOnWhenIdle = @0;
+    _fullThreadDevice = @0;
+    _fullNetworkData = @0;
+    _isChild = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"extAddress:%@; ", charonDescribeObject(self.extAddress)];
+    [text appendFormat:@"age:%@; ", charonDescribeObject(self.age)];
+    [text appendFormat:@"rloc16:%@; ", charonDescribeObject(self.rloc16)];
+    [text appendFormat:@"linkFrameCounter:%@; ", charonDescribeObject(self.linkFrameCounter)];
+    [text appendFormat:@"mleFrameCounter:%@; ", charonDescribeObject(self.mleFrameCounter)];
+    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self.lqi)];
+    [text appendFormat:@"averageRssi:%@; ", charonDescribeObject(self.averageRssi)];
+    [text appendFormat:@"lastRssi:%@; ", charonDescribeObject(self.lastRssi)];
+    [text appendFormat:@"frameErrorRate:%@; ", charonDescribeObject(self.frameErrorRate)];
+    [text appendFormat:@"messageErrorRate:%@; ", charonDescribeObject(self.messageErrorRate)];
+    [text appendFormat:@"rxOnWhenIdle:%@; ", charonDescribeObject(self.rxOnWhenIdle)];
+    [text appendFormat:@"fullThreadDevice:%@; ", charonDescribeObject(self.fullThreadDevice)];
+    [text appendFormat:@"fullNetworkData:%@; ", charonDescribeObject(self.fullNetworkData)];
+    [text appendFormat:@"isChild:%@; ", charonDescribeObject(self.isChild)];
+    [text appendString:@">"];
+    return text;
+}
 @end

@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRThreadNetworkDirectoryClusterThreadNetworkStruct
 
 @synthesize extendedPanID = _extendedPanID;
@@ -38,4 +51,27 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _extendedPanID = [NSData data];
+    _networkName = @"";
+    _channel = @0;
+    _activeTimestamp = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"extendedPanID:%@; ", charonDescribeObject(self.extendedPanID)];
+    [text appendFormat:@"networkName:%@; ", charonDescribeObject(self.networkName)];
+    [text appendFormat:@"channel:%@; ", charonDescribeObject(self.channel)];
+    [text appendFormat:@"activeTimestamp:%@; ", charonDescribeObject(self.activeTimestamp)];
+    [text appendString:@">"];
+    return text;
+}
 @end

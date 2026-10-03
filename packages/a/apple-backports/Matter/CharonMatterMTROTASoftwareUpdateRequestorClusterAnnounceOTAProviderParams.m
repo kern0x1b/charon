@@ -19,11 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTROTASoftwareUpdateRequestorClusterAnnounceOTAProviderParams () {
-    NSNumber * _Nonnull _charon_providerNodeId;
-    NSNumber * _Nonnull _charon_vendorId;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTROTASoftwareUpdateRequestorClusterAnnounceOTAProviderParams
 
@@ -47,35 +54,57 @@
     copied->_endpoint = self->_endpoint;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
     copied->_serverSideProcessingTimeout = self->_serverSideProcessingTimeout;
-    copied->_charon_providerNodeId = self->_charon_providerNodeId;
-    copied->_charon_vendorId = self->_charon_vendorId;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _providerNodeID = @0;
+    _vendorID = @0;
+    _announcementReason = @0;
+    _endpoint = @0;
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber * _Nonnull)providerNodeId
 {
-    return _charon_providerNodeId;
+    return _providerNodeID;
 }
 
 - (void)setProviderNodeId:(NSNumber * _Nonnull)providerNodeId
 {
-    _charon_providerNodeId = providerNodeId;
+    _providerNodeID = [providerNodeId copy];
 }
 
 - (NSNumber * _Nonnull)vendorId
 {
-    return _charon_vendorId;
+    return _vendorID;
 }
 
 - (void)setVendorId:(NSNumber * _Nonnull)vendorId
 {
-    _charon_vendorId = vendorId;
+    _vendorID = [vendorId copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"providerNodeID:%@; ", charonDescribeObject(self.providerNodeID)];
+    [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self.vendorID)];
+    [text appendFormat:@"announcementReason:%@; ", charonDescribeObject(self.announcementReason)];
+    [text appendFormat:@"metadataForNode:%@; ", charonDescribeObject(self.metadataForNode)];
+    [text appendFormat:@"endpoint:%@; ", charonDescribeObject(self.endpoint)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

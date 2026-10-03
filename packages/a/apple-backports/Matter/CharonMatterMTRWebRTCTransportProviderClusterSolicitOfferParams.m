@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRWebRTCTransportProviderClusterSolicitOfferParams
 
 @synthesize streamUsage = _streamUsage;
@@ -50,4 +63,31 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _streamUsage = @0;
+    _originatingEndpointID = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self.streamUsage)];
+    [text appendFormat:@"originatingEndpointID:%@; ", charonDescribeObject(self.originatingEndpointID)];
+    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self.videoStreamID)];
+    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self.audioStreamID)];
+    [text appendFormat:@"iceServers:%@; ", charonDescribeObject(self.iceServers)];
+    [text appendFormat:@"iceTransportPolicy:%@; ", charonDescribeObject(self.iceTransportPolicy)];
+    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self.metadataEnabled)];
+    [text appendFormat:@"sFrameConfig:%@; ", charonDescribeObject(self.sFrameConfig)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

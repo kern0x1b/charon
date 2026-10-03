@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTREnergyEVSEClusterEnergyTransferStartedEvent
 
 @synthesize sessionID = _sessionID;
@@ -38,4 +51,26 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _sessionID = @0;
+    _state = @0;
+    _maximumCurrent = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"sessionID:%@; ", charonDescribeObject(self.sessionID)];
+    [text appendFormat:@"state:%@; ", charonDescribeObject(self.state)];
+    [text appendFormat:@"maximumCurrent:%@; ", charonDescribeObject(self.maximumCurrent)];
+    [text appendFormat:@"maximumDischargeCurrent:%@; ", charonDescribeObject(self.maximumDischargeCurrent)];
+    [text appendString:@">"];
+    return text;
+}
 @end

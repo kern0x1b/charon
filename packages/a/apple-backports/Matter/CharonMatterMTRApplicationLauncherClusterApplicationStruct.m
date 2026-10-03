@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRApplicationLauncherClusterApplicationStruct
 
 @synthesize catalogVendorID = _catalogVendorID;
@@ -32,10 +45,33 @@
 {
     MTRApplicationLauncherClusterApplicationStruct *copied = [[MTRApplicationLauncherClusterApplicationStruct allocWithZone:zone] init];
     copied->_catalogVendorID = self->_catalogVendorID;
-    copied->_catalogVendorId = self->_catalogVendorId;
+    copied->_catalogVendorID = self->_catalogVendorID;
     copied->_applicationID = self->_applicationID;
-    copied->_applicationId = self->_applicationId;
+    copied->_applicationID = self->_applicationID;
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _catalogVendorID = @0;
+    _catalogVendorID = @0;
+    _applicationID = @"";
+    _applicationID = @"";
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"catalogVendorID:%@; ", charonDescribeObject(self.catalogVendorID)];
+    [text appendFormat:@"catalogVendorId:%@; ", charonDescribeObject(self.catalogVendorId)];
+    [text appendFormat:@"applicationID:%@; ", charonDescribeObject(self.applicationID)];
+    [text appendFormat:@"applicationId:%@; ", charonDescribeObject(self.applicationId)];
+    [text appendString:@">"];
+    return text;
+}
 @end

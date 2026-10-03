@@ -19,10 +19,26 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
+// the members they share it with: a category cannot hold an ivar, so these are the port's
+// own, and they are here because the accessors below are what read and write them.
 @interface MTRGroupKeyManagementClusterKeySetReadAllIndicesParams () {
     NSArray * _Nonnull _charon_groupKeySetIDs;
 }
 @end
+
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTRGroupKeyManagementClusterKeySetReadAllIndicesParams
 
@@ -40,12 +56,19 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    return self;
+}
+
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSArray * _Nonnull)groupKeySetIDs
 {
     return _charon_groupKeySetIDs;
@@ -53,7 +76,15 @@
 
 - (void)setGroupKeySetIDs:(NSArray * _Nonnull)groupKeySetIDs
 {
-    _charon_groupKeySetIDs = groupKeySetIDs;
+    _charon_groupKeySetIDs = [groupKeySetIDs copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

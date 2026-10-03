@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRCameraAVStreamManagementClusterRateDistortionTradeOffPointsStruct
 
 @synthesize codec = _codec;
@@ -36,4 +49,24 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _codec = @0;
+    _minBitRate = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"codec:%@; ", charonDescribeObject(self.codec)];
+    [text appendFormat:@"resolution:%@; ", charonDescribeObject(self.resolution)];
+    [text appendFormat:@"minBitRate:%@; ", charonDescribeObject(self.minBitRate)];
+    [text appendString:@">"];
+    return text;
+}
 @end

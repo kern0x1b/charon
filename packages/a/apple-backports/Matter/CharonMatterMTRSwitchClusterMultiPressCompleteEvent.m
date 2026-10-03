@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRSwitchClusterMultiPressCompleteEvent
 
 @synthesize previousPosition = _previousPosition;
@@ -31,9 +44,30 @@
 {
     MTRSwitchClusterMultiPressCompleteEvent *copied = [[MTRSwitchClusterMultiPressCompleteEvent allocWithZone:zone] init];
     copied->_previousPosition = self->_previousPosition;
-    copied->_newPosition = self->_newPosition;
+    copied->_previousPosition = self->_previousPosition;
     copied->_totalNumberOfPressesCounted = self->_totalNumberOfPressesCounted;
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _previousPosition = @0;
+    _previousPosition = @0;
+    _totalNumberOfPressesCounted = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"previousPosition:%@; ", charonDescribeObject(self.previousPosition)];
+    [text appendFormat:@"getNewPosition:%@; ", charonDescribeObject(self.getNewPosition)];
+    [text appendFormat:@"totalNumberOfPressesCounted:%@; ", charonDescribeObject(self.totalNumberOfPressesCounted)];
+    [text appendString:@">"];
+    return text;
+}
 @end

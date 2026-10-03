@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRDeviceEnergyManagementClusterSlotStruct
 
 @synthesize minDuration = _minDuration;
@@ -66,4 +79,42 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _minDuration = @0;
+    _maxDuration = @0;
+    _defaultDuration = @0;
+    _elapsedSlotTime = @0;
+    _remainingSlotTime = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"minDuration:%@; ", charonDescribeObject(self.minDuration)];
+    [text appendFormat:@"maxDuration:%@; ", charonDescribeObject(self.maxDuration)];
+    [text appendFormat:@"defaultDuration:%@; ", charonDescribeObject(self.defaultDuration)];
+    [text appendFormat:@"elapsedSlotTime:%@; ", charonDescribeObject(self.elapsedSlotTime)];
+    [text appendFormat:@"remainingSlotTime:%@; ", charonDescribeObject(self.remainingSlotTime)];
+    [text appendFormat:@"slotIsPausable:%@; ", charonDescribeObject(self.slotIsPausable)];
+    [text appendFormat:@"minPauseDuration:%@; ", charonDescribeObject(self.minPauseDuration)];
+    [text appendFormat:@"maxPauseDuration:%@; ", charonDescribeObject(self.maxPauseDuration)];
+    [text appendFormat:@"manufacturerESAState:%@; ", charonDescribeObject(self.manufacturerESAState)];
+    [text appendFormat:@"nominalPower:%@; ", charonDescribeObject(self.nominalPower)];
+    [text appendFormat:@"minPower:%@; ", charonDescribeObject(self.minPower)];
+    [text appendFormat:@"maxPower:%@; ", charonDescribeObject(self.maxPower)];
+    [text appendFormat:@"nominalEnergy:%@; ", charonDescribeObject(self.nominalEnergy)];
+    [text appendFormat:@"costs:%@; ", charonDescribeObject(self.costs)];
+    [text appendFormat:@"minPowerAdjustment:%@; ", charonDescribeObject(self.minPowerAdjustment)];
+    [text appendFormat:@"maxPowerAdjustment:%@; ", charonDescribeObject(self.maxPowerAdjustment)];
+    [text appendFormat:@"minDurationAdjustment:%@; ", charonDescribeObject(self.minDurationAdjustment)];
+    [text appendFormat:@"maxDurationAdjustment:%@; ", charonDescribeObject(self.maxDurationAdjustment)];
+    [text appendString:@">"];
+    return text;
+}
 @end

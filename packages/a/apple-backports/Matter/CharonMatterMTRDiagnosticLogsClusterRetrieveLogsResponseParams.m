@@ -19,11 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTRDiagnosticLogsClusterRetrieveLogsResponseParams () {
-    NSData * _Nonnull _charon_content;
-    NSNumber * _Nonnull _charon_timeStamp;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTRDiagnosticLogsClusterRetrieveLogsResponseParams
 
@@ -43,35 +50,53 @@
     copied->_utcTimeStamp = self->_utcTimeStamp;
     copied->_timeSinceBoot = self->_timeSinceBoot;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
-    copied->_charon_content = self->_charon_content;
-    copied->_charon_timeStamp = self->_charon_timeStamp;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _status = @0;
+    _logContent = [NSData data];
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSData * _Nonnull)content
 {
-    return _charon_content;
+    return _logContent;
 }
 
 - (void)setContent:(NSData * _Nonnull)content
 {
-    _charon_content = content;
+    _logContent = [content copy];
 }
 
 - (NSNumber * _Nonnull)timeStamp
 {
-    return _charon_timeStamp;
+    return _utcTimeStamp;
 }
 
 - (void)setTimeStamp:(NSNumber * _Nonnull)timeStamp
 {
-    _charon_timeStamp = timeStamp;
+    _utcTimeStamp = [timeStamp copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"status:%@; ", charonDescribeObject(self.status)];
+    [text appendFormat:@"logContent:%@; ", charonDescribeObject(self.logContent)];
+    [text appendFormat:@"utcTimeStamp:%@; ", charonDescribeObject(self.utcTimeStamp)];
+    [text appendFormat:@"timeSinceBoot:%@; ", charonDescribeObject(self.timeSinceBoot)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendString:@">"];
+    return text;
+}
 @end

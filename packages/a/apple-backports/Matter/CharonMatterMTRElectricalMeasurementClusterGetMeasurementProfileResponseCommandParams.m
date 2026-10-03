@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRElectricalMeasurementClusterGetMeasurementProfileResponseCommandParams
 
 @synthesize startTime = _startTime;
@@ -44,4 +57,32 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _startTime = @0;
+    _status = @0;
+    _profileIntervalPeriod = @0;
+    _numberOfIntervalsDelivered = @0;
+    _attributeId = @0;
+    _intervals = @[];
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
+    [text appendFormat:@"status:%@; ", charonDescribeObject(self.status)];
+    [text appendFormat:@"profileIntervalPeriod:%@; ", charonDescribeObject(self.profileIntervalPeriod)];
+    [text appendFormat:@"numberOfIntervalsDelivered:%@; ", charonDescribeObject(self.numberOfIntervalsDelivered)];
+    [text appendFormat:@"attributeId:%@; ", charonDescribeObject(self.attributeId)];
+    [text appendFormat:@"intervals:%@; ", charonDescribeObject(self.intervals)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendString:@">"];
+    return text;
+}
 @end

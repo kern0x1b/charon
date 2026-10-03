@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRMessagesClusterPresentMessagesRequestParams
 
 @synthesize messageID = _messageID;
@@ -48,4 +61,32 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _messageID = [NSData data];
+    _priority = @0;
+    _messageControl = @0;
+    _messageText = @"";
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"messageID:%@; ", charonDescribeObject(self.messageID)];
+    [text appendFormat:@"priority:%@; ", charonDescribeObject(self.priority)];
+    [text appendFormat:@"messageControl:%@; ", charonDescribeObject(self.messageControl)];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
+    [text appendFormat:@"duration:%@; ", charonDescribeObject(self.duration)];
+    [text appendFormat:@"messageText:%@; ", charonDescribeObject(self.messageText)];
+    [text appendFormat:@"responses:%@; ", charonDescribeObject(self.responses)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

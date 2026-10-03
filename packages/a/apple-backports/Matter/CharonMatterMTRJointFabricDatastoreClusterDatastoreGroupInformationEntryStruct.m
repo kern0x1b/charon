@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRJointFabricDatastoreClusterDatastoreGroupInformationEntryStruct
 
 @synthesize groupID = _groupID;
@@ -42,4 +55,28 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _groupID = @0;
+    _friendlyName = @"";
+    _groupPermission = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"groupID:%@; ", charonDescribeObject(self.groupID)];
+    [text appendFormat:@"friendlyName:%@; ", charonDescribeObject(self.friendlyName)];
+    [text appendFormat:@"groupKeySetID:%@; ", charonDescribeObject(self.groupKeySetID)];
+    [text appendFormat:@"groupCAT:%@; ", charonDescribeObject(self.groupCAT)];
+    [text appendFormat:@"groupCATVersion:%@; ", charonDescribeObject(self.groupCATVersion)];
+    [text appendFormat:@"groupPermission:%@; ", charonDescribeObject(self.groupPermission)];
+    [text appendString:@">"];
+    return text;
+}
 @end

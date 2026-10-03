@@ -19,6 +19,9 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
+// the members they share it with: a category cannot hold an ivar, so these are the port's
+// own, and they are here because the accessors below are what read and write them.
 @interface MTRReadParams () {
     NSNumber * _charon_fabricFiltered;
 }
@@ -30,12 +33,21 @@
 @synthesize minEventNumber = _minEventNumber;
 @synthesize assumeUnknownAttributesReportable = _assumeUnknownAttributesReportable;
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _filterByFabric = NO;
+    _assumeUnknownAttributesReportable = NO;
+    return self;
+}
+
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber *)fabricFiltered
 {
     return _charon_fabricFiltered;
@@ -43,7 +55,7 @@
 
 - (void)setFabricFiltered:(NSNumber *)fabricFiltered
 {
-    _charon_fabricFiltered = fabricFiltered;
+    _charon_fabricFiltered = [fabricFiltered copy];
 }
 
 @end

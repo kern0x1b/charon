@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRElectricalPowerMeasurementClusterMeasurementRangeStruct
 
 @synthesize measurementType = _measurementType;
@@ -52,4 +65,33 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _measurementType = @0;
+    _min = @0;
+    _max = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"measurementType:%@; ", charonDescribeObject(self.measurementType)];
+    [text appendFormat:@"min:%@; ", charonDescribeObject(self.min)];
+    [text appendFormat:@"max:%@; ", charonDescribeObject(self.max)];
+    [text appendFormat:@"startTimestamp:%@; ", charonDescribeObject(self.startTimestamp)];
+    [text appendFormat:@"endTimestamp:%@; ", charonDescribeObject(self.endTimestamp)];
+    [text appendFormat:@"minTimestamp:%@; ", charonDescribeObject(self.minTimestamp)];
+    [text appendFormat:@"maxTimestamp:%@; ", charonDescribeObject(self.maxTimestamp)];
+    [text appendFormat:@"startSystime:%@; ", charonDescribeObject(self.startSystime)];
+    [text appendFormat:@"endSystime:%@; ", charonDescribeObject(self.endSystime)];
+    [text appendFormat:@"minSystime:%@; ", charonDescribeObject(self.minSystime)];
+    [text appendFormat:@"maxSystime:%@; ", charonDescribeObject(self.maxSystime)];
+    [text appendString:@">"];
+    return text;
+}
 @end

@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRJointFabricDatastoreClusterDatastoreStatusEntryStruct
 
 @synthesize state = _state;
@@ -36,4 +49,25 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _state = @0;
+    _updateTimestamp = @0;
+    _failureCode = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"state:%@; ", charonDescribeObject(self.state)];
+    [text appendFormat:@"updateTimestamp:%@; ", charonDescribeObject(self.updateTimestamp)];
+    [text appendFormat:@"failureCode:%@; ", charonDescribeObject(self.failureCode)];
+    [text appendString:@">"];
+    return text;
+}
 @end

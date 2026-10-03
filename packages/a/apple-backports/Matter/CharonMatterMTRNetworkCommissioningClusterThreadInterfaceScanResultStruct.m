@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRNetworkCommissioningClusterThreadInterfaceScanResultStruct
 
 @synthesize panId = _panId;
@@ -46,4 +59,35 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _panId = @0;
+    _extendedPanId = @0;
+    _networkName = @"";
+    _channel = @0;
+    _version = @0;
+    _extendedAddress = [NSData data];
+    _rssi = @0;
+    _lqi = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"panId:%@; ", charonDescribeObject(self.panId)];
+    [text appendFormat:@"extendedPanId:%@; ", charonDescribeObject(self.extendedPanId)];
+    [text appendFormat:@"networkName:%@; ", charonDescribeObject(self.networkName)];
+    [text appendFormat:@"channel:%@; ", charonDescribeObject(self.channel)];
+    [text appendFormat:@"version:%@; ", charonDescribeObject(self.version)];
+    [text appendFormat:@"extendedAddress:%@; ", charonDescribeObject(self.extendedAddress)];
+    [text appendFormat:@"rssi:%@; ", charonDescribeObject(self.rssi)];
+    [text appendFormat:@"lqi:%@; ", charonDescribeObject(self.lqi)];
+    [text appendString:@">"];
+    return text;
+}
 @end

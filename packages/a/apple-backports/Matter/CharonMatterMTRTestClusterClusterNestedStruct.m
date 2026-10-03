@@ -36,4 +36,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _a = @0;
+    _b = @0;
+    return self;
+}
+
 @end

@@ -19,6 +19,9 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for
+// the members they share it with: a category cannot hold an ivar, so these are the port's
+// own, and they are here because the accessors below are what read and write them.
 @interface MTRSubscribeParams () {
     NSNumber * _charon_keepPreviousSubscriptions;
     NSNumber * _charon_autoResubscribe;
@@ -33,12 +36,24 @@
 @synthesize maxInterval = _maxInterval;
 @synthesize reportEventsUrgently = _reportEventsUrgently;
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _replaceExistingSubscriptions = NO;
+    _resubscribeAutomatically = NO;
+    _minInterval = @0;
+    _maxInterval = @0;
+    _reportEventsUrgently = NO;
+    return self;
+}
+
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber *)keepPreviousSubscriptions
 {
     return _charon_keepPreviousSubscriptions;
@@ -46,7 +61,7 @@
 
 - (void)setKeepPreviousSubscriptions:(NSNumber *)keepPreviousSubscriptions
 {
-    _charon_keepPreviousSubscriptions = keepPreviousSubscriptions;
+    _charon_keepPreviousSubscriptions = [keepPreviousSubscriptions copy];
 }
 
 - (NSNumber *)autoResubscribe
@@ -56,7 +71,7 @@
 
 - (void)setAutoResubscribe:(NSNumber *)autoResubscribe
 {
-    _charon_autoResubscribe = autoResubscribe;
+    _charon_autoResubscribe = [autoResubscribe copy];
 }
 
 @end

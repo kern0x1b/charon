@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRMediaInputClusterInputInfoStruct
 
 @synthesize index = _index;
@@ -38,4 +51,27 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _index = @0;
+    _inputType = @0;
+    _name = @"";
+    _descriptionString = @"";
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"index:%@; ", charonDescribeObject(self.index)];
+    [text appendFormat:@"inputType:%@; ", charonDescribeObject(self.inputType)];
+    [text appendFormat:@"name:%@; ", charonDescribeObject(self.name)];
+    [text appendFormat:@"descriptionString:%@; ", charonDescribeObject(self.descriptionString)];
+    [text appendString:@">"];
+    return text;
+}
 @end

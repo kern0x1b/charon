@@ -26,4 +26,14 @@
 @synthesize paaCerts = _paaCerts;
 @synthesize cdCerts = _cdCerts;
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _startServer = NO;
+    return self;
+}
+
 @end

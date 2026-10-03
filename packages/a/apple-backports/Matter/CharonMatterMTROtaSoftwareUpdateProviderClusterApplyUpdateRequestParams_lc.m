@@ -38,4 +38,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _updateToken = [NSData data];
+    _newVersion = @0;
+    return self;
+}
+
 @end

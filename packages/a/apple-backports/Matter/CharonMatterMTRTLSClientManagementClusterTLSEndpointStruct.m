@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRTLSClientManagementClusterTLSEndpointStruct
 
 @synthesize endpointID = _endpointID;
@@ -44,4 +57,32 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _endpointID = @0;
+    _hostname = [NSData data];
+    _port = @0;
+    _caid = @0;
+    _referenceCount = @0;
+    _fabricIndex = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"endpointID:%@; ", charonDescribeObject(self.endpointID)];
+    [text appendFormat:@"hostname:%@; ", charonDescribeObject(self.hostname)];
+    [text appendFormat:@"port:%@; ", charonDescribeObject(self.port)];
+    [text appendFormat:@"caid:%@; ", charonDescribeObject(self.caid)];
+    [text appendFormat:@"ccdid:%@; ", charonDescribeObject(self.ccdid)];
+    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self.referenceCount)];
+    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self.fabricIndex)];
+    [text appendString:@">"];
+    return text;
+}
 @end

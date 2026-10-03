@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRScenesManagementClusterAttributeValuePairStruct
 
 @synthesize attributeID = _attributeID;
@@ -48,4 +61,29 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _attributeID = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"attributeID:%@; ", charonDescribeObject(self.attributeID)];
+    [text appendFormat:@"valueUnsigned8:%@; ", charonDescribeObject(self.valueUnsigned8)];
+    [text appendFormat:@"valueSigned8:%@; ", charonDescribeObject(self.valueSigned8)];
+    [text appendFormat:@"valueUnsigned16:%@; ", charonDescribeObject(self.valueUnsigned16)];
+    [text appendFormat:@"valueSigned16:%@; ", charonDescribeObject(self.valueSigned16)];
+    [text appendFormat:@"valueUnsigned32:%@; ", charonDescribeObject(self.valueUnsigned32)];
+    [text appendFormat:@"valueSigned32:%@; ", charonDescribeObject(self.valueSigned32)];
+    [text appendFormat:@"valueUnsigned64:%@; ", charonDescribeObject(self.valueUnsigned64)];
+    [text appendFormat:@"valueSigned64:%@; ", charonDescribeObject(self.valueSigned64)];
+    [text appendString:@">"];
+    return text;
+}
 @end

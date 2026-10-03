@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTREcosystemInformationClusterEcosystemDeviceStruct
 
 @synthesize deviceName = _deviceName;
@@ -46,4 +59,33 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _bridgedEndpoint = @0;
+    _originalEndpoint = @0;
+    _deviceTypes = @[];
+    _uniqueLocationIDs = @[];
+    _uniqueLocationIDsLastEdit = @0;
+    _fabricIndex = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"deviceName:%@; ", charonDescribeObject(self.deviceName)];
+    [text appendFormat:@"deviceNameLastEdit:%@; ", charonDescribeObject(self.deviceNameLastEdit)];
+    [text appendFormat:@"bridgedEndpoint:%@; ", charonDescribeObject(self.bridgedEndpoint)];
+    [text appendFormat:@"originalEndpoint:%@; ", charonDescribeObject(self.originalEndpoint)];
+    [text appendFormat:@"deviceTypes:%@; ", charonDescribeObject(self.deviceTypes)];
+    [text appendFormat:@"uniqueLocationIDs:%@; ", charonDescribeObject(self.uniqueLocationIDs)];
+    [text appendFormat:@"uniqueLocationIDsLastEdit:%@; ", charonDescribeObject(self.uniqueLocationIDsLastEdit)];
+    [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self.fabricIndex)];
+    [text appendString:@">"];
+    return text;
+}
 @end

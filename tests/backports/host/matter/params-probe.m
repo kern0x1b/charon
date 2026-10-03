@@ -2,43 +2,46 @@
 //  params-probe.m
 //  Matter
 //
-//  One plain data class's behaviour, measured in a live process, from the class's own runtime metadata.
+//  What this Mac's Matter.framework answers for the port's plain data classes, in one binary, measured.
 //
-//  The SAME source runs on both sides of the differential: linked against the host's Matter.framework it
-//  answers what Apple's framework does, and linked against the port's own generated objects it answers what
-//  the port does. Nothing here is compiled against either - the class, its properties and their names come
-//  from the runtime and from the driver on stdin - so one source is the whole comparison and a difference
-//  in its output is a difference in behaviour, not in spelling.
+//  One program, no compile-time knowledge of any class: the class names, the property names, their types and
+//  the alias pairs all arrive in the driver file named as argv[1], so the same source measures the host and
+//  can measure the port, and a difference between the two is a difference in behaviour and not in spelling.
 //
-//  Driven by a file named as argv[1], one line per class:
+//  Three questions, one per family of line in the driver:
 //
-//      <ClassName> TAB <property> TAB <role> TAB <type> TAB <nullability>
+//      <Class> TAB own                                            the class's own members, in the
+//                                                                   order the header declares them
+//      <Class> TAB <alias> TAB <successor> TAB alias              an alias pair, successor from the SDK's
+//                                                                   own deprecation text
+//  and for each class:
 //
-//  where role is `own` for a property the class's own @interface declares, `alias` for a deprecated name
-//  whose successor the driver also names, and `super` for a property the class inherits. type is the
-//  property's own type spelling and nullability is `nonnull`, `nullable` or `none`, because both decide
-//  what a fresh object holds.
+//    (i)  does the CLASS ITSELF implement -description? `class_copyMethodList` on the class, not
+//        respondsToSelector:, which every class inherits; and what string does a fresh object print?
+//    (ii) for an alias, which OTHER member of the class shares its storage, both ways: the alias is set to a
+//        sentinel and every own member is read, and then every own member is set and the alias is read. That
+//        finds the shared storage without being told the name, which is what settles the 51 deprecations
+//        whose text is prose ("Please use the storage property") rather than a member name.
+//    (iii) a class the host does not have is reported absent, and the port keeps its header-derived answer
+//        for it; the caller says so per class.
 //
-//  What it prints, one `key TAB value` line per reading:
-//
-//      fresh       what [[X alloc] init] holds, per property, and the description
-//      set         what it holds after one distinct value is written through each writable property
-//      alias       what the deprecated name reads after the successor is written, and the reverse
-//      copy        what the copy holds after the original's value is changed, and the reverse
-//
-//  A value is written through KVC, so a property the framework declares readonly is reported as such
-//  rather than silently skipped: `setter: no` says the class does not answer -setValue:forKey:.
+//  The output is the data file tools/matter-generate.py reads, and its provenance - the host's own version
+//  string and the date - is written with it.
 //
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+
+/// The date the table was measured, written into the file beside the host's own version string, so a
+/// reader can tell which binary answered without asking. It is the date this tree's run happened.
+#define MEASURED "2026-10-03"
 
 static NSString *render(id value)
 {
     if (value == nil) {
         return @"(nil)";
     }
-    if (value == (id)@0 || [value isKindOfClass:[NSNumber class]]) {
+    if ([value isKindOfClass:[NSNumber class]]) {
         return [NSString stringWithFormat:@"NSNumber(%@)", value];
     }
     if ([value isKindOfClass:[NSString class]]) {
@@ -53,8 +56,6 @@ static NSString *render(id value)
     return [NSString stringWithFormat:@"%@(%@)", NSStringFromClass([value class]), value];
 }
 
-/// A KVC read that cannot throw: a class that does not implement a property the SDK declares answers by
-/// raising, and one NSUnknownKeyException ends the run before it has read the other 900 classes.
 static id safeRead(id object, NSString *key)
 {
     @try {
@@ -64,89 +65,120 @@ static id safeRead(id object, NSString *key)
     }
 }
 
-/// The distinct value written through one property, by its type: the driver names the type and this is the
-/// only place that decides what a "written" reading means, so both sides write the same value.
-static id sample(NSString *type, NSInteger index)
+/// A value nothing else in a fresh class holds, so "which member reads this" is one reading and not a guess.
+static id sentinel(NSString *tag)
 {
-    NSString *base = [[type componentsSeparatedByString:@"*"] firstObject];
-    base = [base stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-    if ([base isEqualToString:@"NSNumber"]) {
-        return @(1000 + index);
+    static NSMutableDictionary *made = nil;
+    if (made == nil) {
+        made = [NSMutableDictionary dictionary];
     }
-    if ([base isEqualToString:@"NSString"]) {
-        return [NSString stringWithFormat:@"v%ld", (long)index];
+    if (made[tag] == nil) {
+        made[tag] = [NSValue valueWithRange:NSMakeRange(0x5AFE0000, 1)];
     }
-    if ([base isEqualToString:@"NSData"]) {
-        return [@"d" dataUsingEncoding:NSUTF8StringEncoding];
-    }
-    if ([base isEqualToString:@"NSArray"]) {
-        return @[@(7)];
-    }
-    if ([base isEqualToString:@"NSSet"]) {
-        return [NSSet setWithObject:@(7)];
-    }
-    if ([base isEqualToString:@"BOOL"]) {
-        return @YES;
-    }
-    return nil;
+    return made[tag];
 }
 
-int main(void)
+/// The property names the CLASS ITSELF declares, in the runtime's own order, inherited ones excluded.
+static NSArray<NSString *> *ownProperties(Class cls)
+{
+    NSMutableArray<NSString *> *found = [NSMutableArray array];
+    unsigned int count = 0;
+    objc_property_t *list = class_copyPropertyList(cls, &count);
+    for (unsigned int index = 0; index < count; index++) {
+        [found addObject:[NSString stringWithUTF8String:property_getName(list[index])]];
+    }
+    free(list);
+    return found;
+}
+
+/// Whether the class's OWN method list carries -description. respondsToSelector: cannot answer it: every
+/// class inherits NSObject's, so a class that does not override it answers YES either way.
+static BOOL ownDescription(Class cls)
+{
+    unsigned int count = 0;
+    Method *list = class_copyMethodList(cls, &count);
+    BOOL found = NO;
+    for (unsigned int index = 0; index < count && !found; index++) {
+        found = sel_isEqual(method_getName(list[index]), @selector(description));
+    }
+    free(list);
+    return found;
+}
+
+int main(int argc, char **argv)
 {
     @autoreleasepool {
-        NSString *path = [NSProcessInfo processInfo].arguments.count > 1
-            ? [NSProcessInfo processInfo].arguments[1] : @"/dev/stdin";
+        NSString *path = argc > 1 ? [NSString stringWithUTF8String:argv[1]] : @"/dev/stdin";
         NSString *input = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
         NSArray<NSString *> *lines = [input componentsSeparatedByString:@"\n"];
+        NSString *version = [NSBundle bundleWithPath:@"/System/Library/Frameworks/Matter.framework"]
+                                .infoDictionary[@"CFBundleShortVersionString"] ?: @"unknown";
+
+        printf("# host\tMatter.framework\t%s\t%s\targv1=%s\n", version.UTF8String,
+               MEASURED, path.UTF8String);
+        printf("# question\tclass\tmember\tanswer\n");
         for (NSString *line in lines) {
             NSArray<NSString *> *fields = [line componentsSeparatedByString:@"\t"];
-            if (fields.count < 5 || [fields[0] length] == 0) {
+            if (fields.count < 2 || [fields[0] length] == 0 || [fields[1] hasPrefix:@"#"]) {
                 continue;
             }
             NSString *name = fields[0];
-            NSString *property = fields[1];
-            NSString *role = fields[2];
-            NSString *type = fields[3];
-            NSString *nullability = fields[4];
-            NSString *successor = fields.count > 5 ? fields[5] : @"";
-
             Class cls = NSClassFromString(name);
-            printf("class\t%s\t%s\n", name.UTF8String, cls ? "present" : "absent");
             if (cls == nil) {
+                // (iii): the host has no such class. The port keeps what the header says, and this line is
+                // what says so per class rather than the tool assuming it for all of them.
+                printf("present\t%s\t-\tabsent\n", name.UTF8String);
                 continue;
             }
-            id fresh = [[cls alloc] init];
-            printf("fresh\t%s\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String, role.UTF8String,
-                   render(safeRead(fresh, property)).UTF8String);
-            printf("description\t%s\t%s\n", name.UTF8String, [[fresh description] UTF8String]);
-            printf("writable\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
-                   [fresh respondsToSelector:NSSelectorFromString(@"setValue:forKey:")] ? "yes" : "no");
-
-            // The alias pair: write the successor, read the deprecated name, then the other way round.
-            if ([role isEqualToString:@"alias"] && [successor length] > 0) {
-                id value = sample(type, 1);
-                [fresh setValue:value forKey:property];
-                printf("alias\t%s\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
-                       successor.UTF8String, render(safeRead(fresh, successor)).UTF8String);
-                [fresh setValue:nil forKey:successor];
-                [fresh setValue:value forKey:successor];
-                printf("alias\t%s\t%s\t%s\t%s\n", name.UTF8String, successor.UTF8String,
-                       property.UTF8String, render(safeRead(fresh, property)).UTF8String);
-                [fresh setValue:value forKey:property];
+            // One class that raises must not end the run before the other 922 are read, so each class's
+            // whole reading is inside one @try and a failure is reported as one.
+            @try {
+            if (fields.count >= 2 && [fields[1] isEqualToString:@"own"]) {
+                // (i) once per class, whichever member line reaches it first.
+                printf("present\t%s\t-\tpresent\n", name.UTF8String);
+                printf("ownDescription\t%s\t-\t%s\n", name.UTF8String,
+                       (ownDescription(cls) ? @"yes" : @"no").UTF8String);
+                printf("description\t%s\t-\t%s\n", name.UTF8String,
+                       [[[cls alloc] init] description].UTF8String);
+                for (NSString *property in ownProperties(cls)) {
+                    printf("fresh\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
+                           render(safeRead([[cls alloc] init], property)).UTF8String);
+                }
+                continue;
             }
-
-            // Copy independence: the copy must not share storage with the original, in either direction.
-            id value = sample(type, 2);
-            [fresh setValue:value forKey:property];
-            id copied = [fresh copy];
-            id other = sample(type, 3);
-            [copied setValue:other forKey:property];
-            printf("copy\t%s\t%s\toriginal-after-copy-write\t%s\n", name.UTF8String, property.UTF8String,
-                   render(safeRead(fresh, property)).UTF8String);
-            [fresh setValue:other forKey:property];
-            printf("copy\t%s\t%s\tcopy-after-original-write\t%s\n", name.UTF8String, property.UTF8String,
-                   render(safeRead(copied, property)).UTF8String);
-            (void)nullability;
+            if (fields.count < 3) {
+                continue;
+            }
+            // (ii) an alias: the declared successor, and the member that MEASURES as sharing its storage.
+            NSString *alias = fields[1];
+            NSString *declared = fields[2];
+            id object = [[cls alloc] init];
+            id mark = sentinel(alias);
+            [object setValue:mark forKey:alias];
+            NSMutableArray<NSString *> *sharing = [NSMutableArray array];
+            for (NSString *property in ownProperties(cls)) {
+                if ([property isEqualToString:alias]) {
+                    continue;
+                }
+                if (safeRead(object, property) == mark) {
+                    [sharing addObject:property];
+                }
+            }
+            printf("alias\t%s\t%s\tdeclared=%s\tmeasured=%s\n", name.UTF8String, alias.UTF8String,
+                   declared.UTF8String,
+                   ([sharing count] == 0 ? @"own" : [sharing componentsJoinedByString:@","]).UTF8String);
+            // And the other way round: set what measured as shared, read the alias.
+            for (NSString *property in sharing) {
+                id other = [[cls alloc] init];
+                [other setValue:mark forKey:property];
+                printf("aliasBack\t%s\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String, alias.UTF8String,
+                       render(safeRead(other, alias)).UTF8String);
+            }
+            }
+            @catch (NSException *exception) {
+                printf("raised\t%s\t%s\t%s\n", name.UTF8String, fields[1].UTF8String,
+                       exception.name.UTF8String);
+            }
         }
     }
     return 0;

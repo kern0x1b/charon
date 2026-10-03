@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRColorControlClusterMoveColorTemperatureParams
 
 @synthesize moveMode = _moveMode;
@@ -46,4 +59,33 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _moveMode = @0;
+    _rate = @0;
+    _colorTemperatureMinimumMireds = @0;
+    _colorTemperatureMaximumMireds = @0;
+    _optionsMask = @0;
+    _optionsOverride = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"moveMode:%@; ", charonDescribeObject(self.moveMode)];
+    [text appendFormat:@"rate:%@; ", charonDescribeObject(self.rate)];
+    [text appendFormat:@"colorTemperatureMinimumMireds:%@; ", charonDescribeObject(self.colorTemperatureMinimumMireds)];
+    [text appendFormat:@"colorTemperatureMaximumMireds:%@; ", charonDescribeObject(self.colorTemperatureMaximumMireds)];
+    [text appendFormat:@"optionsMask:%@; ", charonDescribeObject(self.optionsMask)];
+    [text appendFormat:@"optionsOverride:%@; ", charonDescribeObject(self.optionsOverride)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRUnitTestingClusterTestStructArrayArgumentRequestParams
 
 @synthesize arg1 = _arg1;
@@ -46,4 +59,33 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _arg1 = @[];
+    _arg2 = @[];
+    _arg3 = @[];
+    _arg4 = @[];
+    _arg5 = @0;
+    _arg6 = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"arg1:%@; ", charonDescribeObject(self.arg1)];
+    [text appendFormat:@"arg2:%@; ", charonDescribeObject(self.arg2)];
+    [text appendFormat:@"arg3:%@; ", charonDescribeObject(self.arg3)];
+    [text appendFormat:@"arg4:%@; ", charonDescribeObject(self.arg4)];
+    [text appendFormat:@"arg5:%@; ", charonDescribeObject(self.arg5)];
+    [text appendFormat:@"arg6:%@; ", charonDescribeObject(self.arg6)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

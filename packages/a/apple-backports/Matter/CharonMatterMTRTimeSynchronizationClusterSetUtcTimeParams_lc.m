@@ -40,4 +40,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _utcTime = @0;
+    _granularity = @0;
+    return self;
+}
+
 @end

@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRDeviceEnergyManagementClusterForecastStruct
 
 @synthesize forecastID = _forecastID;
@@ -48,4 +61,34 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _forecastID = @0;
+    _startTime = @0;
+    _endTime = @0;
+    _isPausable = @0;
+    _slots = @[];
+    _forecastUpdateReason = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"forecastID:%@; ", charonDescribeObject(self.forecastID)];
+    [text appendFormat:@"activeSlotNumber:%@; ", charonDescribeObject(self.activeSlotNumber)];
+    [text appendFormat:@"startTime:%@; ", charonDescribeObject(self.startTime)];
+    [text appendFormat:@"endTime:%@; ", charonDescribeObject(self.endTime)];
+    [text appendFormat:@"earliestStartTime:%@; ", charonDescribeObject(self.earliestStartTime)];
+    [text appendFormat:@"latestEndTime:%@; ", charonDescribeObject(self.latestEndTime)];
+    [text appendFormat:@"isPausable:%@; ", charonDescribeObject(self.isPausable)];
+    [text appendFormat:@"slots:%@; ", charonDescribeObject(self.slots)];
+    [text appendFormat:@"forecastUpdateReason:%@; ", charonDescribeObject(self.forecastUpdateReason)];
+    [text appendString:@">"];
+    return text;
+}
 @end

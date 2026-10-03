@@ -46,4 +46,21 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _a = @0;
+    _b = @0;
+    _c = @0;
+    _d = [NSData data];
+    _e = @"";
+    _f = @0;
+    _g = @0;
+    _h = @0;
+    return self;
+}
+
 @end

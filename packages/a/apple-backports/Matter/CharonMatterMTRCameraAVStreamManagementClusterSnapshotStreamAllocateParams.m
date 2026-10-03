@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRCameraAVStreamManagementClusterSnapshotStreamAllocateParams
 
 @synthesize imageCodec = _imageCodec;
@@ -48,4 +61,31 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _imageCodec = @0;
+    _maxFrameRate = @0;
+    _quality = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self.imageCodec)];
+    [text appendFormat:@"maxFrameRate:%@; ", charonDescribeObject(self.maxFrameRate)];
+    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self.minResolution)];
+    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self.maxResolution)];
+    [text appendFormat:@"quality:%@; ", charonDescribeObject(self.quality)];
+    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self.watermarkEnabled)];
+    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self.osdEnabled)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

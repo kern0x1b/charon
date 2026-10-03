@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTROTASoftwareUpdateProviderClusterQueryImageResponseParams
 
 @synthesize status = _status;
@@ -48,4 +61,29 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _status = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"status:%@; ", charonDescribeObject(self.status)];
+    [text appendFormat:@"delayedActionTime:%@; ", charonDescribeObject(self.delayedActionTime)];
+    [text appendFormat:@"imageURI:%@; ", charonDescribeObject(self.imageURI)];
+    [text appendFormat:@"softwareVersion:%@; ", charonDescribeObject(self.softwareVersion)];
+    [text appendFormat:@"softwareVersionString:%@; ", charonDescribeObject(self.softwareVersionString)];
+    [text appendFormat:@"updateToken:%@; ", charonDescribeObject(self.updateToken)];
+    [text appendFormat:@"userConsentNeeded:%@; ", charonDescribeObject(self.userConsentNeeded)];
+    [text appendFormat:@"metadataForRequestor:%@; ", charonDescribeObject(self.metadataForRequestor)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendString:@">"];
+    return text;
+}
 @end

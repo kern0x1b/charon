@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRJointFabricDatastoreClusterDatastoreGroupKeySetStruct
 
 @synthesize groupKeySetID = _groupKeySetID;
@@ -48,4 +61,31 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _groupKeySetID = @0;
+    _groupKeySecurityPolicy = @0;
+    _groupKeyMulticastPolicy = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"groupKeySetID:%@; ", charonDescribeObject(self.groupKeySetID)];
+    [text appendFormat:@"groupKeySecurityPolicy:%@; ", charonDescribeObject(self.groupKeySecurityPolicy)];
+    [text appendFormat:@"epochKey0:%@; ", charonDescribeObject(self.epochKey0)];
+    [text appendFormat:@"epochStartTime0:%@; ", charonDescribeObject(self.epochStartTime0)];
+    [text appendFormat:@"epochKey1:%@; ", charonDescribeObject(self.epochKey1)];
+    [text appendFormat:@"epochStartTime1:%@; ", charonDescribeObject(self.epochStartTime1)];
+    [text appendFormat:@"epochKey2:%@; ", charonDescribeObject(self.epochKey2)];
+    [text appendFormat:@"epochStartTime2:%@; ", charonDescribeObject(self.epochStartTime2)];
+    [text appendFormat:@"groupKeyMulticastPolicy:%@; ", charonDescribeObject(self.groupKeyMulticastPolicy)];
+    [text appendString:@">"];
+    return text;
+}
 @end

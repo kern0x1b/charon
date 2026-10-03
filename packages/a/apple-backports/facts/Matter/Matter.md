@@ -179,20 +179,29 @@ come from the runtime and from its driver - so the same source is the whole comp
     description  MTRGroupsClusterAddGroupParams  <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
 
 so a NONNULL object property is the zero value of its own type and a NULLABLE one is nil. That IS derivable
-from the header - the type and the nullability are in the declaration - and the derivation is written
-(`default_of()` in `tools/matter-generate.py`). **NOT LANDED**: the run that carries it is red on 4 objects,
-and the three fixes go in one commit because they touch one function.
+from the header - the type and the nullability are in the declaration - and the derivation is
+`default_of()` in `tools/matter-generate.py`. LANDED.
 
 **2. A deprecated alias is the same value as its successor.** Measured, both directions:
 
     alias  MTRGroupsClusterAddGroupParams  groupId   groupID   NSNumber(1001)
     alias  MTRGroupsClusterAddGroupParams  groupID   groupId   NSNumber(1001)
 
-240 alias pairs are named by the SDK's own deprecation text - `@property ... NSNumber *groupId
-MTR_DEPRECATED("Please use groupID", ...)` - and the pair is read out of that text, never from a list. **51 of
-the 240 name something the class does not declare**: `MTRControllerFactoryParams.storageDelegate` says "Please
-use the storage property", which is prose and not a member. Those need the successor measured per class; the
-generator names them rather than pairing them with a guess.
+88 alias pairs are named by the SDK's own deprecation text - `@property ... NSNumber *groupId
+MTR_DEPRECATED("Please use groupID", ...)` - and the pair is read out of that text, never from a list. The
+MEASURED pair is what decides, because the text does not always name a member: 82 were measured, and **49 of
+them disagree with the text**. `MTRControllerFactoryParams.storageDelegate` says "Please use the storage
+property", which is prose, and the host gives it storage of its own. LANDED: the probe finds the shared
+storage by setting the alias to a sentinel and reading every own member, so the name is a measurement and not
+a reading of the prose.
+
+An alias shares its successor's ivar only where the two are the SAME TYPE. The host shares the storage either
+way - `MTRReadParams`' `fabricFiltered` is an `NSNumber *` and `filterByFabric` is a `BOOL` - but two
+declarations of different types cannot be one ivar in C and the conversion between them is a value nobody has
+measured, so **6 aliases keep storage of their own** and the generator counts and names them:
+`MTRReadParams.fabricFiltered`, `MTRSubscribeParams.replaceExistingSubscriptions`,
+`MTRDeviceControllerStartupParams.fabricId`, `MTRControllerFactoryParams.storageDelegate`,
+`MTRControllerFactoryParams.startServer`, and one more.
 
 **3. `-description` is overridden, BUT NOT BY EVERY CLASS.** The format, where it is overridden, is measured:
 
@@ -202,11 +211,14 @@ generator names them rather than pairing them with a guess.
     description  MTRReadParams  <MTRReadParams: 0x1022a9a20>
 
 `<` + the class name + `: ` + `name:value; ` per property of the class's OWN @interface, in declaration
-order, + `>` - inherited properties are not in it, and the value is what `%@` prints. **The third line is the
-correction to the review's third point: `MTRReadParams` does NOT override it**, and that is NSObject's own
-`<Class: 0xADDRESS>`. So which classes override `-description` is a fact about the host's binary and not
-about the header, and the port cannot derive it. It needs a per-class measurement over the 923 - one probe
-run, then a list the generator reads - and that list does not exist yet.
+order, + `>` - inherited properties are not in it, and the value is what `%@` prints. **66 of the 918 classes the host has do NOT override it**, and that is NSObject's own `<Class: 0xADDRESS>`.
+So which classes override `-description` is a fact about the host's binary and not about the header. It is
+MEASURED: `tests/backports/host/matter/params-probe.m` reads `class_copyMethodList` on the class itself -
+`respondsToSelector:` answers YES for every class that inherits NSObject's - and the run's output is
+committed as `tests/backports/host/matter/host-measurements.tsv` with the host's own version
+(`Matter.framework 1.4.0.94`) and the date in its first line. `tools/matter-generate.py
+--host-measurements` reads it, and a class the host does not have is 5 of the 923: the port keeps the
+header's answer for those and says so, per class, in the object. LANDED.
 
 The copy the port writes is right: `copy  <class> <property> original-after-copy-write` and
 `copy-after-original-write` differ on the host in every fixture tried, and so do they in the port.

@@ -19,10 +19,18 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
-@interface MTRDoorLockClusterSetUserParams () {
-    NSNumber * _Nullable _charon_userUniqueId;
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
 }
-@end
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
 
 @implementation MTRDoorLockClusterSetUserParams
 
@@ -50,24 +58,47 @@
     copied->_credentialRule = self->_credentialRule;
     copied->_timedInvokeTimeoutMs = self->_timedInvokeTimeoutMs;
     copied->_serverSideProcessingTimeout = self->_serverSideProcessingTimeout;
-    copied->_charon_userUniqueId = self->_charon_userUniqueId;
     return copied;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _operationType = @0;
+    _userIndex = @0;
+    return self;
 }
 
 // The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
 // carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
-// are shaped so. Their accessors are written out over the storage of the port's own above,
-// because a category cannot hold an ivar and clang refuses @synthesize for one in either
-// place: `property declared in category 'Deprecated' cannot be implemented in class
-// implementation` and `@synthesize not allowed in a category's implementation`.
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
 - (NSNumber * _Nullable)userUniqueId
 {
-    return _charon_userUniqueId;
+    return _userUniqueID;
 }
 
 - (void)setUserUniqueId:(NSNumber * _Nullable)userUniqueId
 {
-    _charon_userUniqueId = userUniqueId;
+    _userUniqueID = [userUniqueId copy];
 }
 
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"operationType:%@; ", charonDescribeObject(self.operationType)];
+    [text appendFormat:@"userIndex:%@; ", charonDescribeObject(self.userIndex)];
+    [text appendFormat:@"userName:%@; ", charonDescribeObject(self.userName)];
+    [text appendFormat:@"userUniqueID:%@; ", charonDescribeObject(self.userUniqueID)];
+    [text appendFormat:@"userStatus:%@; ", charonDescribeObject(self.userStatus)];
+    [text appendFormat:@"userType:%@; ", charonDescribeObject(self.userType)];
+    [text appendFormat:@"credentialRule:%@; ", charonDescribeObject(self.credentialRule)];
+    [text appendFormat:@"timedInvokeTimeoutMs:%@; ", charonDescribeObject(self.timedInvokeTimeoutMs)];
+    [text appendFormat:@"serverSideProcessingTimeout:%@; ", charonDescribeObject(self.serverSideProcessingTimeout)];
+    [text appendString:@">"];
+    return text;
+}
 @end

@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRPushAVStreamTransportClusterTransportOptionsStruct
 
 @synthesize streamUsage = _streamUsage;
@@ -48,4 +61,32 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _streamUsage = @0;
+    _tlsEndpointID = @0;
+    _url = @"";
+    _ingestMethod = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"streamUsage:%@; ", charonDescribeObject(self.streamUsage)];
+    [text appendFormat:@"videoStreamID:%@; ", charonDescribeObject(self.videoStreamID)];
+    [text appendFormat:@"audioStreamID:%@; ", charonDescribeObject(self.audioStreamID)];
+    [text appendFormat:@"tlsEndpointID:%@; ", charonDescribeObject(self.tlsEndpointID)];
+    [text appendFormat:@"url:%@; ", charonDescribeObject(self.url)];
+    [text appendFormat:@"triggerOptions:%@; ", charonDescribeObject(self.triggerOptions)];
+    [text appendFormat:@"ingestMethod:%@; ", charonDescribeObject(self.ingestMethod)];
+    [text appendFormat:@"containerOptions:%@; ", charonDescribeObject(self.containerOptions)];
+    [text appendFormat:@"expiryTime:%@; ", charonDescribeObject(self.expiryTime)];
+    [text appendString:@">"];
+    return text;
+}
 @end

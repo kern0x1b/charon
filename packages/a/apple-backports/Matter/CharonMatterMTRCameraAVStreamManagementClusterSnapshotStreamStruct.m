@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRCameraAVStreamManagementClusterSnapshotStreamStruct
 
 @synthesize snapshotStreamID = _snapshotStreamID;
@@ -52,4 +65,37 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _snapshotStreamID = @0;
+    _imageCodec = @0;
+    _frameRate = @0;
+    _quality = @0;
+    _referenceCount = @0;
+    _encodedPixels = @0;
+    _hardwareEncoder = @0;
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"snapshotStreamID:%@; ", charonDescribeObject(self.snapshotStreamID)];
+    [text appendFormat:@"imageCodec:%@; ", charonDescribeObject(self.imageCodec)];
+    [text appendFormat:@"frameRate:%@; ", charonDescribeObject(self.frameRate)];
+    [text appendFormat:@"minResolution:%@; ", charonDescribeObject(self.minResolution)];
+    [text appendFormat:@"maxResolution:%@; ", charonDescribeObject(self.maxResolution)];
+    [text appendFormat:@"quality:%@; ", charonDescribeObject(self.quality)];
+    [text appendFormat:@"referenceCount:%@; ", charonDescribeObject(self.referenceCount)];
+    [text appendFormat:@"encodedPixels:%@; ", charonDescribeObject(self.encodedPixels)];
+    [text appendFormat:@"hardwareEncoder:%@; ", charonDescribeObject(self.hardwareEncoder)];
+    [text appendFormat:@"watermarkEnabled:%@; ", charonDescribeObject(self.watermarkEnabled)];
+    [text appendFormat:@"osdEnabled:%@; ", charonDescribeObject(self.osdEnabled)];
+    [text appendString:@">"];
+    return text;
+}
 @end

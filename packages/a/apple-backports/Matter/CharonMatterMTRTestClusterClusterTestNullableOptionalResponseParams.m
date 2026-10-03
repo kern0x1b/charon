@@ -40,4 +40,14 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _wasPresent = @0;
+    return self;
+}
+
 @end

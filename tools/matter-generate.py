@@ -129,6 +129,12 @@ PARAMS_MISSING = []
 EMITTED_FILES = {}
 FORWARDED = []
 CLUSTER_INTERFACES = []
+# A deprecated member whose successor the SDK's own text does not name as a member, or names with a different
+# type than the member has: counted and printed, not a failure. The host's measurement says whether the two
+# share storage, and where they cannot the port gives the alias its own and says which.
+SHARED_STORAGE_REFUSED = []
+# The plain data classes' buckets, kept so --cases can write the probe's driver from them in the same run.
+CASES = []
 # The plain data classes' @interface lines, for CharonMatterTypes.h: see payload_interface().
 PAYLOAD_INTERFACES = []
 HEADER_NOT_ALONE = []
@@ -859,6 +865,11 @@ def matter_headers(sdk):
 
 
 ANNOTATION_WORD = re.compile(r"^(?:MTR_|API_|NS_|CF_)[A-Z0-9_]+$")
+# The successor a deprecated declaration names, out of the annotation's own text: `@property (nonatomic, copy)
+# NSNumber * _Nonnull groupId MTR_DEPRECATED("Please use groupID", ios(16.1, 16.4), ...)`. Read out of the
+# header, so an alias pair is never a list here. The run MEASURES the pair against the host and the host's
+# answer wins - see host_measurements() - because 51 of the 240 deprecations name prose and not a member.
+DEPRECATED_FOR = re.compile(r'(?:MTR_|API_)DEPRECATED\(\s*"\s*(?:Please\s+)?[Uu]se\s+(\w+)')
 
 
 def payload_line(text):
@@ -1069,12 +1080,14 @@ def record_property(target, stripped):
                           "property", "a declaration whose type and name cannot be split", stripped))
         return
     getter = CUSTOM_GETTER.search(prop.group(1))
+    successor = DEPRECATED_FOR.search(prop.group(2))
     target.append({
         "type": kind,
         "name": declared,
         "attributes": prop.group(1),
         "getter": getter.group(1) if getter else None,
         "available": annotation,
+        "successor": successor.group(1) if successor else None,
         "raw": stripped})
 
 
@@ -1321,6 +1334,56 @@ def emit_paths(arguments, stem_of):
         written += 1
     return written
 
+def host_measurements(path):
+    """What the host framework answered, read out of a committed data file, keyed by class then member.
+
+    The file is the OUTPUT of tests/backports/host/matter/params-probe.m and nothing else: the host's own
+    method list, its own -description string, and which member an alias shares its storage with. It is
+    MEASURED, not derived - `ownDescription` comes from class_copyMethodList on the class itself, because
+    respondsToSelector: answers YES for every class that inherits NSObject's - and it is read here for the
+    same reason the header is: which classes override -description is a fact about the binary, not about a
+    declaration.
+
+    Keys are (class, member). `own_description` is None for a class the host does not have, which is what
+    (iii) of the probe records, and the caller then keeps the header-derived answer and says so.
+    """
+    found = {}
+    if not path or not os.path.exists(path):
+        return found
+    with open(path) as handle:
+        for line in handle:
+            if line.startswith("#") or not line.strip():
+                continue
+            fields = line.rstrip("\n").split("\t")
+            name = fields[1] if len(fields) > 1 else None
+            if not name:
+                continue
+            entry = found.setdefault(name, {"own_description": None, "present": None,
+                                            "description": None, "aliases": {}, "fresh": {}})
+            kind = fields[0]
+            if kind == "present":
+                entry["present"] = fields[3] == "present"
+            elif kind == "ownDescription":
+                entry["own_description"] = fields[3] == "yes"
+            elif kind == "description":
+                entry["description"] = fields[3]
+            elif kind == "fresh":
+                entry["fresh"][fields[2]] = fields[3] if len(fields) > 3 else None
+            elif kind == "alias":
+                # declared= is what the header's deprecation text says; measured= is what the host's storage
+                # says. The second wins wherever they differ, which is what settles the deprecations whose
+                # text is prose - "Please use the storage property" names no member and the host still
+                # shares one - and `own` means the host gives the alias storage of its own.
+                declared = measured = None
+                for field in fields[4:]:
+                    if field.startswith("declared="):
+                        declared = field.split("=", 1)[1]
+                    elif field.startswith("measured="):
+                        measured = field.split("=", 1)[1]
+                entry["aliases"][fields[2]] = {"declared": declared, "measured": measured}
+    return found
+
+
 def payload_buckets(name, info, older):
     """Which declaration each property of one plain data class belongs to: the class's own, or a category's.
 
@@ -1353,7 +1416,16 @@ def payload_buckets(name, info, older):
             prop["type"] = older_types[prop["name"]]
         return prop
 
-    own = [as_declared(prop) for prop in info["properties"]]
+    # The class's OWN members keep SDK 26.2's spelling, whatever the library's SDK said: the object
+    # synthesizes them against the declaration that is in scope, and for 317 of the classes the port's own
+    # class extension is that declaration - so rewriting the type here put a BOOL accessor over an NSNumber
+    # ivar and was `implicit conversion of 'BOOL' to 'NSNumber *' is disallowed with ARC` in three objects.
+    own = list(info["properties"])
+    # A CATEGORY member keeps the LIBRARY's SDK spelling, because the declaration in scope for it is the
+    # SDK's own category declaration and not the port's. Apple relaxed a nullability between the two -
+    # MTRDiagnosticLogsClusterRetrieveLogsResponseParams' `timeStamp` is _Nonnull in 16.4 and _Nullable in
+    # 26.2 - and an accessor written with 26.2's spelling is `nullability specifier '_Nullable' conflicts
+    # with existing specifier '_Nonnull'`.
     categories = {label: [as_declared(prop) for prop in props]
                   for label, props in info.get("categories", {}).items() if props}
     for prop in older.get("properties", []):
@@ -1365,17 +1437,25 @@ def payload_buckets(name, info, older):
             if prop["name"] not in declared:
                 categories.setdefault(label or "Extension", []).append(prop)
                 declared.add(prop["name"])
-    categories = {label: [as_declared(prop) for prop in props]
-                  for label, props in categories.items()}
     return own, categories
 
 
-def member_slot(prop):
-    """The ivar the port keeps one category-declared property in."""
+def member_slot(prop, measured=None):
+    """The ivar one property's accessors read and write.
+
+    A deprecated alias reads and writes the storage of the member that MEASURES as shared with it, which is
+    what the host does: `groupId=1001` then `groupID` reads 1001, and the other way round. The successor is
+    the host measurement when there is one and the header's own deprecation text otherwise; `own` from the
+    measurement means the host gives the alias storage of its own, and then so does the port.
+    """
+    if measured and measured.get(prop["name"]) and measured[prop["name"]] != "own":
+        return "_" + measured[prop["name"]]
+    if prop.get("successor"):
+        return "_" + prop["successor"]
     return "_charon_" + prop["name"]
 
 
-def member_accessors(prop):
+def member_accessors(prop, slots):
     """The getter and setter of one category-declared property, written out.
 
     A category cannot hold an ivar: clang answers `@synthesize not allowed in a category's implementation`
@@ -1388,9 +1468,10 @@ def member_accessors(prop):
     is, and a property with neither stores it under ARC.
     """
     kind = prop["type"]
-    slot = member_slot(prop)
+    slot = slots[prop["name"]]
     attributes = prop["attributes"]
-    if "copy" in attributes.split(",") or "strong" in attributes or "retain" in attributes:
+    words = [each.strip() for each in attributes.split(",")]
+    if "copy" in words or "strong" in words or "retain" in words:
         stored = "    %s = [%s copy];\n" % (slot, prop["name"])
     else:
         stored = "    %s = %s;\n" % (slot, prop["name"])
@@ -1400,27 +1481,189 @@ def member_accessors(prop):
             + "- (void)%s(%s)%s\n{\n%s}\n\n" % (setter, kind, prop["name"], stored))
 
 
-def emit_params(path, name, info, version, buckets, copying, counts):
-    """One object for one plain data class: the properties it declares, and a copy that is independent.
+# The value a fresh object holds for one member, or None to store nothing. A NONNULL object member is the zero
+# value of its own type and a NULLABLE one is nil, and both are in the declaration. Measured on the host by
+# tests/backports/host/matter/params-probe.m:
+#
+#     fresh  MTRGroupsClusterAddGroupParams  groupID               NSNumber(0)
+#     fresh  MTRGroupsClusterAddGroupParams  groupName             NSString()
+#     fresh  MTRGroupsClusterAddGroupParams  timedInvokeTimeoutMs  (nil)
+#     fresh  MTRTestClusterClusterSimpleStruct  a                  NSNumber(0)
+#     fresh  MTRTestClusterClusterSimpleStruct  d                  NSData(0)
+#     fresh  MTRAccessControlClusterAccessControlEntryStruct  privilege  NSNumber(0)
+ZEROS = (
+    ("NSNumber", "@0"),
+    ("NSString", '@""'),
+    ("NSMutableString", '@""'),
+    ("NSData", "[NSData data]"),
+    ("NSMutableData", "[NSMutableData data]"),
+    ("NSArray", "@[]"),
+    ("NSMutableArray", "[NSMutableArray array]"),
+    ("NSDictionary", "@{}"),
+    ("NSMutableDictionary", "[NSMutableDictionary dictionary]"),
+    ("NSSet", "[NSSet set]"),
+    ("NSMutableSet", "[NSMutableSet set]"),
+    ("NSOrderedSet", "[NSOrderedSet orderedSet]"),
+)
+SCALARS = ("BOOL", "NSInteger", "NSUInteger", "int", "unsigned", "long", "short", "double", "float",
+           "int32_t", "uint32_t", "int64_t", "uint64_t", "char", "NSUInteger")
+
+
+def bare_type(prop):
+    """The property's type with its nullability and its generic arguments taken off."""
+    spelling = prop["type"].split("<")[0]
+    for word in ("_Nonnull", "_Nullable"):
+        spelling = spelling.replace(word, "")
+    return spelling.strip()
+
+
+def nullable_of(prop):
+    """Whether the declaration says this member may be nil, in either spelling."""
+    if "_Nullable" in prop["type"]:
+        return True
+    return "nullable" in [each.strip() for each in prop["attributes"].split(",")]
+
+
+def default_of(prop):
+    """The value -init stores, or None to store nothing.
+
+    None is one of two right answers: a member the declaration says is nullable is left nil, which is what
+    the host holds, and a non-object member is left at zero by the allocator, which is also what the host
+    holds. A nonnull OBJECT member of a type this table has no zero for is the third case, and it is a gap:
+    the run names it rather than writing a value nobody measured.
+    """
+    if nullable_of(prop):
+        return None
+    spelling = bare_type(prop)
+    if not spelling.endswith("*"):
+        kind = spelling.split()[-1] if spelling.split() else ""
+        return "NO" if kind == "BOOL" else ("0" if kind in SCALARS else None)
+    base = spelling.replace("*", " ").split()[-1] if spelling.replace("*", " ").split() else ""
+    for spelled, zero in ZEROS:
+        if base == spelled:
+            return zero
+    return None
+
+
+def describe_body(name, properties, slots):
+    """The host's own -description, built from the class's own members in declaration order.
+
+    Measured by tests/backports/host/matter/params-probe.m:
+
+        <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
+        <MTRAccessControlClusterAccessControlEntryStruct: privilege:0; authMode:0; subjects:(null);
+         targets:(null); auxiliaryType:(null); fabricIndex:0; >
+
+    so the format is `<` + the class name + `: ` + `name:value; ` per member + `>`, the value is what the host
+    prints, and INHERITED members are not in it. A member's OWN type decides how it prints: `%@` for an
+    object pointer - `0` for the NSNumber zero, nothing at all for the empty NSString, `(null)` for nil -
+    and a member that is not an object pointer is formatted as its own type says. That is what makes
+    MTRReadParams' BOOL and MTRDeviceControllerStartupParams' uint64_t compile at all, and it is what the
+    host's own string for them is compared against.
+    """
+    body = ["- (NSString *)description\n{\n",
+            "    NSMutableString *text = [NSMutableString stringWithFormat:@\"<%@: \","
+            " NSStringFromClass([self class])];\n"]
+    for prop in properties:
+        reader = "self.%s" % (prop["getter"] or prop["name"])
+        spelling = bare_type(prop)
+        if spelling.endswith("*"):
+            value = "charonDescribeObject(%s)" % reader
+        elif spelling.split()[-1:] == ["BOOL"]:
+            value = "(%@ ? \"1\" : \"0\")" % reader
+        else:
+            value = "charonDescribeScalar(%s)" % reader
+        body.append("    [text appendFormat:@\"%s:%%@; \", %s];\n" % (prop["getter"] or prop["name"], value))
+    body.append("    [text appendString:@\">\"];\n    return text;\n}\n")
+    return "".join(body)
+
+
+# The value -description prints for one member, as a string: the member's own type decides. It is two C
+# functions and not a method because a method here would be API the framework does not have, and a file that
+# exports no API symbol of its own is where this repository puts such a function (see
+# packages/a/apple-backports/UIKit/UIViewController+DocumentMenu.m).
+def describe_helpers():
+    return """
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
+"""
+
+
+def emit_params(path, name, info, version, buckets, copying, counts, host=None):
+    """One object for one plain data class: its members, and a copy that is independent.
 
     The synthesis is WRITTEN OUT rather than left to the compiler, so the object's own property list is
     visible in the object file and `-Werror=objc-missing-property-synthesis` has nothing to catch. The copy
     walks the ivars by name, so a property added to the header and not to this list is caught by the
     invariant rather than silently not copied.
 
-    A CATEGORY'S property is synthesized in a category's own @implementation, which is why the object ends
-    with one `@implementation X (CharonDeprecated)` beside the class's own, and why the two are not merged.
+    `host` is what tests/backports/host/matter/params-probe.m measured on this Mac's Matter.framework, and
+    it decides two things the header cannot:
+
+    * WHICH classes override -description. `ownDescription` is read from the class's own method list, and a
+      class the host does not have is None - then the header's answer stands and the run says which.
+    * WHICH member a deprecated alias shares storage with. The host's answer wins over the header's
+      deprecation text, which is what settles the deprecations whose text is prose.
 
     `-copyWithZone:` is written only for a class that conforms to NSCopying, which 565 of the 923 do in their
     own protocol list and the rest inherit from a superclass that does. The 60 that do not are the event
     classes, and giving them a copy would be a method the framework does not have.
 
-    `-init` is NOT written: MTRDeviceControllerStartupParams.h marks it `NS_UNAVAILABLE`, and an
-    @implementation that defines an unavailable method is the compiler's own error. Every one of these
-    classes inherits NSObject's.
+    `-init` is NOT written for a class the SDK marks it NS_UNAVAILABLE on, because an @implementation that
+    defines an unavailable method is the compiler's own error. Every other class gets one, and it stores what
+    the host stores: a NONNULL object member is the zero value of its own type and a nullable one is nil.
     """
     own, categories = buckets
     members = [prop for label in sorted(categories) for prop in categories[label]]
+    alias = (host or {}).get("aliases") or {}
+    unplaced = []
+    # An alias shares the successor's ivar ONLY when the two are the same type. The host shares the storage
+    # either way - MTRReadParams' `fabricFiltered` is an NSNumber and `filterByFabric` is a BOOL, and setting
+    # one is visible through the other - but two declarations of different types cannot be one ivar in C, and
+    # a conversion between them is a value nobody here has measured. So the ones whose types agree share, and
+    # the ones whose types do not keep their own storage and are named by the run.
+    kinds = {prop["name"]: bare_type(prop) for prop in own + members}
+    for prop in own + members:
+        entry = alias.get(prop["name"])
+        if entry and entry["measured"] and entry["measured"] == "own":
+            # The host gives the alias storage of its own, and so does the port.
+            continue
+        shared = (entry["measured"].split(",")[0] if entry and entry["measured"] and entry["measured"] != "own"
+                  else prop.get("successor"))
+        if not shared:
+            continue
+        if shared in kinds and kinds[shared] == kinds[prop["name"]]:
+            prop["shares"] = shared
+            continue
+        unplaced.append((name, prop["name"], "%s is a %s and %s is a %s, so they cannot be one ivar; the"
+                         " port gives the alias its own and the host gives it %s"
+                         % (prop["name"], kinds[prop["name"]], shared, kinds.get(shared, "a member"),
+                            (entry["measured"] if entry else "no measurement"))))
+
+    # One slot per property, and one per SHARED value: an alias and the member it shares with are one ivar,
+    # which is what the host does and what the port must do.
+    # One slot per property, and ONE slot per shared value: an alias and the member the host shares its
+    # storage with are one ivar, which is what the host does. A category member has no @synthesize to give
+    # it an ivar, so its slot is declared in the object's own class extension below - and when the two types
+    # differ there is no shared ivar at all, and the alias keeps one of its own.
+    slots = {prop["name"]: "_" + prop["name"] for prop in own}
+    for prop in members:
+        slots[prop["name"]] = ("_" + prop["shares"] if prop.get("shares")
+                               else "_charon_" + prop["name"])
+    for prop in own + members:
+        if prop.get("shares") and prop["shares"] != prop["name"]:
+            slots[prop["name"]] = slots.get(prop["shares"], "_" + prop["shares"])
+
     body = [PARAMS_PREAMBLE.format(name=os.path.basename(path), params=name,
                                    introduced=version or "16.0",
                                    declared=counts["declared"], written=counts["written"],
@@ -1430,11 +1673,26 @@ def emit_params(path, name, info, version, buckets, copying, counts):
     def synthesis(prop):
         return "@synthesize %s = _%s;\n" % (prop["name"], prop["name"])
 
-    if members:
+    # Storage a category's accessors use and no @synthesize can declare: every slot of theirs that is not an
+    # ivar of the class's own @interface. Declared where the accessors use it, in the object's own class
+    # extension, which is where a cluster object already keeps its device, endpoint and queue.
+    own_names = {prop["name"] for prop in own}
+    extra = []
+    for prop in members:
+        slot = slots[prop["name"]]
+        if slot[1:] in own_names or slot[1:] in [each[1:] for each in extra]:
+            continue
+        extra.append((slot, prop["type"]))
+    if extra:
+        body.append("// Storage for the deprecated names the SDK declares in a CATEGORY of this class, and for\n"
+                    "// the members they share it with: a category cannot hold an ivar, so these are the port's\n"
+                    "// own, and they are here because the accessors below are what read and write them.\n")
         body.append("@interface %s () {\n" % name)
-        for prop in members:
-            body.append("    %s %s;\n" % (prop["type"], member_slot(prop)))
+        for slot, kind in extra:
+            body.append("    %s %s;\n" % (kind, slot))
         body.append("}\n@end\n\n")
+    if host and host.get("own_description"):
+        body.append(describe_helpers())
     body.append("@implementation %s\n\n" % name)
     seen = []
     for prop in own:
@@ -1443,30 +1701,47 @@ def emit_params(path, name, info, version, buckets, copying, counts):
             seen.append(prop["name"])
     if seen:
         body.append("\n")
-    every = [prop for prop in own if prop["name"] in seen]
     if copying:
+        every = list(own)
+        for prop in members:
+            if slots[prop["name"]] not in [slots[each["name"]] for each in every]:
+                every.append(prop)
         body.append("// NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never\n"
                     "// reaches back into the original.\n")
         body.append("- (id)copyWithZone:(NSZone *)zone\n{\n    %s *copied = [[%s allocWithZone:zone] init];\n"
                     % (name, name))
-        every.extend(prop for prop in members if prop["name"] not in seen)
-        slots = {prop["name"]: (member_slot(prop) if prop in members else "_" + prop["name"])
-                 for prop in every}
         for prop in every:
             body.append("    copied->%s = self->%s;\n" % (slots[prop["name"]], slots[prop["name"]]))
         if not every:
             body.append("    (void)zone;\n")
         body.append("    return copied;\n}\n\n")
-    else:
-        every.extend(prop for prop in members if prop["name"] not in seen)
+    if not info.get("init_unavailable") and not info.get("members_unavailable"):
+        body.append("- (instancetype)init\n{\n    self = [super init];\n    if (!self) {\n"
+                    "        return nil;\n    }\n")
+        for prop in own:
+            value = default_of(prop)
+            if value:
+                body.append("    %s = %s;\n" % (slots[prop["name"]], value))
+        body.append("    return self;\n}\n\n")
     if members:
-        body.append("// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams\n// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes\n// are shaped so. Their accessors are written out over the storage of the port's own above,\n// because a category cannot hold an ivar and clang refuses @synthesize for one in either\n// place: `property declared in category 'Deprecated' cannot be implemented in class\n// implementation` and `@synthesize not allowed in a category's implementation`.\n")
+        body.append("// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams\n"
+                    "// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes\n"
+                    "// are shaped so. Their accessors are written out over the storage above, because a category\n"
+                    "// cannot hold an ivar and clang refuses @synthesize for one in either place.\n")
         for prop in members:
-            body.append(member_accessors(prop))
+            body.append(member_accessors(prop, slots))
+    described = (host or {}).get("own_description")
+    if described is None:
+        body.append("// -description: the host does not have this class, so the header's answer stands and this\n"
+                    "// object does not override it. Named by the run, per class, from the host measurement.\n")
+    elif described:
+        body.append(describe_body(name, own, slots))
     body.append("@end\n")
+    for where, said, wanted in unplaced:
+        SHARED_STORAGE_REFUSED.append((where, said, wanted))
     with open(path, "w") as out:
         out.write("".join(body))
-    return len(every)
+    return len(own) + len(members)
 
 
 def category_label(label):
@@ -2193,6 +2468,13 @@ def main():
     parser.add_argument("--shared-types", action="store_true", help="emit CharonMatterTypes.h and one object per shared class")
     parser.add_argument("--sdk16", help="the SDK the LIBRARY builds against; types it does not declare get a forward declaration")
     parser.add_argument("--paths", action="store_true", help="also emit MTRClusterPath and the three that extend it")
+    parser.add_argument("--cases",
+                        help="write the probe's driver file here: one line per class and one per alias pair, "
+                             "read out of the same buckets this run emits from")
+    parser.add_argument("--host-measurements",
+                        help="the committed data file tests/backports/host/matter/params-probe.m wrote, and the "
+                             "generator's input for two things the header cannot say: which classes override "
+                             "-description, and which member a deprecated alias shares storage with")
     parser.add_argument("--params", action="store_true",
                         help="emit one object per plain data class the SDK's own Matter headers declare")
     parser.add_argument("--params-from", help="a file of plain data class names to emit instead of all of them")
@@ -2245,9 +2527,10 @@ def main():
     for stale in sorted(os.listdir(arguments.out)):
         if stale.endswith(".m"):
             os.remove(os.path.join(arguments.out, stale))
-    global NAMED, EMITTED, NAME_ERRORS, PORT_ONLY, PORT_OWNED_CLASS, PARAMS_MISSING, EMITTED_FILES, FORWARDED, CLUSTER_INTERFACES, HEADER_FORWARDS, COMPILE_FAILURES, HEADER_NOT_ALONE, PAYLOAD_INTERFACES
+    global NAMED, EMITTED, NAME_ERRORS, PORT_ONLY, PORT_OWNED_CLASS, PARAMS_MISSING, EMITTED_FILES, FORWARDED, CLUSTER_INTERFACES, HEADER_FORWARDS, COMPILE_FAILURES, HEADER_NOT_ALONE, PAYLOAD_INTERFACES, CASES
     NAMED = {}
     EMITTED = []
+    CASES = []
     NAME_ERRORS = []
     written = 0
     for cluster in arguments.classes:
@@ -2402,8 +2685,11 @@ def main():
                      "written": ("an extension of" if declaration and name in older
                                  else ("a declaration of" if declaration else "none")),
                      "total": len(wanted)}
-            properties += emit_params(path, name, info, None,
-                                      payload_buckets(name, info, older.get(name, {})), copying, counts)
+            buckets = payload_buckets(name, info, older.get(name, {}))
+            if arguments.cases is not None:
+                CASES.append((name, buckets))
+            properties += emit_params(path, name, info, None, buckets, copying, counts,
+                                      host_measurements(arguments.host_measurements).get(name))
             EMITTED_FILES[name] = os.path.basename(path)
             with open(os.path.join(contracts, stem + ".m.contract"), "w") as out:
                 out.write("%s\n" % name)
@@ -2416,6 +2702,16 @@ def main():
               " extension. For the other %d the port declares the class, its superclass and every property."
               % (own_by_16, extended_by_26, len(wanted) - own_by_16))
         print("  %d interface(s) added to CharonMatterTypes.h" % len(interfaces))
+        if arguments.cases is not None:
+            # The probe's driver, written from the buckets this run emits from, so the property list it
+            # measures is the port's own and not a list typed beside it.
+            with open(arguments.cases, "w") as out:
+                for each, (own, categories) in CASES:
+                    out.write("%s\town\n" % each)
+                    for prop in own + [q for label in sorted(categories) for q in categories[label]]:
+                        if prop.get("successor"):
+                            out.write("%s\t%s\t%s\talias\n" % (each, prop["name"], prop["successor"]))
+            print("probe driver written: %d class lines" % len(CASES))
         for name in missing[:8]:
             print("  not declared: %s" % name)
         if missing:
@@ -2476,6 +2772,12 @@ def main():
               " list, over %d cluster(s):" % (len(PORT_ONLY), len(set(c for c, _ in PORT_ONLY))))
         for name in sorted(shapes)[:12]:
             print("  %-58s %d cluster(s), first: %s" % (name[:58], len(shapes[name]), shapes[name][0]))
+    if SHARED_STORAGE_REFUSED:
+        print("")
+        print("deprecated members that do NOT share storage with their successor, and why: %d" % len(
+            SHARED_STORAGE_REFUSED))
+        for where, said, wanted in SHARED_STORAGE_REFUSED:
+            print("  %s.%s: %s" % (where, said, wanted))
     if NAME_ERRORS:
         print("")
         print("EMITTED FILE NAME ERRORS: %d pair(s) that differ only by case" % len(NAME_ERRORS))

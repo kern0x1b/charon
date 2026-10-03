@@ -24,4 +24,13 @@
 @synthesize timedWriteTimeout = _timedWriteTimeout;
 @synthesize dataVersion = _dataVersion;
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    return self;
+}
+
 @end

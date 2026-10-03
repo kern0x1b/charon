@@ -88,4 +88,25 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _nullableIntWasNull = @0;
+    _optionalIntWasPresent = @0;
+    _nullableOptionalIntWasPresent = @0;
+    _nullableStringWasNull = @0;
+    _optionalStringWasPresent = @0;
+    _nullableOptionalStringWasPresent = @0;
+    _nullableStructWasNull = @0;
+    _optionalStructWasPresent = @0;
+    _nullableOptionalStructWasPresent = @0;
+    _nullableListWasNull = @0;
+    _optionalListWasPresent = @0;
+    _nullableOptionalListWasPresent = @0;
+    return self;
+}
+
 @end

@@ -38,4 +38,15 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _softwareVersion = @0;
+    _bytesDownloaded = @0;
+    return self;
+}
+
 @end

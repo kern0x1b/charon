@@ -19,6 +19,19 @@
 #import <Matter/Matter.h>
 #import "CharonMatterTypes.h"
 
+
+// What -description prints for one member: %@ for an object pointer, and the member's own type's text for
+// anything else. The host's own string is the oracle; see tests/backports/host/matter/params-probe.m.
+static NSString *charonDescribeObject(id value)
+{
+    return value == nil ? @"(nil)" : [value description];
+}
+
+static NSString *charonDescribeScalar(long long value)
+{
+    return [@(value) stringValue];
+}
+
 @implementation MTRPushAVStreamTransportClusterCMAFContainerOptionsStruct
 
 @synthesize cmafInterface = _cmafInterface;
@@ -46,4 +59,32 @@
     return copied;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (!self) {
+        return nil;
+    }
+    _cmafInterface = @0;
+    _segmentDuration = @0;
+    _chunkDuration = @0;
+    _sessionGroup = @0;
+    _trackName = @"";
+    return self;
+}
+
+- (NSString *)description
+{
+    NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
+    [text appendFormat:@"cmafInterface:%@; ", charonDescribeObject(self.cmafInterface)];
+    [text appendFormat:@"segmentDuration:%@; ", charonDescribeObject(self.segmentDuration)];
+    [text appendFormat:@"chunkDuration:%@; ", charonDescribeObject(self.chunkDuration)];
+    [text appendFormat:@"sessionGroup:%@; ", charonDescribeObject(self.sessionGroup)];
+    [text appendFormat:@"trackName:%@; ", charonDescribeObject(self.trackName)];
+    [text appendFormat:@"cencKey:%@; ", charonDescribeObject(self.cencKey)];
+    [text appendFormat:@"cencKeyID:%@; ", charonDescribeObject(self.cencKeyID)];
+    [text appendFormat:@"metadataEnabled:%@; ", charonDescribeObject(self.metadataEnabled)];
+    [text appendString:@">"];
+    return text;
+}
 @end
