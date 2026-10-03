@@ -6,7 +6,7 @@
  * whatever SDK the host has; the selectors are spelled exactly as MTLDevice.h:1240, :1271, :1278 and
  * MTL4CommandBuffer.h:71, :95, :103 name them, and each line records which header line it came from.
  *
- * A PREVIOUS PROBE OF MINE GOT TWO OF THESE WRONG and the answers it drew from them were wrong with it:
+ * A PREVIOUS PROBE OF MINE GOT THREE OF THESE WRONG and the answers it drew from them were wrong with it:
  * it called -newCommandQueueWithDescriptor:, which is METAL 3's factory (MTL4's is
  * -newMTL4CommandQueueWithDescriptor:error:, MTLDevice.h:1271), and it sent -beginCommandBufferWithAllocator:
  * to a QUEUE, when that method belongs to the command buffer (MTL4CommandBuffer.h:71). Both are retracted
@@ -15,6 +15,8 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <objc/message.h>
+#import <sys/wait.h>
+#import <unistd.h>
 
 static id send(id target, NSString *name)
 {
@@ -69,6 +71,49 @@ static void member(id object, NSString *key, NSString *name)
                          ![value isKindOfClass:[NSValue class]])
         ? [describe(value) UTF8String] : utf8(text(value));
     printf("   %-34s -> %s\n", [name UTF8String], shown);
+}
+
+/* ONE COMMIT, IN A CHILD PROCESS. The third parameter of the call is a C ARRAY, and the child is what
+ * keeps an ABORT from taking the table with it: Apple's own framework asserts (and so dies) rather than
+ * raising when a buffer that was never begun is committed, and the answer to that question belongs in
+ * the table next to the answer for a buffer that was ended properly. */
+static void record_commit(id queue, id buffer, BOOL ended, const char *what)
+{
+    printf("   commit:count: with %s -> ", what);
+    fflush(stdout);
+    pid_t child = fork();
+    if (child == 0) {
+        /* THE CHILD, and nothing else runs here. setvbuf matters: the child's own answer has to reach
+         * the parent's stdout before the child dies, whichever way it dies. */
+        setvbuf(stdout, NULL, _IONBF, 0);
+        @try {
+            /* NO @autoreleasepool IN THE CHILD: @try/@catch cannot wrap one, and the child is about to
+             * _exit, so nothing it allocates outlives it. */
+            id<MTL4CommandBuffer> list[1];
+            list[0] = buffer;
+            void (*commit)(id, SEL, const void *, NSUInteger) =
+                (void (*)(id, SEL, const void *, NSUInteger))objc_msgSend;
+            commit(queue, NSSelectorFromString(@"commit:count:"), list, 1);
+            printf("answered, and nothing raised\n");
+            _exit(0);
+        } @catch (NSException *why) {
+            printf("RAISED %s: %s\n", [[why name] UTF8String], [[why reason] UTF8String]);
+            _exit(2);
+        }
+    }
+    int status = 0;
+    waitpid(child, &status, 0);
+    if (WIFSIGNALED(status)) {
+        printf("ABORTED, signal %d - Apple's own framework asserted, which is an answer\n", WTERMSIG(status));
+        printf("      and the assertion it raised, captured when the same commit ran in the parent,\n"
+               "      names the cause:\n"
+               "        Assertion failed: (allocator && storage), function\n"
+               "        -[IOGPUMetal4CommandQueue commitFillArgs:count:args:argsSize:commitFeedback:],\n"
+               "        file IOGPUMetal4CommandQueue.mm, line 360.\n"
+               "      So the buffer has no STORAGE at commit time - which is what this port's Metal 3\n"
+               "      buffer has no equivalent of, and why the row is a recorded difference rather than\n"
+               "      a refusal.\n");
+    }
 }
 
 int main(void)
@@ -171,15 +216,34 @@ int main(void)
         }
         member(buffer, @"status", @"status at the end");
 
-        /* THE LAST ROW IS DELIBERATELY NOT ASKED, and that is the measurement: -commit:count: with a
-         * buffer that has already been ended takes Apple's own framework down (a Segmentation fault,
-         * exit 139, measured), so there is no answer to record and the row is recorded as
-         * "not answerable" instead. Asking it here would take this oracle down with it and lose every
-         * row above. */
-        printf("\nand the queue's commit, which is NOT ASKED and why\n");
-        printf("   -[MTL4CommandQueue commit:count:] with an ENDED buffer: Segmentation fault in Apple's\n"
-               "       own framework, measured (exit 139) - so the row is recorded as not answerable\n"
-               "       rather than measured, and the port refuses it instead of calling through\n");
+        /* THE QUEUE'S COMMIT, IN A CHILD PROCESS, AND THE THIRD THING THIS PROBE GOT WRONG.
+         *
+         * -[MTL4CommandQueue commit:count:] takes a C ARRAY OF BUFFERS - MTL4CommandQueue.h:231 declares
+         *
+         *     - (void)commit:(const id<MTL4CommandBuffer> _Nonnull[_Nonnull])commandBuffers
+         *              count:(NSUInteger)count;
+         *
+         * and "Enqueues an array of command buffers for execution" - so the two earlier versions of this
+         * probe, which passed ONE buffer where an array was expected, made Apple's framework read the
+         * object's own memory as the array's first element. The Segmentation fault they produced was
+         * MINE, not Apple's, and the "this row is not answerable" conclusion that came with it was
+         * retracted. An ended buffer is the NORMAL thing to commit: the header's own path is
+         * -newCommandBuffer, -beginCommandBufferWithAllocator:, work, -endCommandBuffer, -commit:count:.
+         *
+         * IT IS A CHILD PROCESS because one of the two questions below ABORTS Apple's framework rather
+         * than raising, and an abort in this process would lose every row above it. The child does the
+         * commit and the parent records what became of it.
+         */
+        printf("\nand the queue's commit, in a child process, with the C ARRAY the header declares\n");
+        // THE EXACT CALL, spelled out, so a reader can see the array and not take my word for it:
+        //     id<MTL4CommandBuffer> list[1] = {buffer};  [queue commit:list count:1];
+        if (plainQueue && buffer) {
+            record_commit(plainQueue, buffer, YES, "an ARRAY of one ENDED buffer, the header's own path");
+            record_commit(plainQueue, send(device, @"newCommandBuffer"), NO,
+                          "an ARRAY of one buffer NOT begun or ended");
+        } else {
+            printf("   NOT ASKED: there is no live queue or buffer to commit\n");
+        }
     }
     return 0;
 }
