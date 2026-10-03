@@ -418,7 +418,23 @@ for key in \
     init.named99.name \
     init.remote.class \
     init.reset.class \
-    init.destination.made.zoomAfterSet
+    init.destination.made.zoomAfterSet \
+    initdest.nilpage \
+    initgoto.class \
+    initnamed.class \
+    initremote.class \
+    initremote.point.x \
+    copy.destination.same \
+    copy.destination.page.same \
+    copy.destination.zoomAfterSet \
+    copy.destination.zoomOriginal \
+    copy.nopage \
+    copy.goto.destination.same \
+    copy.goto.destination.page.same \
+    copy.named.nameAfterSet \
+    copy.remote.pageIndex \
+    copy.reset.fields.same \
+    copy.action.class
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

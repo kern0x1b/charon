@@ -53,8 +53,21 @@ static CGFloat charonDestinationNumber(CGPDFArrayRef destination, size_t index)
 // asked about PDFBorder and answered by measurement.  What the host answers is measured: the page is
 // kept, the point is the one it was given, and the ZOOM is unspecified - so a destination made in code
 // has no scale until one is set.
+// -initWithPage:atPoint: is the header's own designated initializer (PDFDestination.h:22) and it is
+// implemented because without it the class cannot be built at all, which is the question the coordinator
+// asked about PDFBorder and answered by measurement.  What the host answers is measured: the page is
+// kept, the point is the one it was given, and the ZOOM is unspecified - so a destination made in code
+// has no scale until one is set.
+//
+// AND a NIL PAGE ANSWERS NO OBJECT AT ALL.  That was found by the harness rather than asked for: written
+// against a nil page first, [[PDFDestination alloc] initWithPage:nil atPoint:(3,4)] answers nil on the
+// host, so every read off it answers nil or zero and [made copy] answers nil too - which is what the
+// copy block reported before it was given a real page, and the reason this rule is in the file at all.
+// The SDK does not say why; what is measured is that a caller who passes no page gets nothing back.
 - (instancetype)initWithPage:(PDFPage *)page atPoint:(CGPoint)point
 {
+    if (page == nil)
+        return nil;
     self = [super init];
     if (self == nil)
         return nil;
@@ -64,13 +77,35 @@ static CGFloat charonDestinationNumber(CGPDFArrayRef destination, size_t index)
     return self;
 }
 
-// -init is not a designated initializer in the header, and the host's own plain -init answers a
-// destination with no page, an unspecified point and an unspecified zoom - so that is what this reaches,
-// through the designated initializer with nothing.
+// -init is not a designated initializer in the header, and the host's own plain -init answers an OBJECT
+// with no page, an unspecified point and an unspecified zoom - so it cannot be reached through
+// -initWithPage:atPoint:, which answers nil for a nil page, and sets the members itself.
 - (instancetype)init
 {
-    return [self initWithPage:nil atPoint:CGPointMake(kPDFDestinationUnspecifiedValue,
-                                                     kPDFDestinationUnspecifiedValue)];
+    self = [super init];
+    if (self == nil)
+        return nil;
+    _point = CGPointMake(kPDFDestinationUnspecifiedValue, kPDFDestinationUnspecifiedValue);
+    _zoom = kPDFDestinationUnspecifiedValue;
+    return self;
+}
+
+// -copyWithZone: is the NSCopying conformance CharonPDFKit.h declares.  Measured: the copy is a NEW
+// object of the same class, its PAGE IS THE SAME OBJECT - a destination names a page and does not own it,
+// and the page is weak here exactly as PDFDestination.h:19 declares - and its state is independent, so a
+// zoom set on the copy leaves the original alone.  The initializer is the header's own, so the copy is
+// built through it and the zoom is then set; nothing else needs copying.
+- (id)copyWithZone:(NSZone *)zone
+{
+    // NOT through -initWithPage:atPoint:, which answers nil for a nil page: a destination with no page
+    // is a real object here - a named destination and a plain -init both make one - and it has to be
+    // copyable.  Whether the host's copy of such a destination answers an object or nil is measured, in
+    // the harness's own copy.nopage.* keys, rather than assumed.
+    PDFDestination *copy = [[[self class] alloc] init];
+    copy->_page = _page;
+    copy->_point = _point;
+    copy->_zoom = _zoom;
+    return copy;
 }
 
 // The same reader over the destination ARRAY itself, which is what an action's /D holds under a key and

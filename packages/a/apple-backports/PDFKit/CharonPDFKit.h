@@ -292,6 +292,13 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 };
 
 @interface PDFDestination : NSObject <NSCopying>
+// -init, marked DESIGNATED here and not in the SDK's header, for the reason the four action subclasses'
+// -init below is: the host answers [[PDFDestination alloc] init] with an OBJECT - no page, an
+// unspecified point and an unspecified zoom - so a caller of this port must be able to write that, and a
+// class that declares a designated initializer of its own otherwise treats -init as a convenience
+// initializer and clang rejects one that calls [super init].
+// -initWithPage:atPoint: answers NO OBJECT for a nil page - measured - so the two are separate.
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithPage:(nullable PDFPage *)page atPoint:(CGPoint)point NS_DESIGNATED_INITIALIZER;
 @property (nonatomic, weak, readonly, nullable) PDFPage *page;
 @property (nonatomic, readonly) CGPoint point;
@@ -328,6 +335,14 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 @end
 
 @interface PDFActionGoTo : PDFAction <NSCopying>
+// NSObject's -init, marked DESIGNATED here and not in the SDK's header, because the host answers
+// [[X alloc] init] with an object of this class and a caller of this port must be able to write
+// that without a warning.  It answers a nil -type and this class's own default members -
+// measured - because a type name belongs to a dictionary the object was not built from.  The
+// mark is also what lets it call [super init]: without it a class that declares a designated
+// initializer of its own treats -init as a convenience initializer, and clang rejects a
+// convenience initializer that calls super (-Wobjc-designated-initializers).
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithDestination:(nullable PDFDestination *)destination NS_DESIGNATED_INITIALIZER;
 @property (nonatomic, strong, nullable) PDFDestination *destination;
 @end
@@ -338,6 +353,14 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 @end
 
 @interface PDFActionNamed : PDFAction <NSCopying>
+// NSObject's -init, marked DESIGNATED here and not in the SDK's header, because the host answers
+// [[X alloc] init] with an object of this class and a caller of this port must be able to write
+// that without a warning.  It answers a nil -type and this class's own default members -
+// measured - because a type name belongs to a dictionary the object was not built from.  The
+// mark is also what lets it call [super init]: without it a class that declares a designated
+// initializer of its own treats -init as a convenience initializer, and clang rejects a
+// convenience initializer that calls super (-Wobjc-designated-initializers).
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithName:(PDFActionNamedName)name NS_DESIGNATED_INITIALIZER;
 @property (nonatomic) PDFActionNamedName name;
 @end
@@ -347,6 +370,14 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 @end
 
 @interface PDFActionURL : PDFAction <NSCopying>
+// NSObject's -init, marked DESIGNATED here and not in the SDK's header, because the host answers
+// [[X alloc] init] with an object of this class and a caller of this port must be able to write
+// that without a warning.  It answers a nil -type and this class's own default members -
+// measured - because a type name belongs to a dictionary the object was not built from.  The
+// mark is also what lets it call [super init]: without it a class that declares a designated
+// initializer of its own treats -init as a convenience initializer, and clang rejects a
+// convenience initializer that calls super (-Wobjc-designated-initializers).
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithURL:(nullable NSURL *)url NS_DESIGNATED_INITIALIZER;
 @property (nonatomic, copy, nullable) NSURL *URL;
 @end
@@ -356,6 +387,14 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 @end
 
 @interface PDFActionRemoteGoTo : PDFAction <NSCopying>
+// NSObject's -init, marked DESIGNATED here and not in the SDK's header, because the host answers
+// [[X alloc] init] with an object of this class and a caller of this port must be able to write
+// that without a warning.  It answers a nil -type and this class's own default members -
+// measured - because a type name belongs to a dictionary the object was not built from.  The
+// mark is also what lets it call [super init]: without it a class that declares a designated
+// initializer of its own treats -init as a convenience initializer, and clang rejects a
+// convenience initializer that calls super (-Wobjc-designated-initializers).
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 - (instancetype)initWithPageIndex:(NSUInteger)pageIndex
                          atPoint:(CGPoint)point
                          fileURL:(nullable NSURL *)url NS_DESIGNATED_INITIALIZER;
