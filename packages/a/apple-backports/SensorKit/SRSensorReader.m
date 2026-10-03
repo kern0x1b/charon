@@ -35,6 +35,13 @@
 NSErrorDomain SRErrorDomain = @"SRErrorDomain";
 
 @implementation SRSensorReader
+// The header closes both (SRSensorReader.h:1662 and :1663, immediately after -initWithSensor: at
+// :1660) and the framework's own class is what decides what that means at run time: it implements
+// both, and both raise NSInternalInconsistencyException whose reason names the door that is open -
+// "Use initWithSensor:", measured on the host's own SensorKit over this class and the seventeen other
+// value classes of this framework (tests/backports/host/sensorkit-value). This row was absent for want
+// of that body; it is one line, and it is owed.
+CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@"Use initWithSensor:")
 
 - (instancetype)initWithSensor:(SRSensor)sensor
 {
