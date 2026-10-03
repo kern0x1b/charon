@@ -6,6 +6,11 @@ decompression session API on the armv7 cache ladder since 3.1.3. It carries none
 seventeen frame-processor classes, which SDK 26.2 marks `API_AVAILABLE(ios(26.0))` and which
 the 6.1.3 cache ladder does not export at any release.
 
+The measurement behind that, repeated rather than assumed: `objc-inventory.lua` and `dump-cache.lua`
+over `$HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7` find no `VTFrameProcessor` class and no
+`VTFrameProcessor*` symbol, and `tools/corpus/cache-index` gives the same zero on 4.3. The port's own
+`VTFrameProcessor.m` says so at the head of the file, with the same commands.
+
 ## What the port does with a class the release does not have
 
 Each class is a value object: an initialiser puts its arguments in a keyed store under the
@@ -15,55 +20,180 @@ type rather than to an instance. A `CVPixelBufferRef` is kept in an ivar and ret
 the SDK declares `@property(nonatomic, readonly) CVPixelBufferRef buffer;` with no ownership
 annotation. A `CMTime` or `CMVideoDimensions` is an `NSValue` box.
 
+## The one class property that is an answer and not a store read
+
+`+isSupported` on each of the seven configuration classes answers `NO`, and it is written as a
+literal `return NO` rather than as a read of the class store, because nothing ever writes that key:
+a store nothing writes would be `NO` by accident instead of by measurement. The measurement is in
+the source at each of the seven. SDK 26.2 documents the property as "whether the SYSTEM SUPPORTS
+this processor", the effects are motion estimation, frame interpolation, super resolution and
+temporal noise filtering, and no armv7 device has the hardware they need.
+
+`+supportedScaleFactors` and `+[VTLowLatencySuperResolutionScalerConfiguration
+supportedScaleFactorsForFrameWidth:frameHeight:]` answer the empty array, which is what the header
+asks for in so many words: "or an empty list if the processor doesn't support the dimensions".
+
+## What the host can and cannot be the oracle for
+
+The host is an M4 Pro, so it HAS the Neural Engine these processors need. Measured
+2026-10-03 with `tests/backports/host/videotoolbox-frameprocessor`:
+
+| question | host | this release |
+| --- | --- | --- |
+| `+[VTMotionBlurConfiguration isSupported]` | **1** | NO, and the release measurement above is why |
+| `+[VTFrameProcessorFrame new]`, `-init` | both answer, and `frameWidth` reads 0 | the same, from NSObject |
+| `VTFrameProcessorErrorDomain` | `"VTFrameProcessorErrorDomain"` | the same string, measured from the host by `dlsym` |
+
+So the host is the oracle for the SHAPE of the family - which selectors exist, what `NS_UNAVAILABLE`
+does at run time, what the domain string is - and it is NOT the oracle for the `supported` value,
+which is why that one is measured on the release instead. That distinction is the reason the two
+halves of the check exist separately.
+
 ## What is NOT carried, and why
 
 `processorSupported` is declared on three of the classes and the SDK marks it
-`API_UNAVAILABLE(ios)`, so it is not iOS surface and carrying it would collide with the host's
-own header on the armv7 build. It is absent, and the registry says so where a reader will look
-for it rather than leaving the gap to be rediscovered.
+`API_DEPCRECATED_WITH_REPLACEMENT("isSupported") API_UNAVAILABLE(ios)`, so it is not iOS surface
+and carrying it would collide with the host's own header on the armv7 build. All three are
+recorded `absent` in `registry/VideoToolbox/ios26.json` with the declaration's own availability as
+the source, which is where a reader looks for it rather than leaving the gap to be rediscovered.
 
-## The nine VTFrameProcessor methods this series does not carry
+`-init` and `+new` on the sixteen classes that declare `- (instancetype) init NS_UNAVAILABLE;` are
+also recorded `absent`, one row each, for the same measured reason: the port declares no initialiser
+of its own there, so the class inherits NSObject's, and a program that sends it anyway gets an object
+with nothing in it - which is what the host does too, and is the case the annotation exists to warn
+about. `VTFrameProcessor` is the seventeenth and the exception: SDK 26.2 declares its `-init`
+without the annotation, so the port carries it, and `[VTFrameProcessor new]` reaches it.
 
-`startSessionWithConfiguration:error:`, the four `processWith…` variants, `endSession`,
-`+supportedScaleFactorsForFrameWidth:frameHeight:` and
-`downloadConfigurationModelWithCompletionHandler:` need a device with a Neural Engine, which no
-armv7 release has. They are recorded absent with the reason, and the one that cannot report
-failure at all - `processWithCommandBuffer:parameters:` - is in `coordination/crutches.md`,
-because it is undetectable by the header's own design.
+## The nine VTFrameProcessor methods, and what each answers
+
+All nine are carried now, each answering what SDK 26.2 documents for a device that does not have
+the hardware, which is the port's contract for hardware it cannot have:
+
+| member | answer |
+| --- | --- |
+| `-init` | `[super init]` - SDK 26.2 declares it and does not mark it unavailable |
+| `-startSessionWithConfiguration:error:` | NO with `VTFrameProcessorInitializationFailed`, or `VTFrameProcessorInvalidParameterError` for a nil configuration |
+| `-processWithParameters:error:` | NO with `VTFrameProcessorSessionNotStarted`, or `VTFrameProcessorInvalidParameterError` for nil parameters |
+| `-processWithParameters:completionHandler:` | the completion RUNS once, with the parameters and that same error |
+| `-processWithParameters:frameOutputHandler:` | the handler runs once with `kCMTimeInvalid`, `YES` and that same error |
+| `-processWithCommandBuffer:parameters:` | nothing added to the buffer, nothing reported - see below |
+| `-endSession` | a no-op, because no session was ever started |
+| `+supportedScaleFactorsForFrameWidth:frameHeight:` | the empty array |
+| `-downloadConfigurationModelWithCompletionHandler:` | the completion runs once with `VTFrameProcessorAssetDownloadFailed`, and no request is made |
+
+Both block-taking methods RUN their block. That is not politeness: SDK 26.2 says of the first one
+that "This completion handler is called when frame processing is completed", and a completion that
+never runs is a hang a caller cannot diagnose.
+
+`-processWithCommandBuffer:parameters:` is the one member with no error channel, and that is
+Apple's design rather than the port's choice: the method returns `void`, takes no `NSError`, and
+SDK 26.2 says only "Performs effects in a Metal command buffer". It is written up in
+`coordination/crutches.md`; the port does not invent a channel to report through.
 
 ## The members per class
 
 ### VTFrameProcessor
 
+`-init`, `-startSessionWithConfiguration:error:`, `-processWithParameters:error:`,
+`-processWithParameters:completionHandler:`, `-processWithParameters:frameOutputHandler:`,
+`-processWithCommandBuffer:parameters:`, `-endSession` - the nine above. Nothing else: the class body
+in `VTFrameProcessor.h` is seven methods and no properties.
+
 ### VTFrameProcessorFrame
+
+`-initWithBuffer:presentationTimeStamp:` builds it; `-buffer` and `-presentationTimeStamp` read it
+back. `-init` and `+new` are `absent` (NS_UNAVAILABLE).
 
 ### VTFrameProcessorOpticalFlow
 
+`-initWithForwardFlow:backwardFlow:` builds it; `-forwardFlow` and `-backwardFlow` read it back.
+`-init` and `+new` are `absent` (NS_UNAVAILABLE).
+
 ### VTFrameRateConversionConfiguration
+
+`-initWithFrameWidth:frameHeight:usePrecomputedFlow:qualityPrioritization:revision:` builds it.
+`+isSupported`, `+maximumDimensions`, `+minimumDimensions` and the five protocol instance
+properties are the class store's; `+defaultRevision` and `+supportedRevisions` are the class's own.
+`-init`, `+new` and `processorSupported` are `absent`.
 
 ### VTFrameRateConversionParameters
 
+`-initWithSourceFrame:nextFrame:opticalFlow:interpolationPhase:submissionMode:destinationFrames:`
+builds it. `-sourceFrame`, `-destinationFrame` and `-destinationFrames` come from the
+`VTFrameProcessorParameters` protocol; `-nextFrame`, `-opticalFlow`, `-interpolationPhase` and
+`-submissionMode` are its own. `-init` and `+new` are `absent`.
+
 ### VTLowLatencyFrameInterpolationConfiguration
+
+Three initialisers in SDK 26.2 (`frameHeight:numberOfInterpolatedFrames:`,
+`frameHeight:spatialScaleFactor:`, and the two-argument one at line 57 of its header). `+isSupported`
+answers NO; `-numberOfInterpolatedFrames` and `-spatialScaleFactor` are its own. `-init`, `+new` and
+`processorSupported` are `absent`.
 
 ### VTLowLatencyFrameInterpolationParameters
 
+`-initWithSourceFrame:previousFrame:interpolationPhase:destinationFrames:` builds it;
+`-previousFrame` and `-interpolationPhase` are its own. `-init` and `+new` are `absent`.
+
 ### VTLowLatencySuperResolutionScalerConfiguration
+
+`-initWithFrameWidth:frameHeight:scaleFactor:` builds it. `+isSupported` answers NO,
+`+supportedScaleFactorsForFrameWidth:frameHeight:` answers the empty array. `-init` and `+new` are
+`absent`.
 
 ### VTLowLatencySuperResolutionScalerParameters
 
+`-initWithSourceFrame:destinationFrame:` builds it. `-init` and `+new` are `absent`.
+
 ### VTMotionBlurConfiguration
+
+Two initialisers, the five-argument one and the six-argument one that adds `revision:`.
+`+isSupported` answers NO. `-init`, `+new` and `processorSupported` are `absent`.
 
 ### VTMotionBlurParameters
 
+`-initWithSourceFrame:interpolationPhase:submissionMode:destinationFrame:` builds it. `-init` and
+`+new` are `absent`.
+
 ### VTOpticalFlowConfiguration
+
+`-initWithFrameWidth:frameHeight:qualityPrioritization:revision:` builds it. `+isSupported` answers
+NO. `-init`, `+new` and `processorSupported` are `absent`.
 
 ### VTOpticalFlowParameters
 
+`-initWithSourceFrame:nextFrame:opticalFlow:submissionMode:destinationOpticalFlow:` builds it.
+`-init` and `+new` are `absent`.
+
 ### VTSuperResolutionScalerConfiguration
+
+`-initWithFrameWidth:frameHeight:scaleFactor:inputType:usePrecomputedFlow:qualityPrioritization:revision:`
+builds it. `+isSupported` answers NO, `+supportedScaleFactors` and
+`+supportedScaleFactorsForFrameWidth:frameHeight:`'s sibling answer empty, and
+`-downloadConfigurationModelWithCompletionHandler:` completes with
+`VTFrameProcessorAssetDownloadFailed`. `-usesPrecomputedFlow` is `precomputedFlow`'s getter, as the
+SDK's own `getter=usesPrecomputedFlow` writes it. `-init` and `+new` are `absent`.
 
 ### VTSuperResolutionScalerParameters
 
+`-initWithSourceFrame:nextFrame:opticalFlow:submissionMode:destinationFrame:` builds it. `-init` and
+`+new` are `absent`.
+
 ### VTTemporalNoiseFilterConfiguration
+
+`-initWithFrameWidth:frameHeight:sourcePixelFormat:` builds it. `+isSupported` answers NO.
+`+supportedSourcePixelFormats` is its own. `-init` and `+new` are `absent`.
 
 ### VTTemporalNoiseFilterParameters
 
+`-initWithSourceFrame:destinationFrames:` builds it. `-init` and `+new` are `absent`.
+
+## A renamed getter, and what the ledger reads
+
+Seven of the properties are declared `@property (class, nonatomic, readonly, getter=isSupported)
+BOOL supported;` and one is `getter=usesPrecomputedFlow`, so the selectors a class must carry are
+`+isSupported` and `-usesPrecomputedFlow` - not `+supported` and not `-precomputedFlow`. The port
+carries exactly the accessors the SDK's own attributes name, and no second accessor is added to
+satisfy a spelling: `api-ledger.py`'s `classify_property` builds its getter as `-` + the property
+name and does not read `getter=`, so it reports these rows `missing` on a port that carries them. That
+is a defect in the measurement, reported to the coordinator and not worked around here.

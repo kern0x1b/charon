@@ -40,6 +40,37 @@ NS_ASSUME_NONNULL_BEGIN
 // instead of reaching for the runtime and a string - a class it can name should be called by name.
 #if !defined(CHARON_HOST_DIFFERENTIAL) || defined(CHARON_VT_DECLARE_FOR_CASE)
 
+// The one protocol of another framework this header names. `-processWithCommandBuffer:parameters:`
+// takes an `id<MTLCommandBuffer>` because that is what SDK 26.2's VTFrameProcessor.h writes, and the
+// header that declares it (Metal) is a framework this library does not link: the port never sends a
+// message to the buffer, so it needs the name and not the interface. A forward declaration is the
+// same arrangement CharonMediaPlayerProtocols.h and CharonWebExtension.h use for the same reason.
+@protocol MTLCommandBuffer;
+
+// The error domain VTFrameProcessor.h and VTFrameProcessorErrors.h of SDK 26.2 declare, and the codes
+// the second of them enumerates, transcribed with Apple's own values: a caller compares a code against
+// these names, so they are part of the surface the port carries and not an implementation detail. The
+// domain's string is NOT the header's to spell - it is measured from the host's own VideoToolbox by
+// dlsym and recorded in facts/VideoToolbox/FrameProcessorErrors.md.
+extern NSErrorDomain _Nonnull const VTFrameProcessorErrorDomain;
+
+typedef NS_ENUM(NSInteger, VTFrameProcessorError) {
+    VTFrameProcessorUnknownError = -19730,
+    VTFrameProcessorUnsupportedResolution = -19731,
+    VTFrameProcessorSessionNotStarted = -19732,
+    VTFrameProcessorSessionAlreadyActive = -19733,
+    VTFrameProcessorFatalError = -19734,
+    VTFrameProcessorSessionLevelError = -19735,
+    VTFrameProcessorInitializationFailed = -19736,
+    VTFrameProcessorUnsupportedInput = -19737,
+    VTFrameProcessorMemoryAllocationFailure = -19738,
+    VTFrameProcessorRevisionNotSupported = -19739,
+    VTFrameProcessorProcessingError = -19740,
+    VTFrameProcessorInvalidParameterError = -19741,
+    VTFrameProcessorInvalidFrameTiming = -19742,
+    VTFrameProcessorAssetDownloadFailed = -19743,
+};
+
 @class VTFrameProcessor;
 @class VTFrameProcessorFrame;
 @class VTFrameProcessorOpticalFlow;
@@ -330,6 +361,24 @@ typedef NS_ENUM(NSInteger, VTSuperResolutionScalerParametersSubmissionMode) {
 
 @interface VTFrameProcessor : NSObject
 
+- (instancetype)init;
+
+- (BOOL)startSessionWithConfiguration:(id<VTFrameProcessorConfiguration>)configuration
+                                 error:(NSError * _Nullable * _Nullable)error;
+
+- (BOOL)processWithParameters:(id<VTFrameProcessorParameters>)parameters
+                        error:(NSError * _Nullable * _Nullable)error;
+
+- (void)processWithParameters:(id<VTFrameProcessorParameters>)parameters
+            completionHandler:(void (^)(id<VTFrameProcessorParameters>, NSError * _Nullable))completionHandler;
+
+- (void)processWithParameters:(id<VTFrameProcessorParameters>)parameters
+           frameOutputHandler:(void (^)(id<VTFrameProcessorParameters>, CMTime, BOOL, NSError * _Nullable))frameOutputHandler;
+
+- (void)processWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer
+                       parameters:(id<VTFrameProcessorParameters>)parameters;
+
+- (void)endSession;
 
 @end
 
