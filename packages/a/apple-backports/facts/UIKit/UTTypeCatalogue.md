@@ -50,8 +50,9 @@ a `const` object needs its initializer at its definition, so they carry theirs t
 
 ## One object per release band
 
-`UTTypeCatalogue14.m`, `UTTypeCatalogue15.m`, `UTTypeCatalogue17.m` and `UTTypeCatalogue18.m` hold the
-119, 1, 1 and 8 constants whose availability the corpus places in their band. An object holds the API
+`UTTypeCatalogue14.m`, `UTTypeCatalogue15.m`, `UTTypeCatalogue17.m`, `UTTypeCatalogue18.m` and
+`UTTypeCatalogue182.m` hold the 119, 1, 1, 7 and 1 constants whose availability the corpus places in their
+band (UTTypeJPEGXL is 18.2, and the gate refused it beside the seven of 18.0). An object holds the API
 of exactly one release, which is what `release-split` and `check_releases` read off an object's own
 symbols, so a file holding 14.0 and 17.0 constants would be one band carrying two releases' API.
 

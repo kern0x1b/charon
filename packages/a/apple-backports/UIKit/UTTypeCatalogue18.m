@@ -1,7 +1,7 @@
 #import "CharonUTType.h"
 
-// UniformTypeIdentifiers' system type catalogue, iOS 18: the 8 constants of SDK 26.2's
-// UTCoreTypes.h whose availability the corpus places in this band, out of the 18.0, 18.2 the file declares.
+// UniformTypeIdentifiers' system type catalogue, iOS 18.0: the 7 constants of SDK 26.2's
+// UTCoreTypes.h whose availability the corpus places at 18.0. UTTypeJPEGXL (18.2) is in UTTypeCatalogue182.m.
 // Every identifier below is the `UTI:` line of that constant's own doc comment in
 // System/Library/Frameworks/UniformTypeIdentifiers.framework/Headers/UTCoreTypes.h of
 // charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk -- transcribed one row per constant, nothing recalled
@@ -11,7 +11,7 @@
 // re-measured on every run of tests/backports/host/uttypeconstants, which reads the value out of the
 // host rather than out of this file). facts/UIKit/UTTypeCatalogue.md carries the whole table.
 //
-// One release per object file: this object holds the 18.0, 18.2 catalogue only, and the files beside it hold
+// One release per object file: this object holds the 18.0 catalogue only, and the files beside it hold
 // the other bands, so every symbol first appears in exactly one release and release-split is clean.
 // The constants are plain, non-const globals filled in once by a constructor, the way UIKit/UTType.m
 // already fills the eleven it carried first and the way CFEmptyCollections.m fills
@@ -40,9 +40,6 @@ UTType *UTTypeGeoJSON;
 // UTTypeLinkPresentationMetadata is com.apple.linkpresentation.metadata.
 UTType *UTTypeLinkPresentationMetadata;
 
-// UTTypeJPEGXL is public.jpeg-xl.
-UTType *UTTypeJPEGXL;
-
 __attribute__((constructor)) static void charon_uttype_catalog_18(void)
 {
     UTTypeCSS = [UTType typeWithIdentifier:@"public.css"];
@@ -52,8 +49,7 @@ __attribute__((constructor)) static void charon_uttype_catalog_18(void)
     UTTypeTarArchive = [UTType typeWithIdentifier:@"public.tar-archive"];
     UTTypeGeoJSON = [UTType typeWithIdentifier:@"public.geojson"];
     UTTypeLinkPresentationMetadata = [UTType typeWithIdentifier:@"com.apple.linkpresentation.metadata"];
-    UTTypeJPEGXL = [UTType typeWithIdentifier:@"public.jpeg-xl"];
 
     // Handed to the index -[UTType supertypes] reads; see UIKit/UTTypeCatalogueIndex.m.
-    charon_uttype_catalogue_add(@[UTTypeCSS, UTTypeHEICS, UTTypeEXR, UTTypeDNG, UTTypeTarArchive, UTTypeGeoJSON, UTTypeLinkPresentationMetadata, UTTypeJPEGXL]);
+    charon_uttype_catalogue_add(@[UTTypeCSS, UTTypeHEICS, UTTypeEXR, UTTypeDNG, UTTypeTarArchive, UTTypeGeoJSON, UTTypeLinkPresentationMetadata]);
 }
