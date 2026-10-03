@@ -68,6 +68,28 @@
    "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with this repository's readers: +[ARSkeletonDefinition defaultBody2DSkeletonDefinition] at 0x1af1a93dc (its span 0x1af1a93dc +0x270 is the image's own LC_FUNCTION_STARTS), -jointNames at 0x1af1a9708 and -parentIndices at 0x1af1a9710 (each a single ldr out of the object), the names from the __cfstring constants the initialiser stores with movz w3 = 0x11, and the parents from the constant CFArray at 0x1e0be6b08 (count 17, values 0x1d6d90928, each value an NSNumber in __objc_intobj whose third word is the integer); and this Mac's own ARKit, dlopen'd from /System/Library/Frameworks/ARKit.framework/ARKit and asked through its own selectors"
   },
   {
+   "api": "-[ARSkeletonDefinition init]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/ARKit/Skeleton.md",
+   "reason": "absent, decided by the class's own method lists in ARKitCore of the arm64e shared cache of iOS 16.0 rather than by what a header redeclares: ARSkeletonDefinition's own instance list is eight entries and does not contain it (modules/apple/objc.lua's inventory: -.cxx_destruct, -indexForJointName:, -initDefault2DSkeletonDefinition, -initDefault3DSkeletonDefinition, -jointCount, -jointNames, -neutralBodySkeleton3D, -parentIndices), and its own class list is two entries and does not contain it either (+defaultBody2DSkeletonDefinition, +defaultBody3DSkeletonDefinition). The SDK's header re-declares both as NS_UNAVAILABLE, and a redeclaration obliges the port to nothing: Apple does not implement them, and neither does this package. What answers is NSObject's inherited method, which is what answers on the host too",
+   "effect": "the method is not there, so what answers is the one NSObject answers with; the class's own state is set from inside the framework and never by a caller",
+   "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory and with tools/corpus/skeleton-table.lua, which prints the list, its entsize_and_flags (0xc000000f, so small relative entries with direct selectors), every selector it resolves and the address of every implementation: instance list 0x1af21c818, eight twelve-byte entries; the class method list is the metaclass's, two entries"
+  },
+  {
+   "api": "+[ARSkeletonDefinition new]",
+   "kind": "method",
+   "introduced": "13.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/ARKit/Skeleton.md",
+   "reason": "absent, decided by the class's own method lists in ARKitCore of the arm64e shared cache of iOS 16.0 rather than by what a header redeclares: ARSkeletonDefinition's own instance list is eight entries and does not contain it (modules/apple/objc.lua's inventory: -.cxx_destruct, -indexForJointName:, -initDefault2DSkeletonDefinition, -initDefault3DSkeletonDefinition, -jointCount, -jointNames, -neutralBodySkeleton3D, -parentIndices), and its own class list is two entries and does not contain it either (+defaultBody2DSkeletonDefinition, +defaultBody3DSkeletonDefinition). The SDK's header re-declares both as NS_UNAVAILABLE, and a redeclaration obliges the port to nothing: Apple does not implement them, and neither does this package. What answers is NSObject's inherited method, which is what answers on the host too",
+   "effect": "the method is not there, so what answers is the one NSObject answers with; the class's own state is set from inside the framework and never by a caller",
+   "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with modules/apple/objc.lua's inventory and with tools/corpus/skeleton-table.lua, which prints the list, its entsize_and_flags (0xc000000f, so small relative entries with direct selectors), every selector it resolves and the address of every implementation: instance list 0x1af21c818, eight twelve-byte entries; the class method list is the metaclass's, two entries"
+  },
+  {
    "api": "ARSkeletonDefinition.defaultBody3DSkeletonDefinition",
    "kind": "property",
    "introduced": "13.0",
