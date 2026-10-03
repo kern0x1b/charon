@@ -30,6 +30,11 @@ name them nowhere, so all six are declared in `CharonVideoToolbox.h`, transcribe
 | `VTCompressionSessionEncodeMultiImageFrame` | `kVTVideoEncoderNotAvailableNowErr` (-12915) | the multi-image encode's SOURCE is a `CMTaggedBufferGroupRef`; the release's encode entry point takes a `CVImageBuffer`, so there is no release function that reads one |
 | `VTCompressionSessionEncodeMultiImageFrameWithOutputHandler` | -12915 | the same source, and a block the header says "may be called asynchronously, on a different thread from the one that calls" it - a promise that needs an encode to run it after |
 
+**BOTH OF THOSE REASONINGS ARE ABOUT A RELEASE THAT HAS THE FUNCTION, and the host measurement below refuses
+three of the four with `kVTParameterErr` (-12902) rather than the -12913 and -12915 these rows name - so the
+codes in the rows are wrong, not only the reasoning.** The reasoning is kept because the shape of the argument
+is what produced it and a reader comparing a row with the measurement needs to see both.
+
 `CMTaggedBufferGroup` arrived with iOS 14 and no release the port builds has it. A variant that accepted its
 argument and did nothing with it would be the silent fake the brief forbids; these refuse with the release's
 own codes, before any work, and each `infoFlagsOut` is set to 0 with the file saying why - the two flags the
