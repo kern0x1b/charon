@@ -64,14 +64,24 @@ libs="-framework Foundation -framework CoreMedia -framework VideoToolbox"
 # on `AttributeError: 'NoneType' object has no attribute 'group'` twenty lines later with the SDK
 # nowhere in the message. An input that is not on the machine is said by name, in the words the sweep
 # reads, and not as a traceback about a protocol.
+# An SDK that was never built as a package is not absent either: this workspace keeps an extracted
+# iPhoneOS 26.2 SDK under the main checkout's agent work area, and the store glob cannot see it
+# because the store holds packages and not extractions. Both are asked, in that order, and VT_SDK
+# still overrides both.
+extracted=$HOME/Git/projects/ios/charon/.agent-work/sdk-26.2/iPhoneOS26.2.sdk
 VT_SDK=${VT_SDK:-$(ls -d "$HOME"/.xmake/packages/i/iphoneos-sdk/26.2/*/Developer.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.2.sdk 2>/dev/null | head -1)}
 if [ -z "$VT_SDK" ] || [ ! -d "$VT_SDK" ]; then
-    echo "FAIL: no iPhoneOS26.2.sdk under $HOME/.xmake/packages/i/iphoneos-sdk/26.2/, so there"
-    echo "      are no VideoToolbox headers to compare the port's declarations against."
-    echo "      Build the SDK once, or set VT_SDK to an iPhoneOS 26.2 SDK."
+    VT_SDK=$extracted
+fi
+if [ -z "$VT_SDK" ] || [ ! -d "$VT_SDK" ]; then
+    echo "FAIL: no iPhoneOS26.2.sdk, so there are no VideoToolbox headers to compare the port's"
+    echo "      declarations against. This machine has neither $HOME/.xmake/packages/i/iphoneos-sdk/26.2/"
+    echo "      nor $extracted. Build the SDK once, extract one to that path, or set VT_SDK to an"
+    echo "      iPhoneOS 26.2 SDK."
     exit 1
 fi
 export VT_SDK
+echo "sdk: $VT_SDK"
 # 0a. PROVISION THE INPUTS. A clean tree has no .agent-work/generated/vt: probe-types.py and emit.py
 #     both write there, and cases-roundtrip.m includes the header emit.py produces, so a run that skipped
 #     them stopped with "roundtrip-cases.h file not found" - which is how a reviewer reached the mutants
@@ -79,13 +89,12 @@ export VT_SDK
 #     produced its output rather than trusting the exit status.
 rm -f "$gen/roundtrip-cases.h" "$gen/mutants.tsv"
 python3 "$here/probe-types.py" || exit 1
-runs=$here/../../../../.agent-work/runs/vt
 [ -s "$here/type-branches.tsv" ] || { echo "the committed type-branches.tsv is missing, and the generator reads that one"; exit 1; }
 python3 "$here/emit.py" "$VT_SDK" || exit 1
 for generated in roundtrip-cases.h mutants.tsv summary.json; do
     [ -s "$gen/$generated" ] || { echo "emit.py produced no $generated"; exit 1; }
 done
-echo "provisioned: $(wc -l < "$runs/type-branches.tsv" | tr -d ' ') types, $(wc -l < "$gen/mutants.tsv" | tr -d ' ') mutants"
+echo "provisioned: $(wc -l < "$here/type-branches.tsv" | tr -d ' ') types, $(wc -l < "$gen/mutants.tsv" | tr -d ' ') mutants"
 
 # The anchors are GENERATED, from the same emission that produced the accessors, and a stale hand-written
 # one is how all sixteen mutants came to report as survivors. The generated list wins when it is there.
