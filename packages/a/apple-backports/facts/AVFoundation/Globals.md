@@ -22,13 +22,60 @@ measurement says the 16.0 cache exports it. That is the whole reason for the rul
 `relcheck.lua` (which is what the gate runs) refuses an object that holds names from two releases.
 
 
-## The two oracles, and what each can reach
+## The oracles, and a correction
+
+**The host's own AVFoundation, on this machine.** `tests/backports/host/avf-globals/` is a differential:
+`run.sh` compiles the port's five objects with each constant's *definition* renamed to a `charon_host_`
+spelling and links them beside `probe.m`, so the bare name is Apple's own symbol and the prefixed name is
+the port's own definition, and one process prints both. 116 of 116 agree.
+
+```
+$ sh tests/backports/host/avf-globals/run.sh
+the port's own sources declare 116 constants
+ok  control AVMediaTypeVideo = STR vide
+ok  control AVMediaTypeDepthData = STR dpth
+ok  control AVMediaTypeCharonProbeNoSuchConstant = LACKS
+ok  control AVPlayer = HAS 0x1f0c10830
+ok  116 constants declared, 116 names read, 116 rows emitted
+the join compared 116 rows that agree and 0 that differ
+ok  every one of the 116 constants the port defines holds the value the host's own symbol holds
+```
+
+And the check can fail, which is the part that makes it a check:
+
+```
+$ AVFGLOBALSMUTANT=1 sh tests/backports/host/avf-globals/run.sh
+the join compared 115 rows that agree and 1 that differ
+ok  the mutation was noticed, on 1 row(s):
+DIFFERS	AVFileTypeDICOM	host=[STR org.nema.dicom] port=[STR org.nema.dicom.PLANTED]
+
+$ AVFGLOBALSMUTANT=1 CONTROL=1 sh tests/backports/host/avf-globals/run.sh
+the join compared 116 rows that agree and 0 that differ
+ok  the control is clean: the unmutated sources through the identical build-and-run path
+```
+
+**The correction.** The first version of this page said the host could not be used at all, because
+macOS 27's `/System/Library/Frameworks/AVFoundation.framework/Versions/A` holds `_CodeSignature` and
+`Resources` and no binary, and `dlsym` for `_AVMediaTypeVideo` on the image path answered nothing. Both
+observations were right and the conclusion drawn from them was wrong. The image is in the shared cache,
+`dlopen` succeeds, and this release exports these data symbols **without** the Mach-O leading underscore:
+
+```
+dlopen /System/Library/Frameworks/AVFoundation.framework/AVFoundation   handle=0x36c68ebc0 err=-
+AVPlayer class       = 0x1f0c10830
+dlsym _AVMediaTypeVideo = 0x0
+dlsym AVMediaTypeVideo  = 0x1eb7b2a88
+```
+
+So the first probe, which only asked for the `_`-prefixed spelling, found nothing for all 121 names and
+reported that the host does not have the framework. The probe now asks both spellings and prints which
+one answered with every row. The coordinator caught this; the numbers above are the host's, measured
+here, and the corpus table is now a third opinion rather than the only one.
 
 **The release's own cache.** `tools/corpus/cache-value.lua` reads what a symbol an image of a dyld
 shared cache exports actually holds: the export gives the variable's address, the variable holds a
 slid pointer, the pointer names a `__CFString`, and the string's own words give the bytes and their
-count. It uses the tree's own cache reader (`modules/apple/dyld.lua`), so the split cache and the
-slide a stored pointer carries are handled by the code that already binds them.
+count. It uses the tree's own cache reader (`modules/apple/dyld.lua`).
 
 ```
 CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua \
@@ -39,43 +86,29 @@ CHARON_ROOT=$PWD xmake l tools/corpus/cache-value.lua \
     ~/.charon/dyld/12.0/dyld_shared_cache_arm64  .agent-work/avf/symbols-pointer.tsv > .agent-work/avf/values-12.tsv
 ```
 
-Its own controls, on each of the three caches, from the first lines of the run:
+Its own controls, on each of the three caches:
 
 ```
 # control AVMediaTypeVideo	STRING	vide	4 bytes	isa __NSCFConstantString
 # control AVMediaTypeCharonProbeNoSuchConstant	ABSENT	-
 ```
 
-The first is a name the cache exports and holds as a string, the second a name it does not export:
-between them a run that examined nothing cannot pass. The ladder ends at 18.0, so this oracle reaches
-every constant up to and including 18.0 and **nothing** above it - 59 of this framework's 26.0
-constants are in no cache this machine holds.
+The ladder ends at 18.0, so this oracle reaches every constant up to and including 18.0 and **nothing**
+above it: 54 of this framework's 26.0 constants are in no cache this machine holds, and for those two
+thirds of the work the host differential above is the only oracle - which is why it had to be right.
 
-**The host's own AVFoundation.** `coordination/corpus/ledger/constant-values-AVFoundation.tsv` holds
-231 rows measured with `dlopen + dlsym` on the host, decoded through `CFStringGetCString` as UTF-8,
-each row naming the image it read and the build:
+**The corpus table.** `coordination/corpus/ledger/constant-values-AVFoundation.tsv` holds 231 rows
+measured the same way on the same build (`macOS 26A428`, which is this machine's build number). All 116
+names are in it and all 116 agree with the run above.
 
-```
-AVAssetExportPresetHEVC4320x2160	26.0	NSString *const	AVAssetExportPresetHEVC4320x2160	dlopen + dlsym on the host, decoded through CFStringGetCString as UTF-8	/System/Library/Frameworks/AVFoundation.framework/AVFoundation	macOS 26A428
-AVTrackAssociationTypeRenderMetadataSource	26.0	NSString *const	rndr	dlopen + dlsym on the host, decoded through CFStringGetCString as UTF-8	/System/Library/Frameworks/AVFoundation.framework/AVFoundation	macOS 26A428
-```
+## Where the oracles meet
 
-116 of the 121 constants this worker's list holds appear there. This machine's own macOS is 27.0,
-which has **no** AVFoundation at all - `/System/Library/Frameworks/AVFoundation.framework/Versions/A`
-holds `_CodeSignature` and `Resources` and no binary, and `dlsym` for `_AVMediaTypeVideo` on the
-image path answers nothing - so this oracle is read from the corpus, from the macOS 26A428 build it
-was measured on, and not re-taken here.
-
-## Where the two oracles meet
-
-62 names are in both. Every one of them agrees, which is the point of reading twice:
+Three, and they agree on every name that more than one of them reaches:
 
 ```
-agree 62 differ 0
+host (this machine)            vs iOS caches: agree 62 differ 0   (54 names no held cache reaches)
+host (this machine)            vs corpus table: agree 116 differ 0
 ```
-
-(`coordination/corpus/ledger/constant-values-AVFoundation.tsv` column `value` against
-`.agent-work/avf/values-{18,16,12}.tsv` column 9, over the 62 names in both.)
 
 The agreement is not a formality. `AVURLAssetOverrideMIMETypeKey` is **not** the string its own name
 says:
@@ -85,9 +118,9 @@ says:
 ```
 
 and `AVPlayerInterstitialEventMonitorInterstitialEventWasUnscheduledErrorKey` is spelled
-`InterstitialEventWasUnschedule` - without the `d` - in the value the host's own symbol holds. Both
-were written out by name first and the measurement disagreed with what had been written, which is the
-reason every value here is read and none is typed.
+`InterstitialEventWasUnschedule` - without the `d` - in the value the host's own symbol holds. Both were
+written out by name first and the measurement disagreed with what had been written, which is the reason
+every value here is read and none is typed.
 
 ## What the ladder measures, and the run that measured it
 
@@ -118,11 +151,12 @@ is why they form one object.
 
 `AVCaptureWhiteBalanceTemperatureAndTintValues{Cloudy,Daylight,Fluorescent,Shadow,Tungsten}` are not
 strings. `AVCaptureWhiteBalanceTemperatureAndTintValues` is a struct of two `float`s
-(`AVCaptureDevice.h:1671-1673` in the SDK 26.2), so there is no CFString to read and no
-`__cfstring` behind the symbol; they are also `API_UNAVAILABLE(macos)`, so the host oracle cannot
-reach them either, and no cache this machine holds is of a release that has them. Their values are a
-pair of colour temperatures and tints that only Apple's own image holds. They are **not** carried:
-a constant with an invented value is a silent fake, and the pair would be invented. See
+(`AVCaptureDevice.h:1671-1673` of the SDK 26.2), so there is no `__CFString` behind the symbol and the
+host differential above reads the address of a constant and not a pair of numbers - measured, the run
+reports them as `NUM <address>` and not as a temperature and a tint. They are also
+`API_UNAVAILABLE(macos)`, so no macOS build carries them at all, and no held cache is of a release that
+has them. Their value is a pair of colour temperatures and tints only Apple's own image holds. They are
+**not** carried: a constant with an invented value is a silent fake, and the pair would be invented. See
 `coordination/wave-2026-10-03/v-avf-report.md`.
 
 ## What these constants are for, on this port
