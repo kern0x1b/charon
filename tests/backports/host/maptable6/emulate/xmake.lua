@@ -56,6 +56,17 @@ if os.getenv("MAPTABLE6_PROBES") then
         add_frameworks("Foundation")
         set_values("charon.version", "1.0")
         set_values("charon.control", "control-weak")
+    -- Whether the release's dispatch_resume calls a source's registration handler before it returns or only
+    -- enqueues it, which the registration half of the barrier source entry rests on
+    -- (coordination/crutches.md, "apple-compat: a barrier source handler below iOS 10").
+    target("registrationprobe")
+        add_rules("@addon/charon/daemon")
+        add_files(path.join(root, "tests/backports/host/maptable6/probes/registration.m"))
+        add_mflags("-fobjc-arc")
+        add_ldflags("-fobjc-arc")
+        add_frameworks("Foundation")
+        set_values("charon.version", "1.0")
+        set_values("charon.control", "control-weak")
     -- Whether arclite's own __weak on 4.3 is cleared before -dealloc, which is the measurement the 4.3
     -- paragraph of facts/Foundation/NSMapTable.md calls unmeasured.
     target("weakwindowprobe")
