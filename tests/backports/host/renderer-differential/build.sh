@@ -18,8 +18,11 @@
 # A heavy build, so it runs through heavy.sh, and its output is the two logs it names.
 set -eu
 
-root=${DDR_ROOT:?set DDR_ROOT to the port checkout}
+# The port checkout, found the way every other host test finds it, with DDR_ROOT as the override.
+# It used to be REQUIRED and unset, so the script died on `${DDR_ROOT:?}` before compiling anything
+# and the sweep had no run.sh to run: this is not an external input at all, it is this repository.
 here=$(cd "$(dirname "$0")" && pwd)
+root=${DDR_ROOT:-$here/../../../..}
 port=$root/packages/a/apple-backports/UIKit/UITextDragPreviewRenderer11.m
 build=${DDR_BUILD:-$root/.agent-work/runs/renderer-differential-build}
 sdk=$(xcrun --show-sdk-path)
