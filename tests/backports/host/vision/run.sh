@@ -29,6 +29,18 @@ frameworks="-iframework $sdk/System/iOSSupport/System/Library/Frameworks"
 common="-target arm64-apple-ios15.0-macabi -isysroot $sdk $frameworks -fobjc-arc -w"
 libs="-framework Foundation -framework CoreGraphics -framework CoreImage -framework CoreVideo -framework ImageIO -framework CoreML"
 
+# The containers are made HERE, not asked for. tools/coreml/make-models.py is this repository's own
+# writer - coremltools' own writer, one model per kind the port interprets, with the reference dump
+# and the manifest the cases read - and it takes a second. This test used to stop with the command
+# to run printed at the reader, which meant a fresh worktree guarded nothing at all: the sweep found
+# no directory and called the test DEAD, and a person who ran it by hand had to know to go and write
+# the models first. Nothing outside the tree is needed and nothing is downloaded.
+if [ ! -d "$models" ]; then
+    echo "no Core ML containers in $models: writing them with tools/coreml/make-models.py"
+    python3 "$here/../../../../tools/coreml/make-models.py" --out "$models" > "$build/models.log" 2>&1 || {
+        echo "FAIL: the containers could not be written, so the picture cases have nothing to read:"
+        tail -3 "$build/models.log" | sed 's/^/    /'; exit 1; }
+fi
 if [ ! -d "$models" ]; then
     echo "no Core ML containers in $models"
     echo "the picture cases need them, and without them this run records $((expected_records - 8)) records instead of $expected_records and lets a mutant survive: write them with"
