@@ -25,6 +25,101 @@ static const struct { CGPDFBox box; const char *name; } kinds[] = {
 };
 
 // A colour, by its components, or "(nil)".
+
+// The key values of one border, in the header's own key order, in the shape both binaries print.
+static void printBorderKeys(const char *label, PDFBorder *border)
+{
+    NSDictionary *keys = border.borderKeyValues;
+    NSMutableArray *sorted = [[keys allKeys] mutableCopy];
+    [sorted sortUsingSelector:@selector(compare:)];
+    printf("%s.keys=%lu\n", label, (unsigned long)sorted.count);
+    for (NSString *key in sorted) {
+        id value = keys[key];
+        if ([value isKindOfClass:[NSArray class]]) {
+            NSMutableArray *parts = [NSMutableArray array];
+            for (id element in value)
+                [parts addObject:[NSString stringWithFormat:@"%.4f", (double)[element doubleValue]]];
+            printf("%s.key.%s=%s\n", label, [key UTF8String],
+                   [[parts componentsJoinedByString:@","] UTF8String]);
+        } else {
+            printf("%s.key.%s=%.4f\n", label, [key UTF8String], (double)[value doubleValue]);
+        }
+    }
+}
+
+// The pattern's numbers, which -dashPattern answers and the key values also publish.
+static void printBorderDash(const char *label, PDFBorder *border)
+{
+    if (border.dashPattern == nil) {
+        printf("%s.dash.values=(nil)\n", label);
+        return;
+    }
+    NSMutableArray *parts = [NSMutableArray array];
+    for (id value in border.dashPattern)
+        [parts addObject:[NSString stringWithFormat:@"%.4f", (double)[value doubleValue]]];
+    printf("%s.dash.values=%s\n", label, [[parts componentsJoinedByString:@","] UTF8String]);
+}
+// ---- the border as a VALUE OBJECT: its setters, its identity and -setBorder: --------------------
+//
+// Printed once, outside the fixture loop, because none of it is about a file: these are the host's
+// answers about the OBJECT.  Every key here has the same name on the port side, and the whole block is
+// what the coordinator's own measurement (/tmp/land/pdfb/t.m) covers, extended with the setter
+// sequences that pin each setter's effect on the other two members.
+static void printBorderValueFacts(void)
+{
+    PDFBorder *fresh = [[PDFBorder alloc] init];
+    printf("border.fresh.style=%ld\n", (long)fresh.style);
+    printf("border.fresh.lineWidth=%.4f\n", (double)fresh.lineWidth);
+    printf("border.fresh.dash=%s\n", fresh.dashPattern ? "an-array" : "(nil)");
+    printBorderKeys("border.fresh", fresh);
+    // all three members set, which is what the coordinator measured: reads back 1 / 5 / (7 5)
+    PDFBorder *all = [[PDFBorder alloc] init];
+    all.style = kPDFBorderStyleDashed;
+    all.lineWidth = 5;
+    all.dashPattern = @[@7, @5];
+    printf("border.all.style=%ld\n", (long)all.style);
+    printf("border.all.lineWidth=%.4f\n", (double)all.lineWidth);
+    printf("border.all.dash=%s\n", all.dashPattern ? "an-array" : "(nil)");
+    printBorderDash("border.all", all);
+    printBorderKeys("border.all", all);
+    // a pattern alone forces the style dashed, and an empty one forces it solid
+    PDFBorder *pattern = [[PDFBorder alloc] init];
+    pattern.dashPattern = @[@7, @5];
+    printf("border.pattern.style=%ld\n", (long)pattern.style);
+    printf("border.pattern.lineWidth=%.4f\n", (double)pattern.lineWidth);
+    printBorderKeys("border.pattern", pattern);
+    PDFBorder *empty = [[PDFBorder alloc] init];
+    empty.dashPattern = @[];
+    printf("border.empty.style=%ld\n", (long)empty.style);
+    printf("border.empty.dash=%s\n", empty.dashPattern ? "an-array" : "(nil)");
+    printBorderDash("border.empty", empty);
+    printBorderKeys("border.empty", empty);
+    // nil is the same as an empty array, and the width is NOT reset by any of the three setters:
+    // W 5 is set first here and answers 5 after the pattern and after the nil
+    PDFBorder *cleared = [[PDFBorder alloc] init];
+    cleared.lineWidth = 5;
+    cleared.style = kPDFBorderStyleDashed;
+    cleared.dashPattern = @[@7, @5];
+    cleared.dashPattern = nil;
+    printf("border.cleared.style=%ld\n", (long)cleared.style);
+    printf("border.cleared.lineWidth=%.4f\n", (double)cleared.lineWidth);
+    printf("border.cleared.dash=%s\n", cleared.dashPattern ? "an-array" : "(nil)");
+    printBorderDash("border.cleared", cleared);
+    printBorderKeys("border.cleared", cleared);
+    // the style setter touches nothing else, and the width setter touches nothing else
+    PDFBorder *styleOnly = [[PDFBorder alloc] init];
+    styleOnly.style = kPDFBorderStyleInset;
+    printf("border.styleonly.style=%ld lineWidth=%.4f dash=%s\n", (long)styleOnly.style,
+           (double)styleOnly.lineWidth, styleOnly.dashPattern ? "an-array" : "(nil)");
+    printBorderKeys("border.styleonly", styleOnly);
+    PDFBorder *widthOnly = [[PDFBorder alloc] init];
+    widthOnly.lineWidth = 0;
+    printf("border.widthzero.lineWidth=%.4f style=%ld\n", (double)widthOnly.lineWidth,
+           (long)widthOnly.style);
+    printBorderKeys("border.widthzero", widthOnly);
+}
+
+
 static void printAppearanceColour(const char *label, const char *member, id colour)
 {
     if (colour == nil) {
@@ -236,6 +331,32 @@ int main(int argc, char **argv)
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++)
                     printf("%s.page0.%s=NOT-COMPARED-no-such-method\n", name, kinds[k].name);
             } else {
+                // -border's IDENTITY and -setBorder:, on the first annotation of every fixture: the
+                // same object each time, visible mutation through it, a set object held by reference,
+                // and nil after setting nil.  These run AFTER the per-annotation facts above, because
+                // they change that annotation's border and the file's own answers must be read first.
+                if (first.annotations.count > 0) {
+                    PDFAnnotation *target = first.annotations[0];
+                    PDFBorder *once = target.border;
+                    printf("%s.page0.border.identity.same=%d\n", name, (int)(once == target.border));
+                    if (once != nil) {
+                        once.lineWidth = 9;
+                        printf("%s.page0.border.identity.mutated=%.4f\n", name,
+                               (double)target.border.lineWidth);
+                        PDFBorder *replacement = [[PDFBorder alloc] init];
+                        replacement.lineWidth = 11;
+                        target.border = replacement;
+                        printf("%s.page0.border.set.same=%d\n", name,
+                               (int)(target.border == replacement));
+                        printf("%s.page0.border.set.lineWidth=%.4f\n", name,
+                               (double)target.border.lineWidth);
+                        replacement.lineWidth = 12;
+                        printf("%s.page0.border.set.mutated=%.4f\n", name,
+                               (double)target.border.lineWidth);
+                        target.border = nil;
+                        printf("%s.page0.border.set.nil=%d\n", name, (int)(target.border == nil));
+                    }
+                }
                 for (unsigned k = 0; k < sizeof(kinds) / sizeof(*kinds); k++) {
                     CGRect box = ((CGRect (*)(id, SEL, CGPDFBox))objc_msgSend)(first,
                                                                             @selector(boundsForBox:),
@@ -289,6 +410,7 @@ int main(int argc, char **argv)
             full.downCaption = @"down";
             printAppearanceCharacteristics("full", full);
         }
+        printBorderValueFacts();
     }
     return 0;
 }

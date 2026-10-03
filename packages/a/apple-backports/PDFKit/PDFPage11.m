@@ -6,6 +6,7 @@
 
 @interface PDFPage ()
 - (CGPDFPageRef)charon_CGPDFPage;
+- (void)charon_buildAnnotations;
 @end
 
 @implementation PDFPage {
@@ -17,6 +18,9 @@
     // The CGPDFDocument itself, held strongly, because the CGPDFPage below belongs to it.
     CGPDFDocumentRef _documentRef;
     NSUInteger _index;
+    // The page's annotations, built once and handed out as a copy each time.  Strong, and not a cycle:
+    // an annotation's page is WEAK (PDFAnnotation.h:141), so page -> annotation -> page does not close.
+    NSArray *_annotations;
 }
 
 @synthesize pageIndex = _index;
@@ -355,14 +359,33 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 // format's.
 - (NSArray *)annotations
 {
+    if (_annotations == nil)
+        [self charon_buildAnnotations];
+    // A COPY each call, over objects built once.  Both halves are measured on the host, and they are two
+    // different halves: two calls answer two DIFFERENT arrays (arrays-same = 0 on every fixture) whose
+    // elements are the SAME objects (objects-same = 1), and a change made through one is visible through
+    // the other - a line width set on the first array's annotation reads back 9 on the second's, and a
+    // border assigned through the first is the very object the second answers.  So the objects are built
+    // once and kept, and the array is not: rebuilding the objects on every call, which is what this did
+    // before, makes every one of those answers unreachable through the API.
+    return _annotations != nil ? [_annotations copy] : @[];
+}
+
+- (void)charon_buildAnnotations
+{
+    _annotations = nil;
     if (_page == NULL)
-        return @[];
+        return;
     CGPDFDictionaryRef dictionary = CGPDFPageGetDictionary(_page);
-    if (dictionary == NULL)
-        return @[];
+    if (dictionary == NULL) {
+        _annotations = @[];
+        return;
+    }
     CGPDFArrayRef annots = NULL;
-    if (!CGPDFDictionaryGetArray(dictionary, "Annots", &annots) || annots == NULL)
-        return @[];
+    if (!CGPDFDictionaryGetArray(dictionary, "Annots", &annots) || annots == NULL) {
+        _annotations = @[];
+        return;
+    }
     size_t count = CGPDFArrayGetCount(annots);
     NSMutableArray *answer = [NSMutableArray arrayWithCapacity:count];
     for (size_t i = 0; i < count; i++) {
@@ -385,7 +408,7 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
         if (built != nil)
             [answer addObject:built];
     }
-    return answer;
+    _annotations = answer;
 }
 
 // The annotation COUNT is the length of that array: an array this release cannot answer, and a
