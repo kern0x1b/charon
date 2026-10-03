@@ -1,0 +1,38 @@
+{
+ "framework": "ARKit",
+ "entries": [
+  {
+   "api": "ARVideoFormat.defaultColorSpace",
+   "kind": "property",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/ARKit/Configurations.md",
+   "reason": "not carried, and the cause is stated rather than a gap in this series: the colour space a capture in this format is delivered in, and a default is a property of the capture pipeline this port does not have: ARVideoFormat.m builds every format from an AVCaptureDeviceFormat and reads its dimensions and frame rates, and nothing in packages/a/apple-backports/ARKit builds a colour space or attaches one to a capture. There is also nothing here to measure it from: the newest release this workspace holds a cache of is 16.0, and neither this selector nor the class method that would answer it is among ARVideoFormat's 28 instance and 16 class methods there",
+   "effect": "the method is not there, so what answers is NSObject's, which is what a caller on a release before 26.0 reaches as well",
+   "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/skeleton-table.lua impls ARVideoFormat: instance list 0x1af214578 of 28 twelve-byte entries and class list 0x1af2144b0 of 16 entries, both entsize_and_flags 0xc000000f (small entries, direct selectors), every implementation address printed, and isVideoHDRSupported at 0x1af0f4870 on the instance list. Neither defaultColorSpace nor defaultPhotoSettings is among the 28: both arrived in 26.0 and the newest release this workspace holds a cache of is 16.0. The declaration is the 16.4 build SDK's own ARKit.framework/Headers. What the port's bands run on: the armv7 shared cache of iOS 6.1.3 and of 4.3, read with tools/corpus/objc-inventory.lua (11378 and 7187 class names, 1171 and 564 protocol names): 0 of them begin AR and the selectors of every row here are in none of their own method lists, while the controls of the same read are non-zero - AVCaptureDevice present with 100 instance and 5 class methods in 6.1.3, CMMotionManager with 74, NSObject with 590 and 104, -init in 2551 class lists, -copyWithZone: in 824, +alloc, +new and +defaultDeviceWithMediaType: in the lists they belong to. A selector the reader cannot see would take all four of those to zero"
+  },
+  {
+   "api": "ARVideoFormat.defaultPhotoSettings",
+   "kind": "property",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/ARKit/Configurations.md",
+   "reason": "not carried, and the cause is stated rather than a gap in this series: the AVCapturePhotoSettings a still capture from this format would use, and this port has no still capture at all: no @implementation for ARSession's 26.0 capture method anywhere under packages/a/apple-backports/ARKit, and nothing in the nine ARKit sources constructs an AVCapturePhotoSettings or opens an AVCapturePhotoOutput. Nothing here to measure it from either: the newest cache is 16.0 and the selector is not among ARVideoFormat's 28 instance methods there",
+   "effect": "the method is not there, so what answers is NSObject's, which is what a caller on a release before 26.0 reaches as well",
+   "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/skeleton-table.lua impls ARVideoFormat: instance list 0x1af214578 of 28 twelve-byte entries and class list 0x1af2144b0 of 16 entries, both entsize_and_flags 0xc000000f (small entries, direct selectors), every implementation address printed, and isVideoHDRSupported at 0x1af0f4870 on the instance list. Neither defaultColorSpace nor defaultPhotoSettings is among the 28: both arrived in 26.0 and the newest release this workspace holds a cache of is 16.0. The declaration is the 16.4 build SDK's own ARKit.framework/Headers. What the port's bands run on: the armv7 shared cache of iOS 6.1.3 and of 4.3, read with tools/corpus/objc-inventory.lua (11378 and 7187 class names, 1171 and 564 protocol names): 0 of them begin AR and the selectors of every row here are in none of their own method lists, while the controls of the same read are non-zero - AVCaptureDevice present with 100 instance and 5 class methods in 6.1.3, CMMotionManager with 74, NSObject with 590 and 104, -init in 2551 class lists, -copyWithZone: in 824, +alloc, +new and +defaultDeviceWithMediaType: in the lists they belong to. A selector the reader cannot see would take all four of those to zero"
+  },
+  {
+   "api": "-[ARSession captureHighResolutionFrameUsingPhotoSettings:completion:]",
+   "kind": "method",
+   "introduced": "26.0",
+   "minimum": "6.0",
+   "status": "absent",
+   "facts": "facts/ARKit/Configurations.md",
+   "reason": "not carried, and the cause is stated rather than a gap in this series: a still capture from the session, which needs the photo pipeline above and a completion handler dispatched on a queue this port does not run a capture on. Measured: ARSession's own instance list in the 16.0 cache is 133 entries and does not contain this selector - the row is 26.0 and the newest cache here is 16.0, where the nearest method is captureHighResolutionFrameWithPhotoSettings:completion: at 0x1af1611e4 - and this package carries no capture method of that shape at all",
+   "effect": "the method is not there, so what answers is NSObject's, which is what a caller on a release before 26.0 reaches as well",
+   "source": "ARKitCore of the arm64e shared cache of iOS 16.0, read with tools/corpus/skeleton-table.lua impls ARSession: instance list 0x1af219178 of 133 twelve-byte entries and class list 0x1af219118 of 7 entries, both entsize_and_flags 0xc000000f (small entries, direct selectors), every implementation address printed. captureHighResolutionFrameUsingPhotoSettings:completion: is not among the 133: the row is 26.0 and the newest cache here is 16.0, where ARSession's own list has captureHighResolutionFrameWithPhotoSettings:completion: at 0x1af1611e4 instead. The declaration is the 16.4 build SDK's own ARKit.framework/Headers. What the port's bands run on: the armv7 shared cache of iOS 6.1.3 and of 4.3, read with tools/corpus/objc-inventory.lua (11378 and 7187 class names, 1171 and 564 protocol names): 0 of them begin AR and the selectors of every row here are in none of their own method lists, while the controls of the same read are non-zero - AVCaptureDevice present with 100 instance and 5 class methods in 6.1.3, CMMotionManager with 74, NSObject with 590 and 104, -init in 2551 class lists, -copyWithZone: in 824, +alloc, +new and +defaultDeviceWithMediaType: in the lists they belong to. A selector the reader cannot see would take all four of those to zero"
+  }
+ ]
+}
