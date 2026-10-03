@@ -507,3 +507,72 @@ cannot fail is not a fixture, and that one hid for a whole run.
 
 RED CONTROL, the walk unbounded, which is the shape the code had before the bound: the run exits 124,
 having run to the wall clock.  That is the over-read, timed.
+
+## Whitespace and control bytes in the page's own text: the walk was joining runs verbatim
+
+The word-boundary family for `PDFSelection` (`Selection11.md`) needed the page's `-string` to be exact,
+because a selection's range is an OFFSET into it. Ten new fixtures through the conforming writer, and
+three byte-level ones beside them, made the harness red on eight keys that were all this row:
+
+    COMPARED 8106 MISMATCHES 8
+      cgfixture-gap.pdf.page0.string              host='alpha bravo'  port='alpha  bravo'
+      cgfixture-gap.pdf.page0.numberOfCharacters  host='11'           port='12'
+      cgfixture-tail.pdf.page0.string             host='alpha'       port='alpha '
+      cgfixture-tail.pdf.page0.numberOfCharacters host='11'           port='12'
+      cgfixture-lead.pdf.page0.string             host='alpha bravo\ncharlie'  port=' alpha bravo \ncharlie '
+      cgfixture-lead.pdf.page0.numberOfCharacters host='19'          port='22'
+      cgfixture-inline.pdf.page0.string           host='alpha'       port='alpha bravo'
+      cgfixture-tab.pdf.page0.string              host='alpha'       port='alpha bravo'
+
+**A LINE is trimmed at both ends and the runs of U+0020 inside it are collapsed to one.** Five fixtures
+say it, and the fifth is the one that says *line* and not *run*:
+
+    drawn "alpha  bravo"                      answers "alpha bravo"
+    drawn " alpha bravo "                     answers "alpha bravo"
+    drawn "alpha " then "bravo" on a new line answers "alpha\nbravo"
+    drawn "alpha  b   c"                      answers "a b c"
+    drawn "alpha " then "beta" at the SAME y   answers "alpha beta"
+
+The last one is the whole of it: the walk joins a tie on y with nothing, so a space at the end of a run
+survives when the next run is on the same line and is gone when the next run is on another. The trim is
+therefore where the LINE ends, and the collapse is inside the line's own text.
+
+**A control byte in a show string is a NUL in the text, and the release's own decoder is what hid it.**
+`CGPDFStringCopyTextString` maps a NUL byte to a space and a tab to a tab, so a run carrying either
+arrived here indistinguishable from a run that really drew a space. Both sides' `-numberOfCharacters`
+answered 11 on `cgfixture-inline` and the two `-string`s printed differently, because a NUL ends a `%s`:
+the host printed its first five characters and the port printed all eleven with a space at index 5.
+Measured over a byte-level fixture whose one show string is `a \0 b \1 c \t d \n e \r f \37 g \177 h`:
+the host answers 15 characters, `a \0 b \0 c \0 d \0 e \0 f \0 g \0 h`, so the LENGTH is the byte count
+whatever the bytes are and only the CHARACTER changes. The characters still come from the release's
+decoder, which knows the string's encoding, and the control bytes from the release's byte reader beside
+it, and the two are zipped. A UTF-16BE string (a FE FF byte-order mark) is not zipped that way and the
+decoder's own characters stand.
+
+What is NOT measured here, and is not claimed: a code at 0x80 or above. The host resolves those through
+the FONT's encoding and answers the glyph's Unicode where the font has one - byte 0xE9 in a base-14 font
+answers U+00D8 - and a NUL where it has none (0x80, 0x8E, 0xA0, 0xFF all answer NUL). This walk keeps the
+decoder's character for those bytes, which is the same character it answered before and is not the host's.
+Reading the font's /Encoding and its /Differences is the metrics engine's work, not this walk's.
+
+## Every named red control in this harness was a no-op until 2026-10-03
+
+The controls above caught a defect in the harness itself. `compare()` plants its mutation in a scratch
+copy of the port's answers, and it found the line to replace by looking for a `port.` PREFIX - but
+`read()` takes a line's key to be its name with the side's prefix removed WHEN THERE IS ONE, because the
+class-level facts are printed as `port.<key>` and every per-fixture fact is printed as a BARE `<key>`.
+So for every per-fixture key the writer found no line, wrote the file through unchanged, and the
+comparison then printed `MUTATION failed: ... the comparison is blind` and exited non-zero - which the
+control loop read as a PASS, because it only checked that the log said `MUTATION planted on`.
+
+    116 mutation logs, 116 of them saying "MUTATION failed", 0 of them containing a DIFFER line
+
+The one automatic control was real by accident: the key it picks is `PDFDocument.hasInitWithURL`, which is
+one of the prefixed ones. Every control that named a border, an appearance, an action, an outline or a text
+key proved nothing for as long as it stood there. Two changes: the line is found by its KEY and keeps
+whatever prefix it has, and a key in no line is a refusal rather than a silent no-op; and the control loop
+requires a `DIFFER` line, not merely a non-zero exit. All 117 named controls and the automatic one now
+report a difference naming their own key.
+
+Self-review's rule - a control that fires - is what this was worth: the check existed, printed "ok", and
+had never been asking anything.

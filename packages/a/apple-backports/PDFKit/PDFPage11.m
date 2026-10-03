@@ -1,4 +1,5 @@
 #import "CharonPDFKit.h"
+#import "PDFPageText11.h"
 #include <ctype.h>
 
 // PDFPage over the release's own CGPDFPage.  Every answer is the page read back through CoreGraphics:
@@ -7,6 +8,7 @@
 @interface PDFPage ()
 - (CGPDFPageRef)charon_CGPDFPage;
 - (void)charon_buildAnnotations;
+- (PDFPageText *)charon_textLayout;
 @end
 
 @implementation PDFPage {
@@ -21,6 +23,9 @@
     // The page's annotations, built once and handed out as a copy each time.  Strong, and not a cycle:
     // an annotation's page is WEAK (PDFAnnotation.h:141), so page -> annotation -> page does not close.
     NSArray *_annotations;
+    // The page's text layout, built once by -charon_textLayout and read by -string, by
+    // -numberOfCharacters and by every PDFSelection over this page.
+    PDFPageText *_layout;
 }
 
 @synthesize pageIndex = _index;
@@ -83,7 +88,59 @@ typedef struct {
     CGFloat x;
     CGFloat y;
     CGFloat size;
+    // The name Tf named, kept beside the size because a selection's -attributedString hands back a font
+    // and its two facts are these: measured, the host answers "Helvetica" at 12pt for every fixture drawn
+    // with /TT1 12 Tf, and the walk is what knows both halves.
+    NSString *font;
 } CharonTextWalk;
+
+// A CONTROL BYTE in a show string is a NUL in the host's text, and the release's own decoder is what
+// hides that.  Measured on this Mac's own PDFKit, over byte-level fixtures whose single show string
+// carries one control byte between two letters:
+//
+//     bytes a \0 b \1 c \t d \n e \r f \37 g \177 h
+//     host   a \0 b \0 c \0 d \0 e \0 f \0 g \0 h      (15 characters, the length preserved)
+//
+// and over a string with no control byte in it, where the answer is the letters themselves.  So the
+// LENGTH is the byte count whatever the bytes are, and only the CHARACTER changes.  That is the whole of
+// what CGPDFStringCopyTextString cannot do: it maps a NUL byte to a space and a tab to a tab, so a
+// string carrying either arrives here indistinguishable from a string that really drew a space, and the
+// host answers one NUL and the port a space - measured, `alpha\0bravo` reads `alpha\0bravo` on the host
+// and `alpha bravo` here.
+//
+// So the characters come from the release's decoder, which knows the string's encoding, and the CONTROL
+// BYTES come from the release's byte reader beside it, and the two are zipped: a byte below 0x20 or the
+// 0x7F byte becomes U+0000 and every other byte keeps the character the decoder gave it.  A byte at
+// 0x80 or above is NOT a control byte and keeps the decoder's character - the host resolves those
+// through the FONT's encoding, which is the metrics engine's business and not this walk's; facts
+// Selection11.md records what each side answers there.
+static NSString *charonTextForOperand(CGPDFStringRef operand, CFStringRef characters)
+{
+    // CGPDFStringGetBytePtr answers `const unsigned char *`, and the length comes from
+    // CGPDFStringGetLength - which is the length of the string in BYTES for the strings this walk sees,
+    // because it is the length the release's own parser counted.
+    const unsigned char *bytes = CGPDFStringGetBytePtr(operand);
+    size_t length = CGPDFStringGetLength(operand);
+    NSUInteger decoded = CFStringGetLength(characters);
+    if (bytes == NULL || length == 0 || decoded == 0 || (size_t)decoded != length)
+        // No bytes to read, or the decoder's own length does not match the byte count - a UTF-16BE string
+        // with a byte-order mark is two bytes per character and is the case that cannot be zipped this
+        // way.  Then the decoder's characters stand on their own, which is what they are for.
+        return (__bridge NSString *)characters;
+    // FE FF is the byte-order mark of a UTF-16BE string (PDF 1.7 Table 3.5): its bytes are not character
+    // codes at all, so the zip below would read half a character as a control byte.
+    if (length >= 2 && (unsigned char)bytes[0] == 0xFE && (unsigned char)bytes[1] == 0xFF)
+        return (__bridge NSString *)characters;
+    NSMutableString *answer = [NSMutableString stringWithCapacity:decoded];
+    for (NSUInteger i = 0; i < decoded; i++) {
+        unsigned char byte = (unsigned char)bytes[i];
+        if (byte < 0x20 || byte == 0x7F)
+            [answer appendFormat:@"%C", (unichar)0];
+        else
+            [answer appendFormat:@"%C", (unichar)CFStringGetCharacterAtIndex(characters, i)];
+    }
+    return answer;
+}
 
 // The show operators, as C functions.  Each pops ITS OWN operands: the callback signature carries none.
 static void charonAppendOperand(CGPDFScannerRef scanner, CharonTextWalk *walk, CGPDFStringRef operand)
@@ -93,8 +150,9 @@ static void charonAppendOperand(CGPDFScannerRef scanner, CharonTextWalk *walk, C
     CFStringRef characters = CGPDFStringCopyTextString(operand);
     if (characters == NULL)
         return;
-    [walk->text appendString:(__bridge NSString *)characters];
-    collectRun(walk->runs, characters, walk->x, walk->y);
+    NSString *text = charonTextForOperand(operand, characters);
+    [walk->text appendString:text];
+    collectRun(walk->runs, text, walk->x, walk->y, walk->size, walk->font);
     CFRelease(characters);
 }
 
@@ -152,35 +210,40 @@ static void charonOpTextMatrix(CGPDFScannerRef scanner, void *info)
     }
 }
 
-// The font size, for a run's vertical extent.
+// Tf names a font and a size, and the operands come off the stack size FIRST: `BT /F1 12 Tf` pushes the
+// name and then the number.  Both halves are kept, because the size is a run's vertical extent and the
+// name is what a selection's attributed string hands back as its font.
 static void charonOpFontSize(CGPDFScannerRef scanner, void *info)
 {
     CharonTextWalk *walk = info;
     if (walk == NULL)
         return;
     CGPDFReal size = 0;
-    if (CGPDFScannerPopNumber(scanner, &size))
-        walk->size = (CGFloat)size;
+    if (!CGPDFScannerPopNumber(scanner, &size))
+        return;
+    walk->size = (CGFloat)size;
+    const char *name = NULL;
+    // A font name is a NAME object and not a string, and CGPDFScannerPopName is the reader for it; a
+    // stream that writes `/F1 12 Tf` with the font in its own /Resources answers the name here, and one
+    // that names no font leaves the run's font nil rather than inventing one.
+    if (CGPDFScannerPopName(scanner, &name) && name != NULL)
+        walk->font = @(name);
 }
 
-// One drawn run, as the walk collects it: the characters and where they were drawn.
-typedef struct {
-    CFStringRef text;
-    CGFloat x;
-    CGFloat y;
-} CharonTextRun;
-
-static void collectRun(NSMutableArray *runs, CFStringRef text, CGFloat x, CGFloat y)
+// One drawn run, as the layout's own object: the characters, where they were drawn, and the text state.
+// PDFTextRun is declared in PDFPageText11.h because a selection reads it for its font and its position.
+static void collectRun(NSMutableArray *runs, NSString *text, CGFloat x, CGFloat y, CGFloat size,
+                       NSString *font)
 {
-    if (text == NULL)
+    if (text == nil || text.length == 0)
         return;
-    CharonTextRun *run = malloc(sizeof(*run));
-    if (run == NULL)
-        return;
-    run->text = (CFStringRef)CFRetain(text);
-    run->x = x;
-    run->y = y;
-    [runs addObject:[NSValue valueWithPointer:run]];
+    PDFTextRun *run = [[PDFTextRun alloc] init];
+    run.text = text;
+    run.x = x;
+    run.y = y;
+    run.size = size;
+    run.fontName = font;
+    [runs addObject:run];
 }
 
 // The page's text IN READING ORDER, which is not the order it was drawn in and is not the runs joined
@@ -199,57 +262,25 @@ static void collectRun(NSMutableArray *runs, CFStringRef text, CGFloat x, CGFloa
 //
 // and cgfixture-lines.pdf, three runs at y = 360, 340, 320, answers "shared one\nshared two\nthird line"
 // - 32 characters, against the 30 this port answered before the fixture existed.
-static NSString *charonJoinRuns(NSArray *runs)
-{
-    if (runs.count == 0)
-        return nil;
-    NSArray *ordered = [runs sortedArrayWithOptions:NSSortStable
-                                       usingComparator:^NSComparisonResult(id left, id right) {
-        CharonTextRun *a = (CharonTextRun *)[left pointerValue];
-        CharonTextRun *b = (CharonTextRun *)[right pointerValue];
-        if (a == NULL || b == NULL)
-            return NSOrderedSame;
-        if (a->y > b->y)
-            return NSOrderedAscending;      // higher on the page first
-        if (a->y < b->y)
-            return NSOrderedDescending;
-        return NSOrderedSame;                // a tie keeps drawing order
-    }];
-    NSMutableString *answer = [NSMutableString string];
-    CGFloat previousY = 0;
-    BOOL first = YES;
-    for (NSValue *boxed in ordered) {
-        CharonTextRun *run = (CharonTextRun *)[boxed pointerValue];
-        if (run == NULL || run->text == NULL)
-            continue;
-        if (!first && run->y != previousY)
-            [answer appendString:@"\n"];
-        [answer appendString:(__bridge NSString *)run->text];
-        previousY = run->y;
-        first = NO;
-    }
-    return answer;
-}
-
-static void freeRuns(NSMutableArray *runs)
-{
-    for (NSUInteger i = 0; i < runs.count; i++) {
-        CharonTextRun *run = (CharonTextRun *)[runs[i] pointerValue];
-        if (run == NULL)
-            continue;
-        CFRelease(run->text);
-        free(run);
-    }
-    [runs removeAllObjects];
-}
-
-// The text matrix and the font size the page drew its last text at, read off the content stream's own
+//
+// WHITESPACE and the LINES are the layout's: charonTrimLine and charonCollapseSpaces live in
+// PDFPageText11.m, which builds the string line by line and needs them at every line
+// boundary, and facts/PDFKit/Document11.md has the measurements.
+// WHITESPACE, which is the fourth thing a line does and the one this walk was missing.  Measured on the
+// host over five fixtures a conforming writer writes, and every one of them is a LINE and not a run:
+//
+//   cgfixture-gap.pdf       one line drawn "alpha  bravo"          answers "alpha bravo"   (11)
+//   cgfixture-lead.pdf      one line drawn " alpha bravo "         answers "alpha bravo"   (10)
+//   cgfixture-tail.pdf      one line drawn "alpha ", the next "bravo"  answers "alpha\nbravo" (11)
+//   cgfixture-tailpair.pdf  two runs at ONE y, "alpha " then "beta"    answers "alpha beta"  (10)
+//   bytes-space.pdf         one line drawn "a  b   c"             answers "a b c"         (5)
+//
 // Tm and Tf operators.  A selection's geometry needs them and the walk needs them, so they are read once
 // and shared.  A stream that names neither leaves the size at 0 and the position at the origin, and the
 // rows that depend on a position say so rather than inventing one.
 typedef struct { CGFloat x; CGFloat y; CGFloat size; } CharonTextState;
 
-static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
+static PDFPageText *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 {
     if (state != NULL) {
         state->x = 0;
@@ -377,12 +408,27 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
     CGPDFScannerRelease(scanner);
     CGPDFOperatorTableRelease(table);
     CGPDFContentStreamRelease(content);
-    // joined BEFORE the runs are freed, because the answer is built out of them
-    NSString *joined = exhausted ? nil : charonJoinRuns(runs);
-    freeRuns(runs);
-    if (joined == nil || joined.length == 0)
+    // The layout is built out of the runs, so it is asked for before anything else touches them, and a
+    // walk that took fewer shows than the stream holds is discarded rather than returned half-formed: a
+    // -string that is wrong in a way nobody can see is worse than nil, and the facts file records it.
+    if (exhausted) {
         return nil;
-    return joined;
+    }
+    PDFPageText *layout = [PDFPageText layoutWithRuns:runs];
+    if (layout.string.length == 0)
+        return nil;
+    return layout;
+}
+
+// THE PAGE'S OWN TEXT LAYOUT, built once and kept.  Both the page's own -string and every PDFSelection
+// read it, and they have to agree character for character because a selection's range is an offset into
+// it - so it is built here, once, rather than walked twice.  It is strong: it holds no reference back to
+// the page, and the page holding it is the same arrangement every other memoised array on this page uses.
+- (PDFPageText *)charon_textLayout
+{
+    if (_layout == nil)
+        _layout = charonScanPageText(_page, NULL);
+    return _layout;
 }
 
 // The page's own TEXT, which is what the host's -string answers on every fixture measured here: "page 1"
@@ -393,7 +439,7 @@ static NSString *charonScanPageText(CGPDFPageRef page, CharonTextState *state)
 {
     if (_page == NULL)
         return nil;
-    return charonScanPageText(_page, NULL);
+    return [self charon_textLayout].string;
 }
 
 // The page's ANNOTATIONS, built over the page's own /Annots array: each element is a dictionary

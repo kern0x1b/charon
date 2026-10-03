@@ -765,6 +765,28 @@
    "facts": "facts/PDFKit/Document11.md",
    "source": "the host's own PDFKit under macOS in a process containing no port object, against the port's objects in a process containing no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh, two binaries, dladdr proving each side's class comes from where it should: COMPARED 586 MISMATCHES 0, which includes every annotation key below; two red controls confirm the differential is live - the Print bit read as the Hidden bit makes six annotations DIFFER, and dropping the /Text note rule makes three",
    "ledger": "?"
+  },
+
+  {
+   "api": "-[PDFDocument findString:withOptions:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the release's own substring search over each page's text - Foundation's -rangeOfString:options:range:, which is what the header's three options are - and one PDFSelection per occurrence, whose range is the match extended by ONE character when the character after it is a line break and by nothing else.  Measured over the 136 rows of the fixture family facts/PDFKit/Selection11.md describes: nothing is snapped (\"al\" is {5,2}, \"pha\" is {7,3}), no space is ever taken, a needle never spans a page, a case-insensitive match answers the DOCUMENT's spelling and not the needle's, NSBackwardsSearch reverses the answer and not the ranges, and a needle that is not there answers an EMPTY array.  The array it answers is the document's own and the next search on that document replaces its contents, which is measured and is why two searches of one document cannot be compared through one array",
+   "facts": "facts/PDFKit/Selection11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14627 MISMATCHES 0 over 121 fixtures, with 134 red controls - one automatic and 133 naming a border, appearance, identity, action, copy, initializer, outline, text or selection key"
+  },
+
+  {
+   "api": "-[PDFDocument findString:fromSelection:withOptions:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the search carried on from a selection, as PDFDocument.h:274 describes: \"beginning after the last character of selection ... (or preceding the first character of the selection if NSBackwardsSearch is specified)\".  A nil selection starts at the beginning of the document, or at its end when the search runs backwards - measured on a document nothing had been asked: {5,5} forward and {31,5} backwards.  The search CROSSES onto the next page, in the direction it runs, and answers nil off the end of the document; measured on cgfixture-3.pdf, forwards from page 1's \"page\" answers page 2's and backwards answers page 0's.  A search before it changes nothing",
+   "facts": "facts/PDFKit/Selection11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 14627 MISMATCHES 0 over 121 fixtures, with 134 red controls - one automatic and 133 naming a border, appearance, identity, action, copy, initializer, outline, text or selection key"
   }
  ]
 }
