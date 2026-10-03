@@ -150,5 +150,5 @@ cp "$build/VTFrameProcessor.o.saved" "$build/VTFrameProcessor.o"
 
 if [ "$survived" -ne 0 ]; then echo "$survived plants survived; this check proves nothing"; exit 1; fi
 echo "videotoolbox-frameprocessor: OK - 14 codes, the measured domain string, 7 VTFrameProcessor methods,"
-echo "  2 more on the other two classes, the HDR session's 3 functions and its measured constant,"
-echo "  16 NS_UNAVAILABLE classes, and 3 plants caught"
+echo "  2 more on the other two classes, the two protocols' accessors on 14 conforming classes, the HDR"
+echo "  session's 3 functions and its measured constant, 16 NS_UNAVAILABLE classes, 3 plants caught"

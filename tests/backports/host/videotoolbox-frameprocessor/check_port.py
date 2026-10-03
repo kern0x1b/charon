@@ -247,6 +247,63 @@ def main():
             if row is None or row["status"] != "implemented":
                 failures.append("no implemented registry row for %s" % api)
 
+    # The eleven properties the two PROTOCOLS own, plus VTMotionBlurConfiguration.supported. The protocol
+    # rows are the ones api-ledger.py cannot place at all - classify_property takes no protocols - so
+    # this is where they are checked: the protocol object itself must carry the selectors SDK 26.2
+    # declares on it, because that protocol metadata is what a conforming class inherits the
+    # conformance from, and every conforming class must carry the accessor too.
+    PROTOCOL_METHODS = {
+        "VTFrameProcessorParameters": ["destinationFrame", "destinationFrames", "sourceFrame"],
+        "VTFrameProcessorConfiguration": ["destinationPixelBufferAttributes", "frameSupportedPixelFormats",
+                                         "isSupported", "maximumDimensions", "minimumDimensions",
+                                         "nextFrameCount", "previousFrameCount",
+                                         "sourcePixelBufferAttributes"],
+    }
+    # The protocols themselves carry no registry row, and they need none: check_registry reads a
+    # protocol row as answered by a declaration a caller compiles against - a header this package
+    # installs, the SDK, or the release - and CharonVideoToolbox.h declares both. What is checked here is
+    # the OTHER half: that the accessor exists on every class that declares the conformance, because a
+    # protocol row with no accessor behind it is a promise nothing keeps.
+    for cls, methods in PROTOCOL_METHODS.items():
+        for method in methods:
+            api = "%s.%s" % (cls, method if method != "isSupported" else "supported")
+            entry = registry.get((api, "property"))
+            if entry is None:
+                failures.append("no registry row for %s, which the protocol declares" % api)
+            elif entry["status"] != "implemented":
+                failures.append("%s is %s" % (api, entry["status"]))
+    # Which protocol each class declares conformance to, as CharonVideoToolbox.h writes it: the six
+    # configuration classes conform to VTFrameProcessorConfiguration and the six parameters classes to
+    # VTFrameProcessorParameters. Asking a configuration class for -sourceFrame would be the check
+    # asserting something the header does not say.
+    CONFORMS = {
+        "VTFrameRateConversionConfiguration": "VTFrameProcessorConfiguration",
+        "VTLowLatencyFrameInterpolationConfiguration": "VTFrameProcessorConfiguration",
+        "VTLowLatencySuperResolutionScalerConfiguration": "VTFrameProcessorConfiguration",
+        "VTOpticalFlowConfiguration": "VTFrameProcessorConfiguration",
+        "VTSuperResolutionScalerConfiguration": "VTFrameProcessorConfiguration",
+        "VTTemporalNoiseFilterConfiguration": "VTFrameProcessorConfiguration",
+        "VTFrameRateConversionParameters": "VTFrameProcessorParameters",
+        "VTLowLatencyFrameInterpolationParameters": "VTFrameProcessorParameters",
+        "VTLowLatencySuperResolutionScalerParameters": "VTFrameProcessorParameters",
+        "VTOpticalFlowParameters": "VTFrameProcessorParameters",
+        "VTSuperResolutionScalerParameters": "VTFrameProcessorParameters",
+        "VTTemporalNoiseFilterParameters": "VTFrameProcessorParameters",
+        "VTMotionBlurConfiguration": "VTFrameProcessorConfiguration",
+        "VTMotionBlurParameters": "VTFrameProcessorParameters",
+    }
+    for cls, protocol in sorted(CONFORMS.items()):
+        unit = OBJECT_OF.get(cls, cls)
+        obj = os.path.join(build, unit + ".o")
+        if not os.path.exists(obj):
+            failures.append("no compiled object for %s (expected %s.o)" % (cls, unit))
+            continue
+        found = own_methods(obj)
+        for method in PROTOCOL_METHODS[protocol]:
+            if method not in found["instance"] and method not in found["class"]:
+                failures.append("%s.o defines no %s, which %s - the protocol it declares conformance to -"
+                                " carries in the built library" % (cls, method, protocol))
+
     # The HDR per-frame metadata session: the constant's string in the compiled object, and the three
     # functions as symbols. nm, not otool: these are C functions, and a C function has no ObjC method
     # list to read, so the only place its name lives is the symbol table.
@@ -293,10 +350,10 @@ def main():
             print("FAIL " + failure)
         print("videotoolbox-frameprocessor: %d failure(s)" % len(failures))
         return 1
-    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods, the HDR"
-          " session's 3 functions and its measured constant, and %d NS_UNAVAILABLE classes agree with the"
-          " host and with the registry"
-          % (len(codes), len(PROCESSOR_METHODS), len(NS_UNAVAILABLE_CLASSES)))
+    print("videotoolbox-frameprocessor: OK - the domain string, %d codes, %d processor methods, the"
+          " protocol accessors on %d conforming classes, the HDR session's 3 functions and its measured"
+          " constant, and %d NS_UNAVAILABLE classes agree with the host and with the registry"
+          % (len(codes), len(PROCESSOR_METHODS), len(CONFORMS), len(NS_UNAVAILABLE_CLASSES)))
     return 0
 
 

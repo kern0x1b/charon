@@ -188,6 +188,31 @@ SDK's own `getter=usesPrecomputedFlow` writes it. `-init` and `+new` are `absent
 
 `-initWithSourceFrame:destinationFrames:` builds it. `-init` and `+new` are `absent`.
 
+## The two protocols' eleven properties, and the eight renamed getters
+
+Eleven of this family's property rows name a PROTOCOL as their owner rather than a class - the eight
+`VTFrameProcessorConfiguration` properties and the three `VTFrameProcessorParameters` ones. Every
+conforming class in this library carries the accessor, and the protocols themselves carry the selectors
+in the built library (measured with `tools/corpus/objc-inventory.lua` over the 6.1.3 gate's
+`libVideoToolboxBackports.dylib`, armv7):
+
+```
+protocol	VTFrameProcessorConfiguration
+  instance	-destinationPixelBufferAttributes,-frameSupportedPixelFormats,-nextFrameCount,-previousFrameCount,-sourcePixelBufferAttributes
+  class		-isSupported,-maximumDimensions,-minimumDimensions
+protocol	VTFrameProcessorParameters
+  instance	-destinationFrame,-destinationFrames,-sourceFrame
+```
+
+so every one of the eleven rows is carried and every one has an `implemented` registry row.
+
+Eight rows are declared with the SDK's own renamed accessor - `getter=isSupported` on seven
+configuration classes and `getter=usesPrecomputedFlow` on `precomputedFlow` - so the selectors a class
+must carry are `+isSupported` and `-usesPrecomputedFlow`, and the built library's class set for each
+carries `-isSupported` and none carries `-supported`. Every one of the eight has an `implemented`
+registry row naming the selector the SDK's own attribute names, and no second accessor is added
+anywhere to satisfy a spelling.
+
 ## A renamed getter, and what the ledger reads
 
 Seven of the properties are declared `@property (class, nonatomic, readonly, getter=isSupported)
