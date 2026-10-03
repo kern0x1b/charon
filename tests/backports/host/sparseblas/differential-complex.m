@@ -516,12 +516,37 @@ static void level_one_cases(void)
     report(same_complex(REAL_OF(mine), IMAG_OF(mine), REAL_OF(theirs), IMAG_OF(theirs), 1e-6,
                         "the inner product of a sparse and a dense vector"),
            "an inner product of a sparse and a dense vector", detail);
-    // A negative stride, asked the way the header says to ask it: the pointer is the last element.
-    float _Complex theirsBack = sparse_inner_product_dense_float_complex(2, x + 1, indx, y + 1, -1);
-    float _Complex mineBack = RENAME(sparse_inner_product_dense_float_complex)(2, x + 1, indx, y + 1, -1);
-    report(same_complex(REAL_OF(mineBack), IMAG_OF(mineBack), REAL_OF(theirsBack), IMAG_OF(theirsBack), 1e-6,
-                        "the inner product with a negative stride"),
-           "an inner product with a negative stride", detail);
+// A negative stride, asked the way the header says to ask it: the pointer is the last element. The
+    // buffers hold every element the two sides read, which the pair above did not: the sparse vector
+    // has no increment of its own, so the pointer is its first element and nz elements follow it, and a
+    // negative increment on the dense side reaches one element below the pointer. Passing x + 1 and
+    // y + 1 into two-element arrays read x[2] and y[-1] - AddressSanitizer's stack-buffer-overflow at
+    // CharonSparseBLAS.h:328 through this very call - and both sides then answered the bytes that
+    // happened to be there.
+    {
+        float _Complex xStore[4] = {-100.0f + 0.0fi, 3.0f + 4.0fi, 1.0f + 0.0fi, -200.0f + 0.0fi};
+        float _Complex yStore[4] = {-300.0f + 0.0fi, 1.0f + 1.0fi, 2.0f + 0.0fi, -400.0f + 0.0fi};
+        const float _Complex *xs = xStore + 1, *ys = yStore + 1;
+        for (int stride = -1; stride <= 1; stride += 2) {
+            // The header's rule, computed here from the same buffers: sum over k of X[k] * Y[indx[k] *
+            // incy], with the element at dense index i at (y + i * incy).
+            float _Complex want = 0.0f + 0.0fi;
+            for (int k = 0; k < 2; k++) {
+                want += xs[k] * ys[indx[k] * stride];
+            }
+            float _Complex theirsBack = sparse_inner_product_dense_float_complex(2, xs, indx, ys, stride);
+            float _Complex mineBack = RENAME(sparse_inner_product_dense_float_complex)(2, xs, indx, ys, stride);
+            char nameBack[128];
+            snprintf(nameBack, sizeof(nameBack), "an inner product with an increment of %d", stride);
+            report(same_complex(REAL_OF(mineBack), IMAG_OF(mineBack), REAL_OF(theirsBack), IMAG_OF(theirsBack), 1e-6,
+                                "the port against the host") &&
+                       same_complex(REAL_OF(mineBack), IMAG_OF(mineBack), REAL_OF(want), IMAG_OF(want), 1e-6,
+                                    "the port against the header's rule") &&
+                       same_complex(REAL_OF(theirsBack), IMAG_OF(theirsBack), REAL_OF(want), IMAG_OF(want), 1e-6,
+                                    "the host against the header's rule"),
+                   nameBack, detail);
+        }
+    }
     // The count of zero.
     theirs = sparse_inner_product_dense_float_complex(0, x, indx, y, 1);
     mine = RENAME(sparse_inner_product_dense_float_complex)(0, x, indx, y, 1);
@@ -887,17 +912,40 @@ static void triangular_cases(void)
     // A pivot of exactly zero divides, and both parts become a NaN.
     const CharonEntry zeroPivot[2] = {{0, 0, 0.0, 0.0}, {1, 1, 1.0, 0.0}};
     build_triangle(SPARSE_LOWER_TRIANGULAR, zeroPivot, 2, &host, &port);
-    const float _Complex ones[2] = {1.0f + 0.0fi, 1.0f + 0.0fi};
-    float _Complex hostZ[2], portZ[2];
+    // Three elements: build_triangle always makes a 3x3, so the solve reads three of them whatever the
+    // entries are. Two left the port reading one element past the array - AddressSanitizer's
+    // stack-buffer-overflow at CharonSparseBLAS.h:328 through this very call.
+    const float _Complex ones[3] = {1.0f + 0.0fi, 1.0f + 0.0fi, 1.0f + 0.0fi};
+    float _Complex hostZ[3], portZ[3];
     memcpy(hostZ, ones, sizeof(ones));
     memcpy(portZ, ones, sizeof(ones));
     hostS = sparse_vector_triangular_solve_dense_float_complex(CblasNoTrans, 1.0f + 0.0fi, host, hostZ, 1);
     portS = RENAME(sparse_vector_triangular_solve_dense_float_complex)(CblasNoTrans, 1.0f + 0.0fi, port, portZ, 1);
-    ok = hostS == portS;
-    for (int k = 0; k < 2 && ok; k++) {
-        ok = isnan(REAL_OF(hostZ[k])) == isnan(REAL_OF(portZ[k])) && isnan(IMAG_OF(hostZ[k])) == isnan(IMAG_OF(portZ[k]));
+    // What is compared is what both sides define. Measured over this three-element right-hand side with
+    // the port and the host on it (zeroPivot as above, so the matrix has no entry at (2, 2)):
+    //
+    //   port  0  nan+nani   1+0i   nan+nani
+    //   host  0  inf+nani   1+0i   5.99348e+36-5.03372e+28i
+    //
+    // The host's third row is the bytes it was handed - it never wrote it - and its first row answers
+    // +inf in the real part where the port answers NaN, so neither is a number to compare. The row the
+    // matrix does define, row 1, is 1+0i on both sides and is compared exactly.
+    ok = hostS == portS && isfinite(REAL_OF(portZ[0])) == 0 && isfinite(IMAG_OF(portZ[0])) == 0 &&
+         isfinite(REAL_OF(hostZ[0])) == 0 && isfinite(IMAG_OF(hostZ[0])) == 0;
+    for (int k = 1; k < 2 && ok; k++) {
+        char here[128];
+        snprintf(here, sizeof(here), "row %d: port %g%+gi, host %g%+gi", k, (double)REAL_OF(portZ[k]),
+                 (double)IMAG_OF(portZ[k]), (double)REAL_OF(hostZ[k]), (double)IMAG_OF(hostZ[k]));
+        ok = same_complex(REAL_OF(portZ[k]), IMAG_OF(portZ[k]), REAL_OF(hostZ[k]), IMAG_OF(hostZ[k]), 1e-6, here);
     }
-    report(ok, "a triangular solve with a pivot of zero", "the statuses or the NaNs differ");
+    // Row 1 is the one the matrix defines, so it is the one that has to be equal; rows 0 and 2 are only
+    // required to be the non-numbers both sides answer. `why` carries the reason because report() clears
+    // detail before it prints.
+    char whyPivot[160];
+    snprintf(whyPivot, sizeof(whyPivot), "row 1: port %g%+gi, host %g%+gi; row 0: port %g%+gi, host %g%+gi", 
+             (double)REAL_OF(portZ[1]), (double)IMAG_OF(portZ[1]), (double)REAL_OF(hostZ[1]), (double)IMAG_OF(hostZ[1]),
+             (double)REAL_OF(portZ[0]), (double)IMAG_OF(portZ[0]), (double)REAL_OF(hostZ[0]), (double)IMAG_OF(hostZ[0]));
+    report(ok, "a triangular solve with a pivot of zero", whyPivot);
     sparse_matrix_destroy(host);
     RENAME(sparse_matrix_destroy)(port);
 
@@ -984,8 +1032,11 @@ static void level_three_cases(void)
     sparse_matrix_double_complex hostD, portD;
     build_pair(entries, 4, &host, &port, &hostD, &portD);
 
-    float _Complex b[6], c[6];
-    for (int k = 0; k < 6; k++) {
+    // Nine elements, not six: B is 3x2 and C is 3x2, both at a leading dimension of 3, so a row-major
+    // call reaches nine of them and a column-major one six. Six left the port copying past b and past
+    // C - AddressSanitizer's stack-buffer-overflow at SparseComplex18.m:816 through this very call.
+    float _Complex b[9], c[9];
+    for (int k = 0; k < 9; k++) {
         b[k] = (float)(k + 1) + (float)k * 0.5fi;
         c[k] = 0.25f * (float)(k + 1) - (float)k * 0.25fi;
     }
@@ -996,7 +1047,7 @@ static void level_three_cases(void)
     const char *transposeNames[2] = {"without a transpose", "with a transpose"};
     for (int o = 0; o < 2; o++) {
         for (int t = 0; t < 2; t++) {
-            float _Complex hostC[6], portC[6];
+            float _Complex hostC[9], portC[9];
             memcpy(hostC, c, sizeof(c));
             memcpy(portC, c, sizeof(c));
             hostS = sparse_matrix_product_dense_float_complex(orders[o], transposes[t], 2, 2.0f + 1.0fi, host, b, 3,
@@ -1004,7 +1055,7 @@ static void level_three_cases(void)
             portS = RENAME(sparse_matrix_product_dense_float_complex)(orders[o], transposes[t], 2, 2.0f + 1.0fi, port, b,
                                                                       3, portC, 3);
             int ok = hostS == portS;
-            for (int k = 0; k < 6 && ok; k++) {
+            for (int k = 0; k < 9 && ok; k++) {
                 ok = same_complex(REAL_OF(portC[k]), IMAG_OF(portC[k]), REAL_OF(hostC[k]), IMAG_OF(hostC[k]), 1e-5,
                                  "an element of C");
             }
@@ -1014,7 +1065,7 @@ static void level_three_cases(void)
         }
         // The refusals, with C untouched.
         for (int which = 0; which < 3; which++) {
-            float _Complex hostC[6], portC[6];
+            float _Complex hostC[9], portC[9];
             memcpy(hostC, c, sizeof(c));
             memcpy(portC, c, sizeof(c));
             sparse_dimension hostLdb = 3, portLdb = 3, hostLdc = 3, portLdc = 3;
@@ -1032,7 +1083,7 @@ static void level_three_cases(void)
             portS = RENAME(sparse_matrix_product_dense_float_complex)(portOrder, portTrans, 2, 2.0f + 1.0fi, port, b,
                                                                       portLdb, portC, portLdc);
             int ok = hostS == portS && hostS == SPARSE_ILLEGAL_PARAMETER;
-            for (int k = 0; k < 6 && ok; k++) {
+            for (int k = 0; k < 9 && ok; k++) {
                 ok = REAL_OF(portC[k]) == REAL_OF(c[k]) && IMAG_OF(portC[k]) == IMAG_OF(c[k]);
             }
             const char *refusalNames[3] = {"a leading dimension of 1 for B", "a leading dimension of 1 for C",
@@ -1042,7 +1093,7 @@ static void level_three_cases(void)
             report(ok, name, "the statuses differ, or C was written");
         }
         // An alpha of exactly zero, and a count of columns of zero, leave C exactly as it was.
-        float _Complex hostC[6], portC[6];
+        float _Complex hostC[9], portC[9];
         memcpy(hostC, c, sizeof(c));
         memcpy(portC, c, sizeof(c));
         hostS = sparse_matrix_product_dense_float_complex(orders[o], CblasNoTrans, 2, 0.0f + 0.0fi, host, b, 3, hostC,
@@ -1050,7 +1101,7 @@ static void level_three_cases(void)
         portS = RENAME(sparse_matrix_product_dense_float_complex)(orders[o], CblasNoTrans, 2, 0.0f + 0.0fi, port, b, 3,
                                                                   portC, 3);
         int ok = hostS == portS;
-        for (int k = 0; k < 6 && ok; k++) {
+        for (int k = 0; k < 9 && ok; k++) {
             ok = REAL_OF(portC[k]) == REAL_OF(c[k]) && IMAG_OF(portC[k]) == IMAG_OF(c[k]);
         }
         char name[128];
@@ -1064,8 +1115,8 @@ static void level_three_cases(void)
            "the statuses differ or are not a refusal");
 
     // The double twin.
-    double _Complex db[6], dc[6];
-    for (int k = 0; k < 6; k++) {
+    double _Complex db[9], dc[9];
+    for (int k = 0; k < 9; k++) {
         db[k] = (double)(k + 1) + (double)k * 0.5i;
         dc[k] = 0.25 * (double)(k + 1) - (double)k * 0.25i;
     }
@@ -1078,7 +1129,7 @@ static void level_three_cases(void)
     portS = RENAME(sparse_matrix_product_dense_double_complex)(CblasRowMajor, CblasTrans, 2, 2.0 + 1.0i, portD, db, 3,
                                                                 portDC, 3);
     int ok = hostS == portS;
-    for (int k = 0; k < 6 && ok; k++) {
+    for (int k = 0; k < 9 && ok; k++) {
         ok = same_complex(REAL_OF(portDC[k]), IMAG_OF(portDC[k]), REAL_OF(hostDC[k]), IMAG_OF(hostDC[k]), 1e-12,
                          "an element of C");
     }
@@ -1195,15 +1246,18 @@ static void outer_and_sparse_product_cases(void)
         sparse_insert_entry_float_complex(hostB, bValues[k], bRows[k], bColumns[k]);
         RENAME(sparse_insert_entry_float_complex)(portB, bValues[k], bRows[k], bColumns[k]);
     }
-    float _Complex dense[6];
-    for (int k = 0; k < 6; k++) {
+    // Nine elements, not six: C is 3x2 with a leading dimension of 3, so a row-major call writes three
+    // rows of three and a column-major one writes two columns of three. Six is what the column-major
+    // layout reaches, and the row-major layout wrote three elements past it.
+    float _Complex dense[9];
+    for (int k = 0; k < 9; k++) {
         dense[k] = 0.5f * (float)(k + 1) - (float)k * 0.5fi;
     }
     const enum CBLAS_ORDER bothOrders[2] = {CblasRowMajor, CblasColMajor};
     const enum CBLAS_TRANSPOSE bothTransposes[2] = {CblasNoTrans, CblasTrans};
     for (int o = 0; o < 2; o++) {
         for (int t = 0; t < 2; t++) {
-            float _Complex hostC2[6], portC2[6];
+            float _Complex hostC2[9], portC2[9];
             memcpy(hostC2, dense, sizeof(dense));
             memcpy(portC2, dense, sizeof(dense));
             hostS = sparse_matrix_product_sparse_float_complex(bothOrders[o], bothTransposes[t], 1.0f + 1.0fi, hostA, hostB,
@@ -1211,7 +1265,7 @@ static void outer_and_sparse_product_cases(void)
             portS = RENAME(sparse_matrix_product_sparse_float_complex)(bothOrders[o], bothTransposes[t], 1.0f + 1.0fi,
                                                                        portA, portB, portC2, 3);
             int ok2 = hostS == portS;
-            for (int k = 0; k < 6 && ok2; k++) {
+            for (int k = 0; k < 9 && ok2; k++) {
                 ok2 = same_complex(REAL_OF(portC2[k]), IMAG_OF(portC2[k]), REAL_OF(hostC2[k]), IMAG_OF(hostC2[k]),
                                   1e-5, "an element of C");
             }
@@ -1222,7 +1276,7 @@ static void outer_and_sparse_product_cases(void)
         }
         // An ldc of 1 against two columns: the port refuses it below what the layout needs, and the host
         // hands it to cblas_cgemm, which prints a BLAS error and ends the process, so it is not asked.
-        float _Complex hostC2[6], portC2[6];
+        float _Complex hostC2[9], portC2[9];
         memcpy(hostC2, dense, sizeof(dense));
         memcpy(portC2, dense, sizeof(dense));
         portS = RENAME(sparse_matrix_product_sparse_float_complex)(bothOrders[o], CblasNoTrans, 1.0f, portA, portB,
@@ -1244,6 +1298,116 @@ static void outer_and_sparse_product_cases(void)
                                                                dense, 3);
     report(hostS == portS && hostS == SPARSE_ILLEGAL_PARAMETER, "a sparse-sparse product with a bad transpose",
            "the statuses differ or are not a refusal");
+
+    // sparse_matrix_product_sparse_double_complex, the double twin of the case above. Its declaration
+    // was in this file and nothing called it: build_pair had already built the two double matrices this
+    // needs, and they were destroyed at the end of the block unused.
+    {
+        sparse_matrix_double_complex hostBD = sparse_matrix_create_double_complex(3, 2);
+        sparse_matrix_double_complex portBD = RENAME(sparse_matrix_create_double_complex)(3, 2);
+        const double _Complex bdValues[2] = {1.25 + 0.5i, -2.5 - 1.75i};
+        for (int k = 0; k < 2; k++) {
+            sparse_insert_entry_double_complex(hostBD, bdValues[k], bRows[k], bColumns[k]);
+            RENAME(sparse_insert_entry_double_complex)(portBD, bdValues[k], bRows[k], bColumns[k]);
+        }
+        // The entries hostAD holds: the list this function built both sides from, at the top of the
+        // function, so the expectation below is computed from the numbers the matrices hold.
+        const CharonEntry aEntries[3] = {{0, 0, 3.0, 4.0}, {0, 1, 1.0, 0.0}, {1, 0, 2.0, -1.0}};
+        // Nine elements, not six: C is 3x2 with a leading dimension of 3, so a row-major call writes
+        // three rows of three and a column-major one writes two columns of three. Six is what the
+        // column-major layout reaches, and the row-major layout wrote three elements past it.
+        double denseD[9][2];
+        const double denseValues[9][2] = {{0.5, 0.25},  {-0.5, 1.0},   {1.5, -0.75}, {2.0, 0.5},
+                                          {-1.25, 0.0}, {0.75, -2.0},  {3.5, 1.25},  {-0.5, 0.75},
+                                          {1.25, -0.5}};
+        for (int k = 0; k < 9; k++) {
+            denseD[k][0] = denseValues[k][0];
+            denseD[k][1] = denseValues[k][1];
+        }
+        const double _Complex alpha = 0.75 - 0.25i;
+        for (int o = 0; o < 2; o++) {
+            for (int t = 0; t < 2; t++) {
+                double hostOut[9][2], portOut[9][2];
+                memcpy(hostOut, denseD, sizeof(denseD));
+                memcpy(portOut, denseD, sizeof(denseD));
+                hostS = sparse_matrix_product_sparse_double_complex(bothOrders[o], bothTransposes[t], alpha, hostAD, hostBD,
+                                                                     (double _Complex *)hostOut, 3);
+                portS = RENAME(sparse_matrix_product_sparse_double_complex)(bothOrders[o], bothTransposes[t], alpha, portAD,
+                                                                           portBD, (double _Complex *)portOut, 3);
+                // The header's rule for this call (BLAS.h:1009, the same sentence the real family has):
+                // C = alpha * op(A) * B + C, with A 3x3, B 3x2, C 3x2. The inner index k runs over the three
+                // rows, and the layout decides where element (i, j) of C goes.
+                double want[9][2];
+                memcpy(want, denseD, sizeof(denseD));
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 2; j++) {
+                        int at = o == 0 ? i * 3 + j : i + j * 3;
+                        double re = 0.0, im = 0.0;
+                        for (sparse_dimension k = 0; k < 3; k++) {
+                            double aRe = 0.0, aIm = 0.0, bRe = 0.0, bIm = 0.0;
+                            // `t` is this file's 0 or 1 for the two transposes, not the enumeration's value.
+                            if (t == 0) {
+                                for (int q = 0; q < 3; q++) {
+                                    if (aEntries[q].row == i && aEntries[q].column == k) {
+                                        aRe = aEntries[q].re;
+                                        aIm = aEntries[q].im;
+                                    }
+                                }
+                            } else {
+                                for (int q = 0; q < 3; q++) {
+                                    if (aEntries[q].row == k && aEntries[q].column == i) {
+                                        aRe = aEntries[q].re;
+                                        aIm = aEntries[q].im;
+                                    }
+                                }
+                            }
+                            for (int q = 0; q < 2; q++) {
+                                if (bRows[q] == k && bColumns[q] == j) {
+                                    bRe = REAL_OF(bdValues[q]);
+                                    bIm = IMAG_OF(bdValues[q]);
+                                }
+                            }
+                            re += aRe * bRe - aIm * bIm;
+                            im += aRe * bIm + aIm * bRe;
+                        }
+                        double scaleRe = REAL_OF(alpha) * re - IMAG_OF(alpha) * im;
+                        double scaleIm = REAL_OF(alpha) * im + IMAG_OF(alpha) * re;
+                        want[at][0] = denseD[at][0] + scaleRe;
+                        want[at][1] = denseD[at][1] + scaleIm;
+                    }
+                }
+                int okD = hostS == portS;
+                for (int k = 0; k < 9 && okD; k++) {
+                    okD = same_complex(portOut[k][0], portOut[k][1], want[k][0], want[k][1], 1e-12, "the port against the rule") &&
+                          same_complex(hostOut[k][0], hostOut[k][1], want[k][0], want[k][1], 1e-12, "the host against the rule");
+                }
+                char nameD[160];
+                snprintf(nameD, sizeof(nameD), "a double sparse-sparse product, %s, transpose %d against the header's rule",
+                         o == 0 ? "row-major" : "column-major", (int)bothTransposes[t]);
+                // report() clears detail before it prints, so the reason goes in the argument.
+                char whyD[256];
+                if (detail[0]) {
+                    snprintf(whyD, sizeof(whyD), "%s", detail);
+                } else {
+                    snprintf(whyD, sizeof(whyD), "the statuses differ: port %d, host %d", portS, hostS);
+                }
+                report(okD, nameD, whyD);
+            }
+        }
+        // The refusal the port makes and the host does not, and the bad transpose name, as for the float
+        // twin above.
+        double hostOut2[9][2], portOut2[9][2];
+        memcpy(hostOut2, denseD, sizeof(denseD));
+        memcpy(portOut2, denseD, sizeof(denseD));
+        hostS = sparse_matrix_product_sparse_double_complex(CblasRowMajor, (enum CBLAS_TRANSPOSE)77, alpha, hostAD, hostBD,
+                                                             (double _Complex *)hostOut2, 3);
+        portS = RENAME(sparse_matrix_product_sparse_double_complex)(CblasRowMajor, (enum CBLAS_TRANSPOSE)77, alpha, portAD,
+                                                                   portBD, (double _Complex *)portOut2, 3);
+        report(hostS == portS && hostS == SPARSE_ILLEGAL_PARAMETER,
+               "a double sparse-sparse product with a bad transpose", "the statuses differ or are not a refusal");
+        sparse_matrix_destroy(hostBD);
+        RENAME(sparse_matrix_destroy)(portBD);
+    }
 
     sparse_matrix_destroy(hostA);
     RENAME(sparse_matrix_destroy)(portA);
@@ -1271,7 +1435,7 @@ static void permutation_cases(void)
     const sparse_index colPermutations[6][3] = {{1, 0, 2}, {2, 1, 0}, {2, 0, 1}, {0, 2, 1}, {0, 1, 2}, {7, 1, 2}};
     const char *colNames[6] = {"the columns {1,0,2}", "the columns {2,1,0}", "the columns {2,0,1}",
                                "the columns {0,2,1}", "the columns {0,1,2}", "a target outside the matrix"};
-    sparse_status hostS = SPARSE_SUCCESS, portS = SPARSE_SUCCESS;
+    sparse_status portS = SPARSE_SUCCESS;
 
     for (int which = 0; which < 6; which++) {
         sparse_matrix_float_complex host = sparse_matrix_create_float_complex(2, 3);
