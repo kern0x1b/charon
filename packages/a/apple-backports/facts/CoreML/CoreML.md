@@ -535,3 +535,38 @@ finds 245 `ML*` classes and 23 `ML*` protocols in 12.0's arm64 cache, among them
 reader's. `MLTask`, `MLUpdateTask`, `MLUpdateContext`, `MLUpdateProgressHandlers`, `MLWritable`,
 `MLKey`, `MLMetricKey` and `MLParameterKey` all read 16.0 from `tools/cache-index/first-rung.py`:
 the held ladder has a hole between 12.0 and 16.0, so a 13.0 name's first held rung is 16.0.
+
+## Which translation units emit a protocol's metadata object, and what that means for the duplicate
+
+The open crutch entry "Core ML's `MLFeatureProvider` protocol object is defined by two objects" names its
+native fix as taking this whole folder off Apple's umbrella, because `MLFeatureProvider.m` "must see
+Apple's definition, so it must import `<CoreML/CoreML.h>`". **Measured, that premise does not hold**: what
+makes a translation unit emit `__OBJC_PROTOCOL_$_<name>` is not what it imports but whether it *conforms to*
+the protocol or names it in `@protocol()`. Three objects compiled for armv7-apple-ios6.0 against the SDK of
+iOS 16.4, each reading `#import <CoreML/MLFeatureProvider.h>` and nothing else, and each `nm -g`-ed:
+
+| the object | `__OBJC_PROTOCOL_$_MLFeatureProvider` |
+| --- | --- |
+| imports the header and declares nothing that uses the protocol | **0** symbols |
+| imports the header and uses `id<MLFeatureProvider>` and `@protocol(MLFeatureProvider)` | **0** symbols |
+| imports the header and declares `@interface MyProvider : NSObject <MLFeatureProvider>` | **1** symbol |
+
+So Core ML's headers being modular or not is beside the point: `MLFeatureProvider.m` emits the object
+because `MLDictionaryFeatureProvider` **conforms** to `MLFeatureProvider`, and it would emit it from
+`<CoreML/MLFeatureProvider.h>` exactly as it does from `<CoreML/CoreML.h>`. Taking the folder off the
+umbrella therefore leaves the duplicate in place, and the seven files that use `MLFeatureType` would still
+need that enum from one place or the other - which is the AppIntents entry's "two spellings of one type"
+again.
+
+The other definer is deliberate and is in the build, not in this folder. `protocol_sources()` in
+`modules/apple/backports.lua` writes, for each `implemented` protocol row, a generated
+`<Library>Protocols<release>.m` whose whole body is `(void)@protocol(Name);` inside a function marked
+`used`, so that clang emits the object into that object - which is what makes `objc_getProtocol` and
+`conformsToProtocol:` answer for a protocol no release's own dylib carries. `MLFeatureProvider` has such a
+row (`registry/CoreML/ios11.json`, `implemented`, `11.0`) and `MLBatchProvider` has one too
+(`registry/CoreML/absent_CoreML.json`, `implemented`, `12.0`), which is the same pair of definers the entry
+describes for the second protocol.
+
+**What would remove the duplicate, then, is in `protocol_sources()` and not in this folder**: force the
+object only for a protocol no other object of the same library already defines. That is the build module's
+own change and not this directory's, and it is the coordinator's to make.
