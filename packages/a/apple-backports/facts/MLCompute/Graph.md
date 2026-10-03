@@ -216,3 +216,47 @@ Not asked, and why: the two `summarizedDOTDescription` answers above (415 charac
 and the row is MLCGraph's); the framework's own first argument to a completion handler, which nothing reads
 and which the port states in its own file; and the multi-node value of `deviceMemorySize`, which no binding
 reaches without the raise above.
+
+## `deviceMemorySize` over the bindings, and the rule taken back
+
+Restored at landing from the previous version of this page, verbatim but for the line introducing the rules and the second rule, which the
+measurement above took back (the third paragraph below, from the commit that took it back). This is the
+device-memory table the multi-node rule above refers to.
+
+**`deviceMemorySize` is pinned down, and it is none of the three hypotheses.**
+`tests/backports/host/mlcompute/probes/device-memory.m` builds graphs where the input's bytes, the output's
+bytes and a sum over both are three different numbers. Every operand in it is a tensor the probe makes, never
+one a node made, because a graph's own result asked for as an output raised inside the host on the earlier
+sweep. What this host answers, over a graph with a single node whose result holds six `MLCDataTypeFloat32`
+elements - twenty-four bytes - and over one whose result holds one - four bytes:
+
+| the graph | before a compile | after |
+| --- | --- | --- |
+| six elements, nothing bound | 0 | **24** |
+| six elements, one input of six | 24 | **24** |
+| six elements, one input of **one** | 24 | **24** |
+| six elements, one output of six | 24 | **24** |
+| six elements, an input of one **and** an output of six | 24 | **24** |
+| six elements, two inputs of six | 24 | **24** |
+| six elements, one input of six and **two** outputs of six | 24 | **24** |
+| six elements, an input of one and outputs of six and one | 24 | **24** |
+| **one element**, an input of one and an output of one | 0 | **4** |
+| one element, nothing bound | 4 | **4** |
+| one element, an input of six | 4 | **4** |
+| one element, an input of six and an output of one | 4 | **4** |
+| two graphs linked, one bound to an input of one and the other to six | 24 and 24 | **24 and 24** |
+
+The rule that stands, measured (the second this page carried is taken back below; the "before a compile" column of 24 rows is what that taken-back rule was read from, and is not explained):
+
+* **It is the byte width of a tensor the graph's OWN nodes produce.** The caller's bindings do not move it at
+  all: an input of one element and an input of six over the same six-element graph are the same 24, two
+  outputs of six are the same 24, and a graph whose node holds one element is 4 whatever is bound to it and
+  whatever a link adds. So the input's bytes, the output's bytes and a sum over both are **all three refuted**.
+
+**A rule this facts page carried and has taken back: "another graph in the same process".** It said
+deviceMemorySize is 0 "until the graph has been compiled - or until another graph in the same process has
+been", naming a third graph, made after two had compiled and never compiled itself, as answering 24 on its
+first read. The training graph's own first read refutes the rule that sentence stated: with a compiled
+inference graph beside it, it answers 0, and 24 only after its own compile has been asked - which answers NO.
+What that third graph shared with the compiled ones is not recorded anywhere, so no lazy global of the
+framework is claimed; what is measured is the per-graph rule, and the port implements that one.
