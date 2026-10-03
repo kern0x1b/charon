@@ -68,11 +68,14 @@ def build(path, annotations, extra_objects=(), catalog_extra=b"", pages_extra=b"
     contents = [b"%d 0 R" % (3 + page_count + i) for i in range(page_count)]
     resources = b"<< /Font << /F1 %d 0 R >> >>" % font_number
     kids = b" ".join(b"%d 0 R" % (3 + i) for i in range(page_count))
-    # The /Pages node carries /Parent 1 0 R - the catalog - as a conforming writer emits it.  Without it
-    # nothing can walk UP from a page to the catalog, and the outline fixtures need to: the first version
-    # of these pages omitted it and every outline fixture's root read as nil on the port side.
+    # The /Pages node carries NO /Parent, and that is right: the catalog is the parent of the page tree
+    # in the sense that the TRAILER's /Root names it, and a real PDF does not put /Parent on the root
+    # /Pages node.  An earlier version of this file added one, so that -outlineRoot could reach the
+    # catalog by walking /Parent up from a page - and that walk was only ever working because of this
+    # line.  The catalog now comes from CGPDFDocumentGetCatalog, which is in the release, so the line is
+    # gone and the fixtures are ordinary documents again.
     objects[1] = (b"<< /Type /Pages /Kids [" + kids + b"] /Count " + str(page_count).encode()
-                  + b" /Parent 1 0 R" + pages_extra + b" >>")
+                  + pages_extra + b" >>")
     for i in range(page_count):
         objects[2 + i] = (b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Annots ["
                           + annots + b"] /Resources " + resources + b" /Contents " + contents[i]
@@ -696,8 +699,8 @@ def main():
         ("mk-rot-real.pdf", [MK_ROT_REAL]),
         ("mk-r-zero.pdf", [MK_R_ZERO]),
     ]
-    for name, spec, sign, signs, extra in (("outline-open.pdf", OUTLINE_OPEN, -1, None, 0),
-                                    ("outline-closed.pdf", OUTLINE_CLOSED, 1, None, 0),
+    for name, spec, sign, signs, extra in (("outline-collapsed.pdf", OUTLINE_OPEN, -1, None, 0),
+                                    ("outline-expanded.pdf", OUTLINE_CLOSED, 1, None, 0),
                                     ("outline-shapes.pdf", OUTLINE_SHAPES, -1, None, 0),
                                     ("outline-signs.pdf", OUTLINE_SIGNS, -1, OUTLINE_SIGNS_SIGNS, 0),
                                     ("outline-nocount.pdf", OUTLINE_NO_COUNT, -1, None, 0),

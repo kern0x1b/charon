@@ -439,17 +439,17 @@ for key in \
     initoutline.dest \
     initoutline.root \
     initoutline.root \
-    outline-open.pdf.outline.label \
-    outline-open.pdf.outline.children \
-    outline-open.pdf.outline.isOpen \
-    outline-open.pdf.outline.parent \
-    outline-open.pdf.c0.outline.index \
-    outline-open.pdf.c0.outline.isOpen \
-    outline-open.pdf.c0.outline.dest.point \
-    outline-open.pdf.c0.outline.action.type \
-    outline-open.pdf.c0.c0.outline.label \
-    outline-open.pdf.c0.c1.outline.index \
-    outline-open.pdf.c1.outline.action.class \
+    outline-collapsed.pdf.outline.label \
+    outline-collapsed.pdf.outline.children \
+    outline-collapsed.pdf.outline.isOpen \
+    outline-collapsed.pdf.outline.parent \
+    outline-collapsed.pdf.c0.outline.index \
+    outline-collapsed.pdf.c0.outline.isOpen \
+    outline-collapsed.pdf.c0.outline.dest.point \
+    outline-collapsed.pdf.c0.outline.action.type \
+    outline-collapsed.pdf.c0.c0.outline.label \
+    outline-collapsed.pdf.c0.c1.outline.index \
+    outline-collapsed.pdf.c1.outline.action.class \
     outline-signs.pdf.c0.outline.isOpen \
     outline-signs.pdf.c1.outline.isOpen \
     outline-nocount.pdf.c0.outline.isOpen \
@@ -461,7 +461,11 @@ for key in \
     outline-shapes.pdf.c0.c0.outline.action.dest.point \
     outline-shapes.pdf.c2.outline.dest.page \
     outline-shapes2.pdf.c0.c1.outline.isOpen \
-    act-goto-fit.pdf.outline
+    act-goto-fit.pdf.outline \
+    outline-collapsed.pdf.childPastEnd \
+    outline-collapsed.pdf.c0.childPastEnd \
+    outline-collapsed.pdf.c0.c0.childPastEnd \
+    outline-nocount.pdf.c0.childPastEnd
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then

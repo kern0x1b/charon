@@ -93,6 +93,20 @@ static void printOutlineWalk(const char *name, PDFOutline *outline, int depth)
         snprintf(key, sizeof(key), "%s.c%lu", name, (unsigned long)i);
         printOutlineWalk(key, [outline childAtIndex:i], depth + 1);
     }
+    // ONE PAST THE END, inside @try: the host RAISES NSRangeException there - measured - so the value
+    // printed is the EXCEPTION'S NAME rather than an object, and a side that answers nil names itself.
+    {
+        char key[512];
+        snprintf(key, sizeof(key), "%s.childPastEnd", name);
+        @try {
+            // NIL IS ITS OWN ANSWER and is not an object: the first version of this block printed
+            // "an-object" whatever the call returned, so a side answering nil named itself as an object
+            PDFOutline *past = [outline childAtIndex:outline.numberOfChildren];
+            printf("%s=%s\n", key, past == nil ? "(nil)" : "an-object");
+        } @catch (NSException *raised) {
+            printf("%s=%s\n", key, [[raised name] UTF8String]);
+        }
+    }
     (void)depth;
 }
 

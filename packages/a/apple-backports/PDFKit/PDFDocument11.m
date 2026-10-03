@@ -253,27 +253,13 @@
 {
     if (_document == NULL)
         return nil;
-    // The CATALOG, reached by walking /Parent up from the first page.  There is no
-    // CGPDFDocumentGetDictionary in this SDK - not in CGPDFDocument.h and not in the release's export
-    // table - so the trailer is not reachable directly, and the /Parent chain from a page to the /Pages
-    // node to the /Catalog is, with every step read through the release's own dictionary reader.  A
-    // document with no page has no walk and answers nil, which is also the only case in which there is
-    // nothing to read an outline from.
-    if (CGPDFDocumentGetNumberOfPages(_document) == 0)
-        return nil;
-    CGPDFDictionaryRef node = CGPDFPageGetDictionary(CGPDFDocumentGetPage(_document, 1));
-    CGPDFDictionaryRef catalog = NULL;
-    for (int step = 0; node != NULL && step < 64; step++) {
-        const char *kind = NULL;
-        if (CGPDFDictionaryGetName(node, "Type", &kind) && kind != NULL && strcmp(kind, "Catalog") == 0) {
-            catalog = node;
-            break;
-        }
-        CGPDFDictionaryRef parent = NULL;
-        if (!CGPDFDictionaryGetDictionary(node, "Parent", &parent) || parent == NULL)
-            break;
-        node = parent;
-    }
+    // The CATALOG, through the release's own reader for it.  The first version of this walked UP from
+    // page 1 through /Parent, because CGPDFDocumentGetCatalog looked absent - and it is not: it is at
+    // CGPDFDocument.h:172, CG_AVAILABLE_STARTING(10.3, 2.0), and this SDK declares it.  The walk was
+    // worse than unnecessary: it only ever worked because the same commit gave the root /Pages node a
+    // /Parent, which a real PDF does not have, so on any real document -outlineRoot would have answered
+    // nil.  That fixture change is reverted in this commit too.
+    CGPDFDictionaryRef catalog = CGPDFDocumentGetCatalog(_document);
     if (catalog == NULL)
         return nil;
     CGPDFDictionaryRef root = NULL;

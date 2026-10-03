@@ -404,10 +404,9 @@ typedef NS_ENUM(NSInteger, PDFActionNamedName) {
 // which are WRITE paths - this port reads documents, and a method that changed an outline would have to
 // write one back into the file.
 //
-// -childAtIndex: answers nil past the last child where the host RAISES NSRangeException.  That is a
-// measured boundary and not a match: a differential cannot compare a raised exception against an answer,
-// so the harness does not ask one past the end, and a caller that gets nil can say so.  See PDFOutline11.m
-// and the row.
+// -childAtIndex: has TWO out-of-range answers, and both are implemented because both are measured: a
+// node WITH children raises NSRangeException past the end, and a node with NO children answers nil even
+// at index 0.  See PDFOutline11.m and the row.
 @interface PDFOutline : NSObject
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 @property (nonatomic, readonly, weak, nullable) PDFDocument *document;
