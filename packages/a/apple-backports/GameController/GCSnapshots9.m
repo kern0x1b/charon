@@ -7,8 +7,6 @@
 // facts/GameController/Snapshots.md holds the measurements: a zeroed structure encodes as 20 bytes
 // beginning 0001 1400, and the reader takes 20 bytes and refuses 21.
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
 NSData *NSDataFromGCMicroGamepadSnapShotDataV100(GCMicroGamepadSnapShotDataV100 *snapshotData)
 {
     return charon_gc_snapshot_data(snapshotData, sizeof(GCMicroGamepadSnapShotDataV100), GCMicroGamepadSnapshotDataVersion1);

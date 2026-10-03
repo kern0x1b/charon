@@ -8,10 +8,14 @@
 //
 // GCExtendedGamepadSnapshot.h:24 and GCMicroGamepadSnapshot.h:25 mark both classes
 // API_DEPRECATED("... has been deprecated, use [GCController controllerWithExtendedGamepad] instead",
-// ios(9.0, 13.0)), and the two structures they serialise carry the same mark on their typedefs. A
-// backport that stopped carrying them at 13.0 would be answering for a release that has the classes,
-// so the suppression is that sentence and nothing else, scoped to this file's two implementations
-// rather than left file-wide.
+// ios(9.0, 13.0)), and the two structures they serialise carry the same mark on their typedefs. That
+// mark needs no suppression here, and the reason is worth writing down because three files of this
+// library used to carry one for it and it suppressed nothing. A deprecation is diagnosed only where it
+// has begun: this port's floor is 6.0, the deprecation starts at 9.0, and so for a binary that deploys
+// at 6.0 the API is current and the compiler has nothing to say. Measured with the suppression removed
+// and this file compiled the way modules/apple/backports.lua compiles it - zero deprecation
+// diagnostics, at the port's own target and at a 14.0 one. The classes are carried from 9.0 and
+// stopped at 13.0, which is the header's own chronology and not a choice here.
 //
 // What a snapshot is, is the header's own: a profile of the game's own elements that holds the values
 // it was saved from and answers them again. So the two classes below hold the data and push it through
@@ -29,9 +33,6 @@
 // declares at 7.0 (GCExtendedGamepad.h:65) returning a class that first appears at 9.0: a method's
 // implementation emits an objc-class-ref for its return type, and the 6.1.3 band has no 9.0 object to
 // satisfy it. That is measured and recorded in coordination/api-queue.md, and the row stays absent.
-
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 @implementation GCExtendedGamepadSnapshot {
     NSData *_snapshotData;
@@ -169,5 +170,3 @@
 }
 
 @end
-
-#pragma clang diagnostic pop

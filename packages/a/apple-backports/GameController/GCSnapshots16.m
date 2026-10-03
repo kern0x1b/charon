@@ -11,8 +11,6 @@
 // host at run time - the values are the ones the header states, taken at compile time from the very
 // enumeration it names.
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
 const GCExtendedGamepadSnapshotDataVersion GCCurrentExtendedGamepadSnapshotDataVersion = GCExtendedGamepadSnapshotDataVersion2;
 const GCMicroGamepadSnapshotDataVersion GCCurrentMicroGamepadSnapshotDataVersion = GCMicroGamepadSnapshotDataVersion1;
 

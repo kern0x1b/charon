@@ -209,8 +209,8 @@ check_objects() {
     restore_objects
 }
 
-check_objects '@"Button X": @(fields->buttonY)' \
-             '@"Button X": @(fields->buttonX)' \
+check_objects '@"Button Y": @(fields->buttonY)' \
+             '@"Button Y": @(fields->buttonX)' \
              'snapshot-field-read-from-the-wrong-element'
 
 check_objects 'fields.dpadX = charon_gc_pad_axis(dpad, @selector(xAxis));' \

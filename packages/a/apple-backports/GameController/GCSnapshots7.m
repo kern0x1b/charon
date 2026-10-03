@@ -9,8 +9,6 @@
 // whose first four are 0001 2400 for the plain game and 60 bytes beginning 0001 3c00 for the extended
 // one, and the two readers differ as the table there sets out.
 
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
 NSData *NSDataFromGCGamepadSnapShotDataV100(GCGamepadSnapShotDataV100 *snapshotData)
 {
     return charon_gc_snapshot_data(snapshotData, sizeof(GCGamepadSnapShotDataV100), CHARON_GCGAMEPAD_SNAPSHOT_VERSION_V100);
