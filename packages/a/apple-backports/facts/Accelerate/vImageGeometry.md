@@ -1157,3 +1157,92 @@ is not, an object with no registry entry is kept in every band from 4.3, and `st
 function its own differential rejects is not a thing this package ships. Their source is on the
 `vimage-shear-wip` branch, where the vertical is 39 of 212 and its mapping is characterised down to one
 half-pixel sign.
+
+## The two axes are mirrors, and both position rules are measured (2026-10-03)
+
+The instrument that settled this is the delta sweep: a source with exactly one row (vertical) or one column
+(horizontal) carrying 1.0 and a backColor of 0, so a destination sample's value IS the weight the kernel gave
+that row, and a search over `CharonResampleWeights`' own output reads the mapped position off the kernel to
+four decimals. The residual of that search is at rounding size in every case below, so the position is read
+off the kernel rather than inferred from the destination's index.
+
+    horizontal:  alongPosition = along0 + along + 0.5 - translate + slope * (cross - dstCross + 0.5)
+                  centre        = alongPosition / scale - 0.5
+    vertical:    alongPosition = along0 + along + 0.5 + translate + slope * (cross + 0.5)
+                  centre        = dstAlong + (alongPosition - dstAlong) / scale - 0.5
+
+**The vertical's scale is anchored to the DESTINATION's far edge and the horizontal's to its near edge.** At a
+scale of two on a twelve-row source the vertical's destination row 0 maps to source row 5.7500 and the
+horizontal's destination column 0 to source column -0.2500, and the offset is exactly
+`dstAlong * (1 - 1/scale)` on one axis and zero on the other. The offset is the DESTINATION's extent and not
+the source's: a twelve-row source into a twenty-row destination offsets by ten and not by six, measured over
+source and destination extents of (6,6), (12,12), (20,20), (7,20), (12,20), (30,15), (6,3) and (3,6) at scales
+of 0.25, 0.5, 1 and 2.
+
+**The slope's cross coordinate is read from the opposite edge on each axis**, which is what makes the two axes
+mirrors: the horizontal's amount of shear grows as the distance from the BOTTOM row and the vertical's as the
+distance from the LEFT column. Measured over three destination cross extents with the source's held at nine
+(7, 5 and 9, at slopes of 1 and 2, residuals at rounding size), and over seven cross coordinates at slopes of
+1, 2 and -0.5.
+
+## The kernel is the normalised Lanczos to 1e-6, and the weights are NOT renormalised at an edge
+
+Every tap inside a forty-one-wide source at a scale of one, at phases of 0.125 through 1.0 in steps of an
+eighth, compared with `sinc(x)*sinc(x/3)` normalised per phase: the widest **relative** difference over the
+whole table is 1.2e-06, which is the float the release stores the weight in and not a different kernel. So the
+"per-phase factor" an earlier pass of this page reported is the storage, and the earlier residual in the phase
+table is closed.
+
+At an edge the release keeps the weights and does NOT renormalise over the survivors: a source constant at 1.0
+with a backColor of -1 answers `2w - 1`, and the answers -0.000 and 1.223 are weights and not gaps. The sum of
+the surviving weights is therefore not one - at a phase of 0.5 and an extent of three it is 1.111413 - and that
+is the release's own overshoot, which is why the last row of a sheared picture can exceed the source's maximum.
+
+## The refusals, in the order the release makes them
+
+Measured over all thirty-two flag bits for each of the thirty-six, over a NULL buffer, a NULL filter, the
+region's two origins against the destination's two extents, and three destination extents on each axis:
+
+    a NULL source or destination        kvImageNullPointerArgument   -21772
+    a NULL filter                       kvImageInvalidParameter      -21773
+    a region or destination that does not fit ACROSS the shear
+                                         kvImageBufferSizeMismatch    -21774
+    a flag bit the function does not take  kvImageUnknownFlagsBit      -21775
+
+The order is measured, not assumed: a bad flag beside an across offset of one answers the offset, and a NULL
+destination beside a bad flag answers the NULL. The cross extent is the only shape condition, and it is the
+sum - `srcOffsetToROI_Y + dest->height > src->height` on the horizontal and the X pair on the vertical - while
+the destination's extent ALONG the shear is free and so is the along offset, which a source nine wide accepts
+at twelve.
+
+**The flag word is not the same for all of them.** The three half-precision shapes - `ARGB16F`, `CbCr16F` and
+`Planar16F` - take seven bits, `0x11bc` = `kvImageBackgroundColorFill | kvImageEdgeExtend | kvImageDoNotTile |
+kvImageHighQualityResampling | kvImageGetTempBufferSize | kvImagePrintDiagnosticsToConsole |
+kvImageUseFP16Accumulator`, and answer `kvImageUnknownFlagsBit` for the other twenty-five; **every other shape
+takes all thirty-two**. An earlier measurement in this family said all thirty-two are accepted, and it was
+right - of `vImageHorizontalShear_PlanarF`, which is in 6.1.3 already and is not one of the thirty-six.
+
+## What is still open, and it is one number's worth of arithmetic
+
+`tests/backports/host/shear` holds all thirty-six against the host's own thirty-six, case by case: both axes,
+four filter scales, six translates, four slopes, both edging modes, six shapes and two along offsets, with
+every byte of every destination row compared - including the padding past the destination's own width - and
+with a third answer computed by the harness's own loops from the rules on this page.
+
+**The horizontal is exact on every one of its cases, and the vertical's stored values differ from the
+release's by one or two units of the stored type on a large fraction of the rest.** The kernel agrees to 1e-6
+relative, the centres agree exactly, and the disagreement is neither the truncation nor the rounding of the sum
+- the harness's own sum matches the host's stored value under truncation on 566164 samples, under rounding on
+97794, and under neither on 161294 - nor the precision of the accumulator, since summing the same products in
+a float makes it worse and not better.
+
+So the cause is in the release's own arithmetic and has not been attributed, the thirty-six registry entries
+stay **out**, and the four band files are not in the build: an object with no registry entry is kept in every
+band from 4.3 and `check_registry` fails on the built symbols it has no row for. They are in
+`.agent-work/pending-shears/` and `tests/backports/host/shear/run.sh` builds them from there, so the
+measurement can be re-run, with two red controls: removing the NULL test ends the run on a signal, and
+removing the vertical's far-edge anchor takes the failure count from 10157 to 12686.
+
+**The next thing to try**, in the order the evidence suggests: read the release's weight table out of a filter
+buffer with `vImageNewResamplingFilterForFunctionUsingBuffer` and compare it against `CharonResampleWeights` at
+the phases the differential fails on, which is the one thing measured here only through the shear's own output.
