@@ -136,10 +136,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "NO skips the element from the enumeration, which is how a provider hides an element from the layout; a manager with no delegate enumerates all of them",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextContentManagerDelegate> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextContentManagerDelegate' and '^@interface NSTextContentManagerDelegate' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextContentManagerDelegate> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentStorage15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextContent15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextContentManagerDelegate textContentManager:textElementAtLocation:]",
@@ -207,10 +208,11 @@
       "kind": "method",
       "introduced": "15.0",
       "minimum": "6.0",
-      "status": "implemented",
+      "status": "absent",
       "facts": "facts/UIKit/NSTextContent15.md",
-      "effect": "the paragraph of a range, used in place of the port's own paragraph for that range, which is how a document type of an application's own supplies its elements",
-      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m"
+      "effect": "the owner is not there: a caller holding an id<NSTextContentStorageDelegate> has no protocol to conform to or cast to, so this selector cannot be reached through it",
+      "source": "UIKitCore 26.2 arm64e under Mac Catalyst, the host's own UIKit, measured by .agent-work/runs/textkit2/probe-content.m and held by tests/backports/host/uikit2/content15_test.m",
+      "reason": "The port declares no such owner, so nothing can be reached through it. Measured in this tree: grep for '^@protocol NSTextContentStorageDelegate' and '^@interface NSTextContentStorageDelegate' over every .h and .m under packages/a/apple-backports returns nothing - not a protocol declaration and not a class - so a caller holding an id<NSTextContentStorageDelegate> has no protocol to conform to or cast to. This row said `implemented` while its siblings in the same file and the protocol row itself said `absent`, and the measured state does not support `implemented`. The SELECTORS are not missing from the tree - they are the port's own, on NSTextContentStorage15.m - but that is a different API: these are the methods a caller-supplied delegate implements, and a port class that happens to answer them is not the protocol being carried. The measured behaviour stays in facts/UIKit/NSTextContent15.md; what is absent is the owner, and this row now says so. Found by v-swift2's registry-vs-built measurement and settled here; the disagreement was inside one package and, for five of the seven, inside one file."
     },
     {
       "api": "-[NSTextElementProvider adjustedRangeFromRange:forEditingTextSelection:]",
