@@ -1,5 +1,5 @@
 #!/bin/sh
-# run.sh — is this port's MPSGraph the same arithmetic as the system's own?
+# run.sh - is this port's MPSGraph the same arithmetic as the system's own?
 #
 # graph-cases.m is compiled twice: once against the system's own MPSGraph, and once against this port's
 # classes with the MPSGraph names mapped to Charon names and their selectors prefixed, so the port's
@@ -9,8 +9,8 @@
 #
 # A family is a process because the release makes it necessary, and the measurement is written down in
 # facts/MetalPerformanceShadersGraph/Core.md: in a process that holds three hundred graphs the release's own
-# gather operations start asserting partway through the family — "Error: NDArray dimension length > INT_MAX"
-# (MPSNDArray.mm:831) over a flatten of a 2x4 that answers in a program of its own — and every FED gather
+# gather operations start asserting partway through the family - "Error: NDArray dimension length > INT_MAX"
+# (MPSNDArray.mm:831) over a flatten of a 2x4 that answers in a program of its own - and every FED gather
 # parameter takes the process down whatever else it holds. So each family is run, compared and judged on
 # its own, and the check of the recorded cells is scoped to the cases that family actually ran: a cell
 # another family recorded is not in these two runs, and reading it here would report a divergence that has
@@ -26,7 +26,7 @@ mkdir -p "$build"
 
 # The families this differential runs, and for each the number of case lines the PORT is expected to have
 # beyond the release's. It is 1 for "misc" alone, which holds the one case the host of this machine cannot
-# answer at all — -[MPSGraph constantWithShape:dataType:values:name:] aborts it — so the port's extra lines
+# answer at all - -[MPSGraph constantWithShape:dataType:values:name:] aborts it - so the port's extra lines
 # must be that case and nothing else. Every other family holds nothing the host cannot answer, so a family
 # whose two counts differ is a failure and the message names the case either side last reached. A family
 # named here and not in graph-cases.m, or the other way round, is a family that silently stops being run, so

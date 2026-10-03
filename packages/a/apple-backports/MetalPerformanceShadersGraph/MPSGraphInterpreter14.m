@@ -1110,8 +1110,11 @@ static NSMutableArray<NSNumber *> *CharonMPSGraphGatherIntegers(MPSGraphTensorDa
 // THE GATHER FAMILY: the operations whose result is the operand's elements in some other order or some other
 // extent. Every one of them is one walk here, because every one of them is the same question - for each axis
 // of the result, which axis of the operand feeds it, how many of the operand's axes it covers, and whether
-// that one is reversed or wrapped - and the operation's parameters are the answer. This function is the
-// plan: the result's shape and that mapping, both derived from the transformation the operation names.
+// that one is reversed, and whether the coordinate has an element of the operand behind it at all - and the
+// operation's parameters are the answer. This function is the plan: the result's shape and that mapping,
+// both derived from the transformation the operation names, and asked both when the graph is built (through
+// -[MPSGraph charon_mps_gatherShapeOfTensor:parameters:named:], so that a caller can read the result's shape
+// off the tensor) and when the operation runs (where a parameter the caller fed can be read).
 //
 // Every rule is measured on this host's own MPSGraph over a 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40):
 //

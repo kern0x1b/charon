@@ -15,7 +15,7 @@ system's own MPSGraph by `tests/backports/host/mpsgraph/run.sh`.
 A graph is a description of work, and a tensor is a description of a result. Running a graph therefore
 means walking the operations **in the order they were added** and asking each to fill its outputs from
 its inputs and from the feeds: an operation can only read what an earlier one wrote, and the order they
-were added is the order that guarantees it. A tensor's value is found by looking it up — a placeholder's
+were added is the order that guarantees it. A tensor's value is found by looking it up - a placeholder's
 comes from the feeds, any other one's from the operation that produced it.
 
 `MPSGraphExecutable` is then the graph itself. The release compiles a graph into device code and holds
@@ -44,7 +44,7 @@ The iPhoneOS 16.4 SDK predates four names of the 26.2 surface:
 * `MPSGraphFFTDescriptor`, `MPSGraphImToColOpDescriptor` and
   `MPSGraphExecutableSerializationDescriptor` are in the 26.2 surface and not in the 16.4 headers.
 
-The declarations are guarded on a host SDK that already has them — where redeclaring would be a
+The declarations are guarded on a host SDK that already has them - where redeclaring would be a
 duplicate, and where the host's own classes are what a comparison must be against.
 
 **Four registered names that no header the build compiles against declares** is a rule R4 item: the
@@ -52,9 +52,9 @@ lift's sets have to be re-measured in the same push as these land.
 
 ## The measuring, and where it stands
 
-`tests/backports/host/mpsgraph/` compiles the same cases twice — once against the system's own
+`tests/backports/host/mpsgraph/` compiles the same cases twice - once against the system's own
 MPSGraph, once against these classes with the MPSGraph names mapped to `Charon` names and their
-selectors prefixed — and compares the bytes of a buffer the case owns.
+selectors prefixed - and compares the bytes of a buffer the case owns.
 
 **Both execution routes work on this host**, measured directly:
 
@@ -74,22 +74,22 @@ harness rather than in the library:
 * **The inputs paired with the feed tensors in the wrong order.** `-[MPSGraphExecutable
   runWithMTLCommandQueue:...]` took the feed tensors from the dictionary's key order, which is
   arbitrary, so the second operand reached the first tensor and every non-commutative operation read
-  its arguments backwards: subtraction answered `9, 18, 27…` where the release answers `-9, -18,
-  -27…`. The pairings are now in the graph's placeholder order, which is the order the caller passed
+  its arguments backwards: subtraction answered `9, 18, 27...` where the release answers `-9, -18,
+  -27...`. The pairings are now in the graph's placeholder order, which is the order the caller passed
   the inputs in.
 * **The harness overwrote its own inputs.** It remembered each *feed's* buffer as well as the result's,
   and read every remembered buffer back into the array it came from, so after the first case each input
   array held the previous case's output and both sides agreed on the wrong numbers. Only the result
   buffer is read back now.
-* **A square root of a negative, three times.** I read the chain case — where the product is positive even
-  where the sum is not, so no negative ever reaches the root — as the release's root answering a
+* **A square root of a negative, three times.** I read the chain case - where the product is positive even
+  where the sum is not, so no negative ever reaches the root - as the release's root answering a
   magnitude, and changed it to `fabs`. Measured over a feed of `(1, 2, 3, 4, -1, -2, -3, -4)`, the
   release answers `1, 1.41421, 1.73205, 2` and then four NaNs. It is a NaN, it is one again, and
   `MPSGraphOperationKindSqrt` now takes `sqrt(a)`: over the sixteen classes below the whole row is
   byte-identical to the release's, element for element.
 * **A branch that decided a division, a reciprocal, a square root and a logarithm by itself.** Each of the
-  four had a case for the values the arithmetic is undefined at — `b == 0.0`, `a == 0.0`, `a < 0.0`,
-  `a <= 0.0` — and each of the first two chose its infinity from the sign of the dividend alone, so it had
+  four had a case for the values the arithmetic is undefined at - `b == 0.0`, `a == 0.0`, `a < 0.0`,
+  `a <= 0.0` - and each of the first two chose its infinity from the sign of the dividend alone, so it had
   one answer where the arithmetic has two: `-1 / -0.0` is `+inf` and the division branch had only `-inf`
   for it, and a reciprocal of `-0.0` is `-inf` where the reciprocal branch had only `+inf`. The measured
   columns `reciprocal` and `divide` carry both zeroes, `ff800000` and `7f800000`, which is what the case
@@ -137,7 +137,7 @@ Four things in it are worth naming, because each one is a rule rather than a val
   shows in one row: `square` of `0x00800000` is `00000000`, because the square of the smallest normal is a
   denormal, while `square` of `0x3f7fffff` is `3f7ffffe`, which is neither.
 * **A NaN a kind computes is the arithmetic's own.** Every computing column answers `7fc00000` for
-  `ffc00000` and for the payload-carrying `7f800001` — the sign and the payload are both gone — and the
+  `ffc00000` and for the payload-carrying `7f800001` - the sign and the payload are both gone - and the
   two copying columns are the two that keep them: `abs` of `7f800001` is `7f800001`, and `identity` of
   `7f800001` is `7f800001` too.
 * **A negative zero is a negative zero.** `sqrt` of `80000000` is `80000000`, where a `fabs` before the
@@ -175,7 +175,7 @@ argument, `CharonMPSStoreRounded` passes it on to the narrowing, and the interpr
 for it; `CharonMPSFloatToHalf` and `CharonMPSStore` are the same functions with the even rounding and
 every other family keeps calling those, so the matrix and image kernels do not move. Measured: an
 addition of `2^-10` to 3.0 is exactly halfway between two halves and the release answers `4201`, and
-a square root of `3c01` — `sqrt(1 + 2^-14 * 2)` — is exactly halfway and the release answers `3c01`,
+a square root of `3c01` - `sqrt(1 + 2^-14 * 2)` - is exactly halfway and the release answers `3c01`,
 where round-to-even gives `3c00`. **Four cells left the record when this was applied, not three**: it
 also fixed a multiply of a half denormal by 0.5 and a division of one by -0.5, whose exact answers are
 both halfway between two halves.
@@ -190,11 +190,11 @@ not the two written there, so neither a new divergence nor a stale record can pa
 `c8da`, `log(0x1400)` is `c6ef` against `c6ee`, `log(0x3555)` is `bc66` against `bc65`, `rsqrt(0x3555)` is
 `3eef` against `3eee`, and `sqrt(0x3c01)` is `3c01` against `3c00`. **Attempted and rejected**: that the
 kernels keep their intermediate in a half, which is the shape the coordinator suggested. Three models
-were measured against all sixteen cells of each kind — the operation narrowed once, `x` times a reverse
-square root narrowed to a half, and a reverse square root of the narrowed reciprocal — and each explains
+were measured against all sixteen cells of each kind - the operation narrowed once, `x` times a reverse
+square root narrowed to a half, and a reverse square root of the narrowed reciprocal - and each explains
 *fewer* cells than the single narrowing the port already does: 6, 7 and 7 of 16 against 8 for the square
-root, 5 and 7 of 16 against 8 for the reverse square root. For the logarithm, three models — one
-narrowing, a `log2` narrowed to a half and then multiplied by `ln2`, and a `log2` narrowed twice —
+root, 5 and 7 of 16 against 8 for the reverse square root. For the logarithm, three models - one
+narrowing, a `log2` narrowed to a half and then multiplied by `ln2`, and a `log2` narrowed twice -
 explain **0 of the 5** recorded cells. A half-precision intermediate is therefore not what is happening,
 and what is left is the compiler's own approximation, whose coefficients are not derivable from the
 specification. **Owed, not attempted further.**
@@ -202,15 +202,15 @@ specification. **Owed, not attempted further.**
 **Eleven are the release's half binary arithmetic answering what no operation of the specification
 produces**, and every one of them has an operand that is a zero, an infinity, a NaN or a denormal: a zero
 times an infinity is `0000` where IEEE answers a NaN, an infinity times a NaN is `7c00` and a negative
-infinity times a negative NaN is also `7c00` — the sign of the infinity gone — a positive NaN times a
+infinity times a negative NaN is also `7c00` - the sign of the infinity gone - a positive NaN times a
 denormal is `1e00` (`0.00585938`) and a negative NaN times 2.0 is `fc00`, a division of a NaN is `7c00`
 and of a negative NaN is `fa00` (`-49152`), a division of `-1.0` by `-0.0` is `fc00` where IEEE answers
 a positive infinity, and a subtraction of `+inf` and a NaN is `f800` (`-32768`) and of `-inf` and a NaN
 is `7800` (`32768`). **Attempted and rejected**: the two suggestions, in the form each can be measured.
-A half denormal read with the wrong exponent bias is ruled out by the ratios — the release's answers for
-an operation with a denormal operand were 2×, 2× and 4× the exact value and `0.00585938`, and no single
+A half denormal read with the wrong exponent bias is ruled out by the ratios - the release's answers for
+an operation with a denormal operand were 2x, 2x and 4x the exact value and `0.00585938`, and no single
 exponent field gives a fixed ratio across them. A clamped or fast-math float path is ruled out by the
-group's own answers: within one class of operand — one that is not a finite non-zero normal — the release
+group's own answers: within one class of operand - one that is not a finite non-zero normal - the release
 answers `0000`, `7c00`, `fc00`, `1e00` and `0000`, and no rule over the class produces five different
 values. Five substitutions were measured against all eleven cells: IEEE itself explains 3, "a NaN operand
 becomes the largest finite half" 1, "a NaN operand becomes an infinity" 2, "a zero operand makes the
@@ -218,8 +218,8 @@ product a zero" 5, and "computed in a float32 with denormals flushed" 2. Nothing
 **Owed, not attempted further**: a kernel that answers these is not a function of the operations the
 specification names, and reproducing it bit for bit would be a table of its answers.
 
-The buffer a half case needs is sixteen elements: `MPSNDArray` refuses a shorter one — "buffer is not
-large enough. Must be 32 bytes", `MPSNDArray.mm:893` — so a half tensor in this harness cannot be
+The buffer a half case needs is sixteen elements: `MPSNDArray` refuses a shorter one - "buffer is not
+large enough. Must be 32 bytes", `MPSNDArray.mm:893` - so a half tensor in this harness cannot be
 smaller than 32 bytes.
 
 Two of the case file's cases are not counted as agreeing:
@@ -235,7 +235,7 @@ The harness now **fails on a length mismatch** rather than truncating to the sho
 case each side last reached, so an abort in either run cannot be read as agreement.
 
 One thing the harness did teach, and which is written into the case file: **reading a shaped type's
-equality, or a placeholder's `dataType`, takes the release down** — it calls
+equality, or a placeholder's `dataType`, takes the release down** - it calls
 `-[MPSGraphTensor tensorDataType]`, a selector its own `MPSGraphTensor` does not declare. So those
 answers are not comparable on this host and the case file does not ask for them.
 
@@ -912,12 +912,10 @@ rows the ledger carries as `missing` for this family.
 
 ## The R4 names this band adds, in full
 
-The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the
-private surface the two families use to share their own state, and each is a registered implemented name or a
-method of its object's own class rather than of a category - which is the one shape `carried_api` does not
-read, so it is named here in the facts rather than only in the registry. The graph's are read out of the
-graph's own compiled objects with `nm` (`MPSGraphBackports`, 13 objects), not from the sources, so a
-declaration and a definition are not confused:
+The SDK this package compiles against, the iPhoneOS 16.4 one, declares none of these: they are the private
+surface this library's own files use to share their own state, and each is a registered implemented name or a
+method of its object's own class rather than of a category - which is the one shape `carried_api` does not read,
+so it is named here in the facts and not only in the registry.
 
 * `-[MPSGraph charon_mps_addOperationOfKind]` - MPSGraph14.m
 * `-[MPSState charon_mps_appendBuffer]` - MPSState11.m
@@ -950,19 +948,22 @@ declaration and a definition are not confused:
 * `-[MPSMatrixRandom charon_mps_wordAtIndex]` - MPSMatrixRandom13.m
 * `-[MPSCNNPooling charon_mps_zeroPadSizeX]` - MPSCNNPooling10.m
 * `-[MPSCNNPooling charon_mps_zeroPadSizeY]` - MPSCNNPooling10.m
+* `-[MPSGraph charon_mps_gatherShapeOfTensor:parameters:named:]` - MPSGraphInterpreter14.m,
+  the gather walk's own plan asked when the graph is built, so that the output tensor
+  carries its result's shape before anything runs
 
-**The matrix and CNN entries are a snapshot of an earlier pass and are short of the tree**: measured against
-the sources, `MPSPredicate16.m` carries `charon_mps_permitsExecution`, `MPSImagePyramid16.m` carries three
-(`charon_mps_filter`, `charon_mps_filterWidth`, `charon_mps_filterHeight`) and `MPSNDArray13.m` carries four
-(`charon_mps_wholeShapeOf:`, `charon_mps_makeBuffer`, `charon_mps_elementCount`, `charon_mps_bufferStrides:`),
-and none of those eight is named above. The graph's nineteen are current, read out of the graph's own
-compiled objects (`MPSGraphBackports`, 13 objects) rather than from the sources, so a declaration and a
-definition are not confused; nothing in the graph family rests on the gap in the rest of the list, because
-the registry check reads the built libraries and not this page - but the page is wrong about the tree until
-the whole library's objects are read again, which is what the closing sentence describes.
+**Which half of this list is current, and which is not.** The graph's names are read out of the graph's own
+compiled objects with `nm` and are current for this tree: `relcheck` compiled seventeen of them and held every
+one to a single release. The matrix and CNN entries are a snapshot of an earlier pass and are short of the tree:
+measured against the sources, `MPSPredicate16.m` carries `charon_mps_permitsExecution`, `MPSImagePyramid16.m`
+carries three (`charon_mps_filter`, `charon_mps_filterWidth`, `charon_mps_filterHeight`) and `MPSNDArray13.m`
+carries four (`charon_mps_wholeShapeOf:`, `charon_mps_makeBuffer`, `charon_mps_elementCount`,
+`charon_mps_bufferStrides:`), and none of those eight is named above. Nothing in the graph family rests on the
+gap in the rest of the list, because the registry check reads the built libraries and not this page - but the
+page is wrong about the tree there until the whole library's objects are read again, which is what the closing
+sentence describes.
 
-The graph's are the interpreter's - its kinds, its per-operation wiring, its element accessors and the seams
-its releases' factories share - and the matrix and CNN families' are the window, the fold, the state and the
-copy descriptor's. None of them is called by an application. Each needs the lift's sets re-measured in the
-same push as the ones that land with them, and the list is regenerated from the objects whenever the family
-changes.
+The graph's are the interpreter's - its kinds, its per-operation wiring, its element accessors and the seams its
+releases' factories share - and the matrix and CNN families' are the window, the fold, the state and the copy
+descriptor's. None of them is called by an application. Each needs the lift's sets re-measured in the same push
+as the ones that land with them, and the list is regenerated from the objects whenever a family changes.

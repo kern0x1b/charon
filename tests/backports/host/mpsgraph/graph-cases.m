@@ -1,4 +1,4 @@
-// graph-cases.m — the builder side and the arithmetic family of MPSGraph, run twice: once against the
+// graph-cases.m - the builder side and the arithmetic family of MPSGraph, run twice: once against the
 // system's own MPSGraph and once against this port's classes under names of their own. Every case
 // prints the bytes of a buffer the case owns, so the two runs are compared exactly.
 #import <Foundation/Foundation.h>
