@@ -34,7 +34,7 @@
 // The port's own read of the SDK this binary was linked against, so the label below is a MEASUREMENT of this
 // binary and not a claim about it: run.sh links this source twice, once with a 26-or-later SDK field and once
 // with a pre-26 one, and the two runs have to answer differently for the 26.0 deferred-start defaults.
-#import "CharonProgramSDK.h"
+#import "../CharonProgramSDK.h"
 #include <dlfcn.h>
 #include <stdio.h>
 #include <stdlib.h>

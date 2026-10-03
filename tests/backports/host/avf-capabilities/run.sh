@@ -28,7 +28,6 @@ set -eu
 here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../../../.." && pwd)
 avf=$root/packages/a/apple-backports/AVFoundation
-pkg=$root/packages/a/apple-backports
 control=${CONTROL:-0}
 # AVFCAPSMUTANT=1 plants a wrong capability answer; AVFCAPSMUTANT=prefcam plants the preferred-camera pair's
 # persistence away. Each is named, so a run that plants neither is not called a mutation.
@@ -547,10 +546,11 @@ for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
             "dynamic26.rn:dynamic26.o" "deferredstart26.rn:deferredstart26.o" \
             "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
-    # -I"$avf" is the object's own folder and -I"$pkg" the package root, for a header a source reaches above
-    # its folder: the deferred-start object includes packages/a/apple-backports/CharonProgramSDK.h, and without
-    # the second the copy does not build.
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$pkg" -I"$build/src" -c "$build/src/$src" \
+    # -I"$avf" and -I"$build/src" and nothing else: the port's sources reach a header above their own folder by a
+    # relative path, which is what the build does (modules/apple/backports.lua:928 passes only the library's own
+    # folder), so a copy that needed -I"$pkg" would be a copy the build could not compile. The harness once did
+    # add it, and relcheck caught the difference.
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
         echo "RUN FAILED: the port's $src did not build - a build failure is never a noticed mutation"
         head -8 "$build/o/$obj.log"
@@ -707,7 +707,7 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     # plant applied before it leaves the object identical to its own recompile and the guard then refuses a
     # mutation that did happen.
     before=$(shasum -a 256 "$build/o/$target.o" | cut -d' ' -f1)
-    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$pkg" -I"$build/src" -c "$build/src/$target.rn" \
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$target.rn" \
             -o "$build/o/$target.o" > "$build/o/$target.rebuild.log" 2>&1; then
         echo "RUN FAILED: the port's $target.rn did not build after the mutation"
         head -6 "$build/o/$target.rebuild.log"
@@ -735,7 +735,7 @@ fi
 link_probe() {   # $1 = output binary, $2... = extra linker flags
     output=$1
     shift
-    xcrun clang -fobjc-arc -w -I"$avf" -I"$pkg" "$here/probe.m" $objects -framework Foundation \
+    xcrun clang -fobjc-arc -w -I"$avf" "$here/probe.m" $objects -framework Foundation \
         -framework AVFoundation -framework CoreMedia -framework CoreGraphics "$@" -o "$output"
 }
 if ! link_probe "$build/probe" > "$build/probe.log" 2>&1; then
