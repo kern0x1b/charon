@@ -1107,8 +1107,23 @@ def plain_data_classes(families):
     800 lines apart and in the wrong order for C. Sorting by the superclass chain alone put the child first
     and every one of the 1067 objects that import the header was `unknown type name`.
     """
+    # The three suffixes are the START, and the set CLOSES over the classes they name as a member's type.
+    # `MTRUnitTestingClusterNestedStructList` ends in none of them and is named by
+    # MTRTestClusterClusterTestNestedStructListArgumentRequestParams' `list` member, so nothing referenced it
+    # until a member's default became `[[MTRUnitTestingClusterNestedStructList alloc] init]` - and then the
+    # library did not LINK: `Undefined symbols for architecture arm64:
+    # "_OBJC_CLASS_$_MTRUnitTestingClusterNestedStructList"`. A class the port's own members name is part of
+    # the family whether or not its name ends in one of the three suffixes.
     wanted = {name: info for name, info in families.items()
               if name.endswith(PAYLOAD_SUFFIXES)}
+    frontier = set(wanted)
+    while frontier:
+        name = frontier.pop()
+        for prop in wanted[name]["properties"]:
+            named = MATTER_TYPE_FIND(prop["type"])
+            if named and named in families and named not in wanted:
+                wanted[named] = families[named]
+                frontier.add(named)
     ordered, state = [], {}
 
     def visit(name):
@@ -1571,6 +1586,14 @@ def default_of(prop):
     for spelled, zero in ZEROS:
         if base == spelled:
             return zero
+    if base.startswith("MTR"):
+        # A nonnull member whose type is ANOTHER plain data class: the host allocates one and hands back a
+        # fresh object, measured - `MTRDataTypeViewportStruct.viewport` reads
+        # `<MTRDataTypeViewportStruct: x1:0; y1:0; x2:0; y2:0; >` where the port held nil and both SDKs
+        # declare the member `MTRDataTypeViewportStruct * nonnull`. It is [[X alloc] init] and nothing else,
+        # and it is the same construction the class's own -init does, so the value a nested member starts
+        # with is the value that class starts with.
+        return "[[%s alloc] init]" % base
     return None
 
 
@@ -1716,6 +1739,16 @@ def emit_params(path, name, info, version, buckets, copying, counts, host=None):
     CONVERSION_TYPES.clear()
     CONVERSION_TYPES.update({shared: kinds[shared] for prop in own + members
                              if (shared := prop.get("shares")) and shared in kinds})
+    # An own member that SHARES an ivar with its successor cannot be @synthesize'd: the synthesis gives it a
+    # second ivar of its own, the accessors the hand-written ones below read the shared one, and the member
+    # then answers nil where its successor answers the shared value. That is what
+    # `MTRApplicationBasicClusterApplicationStruct.catalogVendorId` did - 0 on the host, nil in the port,
+    # with both SDKs declaring it NSNumber * nonnull - and it is the same shape as a category member, so it
+    # is emitted the same way: accessors written out over the shared storage.
+    shared_own = [prop for prop in own if prop.get("shares") and prop["shares"] != prop["name"]]
+    if shared_own:
+        members = members + shared_own
+        own = [prop for prop in own if prop not in shared_own]
     slots = {prop["name"]: "_" + prop["name"] for prop in own}
     for prop in members:
         slots[prop["name"]] = ("_" + prop["shares"] if prop.get("shares")

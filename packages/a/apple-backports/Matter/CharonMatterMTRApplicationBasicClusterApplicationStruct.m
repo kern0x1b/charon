@@ -11,7 +11,7 @@
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
 //  Two imports, and each is load-bearing. Matter.h is the framework's own declarations, and it declares
-//  it of the 923 classes of this family: an object that re-declares one of those is the
+//  it of the 924 classes of this family: an object that re-declares one of those is the
 //  compiler's `duplicate interface definition for class`. CharonMatterTypes.h is the port's, and it carries
 //  the declarations the library's SDK does not have: the class itself where that SDK declares none, and a
 //  class extension with the properties a later SDK added where it declares an older shape of the same name.
@@ -33,9 +33,7 @@ static NSString *charonDescribeScalar(long long value)
 @implementation MTRApplicationBasicClusterApplicationStruct
 
 @synthesize catalogVendorID = _catalogVendorID;
-@synthesize catalogVendorId = _catalogVendorId;
 @synthesize applicationID = _applicationID;
-@synthesize applicationId = _applicationId;
 
 // NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never
 // reaches back into the original.
@@ -43,8 +41,6 @@ static NSString *charonDescribeScalar(long long value)
 {
     MTRApplicationBasicClusterApplicationStruct *copied = [[MTRApplicationBasicClusterApplicationStruct allocWithZone:zone] init];
     copied->_catalogVendorID = self->_catalogVendorID;
-    copied->_catalogVendorID = self->_catalogVendorID;
-    copied->_applicationID = self->_applicationID;
     copied->_applicationID = self->_applicationID;
     return copied;
 }
@@ -56,19 +52,39 @@ static NSString *charonDescribeScalar(long long value)
         return nil;
     }
     _catalogVendorID = @0;
-    _catalogVendorID = @0;
-    _applicationID = @"";
     _applicationID = @"";
     return self;
+}
+
+// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
+// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
+- (NSNumber * _Nonnull)catalogVendorId
+{
+    return _catalogVendorID;
+}
+
+- (void)setCatalogVendorId:(NSNumber * _Nonnull)catalogVendorId
+{
+    _catalogVendorID = [catalogVendorId copy];
+}
+
+- (NSString * _Nonnull)applicationId
+{
+    return _applicationID;
+}
+
+- (void)setApplicationId:(NSString * _Nonnull)applicationId
+{
+    _applicationID = [applicationId copy];
 }
 
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"catalogVendorID:%@; ", charonDescribeObject(self->_catalogVendorID)];
-    [text appendFormat:@"catalogVendorId:%@; ", charonDescribeObject(self->_catalogVendorID)];
     [text appendFormat:@"applicationID:%@; ", charonDescribeObject(self->_applicationID)];
-    [text appendFormat:@"applicationId:%@; ", charonDescribeObject(self->_applicationID)];
     [text appendString:@">"];
     return text;
 }

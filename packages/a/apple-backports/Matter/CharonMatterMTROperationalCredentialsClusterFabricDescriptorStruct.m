@@ -11,7 +11,7 @@
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
 //  Two imports, and each is load-bearing. Matter.h is the framework's own declarations, and it declares
-//  it of the 923 classes of this family: an object that re-declares one of those is the
+//  it of the 924 classes of this family: an object that re-declares one of those is the
 //  compiler's `duplicate interface definition for class`. CharonMatterTypes.h is the port's, and it carries
 //  the declarations the library's SDK does not have: the class itself where that SDK declares none, and a
 //  class extension with the properties a later SDK added where it declares an older shape of the same name.
@@ -34,11 +34,8 @@ static NSString *charonDescribeScalar(long long value)
 
 @synthesize rootPublicKey = _rootPublicKey;
 @synthesize vendorID = _vendorID;
-@synthesize vendorId = _vendorId;
 @synthesize fabricID = _fabricID;
-@synthesize fabricId = _fabricId;
 @synthesize nodeID = _nodeID;
-@synthesize nodeId = _nodeId;
 @synthesize label = _label;
 @synthesize vidVerificationStatement = _vidVerificationStatement;
 @synthesize fabricIndex = _fabricIndex;
@@ -50,10 +47,7 @@ static NSString *charonDescribeScalar(long long value)
     MTROperationalCredentialsClusterFabricDescriptorStruct *copied = [[MTROperationalCredentialsClusterFabricDescriptorStruct allocWithZone:zone] init];
     copied->_rootPublicKey = self->_rootPublicKey;
     copied->_vendorID = self->_vendorID;
-    copied->_vendorID = self->_vendorID;
     copied->_fabricID = self->_fabricID;
-    copied->_fabricID = self->_fabricID;
-    copied->_nodeID = self->_nodeID;
     copied->_nodeID = self->_nodeID;
     copied->_label = self->_label;
     copied->_vidVerificationStatement = self->_vidVerificationStatement;
@@ -69,14 +63,45 @@ static NSString *charonDescribeScalar(long long value)
     }
     _rootPublicKey = [NSData data];
     _vendorID = @0;
-    _vendorID = @0;
     _fabricID = @0;
-    _fabricID = @0;
-    _nodeID = @0;
     _nodeID = @0;
     _label = @"";
     _fabricIndex = @0;
     return self;
+}
+
+// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
+// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
+- (NSNumber * _Nonnull)vendorId
+{
+    return _vendorID;
+}
+
+- (void)setVendorId:(NSNumber * _Nonnull)vendorId
+{
+    _vendorID = [vendorId copy];
+}
+
+- (NSNumber * _Nonnull)fabricId
+{
+    return _fabricID;
+}
+
+- (void)setFabricId:(NSNumber * _Nonnull)fabricId
+{
+    _fabricID = [fabricId copy];
+}
+
+- (NSNumber * _Nonnull)nodeId
+{
+    return _nodeID;
+}
+
+- (void)setNodeId:(NSNumber * _Nonnull)nodeId
+{
+    _nodeID = [nodeId copy];
 }
 
 - (NSString *)description
@@ -84,11 +109,8 @@ static NSString *charonDescribeScalar(long long value)
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"rootPublicKey:%@; ", charonDescribeObject(self->_rootPublicKey)];
     [text appendFormat:@"vendorID:%@; ", charonDescribeObject(self->_vendorID)];
-    [text appendFormat:@"vendorId:%@; ", charonDescribeObject(self->_vendorID)];
     [text appendFormat:@"fabricID:%@; ", charonDescribeObject(self->_fabricID)];
-    [text appendFormat:@"fabricId:%@; ", charonDescribeObject(self->_fabricID)];
     [text appendFormat:@"nodeID:%@; ", charonDescribeObject(self->_nodeID)];
-    [text appendFormat:@"nodeId:%@; ", charonDescribeObject(self->_nodeID)];
     [text appendFormat:@"label:%@; ", charonDescribeObject(self->_label)];
     [text appendFormat:@"vidVerificationStatement:%@; ", charonDescribeObject(self->_vidVerificationStatement)];
     [text appendFormat:@"fabricIndex:%@; ", charonDescribeObject(self->_fabricIndex)];

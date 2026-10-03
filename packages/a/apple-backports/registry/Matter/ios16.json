@@ -98430,6 +98430,50 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRApplicationBasicClusterApplicationStruct catalogVendorId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationBasicClusterApplicationStruct setCatalogVendorId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationBasicClusterApplicationStruct applicationId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationBasicClusterApplicationStruct setApplicationId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRApplicationBasicClusterApplicationStruct description]",
       "kind": "method",
       "introduced": "16.4",
@@ -98596,6 +98640,50 @@
     },
     {
       "api": "-[MTRApplicationLauncherClusterApplicationStruct init]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationLauncherClusterApplicationStruct catalogVendorId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationLauncherClusterApplicationStruct setCatalogVendorId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationLauncherClusterApplicationStruct applicationId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRApplicationLauncherClusterApplicationStruct setApplicationId:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -127833,6 +127921,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRContentLauncherClusterStyleInformationStruct imageUrl]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRContentLauncherClusterStyleInformationStruct setImageUrl:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRContentLauncherClusterStyleInformationStruct description]",
       "kind": "method",
       "introduced": "16.4",
@@ -129352,6 +129462,28 @@
     },
     {
       "api": "-[MTRDescriptorClusterDeviceTypeStruct init]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRDescriptorClusterDeviceTypeStruct type]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRDescriptorClusterDeviceTypeStruct setType:]",
       "kind": "method",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -160107,6 +160239,72 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct vendorId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct setVendorId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct fabricId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct setFabricId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct nodeId]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct setNodeId:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTROperationalCredentialsClusterFabricDescriptorStruct description]",
       "kind": "method",
       "introduced": "16.4",
@@ -172405,6 +172603,28 @@
       "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
     },
     {
+      "api": "-[MTRSwitchClusterMultiPressCompleteEvent getNewPosition]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRSwitchClusterMultiPressCompleteEvent setNewPosition:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
       "api": "-[MTRSwitchClusterMultiPressCompleteEvent description]",
       "kind": "method",
       "introduced": "16.4",
@@ -172417,17 +172637,6 @@
     },
     {
       "api": "MTRSwitchClusterMultiPressCompleteEvent.description",
-      "kind": "property",
-      "introduced": "16.4",
-      "minimum": "6.0",
-      "status": "implemented",
-      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
-      "facts": "facts/Matter/Matter.md",
-      "reason": "a property of a class the release does not have, carried whole",
-      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
-    },
-    {
-      "api": "MTRSwitchClusterMultiPressCompleteEvent.newPosition",
       "kind": "property",
       "introduced": "16.4",
       "minimum": "6.0",
@@ -184098,6 +184307,116 @@
       "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
     },
     {
+      "api": "MTRUnitTestingClusterNestedStructList",
+      "kind": "class",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a plain data class of the Matter framework: the release this family is carried into has no Matter.framework at all, so nothing can be shadowed and the class is carried whole, generated from the SDK's own payload declarations rather than written by hand",
+      "effect": "every property the SDK's own header declares for the class is an ivar of the object's own, with the header's attribute deciding the setter, and -copyWithZone: is written out over those ivars so a copy never shares storage with the original. A property the SDK declares in a CATEGORY of the class keeps its accessors written out by hand over the port's own storage, because a category cannot hold an ivar"
+    },
+    {
+      "api": "-[MTRUnitTestingClusterNestedStructList copyWithZone:]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRUnitTestingClusterNestedStructList init]",
+      "kind": "method",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.a",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.b",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.c",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.d",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.e",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.f",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
+      "api": "MTRUnitTestingClusterNestedStructList.g",
+      "kind": "property",
+      "introduced": "16.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a property of a class the release does not have, carried whole",
+      "effect": "the property is a readwrite ivar of the object's own, and the header's own attribute decides the setter: copy for a copy property, a plain store otherwise. Nothing here reaches a fabric"
+    },
+    {
       "api": "MTRUnitTestingClusterNullablesAndOptionalsStruct",
       "kind": "class",
       "introduced": "16.4",
@@ -191216,6 +191535,28 @@
     },
     {
       "api": "-[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent init]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent associationFailure]",
+      "kind": "method",
+      "introduced": "17.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "source": "SDK 26.2, iPhoneOS26.2.sdk, System/Library/Frameworks/Matter.framework/Headers/MTRStructsObjc.h, read for arm64 and carried from the armv7 release caches (tools/corpus/built-exports.py)",
+      "facts": "facts/Matter/Matter.md",
+      "reason": "a member of a cluster class the release does not have, carried whole",
+      "effect": "the member answers without reaching a fabric: the value the caller set, or no value and the error the release documents for a cluster it cannot reach"
+    },
+    {
+      "api": "-[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent setAssociationFailure:]",
       "kind": "method",
       "introduced": "17.4",
       "minimum": "6.0",

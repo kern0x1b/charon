@@ -98,13 +98,22 @@ compile "$build/objects"
 xcrun clang -o "$build/port/probe" "$build/objects"/*.o "$here/params-probe.m" -framework Foundation
 "$build/port/probe" "$build/cases.tsv" > "$build/port.tsv"
 
+# `description` and `fresh` are PREDICTED, not compared: the host's Matter.framework is built from a later
+# SDK than the port implements, so it renames members and reorders them, and a difference the two SDKs'
+# DECLARATIONS account for is a difference between two releases. predict.py lays the port's own values out in
+# the host SDK's declaration order and set, read from that SDK's headers with the generator's own reader,
+# and reports what is identical, what is predicted by a declaration difference, and what is UNEXPLAINED. The
+# last must be zero, and that is the gate this comparison exists for.
+python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port.tsv" | tee "$build/predicted.txt"
+grep -q ' 0 unexplained' "$build/predicted.txt" || status=1
+
 present=$(awk -F'\t' '$1=="present" && $4=="present"' "$build/host.tsv" | wc -l | tr -d ' ')
 absent=$(awk -F'\t' '$1=="present" && $4=="absent"' "$build/host.tsv" | wc -l | tr -d ' ')
 raised=$(awk -F'\t' '$1=="raised"' "$build/host.tsv" | wc -l | tr -d ' ')
 printf 'params-diff: classes the host has %s, absent %s, raised %s\n' "$present" "$absent" "$raised"
 
 status=0
-for question in ownDescription description fresh alias; do
+for question in ownDescription alias; do
     awk -F'\t' -v q="$question" '$1==q' "$build/host.tsv" | sort > "$build/host.$question"
     awk -F'\t' -v q="$question" '$1==q' "$build/port.tsv" | sort > "$build/port.$question"
     host_n=$(wc -l < "$build/host.$question" | tr -d ' ')
@@ -134,5 +143,15 @@ if [ "$moved" -lt 1 ]; then
     exit 1
 fi
 printf 'params-diff: red control %s readings move, so this comparison can fail\n' "$moved"
+# and it must move the PREDICTION too, or the prediction is not looking at the port's values at all
+python3 "$here/predict.py" "$host_sdk" "$build/host.tsv" "$build/port-mutant.tsv" > "$build/predicted-mutant.txt"
+moved_predicted=$(grep -c 'UNEXPLAINED' "$build/predicted-mutant.txt" || true)
+if [ "$moved_predicted" -lt 1 ]; then
+    echo "params-diff: FAIL the red control - mutating a port value did not move the prediction, so the" >&2
+    echo "  prediction is not reading the port's values and would pass on anything." >&2
+    exit 1
+fi
+printf 'params-diff: red control %s readings become UNEXPLAINED, so the prediction looks at the port\n' \
+    "$moved_predicted"
 echo "params-diff: outputs under $build"
 exit $status

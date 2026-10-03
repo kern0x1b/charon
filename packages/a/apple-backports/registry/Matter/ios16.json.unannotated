@@ -153,6 +153,8 @@ MTRAdministratorCommissioningClusterRevokeCommissioningParams.serverSideProcessi
 MTRAdministratorCommissioningClusterRevokeCommissioningParams.timedInvokeTimeoutMs
 -[MTRApplicationBasicClusterApplicationStruct copyWithZone:]
 -[MTRApplicationBasicClusterApplicationStruct init]
+-[MTRApplicationBasicClusterApplicationStruct setCatalogVendorId:]
+-[MTRApplicationBasicClusterApplicationStruct setApplicationId:]
 -[MTRApplicationBasicClusterApplicationStruct description]
 MTRApplicationBasicClusterApplicationStruct.description
 -[MTRApplicationLauncherClusterApplicationEPStruct copyWithZone:]
@@ -161,6 +163,8 @@ MTRApplicationBasicClusterApplicationStruct.description
 MTRApplicationLauncherClusterApplicationEPStruct.description
 -[MTRApplicationLauncherClusterApplicationStruct copyWithZone:]
 -[MTRApplicationLauncherClusterApplicationStruct init]
+-[MTRApplicationLauncherClusterApplicationStruct setCatalogVendorId:]
+-[MTRApplicationLauncherClusterApplicationStruct setApplicationId:]
 -[MTRApplicationLauncherClusterApplicationStruct description]
 MTRApplicationLauncherClusterApplicationStruct.description
 -[MTRApplicationLauncherClusterHideAppParams copyWithZone:]
@@ -5527,6 +5531,7 @@ MTRContentLauncherClusterPlaybackPreferencesStruct.playbackPosition
 MTRContentLauncherClusterPlaybackPreferencesStruct.textTrack
 -[MTRContentLauncherClusterStyleInformationStruct copyWithZone:]
 -[MTRContentLauncherClusterStyleInformationStruct init]
+-[MTRContentLauncherClusterStyleInformationStruct setImageUrl:]
 -[MTRContentLauncherClusterStyleInformationStruct description]
 MTRContentLauncherClusterStyleInformationStruct.description
 MTRContentLauncherClusterTrackPreferenceStruct
@@ -5654,6 +5659,7 @@ MTRDataTypeWebRTCSessionStruct.streamUsage
 MTRDataTypeWebRTCSessionStruct.videoStreamID
 -[MTRDescriptorClusterDeviceTypeStruct copyWithZone:]
 -[MTRDescriptorClusterDeviceTypeStruct init]
+-[MTRDescriptorClusterDeviceTypeStruct setType:]
 -[MTRDescriptorClusterDeviceTypeStruct description]
 MTRDescriptorClusterDeviceTypeStruct.description
 -[MTRDeviceControllerFactoryParams init]
@@ -7351,6 +7357,9 @@ MTROperationalCredentialsClusterCertificateChainRequestParams.description
 MTROperationalCredentialsClusterCertificateChainResponseParams.description
 -[MTROperationalCredentialsClusterFabricDescriptorStruct copyWithZone:]
 -[MTROperationalCredentialsClusterFabricDescriptorStruct init]
+-[MTROperationalCredentialsClusterFabricDescriptorStruct setVendorId:]
+-[MTROperationalCredentialsClusterFabricDescriptorStruct setFabricId:]
+-[MTROperationalCredentialsClusterFabricDescriptorStruct setNodeId:]
 -[MTROperationalCredentialsClusterFabricDescriptorStruct description]
 MTROperationalCredentialsClusterFabricDescriptorStruct.description
 -[MTROperationalCredentialsClusterNOCResponseParams copyWithZone:]
@@ -8209,6 +8218,8 @@ MTRSwitchClusterLongPressEvent.description
 MTRSwitchClusterLongReleaseEvent.description
 -[MTRSwitchClusterMultiPressCompleteEvent copyWithZone:]
 -[MTRSwitchClusterMultiPressCompleteEvent init]
+-[MTRSwitchClusterMultiPressCompleteEvent getNewPosition]
+-[MTRSwitchClusterMultiPressCompleteEvent setNewPosition:]
 -[MTRSwitchClusterMultiPressCompleteEvent description]
 MTRSwitchClusterMultiPressCompleteEvent.description
 -[MTRSwitchClusterMultiPressOngoingEvent copyWithZone:]
@@ -9036,6 +9047,8 @@ MTRUnitTestingClusterGlobalEchoResponseParams.description
 -[MTRUnitTestingClusterNestedStruct init]
 -[MTRUnitTestingClusterNestedStruct description]
 MTRUnitTestingClusterNestedStruct.description
+-[MTRUnitTestingClusterNestedStructList copyWithZone:]
+-[MTRUnitTestingClusterNestedStructList init]
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct copyWithZone:]
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct init]
 -[MTRUnitTestingClusterNullablesAndOptionalsStruct description]
@@ -9442,6 +9455,7 @@ MTRWebRTCTransportRequestorClusterOfferParams.timedInvokeTimeoutMs
 MTRWebRTCTransportRequestorClusterOfferParams.webRTCSessionID
 -[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent copyWithZone:]
 -[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent init]
+-[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent setAssociationFailure:]
 -[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent description]
 MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent.description
 -[MTRWiFiNetworkDiagnosticsClusterConnectionStatusEvent copyWithZone:]

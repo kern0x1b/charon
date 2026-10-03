@@ -197,20 +197,54 @@ so the comparison can fail and its verdict is a verdict.
 
 **What is left, each with the measurement that explains it.**
 
-* `description` 393 of 918. The ORDER and SET of members is not the port's. The host's order is its own SDK's
-  declaration order and the port's is 26.2's, and the two differ:
-  `MTRAccessControlClusterAccessControlEntryStruct` reads
-  `privilege:0; authMode:0; subjects:(null); targets:(null); auxiliaryType:(null); fabricIndex:0;` on the host
-  and `privilege:0; authMode:0; subjects:(null); targets:(null); fabricIndex:0; auxiliaryType:(null);` from the
-  port. Every value is right; two members are in the other order. The fix is to take the member order and set
-  from the measured string and the VALUES from the port's own storage, which is not a fake because nothing is
-  copied out of the measurement but the order.
+**The ruling changed what these numbers mean.** The host's Matter.framework is built from a LATER SDK than
+the one the port implements - it renames `thumbnailUrl` to `thumbnailURL` and reorders members - so a
+difference in member SET, ORDER or NULLABILITY between the two is a difference between two RELEASES. The port
+keeps 26.2's declaration, and `tests/backports/host/matter/predict.py` lays the port's own VALUES out in the
+HOST SDK's declaration order and set, read from that SDK's headers with the generator's own reader. Three
+families of reading:
 
-* `fresh` 3141 of 3273, and the mismatching readings are 26 `NSNumber(0)`, 15 `(nil)`, 7 `NSNumber(1)`, 4
-  `NSData(0)`, 3 `NSString()` and the rest the nested struct's own description. A member's NULLABILITY differs
-  between SDK 26.2 and the host SDK for the members in those readings, so `default_of()` derives nil where the
-  host holds a zero value. The host's value for each member IS measured, one row per member, in
-  `host-measurements.tsv`, and the default should be taken from there.
+    identical   the port's reading IS the host's
+    predicted   a difference the two SDKs' DECLARATIONS account for, named one by one
+    unexplained a difference no declaration difference accounts for. THIS IS WHAT MUST BE ZERO.
+
+    run                                          description                      fresh                    alias
+    first (no --host-measurements on the port side)
+                                                  66 of 918 ownDescription, 0 of 918 description
+    second (-description through the accessors)    918 / 393 / 0                   3141 / 0 / 132           25 of 37
+    third (-description through the OWN STORAGE)   918 / 393 / 0                   3141 / 0 / 132           26 of 37
+    fourth (an own member that shares an ivar is emitted like a category member)
+                                                  918 / 3151 / 39 / 83            3151 / 39 / 83            37 of 37
+    fifth (a nonnull member of another plain data class is [[X alloc] init]; the family closes over
+           the classes its members name, which added MTRUnitTestingClusterNestedStructList)
+                                                  918 of 919 / 3216 / 39 / 25     3216 / 39 / 25           37 of 37
+
+`alias` is 37 of 37 and the fourth and fifth runs each carry the red control. What the 25 are, and it is
+three things:
+
+* **an own member that shared an ivar and was still `@synthesize`d** - which is now fixed. The synthesis
+  gave `MTRApplicationBasicClusterApplicationStruct.catalogVendorId` a second ivar, so the member answered
+  nil where its successor answered the shared value, with both SDKs declaring it `NSNumber * nonnull`.
+* **a nonnull member whose type is another plain data class**: the host allocates one and the port held nil.
+  It is `[[X alloc] init]`, the same construction the class's own `-init` does, and 83 readings were this
+  one cause. Making it so added one class to the family - `MTRUnitTestingClusterNestedStructList`, which ends
+  in none of the three suffixes and is named by
+  `MTRTestClusterClusterTestNestedStructListArgumentRequestParams`'s `list` member. Without an object for it
+  the library did not LINK: `Undefined symbols for architecture arm64:
+  "_OBJC_CLASS_$_MTRUnitTestingClusterNestedStructList"`. The family now CLOSES over the classes its members
+  name, so 924 classes and 1068 objects, and the oracle for 26.2's own defaults is the connectedhomeip tree
+  already on this machine at `charon/.agent-work/upstreams/chip/src/darwin/Framework/CHIP/zap-generated/`,
+  whose generated `MTRCommandPayloadsObjc.h` is the 26.2-era shape (`groupID` at `MTR_AVAILABLE(ios(16.4))`,
+  the same as 26.2).
+
+* **NOT FIXED, and named**: `MTRDeviceControllerStartupParams.fabricID` and `.ipk` - the host holds `(null)`
+  where the port holds a zero, and both SDKs declare the member `nonnull`. That is host behaviour the port
+  does not reproduce, it is two readings, and it needs its own measurement of which members the host's
+  `-init` deliberately leaves nil.
+
+* **NOT FIXED, and named**: `ownDescription` is 918 of 919, the one being
+  `MTRUnitTestingClusterNestedStructList` - the class the closure added after the measurement was taken. The
+  measurement has to be re-taken with the class in it; one reading.
 
 * `alias` 26 of 37. Eleven rows where the port's own `measured=` differs from the host's: the host says
   `MTRApplicationBasicClusterApplicationStruct.applicationId` shares `applicationID` and the port's own probe

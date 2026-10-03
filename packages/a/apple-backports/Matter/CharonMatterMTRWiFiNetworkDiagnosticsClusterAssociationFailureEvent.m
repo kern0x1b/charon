@@ -11,7 +11,7 @@
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
 //  Two imports, and each is load-bearing. Matter.h is the framework's own declarations, and it declares
-//  it of the 923 classes of this family: an object that re-declares one of those is the
+//  it of the 924 classes of this family: an object that re-declares one of those is the
 //  compiler's `duplicate interface definition for class`. CharonMatterTypes.h is the port's, and it carries
 //  the declarations the library's SDK does not have: the class itself where that SDK declares none, and a
 //  class extension with the properties a later SDK added where it declares an older shape of the same name.
@@ -33,7 +33,6 @@ static NSString *charonDescribeScalar(long long value)
 @implementation MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent
 
 @synthesize associationFailureCause = _associationFailureCause;
-@synthesize associationFailure = _associationFailure;
 @synthesize status = _status;
 
 // NSCopying, by declaration: the copy owns its own ivars, so writing to the copy never
@@ -41,7 +40,6 @@ static NSString *charonDescribeScalar(long long value)
 - (id)copyWithZone:(NSZone *)zone
 {
     MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent *copied = [[MTRWiFiNetworkDiagnosticsClusterAssociationFailureEvent allocWithZone:zone] init];
-    copied->_associationFailureCause = self->_associationFailureCause;
     copied->_associationFailureCause = self->_associationFailureCause;
     copied->_status = self->_status;
     return copied;
@@ -54,16 +52,28 @@ static NSString *charonDescribeScalar(long long value)
         return nil;
     }
     _associationFailureCause = @0;
-    _associationFailureCause = @0;
     _status = @0;
     return self;
+}
+
+// The properties the SDK declares in a CATEGORY of this class - MTRGroupsClusterAddGroupParams
+// carries the old `groupId` beside the `groupID` of its own @interface, and 17 classes
+// are shaped so. Their accessors are written out over the storage above, because a category
+// cannot hold an ivar and clang refuses @synthesize for one in either place.
+- (NSNumber * _Nonnull)associationFailure
+{
+    return _associationFailureCause;
+}
+
+- (void)setAssociationFailure:(NSNumber * _Nonnull)associationFailure
+{
+    _associationFailureCause = [associationFailure copy];
 }
 
 - (NSString *)description
 {
     NSMutableString *text = [NSMutableString stringWithFormat:@"<%@: ", NSStringFromClass([self class])];
     [text appendFormat:@"associationFailureCause:%@; ", charonDescribeObject(self->_associationFailureCause)];
-    [text appendFormat:@"associationFailure:%@; ", charonDescribeObject(self->_associationFailureCause)];
     [text appendFormat:@"status:%@; ", charonDescribeObject(self->_status)];
     [text appendString:@">"];
     return text;

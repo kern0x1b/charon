@@ -178,8 +178,15 @@ int main(int argc, char **argv)
                 printf("description\t%s\t-\t%s\n", name.UTF8String,
                        [[[cls alloc] init] description].UTF8String);
                 for (NSString *property in ownProperties(cls)) {
+                    id value = safeRead([[cls alloc] init], property);
                     printf("fresh\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
-                           render(safeRead([[cls alloc] init], property)).UTF8String);
+                           render(value).UTF8String);
+                    // The same value as the -description PRINTS it, which is %@ and not render()'s
+                    // spelling: `(null)` for nil, `0` for the NSNumber zero, nothing for an empty NSString.
+                    // The predictor lays these out in the HOST SDK's declaration order and compares the
+                    // string that comes out with the host's own, so this is the row it needs.
+                    printf("described\t%s\t%s\t%s\n", name.UTF8String, property.UTF8String,
+                           (value == nil ? @"(null)" : [value description]).UTF8String);
                 }
                 continue;
             }

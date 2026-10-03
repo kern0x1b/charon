@@ -11,7 +11,7 @@
 //  Nothing in it reaches a fabric - it holds what the caller put in it and hands back what it holds.
 //
 //  Two imports, and each is load-bearing. Matter.h is the framework's own declarations, and it declares
-//  no of the 923 classes of this family: an object that re-declares one of those is the
+//  no of the 924 classes of this family: an object that re-declares one of those is the
 //  compiler's `duplicate interface definition for class`. CharonMatterTypes.h is the port's, and it carries
 //  the declarations the library's SDK does not have: the class itself where that SDK declares none, and a
 //  class extension with the properties a later SDK added where it declares an older shape of the same name.
@@ -78,6 +78,8 @@ static NSString *charonDescribeScalar(long long value)
     _videoCodec = @0;
     _minFrameRate = @0;
     _maxFrameRate = @0;
+    _minResolution = [[MTRCameraAVStreamManagementClusterVideoResolutionStruct alloc] init];
+    _maxResolution = [[MTRCameraAVStreamManagementClusterVideoResolutionStruct alloc] init];
     _minBitRate = @0;
     _maxBitRate = @0;
     _keyFrameInterval = @0;
