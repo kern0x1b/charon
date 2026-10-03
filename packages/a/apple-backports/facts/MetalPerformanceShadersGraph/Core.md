@@ -856,9 +856,107 @@ of its own, with `refusals.txt` holding what it is measured to answer:**
   `NSInvalidArgumentException` for all four where the graph is built, which is the named divergence every axis
   or extent the release refuses carries in this library.
 
-**Not in this family yet**: the ten other forms of the ledger's twelve slice rows - the three mask forms of
-14.0 and of 18.2, the two fed forms of 18.2, the three `sliceGradient` forms and the three
-`sliceUpdateData` forms - are separate rows, are not carried here and are not in the differential.
+## The slice family: the three masks, the gradient and the update
+
+The ledger's other eleven slice rows, in four objects: 14.0's `MPSGraph14.m` (the masked slice and the two
+gradients), 17.4's `MPSGraphTensorShapeOps174.m` (the two updates with the masks), 18.0's
+`MPSGraphTensorShapeOps180.m` (the two updates without them) and 18.2's `MPSGraphTensorShapeOps182.m` (the two
+fed slice forms and the two fed gradients). **One piece of arithmetic in three directions**: a start, an end
+(or a size), a stride and a count per axis, and then
+
+| direction | the result is | what is written | the walk |
+| --- | --- | --- | --- |
+| the slice | the region's own shape | the operand's elements at the region | the gather walk with an offset and a stride |
+| the slice's **gradient** | the shape the forward pass's INPUT had | the gradient's elements at the region, the rest **written zeros** | a scatter |
+| the slice's **update** | the data tensor's own shape | the data's own elements with the update written **over** the region | a copy and a scatter |
+
+compared in a process of its own (`gather_slice_rest`): **24 cases, every cell and every shape byte-identical to
+the release, `gather_slice_rest checks=24 failures=0 recorded=0` over 145 cells in 51 case lines**, with the red
+control differing from the release in 24 of the 51, and **41 refusal questions** asked one process each in
+`refusals.m`, of which fourteen are this family's.
+
+### The three masks, each measured
+
+Over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), and every one of them in the differential:
+
+* **A `startMask` bit means the start written down is NOT read, and the axis starts at ZERO.** A start of 5 and a
+  start of -3 each answer what a start of 0 answers (both a 1x4 and a 2x4 respectively), so it is a replacement
+  and not a clamp: a start of -3 that were clamped would start at 1 and answer one row, and it answers two.
+* **An `endMask` bit means the end is not read either, and the axis runs to its own last element.** Measured: over
+  axis 1 from a start of 1 it answers three elements - (2, 3, 4) and (20, 30, 40) - whether the written end is 0
+  or -9. With a **negative stride** the masked end is the one *before* the axis begins, so the count reaches index
+  0: an endMask over axis 1 with a stride of -1 from 3 answers four elements, (4, 3, 2, 1) and (40, 30, 20, 10).
+  This is the one rule of the three where the masked value is *not* counted from the end of the axis, and it is
+  why the two are two lines of code and not one.
+* **A `squeezeMask` bit drops the axis from the RESULT's shape whatever its extent, and the elements are the
+  mapped walk's own in order**, so a result of fewer axes holds the first of them. Measured: axis 0 of a 2x4 with
+  its bit set answers a **rank of one** holding (1, 2, 3, 4); with two rows selected it answers the same rank of
+  one over the same four values; axis 1 answers a rank of one holding (1, 10); and both bits together answer a
+  **rank of zero** holding the first element. TensorFlow's own rule is narrower - the axis is dropped only where
+  `startMask` or `endMask` names it as well - and the release does not carry that half: the axis goes whatever its
+  extent and whatever else is masked with it. So the walk keeps the full shape of the mapped region as well as the
+  result's own and copies the first of the one into the other.
+
+### The gradient: the shape arrives as a tensor, and that is the whole difficulty
+
+The header's words are "The shape of the forward pass input, that is the shape of the gradient output", and it
+arrives as a **tensor**, so it is a shape the graph has to be told. There are exactly two ways to tell it:
+
+* **A CONSTANT**, whose value is in the graph. The release then infers the result's type when the graph is built,
+  and answers the gradient. Measured over a 2x4 of (1, 2, 3, 4 | 5, 6, 7, 8): the whole slice answers the
+  gradient; a 1x3 gradient of row 0 answers (-1, -2, -3, 0 | 0, 0, 0, 0); a 1x2 gradient of columns 1 and 2
+  answers (0, -1, -2, 0 | 0, 0, 0, 0); and **over a destination filled with the byte `0xbd` the zeros are
+  written and not left**, which is what makes this a scatter over a zeroed result and not a copy of the region.
+  This is the form the differential compares, and it is why the cases build the shape with
+  `constantWithData:shape:dataType:`.
+* **A FEED**, which is data. The release's own result tensor then carries **no shape at all**, before the run and
+  after it, and the process writes the gradient's element 0 into the destination's element 0 and nothing else -
+  measured over five shapes of the destination (2x4, 1, 8, 2x2, 2x4x1) and five of the forward input, all of
+  them one element (`refusals.m`'s `slice-gradient-fed-shape` and `slice-gradient-fed`, both answering
+  `result-shape nil`). **The port reads that shape when the graph runs and answers this gradient**, which is the
+  header's own words; each of the four gradient rows names the divergence with this measurement.
+
+Three gradients the release will not build, each in `refusals.m` and refused by the port where the graph is
+built: a **`squeezeMask`** (alone and with the mask it pairs with) and a **stride above one**, both refused by
+the release's own compiler ("Optimize Original Module MLIR pass manager failed"), and a **gradient whose shape is
+not the region's**, which the release refuses in its own words and which is the check the port makes at build
+time: *"'mps.strided_slice_gradient' op `grad_input`[0] = 1 should match dimension size: 2 deduced from
+`fwd_shape`"*.
+
+### The update: a copy, and then a scatter
+
+Measured over a 2x4 of (100, 200, 300, 400 | 500, 600, 700, 800):
+
+* **The update REPLACES and does not add.** A region of row 0, columns 1 and 2 updated with (-1, -2) answers
+  (100, -1, -2, 400 | 500, 600, 700, 800): the data is byte for byte what it was everywhere else.
+* **A negative stride writes the update's elements along the region's own order.** A region that walks axis 1
+  from 3 with a stride of -1 and an update of (-1, -2, -3, -4) answers (100, 200, -2, -1 | 500, 600, -4, -3): the
+  update's first element goes to index 3 and its second to index 2.
+* **The update's shape must BE the region's.** One wider (a 2x4 update into a 1x2 region) is refused by the
+  release's own NDArray (`MPSNDArray, initWithBufferImpl:offset:descriptor:isForNDArray...`) and one narrower
+  (a 1x1 update into a 1x2 region) by its compiler; the port refuses both where the graph is built.
+* **An `endMask` and a `squeezeMask` are refused on an update**, measured over three shapes of the update and
+  three masks each, the same compiler's words. The port answers them; the rows name the divergence.
+
+### The one fed parameter the release answers, and why
+
+**The fed forms of the update (17.4 and 18.0) are the fed parameters this family answers**, measured with the
+starts, the ends and the strides fed as int32 of shape `[2]` and the answer the written-down form's answer byte
+for byte (`refusals.m`'s `slice-update-fed-answer`, which holds the line). The reason is the family rule the
+whole page keeps coming back to:
+
+> **A fed parameter the result's SHAPE depends on is a parameter the release cannot build a graph over.**
+
+The update's result is the *data* tensor's shape, which the graph knows when the graph is built, so its index
+parameters can be data. The slice's fed forms of 18.2 take their result's shape out of the fed starts and ends,
+and they die: measured, an int32 of shape `[2]`, an int32 of shape `[1]`, an int64 of shape `[2]` and the size
+form each print a result shape of **`-1x-1`** - the release's own way of saying it could not resolve the shape it
+was given, the same `-1x-1` the reshape's two dynamic extents print - and then the process goes, with SIGSEGV
+into a 2x4 destination and `NDArray dimension length > INT_MAX` (MPSNDArray.mm:759, exit 134) into a destination
+of one element. A float32 of shape `[2]` prints the same `-1x-1`. **The port answers the header**: the fed
+values are read when the graph runs, which is the only time a fed value is there to read. That is the same
+ruling as the reduction axis and the five fed gathers, and each of the four 18.2 rows carries its own
+measurement.
 
 ## The reshape: two rows, and the flat index
 
@@ -1025,13 +1123,17 @@ so it is named here in the facts and not only in the registry.
 * `-[MPSMatrixRandom charon_mps_wordAtIndex]` - MPSMatrixRandom13.m
 * `-[MPSCNNPooling charon_mps_zeroPadSizeX]` - MPSCNNPooling10.m
 * `-[MPSCNNPooling charon_mps_zeroPadSizeY]` - MPSCNNPooling10.m
+* `-[MPSGraph charon_mps_constantShapeOfTensor:]` - MPSGraph14.m, the shape a constant tensor holds and nil for
+  any other, which is how a slice's gradient is given the shape of its forward input before the graph runs
 * `-[MPSGraph charon_mps_gatherShapeOfTensor:parameters:named:]` - MPSGraphInterpreter14.m,
   the gather walk's own plan asked when the graph is built, so that the output tensor
   carries its result's shape before anything runs
+* `-[MPSGraph charon_mps_slice:inputs:parameters:name:]` - MPSGraph14.m, the one seam the slice family's eleven
+  methods go through in its three directions, the slice itself and its gradient and its update
 
 **Which half of this list is current, and which is not.** The graph's names are read out of the graph's own
-compiled objects with `nm` and are current for this tree: `relcheck` compiled seventeen of them and held every
-one to a single release. The matrix and CNN entries are a snapshot of an earlier pass and are short of the tree:
+compiled objects with `nm` and are current for this tree: `relcheck` compiled twenty of them - the slice family's
+three objects of 17.4, 18.0 and 18.2 among them - and held every one to a single release. The matrix and CNN entries are a snapshot of an earlier pass and are short of the tree:
 measured against the sources, `MPSPredicate16.m` carries `charon_mps_permitsExecution`, `MPSImagePyramid16.m`
 carries three (`charon_mps_filter`, `charon_mps_filterWidth`, `charon_mps_filterHeight`) and `MPSNDArray13.m`
 carries four (`charon_mps_wholeShapeOf:`, `charon_mps_makeBuffer`, `charon_mps_elementCount`,

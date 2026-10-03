@@ -296,6 +296,32 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
 - (NSArray<NSNumber *> *)charon_mps_gatherShapeOfTensor:(MPSGraphTensor *)tensor
                                              parameters:(NSDictionary *)parameters
                                                     named:(NSString *)name;
+// The SLICE family in its three directions, which are one plan over the same arithmetic - a start, an end
+// and a stride per axis with the three masks applied - and three walks, because they go three ways:
+//   - the slice itself (@"slice") is a gather: the result's axis k reads the operand's axis k from the start,
+//     stepping by the stride, so it is the walk above with an offset and a stride in it;
+//   - the slice's GRADIENT (@"sliceGradient") is a scatter: the result is a tensor of the FORWARD INPUT's
+//     shape - which is why the shape arrives as a tensor, either a constant the graph knows at build time or
+//     a feed it reads when the graph runs - and the gradient's elements are written into the region the slice
+//     selects, every other element a zero (measured: the release writes those zeros over a destination that
+//     was filled with a pattern);
+//   - the slice's UPDATE (@"sliceUpdate") is a copy and a scatter: the result is the DATA tensor's own
+//     elements with the update written over the region the slice selects, which replaces and does not add.
+// Everything the plan needs is in `parameters` - which direction (@"gather"), the starts, the ends, the
+// strides and the three masks (@"sliceStarts", @"sliceEnds", @"sliceStrides", @"sliceStartMask",
+// @"sliceEndMask", @"sliceSqueezeMask"), whether an end is really a SIZE (@"sliceSizes"), the forward
+// input's shape where the graph already knows it (@"sliceForwardShape") and the index in `inputs` where the
+// slice's fed parameters start (@"sliceFedFrom"), so a release's factory fills those in and names only its
+// own methods. The fed form of a parameter the result's SHAPE depends on is one the release cannot build a
+// graph over at all (measured: every fed gather parameter, and the fed slice of 18.2, die in its own
+// NDArray), which is why the port refuses a floating point one and reads the rest when the graph runs.
+- (MPSGraphTensor *)charon_mps_slice:(CharonMPSGraphOperationKind)kind
+                               inputs:(NSArray<MPSGraphTensor *> *)inputs
+                           parameters:(NSDictionary *)parameters
+                                  name:(NSString *)name;
+// The shape a constant tensor holds, and nil for any other tensor: how a slice's gradient is given the
+// shape of its forward input before the graph runs. See the implementation for why that is the only way.
+- (NSArray<NSNumber *> *)charon_mps_constantShapeOfTensor:(MPSGraphTensor *)tensor;
 // A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
 // element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
 // here - negative counted from the end of the rank, and an axis outside it refused the way the reduction

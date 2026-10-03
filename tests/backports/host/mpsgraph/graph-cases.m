@@ -19,6 +19,9 @@
 - (MPSGraphTensor *)absoluteWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
 - (MPSGraphTensor *)signWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
 - (MPSGraphTensor *)identityWithTensor:(MPSGraphTensor *)tensor name:(NSString *)name;
+// The constant a slice's gradient takes the shape of its forward input as, and the one factory that puts a
+// caller's NSData in a graph (MPSGraphMemoryOps.h, ios(14.0)).
+- (MPSGraphTensor *)constantWithData:(NSData *)data shape:(MPSShape *)shape dataType:(MPSDataType)dataType;
 - (MPSGraphTensor *)constantWithShape:(MPSShape *)shape
                             dataType:(MPSDataType)dataType
                               values:(NSData *)values
@@ -37,6 +40,12 @@
 - (MPSGraphTensor *)maximumWithNaNPropagationWithPrimaryTensor:(MPSGraphTensor *)primary
                                              secondaryTensor:(MPSGraphTensor *)secondary
                                                         name:(NSString *)name;
+// The two 18.2 fed slice forms and the two fed gradient forms, which are asked of the release in
+// refusals.m because every one of them takes the release down (MPSGraphTensorShapeOps.h, ios(18.2)).
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+- (MPSGraphTensor *)sliceTensor:(MPSGraphTensor *)tensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+- (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor endTensor:(MPSGraphTensor *)endTensor strideTensor:(MPSGraphTensor *)strideTensor startMask:(uint32_t)startMask endMask:(uint32_t)endMask squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
+- (MPSGraphTensor *)sliceGradientTensor:(MPSGraphTensor *)inputGradientTensor fwdInShapeTensor:(MPSGraphTensor *)fwdInShapeTensor startTensor:(MPSGraphTensor *)startTensor sizeTensor:(MPSGraphTensor *)sizeTensor squeezeMask:(uint32_t)squeezeMask name:(NSString *)name;
 // The cumulative family of 16.0 (MPSGraphCumulativeOps.h, ios(16.0)), sixteen methods over four
 // operations: an axis written down, and an axis fed at run time, each with and without the two flags.
 - (MPSGraphTensor *)cumulativeSumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
@@ -795,6 +804,80 @@ static void gather_case(const char *name, MPSGraphTensor *(^build)(MPSGraph *, M
     gather_case_filled(name, build, type, shape, values, 0);
 }
 
+// A case over an operation of MORE THAN ONE input, which is what the slice's two other directions need: the
+// update is fed a data tensor, an update and three index tensors, and the gradient a gradient and the shape
+// of its forward input. Each input is a placeholder of its own shape and data type, the compile is given a
+// feed for each of them, and the run is given them in the same order - which is the arrangement the
+// one-operand gather_case above cannot ask.
+//
+// Two lines a case, the shape and the bytes, as every other case in this family prints. The result's shape
+// is read off the result tensor, which is what a caller does and what the release can answer: a slice's
+// gradient whose forward input's shape is a CONSTANT carries its result's shape when the graph is built,
+// and one whose shape is fed carries none at all, which is the family's named divergence and is asked of the
+// release in refusals.m rather than here.
+//
+// `fill` is a byte the destination is filled with before the run, and it is not decoration for this family:
+// a gradient writes ZEROS over the elements no gradient reaches - measured, over a destination filled with
+// the byte 0xbd - and a destination that starts as zero cannot tell a written zero from an unwritten one.
+static void multi_case_filled(const char *name, MPSGraphTensor *(^build)(MPSGraph *, NSArray<MPSGraphTensor *> *),
+                              NSArray<NSArray<NSNumber *> *> *shapes, NSArray<NSData *> *bytes,
+                              NSArray<NSNumber *> *types, unsigned char fill)
+{
+    MPSGraph *one = [MPSGraph new];
+    NSMutableArray *operands = [NSMutableArray arrayWithCapacity:shapes.count];
+    NSMutableDictionary *feeds = [NSMutableDictionary dictionary];
+    NSMutableArray *inputs = [NSMutableArray arrayWithCapacity:shapes.count];
+    for (NSUInteger i = 0; i < shapes.count; i++) {
+        MPSDataType type = (MPSDataType)[types[i] unsignedIntValue];
+        MPSGraphTensor *operand = [one placeholderWithShape:shapes[i] dataType:type name:@"i"];
+        [operands addObject:operand];
+        feeds[operand] = [[MPSGraphShapedType alloc] initWithShape:shapes[i] dataType:type];
+        [inputs addObject:[[MPSGraphTensorData alloc] initWithMTLBuffer:
+                           [gDevice newBufferWithBytes:bytes[i].bytes length:bytes[i].length
+                                                options:MTLResourceStorageModeShared]
+                                                     shape:shapes[i] dataType:type]];
+    }
+    MPSGraphTensor *t = build(one, operands);
+    NSArray<NSNumber *> *shape = t.shape;
+    if (shape == nil) {
+        printf("#case %s-shape nil\n", name);
+        return;
+    }
+    NSUInteger count = 1;
+    for (NSNumber *dimension in shape) count *= (NSUInteger)dimension.integerValue;
+    size_t width = MPSSizeofMPSDataType(t.dataType);
+    size_t result = count * width;
+    id<MTLBuffer> buffer = [gDevice newBufferWithLength:result options:MTLResourceStorageModeShared];
+    if (fill) memset([buffer contents], fill, result);
+    remember(buffer, resultBytes, result);
+    printf("#case %s-shape %s\n", name, [[shape componentsJoinedByString:@"x"] UTF8String]);
+    MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:shape
+                                                                             dataType:t.dataType];
+    MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:feeds
+                                              targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+    [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                          inputsArray:inputs resultsArray:@[destination] executionDescriptor:nil];
+    put(name, resultBytes, result);
+}
+
+// The shape of the forward input as a CONSTANT, which is how the release can be asked for a gradient at all:
+// the shape of a slice's gradient is a tensor, and a tensor the caller feeds is one the release cannot build a
+// graph over (measured: the result's shape is nil before and after the run, and the process writes one
+// element). A constant is a value that is in the graph, so the release infers the result's type when the
+// graph is built and answers the gradient - which is what these cases compare, and what
+// `constantWithData:shape:dataType:` is here for.
+static MPSGraphTensor *forwardShapeConstant(MPSGraph *g, NSArray<NSNumber *> *extents)
+{
+    NSUInteger count = extents.count;
+    int32_t *numbers = calloc(count, sizeof(int32_t));
+    for (NSUInteger i = 0; i < count; i++)
+        numbers[i] = (int32_t)extents[i].integerValue;
+    MPSGraphTensor *constant = [g constantWithData:[NSData dataWithBytes:numbers length:count * sizeof(int32_t)]
+                                              shape:@[ @(count) ] dataType:MPSDataTypeInt32];
+    free(numbers);
+    return constant;
+}
+
 // The transpose, in both of the forms the family has: 14.0's two axes and 16.0's permutation. The rank-3
 // cases are here because a two-axis transpose of a rank above two is a different question from a rank of
 // two - the result keeps the operand's rank with two of its axes exchanged, and a permutation of a whole
@@ -890,6 +973,232 @@ static void family_gather_slice(void)
                 ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
                     return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1] name:@"s"]; },
                 MPSDataTypeFloat32, twoByFour, rowFeed);
+    chain_case();
+}
+
+// THE REST OF THE SLICE FAMILY: the three masks of the written-down slice, the slice's GRADIENT, and the
+// slice's UPDATE - the three directions of the one arithmetic the header's methods are written over, and the
+// measurements behind them are in the header of MPSGraphTensorShapeOps174.m and in
+// facts/MetalPerformanceShadersGraph/Core.md.
+//
+// A family of its own because one process cannot hold it: the four fed forms of 18.2 take the release down
+// whatever else the process holds, and they are asked of the release in refusals.m for that reason, so what
+// is compared here is every form the release answers.
+static void family_gather_slice_rest(void)
+{
+    NSArray<NSNumber *> *twoByFour = @[@2, @4];
+    NSArray<NSNumber *> *twoByThreeByFour = @[@2, @3, @4];
+
+    // THE THREE MASKS, over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40). A startMask bit means the start
+    // written down is not read and the axis starts at zero, so a start of 5 and a start of -3 answer what a
+    // start of 0 answers.
+    gather_case("slice-mask-start float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@5, @0] ends:@[@1, @4] strides:@[@1, @1]
+                              startMask:1 endMask:0 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-start-negative float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@-3, @0] ends:@[@2, @4] strides:@[@1, @1]
+                              startMask:1 endMask:0 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // An endMask bit means the end written down is not read either and the axis runs to its own last element:
+    // three elements from a start of 1, whether the written end is 0 or -9.
+    gather_case("slice-mask-end float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @1] ends:@[@2, @0] strides:@[@1, @1]
+                              startMask:0 endMask:2 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-end-past float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @1] ends:@[@2, @-9] strides:@[@1, @1]
+                              startMask:0 endMask:2 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // With a NEGATIVE stride the masked end is the one before the axis begins, so the count reaches index 0.
+    gather_case("slice-mask-end-negative-stride float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @3] ends:@[@2, @0] strides:@[@1, @-1]
+                              startMask:0 endMask:2 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // Both masks and a stride above one: the count is the number of steps that reach the masked end.
+    gather_case("slice-mask-both-stride2 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@7, @7] ends:@[@0, @0] strides:@[@2, @2]
+                              startMask:3 endMask:3 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-both-stride2-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@9, @9, @9] ends:@[@0, @0, @0] strides:@[@2, @3, @2]
+                              startMask:7 endMask:7 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    // A squeezeMask bit drops the axis from the RESULT's shape whatever its extent, and the elements are the
+    // mapped walk's own in order: the first row, the first row again over two selected rows, the first column,
+    // and the first element with both axes dropped.
+    gather_case("slice-mask-squeeze-axis0 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@1, @4] strides:@[@1, @1]
+                              startMask:0 endMask:0 squeezeMask:1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-squeeze-axis0-two-rows float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1]
+                              startMask:0 endMask:0 squeezeMask:1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-squeeze-axis1 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @1] strides:@[@1, @1]
+                              startMask:0 endMask:0 squeezeMask:2 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    gather_case("slice-mask-squeeze-both float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1]
+                              startMask:3 endMask:3 squeezeMask:3 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, rowFeed);
+    // A squeezed axis of a rank of three, and a squeeze over an axis the walk reads with a stride.
+    gather_case("slice-mask-squeeze-rank3 float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@1, @0, @0] ends:@[@2, @3, @4] strides:@[@1, @2, @1]
+                              startMask:0 endMask:0 squeezeMask:1 name:@"s"]; },
+                MPSDataTypeFloat32, twoByThreeByFour, cubeFeed);
+    // The sixteen classes through a mask, where a NaN's sign and a negative zero's sign are what a walk that
+    // recomputed a value would lose.
+    gather_case("slice-mask-classes float32",
+                ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+                    return [g sliceTensor:a starts:@[@1, @1] ends:@[@2, @0] strides:@[@1, @2]
+                              startMask:2 endMask:2 squeezeMask:0 name:@"s"]; },
+                MPSDataTypeFloat32, twoByFour, gatherClasses);
+
+    // THE GRADIENT, which writes into a tensor of the shape the forward pass's input had. The shape is fed as
+    // a CONSTANT, because that is the only way the release answers it at all (measured, and the fed form is
+    // refusals.m's `slice-gradient-fed-shape`). The destination is filled with the byte 0xbd first, because
+    // the elements no gradient reaches are written zeros and a destination that started as zero could not
+    // tell a written zero from an unwritten one.
+    {
+        NSArray<NSNumber *> *forwardShape = @[@2, @4];
+        float gradient[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        float three[3] = { -1, -2, -3 };
+        float two[2] = { -1, -2 };
+        multi_case_filled("slice-gradient-all float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceGradientTensor:in[0] fwdInShapeTensor:forwardShapeConstant(g, forwardShape)
+                                                  starts:@[@0, @0] ends:@[@2, @4] strides:@[@1, @1] name:@"grad"]; },
+                          @[@[@2, @4]], @[[NSData dataWithBytes:gradient length:sizeof gradient]], @[@(MPSDataTypeFloat32)],
+                          0xbd);
+        multi_case_filled("slice-gradient-row0 float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceGradientTensor:in[0] fwdInShapeTensor:forwardShapeConstant(g, forwardShape)
+                                                  starts:@[@0, @0] ends:@[@1, @3] strides:@[@1, @1] name:@"grad"]; },
+                          @[@[@1, @3]], @[[NSData dataWithBytes:three length:sizeof three]], @[@(MPSDataTypeFloat32)],
+                          0xbd);
+        multi_case_filled("slice-gradient-cols12 float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceGradientTensor:in[0] fwdInShapeTensor:forwardShapeConstant(g, forwardShape)
+                                                  starts:@[@0, @1] ends:@[@1, @3] strides:@[@1, @1] name:@"grad"]; },
+                          @[@[@1, @2]], @[[NSData dataWithBytes:two length:sizeof two]], @[@(MPSDataTypeFloat32)],
+                          0xbd);
+        // The masked form of the same thing: the three masks are the slice's own, and an endMask over axis 1
+        // runs that axis to its own last element.
+        multi_case_filled("slice-gradient-mask-end float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceGradientTensor:in[0] fwdInShapeTensor:forwardShapeConstant(g, forwardShape)
+                                                  starts:@[@0, @0] ends:@[@2, @0] strides:@[@1, @1]
+                                                  startMask:0 endMask:2 squeezeMask:0 name:@"grad"]; },
+                          @[@[@2, @4]], @[[NSData dataWithBytes:gradient length:sizeof gradient]], @[@(MPSDataTypeFloat32)],
+                          0xbd);
+        // The masked gradient of a WHOLE axis: with a startMask over axis 0 the region is two rows, so the
+        // gradient is of two rows. The release says so in its own words when it is not - "'mps.
+        // strided_slice_gradient' op `grad_input`[0] = 1 should match dimension size: 2 deduced from
+        // `fwd_shape`" - which is the check this port makes at build time and refusals.m holds.
+        float bothRows[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        multi_case_filled("slice-gradient-mask-start float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceGradientTensor:in[0] fwdInShapeTensor:forwardShapeConstant(g, forwardShape)
+                                                  starts:@[@1, @0] ends:@[@2, @4] strides:@[@1, @1]
+                                                  startMask:1 endMask:0 squeezeMask:0 name:@"grad"]; },
+                          @[@[@2, @4]], @[[NSData dataWithBytes:bothRows length:sizeof bothRows]],
+                          @[@(MPSDataTypeFloat32)], 0xbd);
+    }
+
+    // THE UPDATE, which is the data tensor's own elements with the update written OVER the region the slice
+    // selects: it replaces and it does not add, and the data is byte for byte what it was everywhere else.
+    // The data is of (100, 200, 300, 400 | 500, 600, 700, 800) and the update of (-1, -2, -3, -4).
+    {
+        float data[8] = { 100, 200, 300, 400, 500, 600, 700, 800 };
+        float two[2] = { -1, -2 };
+        float four[4] = { -1, -2, -3, -4 };
+        float eight[8] = { -1, -2, -3, -4, -5, -6, -7, -8 };
+        // One data type per INPUT, not per kind of value in the case: the two-input updates are a data tensor
+        // and an update, and the five-input fed ones are those two and three index tensors.
+        NSArray<NSNumber *> *twoFloats = @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32)];
+        int32_t starts[2] = { 0, 1 };
+        int32_t ends[2] = { 1, 3 };
+        int32_t each[2] = { 1, 1 };
+        int32_t rowStarts[2] = { 1, 0 };
+        int32_t rowEnds[2] = { 2, 4 };
+        NSArray<NSArray<NSNumber *> *> *fedShape = @[@[@2, @4], @[@1, @2], @[@2], @[@2], @[@2]];
+
+        multi_case_filled("slice-update-written float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] starts:@[@0, @1]
+                                                      ends:@[@1, @3] strides:@[@1, @1] name:@"upd"]; },
+                          @[@[@2, @4], @[@1, @2]],
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:two length:sizeof two]], twoFloats, 0);
+        multi_case_filled("slice-update-all float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] starts:@[@0, @0]
+                                                      ends:@[@2, @4] strides:@[@1, @1] name:@"upd"]; },
+                          @[@[@2, @4], @[@2, @4]],
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:eight length:sizeof eight]], twoFloats, 0);
+        // The masked form of 17.4: a startMask over axis 0 with a start of 1 and an end of 2 writes the WHOLE
+        // axis, which is what a start of zero and an end of two say.
+        multi_case_filled("slice-update-mask-start float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] starts:@[@1, @0]
+                                                      ends:@[@2, @4] strides:@[@1, @1] startMask:1 endMask:0
+                                                      squeezeMask:0 name:@"upd"]; },
+                          @[@[@2, @4], @[@2, @4]],
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:eight length:sizeof eight]], twoFloats, 0);
+        // A NEGATIVE stride writes the update's elements along the region's own order: the region walks axis
+        // 1 from 3 with a stride of -1, so the update's first element goes to index 3.
+        multi_case_filled("slice-update-negative-stride float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] starts:@[@0, @3]
+                                                      ends:@[@2, @1] strides:@[@1, @-1] name:@"upd"]; },
+                          @[@[@2, @4], @[@2, @2]],
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:four length:sizeof four]], twoFloats, 0);
+        // The FED forms, which the release answers because the result's shape is the data tensor's own and
+        // the graph knows it when the graph is built: a fed start, end and stride are the one fed parameter
+        // of this family the release takes, measured over int32 of shape [2] for all three.
+        multi_case_filled("slice-update-fed float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] startsTensor:in[2]
+                                                      endsTensor:in[3] stridesTensor:in[4] name:@"upd"]; },
+                          fedShape,
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:two length:sizeof two],
+                            [NSData dataWithBytes:starts length:sizeof starts],
+                            [NSData dataWithBytes:ends length:sizeof ends],
+                            [NSData dataWithBytes:each length:sizeof each]],
+                          @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32), @(MPSDataTypeInt32),
+                            @(MPSDataTypeInt32), @(MPSDataTypeInt32)], 0);
+        multi_case_filled("slice-update-fed-mask-start float32",
+                          ^MPSGraphTensor *(MPSGraph *g, NSArray<MPSGraphTensor *> *in) {
+                              return [g sliceUpdateDataTensor:in[0] updateTensor:in[1] startsTensor:in[2]
+                                                      endsTensor:in[3] stridesTensor:in[4] startMask:1 endMask:0
+                                                      squeezeMask:0 name:@"upd"]; },
+                          @[@[@2, @4], @[@2, @4], @[@2], @[@2], @[@2]],
+                          @[[NSData dataWithBytes:data length:sizeof data],
+                            [NSData dataWithBytes:eight length:sizeof eight],
+                            [NSData dataWithBytes:rowStarts length:sizeof rowStarts],
+                            [NSData dataWithBytes:rowEnds length:sizeof rowEnds],
+                            [NSData dataWithBytes:each length:sizeof each]],
+                          @[@(MPSDataTypeFloat32), @(MPSDataTypeFloat32), @(MPSDataTypeInt32),
+                            @(MPSDataTypeInt32), @(MPSDataTypeInt32)], 0);
+    }
     chain_case();
 }
 
@@ -1522,6 +1831,7 @@ static const Family kFamilies[] = {
     { "cumulative", family_cumulative },
     { "gather_transpose", family_gather_transpose },
     { "gather_slice", family_gather_slice },
+    { "gather_slice_rest", family_gather_slice_rest },
     { "gather_reshape", family_gather_reshape },
     { "gather_flatten", family_gather_flatten },
     { "gather_broadcast", family_gather_broadcast },
