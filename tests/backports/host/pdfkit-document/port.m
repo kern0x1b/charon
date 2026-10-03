@@ -471,6 +471,95 @@ static void printCopyFacts(void)
            (int)[resetCopy fieldsIncludedAreCleared]);
 }
 
+// ---- find and PDFSelection ------------------------------------------------------------------------
+//
+// Both sides ask the SAME rows in the SAME order, one key per line, because the comparison reads one
+// key=value per line.  The needles are a FIXED list, so a fixture that carries none of them answers
+// count=0 for every one - which is itself the measured answer ("May return an empty array (if not found)",
+// PDFDocument.h:259) and is compared rather than skipped.
+static const char *const kNeedles[] = {
+    "alpha", "bravo", "charlie", "zero", "one", "two", "three", "six", "shared", "third", "line",
+    "page", "delta", "nothing here",
+};
+
+// The control characters of a selection's own string made visible, because a range that takes a line break
+// and one that does not look identical when the break is printed raw.
+static NSString *visibleText(NSString *text)
+{
+    if (text == nil)
+        return nil;
+    NSMutableString *out = [NSMutableString string];
+    for (NSUInteger i = 0; i < text.length; i++) {
+        unichar c = [text characterAtIndex:i];
+        if (c == '\n') [out appendString:@"\\n"];
+        else if (c == '\r') [out appendString:@"\\r"];
+        else if (c == '\t') [out appendString:@"\\t"];
+        else [out appendFormat:@"%C", c];
+    }
+    return out;
+}
+
+static void printSelection(const char *prefix, PDFSelection *selection, PDFDocument *document)
+{
+    if (selection == nil) {
+        printf("%s=nil\n", prefix);
+        return;
+    }
+    printf("%s.class=%s\n", prefix, class_getName([selection class]));
+    printf("%s.string=%s\n", prefix, visibleText(selection.string).UTF8String ?: "(nil)");
+    printf("%s.pages=%lu\n", prefix, (unsigned long)selection.pages.count);
+    printf("%s.byLine=%lu\n", prefix, (unsigned long)selection.selectionsByLine.count);
+    printf("%s.color=%s\n", prefix, selection.color ? "a-colour" : "(nil)");
+    PDFPage *page0 = document.pageCount ? [document pageAtIndex:0] : nil;
+    if (page0 != nil) {
+        printf("%s.ranges=%lu\n", prefix, (unsigned long)[selection numberOfTextRangesOnPage:page0]);
+        for (NSUInteger i = 0; i < [selection numberOfTextRangesOnPage:page0]; i++) {
+            NSRange r = [selection rangeAtIndex:i onPage:page0];
+            printf("%s.range%lu=%lu,%lu\n", prefix, (unsigned long)i, (unsigned long)r.location,
+                   (unsigned long)r.length);
+        }
+    }
+    NSAttributedString *attributed = selection.attributedString;
+    printf("%s.attributed=%s\n", prefix, attributed == nil ? "(nil)" : "an-object");
+    if (attributed != nil)
+        printf("%s.attributedLength=%lu\n", prefix, (unsigned long)attributed.length);
+    PDFSelection *copy = [selection copy];
+    printf("%s.copy=%s\n", prefix, copy == selection ? "same" : "another-object");
+    printf("%s.copyString=%s\n", prefix, visibleText(copy.string).UTF8String ?: "(nil)");
+}
+
+// Every needle over every fixture, then the members of the FIRST selection it answers: the range, the pages,
+// the line split, the colour, the attributed string and the copy.  The per-fixture keys are named by the
+// needle and not by the selection's index, so a difference says WHICH match and not merely that one differs.
+static void printFindFacts(const char *name, PDFDocument *document)
+{
+    for (unsigned i = 0; i < sizeof(kNeedles) / sizeof(*kNeedles); i++) {
+        NSString *needle = @(kNeedles[i]);
+        NSArray<PDFSelection *> *found = [document findString:needle withOptions:0];
+        printf("%s.find.%s.count=%lu\n", name, kNeedles[i], (unsigned long)found.count);
+        if (found.count > 0) {
+            char prefix[512];
+            snprintf(prefix, sizeof(prefix), "%s.find.%s.0", name, kNeedles[i]);
+            printSelection(prefix, found[0], document);
+            // and the SAME needle backwards, which is the option that reverses the array and not the ranges
+            NSArray<PDFSelection *> *backwards = [document findString:needle withOptions:NSBackwardsSearch];
+            printf("%s.find.%s.backwards=%lu\n", name, kNeedles[i], (unsigned long)backwards.count);
+            if (backwards.count > 0) {
+                snprintf(prefix, sizeof(prefix), "%s.find.%s.backwards.0", name, kNeedles[i]);
+                printSelection(prefix, backwards[0], document);
+            }
+            // and the case-insensitive option, which answers the document's spelling and not the needle's
+            NSArray<PDFSelection *> *folded = [document findString:needle
+                                                     withOptions:NSCaseInsensitiveSearch];
+            printf("%s.find.%s.folded=%lu\n", name, kNeedles[i], (unsigned long)folded.count);
+            if (folded.count > 0) {
+                snprintf(prefix, sizeof(prefix), "%s.find.%s.folded.0", name, kNeedles[i]);
+                printSelection(prefix, folded[0], document);
+            }
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     setvbuf(stdout, NULL, _IOLBF, 0);
@@ -480,6 +569,7 @@ int main(int argc, char **argv)
         printf("port.PDFPage.image=%s\n", imageOf([PDFPage class]));
         printf("port.PDFDocument.hasInitWithURL=%d\n",
                (int)[PDFDocument instancesRespondToSelector:@selector(initWithURL:)]);
+
         for (int i = 1; i < argc; i++) {
             NSString *path = @(argv[i]);
             const char *name = strrchr(argv[i], '/');
@@ -569,6 +659,8 @@ int main(int argc, char **argv)
                 printf("%s.page0.numberOfCharacters=%ld\n", name, (long)[first numberOfCharacters]);
                 printf("%s.page0.string=%s\n", name, [first string] ? [first string].UTF8String : "(nil)");
                 printf("%s.page0.annotations.count=%lu\n", name, (unsigned long)first.annotations.count);
+                // the SEARCH and the selection it answers, over the fixed needle list
+                printFindFacts(name, document);
                 printOutlineWalk(name, [document outlineRoot], 0);
                 for (unsigned a = 0; a < first.annotations.count; a++) {
                     PDFAnnotation *each = first.annotations[a];

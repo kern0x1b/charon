@@ -78,7 +78,7 @@ xcrun clang -fobjc-arc -Wall "$here/host.m" -framework Foundation -framework App
 xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation -I "$port" "$here/port.m" \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
-    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" "$port/PDFPageText11.m" \
+    "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" "$port/PDFPageText11.m" "$port/PDFSelection11.m" \
     "$port/PDFKitConstants11.m" \
     -framework Foundation -framework CoreGraphics -o "$build/port-side" 2> "$build/port.log" || {
     echo "BUILD the port side did not compile:"; head -8 "$build/port.log" | sed 's/^/    /'; exit 1; }
@@ -94,7 +94,7 @@ xcrun clang -fobjc-arc -Wall -Werror=incomplete-implementation \
     "$port/PDFDocument11.m" "$port/PDFPage11.m" "$port/PDFView11.m" "$port/PDFAnnotation11.m" \
     "$port/PDFBorder11.m" "$port/PDFAppearanceCharacteristics11.m" \
     "$port/PDFDestination11.m" "$port/PDFAction11.m" "$port/PDFOutline11.m" \
-    "$port/PDFPageText11.m" "$port/PDFKitConstants11.m" \
+    "$port/PDFPageText11.m" "$port/PDFSelection11.m" "$port/PDFKitConstants11.m" \
     -framework Foundation -framework UIKit -framework CoreGraphics \
     -o "$build/port-color-side" 2> "$build/color.log" || {
     echo "BUILD the Catalyst side did not compile:"; head -8 "$build/color.log" | sed 's/^/    /'; exit 1; }
@@ -538,7 +538,24 @@ for key in \
     cgfixture-blank.pdf.page0.string \
     cgfixture-inline.pdf.page0.string \
     cgfixture-tab.pdf.page0.string \
-    cgfixture-cross.pdf.page0.string
+    cgfixture-cross.pdf.page0.string \
+    cgfixture-words.pdf.find.alpha.count \
+    cgfixture-words.pdf.find.alpha.0.string \
+    cgfixture-words.pdf.find.alpha.0.range0 \
+    cgfixture-words.pdf.find.alpha.0.ranges \
+    cgfixture-words.pdf.find.alpha.0.pages \
+    cgfixture-words.pdf.find.alpha.0.byLine \
+    cgfixture-words.pdf.find.alpha.0.copy \
+    cgfixture-words.pdf.find.alpha.0.attributedLength \
+    cgfixture-words.pdf.find.alpha.backwards.0.range0 \
+    cgfixture-lines.pdf.find.third.0.string \
+    cgfixture-lines.pdf.find.third.0.range0 \
+    cgfixture-lines2.pdf.find.two.0.string \
+    cgfixture-lines2.pdf.find.two.0.range0 \
+    cgfixture-3.pdf.find.page.backwards.0.ranges \
+    cgfixture-gap.pdf.find.alpha.0.string \
+    cgfixture-blank.pdf.find.alpha.0.string \
+    cgfixture-lead.pdf.find.bravo.0.range0
 do
     family_log="$build/mutation-$key.log"
     if compare "$key" > "$family_log" 2>&1; then
