@@ -1,7 +1,6 @@
 #import "CharonMetal.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The handle's two private members, declared beside the class: the SDK's own @interface for

@@ -7,7 +7,6 @@
 // object does need is MetalKit's own, and backports.lua:45 declares them: MetalKitBackports links
 // FoundationBackports and MetalBackports.
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 static NSUInteger CharonMDLComponentSize(MDLVertexFormat format)
 {

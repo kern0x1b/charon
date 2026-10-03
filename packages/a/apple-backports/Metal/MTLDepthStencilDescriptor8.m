@@ -1,6 +1,5 @@
 #import "CharonMetal.h"
 
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 
 @implementation MTLStencilDescriptor
 

@@ -2,7 +2,6 @@
 #import "CharonMetalProtocols.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 // The header marks -init API_UNAVAILABLE and -initWithSampleCount: the DESIGNATED initializer, so the
 // port has to override -init to give a fresh layer its two sample arrays and cannot say so in an

@@ -2,7 +2,6 @@
 #import "CharonMetalProtocols.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // THE DESCRIPTORS THAT ARRIVED IN iOS 16, and they are the same kind of thing as the twenty in

@@ -2,7 +2,6 @@
 #import "CharonMetalProtocols.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wobjc-missing-property-synthesis"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
 // The DESCRIPTORS that arrived in iOS 14: the acceleration-structure family, the two ray-tracing
