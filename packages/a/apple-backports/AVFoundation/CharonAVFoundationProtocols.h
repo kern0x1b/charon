@@ -18,3 +18,20 @@
 @protocol AVQueuedSampleBufferRendering;
 
 @protocol AVMetricEventStreamSubscriber;
+
+// Below this one the tool's own output, character for character: `python3 tools/transcribe-protocols.py
+// <sdk26> <sdk16> <worktree> <out> AVCaptureDataOutputSynchronizerDelegate:AVFoundation:11.0
+// AVQueuedSampleBufferRendering:AVFoundation:11.0 AVMetricEventStreamSubscriber:AVFoundation:18.0
+// AVCaptureSessionControlsDelegate:AVFoundation:18.0` writes exactly these lines, the three forward
+// declarations and the import of CharonAVMetrics18.h above them, and nothing else (the comments are not
+// the tool's, which is why a regeneration drops them). The protocol is iOS 18's and the 16.4 SDK this
+// package compiles against declares it nowhere, so it is transcribed rather than forward-declared: the
+// generated source names it with @protocol(...), and a name with no definition in the image is a symbol
+// nothing binds.
+API_AVAILABLE(ios(18.0))
+@protocol AVCaptureSessionControlsDelegate <NSObject>
+- (void)sessionControlsDidBecomeActive:(AVCaptureSession * _Nonnull)session;
+- (void)sessionControlsWillEnterFullscreenAppearance:(AVCaptureSession * _Nonnull)session;
+- (void)sessionControlsWillExitFullscreenAppearance:(AVCaptureSession * _Nonnull)session;
+- (void)sessionControlsDidBecomeInactive:(AVCaptureSession * _Nonnull)session;
+@end

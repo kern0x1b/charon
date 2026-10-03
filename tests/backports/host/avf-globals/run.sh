@@ -41,6 +41,7 @@ kind=constant
 [ "$mutant" = function ] && kind=function
 [ "$mutant" = metrics ] && kind=metrics
 [ "$mutant" = coding ] && kind=coding
+[ "$mutant" = controls ] && kind=controls
 build=${AVF_GLOBALS_BUILD:-$root/.agent-work/avf-globals-build}
 rm -rf "$build"
 mkdir -p "$build/src" "$build/o"
@@ -849,5 +850,442 @@ echo "    subclass, and -initWithCoder: did not go through -init"
 [ "$copen" = 0 ] || echo "OPEN $copen archived value(s) this run could not show carried - printed above and"
 [ "$copen" = 0 ] || echo "     in coordination/wave-2026-10-03/v-avf-report.md, not counted as a pass"
 
+# ---------------------------------------------------------------------------------------------
+# The CONTROLS surface. Same shape again, with one difference the port forced: the session's ten members
+# are a CATEGORY on AVCaptureSession, and AVCaptureSession is APPLE's class on this host, so a copy
+# compiled here unchanged would not be the port's category at all - it would replace Apple's own ten
+# implementations in this process, and the probe would then be comparing the port against itself. So the
+# copy is renamed at its @implementation line and lands on a stand-in owner this build declares
+# (charon_host_AVCaptureSession), while the port's class is renamed the way the metric phase renames its
+# seventeen. The category NAME is not renamed and the stand-in declares that same name, so a category
+# spelled differently in the port's source still fails to compile (clang: "cannot find interface
+# declaration for '<name>'"), and the reason strings the port raises stay Apple's own text.
+# ---------------------------------------------------------------------------------------------
+csource=AVCaptureControls18.m
+[ -f "$avf/$csource" ] || {
+    echo "FAIL: $avf/$csource does not exist, so the controls surface this run checks for is not there"
+    exit 1
+}
+[ -f "$avf/CharonAVCaptureControls18.h" ] || {
+    echo "FAIL: $avf/CharonAVCaptureControls18.h does not exist, so the class this run asks about is not declared"
+    exit 1
+}
+
+# THE LIST IS BUILT FROM THE REGISTRY and the port's own header, never typed here: one line per class row,
+# per protocol row, per method row and per property row of controls18.json, and for a property the
+# SELECTOR THE HEADER DECLARES. `AVCaptureControl.enabled` is declared getter=isEnabled, so a list that
+# asked -enabled would ask a selector neither side implements and would report the row equal without
+# having asked anything. A property the header does not declare is reported rather than guessed at.
+python3 - "$avf/CharonAVCaptureControls18.h" "$root/packages/a/apple-backports/registry/AVFoundation" \
+        "$build/controls-list.tsv" <<'CONTROLSLIST'
+import json, os, re, sys
+header, registry, out = sys.argv[1], sys.argv[2], sys.argv[3]
+text = open(header).read()
+# every property declaration in the header, with the accessor it names: @property(attrs) Type name;
+declared = {}
+for line in text.split("\n"):
+    if "@property" not in line:
+        continue
+    attributes = line.split("@property", 1)[1]
+    getter = re.search(r"getter=(\w+)", attributes)
+    # What is left of the declaration once the attribute list is taken off is `<Type> <name>;`, so the name
+    # is its LAST identifier. Taking the first is what the attribute list itself is, and a generic argument
+    # (`NSArray<__kindof AVCaptureControl *> *controls`) is removed before the tokens are read, so the type
+    # cannot be mistaken for the name.
+    rest = attributes[attributes.index(")") + 1:] if "(" in attributes else attributes
+    rest = rest.split("API_AVAILABLE")[0].split("API_UNAVAILABLE")[0]
+    rest = re.sub(r"<[^<>]*>", " ", rest)
+    tokens = re.findall(r"\b([A-Za-z_]\w*)\b", rest)
+    if not tokens:
+        raise SystemExit("cannot tell the property name on this line, so this run must not guess: " + line)
+    name = tokens[-1]
+    declared.setdefault(name, getter.group(1) if getter else name)
+rows = []
+classes, protocols = set(), set()
+for name in sorted(os.listdir(registry)):
+    if not name.startswith("controls") or not name.endswith(".json"):
+        continue
+    for entry in json.load(open(os.path.join(registry, name))).get("entries", []):
+        if entry["kind"] == "class":
+            classes.add(entry["api"])
+            rows.append(("class", entry["api"], ""))
+        elif entry["kind"] == "protocol":
+            protocols.add(entry["api"])
+            rows.append(("protocol", entry["api"], ""))
+        elif entry["kind"] == "method":
+            match = re.match(r"^([-+])\[([A-Za-z_]\w*) (.+)\]$", entry["api"])
+            if not match:
+                raise SystemExit("cannot read the sign, the owner and the selector of " + entry["api"])
+            # a method of a protocol belongs to no class: it cannot be asked of one, and its declaration is
+            # read out of the binary's metadata instead (see the probe's protocolmethod line)
+            kind = "protocolmethod" if match.group(2) in protocols and match.group(2) not in classes else "member"
+            rows.append((kind, match.group(2), match.group(1) + match.group(3)))
+        elif entry["kind"] == "property":
+            owner, member = entry["api"].split(".", 1)
+            if member not in declared:
+                raise SystemExit("%s is declared by no property in %s, so asking its name would ask a "
+                                 "selector neither side has" % (entry["api"], header))
+            rows.append(("member", owner, declared[member]))
+with open(out, "w") as handle:
+    for kind, first, second in rows:
+        handle.write("%s\t%s\t%s\n" % (kind, first, second))
+print("the controls probe is asked about %d classes, protocols and members, over %d accessor(s) the header "
+      "names" % (len(rows), len(declared)))
+CONTROLSLIST
+# the protocol methods the probe must find on the port's protocol object, read out of the same registry
+python3 - "$root/packages/a/apple-backports/registry/AVFoundation" "$build/controls-protocol.tsv" <<'CONTROLSPROTO'
+import json, os, re, sys
+registry, out = sys.argv[1], sys.argv[2]
+expected = []
+for name in sorted(os.listdir(registry)):
+    if not name.startswith("controls") or not name.endswith(".json"):
+        continue
+    for entry in json.load(open(os.path.join(registry, name))).get("entries", []):
+        match = re.match(r"^-\[AVCaptureSessionControlsDelegate (.+)\]$", entry["api"])
+        if match:
+            expected.append(match.group(1))
+with open(out, "w") as handle:
+    handle.write("".join(name + "\n" for name in sorted(expected)))
+print("the registry names %d methods of AVCaptureSessionControlsDelegate" % len(expected))
+CONTROLSPROTO
+# THE PROLOGUE: the renamed class with its one property, and the stand-in owner of the renamed category.
+# The property declaration is copied in because the copy's @synthesize-free accessors still need a
+# declaration to sit in an @interface, and the category's members are NOT copied: the point of the phase
+# is to ask the runtime what the port's own copy carries, not to have the harness declare it for the port.
+python3 - "$avf/CharonAVCaptureControls18.h" "$build/src/controls-prologue.h" <<'CONTROLSPROLOGUE'
+import re, sys
+header, out = sys.argv[1], sys.argv[2]
+text = open(header).read()
+control = re.search(r"@interface\s+AVCaptureControl\s*:\s*NSObject(.*?)@end", text, re.S)
+if not control:
+    raise SystemExit("no @interface AVCaptureControl : NSObject in " + header)
+category = re.search(r"@interface\s+AVCaptureSession\s+\((\w+)\)", text)
+if not category:
+    raise SystemExit("no @interface AVCaptureSession (category) in " + header)
+lines = ["// Generated by tests/backports/host/avf-globals/run.sh from " + header + ": the port's own",
+         "// AVCaptureControl with its name prefixed, and a stand-in owner for its category on AVCaptureSession,",
+         "// which is Apple's class on this host and cannot carry the port's copy.",
+         "//",
+         "// The category keeps its name: clang refuses an @implementation whose category has no @interface, so a",
+         "// category the port spells differently still fails to compile here rather than passing unnoticed.",
+         "#import <Foundation/Foundation.h>",
+         "#import <AVFoundation/AVFoundation.h>",
+         "",
+         "@interface charon_host_AVCaptureControl : NSObject",
+         control.group(1).rstrip(),
+         "@end",
+         "",
+         "@interface charon_host_AVCaptureSession : NSObject",
+         "@end",
+         "",
+         "@interface charon_host_AVCaptureSession (%s)" % category.group(1),
+         "@end",
+         ""]
+open(out, "w").write("\n".join(lines))
+print("the host build's prologue declares the port's renamed class and a stand-in for its category (%s)"
+      % category.group(1))
+CONTROLSPROLOGUE
+# The stand-in's own OBJECT, in a source of its own and not in the prologue. The port's copy carries only
+# the category, so nothing else defines the class and the link stops without it ("_OBJC_CLASS_$
+# _charon_host_AVCaptureSession, referenced from __OBJC_$_CATEGORY_..."), and a prologue that also
+# implemented it would define it twice instead - once in each of the two copies it is prepended to.
+{
+    echo '#import "controls-prologue.h"'
+    echo '@implementation charon_host_AVCaptureSession'
+    echo '@end'
+} > "$build/src/controls-standin.rn"
+# The protocol source, in the shape modules/apple/backports.lua writes from a protocol row: naming the
+# protocol with @protocol(...) is what makes clang emit its metadata into the object. Without it the
+# protocol object does not exist in this binary and the four protocol methods are not declared in the build
+# that is being checked.
+python3 - "$root/packages/a/apple-backports/registry/AVFoundation" "$build/src/controls-protocols.rn" <<'CONTROLSPROTOC'
+import json, os, sys
+registry, out = sys.argv[1], sys.argv[2]
+names = []
+for name in sorted(os.listdir(registry)):
+    if not name.startswith("controls") or not name.endswith(".json"):
+        continue
+    for entry in json.load(open(os.path.join(registry, name))).get("entries", []):
+        if entry["kind"] == "protocol" and entry["status"] == "implemented":
+            names.append(entry["api"])
+if not names:
+    raise SystemExit("no implemented protocol row in the controls registry, so this run would declare none")
+lines = ["// Generated by tests/backports/host/avf-globals/run.sh, in the shape modules/apple/backports.lua",
+         "// writes for a library's protocol rows: every @protocol() named so clang emits",
+         "// _OBJC_PROTOCOL_$_<name> into the object.",
+         '#import "CharonAVFoundationProtocols.h"',
+         "",
+         "static void charon_avf_controls_protocols(void) __attribute__((used));",
+         "static void charon_avf_controls_protocols(void)",
+         "{"]
+lines += ["    (void)@protocol(%s);" % name for name in sorted(names)]
+lines += ["}", ""]
+open(out, "w").write("\n".join(lines))
+print("the protocol source names %d protocol(s): %s" % (len(names), " ".join(sorted(names))))
+CONTROLSPROTOC
+# THE COPIES. Three rewrites, each on one line kind, and each asserted by the guard in the python below:
+#   * the @implementation / @interface lines naming the port's own two classes get the prefix, anchored at
+#     the start of the line, so the reason strings the port raises keep Apple's own spelling of the selector
+#     - an unanchored rename would rewrite "*** -[AVCaptureSession %@] Controls are not supported" and the
+#     comparison of the three refusals would then be a comparison of two different texts;
+#   * the import of the port's Charon header is DROPPED, because on this host its @interface
+#     AVCaptureControl is a duplicate of the macOS SDK's own (measured: "duplicate interface definition for
+#     class 'AVCaptureControl'") and its category would replace Apple's implementations in this process.
+#     The prologue above is what the copy is compiled against instead.
+if true; then
+    src=$csource
+    python3 - "$avf/$src" "$build/src/controls-prologue.h" "$build/src/controls.rn" <<'CONTROLSCOPY'
+import re, sys
+source, prologue, out = sys.argv[1], sys.argv[2], sys.argv[3]
+text = open(source).read()
+drop = '#import "CharonAVCaptureControls18.h"\n'
+if text.count(drop) != 1:
+    raise SystemExit("%s imports the Charon header %d time(s), so this copy is not the one the harness "
+                     "was written against" % (source, text.count(drop)))
+text = text.replace(drop, "")
+text, renamed = re.subn(r"^(@(?:implementation|interface)\s+)(AVCaptureControl\b|AVCaptureSession\b)",
+                        r"\1charon_host_\2", text, flags=re.M)
+if renamed != 2:
+    raise SystemExit("%s names %d of its own two classes at an @implementation/@interface line, and this "
+                     "copy is written for exactly two" % (source, renamed))
+# The prologue is prepended, not imported: the copy's own import of the port's header is dropped above, and
+# what declares charon_host_AVCaptureControl for it is here (the metric phase does the same, for the same
+# reason: a renamed @implementation with no @interface behind it is a root class and stops the compile).
+open(out, "w").write(open(prologue).read() + text)
+print("the copy of %s is renamed (%d class line(s)), carries the prologue and no longer imports the port's "
+      "own header" % (source, renamed))
+CONTROLSCOPY
+fi
+cobjects=""
+for pair in "controls.rn:controls.o" "controls-standin.rn:controls-standin.o" \
+           "controls-protocols.rn:controls-protocols.o"; do
+    src=${pair%%:*}; obj=${pair##*:}
+    # -I"$build/src" for the stand-in, which imports controls-prologue.h by that name.
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" -o "$build/o/$obj" \
+            > "$build/o/$obj.log" 2>&1; then
+        echo "RUN FAILED: the port's $src did not build"
+        head -8 "$build/o/$obj.log"
+        exit 1
+    fi
+    [ -f "$build/o/$obj" ] || {
+        echo "FAIL: $obj was not written, so the link below would measure nothing"; exit 1; }
+    cobjects="$cobjects $build/o/$obj"
+done
+# The plant is applied AFTER the first compile, which is the only order the sha guard below can see
+# anything in: a plant applied before it leaves the object identical to its own recompile, and the guard
+# then refuses the run over a mutation that did happen - which is what it did on the first attempt here.
+if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = controls ]; then
+    # The mutation is on the port's OWN answer, where Apple's answer is measured and different: the port says
+    # -supportsControls is NO because this hardware has no CaptureControls, and the plant makes it say YES.
+    # A structural change (a missing selector) would go red too, but this one is the mistake this family can
+    # actually make: a port that reports the capability of a newer release instead of the hardware it runs on.
+    python3 - "$build/src/controls.rn" <<'PERTURB'
+import sys
+path = sys.argv[1]
+text = open(path).read()
+before = """- (BOOL)supportsControls
+{
+    return NO;
+}"""
+after = """- (BOOL)supportsControls
+{
+    return YES; /* PLANTED */
+}"""
+if text.count(before) != 1:
+    raise SystemExit("the mutation target is not unique (%d matches), so this run proves nothing"
+                     % text.count(before))
+out = text.replace(before, after)
+if out.count(before) != 0 or out.count(after) != 1:
+    raise SystemExit("the mutation did not take, so this run proves nothing")
+open(path, "w").write(out)
+print("# the mutation applied: -supportsControls answers YES, where Apple answers NO here")
+PERTURB
+fi
+if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = controls ]; then
+    # REBUILD THE OBJECT THE PROBE LINKS and show that it is not the object that was there, which is what the
+    # coding phase's "the plant never reached the linker" defect was: a rebuilt object nothing relinks is not
+    # a rebuild.
+    before=$(shasum -a 256 "$build/o/controls.o" | cut -d' ' -f1)
+    if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/controls.rn" \
+            -o "$build/o/controls.o" > "$build/o/controls.o.log" 2>&1; then
+        echo "RUN FAILED: the port's controls.rn did not build after the mutation"
+        head -6 "$build/o/controls.o.log"
+        exit 1
+    fi
+    after=$(shasum -a 256 "$build/o/controls.o" | cut -d' ' -f1)
+    if [ "$before" = "$after" ]; then
+        echo "FAIL: controls.o is byte-for-byte what it was before the mutation, so the probe below links the"
+        echo "      same object and this mutation can never be noticed"
+        exit 1
+    fi
+    echo "rebuilt controls.o after the mutation, and it differs: ${before%????????????????????????????????????????????????} -> ${after%????????????????????????????????????????????????}"
+fi
+# -I"$avf" because the probe declares the protocol itself, from the port's own header: without the
+# declaration the @protocol conformance below has no protocol to conform to and the compile stops on
+# "cannot find protocol declaration for 'AVCaptureSessionControlsDelegate'".
+if ! xcrun clang -fobjc-arc -w -I"$avf" "$here/controls.m" $cobjects -framework Foundation -framework AVFoundation \
+        -o "$build/controls" > "$build/controls.log" 2>&1; then
+    echo "FAIL: the controls probe did not build"; head -14 "$build/controls.log"; exit 1
+fi
+"$build/controls" "$build/controls-list.tsv" > "$build/controls.table" 2> "$build/controls.stderr" || {
+    echo "FAIL: the controls probe did not run"; head -10 "$build/controls.stderr"; exit 1; }
+
+ccontrol() {
+    line=$(grep "^CONTROL	$1	" "$build/controls.table" | cut -f3 || true)
+    [ -n "$line" ] || { echo "FAIL: the controls control $1 printed nothing, so the run examined nothing"; exit 1; }
+    case "$2" in
+        ABSENT) [ "$line" = ABSENT ] || { echo "FAIL: control $1 answered [$line], expected ABSENT"; exit 1; } ;;
+        HAS) case "$line" in HAS*|yes) : ;; *) echo "FAIL: control $1 answered [$line], expected HAS"; exit 1; ;; esac ;;
+        YES) case "$line" in HAS*|yes) : ;; *) echo "FAIL: control $1 answered [$line], expected yes"; exit 1; ;; esac ;;
+        [0-9]*) [ "$line" = "$2" ] || { echo "FAIL: control $1 answered [$line], expected $2"; exit 1; } ;;
+        *) echo "FAIL: no expectation given for control $1"; exit 1 ;;
+    esac
+    echo "ok  control $1 = $line"
+}
+ccontrol AVCaptureNoSuchClass ABSENT
+ccontrol AVCaptureControl HAS
+ccontrol "-\[AVCaptureControl isEnabled\]" YES
+ccontrol charon_host_AVCaptureControl HAS
+ccontrol charon_host_AVCaptureSession HAS
+cline=$(grep "^CONTROL	AVCaptureSessionControlsDelegate	" "$build/controls.table" | cut -f3 || true)
+case "$cline" in
+    "port=HAS"*) echo "ok  control AVCaptureSessionControlsDelegate = $cline" ;;
+    *) echo "FAIL: the port carries no AVCaptureSessionControlsDelegate protocol object ($cline)"; exit 1 ;;
+esac
+ccontrol "AVCaptureSessionControlsDelegate conformed" YES
+# The four methods, read out of THIS BINARY's own Objective-C metadata with the repository's own reader, and
+# compared against the registry's own protocol-method rows. Not out of the runtime: protocol_
+# copyMethodDescriptionList + sel_getName takes the process down with SIGSEGV on this release (measured on
+# Apple's own NSObject protocol, on its first required method), because a protocol's method list holds
+# selector references the runtime has not registered. tools/corpus/objc-inventory.lua is what the registry
+# check reads too, so this is the metadata the gate would see.
+cpdeclared=$(wc -l < "$build/controls-protocol.tsv" | tr -d ' ')
+if ! CHARON_ROOT="$root" xmake l tools/corpus/objc-inventory.lua "$build/controls" arm64 \
+        > "$build/controls-metadata.tsv" 2> "$build/controls-metadata.log"; then
+    echo "FAIL: the Objective-C metadata of the probe binary could not be read"
+    head -5 "$build/controls-metadata.log"
+    exit 1
+fi
+prow=$(grep '^protocol	AVCaptureSessionControlsDelegate	' "$build/controls-metadata.tsv" | head -1)
+if [ -z "$prow" ]; then
+    echo "FAIL: this binary's own metadata carries no AVCaptureSessionControlsDelegate protocol, so the four"
+    echo "      methods are not declared in the build that was checked"
+    grep '^protocol	' "$build/controls-metadata.tsv" | head -8
+    exit 1
+fi
+cpcarried=$(printf '%s\n' "$prow" | cut -f5 | tr ',' '\n' | sed 's/^-//' | sort | tr '\n' ' ')
+missing=""
+extra=""
+while IFS= read -r selector; do
+    [ -n "$selector" ] || continue
+    case " $cpcarried " in *" $selector "*) : ;; *) missing="$missing $selector" ;; esac
+done < "$build/controls-protocol.tsv"
+for selector in $cpcarried; do
+    # the tsv holds the bare selector, the reader's own field the leading - that apple.objc stores every
+    # instance selector with
+    grep -qx -- "$selector" "$build/controls-protocol.tsv" || extra="$extra $selector"
+done
+if [ -n "$missing" ] || [ -n "$extra" ]; then
+    echo "FAIL: this binary's protocol declares:$cpcarried"
+    echo "      the registry names:$missing (absent from the binary)$extra (in the binary, not in the registry)"
+    exit 1
+fi
+echo "ok  this binary's own metadata declares the $cpdeclared methods of AVCaptureSessionControlsDelegate"
+echo "    the registry names, and no others: $cpcarried"
+
+cabsent=$(grep '^CLASS	' "$build/controls.table" | awk -F'	' '{split($3,p,"="); if (p[2]=="ABSENT") print $2}' | tr '\n' ' ')
+cdiffer=$(grep -c '	DIFFERENT$' "$build/controls.table" || true)
+cclasses=$(grep -c '^CLASS	' "$build/controls.table" || true)
+cmembers=$(grep -c '^RESPONDS	' "$build/controls.table" || true)
+chostlacks=$(grep '^RESPONDS	' "$build/controls.table" | grep -c 'host=no' || true)
+cportlacks=$(grep '^RESPONDS	' "$build/controls.table" | grep -c 'port=no' || true)
+# The join on the ANSWER rows, host column against port column. The two rows whose value no macOS caller may
+# ask for are excluded by name and checked separately below, so nothing is compared that was not asked of
+# both sides.
+: > "$build/controls-diff.log"
+grep '^ANSWER	' "$build/controls.table" | grep -v 'configuresApplicationAudioSessionToMixWithOthers' | \
+    while IFS=$(printf '\t') read -r kind label host port; do
+        # the two columns are named in the row, so the prefixes come off before the comparison: left in
+        # place, "host=[0]" and "port=[0]" are two different strings and every row differs, which is what
+        # this join did on its first run.
+        host=${host#host=}
+        port=${port#port=}
+        if [ "$host" != "$port" ]; then
+            printf 'DIFFERS\t%s\t%s\t%s\n' "$label" "$host" "$port" >> "$build/controls-diff.log"
+        fi
+    done
+canswerdiffers=$(grep -c '^DIFFERS	' "$build/controls-diff.log" || true)
+canswers=$(grep -c '^ANSWER	' "$build/controls.table" || true)
+cskipped=$(grep -c '^SKIPPED	' "$build/controls.table" || true)
+# every protocol-method row the registry names has to be one of the SKIPPED lines, or a row would be dropped
+# from the run without anything saying so
+if [ "$cskipped" != "$cpdeclared" ]; then
+    echo "FAIL: the registry names $cpdeclared protocol methods and the run looked at $cskipped of them"
+    exit 1
+fi
+
+if [ "$mutant" != 0 ] && [ "$control" = 0 ] && [ "$kind" = controls ]; then
+    if [ "$canswerdiffers" = 0 ] && [ "$cdiffer" = 0 ]; then
+        echo "FAIL: the mutation left every answer equal, so this check cannot fail and proves nothing"
+        exit 1
+    fi
+    echo "ok  the mutation was noticed: $canswerdiffers answer row(s) and $cdiffer hierarchy row(s) differ"
+    head -6 "$build/controls-diff.log"
+    exit 0
+fi
+if [ "$mutant" != 0 ] && [ "$control" != 0 ] && [ "$kind" = controls ]; then
+    if [ "$canswerdiffers" != 0 ] || [ "$cdiffer" != 0 ]; then
+        echo "FAIL: the control is not clean: $canswerdiffers answer row(s) and $cdiffer hierarchy row(s)"
+        echo "      differ through the identical path, so the red would be the path and not the mutation"
+        head -6 "$build/controls-diff.log"
+        exit 1
+    fi
+    echo "ok  the control is clean: the unmutated controls objects through the identical build-and-run path"
+    exit 0
+fi
+
+if [ -n "$cabsent" ]; then
+    echo "FAIL: the port does not define these classes its own registry rows name: $cabsent"
+    exit 1
+fi
+if [ "$cdiffer" != 0 ]; then
+    echo "FAIL: the port's hierarchy differs from the host's on $cdiffer row(s)"
+    grep '	DIFFERENT$' "$build/controls.table" | head -12
+    exit 1
+fi
+if [ "$chostlacks" != 0 ] || [ "$cportlacks" != 0 ]; then
+    echo "FAIL: a member the two sides are both asked about is missing from one of them: $chostlacks host, $cportlacks port."
+    echo "      The claim this phase makes is that the port carries what Apple's own class carries."
+    grep '^RESPONDS	' "$build/controls.table" | grep -e 'host=no' -e 'port=no' | head -12
+    exit 1
+fi
+if [ "$canswerdiffers" != 0 ]; then
+    echo "FAIL: the port's answers differ from Apple's own on $canswerdiffers of the rows both sides were asked"
+    head -12 "$build/controls-diff.log"
+    exit 1
+fi
+# The two port-only rows: the property the host's header marks unavailable, checked against the header's own
+# documented default and against what a second session of the same class answers, so "it keeps the value"
+# is a measurement and not an assumption.
+cdefault=$(grep '^ANSWER	-configuresApplicationAudioSessionToMixWithOthers default	' "$build/controls.table" | cut -f3 || true)
+[ "$cdefault" = "port=[0]" ] || {
+    echo "FAIL: the port's configuresApplicationAudioSessionToMixWithOthers answered [$cdefault] before"
+    echo "      anything set it, and the header's own default is NO (AVCaptureSession.h:583)"
+    exit 1
+}
+cafter=$(grep '^ANSWER	-configuresApplicationAudioSessionToMixWithOthers after YES	' "$build/controls.table" | cut -f3 || true)
+case "$cafter" in
+    "port=[1 on the session, 0 on a second one]") : ;;
+    *) echo "FAIL: after -setConfiguresApplicationAudioSessionToMixWithOthers: YES the port answered [$cafter],"
+       echo "      which is not a value it kept for that session alone"; exit 1 ;;
+esac
+echo "ok  the mix-with-others flag keeps its value per session (default NO, the header's own), and Apple's"
+echo "    value for it is not asked: API_UNAVAILABLE(macos) on this host"
+echo "ok  $cclasses class row(s) resolve on both sides with the same superclass, and $cmembers members were"
+echo "    asked of both ($cskipped of them belong to a protocol and were read out of the metadata above)"
+echo "ok  $canswers answers agree with Apple's own class on this host, exception names and reasons included"
+
+log=$build
+exit 0
 log=$build
 exit 0
