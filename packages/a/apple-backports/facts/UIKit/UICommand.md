@@ -77,6 +77,36 @@ and the corpus export read them `missing`, because it looks for the accessor in 
 defines none of the eight on `UIKeyCommand` itself. They were answered before this was measured; `UIKeyCommand.action` (7.0)
 and `UIKeyCommand.discoverabilityTitle` (9.0) had no row at all and have one now.
 
+### `UIMenuLeaf`'s two members the 16.4 header does not carry
+
+`UIMenuLeaf.h` of the 16.4 build SDK declares eight members; the 26.2 one declares ten.  The two it adds are
+`selectedImage` (`:27`, `API_AVAILABLE(ios(17.0))`, "Image that can appear next to this action when the `state`
+is `UIMenuElementStateOn`") and `repeatBehavior` (`:41`, typed `UIMenuElementRepeatBehavior`, "The leaf's
+preferred repeat behavior").  This port builds against the 16.4 header, so neither name is in the protocol
+declaration a caller compiles against - and a protocol cannot be given a member by a category, so what the port
+can do is answer the names on the classes that conform.
+
+Measured on Apple's own metadata, the arm64e shared cache of iOS 18.0 read with `modules/apple/objc.lua`'s
+inventory, the own instance lists:
+
+| read | result |
+| --- | --- |
+| `selectedImage` on `UIAction` | present, with its setter |
+| `selectedImage` on `UICommand` | present, with its setter |
+| `selectedImage` on `UIMenuElement` | absent - the leaf's, and both conformers carry their own |
+| a method named `repeatBehavior` on `UIMenuElement`, `UIAction` or `UICommand` | **absent from all three** |
+
+So `selectedImage` is answered on both classes Apple answers it on (`UIAction.m` and, from this band,
+`UICommand+SelectedImage17.m`), and `repeatBehavior` is answered by no Apple conformer at all: it is a member
+the 26.0 protocol declares and no class of the release implements, and its type `UIMenuElementRepeatBehavior`
+(`UIMenuElement.h:32`) is named by no SDK this port builds against.  Its registry row is therefore `absent`
+with that measurement.
+
+The port's own `-[UIAction repeatBehavior]` and `-setRepeatBehavior:` are a different member and stay: they
+answer the host's **private** pair, `UIActionRepeatBehaviorDisabled` 0 and `UIActionRepeatBehaviorEnabled` 1,
+measured by that band's probe, under a type name (`UIActionRepeatBehavior`) no SDK declares.  Reading Apple's
+class as having `repeatBehavior` because the port has it would be reading the port.
+
 ## In a menu
 
 A `UICommand` is a menu element like an action. The action sheet of the context menu interaction lists it, and when it is chosen the

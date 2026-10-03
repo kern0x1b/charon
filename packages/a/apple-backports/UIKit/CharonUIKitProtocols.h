@@ -57,9 +57,16 @@
 
 #if !__has_include(<UIKit/UICalendarSelectionWeekOfYear.h>)
 
-// What a week-of-year calendar selection tells its delegate when the user picks one.
+// What a week-of-year calendar selection tells its delegate when the user picks one, and what it asks before
+// the user may pick one.  The second is @optional in the SDK's own header
+// (UICalendarSelectionWeekOfYear.h:50) and was left out of this transcription until now, which made the member
+// unreachable for a caller compiling against this port: a conformer could not declare it and no caller could
+// send it.  Nothing in the port dispatches it - 6.1.3 has no week-of-year calendar selection to ask - and the
+// declaration is here so the name exists, which is what the protocol's own registry row says of it.
 @protocol UICalendarSelectionWeekOfYearDelegate <NSObject>
 - (void)weekOfYearSelection:(UICalendarSelectionWeekOfYear *)selection didSelectWeekOfYear:(NSDateComponents *)weekOfYearComponents;
+@optional
+- (BOOL)weekOfYearSelection:(UICalendarSelectionWeekOfYear *)selection canSelectWeekOfYear:(NSDateComponents *)weekOfYearComponents;
 @end
 
 #endif   // !__has_include(<UIKit/UICalendarSelectionWeekOfYear.h>)

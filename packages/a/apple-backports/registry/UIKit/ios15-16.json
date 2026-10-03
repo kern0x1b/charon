@@ -2971,6 +2971,17 @@
       "status": "implemented",
       "facts": "facts/UIKit/UIScene.md",
       "source": "SDK 16.4, UIKit"
+    },
+    {
+      "api": "UIMenuLeaf.repeatBehavior",
+      "kind": "property",
+      "introduced": "16.0",
+      "status": "absent",
+      "facts": "facts/UIKit/UICommand.md",
+      "source": "the SDK that declares the names, charon/.agent-work/sdk-26.2's iPhoneOS26.2.sdk System/Library/Frameworks/UIKit.framework/Headers UIMenuLeaf.h:41 and UIMenuElement.h:32, against which the 16.4 build SDK carries neither the property nor the type. Measured on: the arm64e shared cache of iOS 18.0 read with modules/apple/objc.lua's inventory, one pass for all three rows: the own instance lists of UIAction and of UICommand each carry -selectedImage and -setSelectedImage:, and none of UIMenuElement's, UIAction's or UICommand's carries a method named repeatBehavior",
+      "minimum": "6.0",
+      "reason": "no Apple class that conforms to UIMenuLeaf defines it: the arm64e shared cache of iOS 18.0 read with modules/apple/objc.lua's inventory, one pass for all three rows: the own instance lists of UIAction and of UICommand each carry -selectedImage and -setSelectedImage:, and none of UIMenuElement's, UIAction's or UICommand's carries a method named repeatBehavior. UIMenuLeaf.h:41 of the 26.2 SDK declares it with the type UIMenuElementRepeatBehavior, and UIMenuElement.h:32 declares that type, both of which are 26.2 headers - no SDK this port builds against names either, so there is no declaration to compile against and no class to hang the accessor on",
+      "effect": "no -repeatBehavior and no -setRepeatBehavior: on UIMenuElement, UIAction or UICommand, which is what the release's own classes answer to this row: a call reaches doesNotRecognizeSelector:. The port's own -[UIAction repeatBehavior] and -setRepeatBehavior: are not this row and stay: they answer the host's private pair (UIActionRepeatBehaviorDisabled 0 and UIActionRepeatBehaviorEnabled 1, measured in facts/UIKit/UICommand.md's band), which is a different member under a name no SDK declares"
     }
   ]
 }
