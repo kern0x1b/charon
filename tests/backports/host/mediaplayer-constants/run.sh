@@ -23,13 +23,21 @@ d=$(grep -hc '^NSString \*const ' $files | paste -sd+ - | bc)
 [ "$d" -eq "$n" ] || { echo "$n constants are declared and $d are defined - a name is declared without a value"; exit 1; }
 
 # WHICH ORACLE JUDGES WHICH NAME is DERIVED, never listed. The host is asked first for every name; the ones
-# it has no answer for are the ones a RELEASE CACHE must judge, and they are read from the first held
-# release whose MediaPlayer export trie holds them. Deriving it means a new constant the host cannot judge
+# it has no answer for are the ones a RELEASE CACHE must judge. Deriving it means a new constant the host cannot judge
 # is picked up automatically, and a planted name proves the cache reader fails rather than returning
 # nothing - a reader that silently returned nothing is how these two would have been carried unverified.
+#
+# THE RELEASE IS 7.0's armv7 CACHE, and the reader for it is named by the reader itself: an image of 32 bits
+# has 32-bit pointers and no flags above an address, which tools/cfconst.py cannot read in place, and it
+# refuses such an image BY NAME and names the other reader in that refusal. So the routing below is not a
+# constant written down, it is that refusal, and it is checked: if the shared-cache reader stops refusing
+# this image, or stops naming the extracted-image reader, the run stops rather than carrying on with the
+# reader this image may no longer need.
 CF=$root/tools/cfconst.py
+CF32=$root/tools/cfconst/cache32.py
 IMG=/System/Library/Frameworks/MediaPlayer.framework/MediaPlayer
 CACHE_ROOT=${CACHE_ROOT:-$HOME/.charon/dyld}
+CACHE=$CACHE_ROOT/7.0/dyld_shared_cache_armv7
 : > "$build/oracle.txt"
 : > "$build/cache.txt"
 probe="$build/probe.m"
@@ -53,24 +61,50 @@ xcrun clang -fobjc-arc -w "$probe" -framework Foundation -o "$build/probe" 2>"$b
   echo "BUILD  the probe did not compile"; tail -3 "$build/probe.log" | sed 's/^/    /'; exit 1; }
 "$build/probe" > "$build/host-has.txt"
 # THE READER MUST EXIST. The path was cwd-relative, so from the case directory the reader was not found,
-# its stderr was discarded, and the control below "passed" on a program that had never run.
-[ -f "$CF" ] || { echo "CACHE-ORACLE  the cache reader is not there: $CF"; exit 1; }
+# its stderr was discarded, and the control below "passed" on a program that had never run. Both readers
+# are named here, because which one reads this image is the refusal below's answer and not a constant.
+[ -f "$CF" ] || { echo "CACHE-ORACLE  the shared-cache reader is not there: $CF"; exit 1; }
+[ -f "$CF32" ] || { echo "CACHE-ORACLE  the extracted-image reader is not there: $CF32"; exit 1; }
+[ -f "$CACHE" ] || { echo "CACHE-ORACLE  no held release cache at $CACHE, so no name the host cannot judge"; echo "      can be judged at all. Set CACHE_ROOT to the directory holding the dyld caches."; exit 1; }
+# WHICH READER, ASKED. One call to the shared-cache reader for a name the image certainly does not carry:
+# its refusal is what says the image is 32-bit and which reader reads it, and the check is that the refusal
+# is still that one - the previous version of this test asked for the planted name and matched on wording
+# ("not exported by the image") the reader has never printed, so the control passed on a refusal about the
+# image's WIDTH and proved nothing about a name.
+wide=$(python3 "$CF" "$CACHE" "$IMG" CharonNoSuchPlantedName 2>&1 || true)
+case "$wide" in
+  *"$(basename "$CF32")"*) : ;;
+  *) echo "CACHE-ORACLE  the shared-cache reader did not refuse this image by naming the extracted-image reader,"
+     echo "      so the reader chosen below is not the one it names:"; printf '%s\n' "$wide" | head -2 | sed 's/^/    /'; exit 1;;
+esac
+# THE EXTRACTION, the way that refusal says to read it: dyld.lua's own extract() writes the image out of
+# the cache, and the 32-bit reader walks that image's symbol table. tools/cache-extract.lua checks that it
+# wrote a non-empty file, because a caller that went on to read an image that was never written would be
+# reading nothing - which is the shape of failure this whole control exists to catch.
+image=$build/MediaPlayer
+rm -f "$image"
+xmake lua "$root/tools/cache-extract.lua" "$root/modules" "$CACHE" "$IMG" "$image" > "$build/extract.log" 2>&1 || {
+  echo "CACHE-ORACLE  the MediaPlayer image of $CACHE did not extract:"; tail -3 "$build/extract.log" | sed 's/^/    /'; exit 1; }
+sed 's/^/  /' "$build/extract.log"
 # THE NEGATIVE CONTROL MUST BE THE READER S OWN REFUSAL, not merely a non-zero status. A missing program
 # also exits non-zero, so a status-only control cannot tell "refused a planted name" from "never ran": the
 # reader s own words are required, and its stderr is KEPT rather than discarded so the text is checkable.
-ctl=$(python3 "$CF" "$CACHE_ROOT/7.0/dyld_shared_cache_armv7" "$IMG" _CharonNoSuchPlantedName 2>&1) && {
-  echo "CACHE-ORACLE  the cache reader answered for a planted name, so it cannot be trusted to fail here"; exit 1; }
+# The refusal is now "not an exported symbol of this image", which is the line the reader prints AND the
+# status it exits with; both are asked for, because the 32-bit reader used to print the line and exit 0.
+ctl=$(python3 "$CF32" "$image" CharonNoSuchPlantedName 2>&1) && {
+  echo "CACHE-ORACLE  the extracted-image reader answered for a planted name, so it cannot be trusted to fail here"; exit 1; }
 case "$ctl" in
-  *"not exported by the image"*) : ;;
-  *) echo "CACHE-ORACLE  the cache reader did not refuse a planted name in its own words, so this proves nothing:"
+  *"not an exported symbol of this image"*) : ;;
+  *) echo "CACHE-ORACLE  the extracted-image reader did not refuse a planted name in its own words, so this proves nothing:"
      printf '%s\n' "$ctl" | head -2 | sed 's/^/    /'; exit 1;;
 esac
 while read -r nm <&3; do
   if grep -qx "H $nm" "$build/host-has.txt"; then
     printf 'host\t%s\n' "$nm" >> "$build/oracle.txt"
   else
-    v=$(python3 "$CF" "$CACHE_ROOT/7.0/dyld_shared_cache_armv7" "$IMG" "_$nm" 2>"$build/cf-$nm.log" | awk -F'\t' '{print $3}') || v=""
-    [ -n "$v" ] || { echo "CACHE-ORACLE  $nm: the host has no such symbol and no held release exports it, so nothing can judge it"; exit 1; }
+    v=$(python3 "$CF32" "$image" "$nm" 2>"$build/cf-$nm.log" | awk -F'\t' '{print $3}') || v=""
+    [ -n "$v" ] || { echo "CACHE-ORACLE  $nm: the host has no such symbol and no held release exports it, so nothing can judge it"
+       sed 's/^/    /' "$build/cf-$nm.log"; exit 1; }
     printf 'cache\t%s\t%s\n' "$nm" "$v" >> "$build/oracle.txt"
   fi
 done 3< "$build/strings.txt"
