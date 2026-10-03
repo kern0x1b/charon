@@ -151,7 +151,16 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     CharonMPSGraphOperationKindReductionArgMaximum,
     CharonMPSGraphOperationKindReductionArgMinimum,
     CharonMPSGraphOperationKindReductionAnd,
-    CharonMPSGraphOperationKindReductionOr
+    CharonMPSGraphOperationKindReductionOr,
+    // The cumulative family of 16.0, which is the fold above walked along an axis instead of across a set:
+    // the result is the operand's own shape, and each element holds the fold of everything before it or
+    // everything after it, in one direction or the other. Which of the four it is, which direction, and
+    // whether the element at a position is in its own answer are all parameters of the operation, for the
+    // same reason the reduction family's are.
+    CharonMPSGraphOperationKindCumulativeSum,
+    CharonMPSGraphOperationKindCumulativeProduct,
+    CharonMPSGraphOperationKindCumulativeMaximum,
+    CharonMPSGraphOperationKindCumulativeMinimum
 };
 
 @class MPSGraph;
@@ -244,6 +253,32 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                                   tensor:(MPSGraphTensor *)tensor
                              parameters:(NSDictionary *)parameters
                                     name:(NSString *)name;
+// A cumulative operation along one axis of one operand: the result is the operand's own shape, and each
+// element holds a fold of the elements on one side of it. The axis is the caller's, so it is normalised
+// here - negative counted from the end of the rank, and an axis outside it refused the way the reduction
+// family's is - and everything else the walk needs comes in `parameters`: which fold (@"scanCombination",
+// one of the four the reduction table already holds), whether an element is in its own answer
+// (@"scanExclusive") and which way the walk goes (@"scanReverse"). A 16.0 factory fills those in and names
+// only its own methods.
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                               axis:(NSInteger)axis
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name;
+// The same over an axis the caller feeds at run time rather than writing down, which is the other half of
+// every one of the four operations of 16.0. The axis tensor is the operation's second input, and the walk
+// reads its one element; a floating point axis is refused here, because the release cannot build the graph
+// at all over one (measured: its own compiler refuses the operand and the process goes down with
+// "failed assertion", MPSGraphExecutable.mm:4419) and there is no answer to reproduce.
+- (MPSGraphTensor *)charon_mps_scan:(CharonMPSGraphOperationKind)kind
+                         axisTensor:(MPSGraphTensor *)axisTensor
+                             tensor:(MPSGraphTensor *)tensor
+                        combination:(NSString *)combination
+                           exclusive:(BOOL)exclusive
+                             reverse:(BOOL)reverse
+                                name:(NSString *)name;
 // The operation that fills a tensor's value, called by the interpreter for each in turn.
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation
                           values:(NSMutableDictionary *)values;
