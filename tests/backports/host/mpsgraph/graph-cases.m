@@ -23,6 +23,20 @@
                             dataType:(MPSDataType)dataType
                               values:(NSData *)values
                                 name:(NSString *)name;
+// The four of 15.0 and the four of 15.3, which the iPhoneOS 16.4 SDK this package compiles against
+// already declares (MPSGraphReductionOps.h and MPSGraphArithmeticOps.h, ios(15.0) and ios(15.3)).
+- (MPSGraphTensor *)reductionArgMaximumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)reductionArgMinimumWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)reductionAndWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)reductionAndWithTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)reductionOrWithTensor:(MPSGraphTensor *)tensor axis:(NSInteger)axis name:(NSString *)name;
+- (MPSGraphTensor *)reductionOrWithTensor:(MPSGraphTensor *)tensor axes:(NSArray<NSNumber *> *)axes name:(NSString *)name;
+- (MPSGraphTensor *)minimumWithNaNPropagationWithPrimaryTensor:(MPSGraphTensor *)primary
+                                             secondaryTensor:(MPSGraphTensor *)secondary
+                                                        name:(NSString *)name;
+- (MPSGraphTensor *)maximumWithNaNPropagationWithPrimaryTensor:(MPSGraphTensor *)primary
+                                             secondaryTensor:(MPSGraphTensor *)secondary
+                                                        name:(NSString *)name;
 @end
 
 static id<MTLDevice> gDevice;
@@ -490,6 +504,164 @@ static void reduction_families(void)
                    MPSDataTypeFloat32, nanFeed, shape2x4);
 }
 
+// The feeds the reduction family that arrived in 15.0 and 15.3 is asked over. The sixteen classes above
+// are what an index reduction and a truth fold have to be asked of - a NaN of each sign, both infinities,
+// both zeros, a denormal - and the ties are what decide whether an argument reduction answers the first
+// or the last of several equal elements, so a row of (4, 4, 4, 9 | 9, 9, 1, 1) is asked as well: every
+// element of it is in the answer twice.
+static float tieFeed[8] = { 4.0f, 4.0f, 4.0f, 9.0f, 9.0f, 9.0f, 1.0f, 1.0f };
+
+// The refusal of the pair above, asked the way a differential asks one: the graph is built and run
+// inside the @try, because that is where the release raises, and what is printed is the name of the
+// exception rather than the framework's own message about its kernel table, which is not a contract.
+static void nan_propagation_refusal_case(const char *name)
+{
+    @try {
+        MPSGraph *one = [MPSGraph new];
+        MPSGraphTensor *a = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeInt32 name:@"a"];
+        MPSGraphTensor *b = [one placeholderWithShape:@[@2, @4] dataType:MPSDataTypeInt32 name:@"b"];
+        MPSGraphTensor *t = strcmp(name, "minimumWithNaNPropagation-int32") == 0
+                          ? [one minimumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"m"]
+                          : [one maximumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"M"];
+        size_t bytes = 8 * MPSSizeofMPSDataType(MPSDataTypeInt32);
+        id<MTLBuffer> buffer = [gDevice newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+        MPSGraphTensorData *destination = [[MPSGraphTensorData alloc] initWithMTLBuffer:buffer shape:@[@2, @4]
+                                                                              dataType:MPSDataTypeInt32];
+        remember(buffer, integerResult, sizeof(integerResult));
+        MPSGraphShapedType *shaped = [[MPSGraphShapedType alloc] initWithShape:@[@2, @4] dataType:MPSDataTypeInt32];
+        MPSGraphExecutable *executable = [one compileWithDevice:gGraphDevice feeds:@{a: shaped, b: shaped}
+                                                  targetTensors:@[t] targetOperations:@[] compilationDescriptor:nil];
+        [executable runWithMTLCommandQueue:[gDevice newCommandQueue]
+                              inputsArray:@[feed(intFeed, @[@2, @4], MPSDataTypeInt32),
+                                           feed(integerValues, @[@2, @4], MPSDataTypeInt32)]
+                               resultsArray:@[destination] executionDescriptor:nil];
+        printf("#case %s answered-rather-than-raised\n", name);
+    } @catch (NSException *raised) {
+        // One field, and no spaces in it: run.sh reads a case line of five fields as a case with a result
+        // buffer and this one has none, so the answer is printed as the third field and the whole line is
+        // compared as it stands.
+        printf("#case %s raised-%s\n", name, raised.name.UTF8String);
+    }
+}
+
+// The four reductions and the two binary extremes that arrived after 14.0, asked over the feeds of the
+// reduction family above.
+//
+// The case name of an argument reduction carries the type its ANSWER is stored in and where that type
+// came from, because the result is not the operand's type: measured, an argument reduction answers
+// MPSDataTypeInt32 whatever the operand was, so "int32-from-float32" is four bytes an element in the
+// result buffer and eight hex characters, which is what run.sh reads it at. A truth fold is the other
+// way round - it answers the operand's own type, measured - so it is named for that type as the rest of
+// this file is.
+static void reduction_rest_families(void)
+{
+    NSArray<NSNumber *> *shape2x4 = @[@2, @4];
+    // The two argument reductions, over the sixteen classes first: a row holding a NaN of each sign, both
+    // infinities and both zeros, and over the ordinary row and the tied row beside it.
+    reduction_case("argMaximum int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("argMinimum int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("argMaximum-rowFeed int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("argMinimum-rowFeed int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    // The tied row: every element of it is the answer twice, so this is the case that says whether the
+    // release answers the first of the equal elements or the last.
+    reduction_case("argMaximum-ties int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeFloat32, tieFeed, shape2x4);
+    reduction_case("argMinimum-ties int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeFloat32, tieFeed, shape2x4);
+    // A reduced set of nothing but NaNs, which is the one answer of the two that is not an index at all.
+    reduction_case("argMaximum-allNaN int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeFloat32, nanFeed, shape2x4);
+    reduction_case("argMinimum-allNaN int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeFloat32, nanFeed, shape2x4);
+    // The other two data types, because an index is an index over an integer operand too: measured, an
+    // argument reduction over an int32 and over a float16 answers the same int32 indices.
+    reduction_case("argMaximum int32-from-int32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeInt32, intFeed, shape2x4);
+    reduction_case("argMinimum int32-from-int32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeInt32, intFeed, shape2x4);
+    reduction_case("argMaximum int32-from-float16", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:1 name:@"am"]; }, MPSDataTypeFloat16, halfFeed, shape2x4);
+    reduction_case("argMinimum int32-from-float16", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:1 name:@"an"]; }, MPSDataTypeFloat16, halfFeed, shape2x4);
+    // The two axis questions, which are the family's own and are measured over the ordinary row: an axis
+    // of the other kind of the operand's, and a negative one counted from the end. Both answer a 1x4 of
+    // four indices here, which is a different length from the 2x1 of two the axis-1 cases carry.
+    reduction_case("argMaximum-axis0 int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:0 name:@"am"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("argMinimum-axis0 int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:0 name:@"an"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("argMaximum-axisNeg1 int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMaximumWithTensor:a axis:-1 name:@"am"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("argMinimum-axisNeg1 int32-from-float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionArgMinimumWithTensor:a axis:-1 name:@"an"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+
+    // The two truth folds over the same feeds. An "and" of a row holding a zero answers 0 and an "or" of
+    // it answers 1, and the sixteen classes hold a zero of each sign in the first row and none in the
+    // second, so the two rows of the answer differ.
+    unsigned i;
+    struct { const char *name; MPSGraphTensor *(^build)(MPSGraph *, MPSGraphTensor *); } truth[] = {
+        {"reductionAnd", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionAndWithTensor:a axis:1 name:@"a"]; }},
+        {"reductionOr", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) { return [g reductionOrWithTensor:a axis:1 name:@"o"]; }},
+    };
+    char name[64];
+    for (i = 0; i < sizeof(truth) / sizeof(truth[0]); i++) {
+        snprintf(name, sizeof name, "%s float32", truth[i].name);
+        reduction_case(name, truth[i].build, MPSDataTypeFloat32, leftValues, shape2x4);
+        snprintf(name, sizeof name, "%s int32", truth[i].name);
+        reduction_case(name, truth[i].build, MPSDataTypeInt32, intFeed, shape2x4);
+        snprintf(name, sizeof name, "%s float16", truth[i].name);
+        reduction_case(name, truth[i].build, MPSDataTypeFloat16, halfFeed, shape2x4);
+    }
+    // A reduced set of nothing but NaNs, where the two of them differ: a NaN is a nonzero like any other
+    // value, so an "and" of one is true and an "or" of one is true too.
+    reduction_case("reductionAnd-allNaN float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionAndWithTensor:a axis:1 name:@"a"]; }, MPSDataTypeFloat32, nanFeed, shape2x4);
+    reduction_case("reductionOr-allNaN float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionOrWithTensor:a axis:1 name:@"o"]; }, MPSDataTypeFloat32, nanFeed, shape2x4);
+    // The axes of the family over the two truth folds, which is what the second form of each of them
+    // takes: nil reduces every axis and answers a 1x1, an empty array reduces none and answers the
+    // operand byte for byte, and a descending set is still a set.
+    reduction_case("reductionAnd-axesNil float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionAndWithTensor:a axes:nil name:@"an"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("reductionOr-axesNil float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionOrWithTensor:a axes:nil name:@"on"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("reductionAnd-axesEmpty float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionAndWithTensor:a axes:@[] name:@"ae"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("reductionOr-axesEmpty float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionOrWithTensor:a axes:@[] name:@"oe"]; }, MPSDataTypeFloat32, leftValues, shape2x4);
+    reduction_case("reductionAnd-axesDescending float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionAndWithTensor:a axes:@[@1, @0] name:@"ad"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+    reduction_case("reductionOr-axesDescending float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a) {
+        return [g reductionOrWithTensor:a axes:@[@1, @0] name:@"od"]; }, MPSDataTypeFloat32, rowFeed, shape2x4);
+
+    // The two binary extremes that propagate a NaN, over the same feeds the arithmetic family is asked
+    // over and in both types it is asked in. These are the two cases where the 14.0 pair and this pair
+    // differ, and they differ only where an operand is a NaN: over the sixteen classes the four NaN
+    // positions of the propagating pair answer a NaN each, where the 14.0 pair answers the other side.
+    binary_case("minimumWithNaNPropagation float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) {
+        return [g minimumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"m"]; },
+               MPSDataTypeFloat32, leftValues, rightValues);
+    binary_case("maximumWithNaNPropagation float32", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) {
+        return [g maximumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"M"]; },
+               MPSDataTypeFloat32, leftValues, rightValues);
+    binary_case("minimumWithNaNPropagation float16", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) {
+        return [g minimumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"m"]; },
+               MPSDataTypeFloat16, halfValues, halfRightValues);
+    binary_case("maximumWithNaNPropagation float16", ^MPSGraphTensor *(MPSGraph *g, MPSGraphTensor *a, MPSGraphTensor *b) {
+        return [g maximumWithNaNPropagationWithPrimaryTensor:a secondaryTensor:b name:@"M"]; },
+               MPSDataTypeFloat16, halfValues, halfRightValues);
+    // And the one operand the release does not answer at all: measured, an int32 operand raises out of the
+    // framework's own kernel table, which has no NaN kernel for an integer type to ask with. Asked
+    // through @try on both sides and printed as the exception's name, which is a differential like any
+    // other answer: the 14.0 pair over the same feed answers numbers, and this one does not.
+    nan_propagation_refusal_case("minimumWithNaNPropagation-int32");
+    nan_propagation_refusal_case("maximumWithNaNPropagation-int32");
+}
+
 static void families(MPSDataType type, const void *left, const void *right, const char *label)
 {
     unsigned i;
@@ -562,6 +734,9 @@ int main(void)
         // The reduction family, which is the first thing in this file whose result is not the operand's
         // shape, so it is asked of its own feeds and of the sixteen classes above.
         reduction_families();
+        // The rest of the reduction family: the two argument reductions and the two binary
+        // NaN-propagating extremes of 15.0, and the two truth folds of 15.3.
+        reduction_rest_families();
         {
             MPSGraph *one = [MPSGraph new];
             MPSGraphTensor *a = [one placeholderWithShape:@[@2, @2] dataType:MPSDataTypeInt32 name:@"a"];

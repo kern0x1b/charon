@@ -588,16 +588,23 @@ typedef enum {
 //   - nil reduces every axis and an empty array reduces none. Measured: axes:nil over the 2x4 answers a
 //     1x1 of 110, and axes:@[] answers the 2x4 the operand already was, byte for byte.
 //
+// `parameters` is what tells the walk in MPSGraphInterpreter14.m which fold to run, so that this object
+// and every later release's object share one walk and neither names the other's operations: what is
+// added here on top of the axes and the result's shape is only what this release's own eight differ in,
+// which is the two that latch a NaN.
 // An axis outside the rank is a graph that cannot be built, and the framework refuses it in a way a
 // caller cannot catch: measured on this host's own MPSGraph, reductionSumWithTensor:axis:5 over a 2x4
 // writes "invalid axes: 5" and then dies with "LLVM ERROR: Failed to infer result type(s)", so the
 // process is gone before any answer. There is no way to reproduce that from a port, and returning a
 // tensor for it would be an answer the release does not give at all, so this raises instead - which is
 // the one form of "this graph is not buildable" a caller can handle and is decided when the graph is
-// built rather than left to be discovered as a wrong number later.
+// built rather than left to be discovered as a wrong number later. Every later release's reduction goes
+// through the same seam and is refused the same way: the argument reductions of 15.0 were measured
+// refused the same way, and the truth folds of 15.3 with them.
 - (MPSGraphTensor *)charon_mps_reduction:(CharonMPSGraphOperationKind)kind
                                     axes:(NSArray<NSNumber *> *)axes
                                   tensor:(MPSGraphTensor *)tensor
+                             parameters:(NSDictionary *)parameters
                                     name:(NSString *)name
 {
     NSArray<NSNumber *> *shape = tensor.shape;
@@ -612,8 +619,8 @@ typedef enum {
                 [NSException raise:NSInvalidArgumentException
                             format:@"MPSGraph: %@ was asked to reduce axis %ld of a rank-%lu tensor, and "
                                    @"axis 0 to %lu is all it has",
-                                   name, (long)axis.integerValue, (unsigned long)rank,
-                                   (unsigned long)rank];
+                                    name, (long)axis.integerValue, (unsigned long)rank,
+                                    (unsigned long)rank];
             }
             [dropped addIndex:(NSUInteger)value];
         }
@@ -630,44 +637,60 @@ typedef enum {
         else
             [kept addObject:shape[axis]];
     }
-    return [self charon_mps_operation:kind
-                               inputs:@[tensor]
-                           parameters:@{@"axes": reduced, @"shape": kept}
-                                  name:name];
+    NSMutableDictionary *all = [NSMutableDictionary dictionary];
+    all[@"axes"] = reduced;
+    all[@"shape"] = kept;
+    if (parameters)
+        [all addEntriesFromDictionary:parameters];
+    return [self charon_mps_operation:kind inputs:@[tensor] parameters:all name:name];
+}
+
+// What the eight of 14.0 differ in is the combination they fold with, and the two that latch a NaN say
+// so here. The walk reads both out of the parameters, so a later release's reduction needs no name here.
+- (MPSGraphTensor *)charon_mps_reductionOf:(NSArray<NSNumber *> *)axes
+                                    tensor:(MPSGraphTensor *)tensor
+                             combination:(NSString *)combination
+                                     kind:(CharonMPSGraphOperationKind)kind
+                          propagatesNaN:(BOOL)propagatesNaN
+                                     name:(NSString *)name
+{
+    return [self charon_mps_reduction:kind
+                                axes:axes
+                              tensor:tensor
+                         parameters:@{@"combination": combination, @"propagateNaN": @(propagatesNaN)}
+                                name:name];
 }
 
 - (MPSGraphTensor *)reductionSumWithTensor:(MPSGraphTensor *)tensor
                                        axis:(NSInteger)axis
                                        name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionSum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"sum"
+                                    kind:CharonMPSGraphOperationKindReductionSum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionSumWithTensor:(MPSGraphTensor *)tensor
                                        axes:(NSArray<NSNumber *> *)axes
                                        name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionSum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"sum"
+                                    kind:CharonMPSGraphOperationKindReductionSum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionProductWithTensor:(MPSGraphTensor *)tensor
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionProduct
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"product"
+                                    kind:CharonMPSGraphOperationKindReductionProduct propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionProductWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionProduct axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"product"
+                                    kind:CharonMPSGraphOperationKindReductionProduct propagatesNaN:NO name:name];
 }
 
 // The two maxima and the two minima differ in one thing only, and it is the one a reduction of floating
@@ -682,74 +705,64 @@ typedef enum {
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumWithTensor:(MPSGraphTensor *)tensor
                                           axis:(NSInteger)axis
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimum
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumWithTensor:(MPSGraphTensor *)tensor
                                           axes:(NSArray<NSNumber *> *)axes
                                           name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimum axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimum propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axis:(NSInteger)axis
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximumPropagateNaN
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMaximumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axes:(NSArray<NSNumber *> *)axes
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMaximumPropagateNaN
-                                 axes:axes
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"maximum"
+                                    kind:CharonMPSGraphOperationKindReductionMaximumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axis:(NSInteger)axis
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimumPropagateNaN
-                                 axes:@[@(axis)]
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:@[@(axis)] tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimumPropagateNaN propagatesNaN:YES name:name];
 }
 
 - (MPSGraphTensor *)reductionMinimumPropagateNaNWithTensor:(MPSGraphTensor *)tensor
                                                      axes:(NSArray<NSNumber *> *)axes
                                                      name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMinimumPropagateNaN
-                                 axes:axes
-                               tensor:tensor
-                                 name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"minimum"
+                                    kind:CharonMPSGraphOperationKindReductionMinimumPropagateNaN propagatesNaN:YES name:name];
 }
 
 // The mean and the variance are the reduction family in the two forms every framework of arithmetic has
@@ -764,7 +777,8 @@ typedef enum {
                             axes:(NSArray<NSNumber *> *)axes
                             name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionMean axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"mean"
+                                    kind:CharonMPSGraphOperationKindReductionMean propagatesNaN:NO name:name];
 }
 
 // The variance is the only member of the family that can be given the mean it is to be taken about,
@@ -776,7 +790,8 @@ typedef enum {
                                 axes:(NSArray<NSNumber *> *)axes
                                 name:(NSString *)name
 {
-    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance axes:axes tensor:tensor name:name];
+    return [self charon_mps_reductionOf:axes tensor:tensor combination:@"variance"
+                                    kind:CharonMPSGraphOperationKindReductionVariance propagatesNaN:NO name:name];
 }
 
 - (MPSGraphTensor *)varianceOfTensor:(MPSGraphTensor *)tensor
@@ -784,15 +799,12 @@ typedef enum {
                                 axes:(NSArray<NSNumber *> *)axes
                                 name:(NSString *)name
 {
-    MPSGraphTensor *result = [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance
-                                                  axes:axes
-                                                tensor:tensor
-                                                  name:name];
-    MPSGraphOperation *operation = result.operation;
-    [operation charon_mps_setParameters:@{@"axes": operation.charon_mps_parameters[@"axes"],
-                                         @"shape": operation.charon_mps_parameters[@"shape"],
-                                         @"mean": meanTensor}];
-    return result;
+    return [self charon_mps_reduction:CharonMPSGraphOperationKindReductionVariance
+                                 axes:axes
+                               tensor:tensor
+                          parameters:@{@"combination": @"variance", @"propagateNaN": @NO,
+                                       @"mean": meanTensor}
+                                 name:name];
 }
 
 #pragma mark - running it
