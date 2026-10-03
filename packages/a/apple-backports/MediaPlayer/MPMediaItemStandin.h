@@ -77,7 +77,75 @@ enum { MPNowPlayingInfoLanguageOptionTypeAudible = 0, MPNowPlayingInfoLanguageOp
 @property (nonatomic, readonly) MPNowPlayingInfoLanguageOption *defaultLanguageOption;
 @property (nonatomic, readonly) BOOL allowEmptySelection;
 @end
+// What MPRemoteCommandCenter71.m needs to parse, transcribed from the SDK's own headers:
+// MPRemoteCommandHandlerStatus and its cases from MediaPlayer.framework's MPRemoteCommand.h, the
+// UIEventSubtypeRemoteControl* constants from UIKit's UIEvent.h, and the command classes from the
+// framework's own headers.
+//
+// Why these are here: MPRemoteCommandCenter71.m guards its include of this header behind
+// CHARON_MEDIAPLAYER_STANDIN, so a host check may include the port's object and have the port's own code
+// measured rather than this Mac's MediaPlayer -- which has no MPSeekCommandEvent, MPSkipIntervalCommand
+// or MPRatingCommand at all, and whose MPMediaItem declares albumTrackNumber, so a category compiled
+// against it would look like a clobber. Without these declarations that include does not compile at all,
+// and coordination/crutches.md's "MediaPlayer's command events have no host check" is the entry: it is
+// still open, and the rest of what MPRemoteCommandCenter71.m needs -- MPSeekCommandEvent and
+// MPSeekCommandEventType, MPRemoteCommand's own members, MPRemoteCommandCenter's -- is named there too.
+//
+// Nothing here changes the armv7 object. This header is read only when the .m that includes it is
+// compiled with CHARON_MEDIAPLAYER_STANDIN defined, which is a host check and never a device build.
+typedef NS_ENUM(NSInteger, MPRemoteCommandHandlerStatus) {
+    MPRemoteCommandHandlerStatusSuccess = 0,
+    MPRemoteCommandHandlerStatusUnknownError = 1,
+    MPRemoteCommandHandlerStatusCommandFailed = 2,
+    MPRemoteCommandHandlerStatusNoSuchContent = 100,
+    MPRemoteCommandHandlerStatusNoActionableNowPlayingItem = 110,
+    MPRemoteCommandHandlerStatusCommandInterruptionTimedOut = 120,
+    MPRemoteCommandHandlerStatusCommandInterruptionRunLoop = 121,
+    MPRemoteCommandHandlerStatusInterrupted = 130,
+    MPRemoteCommandHandlerStatusNotApplicable = 140,
+    MPRemoteCommandHandlerStatusTimedOut = 150,
+    MPRemoteCommandHandlerStatusDenied = 160,
+};
+
+// UIEvent.h's own numbering of the remote-control subtypes, which is what MPRemoteCommandCenter71.m's
+// switch on UIEventSubtype runs on.
+enum {
+    UIEventSubtypeRemoteControlPlay = 1,
+    UIEventSubtypeRemoteControlPause = 2,
+    UIEventSubtypeRemoteControlStop = 3,
+    UIEventSubtypeRemoteControlTogglePlayPause = 4,
+    UIEventSubtypeRemoteControlNextTrack = 5,
+    UIEventSubtypeRemoteControlPreviousTrack = 6,
+    UIEventSubtypeRemoteControlBeginSeekingBackward = 7,
+    UIEventSubtypeRemoteControlEndSeekingBackward = 8,
+    UIEventSubtypeRemoteControlBeginSeekingForward = 9,
+    UIEventSubtypeRemoteControlEndSeekingForward = 10,
+    UIEventSubtypeRemoteControlRewind = 11,
+    UIEventSubtypeRemoteControlFastForward = 12,
+    UIEventSubtypeRemoteControlRating = 13,
+};
+
 @interface MPRemoteCommand : NSObject
+@end
+
+// The command classes MPRemoteCommandCenter71.m creates lazily by class. Their own members are in their
+// own objects (MPRatingCommandEvent.m, MPSkipIntervalCommandEvent.m and the 8.0/9.0 groups beside them),
+// and none of those is what this stand-in is for: the check asks what the 7.1 object does with them.
+@interface MPFeedbackCommand : MPRemoteCommand
+@end
+@interface MPSkipIntervalCommand : MPRemoteCommand
+@property (nonatomic, readonly) NSInteger interval;
+@end
+@interface MPRatingCommand : MPRemoteCommand
+@property (nonatomic, readonly) float minimumRating;
+@property (nonatomic, readonly) float maximumRating;
+@end
+@interface MPChangePlaybackRateCommand : MPRemoteCommand
+@property (nonatomic, readonly) NSArray<NSNumber *> *supportedPlaybackRates;
+@end
+@interface MPChangeRepeatModeCommand : MPRemoteCommand
+@end
+@interface MPChangeShuffleModeCommand : MPRemoteCommand
 @end
 @interface MPRemoteCommandEvent : NSObject
 - (instancetype)initWithCommand:(MPRemoteCommand *)command;

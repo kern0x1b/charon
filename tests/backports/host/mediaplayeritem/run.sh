@@ -38,6 +38,19 @@ header=${1:-$sdk/System/Library/Frameworks/MediaPlayer.framework/Headers/MPMedia
 # run that silently read some other SDK's header cannot be told apart from one that read this one's.
 echo "header:   $header"
 
+# The port's own sources, which is where MPMediaItemStandin.h lives and what the three checks below
+# measure: each check re-declares the class under test and the base it stands on, so it compiles against
+# the port's header and the port's own shape rather than against this Mac's MediaPlayer, which declares
+# several of these already and a category compiled against that would look like a clobber. It is the same
+# compile line tools/media-event-class.py uses.
+library=${MPITEM_LIBRARY:-$(cd "$here/../../../../packages/a/apple-backports/MediaPlayer" 2>/dev/null && pwd)}
+[ -f "$library/MPMediaItemStandin.h" ] || {
+    echo "FAIL: no MPMediaItemStandin.h under $library, so the three checks below have no stand-in to"
+    echo "      compile against and would certify nothing while looking present in the tree."
+    exit 1
+}
+echo "library: $library"
+
 bin=${TMPDIR:-/tmp}/mpitem-probe-$$
 rm -f "$bin"
 xcrun clang -fobjc-arc -framework Foundation -framework MediaPlayer -o "$bin" "$here/probe.m"
@@ -45,5 +58,20 @@ xcrun clang -fobjc-arc -framework Foundation -framework MediaPlayer -o "$bin" "$
 # failing ends the script there, so the line below was unreachable and the rm never ran.
 status=0
 "$bin" "$header" || status=$?
-rm -f "$bin"
+
+# The three contract checks, each built before it is run and removed after, for the reason the comment
+# above the probe gives: a compile that fails must not leave a previous binary on screen to be read as
+# this one's output. They were in this directory and named by no runner, which is what
+# coordination/crutches.md's "MediaPlayer MPSeekCommandEvent's host check is missing" recorded; they run
+# here now.
+for check in contract mpratingcommandeventcheck mpskipintervalcommandeventcheck; do
+    rm -f "$bin"
+    if ! xcrun clang -fobjc-arc -w -framework Foundation -I"$here" -I"$library" -o "$bin" "$here/$check.m"; then
+        echo "FAIL: $check.m did not build, so it certifies nothing"
+        rm -f "$bin"
+        exit 1
+    fi
+    "$bin" || status=$?
+    rm -f "$bin"
+done
 exit $status
