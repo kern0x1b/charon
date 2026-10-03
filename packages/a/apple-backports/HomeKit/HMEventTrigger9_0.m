@@ -11,14 +11,6 @@
 
 @synthesize charon_identifier = _charon_identifier;
 
-- (instancetype)init
-{
-    self = [super init];
-    if (self)
-        _charon_identifier = [CharonHomeKitNewIdentifier() copy];
-    return self;
-}
-
 - (NSUUID *)uniqueIdentifier
 {
     return CharonHomeKitUUID(_charon_identifier);

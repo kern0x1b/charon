@@ -1,29 +1,3 @@
-# The pair -init and +new, which these frameworks' SDK 26.2 headers close with NS_UNAVAILABLE, and
-# what Apple's own class does about each of them. NS_UNAVAILABLE is a promise about source and adds
-# nothing at run time, so the header settles nothing: the question is what Apple's own class does, and
-# the port owes that answer or nothing at all.
-#
-# own-init / own-new   whether the selector is in the CLASS's own method list, which is what a corpus
-#                      row asks and what an inherited selector is in no class's.
-# answer/exception/reason   what a caller reaches at run time.
-# oracle               where the answer was measured: `host` for the host's own framework, `ios16`
-#                      for a class read out of the arm64e cache of iOS 16.0 with the repository's own
-#                      tools/corpus/objc-inventory.lua.
-# port-init / port-new what the port owes for each selector, which follows from own-init and own-new
-#                      and nothing else: `raise` where Apple's own class defines that selector, `none`
-# reason-template      a reason that ends in the class name is the framework building it from the
-#                      receiver, so the template with the class replaced by %@ is carried beside it:
-#                      what a caller sees is fixed per class, the port writes a format string.
-# port-init / port-new what the port owes for each selector, read off own-init and own-new: the measured
-#                      raise where Apple's own class defines that selector, `none` where it does not -
-#                      a definition there would put the selector in the port's
-#                      metadata where Apple's has neither, and would answer the caller exactly what
-#                      NSObject's already answers. The two differ per class and per selector:
-#                      HealthKit's classes define -init and inherit +new, SensorKit's define both.
-# port-source/port-object   where the port answers it, and which object must carry the selectors.
-#
-# check_host.py asks the host again and fails when it answers something else; check_port.py holds the
-# source, the macro's own body and the compiled armv7 object to this table. run.sh runs both.
 framework	oracle	class	own-init	own-new	answer	exception	reason	reason-template	port-init	port-new	port-macro	port-source	port-object
 HealthKit	host	HKClinicalRecord	1	0	raises	NSInvalidArgumentException	The -init method is not available on HKClinicalRecord	The -init method is not available on %@	raise	none	CHARON_HEALTHKIT_UNCREATABLE_INIT	HealthKit/HKClinicalRecord120.m	HKClinicalRecord120.m.o
 HealthKit	host	HKDeletedObject	0	0	ok				none	none	-	HealthKit/HKSourceRevision9.m	HKSourceRevision9.m.o
@@ -32,6 +6,26 @@ HealthKit	host	HKFHIRResource	1	0	raises	NSInvalidArgumentException	The -init me
 HealthKit	host	HKQuantitySeriesSampleBuilder	1	0	raises	NSInvalidArgumentException	The -init method is not available on HKQuantitySeriesSampleBuilder	The -init method is not available on %@	raise	none	CHARON_HEALTHKIT_UNCREATABLE_INIT	HealthKit/HKQuantitySeriesSampleBuilder120.m	HKQuantitySeriesSampleBuilder120.m.o
 HealthKit	host	HKSourceRevision	1	0	raises	NSInvalidArgumentException	The -init method is not available on HKSourceRevision	The -init method is not available on %@	raise	none	CHARON_HEALTHKIT_UNCREATABLE_INIT	HealthKit/HKSourceRevision9.m	HKSourceRevision9.m.o
 HealthKit	host	HKWorkoutBuilder	1	0	raises	NSInvalidArgumentException	The -init method is not available on HKWorkoutBuilder	The -init method is not available on %@	raise	none	CHARON_HEALTHKIT_UNCREATABLE_INIT	HealthKit/HKWorkoutBuilder120.m	HKWorkoutBuilder120.m.o
+HomeKit	ios16	HMAccessoryProfile	0	0	ok				none	none	-	HomeKit/HMAccessoryProfile10_0.m	HMAccessoryProfile10_0.m.o
+HomeKit	ios16	HMAccessorySetupPayload	0	0	ok				none	none	-	HomeKit/HMAccessorySetupPayload11_3.m	HMAccessorySetupPayload11_3.m.o
+HomeKit	ios16	HMAccessorySetupResult	0	0	ok				none	none	-	HomeKit/HMAccessorySetupResult15_4.m	HMAccessorySetupResult15_4.m.o
+HomeKit	ios16	HMCalendarEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMCameraProfile	0	0	ok				none	none	-	HomeKit/HMAccessoryProfile10_0.m	HMAccessoryProfile10_0.m.o
+HomeKit	ios16	HMCharacteristicThresholdRangeEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMCharacteristicWriteAction	0	0	ok				none	none	-	HomeKit/HMAccessoryServiceCharacteristic8_0.m	HMAccessoryServiceCharacteristic8_0.m.o
+HomeKit	ios16	HMDurationEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMEvent	0	0	ok				none	none	-	HomeKit/HMEventTrigger9_0.m	HMEventTrigger9_0.m.o
+HomeKit	ios16	HMEventTrigger	0	0	ok				none	none	-	HomeKit/HMEventTrigger9_0.m	HMEventTrigger9_0.m.o
+HomeKit	ios16	HMHomeAccessControl	0	0	ok				none	none	-	HomeKit/HMEventTrigger9_0.m	HMEventTrigger9_0.m.o
+HomeKit	ios16	HMMutableCalendarEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMMutableCharacteristicEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMMutableCharacteristicThresholdRangeEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMMutableDurationEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMMutablePresenceEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMNumberRange	0	0	ok				none	none	-	HomeKit/HMNumberRange11_0.m	HMNumberRange11_0.m.o
+HomeKit	ios16	HMPresenceEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMSignificantTimeEvent	0	0	ok				none	none	-	HomeKit/HMTimeEvent11_0.m	HMTimeEvent11_0.m.o
+HomeKit	ios16	HMTrigger	0	0	ok				none	none	-	HomeKit/HMHomeGraph8_0.m	HMHomeGraph8_0.m.o
 SensorKit	host	SRAcousticSettings	0	0	ok				none	none	-	SensorKit/SensorKit260.m	SensorKit260.m.o
 SensorKit	host	SRAudioLevel	1	1	raises	NSInternalInconsistencyException			raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit170.m	SensorKit170.m.o
 SensorKit	host	SRElectrocardiogramData	1	1	raises	NSInternalInconsistencyException			raise	raise	CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT	SensorKit/SensorKit174.m	SensorKit174.m.o

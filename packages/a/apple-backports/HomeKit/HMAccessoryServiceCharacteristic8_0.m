@@ -508,12 +508,6 @@ HMCharacteristicMetadata *CharonHomeKitCharacteristicMetadataForRecord(NSMutable
 @implementation HMCharacteristicWriteAction
 @synthesize charon_characteristic = _charon_characteristic, charon_targetValue = _charon_targetValue;
 
-- (instancetype)init
-{
-    self = [super init];
-    return self;
-}
-
 - (instancetype)initWithCharacteristic:(HMCharacteristic *)characteristic targetValue:(id)targetValue
 {
     self = [super init];

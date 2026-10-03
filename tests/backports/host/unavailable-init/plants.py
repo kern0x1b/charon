@@ -55,7 +55,10 @@ def anchor_line(source, cls):
             scan += 1
         if scan >= len(lines):
             return None
-        return lines[scan - 1] + "\n" + lines[scan]
+        pair = lines[scan - 1] + "\n" + lines[scan]
+        # The pair has to be in the file as it stands, or the needle matches nothing and the plant
+        # reports that it did not apply rather than quietly checking nothing.
+        return pair if pair in "\n".join(lines) else lines[scan]
     return None
 
 
@@ -90,9 +93,9 @@ def main():
         mine = [r for r in rows_of(table) if r["framework"] == framework]
         owes = [r for r in mine if r["port-init"] == "raise"]
         none = [r for r in mine if r["port-init"] == "none"]
-        if not owes:
+        if not owes and not none:
             continue
-        macro = owes[0]["port-macro"]
+        macro = owes[0]["port-macro"] if owes else "-"
         # The call as the class writes it: with the literal reason when the measurement gave one.
         call = None
         for row in owes:
@@ -113,12 +116,19 @@ def main():
                              owner["port-source"].split("/")[-1], call, "/* %s */" % call]))
         if none:
             anchor = anchor_line(os.path.join(package, none[0]["port-source"]), none[0]["class"])
-            insert = macro + ("" if owes[0].get("reason-template") else '(@"%s")' % owes[0]["reason"])
+            insert = (macro + ("" if owes[0].get("reason-template") else '(@"%s")' % owes[0]["reason"])
+                     if owes else
+                     # Nothing in this framework is owed, so there is no macro to call and the mistake
+                     # has to be written out: NSObject's pair spelled into a class whose own class
+                     # carries neither selector.
+                     "-(instancetype)init { return [super init]; }")
             if anchor:
                 print("\t".join(["a class that must NOT be defined gets a definition anyway", framework,
                                  none[0]["port-source"].split("/")[-1],
                                  anchor.replace("\n", "\\n"),
                                  (anchor + "\n" + insert).replace("\n", "\\n")]))
+        if not owes:
+            continue
         header = header_of(package, macro)
         other = "NSGenericException" if owes[0]["exception"] != "NSGenericException" else "NSRangeException"
         line = raise_line(package, header, owes[0]["exception"]) if header else None
