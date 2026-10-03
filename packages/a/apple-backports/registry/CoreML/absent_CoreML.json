@@ -319,11 +319,11 @@
    "kind": "property",
    "introduced": "17.0",
    "minimum": "6.0",
-   "status": "owed",
-   "reason": "the set is the compute units a model may run on -- a CPU, a GPU, a neural engine -- and this release has one of them: iOS 6 has no Metal driver and no neural engine at all, so the enumeration of compute devices is a family of its own and is not carried here; the port carries no such property today and the work to carry it is scheduled rather than declined, so this row answers 'owed' and not 'absent': nothing is denied here",
-   "effect": "the property is not there: the selector is not sent at all",
-   "source": "SDK 16.4, CoreML (the headers this package is built against)",
-   "facts": "facts/CoreML/CoreML.md"
+   "status": "implemented",
+   "reason": "the compute units a model may run on, which this release has one of: iOS 6 has no Metal driver and no neural engine at all, so the port's list is the CPU and the GPU and engine devices answer what a device of this port's knows, which is nothing, and this row answered 'owed' - the work scheduled rather than declined - until CoreML/MLComputeDevices17.m carried it",
+   "effect": "the compute units a model may run on, which this release has one of: iOS 6 has no Metal driver and no neural engine at all, so the port's list is the CPU and the GPU and engine devices answer what a device of this port's knows, which is nothing; every case of the family in tests/backports/host/coreml/devices-cases.m answers as the host's own Core ML does, bar the answers that are about hardware this release has none of, which the run lists by name with the reason beside them",
+   "facts": "facts/CoreML/CoreML.md",
+   "source": "the headers of Core ML in the SDK of iOS 26.2 for every signature, and the behaviour measured against the Core ML of this host by tests/backports/host/coreml/probe-devices.m and held case by case by tests/backports/host/coreml/devices-cases.m, which asks both sides in one program"
   },
   {
    "api": "MLModelConfiguration.functionName",
