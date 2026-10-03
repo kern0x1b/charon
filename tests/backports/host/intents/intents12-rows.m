@@ -71,11 +71,6 @@ static void send_one_object(id receiver, SEL selector, id first)
     ((void (*)(id, SEL, id))objc_msgSend)(receiver, selector, first);
 }
 
-static void send_two_objects(id receiver, SEL selector, id first, id second)
-{
-    ((void (*)(id, SEL, id, id))objc_msgSend)(receiver, selector, first, second);
-}
-
 static void send_two_integers(id receiver, SEL selector, NSInteger first, NSInteger second)
 {
     ((void (*)(id, SEL, NSInteger, NSInteger))objc_msgSend)(receiver, selector, first, second);
