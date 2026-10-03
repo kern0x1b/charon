@@ -5,10 +5,13 @@
 // nine properties over the release's objects, and not a second PKPass.
 //
 // The one thing this file does not do is answer a property whose answer is a Secure Element. The
-// release has no `PKPaymentPass` and no `PKRemotePass` and the device has no Secure Element and no
-// pass relay, so `paymentPass`, `secureElementPass` and `remotePass` are registry entries of status
-// `absent` with those reasons and are not implemented here: a program that reaches them through the
-// runtime gets no method, which is what an absent entry means, rather than a property that lies.
+// release has no `PKPaymentPass` and the device has no Secure Element, so `paymentPass` and
+// `secureElementPass` are registry entries of status `absent` with those reasons and are not
+// implemented here: a program that reaches them through the runtime gets no method, which is what an
+// absent entry means, rather than a property that lies. `remotePass` is `absent` too, for another
+// reason: the release DOES have a `PKRemotePass`, a `PKPass` subclass of 8 methods in the armv7 cache
+// of 6.1.3 (facts/PassKit/PassKit.md, "Correction 2"), but its `PKPass` has no `-isRemotePass`, and
+// the row's own reason says why the getter is not carried (PassKit/PKPaymentPass9.m).
 #import <PassKit/PassKit.h>
 #import <UIKit/UIKit.h>
 

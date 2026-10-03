@@ -20,8 +20,9 @@
 //
 //   - `-[PKPass deviceName]` is here and answers nil: the release's PKPass has no such selector
 //     (measured, 90 methods, listed in facts/PassKit/PassKit.md), and there is no device to name --
-//     no Secure Element to have added a pass to, and no pass relay in the release either
-//     (PKPassLibrary's own 34 instance methods and 1 class method carry no remote-payment member).
+//     no Secure Element to have added a pass to, and the release's one remote-pass class,
+//     PKRemotePass, carries 8 methods of its own and no -deviceName among them (armv7 cache of 6.1.3;
+//     PKPassLibrary's own 34 instance methods and 1 class method carry no remote-payment member).
 //     Apple's header declares the property nonnull, and no name is invented here to satisfy that.
 //   - `PKPass.remotePass` is NOT here. Its selector is `isRemotePass` and it answers NO just as
 //     truthfully, but the registry's own property row is spelled `PKPass.remotePass` and the
