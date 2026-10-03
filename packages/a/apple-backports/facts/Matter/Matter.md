@@ -160,6 +160,57 @@ this machine at this tree, and the difference is the host's framework, not the p
 whose `Matter.framework` declares none of the 78, or the port's cluster declarations under a guard the
 differential can turn off.
 
+## What the host answers, and what the port does not (measured 2026-10-03, review of 5b0f9f271)
+
+Three behaviours of the 923 plain data classes are NOT what the port does. They are measured here by
+`tests/backports/host/matter/params-probe.m`, one program that runs against the host's Matter.framework and
+prints, per class, what a fresh `[[X alloc] init]` holds, the alias round trip, the copy in both directions
+and the `-description`. The probe reads nothing at compile time - the class, the properties and their names
+come from the runtime and from its driver - so the same source is the whole comparison.
+
+**1. `-init` leaves members nil where the host fills them.** Measured:
+
+    fresh  MTRGroupsClusterAddGroupParams  groupID                NSNumber(0)
+    fresh  MTRGroupsClusterAddGroupParams  groupName              NSString()
+    fresh  MTRGroupsClusterAddGroupParams  timedInvokeTimeoutMs   (nil)
+    fresh  MTRTestClusterClusterSimpleStruct  a                   NSNumber(0)
+    fresh  MTRTestClusterClusterSimpleStruct  d                   NSData(0)
+    fresh  MTRAccessControlClusterAccessControlEntryStruct  privilege  NSNumber(0)
+    description  MTRGroupsClusterAddGroupParams  <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
+
+so a NONNULL object property is the zero value of its own type and a NULLABLE one is nil. That IS derivable
+from the header - the type and the nullability are in the declaration - and the derivation is written
+(`default_of()` in `tools/matter-generate.py`). **NOT LANDED**: the run that carries it is red on 4 objects,
+and the three fixes go in one commit because they touch one function.
+
+**2. A deprecated alias is the same value as its successor.** Measured, both directions:
+
+    alias  MTRGroupsClusterAddGroupParams  groupId   groupID   NSNumber(1001)
+    alias  MTRGroupsClusterAddGroupParams  groupID   groupId   NSNumber(1001)
+
+240 alias pairs are named by the SDK's own deprecation text - `@property ... NSNumber *groupId
+MTR_DEPRECATED("Please use groupID", ...)` - and the pair is read out of that text, never from a list. **51 of
+the 240 name something the class does not declare**: `MTRControllerFactoryParams.storageDelegate` says "Please
+use the storage property", which is prose and not a member. Those need the successor measured per class; the
+generator names them rather than pairing them with a guess.
+
+**3. `-description` is overridden, BUT NOT BY EVERY CLASS.** The format, where it is overridden, is measured:
+
+    description  MTRGroupsClusterAddGroupParams  <MTRGroupsClusterAddGroupParams: groupID:0; groupName:; >
+    description  MTRAccessControlClusterAccessControlEntryStruct  <MTRAccessControlClusterAccessControlEntryStruct:
+        privilege:0; authMode:0; subjects:(null); targets:(null); auxiliaryType:(null); fabricIndex:0; >
+    description  MTRReadParams  <MTRReadParams: 0x1022a9a20>
+
+`<` + the class name + `: ` + `name:value; ` per property of the class's OWN @interface, in declaration
+order, + `>` - inherited properties are not in it, and the value is what `%@` prints. **The third line is the
+correction to the review's third point: `MTRReadParams` does NOT override it**, and that is NSObject's own
+`<Class: 0xADDRESS>`. So which classes override `-description` is a fact about the host's binary and not
+about the header, and the port cannot derive it. It needs a per-class measurement over the 923 - one probe
+run, then a list the generator reads - and that list does not exist yet.
+
+The copy the port writes is right: `copy  <class> <property> original-after-copy-write` and
+`copy-after-original-write` differ on the host in every fixture tried, and so do they in the port.
+
 ## What is owed
 
 - **The plain data classes are carried; their initialisers are not.** The 923 `*Params`/`*Struct`/`*Event`
