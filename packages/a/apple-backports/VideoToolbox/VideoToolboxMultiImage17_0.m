@@ -37,24 +37,61 @@
 // nothing with it would be the silent fake the brief forbids; a variant that refuses says so in the status,
 // before any work, and the caller sees it.
 
-// VTDecompressionSessionSetMultiImageCallback. The header says the multi-image callback "will be used when
-// the video decoder outputs CMTaggedBufferGroups" and "will also be used when DecodeFrame operations fail and
-// return a nonzero status", and that "the original single-image callback will only be used in the case
-// where the video decoder outputs a CVImageBuffer instead of a CMTaggedBufferGroup".
+// VTDecompressionSessionSetMultiImageCallback, and this one does NOT refuse.
 //
-// On a release whose decoder can only ever output a CVImageBuffer - which is every release this port
-// builds, measured above - the second half of that sentence is the only half that applies, so installing
-// this callback would install a callback the release can never reach. There is no registry entry for the
-// stored callback either: nothing would read it.
+// The first version of this function answered kVTVideoDecoderNotAvailableNowErr (-12913) on the reasoning
+// that the release's decode callback ends at CVImageBuffer and so could never call the callback it is given.
+// MEASURED on this host, 2026-10-03, on an ORDINARY single-image H264 session with no key and no special
+// decoder: **VTDecompressionSessionSetMultiImageCallback answers 0**. The host installs the callback and
+// reports success, so a caller that has done nothing unusual is told it worked. A port that answered -12913
+// here would refuse a call the release accepts, which is worse than the reverse: the caller is told no where
+// the real thing says yes.
+//
+// So this stores what it was given and answers noErr, and the honest part is the storing. The callback and
+// its reference value go into a table this file owns, keyed by the session's address as a VALUE rather than
+// by sending it a message: a VTDecompressionSessionRef is an opaque CF type with no toll-free ObjC class on
+// this side, so -hash and -isEqual: cannot be sent to it, and NSValue is what carries the pointer instead.
+// What the table is FOR is stated here rather than left to be found: a session this port creates is the
+// RELEASE's session, and the release's decode has no multi-image output at all, so nothing in this port calls
+// what is stored - on this band or on any band the port builds. It is stored because the function's contract
+// is "install this callback", and a version that accepted the argument and discarded it would be claiming an
+// installation that never happened.
+static NSMutableDictionary *charon_multi_image_callbacks(void)
+{
+    static NSMutableDictionary *table = nil;
+    if (!table)
+        table = [[NSMutableDictionary alloc] init];
+    return table;
+}
+
+// The callback and its reference value together, because one without the other is not the callback.
+@interface CharonVTMultiImageCallback : NSObject {
+@public
+    VTDecompressionOutputMultiImageCallback _callback;
+    void *_refcon;
+}
+@end
+
+@implementation CharonVTMultiImageCallback
+- (void)dealloc
+{
+    _callback = NULL;
+    _refcon = NULL;
+}
+@end
+
 OSStatus VTDecompressionSessionSetMultiImageCallback(
     VTDecompressionSessionRef CM_NONNULL decompressionSession,
     VTDecompressionOutputMultiImageCallback CM_NONNULL outputMultiImageCallback,
     void * CM_NULLABLE outputMultiImageRefcon)
 {
-    (void)decompressionSession;
-    (void)outputMultiImageCallback;
-    (void)outputMultiImageRefcon;
-    return kVTVideoDecoderNotAvailableNowErr;
+    if (!decompressionSession || !outputMultiImageCallback)
+        return kVTParameterErr;
+    CharonVTMultiImageCallback *stored = [[CharonVTMultiImageCallback alloc] init];
+    stored->_callback = outputMultiImageCallback;
+    stored->_refcon = outputMultiImageRefcon;
+    charon_multi_image_callbacks()[[NSValue valueWithPointer:decompressionSession]] = stored;
+    return noErr;
 }
 
 // VTDecompressionSessionDecodeFrameWithMultiImageCapableOutputHandler. The header is explicit that the block
