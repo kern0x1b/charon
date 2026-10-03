@@ -548,6 +548,130 @@ function failures(opt)
         end
     end
 
+    -- A framework inside another's Frameworks folder, which clang resolves from the directory of the header that
+    -- asks for it and not from a framework search path. The copy the lift stages of a header sits outside its own
+    -- framework, so an import of a nested framework out of it is looked for where the SDK keeps it, where the
+    -- staged tree has none, and the whole lift stops on that one import - measured on iPhoneOS16.4.sdk, whose
+    -- MetalPerformanceShaders.h imports <MPSCore/MPSCore.h>. So the overlay carries each nested framework at the
+    -- path a staged header reaches it by, every header of it, and the case reads the overlay the lift wrote and
+    -- asks clang to resolve the import over it.
+    --
+    -- The fixture's folder carries a hash of its own text and not a fixed name, because this machine's ccache can
+    -- hand back the dump of a fixture SDK whose headers changed where the last run left them: measured, the same
+    -- fixture under the same folder with a header rewritten between two runs gave the lift the declarations of the
+    -- earlier text (a mark at line 4 where the fixture as written has none), and both the same fixture under a
+    -- folder no run had used and the same fixture with CCACHE_DISABLE=1 gave the lift the fixture as written.
+    local swiftc = os.getenv("LIFT_SWIFTC")
+    if not swiftc or #swiftc == 0 then
+        for _, bin in ipairs(os.dirs(path.join(store, "s/swift/*/*/bin"))) do
+            if os.isfile(path.join(bin, "swiftc")) then
+                swiftc = path.join(bin, "swiftc")
+                break
+            end
+        end
+    end
+    if not clang or not swiftc then
+        print("skipped: the overlay of a nested framework needs both clang under " .. path.join(store, "l/llvm") ..
+              " and swiftc under " .. path.join(store, "s/swift"))
+    else
+        -- The macros in a header of their own, as the SDK has them: clang gives a mark the file and the line the
+        -- macro is used at only where the macro was spelled somewhere else (the same reason the fixture lift
+        -- overlay test writes Avail.h).
+        local fixture = {"#define ios(version) ios, introduced=version\n" ..
+                         "#define API_AVAILABLE(...) __attribute__((availability(__VA_ARGS__)))\n",
+                         "@protocol NSObject @end\n@protocol NSCopying @end\n" ..
+                         "__attribute__((objc_root_class)) @interface NSObject <NSObject> @end\n",
+                         -- the three shapes a nested framework is reached by: its own umbrella, a header of it the
+                         -- lift rewrote, a header of it the lift did not (there is no staged copy to find), and one
+                         -- in a folder below its Headers (vecLib keeps BNNS, LinearAlgebra, Quadrature, Sparse)
+                         "#import <Fix/Avail.h>\n#import <Nested/Nested.h>\n#import <Nested/Other.h>\n" ..
+                         "#import <Nested/Sub/Deep.h>\nvoid FixOwnUse(void) API_AVAILABLE(ios(9.0));\n",
+                         "#import <Fix/Avail.h>\nvoid FixNestedUse(void) API_AVAILABLE(ios(9.0));\n",
+                         "void FixNestedOther(void);\n",
+                         "void FixNestedDeep(void);\n",
+                         '[{"api": "FixOwnUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"},' ..
+                         '{"api": "FixNestedUse", "kind": "function", "introduced": "9.0", "minimum": "6.0", "status": "implemented",' ..
+                         ' "effect": "a fixture entry", "reason": "a fixture entry the backports do not carry"}]'}
+        local root = path.join(os.tmpdir(), "charon-lift-nested-" .. hash.strhash128(table.concat(fixture, "")))
+        os.tryrm(root)
+        local frameworks = path.join(root, "sdk", "System", "Library", "Frameworks")
+        local fix, nested = path.join(frameworks, "Fix.framework", "Headers"),
+                               path.join(frameworks, "Fix.framework", "Frameworks", "Nested.framework", "Headers")
+        io.writefile(path.join(frameworks, "Foundation.framework", "Headers", "Foundation.h"), fixture[2])
+        io.writefile(path.join(fix, "Avail.h"), fixture[1])
+        io.writefile(path.join(fix, "Fix.h"), fixture[3])
+        io.writefile(path.join(nested, "Nested.h"), fixture[4])
+        io.writefile(path.join(nested, "Other.h"), fixture[5])
+        io.writefile(path.join(nested, "Sub", "Deep.h"), fixture[6])
+        io.writefile(path.join(root, "registry", "Fix.json"), fixture[7])
+        local json = import("core.base.json", {anonymous = true})
+        local lifted, failure
+        try {function ()
+            lifted = lift.lift({clang = clang, swiftc = swiftc, sdk = path.join(root, "sdk"), triple = "armv7-apple-ios6.1.3",
+                                minimum = "6.1.3", registry = root, outputdir = path.join(root, "out"), expected = false})
+        end, catch {function (why) failure = tostring(why) end}}
+        expect_equal(found, "a lift of a fixture SDK with a nested framework", failure, nil)
+        -- and it staged a copy of the nested header as well, which is the premise of the whole case
+        expect_equal(found, "the staged headers", tostring(lifted and lifted.headers), "2")
+        -- the overlay's structure, as written: the nested framework under the staged path a header of the outer
+        -- framework reaches it by, the staged copy where the lift wrote one and the SDK's own file where it did not
+        local vfs = path.join(root, "out", "vfs.yaml")
+        local overlay = os.isfile(vfs) and json.decode(io.readfile(vfs)) or {}
+        -- the SDK's own path carries the nested framework's staged header already (the rewrite's own roots); what is
+        -- new here is the staged tree's, which is where a staged header of the outer framework looks for it
+        local staged_headers = path.join(root, "out", "headers", "System", "Library", "Frameworks", "Fix.framework",
+                                         "Frameworks", "Nested.framework", "Headers")
+        local carried = {}
+        for _, entry in ipairs(overlay.roots or {}) do
+            if entry.name == staged_headers then
+                table.join2(carried, entry.contents or {})
+            end
+        end
+        local function carried_header(name)
+            for _, header in ipairs(carried) do
+                if header.name == name then
+                    return header
+                end
+            end
+        end
+        local function contents_of(name, field)
+            local header = carried_header(name)
+            return header and header[field]
+        end
+        local names = {}
+        for _, header in ipairs(carried) do
+            table.insert(names, tostring(header.name))
+        end
+        expect_equal(found, "the nested framework is carried at the path a staged header of the outer one reaches",
+                     table.concat(names, ","), "Nested.h,Other.h,Sub")
+        expect_equal(found, "its own header is the staged copy",
+                     contents_of("Nested.h", "external-contents"), path.join(staged_headers, "Nested.h"))
+        expect_equal(found, "the header the lift did not rewrite is the SDK's own file",
+                     contents_of("Other.h", "external-contents"), path.join(nested, "Other.h"))
+        local below = carried_header("Sub")
+        expect_equal(found, "and a folder below its Headers is carried as a folder",
+                     tostring(below and below.type) .. "/" .. tostring(below and #below.contents or 0), "directory/1")
+        expect_equal(found, "with the header in it the SDK's own",
+                     below and below.contents and below.contents[1] and below.contents[1]["external-contents"],
+                     path.join(nested, "Sub", "Deep.h"))
+        -- and what that overlay is for: the import resolves, which is the wall the whole lift stopped at
+        local errors
+        try {
+            function ()
+                errors = os.iorunv(clang, {"-target", "armv7-apple-ios6.1.3", "-isysroot", path.join(root, "sdk"),
+                                           "-Wno-incompatible-sysroot", "-fsyntax-only", "-x", "objective-c",
+                                           path.join(root, "out", "umbrella.m"), "-ivfsoverlay", vfs})
+            end,
+            catch {
+                function (why) errors = tostring(why) end
+            }
+        }
+        expect_equal(found, "the import of the nested framework resolves over the overlay the lift wrote",
+                     (errors or ""):gsub("[\r\n]", " "), "")
+        os.tryrm(root)
+    end
+
     -- The three spellings that name a carried property, and the case that is the whole of this change: a row
     -- spelled with the getter the SDK declares for the property - UITextField.isTextDragActive, which names
     -- UITextDraggable's textDragActive whose getter is isTextDragActive - carries the property, where before

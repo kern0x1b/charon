@@ -876,7 +876,7 @@ end
 -- the expansions, and is not lowered. A use a language does not reach (inside #ifdef __OBJC__) is not read by it either.
 -- headers: the SDK's headers read, whose conditionals say which predefined macros they test. files: {file, lines, sites}
 -- each. Answers found[site] = expansion or {branches}, refused[site] = why.
-local function expander(opt, headers, languages)
+local function expander(opt, frameworks, headers, languages)
     -- The macros each language predefines (clang -dM on an empty input), and of those whose presence differs between
     -- the languages the ones the SDK's own #if, #ifdef, #ifndef and #elif test, most tested first.
     local empty = path.join(opt.outputdir, "empty.h")
@@ -908,7 +908,7 @@ local function expander(opt, headers, languages)
         return tested[a] ~= tested[b] and tested[a] > tested[b] or tested[a] == tested[b] and a < b
     end)
     return function (files)
-        local all, roots = {}, {}
+        local all, roots, staged = {}, {}, {}
         for _, item in ipairs(files) do
             local insertions = {}
             for _, site in ipairs(item.sites) do
@@ -937,11 +937,16 @@ local function expander(opt, headers, languages)
             local folder = path.directory(item.file)
             roots[folder] = roots[folder] or {}
             table.insert(roots[folder], {type = "file", name = path.filename(item.file), ["external-contents"] = copy})
+            staged[item.file] = copy
         end
         local overlay = {version = 0, ["case-sensitive"] = "false", roots = {}}
         for _, folder in ipairs(table.orderkeys(roots)) do
             table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
         end
+        -- the nested frameworks too, for the reason nested_frameworks() gives: this preprocesses the same
+        -- umbrella, out of the same staged headers, and clang resolves a nested framework from the staged header
+        local expand = path.join(opt.outputdir, "expand")
+        table.join2(overlay.roots, nested_frameworks(opt.sdk, frameworks, expand, staged))
         local vfs = path.join(opt.outputdir, "expand.yaml")
         json.savefile(vfs, overlay)
         local forms, texts = {}, {}
@@ -1250,6 +1255,59 @@ local function header_files(sdk, frameworks)
     end
     table.join2(files, os.files(path.join(sdk, "usr", "include", "**.h")))
     return files
+end
+
+-- The overlay entries that carry the nested frameworks of the frameworks read: a framework inside another's
+-- Frameworks folder. clang resolves an include of one from the directory of the header that asks for it and not
+-- from a framework search path (`#import <MPSCore/MPSCore.h>` in MetalPerformanceShaders.h), so a header this
+-- lift stages - written under the output folder, outside the framework it belongs to - is asked for the nested
+-- framework where the SDK keeps it, and there is nothing there: the include fails by name. Measured on
+-- iPhoneOS16.4.sdk, where the whole lift stopped on that one import.
+--
+-- So an overlay over a staged tree carries each nested framework at the path a staged header reaches it by, and
+-- carries every header of it: the staged copy where the lift wrote one (staged names them, so the enumeration
+-- cannot name a copy that was never written) and the SDK's own file where it did not, since a nested framework
+-- is reachable only through the header that asks for it and a file missing from the tree fails the same way.
+-- Only the public Frameworks folder of a framework the lift read is walked: a PrivateFramework is no header a
+-- lifted one imports, and no SDK's Headers reaches one.
+--
+-- staging is the folder the staged tree hangs from (<outputdir>/headers, <outputdir>/expand), staged the files
+-- of it by the SDK path they were read from.
+function nested_frameworks(sdk, frameworks, staging, staged)
+    local function contents(folder)
+        local files, folders = {}, {}
+        for _, file in ipairs(os.files(path.join(folder, "*"))) do
+            table.insert(files, file)
+        end
+        -- os.filedirs is the one that lists a folder, and it lists files as well, so each of its entries is asked
+        for _, item in ipairs(os.filedirs(path.join(folder, "*"))) do
+            if os.isdir(item) then
+                table.insert(folders, item)
+            end
+        end
+        table.sort(files)
+        table.sort(folders)
+        local entries = {}
+        for _, file in ipairs(files) do
+            table.insert(entries, {type = "file", name = path.filename(file), ["external-contents"] = staged[file] or file})
+        end
+        for _, sub in ipairs(folders) do
+            table.insert(entries, {type = "directory", name = path.filename(sub), contents = contents(sub)})
+        end
+        return entries
+    end
+    local roots = {}
+    for _, framework in ipairs(frameworks) do
+        local nested = path.join(sdk, "System", "Library", "Frameworks", framework .. ".framework", "Frameworks")
+        for _, one in ipairs(os.filedirs(path.join(nested, "*.framework"))) do
+            local headers = path.join(one, "Headers")
+            if os.isdir(one) and os.isdir(headers) then
+                table.insert(roots, {type = "directory", name = path.join(staging, path.relative(headers, sdk)),
+                                     contents = contents(headers)})
+            end
+        end
+    end
+    return roots
 end
 
 -- The byte offsets where each line of a text starts.
@@ -1742,7 +1800,7 @@ local function computed(opt)
     mark("conformer")
     local languages = languages_of(opt)
     mark("languages")
-    local expand = expander(opt, header_files(opt.sdk, frameworks), languages)
+    local expand = expander(opt, frameworks, header_files(opt.sdk, frameworks), languages)
     mark("expander")
     local kept, entries = {}, {}
     for api, entry in pairs(listed) do
@@ -2598,7 +2656,7 @@ local function computed(opt)
     -- The copies: each mark rewritten where its macro was written - the release inside ios(...) or the positional argument
     -- lift_macro knows, and for any other macro its own expansion at that place, with the release lowered. Only the
     -- places our marks name change: a macro's definition, and every other place it is used, stay as the SDK wrote them.
-    local roots, lifted = {}, 0
+    local roots, staged, lifted = {}, {}, 0
     for file, categories in pairs(redeclared) do
         edits[file] = edits[file] or {}
     end
@@ -2722,6 +2780,7 @@ local function computed(opt)
         local folder = path.directory(file)
         roots[folder] = roots[folder] or {}
         table.insert(roots[folder], {type = "file", name = path.filename(file), ["external-contents"] = copy})
+        staged[file] = copy
     end
     mark("rewrite:write")
     -- marked, so that no edit at all still writes `"roots": []`, which clang reads, not `{}`, which it refuses
@@ -2732,6 +2791,11 @@ local function computed(opt)
     for _, folder in ipairs(folders) do
         table.insert(overlay.roots, {type = "directory", name = folder, contents = roots[folder]})
     end
+    -- and the nested frameworks, for the reason nested_frameworks() gives: every staged header above is carried
+    -- at the SDK's own path, where clang finds it by its framework's name, and a nested framework is found by no
+    -- such path - only from the directory of the header that asks for it, which is the staged tree's
+    local staging = path.join(opt.outputdir, "headers")
+    table.join2(overlay.roots, nested_frameworks(opt.sdk, frameworks, staging, staged))
     local vfs = path.join(opt.outputdir, "vfs.yaml")
     json.savefile(vfs, overlay)
     mark("rewrite:prefetch")
