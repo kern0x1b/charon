@@ -103,6 +103,67 @@ The seven mutations are one per thing the port decides that a header does not st
   the slot is empty again, so the getter answers a fresh descriptor and the format is the default on
   both sides.
 
+## Value equality, which Apple's own objects have and the port now has too
+
+**Measured on Apple's side, class by class**: all sixteen MTL4* classes carry an `-isEqual:` and an
+`-hash` OF THEIR OWN, and the two iOS 11 tile classes carry NEITHER. Measured with
+`class_copyMethodList`, not read off a header. For each of the sixteen: two freshly made objects are
+equal, their hashes agree, and a copy equals its source.
+
+So the port has all sixteen, member by member, and neither of the two 11.0 classes - which keeps
+NSObject's identity equality, as Apple's does.
+
+```
+sh tests/backports/host/metal-census/descriptors26.sh
+```
+
+```
+Apple's own answers to the value-equality questions, in a binary of their own:
+  the port's value equality IS Apple's own, member for member: 51 answers agree
+    MTL4PipelineOptions fresh-equal yes
+    MTL4PipelineOptions fresh-hash-same yes
+    MTL4PipelineOptions copy-equal yes
+descriptors26: the differential is green, the Apple-side answers agree, the control is RUN FAILED, and all nine mutants are red
+```
+
+**Two binaries and a diff, not one case asking both sides**, and the reason is worth the lines it takes:
+asking Apple's `-isEqual:` in a binary that also carries the port's classes trapped - measured, a
+Trace/BPT trap inside `objc_opt_respondsToSelector` at the first such call, reproducibly. So
+`descriptors26-apple.m` asks Apple's own objects the same questions in a binary with no class of the
+port's in it, `descriptors26-value.m` asks the port's, and the script diffs the two runs.
+
+### Four defects the measurement found, each of which a compile could not
+
+1. **`[nil isEqual:nil]` is NO.** A message to nil answers zero, so an equality written
+   `![self.a isEqual:other.a]` says two objects that have no value for that member are NOT equal. Every
+   class with an object member answered exactly that, and only those: measured, the first run of the
+   value case failed 29 checks on 10 classes. The pointer shortcut `self.a != other.a && ![self.a
+   isEqual:other.a]` is what every object member now carries, and it is not decoration.
+2. **THE TILE DESCRIPTOR DOES NOT COMPARE ITS COLOUR ATTACHMENTS.** Apple's own
+   `MTLTileRenderPipelineColorAttachmentDescriptorArray` carries no `-isEqual:` - measured, its own
+   method list has neither it nor `-hash` - so two fresh arrays are two objects that are not equal,
+   and yet two fresh `MTL4TileRenderPipelineDescriptor`s on Apple's side ARE equal, also measured. An
+   equality that compared the attachments could not answer that. The render and mesh descriptors beside
+   it DO compare theirs, because their array is `MTL4RenderPipelineColorAttachmentDescriptorArray` and
+   that one carries an `-isEqual:` of its own.
+3. **APPLE'S `MTLVertexDescriptor` HAS VALUE EQUALITY, AND OURS DID NOT** - and that is two releases
+   away. A Metal 4 render pipeline descriptor compares its vertex descriptor, so without it two fresh
+   render descriptors on this port were not equal where Apple's are. `MTLVertexDescriptor8.m` now has it,
+   comparing its two arrays element by element through their own getters and member by member, because
+   the two array classes are the SDK's PROTOCOLS here and carry no `-isEqual:` of their own.
+4. **`MTL4FunctionDescriptor` HAD NO `-copyWithZone:`, AND A FILE-LEVEL `#pragma` WAS HIDING IT.** The
+   26.2 header declares the class as `NSObject <NSCopying>`; `#pragma clang diagnostic ignored
+   "-Wprotocol"` turned the warning into a silence. The pragma is gone, the method is there, and this
+   file builds with no diagnostic silenced.
+
+### The two mutations that hold the member list to the measurement
+
+A class that compared NOTHING answers "equal" to three of the four questions and to the fourth, so the
+fourth - change one named member and ask again - is the one that holds it to the member list. M8 drops
+`shaderReflection` from the options' equality and is red on exactly that check; M9 drops the DEPTH of the
+compute descriptor's required threadgroup size, and the case changes the depth alone so a mutation that
+only dropped the width or the height would still be caught.
+
 ## What none of these objects is for, and which rows say so
 
 **Nothing in this port reads a descriptor made here.** There is no `MTL4CommandQueue`, no
