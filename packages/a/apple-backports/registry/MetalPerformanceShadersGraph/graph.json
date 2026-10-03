@@ -1486,5 +1486,197 @@
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     }
+,
+{
+      "api": "-[MPSGraph transposeTensor:dimension:withDimension:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph transposeTensor:permutation:name:]",
+      "kind": "method",
+      "introduced": "16.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph flatten2DTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph flatten2DTensor:axisTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph broadcastTensor:toShape:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph broadcastTensor:toShapeTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph reverseTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph squeezeTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    },
+{
+      "api": "-[MPSGraph expandDimsOfTensor:axesTensor:name:]",
+      "kind": "method",
+      "introduced": "15.4",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the result is the operand's elements in another order or another extent, gathered on the CPU: for each axis of the result, which axis of the operand feeds it, how many of the operand's axes it covers and whether that one is reversed or wrapped, which is one walk in MPSGraphInterpreter14.m for the whole family and which this method's own object fills in. Measured on this host's own MPSGraph over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40) and over the sixteen input classes, and recorded with the release's own bytes in .agent-work/mps4/runs/probe-shape.txt: the transpose is the row-major transpose in both of its forms and a negative axis is counted from the end; a squeeze drops the unit axes it is given and every unit axis when it is given none, an expanded dimension adds an axis of extent one there, and a flatten collapses everything from its axis on into one - all three answering the operand's own bytes; a broadcast aligns the operand to the RIGHT of the shape and wraps each axis the shape makes wider; a reverse flips the axes it is given and no axes at all flips every one. NOT COMPARED BY THE DIFFERENTIAL: this release asserts partway through the family in tests/backports/host/mpsgraph/run.sh (\"Error: NDArray dimension length > INT_MAX\", MPSNDArray.mm:831, over a flatten2D of a 2x4 asked as the fifth gather and as the first alike, and over a fed broadcast into its own shape), so the sixteen are measured by a program of their own and the gap is named here and in the facts page rather than left in the harness; the fix is one process per family in run.sh. An axis or an extent the release refuses is refused with NSInvalidArgumentException, which is the same refusal the reduction family's axis is",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_gather:tensor:parameters:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam every release's shape factory goes through, which takes the transformation and its parameter and leaves the result's shape to the walk - which is what lets a shape the caller FEEDS be one of them; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_gather:tensor:fedParameter:parameters:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the same seam over a parameter the caller feeds at run time, which refuses a floating point one because the release cannot build the graph over it at all; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraphTensor charon_mps_setShape:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one place a tensor's shape is written rather than read, which the gather walk uses for the result of an operation whose shape the caller feeds - it is decided when the graph runs and not when it is built; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    }
   ]
 }

@@ -671,6 +671,84 @@ everywhere. The walk therefore answers a reduction over no axis with the operand
 the walk rather than in the two folds because a sum and a product of the identity are the identity either way:
 only a fold whose answer is not the element's own can tell the two apart.
 
+## The gather family: sixteen shape and axis methods
+
+Sixteen rows of the tensor-shape headers, in four objects: 14.0's `transposeTensor:dimension:withDimension:name:`
+(in `MPSGraph14.m`), 15.0's `MPSGraphTensorShapeOps150.m` (two flattens, two broadcasts, three reverses),
+15.4's `MPSGraphTensorShapeOps154.m` (four squeezes, three expanded dimensions) and 16.0's
+`MPSGraphTensorShapeOps160.m` (the permutation transpose).
+
+**One walk for all sixteen.** A gather is one question - for each axis of the result, which axis of the
+operand feeds it, how many of the operand's axes it covers, and whether that one is reversed or wrapped - so
+`CharonMPSGraphGatherPlan` derives that from the operation's parameters and `CharonMPSGraphGather` walks it.
+Which transformation it is (`@"gather"`), which of its parameter the caller wrote down (`@"gatherAxis"`,
+`@"gatherDrop"`, `@"gatherAdd"`, `@"gatherAxes"`, `@"gatherPermutation"`) or which of the operation's inputs
+carries it instead (`@"gatherOperand"`), and every release's factory fills those in and names only its own
+methods. The result's shape comes out of the plan and is put on the output tensor through
+`-[MPSGraphTensor charon_mps_setShape:]` before anything is allocated for it, which is what lets a shape the
+caller FEEDS - a fed axis, a fed set of axes, a fed target shape - be the result's shape at all.
+
+### The rules, all measured on this host's own MPSGraph
+
+Over the 2x4 of (1, 2, 3, 4 | 10, 20, 30, 40), with the release's own bytes in
+`.agent-work/mps4/runs/probe-shape.txt`:
+
+| operation | the release answers | the rule |
+| --- | --- | --- |
+| `transposeTensor:dimension:0 withDimension:1` | a 4x2 of (1, 10, 2, 20, 3, 30, 4, 40) | the row-major transpose, in both forms and with a permutation |
+| `transposeTensor:dimension:-1 withDimension:0` | the same bytes | a negative axis is counted from the end - and the header's own type for it is `NSUInteger`, which the release still reads as signed |
+| `squeezeTensor` over a 1x2x4 | a 2x4 of (1, 2, 3, 4, 5, 6, 7, 8) | every unit axis is dropped, and the rest keep their order |
+| `squeezeTensor` over a 2x4 | the 2x4 itself | an operand with no unit axis is itself |
+| `expandDimsOfTensor:axis:0` over a 2x4 | a 1x2x4 of the same eight values | an axis of extent one is added where it is asked for |
+| `expandDimsOfTensor:axis:2` and `axis:-1` | a 2x4x1 | a negative axis is counted from the end and MAY BE THE RANK ITSELF, which is the trailing unit axis |
+| `expandDimsOfTensor:axes:@[@0, @2]` | a 1x2x1x4 | one axis is added for each of them |
+| `flatten2DTensor:axis:0` over a 2x4 | a 1x8 of the same eight values | everything from the axis named on collapses into one |
+| `flatten2DTensor:axis:1` over a 2x4 | the 2x4 itself | and `axis:0` of a 2x3x4 is a 1x24 of the same values |
+| `broadcastTensor:toShape:@[@4, @4]` | each row of the 2x4 twice | the operand aligns to the RIGHT of the shape and each axis the shape makes wider wraps |
+| `broadcastTensor:toShape:@[@2, @2, @4]` | the 2x4 twice | and a shape that is the operand's own is the operand's own |
+| `reverseTensor` | (4, 3, 2, 1 \| 40, 30, 20, 10) | every axis is flipped when none is named |
+| `reverseTensor:axes:@[@1]` | (4, 3, 2, 1 \| 40, 30, 20, 10) | only the axes named are flipped, and nothing else moves |
+| `reverseTensor:axes:@[@0]` | (10, 20, 30, 40 \| 1, 2, 3, 4) | and over the sixteen classes, `axes:@[@1, @0]` answers (NaN, NaN, -inf, +inf \| +0, -0, -1, 1) |
+
+The squeeze, the expanded dimension and the flatten are therefore **one gather with the axes left alone** -
+each of them answers the operand's own bytes in the operand's own order - and the transpose, the broadcast and
+the reverse are one gather with them not.
+
+### Three refusals, each measured
+
+* **A squeeze of an axis whose extent is not one.** The release writes `squeezed axis must have length 1,
+  input.shape[1] == 2` (MPSGraphUtilities.mm:3210) and then `LLVM ERROR: Failed to infer result type(s)`
+  takes the process down. The port raises `NSInvalidArgumentException` when the graph is built.
+* **A flatten's axis is not normalised the way the family's other axes are.** The release takes it as the
+  unsigned number it is given, so `axis:-1` of a 2x4 is a dimension length of 4294967295 and it asserts
+  (`Error: NDArray dimension length > INT_MAX`, MPSNDArray.mm:831). Measured and different from the same
+  operation's siblings: an expanded dimension and a transpose both count a negative axis from the end and
+  answer. The port raises for the flatten and counts for the other two, which is the release's own split.
+* **A fed parameter of a floating point type.** The release's own compiler refuses the operand
+  (`'mps.cumulative_sum' op operand #1 must be 0D tensor of mps index type values or static-shape defined
+  tensor with shape equal to [1] ... but got 'tensor<1xf32>'`) and `MPSGraphExecutable.mm:4419` takes the
+  process down. The port raises `NSInvalidArgumentException` when the graph is built; an int32 and an int64
+  of shape [1] both answer, measured.
+
+### What this differential does NOT do, and why
+
+**The sixteen are not compared by `tests/backports/host/mpsgraph/run.sh`, and that is a measured fact about
+the release rather than a choice.** That harness compiles three hundred graphs in one process before it is
+done, and the release's own gather operations start asserting partway through the family: the same
+`flatten2DTensor:axis:0` of a 2x4 answers in a program of its own and asserts
+(`Error: NDArray dimension length > INT_MAX`, MPSNDArray.mm:831) in the harness - asked as the fifth gather
+of the family and as the first one alike - and a fed `broadcastTensor:toShapeTensor:` into the operand's own
+shape asserts the same way.
+
+So the port was written against a program of its own, whose output is `.agent-work/mps4/runs/probe-shape.txt`
+and whose source is `.agent-work/mps4/probe-shape.m`: every form of all sixteen was asked there and the
+release answered every one of them, and the table above is those bytes. The harness holds no case for the
+family (`gather_families` is where the cases will go, with the reason written beside it), and the gap is
+named in the row of each of the sixteen as well as here. **The fix is one process per family in run.sh rather
+than one for three hundred cases**, which is what the next commit of this family should carry; until then the
+sixteen are implemented, registered and measured against the release's own answers, but not compared cell by
+cell by the harness that holds every other family.
+
 ## The cumulative family of 16.0
 
 Sixteen rows in one object (`MPSGraphCumulativeOps160.m`): `cumulativeSum`, `cumulativeProduct`,
@@ -755,11 +833,10 @@ that is gone, so there is nothing to compare a line against. Both are measuremen
 
 ### What is not measured here
 
-The shape family (`reshape`, `squeeze`, `expandDims`, `transpose`, `slice`,
-`concat`, `stack`, `split`, `pad`, `tile`, `reverse`, `broadcast`, `flatten2D`, `spaceToDepth`, `depthToSpace`,
-`spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and `scatter*` forms
-and the `topK`/`bottomK` pair) are not in this page and not in the tree: they are the rows the ledger still
-carries as `missing`.
+The rest of the shape family (`reshape`, `slice`, `pad`, `tile`, `concat`, `stack`, `split`, `spaceToDepth`,
+`depthToSpace`, `spaceToBatch`, `batchToSpace`, `coordinateAlongAxis`, `nonZeroIndices`, the `gather*` and
+`scatter*` forms and the `topK`/`bottomK` pair) is not in this page and not in the tree: it is the rest of the
+rows the ledger carries as `missing` for this family.
 
 ## The R4 names this band adds, in full
 
