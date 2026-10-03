@@ -1,0 +1,137 @@
+{
+ "framework": "PDFKit",
+ "entries": [
+  {
+   "api": "PDFOutline",
+   "kind": "class",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "one item of the document's /Outlines tree, which PDF 1.7 Table 8.2 makes a LINKED structure: the catalog names a root dictionary through /Outlines, every item names its /Parent, /Prev and /Next, and an item's children are its /First .. /Last chain.  Every member here is read by walking those links with the release's own dictionary and array readers, and the whole tree is reached through -[PDFDocument outlineRoot].  The children are built once and memoised because both -numberOfChildren and -childAtIndex: walk the same chain.  -insertChild:atIndex: and -removeFromParent are NOT implemented and their rows say why",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "-[PDFOutline init]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the header's own designated initializer (PDFOutline.h:20), implemented because a class a program cannot construct answers a crash where the host answers an object.  A fresh one answers an EMPTY label, no children, index 0, closed, no parent, no document, no destination and no action - measured, in the harness's initoutline.* keys",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.document",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the document the outline was read out of, weak as PDFOutline.h:21 declares it.  An-object for the root and for every item of every fixture, and nil for a fresh -init",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.parent",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item's /Parent, wrapped, weak as PDFOutline.h:33 declares.  An-object for every item and nil for the root of every fixture - measured",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.numberOfChildren",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the length of the item's /First .. /Next chain, and 0 for an item with no /First - measured on every fixture, where the deepest items of outline-open's three-level tree and of outline-nocount's four all answer 0",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.index",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item's position in its parent's chain, ZERO-BASED - measured: the second child of outline-open's root answers 1, the fourth of outline-nocount answers 3, and the root itself answers 0",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "-[PDFOutline childAtIndex:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item at that position, nil for an index past the last child.  THE HOST RAISES THERE: -[PDFOutline childAtIndex:] with an index past the end throws NSRangeException, \"childAtIndex: 2 out of bounds\", measured.  That is a named boundary and not a match - a differential cannot compare a raised exception against an answer, so the harness does not ask one past the end, and a caller that gets nil can say so where a caller that gets an exception cannot",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.label",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item's /Title as the format's string or name.  A MISSING /Title answers an EMPTY STRING and not nil - measured: the root of every outline fixture carries no /Title and answers \"\", every untitled item answers \"\", and so does a fresh -init.  The key's PRESENCE still matters to -isOpen, which is a different rule and is on its own row",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.isOpen",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the one member whose rule is not the format's.  Table 8.2 says a POSITIVE /Count means the item is CLOSED; the host reads it the other way round - outline-signs.pdf has two items of the same shape, two children each, one with /Count +4 and one with /Count -4, and the positive one answers YES and the negative one NO.  And an item with NO /Count answers YES only when it has no /Title either: outline-titlekey.pdf's five leaves differ only in their /Title - none present, an empty /Title (), a real one - and only the first answers YES; outline-untitled.pdf's chain of four UNTITLED items answers NO, NO, NO, YES where outline-titled.pdf's chain of four TITLED items with the same shape answers NO four times; and the item's /F and /Dest make no difference.  So: YES when the /Count is positive, and YES when there is no /Count AND no /Title",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.destination",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "the item's /Dest, which Table 8.2 spells as an ARRAY or a NAME: an array is handed to PDFDestination's reader, a name or a string builds a destination whose page is nil - measured, and outline-shapes.pdf's \"Named\" item is that case - and anything else, including the dictionary spelling, answers nil",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "PDFOutline.action",
+   "kind": "property",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "implemented",
+   "effect": "a GoTo SYNTHESISED over the item's /Dest when it has one, and the item's /A read only when it has no /Dest.  The ORDER IS THE OPPOSITE OF AN ANNOTATION'S and both are measured: outline-shapes.pdf's \"Child\" carries a /Dest of [3 0 R /XYZ 1 2 3] AND an /A of /GoTo [3 0 R /Fit], and the host answers the /DEST's 1,2,3 for both -destination and -action, where ann-dest-and-a's annotation with the same pair answers the /A's, which is what PDFAnnotation11.m implements.  An item with an /A and no /Dest has that /A read - measured on outline-open's \"Two\", a /URI action - and an item with neither answers nil",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "-[PDFOutline insertChild:atIndex:]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a WRITE path: it changes an outline, and this port reads documents.  Nothing in the port writes a PDF, so a method that did would either answer without changing the file behind it or have to grow a writer, and the boundary is the same one PDFAnnotation's -setValue:forAnnotationKey: rows name",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  },
+  {
+   "api": "-[PDFOutline removeFromParent]",
+   "kind": "method",
+   "introduced": "11.0",
+   "minimum": "6.0",
+   "status": "inert",
+   "effect": "not implemented",
+   "reason": "a WRITE path, for the same reason as -insertChild:atIndex: beside it: it unlinks an item from its parent's /First .. /Last chain, which means writing one back into the document",
+   "facts": "facts/PDFKit/Outline11.md",
+   "source": "the host's own PDFKit under macOS in a process that holds no port object, against the port's own objects in a process that links no macOS PDFKit - tests/backports/host/pdfkit-document/run.sh: COMPARED 7505 MISMATCHES 0 over 113 fixtures, with 95 red controls - one automatic and 94 naming a border, appearance, identity, action, copy, initializer or outline key"
+  }
+ ]
+}
