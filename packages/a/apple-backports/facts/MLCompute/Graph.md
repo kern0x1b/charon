@@ -95,81 +95,124 @@ summary, and this is the summary.
 A release that raises is a release that has no answer to compare, so the port's `nil` in those two places is
 a difference of this port's own and not a match: they are named here rather than asked.
 
-## Not asked, and why
+## The inference graph and the training graph, written, and held case by case
 
-`MLCInferenceGraph` and `MLCTrainingGraph` are the next family - fifteen and twenty-six members - and the
-port carries neither yet, so a case that asks one of them on the port's side would answer nil and be a
-difference where there is nothing to compare. The one case that would have asked an inference graph's
-`deviceMemorySize` (measured: 0 before a compile) is left out for that reason and is in this family's place
-when those two classes are written.
+`MLCInferenceGraph` is `MLCompute/MLCInferenceGraph14.m` and `MLCTrainingGraph` is
+`MLCompute/MLCTrainingGraph14.m`, each with its own dictionaries and its own methods and no category seam
+between them; the two forms that arrived in 14.5 are the categories in `MLCompute/MLCGraphConstants15.m`,
+because an object carries the API of one release. `tests/backports/host/mlcompute/inference-cases.m` asks
+**every member of both classes** of the host's own MLCompute and of the port's, in one program beside the
+other case files, and compares the two runs line by line.
 
-## The inference and training graphs: measured, not yet written
+The two classes inherit `-layers`, `-sourceTensorsForLayer:` and `-resultTensorsForLayer:` from MLCGraph and
+answer them **over the graph objects they were made from**, which is the host's own answer and not
+MLCGraph's:
 
-`.agent-work/runs/probe/mlc-inference.m`, kept in the tree as `tests/backports/host/mlcompute/probes/`,
-measures both. What it answers on this host, over one graph with one ReLU node over a 2x3 float32 tensor:
+| over one graph with one ReLU node on a 2x3 tensor | both classes answer |
+| --- | --- |
+| `layers` | **1** |
+| `sourceTensorsForLayer:` for that layer | **1 tensor, `[2,3]` float32** |
+| `resultTensorsForLayer:` for that layer | **1 tensor, `[2,3]` float32**, and it is the very tensor the node made |
+| `device` before a compile | **nil** |
+| `device` after a compile | **a device** |
+| `summarizedDOTDescription` | **415 characters**, where MLCGraph's own summary is 42 - so the two classes are not asked for it: the row is MLCGraph's and its answer is the measured one |
 
-| | `MLCInferenceGraph` | `MLCTrainingGraph` |
-| --- | --- | --- |
-| `addInputs:`, with a name the graph knows, one it does not, an empty dictionary, or nil | **YES, YES, YES, YES** | - |
-| `addInputs:lossLabels:` and `addInputs:lossLabels:lossLabelWeights:` | - | **YES** and **YES** |
-| `addOutputs:`, known, unknown, nil | **YES, YES, YES** | **YES** |
-| `linkWithGraphs:`, empty, itself, another | **YES, YES, YES** | **NO, NO, NO** |
-| `compileWithOptions:device:` | **YES**, and **YES** again on a second call, and **YES** with a nil device | **NO** |
-| `compileOptimizer:` | - | **NO** |
-| `deviceMemorySize` before a compile / after | 0 / **24** | 0 / **24** |
-| `stopGradientForTensors:`, known and unknown | - | **YES** and **YES** |
-| `setTrainingTensorParameters:` | - | **YES** |
-| `bindOptimizerData:deviceData:withTensor:`, known and unknown tensor | - | **YES** and **YES** |
-| `executeForward…`, `executeGradient…`, `executeOptimizerUpdate…`, the two `executeWithInputsData:…` forms | **YES** | **NO** for every one of them |
-| `gradientTensorForInput:`, for the input, for an output, for an unknown tensor | - | **nil, nil, nil** |
-| `sourceGradientTensorsForLayer:` / `resultGradientTensorsForLayer:` | - | **1** / **0** |
-| `gradientDataForParameter:layer:` | - | **nil** |
-| `allocateUserGradientForTensor:`, known and unknown | - | **nil** and **nil** |
-| `optimizer` of a graph made with one / with nil | - | kept / **nil** |
-| `compileWithOptions:device:` and `executeForward…` with a nil loss layer and a nil optimizer | - | **NO** and **NO** |
+## The three bindings the cases ask, and why each one
 
-So the shape of both classes is measured and is not a guess: the inference graph answers YES to everything it
-is asked and the training graph answers NO to everything that needs an engine, and the two are different
-answers rather than one of them being unimplemented.
+**The inference graph** over its own graph object, one node, rank-2 tensors, the CPU device, and the loss
+label tensors declared before anything is executed. Measured over that binding:
 
-**`deviceMemorySize` is pinned down, and it is none of the three hypotheses.**
-`tests/backports/host/mlcompute/probes/device-memory.m` builds graphs where the input's bytes, the output's
-bytes and a sum over both are three different numbers. Every operand in it is a tensor the probe makes, never
-one a node made, because a graph's own result asked for as an output raised inside the host on the earlier
-sweep. What this host answers, over a graph with a single node whose result holds six `MLCDataTypeFloat32`
-elements - twenty-four bytes - and over one whose result holds one - four bytes:
+| | the host answers |
+| --- | --- |
+| `+new` and `-init`, which their own headers mark unavailable | **an object** with no layer, no node, no optimizer and no device |
+| `addInputs:`, over a name the graph knows, one it does not, an empty dictionary, nil | **YES** for all four |
+| `addInputs:lossLabels:lossLabelWeights:` | **YES** |
+| `addOutputs:`, known, unknown, nil | **YES** for all three |
+| `linkWithGraphs:`, with an empty list, with itself, with another graph | **YES** for all three, and `layers` stays **1** and the results stay **one tensor**: a linked graph shares its tensors rather than joining this graph |
+| `compileWithOptions:device:` with a device | **YES** |
+| the same with **no** device, on a graph that has not been compiled | **NO** |
+| the same with no device, on a graph that has | **YES** |
+| `deviceMemorySize` before the compile / after | **0** / **24** |
+| the 14.5 form, with nil dictionaries, two empty ones, tensors with no data, data with no tensors, both | **YES** for all five |
+| the four execute forms | **YES** for all four, and an execute of a ReLU over -1, 2, -3 and 4 writes **0, 2, 0 and 4** into the buffer the caller named for the output and calls the completion handler with **no error** |
 
-| the graph | before a compile | after |
-| --- | --- | --- |
-| six elements, nothing bound | 0 | **24** |
-| six elements, one input of six | 24 | **24** |
-| six elements, one input of **one** | 24 | **24** |
-| six elements, one output of six | 24 | **24** |
-| six elements, an input of one **and** an output of six | 24 | **24** |
-| six elements, two inputs of six | 24 | **24** |
-| six elements, one input of six and **two** outputs of six | 24 | **24** |
-| six elements, an input of one and outputs of six and one | 24 | **24** |
-| **one element**, an input of one and an output of one | 0 | **4** |
-| one element, nothing bound | 4 | **4** |
-| one element, an input of six | 4 | **4** |
-| one element, an input of six and an output of one | 4 | **4** |
-| two graphs linked, one bound to an input of one and the other to six | 24 and 24 | **24 and 24** |
+**The binding that decides the two loss forms is the loss labels themselves.** Measured: with the loss label
+tensors *not* declared on the graph, `-executeWithInputsData:lossLabelsData:lossLabelWeightsData:batchSize:options:completionHandler:`
+and the form that adds `outputsData:` answer **NO** while the two forms without loss labels answer YES; with
+`-addInputs:lossLabels:lossLabelWeights:` called first, **all four answer YES**. That is what the header's own
+comment asks a caller to do - "each input, loss label or label weights tensor is identified by a NSString ...
+this NSString is used to identify which data object should be as input data" - and the cases declare them
+before the four forms. A harness that asks the two loss forms without declaring the labels first is measuring
+its own binding, not the member.
 
-Two rules, and both are measured:
+**The training graph** over **that same graph object, after the inference graph has compiled it**. That is
+the binding every answer below was measured in, and the reason it is the one the cases use is in the next
+section: over a graph object nothing has compiled, the host's training graph raises in its forward pass, so
+no case can hold this port to any of its engine members there.
 
-* **It is the byte width of a tensor the graph's OWN nodes produce.** The caller's bindings do not move it at
-  all: an input of one element and an input of six over the same six-element graph are the same 24, two
-  outputs of six are the same 24, and a graph whose node holds one element is 4 whatever is bound to it and
-  whatever a link adds. So the input's bytes, the output's bytes and a sum over both are **all three refuted**.
-* **It is 0 until the graph has been compiled** - or until another graph in the same process has been, which
-  is a lazy global of the framework's own and is measured rather than argued: read in order, a six-element
-  graph answers 0, 0 and then 24 after its compile, a one-element graph answers 0 and then 4 after its
-  compile, and a **third** six-element graph made afterwards and never compiled answers **24 on its first
-  read**. So "before a compile" means "before anything in the process has been compiled".
+| over the graph object the inference graph compiled | the host answers |
+| --- | --- |
+| `optimizer` of a graph made without one / with one | **nil** / **kept** |
+| `layers`, sources, results | **1**, **one tensor**, **one tensor** |
+| `deviceMemorySize` before its compile / after | **0** / **24** |
+| `addInputs:lossLabels:`, `addInputs:lossLabels:lossLabelWeights:`, `addOutputs:` | **YES** for all three |
+| `linkWithGraphs:`, empty, itself, another | **NO** for all three |
+| `compileWithOptions:device:` and the 14.5 form | **NO** for both |
+| `compileOptimizer:` | **NO** |
+| the seven execute forms | **NO** for every one |
+| `gradientTensorForInput:`, for the input, for the graph's own result, for a tensor it never saw | **nil**, **nil**, **nil** |
+| `sourceGradientTensorsForLayer:` for that layer / for a layer it never used | **1 tensor, `[2,3]` float32, and not the source itself** / **none** |
+| `resultGradientTensorsForLayer:` | **none** |
+| `gradientDataForParameter:layer:` and `allocateUserGradientForTensor:`, known and unknown | **nil** for all four |
+| `stopGradientForTensors:`, `setTrainingTensorParameters:`, `bindOptimizerData:deviceData:withTensor:` | **YES** for all four |
 
-**What is still not measured, and is not needed for the two classes to be written:** whether a graph of
-**several** nodes answers the largest node's bytes or the sum of theirs. A second node over a graph's own
-result raises inside the host (`-[__PlaceholderDictionary initWithObjects:forKeys:count:]`), so every graph
-above has exactly one node. The port therefore computes the sum over its nodes' results and the facts name
-that as the one rule this measurement does not decide - it is a choice between two readings of a property
-whose multi-node value is unmeasured, and it is written down rather than passed off as measured.
+**The third binding: what the port cannot be held to, and why.** Over a graph object **nothing** has
+compiled, the host's training graph answers differently, and every one of those answers is measured
+(`probes/mlc-training-forms.m`):
+
+| over a fresh graph object of its own | the host answers |
+| --- | --- |
+| `compileWithOptions:device:` | **YES** |
+| `deviceMemorySize` after it | **48**, twice the node's 24 - the forward pass and the gradient pass |
+| `executeGradientWithBatchSize:options:completionHandler:` and `executeOptimizerUpdateWithOptions:completionHandler:` | **YES** for both |
+| `executeForwardWithBatchSize:options:completionHandler:`, with and without `outputsData:` | **an NSRangeException**, "index 0 beyond bounds for empty array", inside the CPU engine |
+
+So in that binding the host says YES to a gradient pass and to an optimizer update, and this port's engine
+has neither: `facts/MLCompute/Engine.md` records that the engine carries the activations and nothing else. The
+port's training graph therefore answers NO to every member that needs one of those two passes, which is what
+the host answers in the binding the cases can ask, and the difference in the other binding is **named here
+rather than hidden**. What the port *does* compute is the inference graph's forward pass, and the case for it
+compares the bytes: an execute over a ReLU writes 0, 2, 0 and 4 on both sides.
+
+## The raises, and which bindings cannot be asked at all
+
+* **A graph with no layer cannot be compiled.** `[MLCInferenceGraph graphWithGraphObjects:@[]]` makes a graph
+  with no layers, and `-compileWithOptions:device:` on it raises an `NSRangeException` - "index 0 beyond
+  bounds for empty array" - inside the host's own code (`probes/mlc-inference-forms.m`). The 14.0 compile
+  over a graph with one node does not raise; the 14.5 form raises only over the empty graph. So no case
+  compiles a graph with no layer, and `+new`/`-init` are asked for the object they answer and nothing else.
+* **`MLCExecutionOptionsSkipWritingInputDataToDevice` makes the plain execute form raise**, the same
+  `NSRangeException` (`probes/mlc-raise.m`). The cases pass `MLCExecutionOptionsNone` or
+  `MLCExecutionOptionsSynchronous`, and the synchronous option is what
+  `tests/backports/host/mlcompute-engine/system.m` - the oracle for the numbers - passes as well.
+* **A second node over a graph's own result raises**, `-[__PlaceholderDictionary initWithObjects:forKeys:count:]`,
+  which is why every graph measured here has exactly one node and why the sum over several nodes is the one
+  rule of the device-memory table that this measurement does not decide.
+* **A layer that is already a node of another graph answers a nil node** when it is used in a second graph
+  (`probes/mlc-inference-forms.m`), so the case that reads numbers out of an execute gives that graph a layer
+  of its own. It is the framework's own bookkeeping about a layer belonging to one graph, and it is written
+  here because the first version of the case file tripped over it and a reader will otherwise read the case as
+  arbitrary.
+
+## What is asked of the two classes, and what is left
+
+Every member of both classes is a case in `tests/backports/host/mlcompute/inference-cases.m`, and the two
+rows the two classes carry that the corpus of SDK 26.2 does not name - `+[MLCTrainingGraph new]` and
+`-[MLCTrainingGraph init]` - are carried because the classes carry them, and the cases ask them the way
+`tests/backports/host/mlcompute/cases.m` asks every unavailable initialiser: through the `Class`, since the
+compiler refuses the name.
+
+Not asked, and why: the two `summarizedDOTDescription` answers above (415 characters against MLCGraph's 42,
+and the row is MLCGraph's); the framework's own first argument to a completion handler, which nothing reads
+and which the port states in its own file; and the multi-node value of `deviceMemorySize`, which no binding
+reaches without the raise above.
