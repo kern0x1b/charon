@@ -142,7 +142,16 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
     CharonMPSGraphOperationKindReductionMaximumPropagateNaN,
     CharonMPSGraphOperationKindReductionMinimumPropagateNaN,
     CharonMPSGraphOperationKindReductionMean,
-    CharonMPSGraphOperationKindReductionVariance
+    CharonMPSGraphOperationKindReductionVariance,
+    // The two argument reductions of 15.0 and the two truth folds of 15.3. An argument reduction is the
+    // maximum or the minimum that answers its index rather than its value, and a truth fold answers
+    // whether any element of the reduced set is nonzero, or whether every one of them is. The walk over
+    // all four is the walk over the family above, and it is told which one it is by the operation's own
+    // parameters rather than by which of these it is - see the seam on MPSGraph below.
+    CharonMPSGraphOperationKindReductionArgMaximum,
+    CharonMPSGraphOperationKindReductionArgMinimum,
+    CharonMPSGraphOperationKindReductionAnd,
+    CharonMPSGraphOperationKindReductionOr
 };
 
 @class MPSGraph;
@@ -223,6 +232,18 @@ typedef NS_ENUM(NSInteger, CharonMPSGraphOperationKind) {
                                 inputs:(NSArray<MPSGraphTensor *> *)inputs
                             parameters:(NSDictionary *)parameters
                                    name:(NSString *)name;
+// A reduction over a set of axes of one operand: the result's shape is the operand's with those axes
+// taken out, which is what every member of the family produces. This is the seam every release's
+// reduction factory goes through, and it is deliberately the only one: the 14.0 object that defines it
+// names no operation of any later release, because everything the walk needs to know comes in
+// `parameters` - the combination to fold with, whether a NaN latches, whether the answer is an index
+// rather than a value, and the data type the result is stored as. A release's own factory fills those
+// in and names only its own methods.
+- (MPSGraphTensor *)charon_mps_reduction:(CharonMPSGraphOperationKind)kind
+                                    axes:(NSArray<NSNumber *> *)axes
+                                  tensor:(MPSGraphTensor *)tensor
+                             parameters:(NSDictionary *)parameters
+                                    name:(NSString *)name;
 // The operation that fills a tensor's value, called by the interpreter for each in turn.
 - (void)charon_mps_runOperation:(MPSGraphOperation *)operation
                           values:(NSMutableDictionary *)values;

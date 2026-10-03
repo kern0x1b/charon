@@ -1182,6 +1182,117 @@
       "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16, over both the file's sixteen input classes and a 2x4 feed of ordinary values; the set of axes is normalised the way the release takes it - negative counted from the end, a repeated axis reducing once, the order written not mattering, nil every axis and an empty array none - and an axis outside the rank raises rather than answering, because the release refuses to build that graph at all; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement. The same arithmetic with the mean handed over instead of computed again, which is what the header's own comment asks a caller for; the port holds the two forms to each other rather than to two different answers, and the case feeds the mean the framework itself answered; facts/MetalPerformanceShadersGraph/Core.md carries the run's verdict line and the measurement",
       "facts": "facts/MetalPerformanceShadersGraph/Core.md",
       "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionArgMaximumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release over the file's sixteen input classes, a 2x4 of ordinary values, a row of ties and a row of nothing but NaNs, in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is the index of the FIRST element holding the extreme, so (4, 4, 4, 9) answers 3 for a maximum, a NaN loses every comparison and is never the answer wherever it sits, a reduced set of nothing but NaNs answers -1 in both, and the answer is stored as MPSDataTypeInt32 whatever the operand's own type was - every one of those measured on this host's own MPSGraph; facts/MetalPerformanceShadersGraph/Core.md carries the rules and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionArgMinimumWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the reduction is walked on the CPU over the operand rather than over the result, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release over the file's sixteen input classes, a 2x4 of ordinary values, a row of ties and a row of nothing but NaNs, in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is the index of the FIRST element holding the extreme, so (4, 4, 4, 9) answers 3 for a maximum, a NaN loses every comparison and is never the answer wherever it sits, a reduced set of nothing but NaNs answers -1 in both, and the answer is stored as MPSDataTypeInt32 whatever the operand's own type was - every one of those measured on this host's own MPSGraph; facts/MetalPerformanceShadersGraph/Core.md carries the rules and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph minimumWithNaNPropagationWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the elementwise walk on the CPU is 14.0's minimum and maximum with the one rule this release adds, that a NaN on either side is the answer, which is measured over the same sixteen classes in MPSDataTypeFloat32 and MPSDataTypeFloat16: the four NaN positions answer a NaN each and the four ordinary ones answer what the 14.0 pair answers over the same feeds, which is the whole difference between the two pairs; in float16 this pair keeps the sign of a zero where the 14.0 pair does not (measured, a maximum of -1.0 and -0.0 is 0x8000 here and 0x0000 there, and the port's float32 answer is -0.0 for both); an integer operand is refused with an NSInvalidArgumentException rather than answered, because the release raises out of its own kernel table over an int32 operand (key isNaN_i_i8, no NaN kernel for an integer type to ask with) and answers no number at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+{
+      "api": "-[MPSGraph maximumWithNaNPropagationWithPrimaryTensor:secondaryTensor:name:]",
+      "kind": "method",
+      "introduced": "15.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the elementwise walk on the CPU is 14.0's minimum and maximum with the one rule this release adds, that a NaN on either side is the answer, which is measured over the same sixteen classes in MPSDataTypeFloat32 and MPSDataTypeFloat16: the four NaN positions answer a NaN each and the four ordinary ones answer what the 14.0 pair answers over the same feeds, which is the whole difference between the two pairs; in float16 this pair keeps the sign of a zero where the 14.0 pair does not (measured, a maximum of -1.0 and -0.0 is 0x8000 here and 0x0000 there, and the port's float32 answer is -0.0 for both); an integer operand is refused with an NSInvalidArgumentException rather than answered, because the release raises out of its own kernel table over an int32 operand (key isNaN_i_i8, no NaN kernel for an integer type to ask with) and answers no number at all; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionAndWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionAndWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionOrWithTensor:axis:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    },
+    {
+      "api": "-[MPSGraph reductionOrWithTensor:axes:name:]",
+      "kind": "method",
+      "introduced": "15.3",
+      "minimum": "6.0",
+      "status": "implemented",
+      "effect": "the fold is a question about the whole reduced set rather than an arithmetic over it, and every cell of every case of this operation in tests/backports/host/mpsgraph/graph-cases.m is byte-identical to the release in MPSDataTypeFloat32, MPSDataTypeInt32 and MPSDataTypeFloat16: the answer is written in the operand's own type and not in a boolean, the test is against zero so a NaN is a nonzero like any other value and both signed zeros are false, the answer is one and not a truth of another kind, and a reduced set of no axes is the operand byte for byte - measured over axes:@[], which a seed of the fold's identity would answer one and zero everywhere instead; facts/MetalPerformanceShadersGraph/Core.md carries the measurement and the run's verdict line",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 for every signature, and the behaviour measured against the system's own MPSGraph by tests/backports/host/mpsgraph"
+    }
+,
+{
+      "api": "-[MPSGraph charon_mps_reduction:axes:tensor:parameters:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the one seam every release's reduction factory goes through, which takes the axes of the operand and the combination to fold with, so that the 14.0 object that defines it names no operation of any later release; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_reductionOf:tensor:combination:kind:propagatesNaN:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: the graph's interpreter, its kinds and its element accessors, which its own files share and an application never calls",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
+    },
+{
+      "api": "-[MPSGraph charon_mps_nanPropagatingExtreme:secondaryTensor:lesser:name:]",
+      "kind": "method",
+      "introduced": "14.0",
+      "minimum": "6.0",
+      "status": "implemented",
+      "reason": "a name no SDK header declares: 15.0's two NaN-propagating extremes are one method here, which refuses an integer operand the way the release does and then builds 14.0's minimum or maximum with the latch that is this release's own; its own files share it and an application never calls it",
+      "facts": "facts/MetalPerformanceShadersGraph/Core.md",
+      "source": "the private surface this library's own files share, read out of the compiled objects; the headers of MetalPerformanceShadersGraph in the SDK of iOS 16.4 declare none of them"
     }
   ]
 }

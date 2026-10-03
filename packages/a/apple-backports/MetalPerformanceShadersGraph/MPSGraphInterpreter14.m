@@ -206,9 +206,17 @@ static int CharonMPSGraphHalfRule(CharonMPSGraphOperationKind kind)
 //
 // The third operand is 0.0 for a kind that takes fewer than three: a select and a clamp are the only
 // kinds that read it, and passing a zero for the rest keeps one signature for the whole family.
+//
+// `latch` is the one rule that is not the kind's own: an operation that latches a NaN answers a NaN if
+// any operand is one, and the arithmetic below otherwise. It is read out of the operation's parameters
+// rather than out of its kind for the same reason the fold table is - the method that asks for it
+// arrived in a later release than the object this is, and what it asks for is "this arithmetic, and a
+// NaN on either side wins", which is two things this object can say without naming that release.
 static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, double b, double c,
-                                  MPSDataType operandType, MPSDataType resultType)
+                                  MPSDataType operandType, MPSDataType resultType, int latch)
 {
+    if (latch && (isnan(a) || isnan(b) || isnan(c)))
+        return CharonMPSGraphOwnNaN(NAN);
     int stored = CharonMPSGraphReadsOperandAsStored(kind);
     if (!stored) {
         a = CharonMPSGraphAsZero(a, operandType);
@@ -573,7 +581,13 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
     // maximum of -1.0 and -0.0, a select whose value is a negative zero, a ReLU's gradient of a negative
     // ordinary source and an error function of a positive zero are each 0x0000, where IEEE answers a
     // zero of the operand's own sign.
-    if (resultType == MPSDataTypeFloat16 && result == 0.0)
+    //
+    // The one kernel of this family that does not have it is the latching one of 15.0, and that is
+    // measured rather than assumed: over the same sixteen classes in float16, its maximum of -1.0 and
+    // -0.0 answers 0x8000 and its maximum of +0.0 and -inf answers 0x8000, where the kernel above answers
+    // 0x0000 for the same two pairs and where the port's float32 answer is -0.0 for both. So the rule
+    // belongs to the kernel that has it, and which kernel an operation is comes out of its parameters.
+    if (resultType == MPSDataTypeFloat16 && result == 0.0 && !latch)
         result = 0.0;
     // A boolean is a truth and not a number, so a predicate's result goes through the store as the one
     // or the zero it is and the two rules above - the release's own NaN and the flush - do not touch it.
@@ -603,26 +617,58 @@ static double CharonMPSGraphApply(CharonMPSGraphOperationKind kind, double a, do
 // walk here is over the OPERAND and folds into the result, which is the one place in this interpreter
 // where that is true.
 //
+// The walk is a TABLE, and the table is keyed by the operation's own parameters rather than by which
+// kind of operation it is. That is what lets every release's reduction - 14.0's eight here, 15.0's two
+// argument reductions and two binary NaN-propagating extremes, 15.3's two truth folds - share one walk
+// while every one of those objects names only its own SDK methods: an operation says which fold it is
+// (@"combination"), whether a NaN latches (@"propagateNaN"), whether the answer is an index rather than
+// a value (@"index"), and none of those words is a name of any release's framework.
+//
 // The result buffer is the accumulator, so every fold is written back through the type the result is
 // stored as and each partial answer is the value that type can hold - which is what a reduction that
 // accumulates in its own storage type does. Measured on this host's own MPSGraph over the feeds
 // .agent-work/runs/probe-reduction.out carries: the sum of (1, 2, 3, 4) in float16 is 0x4900 = 10 and
 // in float32 0x41200000 = 10, and the mean of the same four in float16 is 0x4100 = 2.5.
-static int CharonMPSGraphIsReduction(CharonMPSGraphOperationKind kind)
+//
+// One fold, and its seed and the shape of its step. The seeds are measured rather than reasoned: a sum
+// starts at the zero of the type and a product at its one, the two extremes start at the infinities (a
+// maximum at negative infinity and a minimum at positive), and the two truth folds start at the identity
+// of their own fold - one for the "and" and zero for the "or" - which is why a fold over any number of
+// elements is right and which is measured over rows that hold a zero and rows that do not.
+typedef struct {
+    const char *combination;
+    double seed;
+    int isExtreme;   // a comparison decides each fold, so a NaN loses it
+    int isLesser;    // the minimum rather than the maximum
+    int isTruth;     // the operand is a question about nonzeroness, not a number to add up
+    int isOr;        // within a truth fold: any element rather than every one
+    int multiplies;  // the step is a product rather than a sum
+    int divides;     // the answer is over the count of the reduced set
+} CharonMPSGraphFold;
+
+static const CharonMPSGraphFold CharonMPSGraphFolds[] = {
+    // seed, isExtreme, isLesser, isTruth, isOr, multiplies, divides
+    {"sum", 0.0, 0, 0, 0, 0, 0, 0},
+    {"product", 1.0, 0, 0, 0, 0, 1, 0},
+    {"maximum", -INFINITY, 1, 0, 0, 0, 0, 0},
+    {"minimum", INFINITY, 1, 1, 0, 0, 0, 0},
+    {"and", 1.0, 0, 0, 1, 0, 0, 0},
+    {"or", 0.0, 0, 0, 1, 1, 0, 0},
+    // The mean and the variance are the sum over the reduced set and the sum of the squared deviations
+    // about it, both taken over the count: the difference between them is in the second walk, not in the
+    // fold, so the two share the sum's row here.
+    {"mean", 0.0, 0, 0, 0, 0, 0, 1},
+    {"variance", 0.0, 0, 0, 0, 0, 0, 1},
+};
+
+static const CharonMPSGraphFold *CharonMPSGraphFoldNamed(const char *combination)
 {
-    switch (kind) {
-    case CharonMPSGraphOperationKindReductionSum:
-    case CharonMPSGraphOperationKindReductionProduct:
-    case CharonMPSGraphOperationKindReductionMaximum:
-    case CharonMPSGraphOperationKindReductionMinimum:
-    case CharonMPSGraphOperationKindReductionMaximumPropagateNaN:
-    case CharonMPSGraphOperationKindReductionMinimumPropagateNaN:
-    case CharonMPSGraphOperationKindReductionMean:
-    case CharonMPSGraphOperationKindReductionVariance:
-        return 1;
-    default:
-        return 0;
-    }
+    if (combination == NULL)
+        return NULL;
+    for (unsigned i = 0; i < sizeof(CharonMPSGraphFolds) / sizeof(CharonMPSGraphFolds[0]); i++)
+        if (strcmp(CharonMPSGraphFolds[i].combination, combination) == 0)
+            return &CharonMPSGraphFolds[i];
+    return NULL;
 }
 
 // Which output element one input element folds into. A tensor is row-major with its FIRST axis the
@@ -647,12 +693,27 @@ static NSUInteger CharonMPSGraphReductionIndex(NSArray<NSNumber *> *shape, const
     return out;
 }
 
-static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOperation *operation,
-                                  MPSGraphTensorData *source, MPSGraphTensorData *meanGiven,
-                                  MPSGraphTensorData *result)
+// The coordinate of one element along one axis, which is the index an argument reduction answers. The
+// same dividing from the last axis backwards, read out for the axis itself.
+static long CharonMPSGraphCoordinate(NSArray<NSNumber *> *shape, NSUInteger axis, NSUInteger element)
 {
+    NSUInteger rank = shape.count, index = element;
+    for (NSUInteger i = rank; i-- > 0;) {
+        NSUInteger extent = (NSUInteger)shape[i].unsignedIntegerValue;
+        if (i == axis)
+            return (long)(extent ? index % extent : 0);
+        if (extent)
+            index /= extent;
+    }
+    return 0;
+}
+
+static void CharonMPSGraphReduce(MPSGraphOperation *operation, MPSGraphTensorData *source,
+                                  MPSGraphTensorData *meanGiven, MPSGraphTensorData *result)
+{
+    NSDictionary *parameters = operation.charon_mps_parameters;
     NSArray<NSNumber *> *shape = source.shape;
-    NSArray<NSNumber *> *axes = operation.charon_mps_parameters[@"axes"];
+    NSArray<NSNumber *> *axes = parameters[@"axes"];
     NSUInteger sourceCount = [source charon_mps_elementCount];
     NSUInteger resultCount = [result charon_mps_elementCount];
     NSUInteger rank = shape.count;
@@ -661,8 +722,22 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
     size_t resultSize = MPSSizeofMPSDataType(resultType);
     void *in = [source charon_mps_bytes];
     void *out = [result charon_mps_bytes];
-    if (!axes || sourceCount == 0 || resultCount == 0)
+    const CharonMPSGraphFold *fold = CharonMPSGraphFoldNamed([parameters[@"combination"] UTF8String]);
+    if (fold == NULL || !axes || sourceCount == 0 || resultCount == 0)
         return;
+
+    // A reduction over no axis at all is the identity: the operand, byte for byte, and no fold. Measured
+    // on this host's own MPSGraph over the sixteen classes, axes:@[] answers the 2x4 the operand already
+    // was for a sum, for a product, and for the two truth folds of 15.3 - and the last two are what say
+    // so, because a sum and a product of the identity are the identity either way: an "and" of the set of
+    // elements a single element contributes would answer 1 and 0, and answers -1.0 and +inf instead.
+    if (axes.count == 0) {
+        size_t elementSize = MPSSizeofMPSDataType(type);
+        for (NSUInteger i = 0; i < resultCount && i < sourceCount; i++)
+            memcpy((char *)out + i * resultSize, (const char *)in + i * elementSize,
+                   MIN(resultSize, elementSize));
+        return;
+    }
 
     unsigned char *dropped = calloc(rank ? rank : 1, 1);
     unsigned long long *stride = calloc(rank ? rank : 1, sizeof(unsigned long long));
@@ -683,22 +758,60 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         }
     }
 
-    int isSum = kind == CharonMPSGraphOperationKindReductionSum ||
-                kind == CharonMPSGraphOperationKindReductionMean ||
-                kind == CharonMPSGraphOperationKindReductionVariance;
-    int isProduct = kind == CharonMPSGraphOperationKindReductionProduct;
-    int isExtreme = kind == CharonMPSGraphOperationKindReductionMaximum ||
-                    kind == CharonMPSGraphOperationKindReductionMinimum ||
-                    kind == CharonMPSGraphOperationKindReductionMaximumPropagateNaN ||
-                    kind == CharonMPSGraphOperationKindReductionMinimumPropagateNaN;
-    int propagates = kind == CharonMPSGraphOperationKindReductionMaximumPropagateNaN ||
-                     kind == CharonMPSGraphOperationKindReductionMinimumPropagateNaN;
-    int isLesser = kind == CharonMPSGraphOperationKindReductionMinimum ||
-                   kind == CharonMPSGraphOperationKindReductionMinimumPropagateNaN;
+    // Everything the walk needs to know about the operation is in these three, and none of them is a
+    // name of any release's framework: whether a NaN latches (the two propagating extremes of 14.0, and
+    // nothing else in the family), whether the answer is an index rather than a value (the two argument
+    // reductions of 15.0), and which fold to run.
+    int propagates = [parameters[@"propagateNaN"] boolValue];
+    int isIndex = [parameters[@"index"] boolValue];
 
-    // What each fold starts from, and this is measured rather than reasoned: a sum starts at the zero of
-    // the type and a product at its one, and the two extremes start at the infinities - a maximum at
-    // negative infinity and a minimum at positive. A reduced set of nothing but NaNs is what says so
+    if (isIndex) {
+        // THE ARGUMENT REDUCTIONS. What is measured, over the sixteen classes of the arithmetic cases in
+        // this file and over rows chosen for their ties, in float32, float16 and int32 alike:
+        //
+        //  - the answer is the index of the FIRST element holding the extreme, so a row of (4, 4, 4, 9)
+        //    answers 3 for a maximum and a row of (9, 9, 1, 1) answers 0 and 2, and a comparison that
+        //    replaced on equality would answer the last of them.
+        //  - a NaN loses every comparison and so is never the answer, wherever it sits: (nan, 1, 2, 3)
+        //    answers 3 for a maximum and 1 for a minimum, (1, 2, 3, nan) answers 2 and 0, and a row of
+        //    nine with a NaN at either end answers 8 and 7 for a maximum.
+        //  - a reduced set of nothing but NaNs answers -1 in both, which is the "nothing was found"
+        //    answer rather than an index into an empty set.
+        //  - the result is stored as MPSDataTypeInt32 whatever the operand's own type is, and the two
+        //    signed zeros compare equal, so (0, -0, 0, -0) answers 0 for both.
+        //
+        // The held extreme is kept beside the result rather than read back out of it, because the result
+        // holds an index rather than a value and the comparison needs the value it belongs to.
+        double *held = calloc(resultCount, sizeof(double));
+        long *found = calloc(resultCount, sizeof(long));
+        // The axis whose coordinate an index is a coordinate of: the argument reductions of 15.0 take one
+        // axis, which is what the release's own methods hand over, so there is one to read.
+        NSUInteger reducedAxis = (NSUInteger)axes.firstObject.integerValue;
+        for (NSUInteger i = 0; i < resultCount; i++)
+            found[i] = -1;
+        for (NSUInteger i = 0; i < sourceCount; i++) {
+            NSUInteger index = CharonMPSGraphReductionIndex(shape, dropped, stride, i);
+            if (index >= resultCount)
+                continue;
+            double value = CharonMPSLoad(in, type, i);
+            if (isnan(value))
+                continue;
+            if (found[index] < 0 || (fold->isLesser ? value < held[index] : value > held[index])) {
+                found[index] = CharonMPSGraphCoordinate(shape, reducedAxis, i);
+                held[index] = value;
+            }
+        }
+        for (NSUInteger i = 0; i < resultCount; i++)
+            CharonMPSStoreRounded(out, resultType, i, (double)found[i], 1);
+        free(found);
+        free(held);
+        free(stride);
+        free(dropped);
+        return;
+    }
+
+    // What each fold starts from, and this is measured rather than reasoned: the seeds are the table's
+    // own, and the two extremes' infinities are what says what a reduced set of nothing but NaNs answers
     // last: measured on this host's own MPSGraph over a 2x4 whose eight elements are all NaN, over the
     // sixteen classes of the arithmetic cases in this file, reductionMaximumWithTensor:axis:1 answers
     // (0xff800000, 0xff800000) - negative infinity of each - and reductionMinimumWithTensor:axis:1 answers
@@ -710,18 +823,18 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
     // result buffer happened to hold would answer that plus the sum, which is how this port answered
     // 3 for a sum of 11 until the seed was measured.
     memset(out, 0, resultCount * resultSize);
-    if (isProduct)
+    // The seed is written wherever it is not the zero the buffer was just cleared to, which is the
+    // product's one, the two extremes' infinities and the two truth folds' identities. A sum's zero, the
+    // mean's and the variance's are what the clearing already wrote.
+    if (fold->multiplies || fold->isExtreme || fold->isTruth)
         for (NSUInteger i = 0; i < resultCount; i++)
-            CharonMPSStoreRounded(out, resultType, i, 1.0, 1);
-    else if (isExtreme)
-        for (NSUInteger i = 0; i < resultCount; i++)
-            CharonMPSStoreRounded(out, resultType, i, isLesser ? INFINITY : -INFINITY, 1);
+            CharonMPSStoreRounded(out, resultType, i, fold->seed, 1);
     for (NSUInteger i = 0; i < sourceCount; i++) {
         NSUInteger index = CharonMPSGraphReductionIndex(shape, dropped, stride, i);
         if (index >= resultCount)
             continue;
         double value = CharonMPSLoad(in, type, i);
-        if (isExtreme) {
+        if (fold->isExtreme) {
             // One comparison, and every rule of the four extremes is in it. A NaN loses the comparison
             // against anything including another NaN, so it is skipped - which is how a maximum that does
             // not propagate ignores one. The propagating variant latches instead: a NaN that has reached
@@ -736,7 +849,23 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
             if (propagates && isnan(held))
                 continue;
             CharonMPSStoreRounded(out, resultType, index,
-                                  isLesser ? (value < held ? value : held) : (value > held ? value : held), 1);
+                                  fold->isLesser ? (value < held ? value : held) : (value > held ? value : held), 1);
+            continue;
+        }
+        if (fold->isTruth) {
+            // The two truth folds, which are a question about every element of the reduced set rather
+            // than an arithmetic over it, and the answer is written in the operand's own type: measured
+            // on this host's own MPSGraph, an "and" of a row holding a zero answers 0 and of a row of
+            // nothing but NaNs answers 1, so the test is against zero and a NaN is a nonzero like any
+            // other value. An "or" of the same row answers 1.
+            //
+            // A reduced set of no elements at all is the identity rather than the seed of the fold, and
+            // that is what axes:@[] measures over both of them - see the empty-axis case above - so the
+            // two never reach here with nothing to fold.
+            int truth = value != 0.0;
+            int held = CharonMPSLoad(out, resultType, index) != 0.0;
+            CharonMPSStoreRounded(out, resultType, index,
+                                  (fold->isOr ? (truth || held) : (truth && held)) ? 1.0 : 0.0, 1);
             continue;
         }
         // The held answer is read back out of the result, so every fold is a store and a load of the
@@ -746,10 +875,9 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         // the fold was put through the same rule the arithmetic family uses.
         double held = CharonMPSLoad(out, resultType, index);
         CharonMPSStoreRounded(out, resultType, index,
-                              CharonMPSGraphOwnNaN(isProduct ? held * value : held + value), 1);
+                              CharonMPSGraphOwnNaN(fold->multiplies ? held * value : held + value), 1);
     }
-    if (kind == CharonMPSGraphOperationKindReductionMean ||
-        kind == CharonMPSGraphOperationKindReductionVariance) {
+    if (fold->divides) {
         // The mean of the reduced set. Where it came from is the only difference between the two
         // variance forms and none at all for the mean: the sum above is already in the result buffer, so
         // the mean is that over the count, written back through the type so that an integer mean is the
@@ -757,6 +885,7 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         // is -1 and not -2, and the mean of (1, 2, 3, 4) as float16 is 0x4100 = 2.5.
         // It goes into a buffer of its own rather than into the result, because the variance needs it
         // again after the sum is no longer there.
+        int isVariance = strcmp(fold->combination, "variance") == 0;
         unsigned char *mean = meanGiven ? (unsigned char *)[meanGiven charon_mps_bytes]
                                         : malloc(resultCount * resultSize);
         if (!meanGiven) {
@@ -764,7 +893,7 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
                 CharonMPSStoreRounded(mean, resultType, i, CharonMPSLoad(out, resultType, i) / count, 1);
         }
         MPSDataType meanType = meanGiven ? meanGiven.dataType : resultType;
-        if (kind == CharonMPSGraphOperationKindReductionVariance) {
+        if (isVariance) {
             // The mean of the squared deviations, taken about that mean: a second walk over the operand,
             // because a result element's mean is only known once the first has been through every axis of
             // the element it belongs to.
@@ -786,7 +915,7 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         }
         // The mean itself is the result of the mean; for the variance the result is what the second walk
         // above wrote, and copying the mean over it would answer the mean for a variance.
-        if (kind == CharonMPSGraphOperationKindReductionMean)
+        if (!isVariance)
             for (NSUInteger i = 0; i < resultCount; i++)
                 CharonMPSStoreRounded(out, resultType, i, CharonMPSLoad(mean, meanType, i), 1);
         if (!meanGiven)
@@ -815,8 +944,11 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
 
     // The reduction family folds many elements into one, so it is walked before the loop below: the loop
     // reads the element of an operand that is written at the same index of the result, which is what an
-    // elementwise operation wants and not what a reduction wants.
-    if (CharonMPSGraphIsReduction(kind)) {
+    // elementwise operation wants and not what a reduction wants. Which family an operation belongs to is
+    // read out of its own parameters and not out of its kind, because a kind names the release the
+    // operation came from and the walk here is one walk for every release: a reduction says which fold it
+    // is in @"combination", and nothing else in this interpreter knows that a fold exists by its name.
+    if (operation.charon_mps_parameters[@"combination"]) {
         MPSGraphTensorData *source = values[inputs.firstObject];
         MPSGraphTensor *meanTensor = operation.charon_mps_parameters[@"mean"];
         if (![source isKindOfClass:[MPSGraphTensorData class]]) {
@@ -831,7 +963,7 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
         [result charon_mps_bytes];
         MPSGraphTensorData *mean = [meanTensor isKindOfClass:[MPSGraphTensor class]] ? values[meanTensor]
                                                                                      : nil;
-        CharonMPSGraphReduce(kind, operation, source, [mean isKindOfClass:[MPSGraphTensorData class]] ? mean : nil,
+        CharonMPSGraphReduce(operation, source, [mean isKindOfClass:[MPSGraphTensorData class]] ? mean : nil,
                             result);
         values[output] = result;
         return;
@@ -875,6 +1007,9 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
     [result charon_mps_bytes];
     void *out = [result charon_mps_bytes];
     MPSDataType operandType = left.dataType;
+    // Whether this operation latches a NaN is its own parameter and not its kind: see
+    // CharonMPSGraphApply above.
+    int latch = [operation.charon_mps_parameters[@"latchNaN"] boolValue];
     if (right) {
         if (third) {
             for (NSUInteger i = 0; i < count; i++)
@@ -882,19 +1017,19 @@ static void CharonMPSGraphReduce(CharonMPSGraphOperationKind kind, MPSGraphOpera
                            CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i),
                                                CharonMPSLoad([right charon_mps_bytes], right.dataType, i),
                                                CharonMPSLoad([third charon_mps_bytes], third.dataType, i),
-                                               operandType, dataType), 1);
+                                               operandType, dataType, latch), 1);
         } else {
             for (NSUInteger i = 0; i < count; i++)
                 CharonMPSStoreRounded(out, dataType, i,
                            CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i),
                                                CharonMPSLoad([right charon_mps_bytes], right.dataType, i), 0.0,
-                                               operandType, dataType), 1);
+                                               operandType, dataType, latch), 1);
         }
     } else {
         for (NSUInteger i = 0; i < count; i++)
             CharonMPSStoreRounded(out, dataType, i,
                        CharonMPSGraphApply(kind, CharonMPSLoad([left charon_mps_bytes], operandType, i), 0.0, 0.0,
-                                           operandType, dataType), 1);
+                                           operandType, dataType, latch), 1);
     }
     values[output] = result;
 }
