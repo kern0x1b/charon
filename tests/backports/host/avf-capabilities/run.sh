@@ -36,13 +36,15 @@ build=${AVF_CAPS_BUILD:-$root/.agent-work/avf-capabilities-build}
 rm -rf "$build"
 mkdir -p "$build/src" "$build/o"
 
-for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AVCaptureDeviceCapabilities18.m; do
+for source in AVCaptureDeviceReactions17.m AVCaptureDeviceFormatDepthZoom17.m AVCaptureDeviceCapabilities18.m \
+            AVCaptureDeviceRectsOfInterest26.m AVCaptureDeviceCinematicVideo26.m; do
     [ -f "$avf/$source" ] || {
         echo "FAIL: $avf/$source does not exist, so the surface this run checks for is not there"
         exit 1
     }
 done
-for header in CharonAVCaptureDeviceReactions17.h CharonAVCaptureDeviceCapabilities18.h; do
+for header in CharonAVCaptureDeviceReactions17.h CharonAVCaptureDeviceCapabilities18.h \
+            CharonAVCaptureDeviceRectsOfInterest26.h CharonAVCaptureDeviceCinematicVideo26.h; do
     [ -f "$avf/$header" ] || {
         echo "FAIL: $avf/$header does not exist, so these members are declared nowhere"
         exit 1
@@ -53,18 +55,28 @@ done
 # SELECTOR THE HEADER DECLARES is asked for, so a row whose getter= is something other than the property's
 # name asks a selector both sides have. A property the header does not declare is reported, not guessed at.
 #
-# One header and one registry prefix per argument pair, because the two slices of this family are two
-# releases' API in two headers and two registry files (AVCaptureDeviceReactions17.h + reactions*.json carry
-# the 17.0 and 17.2 rows, CharonAVCaptureDeviceCapabilities18.h + capabilities18.json the 18.0 ones), and a
-# row is asked for through the header that declares it.
-python3 - "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
+# One header and one registry prefix per argument pair, because each slice of this family is one release's API
+# in its own header and its own registry file (AVCaptureDeviceReactions17.h + reactions*.json carry the 17.0 and
+# 17.2 rows, CharonAVCaptureDeviceCapabilities18.h + capabilities18.json the 18.0 ones,
+# CharonAVCaptureDeviceRectsOfInterest26.h + rectsofinterest26.json the 26.0 rectangles and
+# CharonAVCaptureDeviceCinematicVideo26.h + cinematicvideo26.json the 26.0 Cinematic Video ones), and a row is
+# asked for through the header that declares it.
+python3 - 4 "$avf/CharonAVCaptureDeviceReactions17.h:reactions" \
         "$avf/CharonAVCaptureDeviceCapabilities18.h:capabilities18" \
         "$avf/CharonAVCaptureDeviceRectsOfInterest26.h:rectsofinterest26" \
+        "$avf/CharonAVCaptureDeviceCinematicVideo26.h:cinematicvideo26" \
         "$root/packages/a/apple-backports/registry/AVFoundation" \
         "$build/members.tsv" <<'MEMBERS'
 import json, os, re, sys
+# The pair COUNT is an argument of its own and not a slice's length: with four pairs, sys.argv[1:-2] is three of
+# them, and the fourth header was then never read - which is exactly what happened, and the run said so
+# ("no declaration in any of the port's headers for ..." for three rows whose header it was holding).
+count = int(sys.argv[1])
 registry, out = sys.argv[-2], sys.argv[-1]
-pairs = sys.argv[1:-2]
+pairs = sys.argv[2:2 + count]
+if len(pairs) != count:
+    raise SystemExit("this run was told %d header/prefix pairs and given %d: %s"
+                     % (count, len(pairs), " ".join(sys.argv[2:])))
 # every property and method the headers declare, with its owner, its accessor and whether it is a class
 # member
 declared = {}
@@ -113,10 +125,12 @@ for pair in pairs:
                 match = re.match(r"^-\[(\w+) ([\w:]+)\]$", api)
                 if not match:
                     continue
-                # and the member is the BARE name the header's own declaration carries, which is what the
-                # signature line above recorded: a selector with an argument ends in a colon and the
-                # declaration does not.
-                owner, member, sign = match.group(1), match.group(2).rstrip(":"), "-"
+                # and the member is the FIRST PIECE of the selector, which is what the signature line above
+                # recorded: a selector with arguments is written with all of them
+                # (setFoo:bar:) and the declaration carries only the first (setFoo:). Stripping the trailing
+                # colon is not enough - `rstrip(":")` leaves `setFoo:bar` - and the run then reported "no
+                # declaration in any of the port's headers" for three rows whose declaration it was holding.
+                owner, member, sign = match.group(1), match.group(2).split(":")[0], "-"
             elif entry["kind"] == "property":
                 owner, member = api.split(".", 1)
                 sign = ""
@@ -166,14 +180,15 @@ MEMBERS
 # stand-in behind the port's back, is the preferred-camera phase: its steps change with the list this run hands
 # the stand-in, which only the port's own code can do.
 python3 - "$avf/CharonAVCaptureDeviceReactions17.h" "$avf/CharonAVCaptureDeviceCapabilities18.h" \
-        "$avf/CharonAVCaptureDeviceRectsOfInterest26.h" "$build/src/prologue.h" <<'PROLOGUE'
+        "$avf/CharonAVCaptureDeviceRectsOfInterest26.h" "$avf/CharonAVCaptureDeviceCinematicVideo26.h" \
+        "$build/src/prologue.h" <<'PROLOGUE'
 import re, sys
 out = sys.argv[-1]
 headers = sys.argv[1:-1]
 text = "".join(open(header).read() for header in headers)
 categories = re.findall(r"@interface\s+(\w+)\s+\((\w+)\)", text)
-if len(categories) != 7:
-    raise SystemExit("expected the seven categories these three headers declare (three, three and one) and"
+if len(categories) != 10:
+    raise SystemExit("expected the ten categories these four headers declare (three, three, one and three) and"
                      " found %d: %s" % (len(categories), categories))
 owners = sorted(set(owner for owner, _ in categories))
 if owners != ["AVCaptureDevice", "AVCaptureDeviceFormat", "AVCaptureDeviceInput"]:
@@ -223,7 +238,13 @@ lines = ["// Generated by tests/backports/host/avf-capabilities/run.sh from " + 
          "@interface charon_host_AVCaptureDeviceFormat : NSObject",
          "@end",
          "",
+         "// The input's device, which 6.1.3's own AVCaptureDeviceInput carries and the 26.0 Cinematic Video",
+         "// support flag asks: that flag is the header's rule about the session's configuration, so the port",
+         "// reads the device's active format. The harness hands it the same stand-in device the device rows",
+         "// are asked of.",
          "@interface charon_host_AVCaptureDeviceInput : NSObject",
+         "+ (void)charon_host_setDevice:(id)device;",
+         "- (id)device;",
          "@end",
          ""]
 for owner, category in categories:
@@ -368,10 +389,22 @@ static CGPoint charon_host_exposure_point = { 0.5, 0.5 };
 
 @end
 
-// The input the 18.0 slice's three members are asked of. It carries nothing of its own: the port's code reads
-// no member of the release's input except the values it keeps itself, and every answer below is the port's own
-// category's, which is what the rename is for.
+// The input the 18.0 and 26.0 slices' members are asked of. It carries nothing of its own but the device the
+// release's own input carries: the port's code reads no other member of the release's input except the values
+// it keeps itself, and every answer below is the port's own category's, which is what the rename is for.
+static id charon_host_input_device;
+
 @implementation charon_host_AVCaptureDeviceInput
+
++ (void)charon_host_setDevice:(id)device
+{
+    charon_host_input_device = device;
+}
+
+- (id)device
+{
+    return charon_host_input_device;
+}
 
 @end
 STANDINS
@@ -391,7 +424,8 @@ STANDINS
 for triple in "AVCaptureDeviceReactions17.m:CharonAVCaptureDeviceReactions17.h:reactions17.rn:2:4" \
              "AVCaptureDeviceFormatDepthZoom17.m:CharonAVCaptureDeviceReactions17.h:depthzoom17.rn:1:0" \
              "AVCaptureDeviceCapabilities18.m:CharonAVCaptureDeviceCapabilities18.h:capabilities18.rn:3:0" \
-             "AVCaptureDeviceRectsOfInterest26.m:CharonAVCaptureDeviceRectsOfInterest26.h:rects26.rn:2:0"; do
+             "AVCaptureDeviceRectsOfInterest26.m:CharonAVCaptureDeviceRectsOfInterest26.h:rects26.rn:2:0" \
+             "AVCaptureDeviceCinematicVideo26.m:CharonAVCaptureDeviceCinematicVideo26.h:cinematic26.rn:3:0"; do
     src=$(printf '%s\n' "$triple" | cut -d: -f1)
     header=$(printf '%s\n' "$triple" | cut -d: -f2)
     python3 - "$avf/$src" "$header" "$build/src/prologue.h" \
@@ -432,7 +466,8 @@ COPY
 done
 objects=""
 for pair in "reactions17.rn:reactions17.o" "depthzoom17.rn:depthzoom17.o" \
-            "capabilities18.rn:capabilities18.o" "rects26.rn:rects26.o" "standins.rn:standins.o"; do
+            "capabilities18.rn:capabilities18.o" "rects26.rn:rects26.o" \
+            "cinematic26.rn:cinematic26.o" "standins.rn:standins.o"; do
     src=${pair%%:*}; obj=${pair##*:}
     if ! xcrun clang -fobjc-arc -w -x objective-c -I"$avf" -I"$build/src" -c "$build/src/$src" \
             -o "$build/o/$obj" > "$build/o/$obj.log" 2>&1; then
@@ -456,8 +491,9 @@ if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
     multichannel) plant=multichannel; target=capabilities18 ;;
     rects)        plant=rects;        target=rects26 ;;
     rectreset)    plant=rectreset;    target=rects26 ;;
+    cinematic)    plant=cinematic;    target=cinematic26 ;;
     *) echo "FAIL: AVFCAPSMUTANT=$mutant is not a plant this harness writes; run it as 1, as prefcam, as"
-       echo "      capabilities, as multichannel, as rects or as rectreset"
+       echo "      capabilities, as multichannel, as rects, as rectreset or as cinematic"
        exit 1 ;;
     esac
     python3 - "$build/src/$target.rn" "$plant" <<'PERTURB'
@@ -506,6 +542,17 @@ plants = {
     # And its second: a getter that never reconciles. The header says the rectangle "resets to the default sized
     # rectangle of interest for the new focus point of interest" when the point is set afterwards
     # (AVCaptureDevice.h:1171), and the reset step of the setter phase is the only thing that sees it.
+    # The Cinematic Video family's plant, and the one that shows the input's flag is DERIVED and not written:
+    # a format that claims Cinematic Video support has to move the format's own row, the input's support row
+    # (which reads that format through the release's -activeFormat), the input's setter (which would then
+    # accept YES) and all three focus methods (which would then return instead of refusing).
+    "cinematic": ("""- (BOOL)isCinematicVideoCaptureSupported
+{
+    return NO;
+}""", """- (BOOL)isCinematicVideoCaptureSupported
+{
+    return YES; /* PLANTED */
+}"""),
     "rectreset": ("""    CGPoint centre = charon_point_for_rect(kept);
     if (centre.x != point.x || centre.y != point.y)
         return charon_rect_for_point(point);
@@ -530,7 +577,9 @@ print("# the mutation applied: " + {"reactions": "-canPerformReactionEffects ans
                                      "rects": "a minimum rectangle size of a quarter by a quarter, which no"
                                               " measurement on this release gives",
                                      "rectreset": "the rectangle never resets when the release's own point of"
-                                                  " interest is set afterwards"}[plant])
+                                                  " interest is set afterwards",
+                                     "cinematic": "every format claims Cinematic Video support, so the input's"
+                                                  " flag, its setter and the three focus methods follow"}[plant])
 PERTURB
 fi
 if [ "$mutant" != 0 ] && [ "$control" = 0 ]; then
@@ -592,20 +641,45 @@ case "${input_control#*	}" in
        exit 1 ;;
 esac
 
-# 2. every member both sides are asked about must be answered by both
+# 2. every member must be answered by the PORT, and by the host unless expectations.tsv records that the host's
+#    own framework does not carry it. One row is in that state, measured: this macOS's AVCaptureDevice has no
+#    -cinematicVideoCaptureSceneMonitoringStatuses, so there is no host cell to read and reading one would be
+#    reading nothing. A host that later gains the selector fails the run below with a message that asks for a
+#    re-measurement, which is what should happen then.
+host_absent=$(awk -F'\t' '$2 == "-" && $1 !~ /^#/ { print $1 }' "$here/expectations.tsv")
 members=$(grep -c '^RESPONDS	' "$build/table" || true)
 listed=$(wc -l < "$build/members.tsv" | tr -d ' ')
 if [ "$members" != "$listed" ]; then
     echo "FAIL: the list names $listed members and the probe answered $members"
     exit 1
 fi
-lacks=$(grep '^RESPONDS	' "$build/table" | grep -e 'host=no' -e 'port=no' || true)
+# The PORT's side is never optional, for any row.
+lacks=$(grep '^RESPONDS	' "$build/table" | grep 'port=no' || true)
 if [ -n "$lacks" ]; then
-    echo "FAIL: a member both sides are asked about is missing from one of them:"
+    echo "FAIL: a member is missing from the port:"
     echo "$lacks" | head -12
     exit 1
 fi
-echo "ok  $members members are answered by both sides"
+# The HOST's side is optional only where expectations.tsv says so, and then the probe's own NOHOST line is
+# what says it happened.
+for api in $(grep '^RESPONDS	' "$build/table" | grep 'host=no' | cut -f2 | sed 's/^-\[\([A-Za-z]*\) \(.*\)\]$/\1.\2/'); do
+    # grep -x -F and not a shell glob: a command substitution drops the last line's newline, so a
+    # *"\n$api\n"* pattern misses the final entry of the list - and a check that misses is worse than none.
+    if printf '%s\n' "$host_absent" | grep -x -F -q "$api"; then
+        if ! grep -q "^NOHOST	$api\$" "$build/table"; then
+            echo "FAIL: expectations.tsv records no host column for $api, but the probe did not print a NOHOST"
+            echo "      line for it, so this run cannot tell an absent host from an unasked one"
+            exit 1
+        fi
+        echo "ok  $api is asked of the port alone: expectations.tsv records no host column and the probe"
+        echo "    printed NOHOST for it"
+    else
+        echo "FAIL: $api is missing from the host's own framework and expectations.tsv has a host answer for it,"
+        echo "      so either the table is stale or the host gained the selector: re-measure and update the table"
+        exit 1
+    fi
+done
+echo "ok  $members members are answered by both sides, or by the port alone where the table says the host has none"
 
 # 3. the answers, each against the table. BOTH columns: the host's is measured here and the port's is the
 #    answer for the port's own devices, and where they differ the table says why.
@@ -627,7 +701,9 @@ while IFS=$(printf '\t') read -r api host port why; do
     want_host="host=[$host]"
     want_port="port=[$port]"
     ok=1
-    [ "$got_host" = "$want_host" ] || ok=0
+    # A host cell of "-" is the row expectations.tsv records as one the host's own framework does not carry:
+    # the probe prints an empty host cell for it (and a NOHOST line), and only the port's answer is compared.
+    [ "$host" = "-" ] || [ "$got_host" = "$want_host" ] || ok=0
     [ "$got_port" = "$want_port" ] || ok=0
     compared=$((compared + 1))
     if [ "$ok" = 0 ]; then

@@ -59,6 +59,7 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                 snprintf(out, room, "%lu range(s)", (unsigned long)[array count]);
             } else if (selector == @selector(videoFrameRateRangeForReactionEffectsInProgress) ||
                        selector == @selector(videoFrameRateRangeForBackgroundReplacement) ||
+                       selector == @selector(videoFrameRateRangeForCinematicVideo) ||
                        selector == @selector(systemRecommendedExposureBiasRange) ||
                        selector == @selector(systemRecommendedVideoZoomRange)) {
                 id range = ((id (*)(id, SEL))objc_msgSend)(object, selector);
@@ -83,7 +84,14 @@ static void answer_of(id object, SEL selector, char *out, size_t room)
                 NSArray *sorted = [[set allObjects] sortedArrayUsingSelector:@selector(compare:)];
                 snprintf(out, room, "%lu reason(s): %s", (unsigned long)[sorted count],
                          [sorted componentsJoinedByString:@","].UTF8String);
-            } else if (selector == @selector(displayVideoZoomFactorMultiplier)) {
+            } else if (selector == @selector(cinematicVideoCaptureSceneMonitoringStatuses)) {
+                id set = ((id (*)(id, SEL))objc_msgSend)(object, selector);
+                NSArray *sorted = [[set allObjects] sortedArrayUsingSelector:@selector(compare:)];
+                snprintf(out, room, "%lu status(es): %s", (unsigned long)[sorted count],
+                         [sorted componentsJoinedByString:@","].UTF8String);
+            } else if (selector == @selector(displayVideoZoomFactorMultiplier) ||
+                       selector == @selector(videoMinZoomFactorForCinematicVideo) ||
+                       selector == @selector(videoMaxZoomFactorForCinematicVideo)) {
                 /* The only CGFloat of the two slices, so it cannot be read through a BOOL cast. */
                 snprintf(out, room, "%g", ((double (*)(id, SEL))objc_msgSend)(object, selector));
             } else if (selector == @selector(multichannelAudioMode)) {
@@ -489,6 +497,78 @@ static void rect_phase(id hostCamera, id portCamera, Class portStandinClass)
                "AVCaptureDevice.setFocusRectOfInterest: the whole field of view, points unsupported");
 }
 
+/* Which of the port's own objects a row is asked of, so the NOHOST branch above can ask the port's side
+ * without repeating the choice the loop below makes. */
+static int onInputOwner(const char *owner)
+{
+    return !strcmp(owner, "AVCaptureDeviceInput");
+}
+
+/* THE 26.0 CINEMATIC VIDEO PHASE: the one readwrite member of the family, asked twice, and the three focus
+ * methods, whose answer on this host is a refusal with Apple's own reason. Each is asked of both sides and
+ * compared through expectations.tsv like every other row. */
+static void cinematic_phase(id hostCamera, id portCamera, id hostInput, id portInput)
+{
+    for (int value = 0; value < 2; value++) {
+        char hostAnswer[512], portAnswer[512];
+        for (int side = 0; side < 2; side++) {
+            id object = side ? portInput : hostInput;
+            char *out = side ? portAnswer : hostAnswer;
+            @autoreleasepool {
+                @try {
+                    ((void (*)(id, SEL, BOOL))objc_msgSend)(object,
+                                                          @selector(setCinematicVideoCaptureEnabled:), value);
+                    snprintf(out, 512, "returned, the getter answers %d",
+                             (int)((BOOL (*)(id, SEL))objc_msgSend)(object,
+                                                                     @selector(isCinematicVideoCaptureEnabled)));
+                } @catch (NSException *exception) {
+                    snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                             exception.reason ? exception.reason.UTF8String : "(no reason)");
+                }
+            }
+        }
+        printf("ANSWER\tAVCaptureDeviceInput.setCinematicVideoCaptureEnabled: %s\thost=[%s]\tport=[%s]\n",
+               value ? "true" : "false", hostAnswer, portAnswer);
+    }
+    /* The three focus methods, each with the arguments its own header names. */
+    struct { const char *label; SEL selector; NSInteger first; NSInteger second; } cases[] = {
+        {"-[AVCaptureDevice setCinematicVideoFixedFocusAtPoint:focusMode:] 0.5 0.5 Strong",
+         @selector(setCinematicVideoFixedFocusAtPoint:focusMode:), 0, 1},
+        {"-[AVCaptureDevice setCinematicVideoTrackingFocusAtPoint:focusMode:] 0.5 0.5 Weak",
+         @selector(setCinematicVideoTrackingFocusAtPoint:focusMode:), 0, 2},
+        {"-[AVCaptureDevice setCinematicVideoTrackingFocusWithDetectedObjectID:focusMode:] 7 Strong",
+         @selector(setCinematicVideoTrackingFocusWithDetectedObjectID:focusMode:), 7, 1},
+    };
+    for (unsigned i = 0; i < sizeof cases / sizeof cases[0]; i++) {
+        char hostAnswer[512], portAnswer[512];
+        for (int side = 0; side < 2; side++) {
+            id object = side ? portCamera : hostCamera;
+            char *out = side ? portAnswer : hostAnswer;
+            @autoreleasepool {
+                @try {
+                    if (cases[i].first == 0 && cases[i].second == 1)
+                        ((void (*)(id, SEL, CGPoint, NSInteger))objc_msgSend)(object, cases[i].selector,
+                                                                             CGPointMake(0.5, 0.5),
+                                                                             cases[i].second);
+                    else if (cases[i].first == 0)
+                        ((void (*)(id, SEL, CGPoint, NSInteger))objc_msgSend)(object, cases[i].selector,
+                                                                             CGPointMake(0.5, 0.5),
+                                                                             cases[i].second);
+                    else
+                        ((void (*)(id, SEL, NSInteger, NSInteger))objc_msgSend)(object, cases[i].selector,
+                                                                               cases[i].first,
+                                                                               cases[i].second);
+                    snprintf(out, 512, "returned");
+                } @catch (NSException *exception) {
+                    snprintf(out, 512, "raised %s: %s", exception.name.UTF8String,
+                             exception.reason ? exception.reason.UTF8String : "(no reason)");
+                }
+            }
+        }
+        printf("ANSWER\t%s\thost=[%s]\tport=[%s]\n", cases[i].label, hostAnswer, portAnswer);
+    }
+}
+
 static void prefcam_phase(Class hostDevice, Class portDevice, const char *mode)
 {
     /* The host's own answer, with the authorization printed beside it - the measurement the coordinator asked
@@ -607,6 +687,9 @@ int main(int argc, char **argv)
            two cameras, on each side. And the history is cleared here rather than in the phase that writes it,
            because the member loop below asks +userPreferredCamera too and must not see a previous run's choice. */
         id portInput = [portInputClass new];
+        /* and the device the 26.0 Cinematic Video support flag reads the active format of, which is the
+         * release's own member of the release's own input */
+        ((void (*)(Class, SEL, id))objc_msgSend)(portInputClass, @selector(charon_host_setDevice:), portCamera);
         /* The stand-in's substrate for the 26.0 rectangles of interest, set before anything is asked of it: the
          * member table reads the support row through it, and the rect phase sets the flag again for its own
          * steps. The static's initial value is not what a run may rely on. */
@@ -652,6 +735,22 @@ int main(int argc, char **argv)
                    hostMethod ? "yes" : "no", portMethod ? "yes" : "no");
             members++;
 
+            /* A row the HOST'S OWN FRAMEWORK does not carry at all. Measured for one row of the 26.0 Cinematic
+             * Video family: this macOS's AVCaptureDevice has no -cinematicVideoCaptureSceneMonitoringStatuses,
+             * so there is no host column to compare and reading one would be reading nothing. Such a row is
+             * named by a NOHOST line, its host cell is empty, and run.sh requires expectations.tsv to say so -
+             * a host that later gains the selector then fails the run with a message that asks for a
+             * re-measurement, which is what should happen. The port's own answer is asked either way. */
+            if (!hostMethod && !classMember) {
+                printf("NOHOST\t%s\n", api);
+                char portAnswer[512];
+                answer_of(onInputOwner(owner) ? (id)portInput : !strcmp(owner, "AVCaptureDeviceFormat")
+                                              ? (id)portFormatObject : (id)portCamera,
+                          asked, portAnswer, sizeof portAnswer);
+                printf("ANSWER\t%s\thost=[]\tport=[%s]\n", api, portAnswer);
+                continue;
+            }
+
             char hostAnswer[512], portAnswer[512];
             if (!strcmp(kind, "class")) {
                 class_answer_of(hostOwner, asked, hostAnswer, sizeof hostAnswer);
@@ -679,6 +778,9 @@ int main(int argc, char **argv)
 
         /* The 26.0 rectangles of interest, over the stand-in that carries the release's substrate. */
         rect_phase(camera, portCamera, portDevice);
+
+        /* The 26.0 Cinematic Video family's own writes. */
+        cinematic_phase(camera, portCamera, hostInput, portInput);
 
         /* The members whose answer is a refusal rather than a value, asked of both sides. */
         raise_of(camera, portCamera, @selector(performEffectForReaction:), @"ReactionHeart",
