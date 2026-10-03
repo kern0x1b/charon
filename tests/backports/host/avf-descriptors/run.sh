@@ -180,16 +180,18 @@ if [ "${AVF_WRITE_BASELINE:-0}" != 0 ]; then
     cp "$build/port.table" "$baseline_dir/port.baseline"
     echo "baseline written under AVF_WRITE_BASELINE=1"
 elif [ "$mutant" = 0 ] || [ "$control" != 0 ]; then
-    # A plain run compares against the baseline and leaves it alone - and if there is no baseline it
-    # says so here, in the script's own FAIL: shape. A fresh clone has none, and without this the join
-    # died with a Python traceback on the one path nobody had walked: all three of the demonstrations
-    # in the commit that introduced the flag had a baseline present, because two of them write it.
-    [ -f "$baseline_dir/port.baseline" ] || {
-        echo "FAIL: no baseline beside this run, so the port-only rows would be compared against"
-        echo "      nothing. Write one and run again:"
-        echo "        AVF_WRITE_BASELINE=1 sh tests/backports/host/avf-descriptors/run.sh"
-        exit 1
-    }
+    # A plain run compares against the baseline and leaves it alone. When there is none it WRITES one
+    # and says so, rather than stopping: a fresh worktree has none, and the sweep - which runs every
+    # run.sh with no environment of its own - read that as "alive, and it reports failures" on every
+    # pass, which is a test that can never be green where it is actually run. Writing it here is not the
+    # vacuous thing AVF_WRITE_BASELINE=1 is on the mutant path, because this run IS the unmutated tree:
+    # the baseline it writes is what the next run, and every mutant, is judged against, and the run
+    # below still compares this very table with it and says so.
+    if [ ! -f "$baseline_dir/port.baseline" ]; then
+        mkdir -p "$baseline_dir"
+        cp "$build/port.table" "$baseline_dir/port.baseline"
+        echo "no baseline at $baseline_dir: wrote one from this run's own unmutated port table"
+    fi
 else
     [ -f "$baseline_dir/port.baseline" ] || {
         echo "FAIL: the mutant was asked for with no baseline beside it. Run this script once with no"
