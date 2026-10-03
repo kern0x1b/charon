@@ -309,25 +309,62 @@ def run_nm_exports(dylib):
 
 def load_built_inventories(gate_dir):
     """Every lib*Backports.dylib in gate_dir merged into one view, keeping which framework's
-    library carried each name (for the reason column, not for the decision)."""
+    library carried each name (for the reason column, not for the decision).
+
+    The per-library entries are MERGED, not replaced, because a class NAME is carried by more than
+    one library as soon as two of them add a category to it, and a Foundation class is extended by
+    half the tree: measured on the 6.1.3 gate of 463407400, NSString is named by three libraries at
+    once - libFoundationBackports with fifteen of its own selectors, libSensorKitBackports with
+    -sr_sensorForDeletionRecordsFromSensor and libUIKitBackports with six - and only the last of
+    the three read here said which selectors the port has, because it came last in the sort. So
+    SensorKit's one category on NSString, which is built and answered, read `missing`. Each entry's
+    selector sets are the union over the libraries, the way apple.objc's own collect() unions the
+    categories of one image (modules/apple/objc.lua:218, :222), and each selector keeps the library
+    that carried it so the reason column names the one that answers rather than the first."""
     classes, protocols, exports = {}, {}, {}
     dylibs = sorted(f for f in os.listdir(gate_dir) if f.endswith(".dylib") and f.startswith("lib"))
     assert dylibs, "%s holds no lib*.dylib -- not a gate output directory" % gate_dir
+
+    def merge(into, found, framework):
+        for name, entry in found.items():
+            held = into.get(name)
+            if held is None:
+                entry["library"] = framework
+                entry["where"] = {}
+                into[name] = entry
+                continue
+            if not held["superclass"] and entry["superclass"]:
+                # A library that only extends the class names no superclass; the one that defines
+                # it does, and a class has one.
+                held["superclass"] = entry["superclass"]
+            for kind in ("instance", "class"):
+                for selector in entry[kind]:
+                    if selector not in held[kind]:
+                        held[kind].add(selector)
+                        held["where"][selector] = framework
+            held["protocols"] |= entry["protocols"]
+            if held.get("image") is None:
+                held["image"] = entry.get("image")
+
     for name in dylibs:
         framework = name[len("lib"):-len(".dylib")]
         if framework.endswith("Backports"):
             framework = framework[:-len("Backports")]
         path_ = os.path.join(gate_dir, name)
         found_classes, found_protocols = run_objc_inventory(path_, "armv7")
-        for cname, entry in found_classes.items():
-            entry["library"] = framework
-            classes[cname] = entry
-        for pname, entry in found_protocols.items():
-            entry["library"] = framework
-            protocols[pname] = entry
+        merge(classes, found_classes, framework)
+        merge(protocols, found_protocols, framework)
         for symbol in run_nm_exports(path_):
             exports[symbol] = framework
     return classes, protocols, exports
+
+
+def built_why(entry, selector=None):
+    """`built: <library>` for a row, naming the library that carries the selector when the row names
+    one. A class two libraries both extend is named by both, and the library that carries the class is
+    not always the one that carries the member the row is about."""
+    where = entry.get("where") or {}
+    return "built: " + where.get(selector, entry["library"])
 
 
 # ---------------------------------------------------------------------------
@@ -369,7 +406,7 @@ def classify_method(api, built_classes, release_classes, built_protocols=None, r
     key = "-" + selector
     built = built_classes.get(owner)
     if built and _selector_present(built, key):
-        return "implemented", "built: " + built["library"]
+        return "implemented", built_why(built, key)
     released = release_classes.get(owner)
     if released and _selector_present(released, key):
         return "implemented", "release-native: 6.1.3 dyld cache"
@@ -400,7 +437,9 @@ def classify_property(api, built_classes, release_classes):
         # has 23 class selectors and no instance selector at all, and every one of its properties was
         # read missing while the built library carries it.
         if any(sel in entry["instance"] or sel in entry["class"] for sel in (getter, setter)):
-            return "implemented", (why or ("built: " + entry["library"])) + (
+            carried = next(sel for sel in (getter, setter)
+                           if sel in entry["instance"] or sel in entry["class"])
+            return "implemented", (why or built_why(entry, carried)) + (
                 " (a class property: read through %s)" % getter
                 if getter in entry["class"] and getter not in entry["instance"] else "")
     if owner not in built_classes and owner not in release_classes:
