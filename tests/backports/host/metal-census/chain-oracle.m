@@ -6,7 +6,7 @@
  * whatever SDK the host has; the selectors are spelled exactly as MTLDevice.h:1240, :1271, :1278 and
  * MTL4CommandBuffer.h:71, :95, :103 name them, and each line records which header line it came from.
  *
- * A PREVIOUS PROBE OF MINE GOT THREE OF THESE WRONG and the answers it drew from them were wrong with it:
+ * A PREVIOUS PROBE OF MINE GOT FOUR OF THESE WRONG and the answers it drew from them were wrong with it:
  * it called -newCommandQueueWithDescriptor:, which is METAL 3's factory (MTL4's is
  * -newMTL4CommandQueueWithDescriptor:error:, MTLDevice.h:1271), and it sent -beginCommandBufferWithAllocator:
  * to a QUEUE, when that method belongs to the command buffer (MTL4CommandBuffer.h:71). Both are retracted
@@ -15,8 +15,6 @@
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
 #import <objc/message.h>
-#import <sys/wait.h>
-#import <unistd.h>
 
 static id send(id target, NSString *name)
 {
@@ -71,49 +69,6 @@ static void member(id object, NSString *key, NSString *name)
                          ![value isKindOfClass:[NSValue class]])
         ? [describe(value) UTF8String] : utf8(text(value));
     printf("   %-34s -> %s\n", [name UTF8String], shown);
-}
-
-/* ONE COMMIT, IN A CHILD PROCESS. The third parameter of the call is a C ARRAY, and the child is what
- * keeps an ABORT from taking the table with it: Apple's own framework asserts (and so dies) rather than
- * raising when a buffer that was never begun is committed, and the answer to that question belongs in
- * the table next to the answer for a buffer that was ended properly. */
-static void record_commit(id queue, id buffer, BOOL ended, const char *what)
-{
-    printf("   commit:count: with %s -> ", what);
-    fflush(stdout);
-    pid_t child = fork();
-    if (child == 0) {
-        /* THE CHILD, and nothing else runs here. setvbuf matters: the child's own answer has to reach
-         * the parent's stdout before the child dies, whichever way it dies. */
-        setvbuf(stdout, NULL, _IONBF, 0);
-        @try {
-            /* NO @autoreleasepool IN THE CHILD: @try/@catch cannot wrap one, and the child is about to
-             * _exit, so nothing it allocates outlives it. */
-            id<MTL4CommandBuffer> list[1];
-            list[0] = buffer;
-            void (*commit)(id, SEL, const void *, NSUInteger) =
-                (void (*)(id, SEL, const void *, NSUInteger))objc_msgSend;
-            commit(queue, NSSelectorFromString(@"commit:count:"), list, 1);
-            printf("answered, and nothing raised\n");
-            _exit(0);
-        } @catch (NSException *why) {
-            printf("RAISED %s: %s\n", [[why name] UTF8String], [[why reason] UTF8String]);
-            _exit(2);
-        }
-    }
-    int status = 0;
-    waitpid(child, &status, 0);
-    if (WIFSIGNALED(status)) {
-        printf("ABORTED, signal %d - Apple's own framework asserted, which is an answer\n", WTERMSIG(status));
-        printf("      and the assertion it raised, captured when the same commit ran in the parent,\n"
-               "      names the cause:\n"
-               "        Assertion failed: (allocator && storage), function\n"
-               "        -[IOGPUMetal4CommandQueue commitFillArgs:count:args:argsSize:commitFeedback:],\n"
-               "        file IOGPUMetal4CommandQueue.mm, line 360.\n"
-               "      So the buffer has no STORAGE at commit time - which is what this port's Metal 3\n"
-               "      buffer has no equivalent of, and why the row is a recorded difference rather than\n"
-               "      a refusal.\n");
-    }
 }
 
 int main(void)
@@ -234,16 +189,18 @@ int main(void)
          * than raising, and an abort in this process would lose every row above it. The child does the
          * commit and the parent records what became of it.
          */
-        printf("\nand the queue's commit, in a child process, with the C ARRAY the header declares\n");
-        // THE EXACT CALL, spelled out, so a reader can see the array and not take my word for it:
-        //     id<MTL4CommandBuffer> list[1] = {buffer};  [queue commit:list count:1];
-        if (plainQueue && buffer) {
-            record_commit(plainQueue, buffer, YES, "an ARRAY of one ENDED buffer, the header's own path");
-            record_commit(plainQueue, send(device, @"newCommandBuffer"), NO,
-                          "an ARRAY of one buffer NOT begun or ended");
-        } else {
-            printf("   NOT ASKED: there is no live queue or buffer to commit\n");
-        }
+        /* NOT MEASURED HERE, and the reason is fork-safety rather than a missing selector. Metal is not
+         * fork-safe, so a commit cannot be measured in a child forked from a process that already holds a
+         * device, a queue and a buffer - the signal such a child dies on says nothing about the commit. The
+         * measurement is chain-commit.sh, which EXECs a fresh process per form, runs Apple's documented
+         * sequence there, keeps the allocator alive until after the commit, waits for completion, and
+         * records that process's own stderr and status as they are. Until it has run, this row says
+         * "measured next" and nothing else. */
+        printf("\nand the queue's commit: measured next, in a process of its own\n");
+        printf("   NOT ASKED HERE - Metal is not fork-safe, so a child forked from this process would\n"
+               "       answer a question about the fork. See chain-commit.sh.\n");
+
+        /* The parent does not fork at all any more; the child helper is gone with it. */
     }
     return 0;
 }
