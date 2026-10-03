@@ -58,35 +58,52 @@ not two, and the port writes one `return` rather than two branches with the same
 reads as if it distinguishes something it cannot is worse than no check. The second condition is also
 unreachable here, because no pass ever ends - `BeginPass` and `EndPass` both refuse first.
 
-## The two output-handler variants cannot deliver, and the cause is a measured absence of API
+## The two output-handler variants answer with a status and do no work
 
 `VTCompressionSessionEncodeFrameWithOutputHandler` and
-`VTDecompressionSessionDecodeFrameWithOutputHandler` exist to hand the caller the encoded or decoded
-frame through a block passed per call. Both headers say why a session can be used that way at all:
+`VTDecompressionSessionDecodeFrameWithOutputHandler` exist to hand the caller a frame through a block
+passed per call.
 
-> Cannot be called with a session created with a `VTCompressionOutputCallback`.
-
-so the caller creates the session with a **NULL** callback and passes a block per call instead. But the
-callback is fixed at `VTCompressionSessionCreate` / `VTDecompressionSessionCreate` time, and **no API
-changes it afterwards**. Measured, by grep over both header sets the port builds and tests against:
+**Why they cannot.** Both headers state the precondition - "Cannot be called with a session created with a
+`VTCompressionOutputCallback`" / "...a `VTDecompressionOutputCallbackRecord`" - so the caller creates the
+session with a NULL callback and passes a block per call. The callback is fixed at
+`VTCompressionSessionCreate` / `VTDecompressionSessionCreate` time. Measured over the release's own symbol
+table, `xmake l tools/corpus/dump-cache.lua $HOME/.charon/dyld/6.1.3/dyld_shared_cache_armv7`, 2026-10-03:
 
 ```
-$ grep -rn "SetOutputCallback\|SetDecompressionOutputCallback" \
-      <iphoneos-sdk 16.4>/System/Library/Frameworks/VideoToolbox.framework/Headers
-(no output)
-$ grep -rn "SetOutputCallback\|SetDecompressionOutputCallback" \
-      <iPhoneOS26.2.sdk>/System/Library/Frameworks/VideoToolbox.framework/Headers
-(no output)
+_VTCompressionSessionEncodeFrame                     1
+_VTCompressionSessionCreate                          1
+_VTDecompressionSessionDecodeFrame                   1
+_VTDecompressionSessionCreate                        1
+_VTCompressionSessionSetOutputCallback               0
+_VTDecompressionSessionSetOutputCallback             0
 ```
 
-Neither name exists in the 16.4 SDK or the 26.2 one. So the port can start the encode, and there is no
-way for it to route the encoder's output to the block the caller handed in.
+Zero for both setters, in the release and in the 26.2 SDK's headers alike.
 
-What it does is the release's own behaviour for a session with no output callback: the frame is encoded
-or decoded, the status is passed back untouched because the work really happened, and the output goes
-where the release sends output for such a session - nowhere. **The handler is not called, and a caller
-cannot see that from the status.** That is the gap, it is Apple's rather than the port's, and it is
-written up for `coordination/crutches.md` rather than left in a registry `effect` field nobody reads.
+**The notification route, checked rather than assumed.** The 6.1.3 cache DOES export
+`_kVTDecompressionSessionNotification_FrameDecodeCompleted` - one hit - and it still does not carry a frame
+on this release:
+
+- it is declared in **no C header**: not the 16.4 SDK's, not the 26.2 SDK's, not the host's. `grep -rl
+  FrameDecodeCompleted` over all three SDKs' `System/Library/Frameworks` hits only the three
+  `VideoToolbox.tbd` export tables. So there is no declared contract for what it carries, and no oracle.
+- `kVTDecompressionSessionFrameDecodeNotificationUserInfoKey` - the key that would name the frame - is
+  **not in the 6.1.3 symbol table at all** (zero hits).
+- and a notification is not a block. Delivering through it would mean the port posting and the caller
+  observing, which is a different API with different lifetime and thread semantics from the block the
+  caller handed in.
+
+**So they do no work and say so.** `kVTVideoEncoderNotAvailableNowErr` (-12915) and
+`kVTVideoDecoderNotAvailableNowErr` (-12913) - the release's own codes, meaning what they say. Encoding
+the frame and dropping it, which an earlier version of this did, is work the caller cannot see and a block
+that is never called: that is the silent fake, and it is gone.
+
+The caller is not left without a way to encode or decode. It creates the session with a
+`VTCompressionOutputCallback` or a `VTDecompressionOutputCallbackRecord` and calls
+`VTCompressionSessionEncodeFrame` or `VTDecompressionSessionDecodeFrame` - both in the release's symbol
+table, both untouched by this port. These two entry points are the ones that cannot work here, and they
+report that rather than failing quietly.
 
 ## What was checked, and how
 
