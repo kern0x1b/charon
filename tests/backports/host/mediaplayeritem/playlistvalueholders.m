@@ -1,5 +1,5 @@
-// MPMediaPlaylist.seedItems (8.0) and MPMediaPlaylistCreationMetadata (9.3), plus the 8.0 key's value
-// (facts/MediaPlayer/PlaylistValueHolders.md).
+// MPMediaPlaylist.seedItems (8.0) and MPMediaPlaylistCreationMetadata (9.3), read through the key
+// MediaPlayerConstants30.m defines (facts/MediaPlayer/PlaylistValueHolders.md).
 //
 // The seedItems half puts values of the RIGHT type and of the WRONG type under the port's accessor,
 // because the whole content of that method is refusing a value the header's declaration does not allow.
@@ -33,7 +33,7 @@
 
 extern NSString *const MPMediaPlaylistPropertySeedItems;
 
-#include "MediaPlayerConstants80.m"
+#include "MediaPlayerConstants30.m"
 #include "MPMediaPlaylist80.m"
 #include "MPMediaPlaylistCreationMetadata93.m"
 
@@ -75,9 +75,13 @@ static void check(const char *what, int held, const char *got) {
 }
 
 int main(void) {
-    // The key's value, and the witness that the reader was live when it was read.
-    check("the key is the value read from Apple's own framework",
-          [MPMediaPlaylistPropertySeedItems isEqualToString:@"seedItems"], "seedItems");
+    // The key's VALUE is not asserted here. A first draft compared the port's constant against the
+    // literal @"seedItems", which is the code under test compared with itself and certifies nothing. The
+    // value's oracle is tests/backports/host/mediaplayeritem/seedkey.m, which links Apple's own
+    // MediaPlayer, includes none of this port's sources, and reads the value from the framework - with the
+    // two keys whose values are known NOT to follow the name convention in the same run, so the reader is
+    // shown live. What is asserted here is the ACCESSOR's behaviour on the key, which is this file's own
+    // code and this file's own subject.
 
     MPMediaItem *a = [[MPMediaItem alloc] init], *b = [[MPMediaItem alloc] init];
     FakePlaylist *withItems = [[FakePlaylist alloc] initWithCharonValue:@[a, b]];

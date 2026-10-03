@@ -116,7 +116,13 @@ send it to* (no) — and the two rows answer them separately rather than one sta
 
 ## The check, and its mutants
 
-`tests/backports/host/mediaplayeritem/playlistvalueholders.m` — 11 checks, 0 failures.
+`tests/backports/host/mediaplayeritem/playlistvalueholders.m` — 9 checks, 0 failures, re-run on
+2026-10-03. It used to open with a check comparing the port's own `MPMediaPlaylistPropertySeedItems`
+against the literal `@"seedItems"`, which is the code under test compared with itself; that check is
+gone, and the key's value is certified only by `seedkey.m` above, which reads Apple's framework and
+includes none of this port. The file also included `MediaPlayerConstants80.m` after the key had moved to
+`MediaPlayerConstants30.m`, so on main it stopped linking (`_MPMediaPlaylistPropertySeedItems`
+undefined); it includes the 3.0 file now.
 
 | mutation | verdict |
 | --- | --- |
