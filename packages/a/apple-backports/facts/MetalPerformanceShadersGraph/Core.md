@@ -493,9 +493,77 @@ reciprocal, square root, reverse square root, exponential, logarithm, absolute a
 in `CharonMPSGraphOperationKind` and a case in the interpreter, so a family lands by adding a kind and a
 function rather than by touching every other operation.
 
-Not written: reductions, matmul, convolution, pooling, normalization, activation, shape operations,
+Not written: matmul, convolution, pooling, normalization, activation, shape operations,
 control flow, random, optimizers, and the rest of the surface. Each is a family of the same shape, and
 each wants the differential to run a graph end to end first.
+
+## The reduction family of 14.0
+
+A reduction is the first family here whose result is not the operand's shape, so it is walked by a
+function of its own (`CharonMPSGraphReduce` in `MPSGraphInterpreter14.m`) over the OPERAND rather than by
+the element-at-a-time loop the arithmetic family uses, and `graph-cases.m` asks it through a case helper
+of its own (`reduction_case`) that gives the compile a feed of the operand's shape and a destination of the
+result's.
+
+Measured against this host's own MPSGraph (macOS, Apple M4 Pro), over a 2x4 feed of
+(1, 2, 3, 4 | 10, 20, 30, 40) and over the case file's sixteen input classes, in MPSDataTypeFloat32,
+MPSDataTypeInt32 and MPSDataTypeFloat16. `bytes` is the release's own answer, little-endian, and every one
+of them is byte-identical to the port's:
+
+| question | answer |
+| --- | --- |
+| `reductionSumWithTensor:axis:0` over the 2x4 | shape (1, 4), `00003041 0000b041 00000442 00003042` = (11, 22, 33, 42) |
+| `reductionSumWithTensor:axis:1` | shape (2, 1), `00002041 0000c842` = (10, 100) |
+| `axis:-1` and `axes:@[1]` | the same bytes and the same (2, 1) as `axis:1` |
+| `axis:-2` | the same bytes and the same (1, 4) as `axis:0` |
+| `axes:@[@1, @0]` and `axes:@[@0, @1]` | both shape (1, 1), `0000dc42` = 110 |
+| `axes:@[@0, @0]` | the same bytes and the same (1, 4) as `axes:@[@0]`: a set, so a repeated axis reduces once |
+| `axes:@[]` | shape (2, 4) and the operand's own bytes: no axis is reduced |
+| `axes:nil` | shape (1, 1), `0000dc42` = 110: nil is EVERY axis |
+| `reductionProductWithTensor:axis:1` | `0000c041 00606a48` = (24, 240000) |
+| `reductionMaximumWithTensor:axis:1` | `00008040 00002042` = (4, 40) |
+| `reductionMinimumWithTensor:axis:1` | `0000803f 00002041` = (1, 10) |
+| `meanOfTensor:axes:@[@1]` | `00002040 0000c841` = (2.5, 25); as int32 `ffffffff 02000000` = (-1, 2), the truncated quotients; as float16 `0041 8046` = (2.5, 6.5) |
+| `varianceOfTensor:axes:@[@1]` | `0000a03f 0000fa42` = (1.25, 125); as int32 `01000000 01000000`; as float16 `003d 003d` = (1.25, 1.25) |
+| `varianceOfTensor:meanTensor:axes:@[@1]` over the same feed and the mean of it | the same bytes as the variance above |
+
+The three rules of the set of axes, which is what a caller can get wrong and what the port normalises:
+a negative axis is counted from the end of the rank, the order written does not matter, and nil is every
+axis while an empty array is none.
+
+### The NaN in a reduction, which is the whole of the difference between the four extremes
+
+Over a feed of (1, NaN, 3, 4 | NaN, 6, 7, 8), and then over a 2x4 whose eight elements are all NaN:
+
+| operation | over a row with a NaN | over a row of nothing but NaNs |
+| --- | --- | --- |
+| `reductionMaximumWithTensor:axis:1` | (4, 8) - the NaN is skipped | `000080ff 000080ff` = negative infinity |
+| `reductionMaximumPropagateNaNWithTensor:axis:1` | `0000c07f 0000c07f` = NaN | NaN |
+| `reductionMinimumWithTensor:axis:1` | (1, 6) - the NaN is skipped | `0000807f 0000807f` = positive infinity |
+| `reductionMinimumPropagateNaNWithTensor:axis:1` | NaN | NaN |
+
+So the kernel seeds an infinity - negative for a maximum, positive for a minimum - and lets one comparison
+decide the rest, and a NaN loses every comparison including one against another NaN. That is why a
+maximum skips a NaN and why a reduced set of nothing but NaNs answers the seed rather than a NaN. The
+propagating variants latch: a NaN that reaches an element is that element's answer and nothing after it
+can move it. The sum, the product, the mean and the variance are different - over the same feed all four
+answer NaN, because a NaN reaches the arithmetic and the arithmetic's own NaN is what leaves it.
+
+### An axis outside the rank, which the release cannot answer at all
+
+`reductionSumWithTensor:axis:5` over a 2x4 writes `invalid axes: 5` and then takes the process down with
+`LLVM ERROR: Failed to infer result type(s)`, so there is no answer to record: the graph is never built.
+A port cannot reproduce a process that is gone, and answering a tensor for it would be an answer the
+release does not give, so the port raises `NSInvalidArgumentException` when the graph is built instead.
+This is the one place in the reduction family where the port is not the release's answer in form, and it
+is named in the row of every method of the family.
+
+### What is not measured here
+
+`reductionOrWithTensor:` and `reductionAndWithTensor:` (15.3), `reductionArgMaximumWithTensor:axis:name:`
+and `reductionArgMinimumWithTensor:axis:name:` and the two `WithNaNPropagation` binary forms (15.0), the
+cumulative family, and the shape family are not in this page and not in the tree: they are the rows the
+ledger still carries as `missing`.
 
 ## The R4 names this band adds, in full
 
