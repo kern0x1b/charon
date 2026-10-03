@@ -262,6 +262,41 @@ What is **not** measured here, and is not claimed: any of this running on the po
 routing needs a process where the port's `NSURLSession` is the only one — `tests/backports/device/
 ios1516.m` is where that runs, and the canon build is what measures it.
 
+## What the host's `-[NSPresentationIntent init]` answers, and why it is not the paragraph intent
+
+A blocked band (`gb09-foundation1516-r15`) measured this and reported that the host's `+new` and
+`-init` "answer a paragraph intent of identity zero, equal to what `+paragraphIntentWithIdentity:0
+nestedInsideIntent:nil` gives", and that this contradicted the row above. It does contradict the row's
+wording, and the measurement says which side is right. Read through the IMP, because
+`NS_UNAVAILABLE` forbids the compile-time call — which is the same constraint
+`tests/backports/host/intents-init/` reads its own answers around. On macOS 27.0 build 26A428 arm64:
+
+    NSPresentationIntentKindParagraph = 0
+    a nonsense selector answers the forwarding trampoline: yes      <- the reader's control
+    -init IMP is NSObject's -init IMP
+    -init   kind=0 identity=0 isEqual(paragraph 0)=1 isEqual(paragraph 5)=0
+    +new    kind=0 identity=0 isEqual(paragraph 0)=1
+    factory kind=0 identity=0
+
+Three facts, and together they settle it.
+
+- **`-init` is NSObject's `-init`**, at NSObject's own IMP. The port already does exactly this:
+  `charon_intent()` in `NSPresentationIntent15.m` runs `[NSObject class]`'s `-init` through
+  `objc_msgSendSuper` rather than its own. So the port and the host agree on WHICH `-init` runs.
+- **`NSPresentationIntentKindParagraph` is 0**, the first enumerator of the enum at
+  `NSAttributedString.h:297-298`. So a zeroed `intentKind` field reads as Paragraph. That is the whole
+  of the "paragraph intent" reading: the object is zeroed, and zero is Paragraph.
+- **The identity is uninitialised, so the equality is not a property of the answer.** On this run it
+  read 0 and the object compared equal to the identity-0 factory; the `attributed15` differential on
+  the same host recorded the same field reading a pointer-shaped number on another run, and on that run
+  the comparison would answer NO. So `isEqual: 1` here is a fact about a run, and the row above's
+  "the release's own answer is uninitialised state" is the claim that survives it.
+
+The blocked band's finding therefore stands on the one thing it measured — the host answers an object,
+not nothing, which is what makes the row `inert` and not `absent` — and does not stand on the equality,
+which is zeroed memory rather than the system's own intent. Nothing is changed in the port for it, and
+the two rows keep the wording they have.
+
 ## The release answers the initialisers of an abstract class, and nothing can be held to the answer
 
 Three rows of this slice are `inert` and not `absent`, and the difference is the whole of their reason.
