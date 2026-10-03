@@ -99,7 +99,9 @@ def methods(obj, root):
 
 def block_of(text, cls):
     """The class's own @implementation block, never a category's."""
-    match = re.search(r"^@implementation %s\n(.*?)^@end" % re.escape(cls), text, re.S | re.M)
+    # The class's own @implementation, never a category's, and with the ivar block on the same line as
+    # the name - which is how this package writes a class that has ivars.
+    match = re.search(r"^@implementation %s(?!\s*\()[^\n]*\n(.*?)^@end" % re.escape(cls), text, re.S | re.M)
     return match.group(1) if match else None
 
 
@@ -134,13 +136,20 @@ def check_source(body, row, package, problems):
         if row["exception"] not in definition:
             problems.append("the measured exception is %s and the macro raises something else"
                             % row["exception"])
-        # A reason the measurement gives as a literal has to appear in the macro or at the call site. A
-        # reason the framework builds from the class name carries no literal, and this is what tells the
-        # two apart.
-        literal = row["reason"] if "%" not in row["reason"] else ""
-        if literal and ('@"' + literal + '"') not in body and ('@"' + literal + '"') not in definition:
+        # The measured reason, in whichever of the two forms it was measured in: a literal has to appear
+        # at the call site or in the macro, and a template - a reason the framework builds from the class
+        # name - has to appear as the macro's format string with the class read off the receiver, because
+        # that is how the six HealthKit classes produce six different sentences from one line.
+        if row.get("reason-template"):
+            if ('@"' + row["reason-template"] + '"') not in definition:
+                problems.append("the measured reason is built from the class name as %r and the macro "
+                                "carries no such format string" % row["reason-template"])
+            if "NSStringFromClass([self class])" not in definition:
+                problems.append("the measured reason names the class and the macro does not read it")
+        elif row["reason"] and ('@"' + row["reason"] + '"') not in body \
+                and ('@"' + row["reason"] + '"') not in definition:
             problems.append("the reason measured is %r and neither the block nor the macro carries it"
-                            % literal)
+                            % row["reason"])
 
 
 def check_object(carried, row, selector, problems):

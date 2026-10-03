@@ -70,24 +70,15 @@ open("%s/frameworks" % outdir, "w").write("".join(name + "\n" for name in framew
 PY
 
 echo "--- the host's own frameworks, one class per process, and the table each is held to"
+survived=0
 xcrun clang -fobjc-arc -w "$here/probe.m" -framework Foundation -o "$build/probe"
 for framework in $(cat "$build/frameworks"); do
+    # No test on the path first, on purpose: this OS ships these frameworks out of the dyld shared
+    # cache and there is no file under the path at all (measured 2026-10-03: SensorKit.framework holds
+    # Versions and two dangling symlinks, HealthKit's binary is a symlink to a Versions/Current that is
+    # not there, and dlopen of both succeeds). dlopen is the question, so the probe answers it, and
+    # check_host.py says whether a framework that cannot be opened leaves rows unchecked.
     binary="/System/Library/Frameworks/$framework.framework/$framework"
-    if [ ! -f "$binary" ]; then
-        # Said out loud, and a reason, because the two cases are different: a framework this host never
-        # carried (HomeKit holds only PlugIns) has its rows held to another oracle, while a framework
-        # that is merely not mounted right now - the OS swaps the cryptex under these paths, measured
-        # 2026-10-03 12:34 - leaves its rows unchecked, which this line has to be able to say.
-        if [ -d "/System/Library/Frameworks/$framework.framework" ] &&
-           [ -z "$(ls -A "/System/Library/Frameworks/$framework.framework" 2>/dev/null)" ]; then
-            echo "FAIL $framework: the framework directory is empty, so the host's oracle is not mounted"
-            echo "     right now and its rows were NOT checked. Re-run when it is."
-            survived=$((survived + 1))
-        else
-            echo "SKIP $framework: this host carries no $binary, so its rows are held to their own oracle"
-        fi
-        continue
-    fi
     : > "$build/$framework.host"
     while read -r class; do
         [ -n "$class" ] || continue
@@ -112,11 +103,11 @@ for framework in $(cat "$build/frameworks"); do
     python3 "$here/check_port.py" "$appledir" "$build/objects/$framework" "$charon" "$framework"
 done
 
-survived=0
 # A plant is the port's own tree with one line changed, compiled and asked again. The framework, the
 # file and the needle come from the table so that a plant always applies to a row that exists.
 plant() {
     label=$1; framework=$2; file=$3; from=$4; to=$5
+    : > "$build/mutant-cc.log"
     rm -rf "$build/mutant"
     mkdir -p "$build/mutant/$framework"
     for header in CharonValueStore.h CharonHKStore.h CharonHKTypes.h CharonHAPBignum.h \
@@ -135,6 +126,8 @@ plant() {
     if ! python3 - "$target" "$from" "$to" <<'PY'
 import sys
 path, needle, replacement = sys.argv[1:4]
+# plants.py writes a newline as the two characters \n so that one plant is one line of its output.
+replacement = replacement.replace("\\n", "\n")
 text = open(path, encoding="utf-8").read()
 if needle not in text:
     sys.exit(1)
@@ -151,10 +144,12 @@ PY
     for source in $(sort -u "$build/$framework.sources"); do
         "$cc" -target armv7-apple-ios6.1.3 -isysroot "$sdk" -I "$build/mutant" \
             -I "$build/mutant/$framework" -fobjc-arc -c "$build/mutant/$framework/$(basename "$source")" \
-            -o "$built/$(basename "$source").o" > "$build/mutant-cc.log" 2>&1 || ok=0
+            -o "$built/$(basename "$source").o" >> "$build/mutant-cc.log" 2>&1 ||
+            { echo "=== $source" >> "$build/mutant-cc.log"; ok=0; }
     done
     if [ "$ok" = 0 ]; then
         echo "MUTANT DID NOT BUILD, which is not the same as being noticed: $label"
+        grep -m 2 "error:" "$build/mutant-cc.log" | cut -c1-140 | sed 's/^/  /' 
         survived=$((survived + 1))
         return
     fi
@@ -168,28 +163,21 @@ PY
 }
 
 echo "--- the plants"
-plant "a class that must refuse is left to NSObject instead" SensorKit SensorKit170.m \
-    "CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@\"\")
-" ""
-plant "a class that must NOT be defined gets a definition anyway" SensorKit SensorKit260.m \
-    "@implementation SRAcousticSettings
-" \
-    "@implementation SRAcousticSettings
-CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@\"\")
-"
-plant "the reason that was measured is another one" SensorKit SensorKit164.m \
-    "CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@\"Not available\")" \
-    "CHARON_SENSORKIT_UNCREATABLE_NEW_AND_INIT(@\"Not here\")"
-plant "the macro itself stops raising" SensorKit CharonSensorKitValue.h \
-    "        [NSException raise:NSInternalInconsistencyException format:reason_text];          \\" \
-    "        (void)reason_text;                                                                   \\"
+# Each plant is chosen from the table by plants.py rather than written here, so it keeps applying when a
+# row moves: the file is the one the table names for the class, the needle is that class's own call.
+while IFS="$(printf '\t')" read -r label framework file from to; do
+    [ -n "${label:-}" ] || continue
+    plant "$label" "$framework" "$file" "$from" "$to"
+done <<PLANTS
+$(python3 "$here/plants.py" "$here/expectations.tsv" "$appledir" $(cat "$build/frameworks"))
+PLANTS
 
 echo "--- the check's own control: an object carrying neither selector must not look green"
 # The control replaces an object the table says MUST carry -init, chosen from the table rather than taken
 # as the first one: an object whose rows all say `none` would agree with an empty file, and a control
 # that cannot fail is not a control. Columns 9 and 13 are port-init and port-object.
 framework=$(head -1 "$build/frameworks")
-victim=$(awk -F'\t' -v f="$framework" '!/^#/ && $1 == f && $9 == "raise" { print $13; exit }' \
+victim=$(awk -F'\t' -v f="$framework" 'NR > 1 && $1 == f && $10 == "raise" { print $NF; exit }' \
     "$here/expectations.tsv")
 : > "$build/empty.o"
 rm -rf "$build/empty"

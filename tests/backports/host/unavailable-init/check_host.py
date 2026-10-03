@@ -48,9 +48,18 @@ def main():
     for line in open(output, encoding="utf-8", errors="replace"):
         line = line.rstrip("\n")
         if line.startswith("NOFRAMEWORK"):
-            print("SKIP %s - this host has no %s binary, so the oracle is not there to ask"
-                  % (framework, line.split()[1]))
-            return 0
+            # Said out loud, and it is a failure when the table's rows name this host as their oracle:
+            # those rows were not checked, and a run that passes over them has proved nothing. A framework
+            # this host never carried - HomeKit, whose directory holds only PlugIns - has no host rows,
+            # and that is the SKIP.
+            if expected:
+                failures.append("%s could not be opened on this host, so its %d rows were not checked"
+                                % (framework, len(expected)))
+                print("FAIL %s cannot be opened here: %s" % (framework, line.split()[1]))
+            else:
+                print("SKIP %s: this host carries no %s, and the table holds no row of its own for it"
+                      % (framework, line.split()[1].split("/")[-1]))
+                return 0
         match = LINE.match(line)
         if not match:
             failures.append("unparsed probe line: %s" % line)

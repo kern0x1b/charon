@@ -309,9 +309,12 @@ initWithSensor:"` for SRSensorReader, which has one, and **a reason of zero leng
 
 **Four implement neither** — SRAcousticSettings, SRSleepSession, and the two photoplethysmogram samples
 that are channels of the sample their parent already guards — so a caller that reaches the pair reaches
-NSObject's and gets a new empty value object. The port spells NSObject's pair out for those four, which
-changes nothing for a caller and puts the two selectors in the class's own list, which is what the row
-reads.
+NSObject's and gets a new empty value object. **The port gives those four no definition at all**, and
+that is the rule the coordinator settled on the same day for the classes that only inherit
+(`coordination/wave-2026-10-03/QUEUE.md`, the answer to v-audio): a definition would put the selector in
+the port's class metadata where Apple's has neither, which changes what the class IS and answers the
+caller exactly what NSObject's already answers. Their eight registry rows are `absent` with this
+measurement as the reason, the way v-metal's five MetalKit rows are.
 
 **What iOS itself holds, measured over the arm64e cache of iOS 16.0** with
 `tools/corpus/objc-inventory.lua` — the newest held cache that still carries SensorKit's classes as
@@ -322,6 +325,10 @@ in the cache of 18.0, where SensorKit's public classes are no longer exported at
 | --- | --- | --- | --- |
 | `SRSensorReader` | `-init` and `+new` | both | raises, `"Use initWithSensor:"` |
 | `SRFetchResult` | `-init`, and `+new` inherited | both | raises, `"Not available"` |
+
+That table is also why the rule is per selector and not per class: Apple's SensorKit classes define both
+selectors and Apple's HealthKit classes define `-init` while inheriting `+new`, so one rule for "the
+class" would answer one framework right and the other wrong.
 
 That is the one place the two disagree, and it is a difference about **where** the implementation sits,
 not about what a caller sees: an inherited `+new` is `+alloc`/`-init`, so on iOS 16.0 `+[SRFetchResult
