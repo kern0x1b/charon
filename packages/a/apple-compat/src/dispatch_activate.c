@@ -1,5 +1,5 @@
 #include <dispatch/dispatch.h>
-#include <objc/runtime.h>
+#include "dispatch_source_state.h"
 #include "system_function.h"
 
 /* The Objective-C runtime is not part of libSystem; the image that pulls this shim in links it. */
@@ -13,38 +13,29 @@ static void charon_resolve_activate(void)
     charon_system_function(&charon_system_activate, CHARON_LIBDISPATCH, "dispatch_activate");
 }
 
-static char charon_activated;
-
 /* Inactive objects arrived in iOS 10. Before, of what dispatch_activate is called on only a source starts inactive: created
    suspended, it waits for the one resume activation gives it. Queues start active, and activating an active object does nothing.
-   The source remembers its activation on itself (dispatch objects are Objective-C objects from iOS 6 on), so a second call
-   does not resume it twice. */
+   The source remembers its activation on itself, in the one record dispatch_source_state.h holds and dispatch_resume writes
+   too, so a second call does not resume it twice and a resume that already happened is not resumed again. */
 __attribute__((visibility("hidden")))
-void charon_dispatch_activate(void *object) __asm("_dispatch_activate");
+void charon_dispatch_activate(dispatch_object_t object) __asm("_dispatch_activate");
 
-void charon_dispatch_activate(void *object)
+void charon_dispatch_activate(dispatch_object_t object)
 {
-    void (*system)(void *) = charon_system_function(&charon_system_activate, CHARON_LIBDISPATCH, "dispatch_activate");
+    void (*system)(dispatch_object_t) = charon_system_function(&charon_system_activate, CHARON_LIBDISPATCH, "dispatch_activate");
     if (system) {
         system(object);
         return;
     }
-    Class source = objc_getClass("OS_dispatch_source");
-    Class kind = object_getClass((id)object);
-    while (kind && kind != source)
-        kind = class_getSuperclass(kind);
-    if (!kind || !source)
+    if (!charon_dispatch_is_object(object))
         return;
-    static dispatch_once_t once;
-    static dispatch_semaphore_t guard;
-    dispatch_once(&once, ^{
-        guard = dispatch_semaphore_create(1);
-    });
-    dispatch_semaphore_wait(guard, DISPATCH_TIME_FOREVER);
-    int first = objc_getAssociatedObject((id)object, &charon_activated) == nil;
+    /* The one caller that has to know whether the resume is the first, so the look and the mark are
+       held together; dispatch_resume only marks and does not read it back. */
+    charon_source_lock_take();
+    int first = !charon_source_activated(object);
     if (first)
-        objc_setAssociatedObject((id)object, &charon_activated, (id)object_getClass((id)object), OBJC_ASSOCIATION_ASSIGN);
-    dispatch_semaphore_signal(guard);
+        charon_source_mark_activated(object);
+    charon_source_lock_give();
     if (first)
-        dispatch_resume((dispatch_source_t)object);
+        dispatch_resume((dispatch_source_t)charon_object_pointer(object));
 }
