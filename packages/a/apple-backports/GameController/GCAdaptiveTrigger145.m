@@ -70,6 +70,16 @@
     _armPosition = fmaxf(0.0f, fminf(1.0f, armPosition));
 }
 
+// The writer for -charon_requestedMode:, reached from GCDualSenseAdaptiveTrigger154.m, which carries
+// the 15.4 half of the setMode family and cannot write this class's ivar. A category cannot add an
+// ivar, so the value stays here and the 15.4 object reaches it through this one - the same seam shape
+// GCDualSenseAdaptiveTrigger's own four setMode calls use, and the reason the declaration is in
+// CharonGC.h rather than in a category interface at the top of that file.
+- (void)charon_setRequestedMode:(GCDualSenseAdaptiveTriggerMode)mode
+{
+    _requestedMode = mode;
+}
+
 - (void)setModeOff
 {
     _requestedMode = GCDualSenseAdaptiveTriggerModeOff;

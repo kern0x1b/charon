@@ -17,7 +17,7 @@ for name in GCGamepadSnapShotDataV100FromNSData NSDataFromGCGamepadSnapShotDataV
     renames="$renames -D$name=charonHost_$name"
 done
 objects=""
-for source in GCElements7 GCControllerTouchpad14 GCKeyboardInput14 GCDeviceParts14 GCDeviceProtocol14 GCGamepadTouchpads14 GCAdaptiveTrigger145 GCPhysicalInputProfile14 GCGamepads7 GCMicroGamepad9 GCMotion8 GCController CharonGCTables GCSnapshots7 GCSnapshots9 GCSnapshots16 GCSnapshotObjects9; do
+for source in GCElements7 GCControllerTouchpad14 GCKeyboardInput14 GCDeviceParts14 GCDeviceProtocol14 GCGamepadTouchpads14 GCAdaptiveTrigger145 GCPhysicalInputProfile14 GCGamepads7 GCMicroGamepad9 GCMotion8 GCController CharonGCTables GCSnapshots7 GCSnapshots9 GCSnapshots16 GCSnapshotObjects9 GCDualSenseAdaptiveTrigger154; do
     xcrun clang -fobjc-arc -w $renames -I"$port" -c "$port/$source.m" -o "$out/$source.o"
     objects="$objects $out/$source.o"
 done

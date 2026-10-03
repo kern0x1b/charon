@@ -822,6 +822,15 @@ static NSArray *hardwareGroup(BOOL port)
 - (void)setModeFeedbackWithStartPosition:(float)startPosition resistiveStrength:(float)resistiveStrength;
 - (void)setModeWeaponWithStartPosition:(float)startPosition endPosition:(float)endPosition resistiveStrength:(float)resistiveStrength;
 - (void)setModeVibrationWithStartPosition:(float)startPosition amplitude:(float)amplitude frequency:(float)frequency;
+// The 15.4 half of the same family: a strength or an amplitude at each of the five points of the pull,
+// and both ends of a slope. Carried in GCDualSenseAdaptiveTrigger154.m on the port's side.
+- (void)setModeSlopeFeedbackWithStartPosition:(float)startPosition
+                                 endPosition:(float)endPosition
+                                startStrength:(float)startStrength
+                                  endStrength:(float)endStrength;
+- (void)setModeFeedbackWithResistiveStrengths:(GCDualSenseAdaptiveTriggerPositionalResistiveStrengths)strengths;
+- (void)setModeVibrationWithAmplitudes:(GCDualSenseAdaptiveTriggerPositionalAmplitudes)amplitudes
+                             frequency:(float)frequency;
 @end
 
 @protocol LDualSenseGamepad <LGamepadExtra>
@@ -881,6 +890,26 @@ static NSArray *triggerGroup(BOOL host)
     [log addObject:[NSString stringWithFormat:@"trigger after setModeWeapon: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
     [t setModeVibrationWithStartPosition:0.2f amplitude:0.8f frequency:0.5f];
     [log addObject:[NSString stringWithFormat:@"trigger after setModeVibration: mode=%ld status=%ld", (long)t.mode, (long)t.status]];
+    // The 15.4 three, which give the whole curve instead of one strength: measured on the host's own
+    // trigger, each selector is present and each call leaves mode and status at 0 exactly as the four
+    // above do, because the header says mode is the controller's answer and no controller is behind it.
+    GCDualSenseAdaptiveTriggerPositionalResistiveStrengths strengths = {0.1f, 0.4f, 0.9f, 0.2f, 0.7f};
+    GCDualSenseAdaptiveTriggerPositionalAmplitudes amplitudes = {0.1f, 0.4f, 0.9f, 0.2f, 0.7f};
+    SEL slope = @selector(setModeSlopeFeedbackWithStartPosition:endPosition:startStrength:endStrength:);
+    SEL positionalFeedback = @selector(setModeFeedbackWithResistiveStrengths:);
+    SEL positionalVibration = @selector(setModeVibrationWithAmplitudes:frequency:);
+    [log addObject:[NSString stringWithFormat:@"trigger carries the 15.4 three: slope=%d strengths=%d amplitudes=%d",
+                     (int)[t respondsToSelector:slope], (int)[t respondsToSelector:positionalFeedback],
+                     (int)[t respondsToSelector:positionalVibration]]];
+    [t setModeSlopeFeedbackWithStartPosition:0.1f endPosition:0.9f startStrength:0.2f endStrength:0.7f];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeSlopeFeedback: mode=%ld status=%ld armPosition=%f",
+                     (long)t.mode, (long)t.status, t.armPosition]];
+    [t setModeFeedbackWithResistiveStrengths:strengths];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeFeedback(strengths): mode=%ld status=%ld armPosition=%f",
+                     (long)t.mode, (long)t.status, t.armPosition]];
+    [t setModeVibrationWithAmplitudes:amplitudes frequency:0.5f];
+    [log addObject:[NSString stringWithFormat:@"trigger after setModeVibration(amplitudes): mode=%ld status=%ld armPosition=%f",
+                     (long)t.mode, (long)t.status, t.armPosition]];
     // The button underneath is real on both sides, so its value is real too.
     t.value = 0.6f;
     [log addObject:[NSString stringWithFormat:@"trigger as a button: %@ armPosition=%f", describeReading(t), t.armPosition]];

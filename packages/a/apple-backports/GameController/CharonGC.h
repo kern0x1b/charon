@@ -31,6 +31,24 @@
 - (void)charon_axisChanged;
 @end
 
+// The adaptive trigger's own storage, reached from the objects that carry its setMode family.
+//
+// GCDualSenseAdaptiveTrigger's @implementation is GCAdaptiveTrigger145.m at the release the class
+// arrived in, and a category cannot add an ivar. -charon_requestedMode: is what the four setMode calls
+// of that object record and what the 15.4 object's three more record through
+// -charon_setRequestedMode:, because the header says the public `mode` is the controller's answer and
+// not the caller's: "mode ... reflects the physical state of the triggers - and requires a response
+// from the controller. It does not update immediately after calling
+// -[GCDualSenseAdaptiveTrigger setMode...]". Measured on the host's own trigger with no controller
+// behind it: each of the seven calls leaves mode and status at 0.
+@interface GCDualSenseAdaptiveTrigger (Charon)
+
+- (GCDualSenseAdaptiveTriggerMode)charon_requestedMode;
+- (void)charon_setRequestedMode:(GCDualSenseAdaptiveTriggerMode)mode;
+- (void)charon_setArmPosition:(float)armPosition;
+
+@end
+
 @interface GCPhysicalInputProfile (Charon)
 - (instancetype)initWithCharonSpecs:(NSArray<NSDictionary *> *)specs;
 - (void)charon_setDevice:(id<GCDevice>)device;

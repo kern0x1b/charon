@@ -591,10 +591,10 @@
    "kind": "method",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDualSenseAdaptiveTrigger class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "written, as a category in GCDualSenseAdaptiveTrigger154.m because GCDualSenseAdaptiveTrigger.h:107 marks this member API_AVAILABLE(ios(15.4)) while the class and the four setMode calls are the 14.5 ones, and one object carries one release. Its behaviour is the 14.5 family's and its oracle is the host's own trigger: measured on this machine, the selector is present and this call leaves mode 0, status 0 and armPosition 0 - the same answer the four of the 14.5 object measured. What is not done with the four numbers is written down in the object's own header: a curve's points are not clamped or stored, because the only thing that could act on a curve is a controller and there is none",
+   "effect": "the mode the caller asked for, recorded through the class's own -charon_setRequestedMode: and readable through -charon_requestedMode: for a profile that owns a trigger to send it to. The public `mode` and `status` answer 0 and `armPosition` 0, which is what the host's own trigger answers with no controller behind it and what the header's sentence says it should: mode is the controller's answer and does not follow the call",
+   "source": "GCDualSenseAdaptiveTrigger.h:107, :123 and :152 for the three declarations and their 15.4 marks; the host's own GCDualSenseAdaptiveTrigger, driven with no controller behind it, as the oracle - the same trigger the `adaptive trigger` group of tests/backports/host/gamecontroller builds and which already measures the four 14.5 calls the same way"
   },
   {
    "api": "-[GCDualSenseAdaptiveTrigger setModeFeedbackWithStartPosition:resistiveStrength:]",
@@ -612,10 +612,10 @@
    "kind": "method",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDualSenseAdaptiveTrigger class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "written, as a category in GCDualSenseAdaptiveTrigger154.m because GCDualSenseAdaptiveTrigger.h:123 marks this member API_AVAILABLE(ios(15.4)). It is the 14.5 feedback with a strength at each of the five points of the pull instead of one strength for all of it, and it records the same mode the 14.5 call records rather than filling the same field twice. Measured on the host's own trigger: the selector is present and this call leaves mode 0, status 0 and armPosition 0",
+   "effect": "the mode the caller asked for, recorded through the class's own -charon_setRequestedMode: and readable through -charon_requestedMode:. The public `mode` and `status` answer 0 and `armPosition` 0, which is what the host's own trigger answers with no controller behind it",
+   "source": "GCDualSenseAdaptiveTrigger.h:107, :123 and :152 for the three declarations and their 15.4 marks; the host's own GCDualSenseAdaptiveTrigger, driven with no controller behind it, as the oracle - the same trigger the `adaptive trigger` group of tests/backports/host/gamecontroller builds and which already measures the four 14.5 calls the same way"
   },
   {
    "api": "-[GCDualSenseAdaptiveTrigger setModeWeaponWithStartPosition:endPosition:resistiveStrength:]",
@@ -644,10 +644,10 @@
    "kind": "method",
    "introduced": "15.4",
    "minimum": "6.0",
-   "status": "absent",
-   "reason": "an external gamepad is peripheral the owner may attach, not hardware absent from the phone, so there is no wall here: the GCDualSenseAdaptiveTrigger class is owed and not yet written",
-   "effect": "until it is written the member is not declared, so respondsToSelector: answers honestly and an unchecked call raises",
-   "source": "the header of iOS 16.4 for the class and the release that added the member"
+   "status": "implemented",
+   "reason": "written, as a category in GCDualSenseAdaptiveTrigger154.m because GCDualSenseAdaptiveTrigger.h:152 marks this member API_AVAILABLE(ios(15.4)). It is the 14.5 vibration with an amplitude at each of the five points of the pull instead of one amplitude for all of it. Measured on the host's own trigger: the selector is present and this call leaves mode 0, status 0 and armPosition 0",
+   "effect": "the mode the caller asked for, recorded through the class's own -charon_setRequestedMode: and readable through -charon_requestedMode:. The public `mode` and `status` answer 0 and `armPosition` 0, which is what the host's own trigger answers with no controller behind it",
+   "source": "GCDualSenseAdaptiveTrigger.h:107, :123 and :152 for the three declarations and their 15.4 marks; the host's own GCDualSenseAdaptiveTrigger, driven with no controller behind it, as the oracle - the same trigger the `adaptive trigger` group of tests/backports/host/gamecontroller builds and which already measures the four 14.5 calls the same way"
   },
   {
    "api": "-[GCDualSenseAdaptiveTrigger setModeOff]",

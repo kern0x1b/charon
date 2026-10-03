@@ -174,6 +174,31 @@ controller's answer. What the port does answer is the part it can: the trigger i
 this package's own button behaviour, and the four `setMode` calls record what was asked for through a
 seam (`-charon_requestedMode:`) for a profile with a controller attached to send.
 
+#### The 15.4 half of the same family
+
+Three more members arrived at 15.4 and are carried in `GCDualSenseAdaptiveTrigger154.m`, an object of
+their own release because `GCDualSenseAdaptiveTrigger.h:107`, `:123` and `:152` mark them
+`API_AVAILABLE(ios(15.4))` while the class and the four calls above are the 14.5 ones:
+
+| member | what it is that the 14.5 call is not |
+| --- | --- |
+| `-setModeSlopeFeedbackWithStartPosition:endPosition:startStrength:endStrength:` | a slope between two positions with a strength at each end, instead of one strength over one position |
+| `-setModeFeedbackWithResistiveStrengths:` | a strength at each of the five points of the pull |
+| `-setModeVibrationWithAmplitudes:frequency:` | an amplitude at each of the five points of the pull |
+
+Measured on the host's own trigger, same trigger and same drive as the four above: all three selectors
+are **present**, and each call leaves `mode` 0, `status` 0 and `armPosition` 0. That is the same answer the
+four 14.5 calls give, and for the header's reason: `mode` is the controller's answer and no controller is
+behind it. So the port's three do what the four do - record the mode through
+`-charon_setRequestedMode:`, reach it back through `-charon_requestedMode:` - and the `adaptive trigger`
+group of the differential holds both families at 11 lines a side, all identical.
+
+What is deliberately **not** done with a curve's numbers: they are not clamped, ordered or stored. The
+header declares the five fields normalized, and clamping them into a value nothing reads would be a
+check that examines nothing - the only thing that could act on a curve is a controller, and there is
+none, which is what the measurement above is. The four numbers of the slope call are not inspected for
+the same reason.
+
 One difference, named: `isKindOfClass:[GCControllerButtonInput class]` answers **YES** here and **NO**
 on the host's own trigger, though the SDK 16.4 header declares
 `@interface GCDualSenseAdaptiveTrigger : GCControllerButtonInput`. This port follows the declaration;
