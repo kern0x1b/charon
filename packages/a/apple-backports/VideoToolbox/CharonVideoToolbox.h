@@ -233,6 +233,8 @@ typedef NS_ENUM(NSInteger, VTSuperResolutionScalerParametersSubmissionMode) {
 @property (nonatomic, readonly, assign) float configurationModelPercentageAvailable;
 @property (class, nonatomic, readonly, strong) NSArray<NSNumber*> * supportedScaleFactors;
 
+- (void)downloadConfigurationModelWithCompletionHandler:(void (^)(NSError * _Nullable error))completionHandler;
+
 - (nullable instancetype)initWithFrameWidth:(NSInteger)frameWidth
                         frameHeight:(NSInteger)frameHeight
                         scaleFactor:(NSInteger)scaleFactor
@@ -526,6 +528,9 @@ typedef NS_ENUM(NSInteger, VTSuperResolutionScalerParametersSubmissionMode) {
 @property (nonatomic, readonly, assign) NSInteger frameWidth;
 @property (nonatomic, readonly, assign) NSInteger frameHeight;
 @property (nonatomic, readonly, assign) float scaleFactor;
+
++ (NSArray<NSNumber *> *)supportedScaleFactorsForFrameWidth:(NSInteger)frameWidth
+                                                 frameHeight:(NSInteger)frameHeight;
 
 - (nullable instancetype)initWithFrameWidth:(NSInteger)frameWidth
                         frameHeight:(NSInteger)frameHeight
