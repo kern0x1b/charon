@@ -140,12 +140,16 @@ real H264 or HEVC session needs an SPS and a PPS. So four of the five codecs nev
 question. The one that did is the answer: **JPEG creates with `noErr` and FAILS with the key.** The key does
 not open anything this release can do; it only removes what it could do.
 
-So the create status is NOT the release's answer to "can this codec be hardware-decoded", and
-`VTIsHardwareDecodeSupported` **stays owed** - which is the outcome the coordinator named for exactly this
-case, reached by measurement rather than by waiting for it. The honest position is that this release offers
-no query for it at all: `_VTIsHardwareDecodeSupported` arrived with iOS 11 and
-`_VTDecompressionSessionCopySupportedPropertyDictionaryForDecoder` does not exist at any band this port
-builds, so there is nothing left to ask.
+**The emulator has NO decoder hardware at all**, and that is the reading which decides the row. "JPEG creates
+without the key and fails with it" is ALSO exactly what a release that DOES honour the key answers on a
+machine with no hardware JPEG decoder - so the run cannot tell an ignored key from an honoured one, and any
+conclusion about the key's behaviour from this run would be a guess. What the run does establish is the two
+things it can: that four codecs never reached the question (no parameter sets), and that on this machine the
+key cannot help. So `VTIsHardwareDecodeSupported` **stays owed**, and the reason is the stronger one: **the
+oracle is a device with real parameter sets**, not this machine. The row has no other reading available on any
+band this port builds either - `_VTIsHardwareDecodeSupported` arrived with iOS 11 and
+`_VTDecompressionSessionCopySupportedPropertyDictionaryForDecoder` does not exist at 4.3, 6.0, 6.1.3, 7.0.1,
+10.3.4, 12.0, 16.0 or 18.0, so there is nothing left to ask.
 
 Two further numbers from that run, both of which settle something else:
 

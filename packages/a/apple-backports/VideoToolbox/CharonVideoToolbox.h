@@ -130,18 +130,13 @@ extern OSStatus VTCompressionSessionEncodeMultiImageFrameWithOutputHandler(
     VTCompressionOutputHandler CM_NONNULL outputHandler);
 #endif
 
-// kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder, which VTIsHardwareDecodeSupported asks
-// the release by.
-//
-// It is not missing from the 16.4 SDK's VTDecompressionProperties.h: that file puts the whole
-// kVTVideoDecoderSpecification_* block inside `#if !TARGET_OS_IPHONE` (lines 140 to 184), so an armv7 build
-// cannot see the declaration at all, while SDK 26.2's copy of the same file declares it at line 172 with no
-// such guard and says `API_AVAILABLE(macos(10.9), ios(17.0), tvos(17.0), visionos(1.0))`. The SYMBOL is the
-// release's own well before either SDK date - `_kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder`
-// is in the 4.3 and the 6.1.3 armv7 caches (tools/corpus/dump-cache.lua, 2026-10-03) - so this DECLARES it
-// and does not define it, with the availability attribute left out because the port builds for
-// armv7-apple-ios6.0 and an ios(17.0) attribute would hide the declaration from that target.
-extern const CFStringRef kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder;
+// The declaration of kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder that used to be
+// here is gone with the function that used it. Nothing in the port references the key any more: the row that
+// did - VTIsHardwareDecodeSupported - is OWED, not implemented, and the measurement that moved it is in
+// facts/VideoToolbox/Queries.md. The 16.4 SDK still hides the key from an armv7 build
+// (VTDecompressionProperties.h:140-184 wraps the whole kVTVideoDecoderSpecification_* block in
+// `#if !TARGET_OS_IPHONE`), so anything that needs it again has to declare it again, transcribed from SDK
+// 26.2 line 172, and that declaration has to arrive with the row that uses it.
 
 // The error domain VTFrameProcessor.h and VTFrameProcessorErrors.h of SDK 26.2 declare, and the codes
 // the second of them enumerates, transcribed with Apple's own values: a caller compares a code against

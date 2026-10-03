@@ -1,104 +1,42 @@
 #import "CharonVideoToolbox.h"
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreMedia/CoreMedia.h>
-#include <VideoToolbox/VTDecompressionSession.h>
 #include <VideoToolbox/VTCompressionSession.h>
 #include <VideoToolbox/VTErrors.h>
+
+// VTCopySupportedPropertyDictionaryForEncoder: "Builds a list of supported properties and encoder ID for an
+// encoder", and the caller must release both. SDK 26.2 declares it at 11.0 (VTVideoEncoderList.h:55-64) and
+// no release this port builds exports it (_VTCopySupportedPropertyDictionaryForEncoder is absent from the 4.3
+// and the 6.1.3 armv7 caches), so the port exports it.
+//
+// ONE ROW OF THE SAME FAMILY IS NOT HERE AND SAYS SO. VTIsHardwareDecodeSupported was written against this
+// release's own kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder - a session created with
+// that key exists only if the release can decode the codec in hardware - and then measured on the 6.1.3
+// release itself through xmake emulate, per codec, with and without the key:
+//
+//   H264     noKey=-12906  withKey=-12906        JPEG  noKey=0  withKey=-12906
+//   MPEG4    noKey=-12906  withKey=-12906        HEVC  noKey=-12906  withKey=-12906
+//   ProRes   noKey=-12906  withKey=-12906
+//
+// -12906 is kVTVideoDecoderMalfunctionErr, which is what the release answers for a format description with
+// no parameter sets, so four of the five codecs never reached the question; and the emulator has NO decoder
+// hardware at all, so "JPEG creates without the key and fails with it" is also exactly what a release that
+// DOES honour the key answers on a machine with no hardware JPEG decoder. The run therefore cannot tell an
+// ignored key from an honoured one, which is the stronger reason the row is owed: the oracle is a device
+// with real parameter sets. The function is not written, because a gate that finds an owed row answered by
+// the build is a gate that has caught something true.
+
+
 
 // Two of VideoToolbox's queries, both of which SDK 26.2 declares at 11.0 and neither of which any release
 // this port builds exports (tools/corpus/dump-cache.lua over $HOME/.charon/dyld/4.3/dyld_shared_cache_armv7
 // and over the 6.1.3 armv7 dump, 2026-10-03: zero hits for _VTIsHardwareDecodeSupported and for
 // _VTCopySupportedPropertyDictionaryForEncoder), so the port exports both.
 //
-// NEITHER IS ANSWERED FROM A TABLE OF WHAT THIS HARDWARE HAS. That is the whole design, and the reason is
-// measured: the obvious oracle for VTIsHardwareDecodeSupported is the decoder's own supported-property
-// dictionary, and **that function does not exist at any band this port builds or any band this wave
-// holds** -
-//
-//   _VTDecompressionSessionCopySupportedPropertyDictionaryForDecoder  4.3=0 6.1.3=0 6.0=0 7.0.1=0
-//                                                                     10.3.4=0 12.0=0 16.0=0 18.0=0
-//   _VTCompressionSessionCopySupportedPropertyDictionaryForEncoder    4.3=0 6.1.3=0 6.0=0 7.0.1=0
-//                                                                     10.3.4=0 12.0=0 16.0=0 18.0=0
-//
-// so there is no dictionary to ask. What the release DOES have, at every band, is a specification key -
-//
-//   _kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder  4.3=1 6.1.3=1
-//   _kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder  4.3=1 6.1.3=1
-//   _VTDecompressionSessionCreate 4.3=1  6.1.3=1     _VTCompressionSessionCreate 4.3=1 6.1.3=1
-//   _CMVideoFormatDescriptionCreate 4.3=1 6.1.3=1    _VTSessionCopySupportedPropertyDictionary 4.3=1 6.1.3=1
-//
-// and a session created with the hardware requirement set exists only if the release can do it in
-// hardware. So asking the release by creating that session IS the release's answer, and it is a different
-// answer on different hardware - which is what the function is for. CMVideoFormatDescriptionCreate takes
-// the codec type, the width and the height and nothing else (CMFormatDescription.h:909, iOS 4.0), so the
-// probe needs no parameter sets and works for every codec type the caller names.
-
-// The size the probe asks the release about. A session's existence turns on the CODEC and the hardware
-// requirement, not on the dimensions, and the release's own decoder dictionaries are asked by the apps that
-// ship at sizes no bigger than this; 320x240 is also what the host measurement of the sibling function used
-// (facts/VideoToolbox/Queries.md).
-static const int32_t kCharonVTProbeWidth = 320;
-static const int32_t kCharonVTProbeHeight = 240;
-
-// The callback record the probe hands the release, and why it hands one at all.
-//
-// VTDecompressionSessionCreate's outputCallback is documented as optional, and it is documented as optional
-// only from iOS 9: before that the header had no handler form, and a NULL callback record may be refused
-// with kVTParameterErr whatever the codec - which would make this function answer NO always, for a reason
-// that has nothing to do with the hardware it is asking about. So a real no-op record goes in instead. It
-// cannot be reached: nothing is decoded here, the session's EXISTENCE is the whole of the question, and no
-// sample buffer is ever handed to the session. The record's shape is the 16.4 SDK's
-// (VTDecompressionSession.h:94-98) and is valid at every band.
-static void charon_probe_output(void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status,
-                                VTDecodeInfoFlags infoFlags, CVImageBufferRef imageBuffer,
-                                CMTime presentationTimeStamp, CMTime presentationDuration)
-{
-    (void)decompressionOutputRefCon;
-    (void)sourceFrameRefCon;
-    (void)status;
-    (void)infoFlags;
-    (void)imageBuffer;
-    (void)presentationTimeStamp;
-    (void)presentationDuration;
-}
-
-static const VTDecompressionOutputCallbackRecord kCharonVTProbeCallback = {
-    charon_probe_output, NULL
-};
-
-// The release's own answer to "can you decode this codec in hardware", asked by trying. A NULL session with
-// noErr is not possible - VTDecompressionSessionCreate either hands one back or fails - so the status is
-// the answer and nothing else is consulted.
-static Boolean charon_can_decode(CMVideoCodecType codecType, CFStringRef requirement)
-{
-    CMVideoFormatDescriptionRef format = NULL;
-    if (CMVideoFormatDescriptionCreate(kCFAllocatorDefault, codecType, kCharonVTProbeWidth,
-                                      kCharonVTProbeHeight, NULL, &format) != noErr || !format)
-        return false;
-    const void *keys[] = { requirement };
-    const void *values[] = { kCFBooleanTrue };
-    CFDictionaryRef specification = CFDictionaryCreate(kCFAllocatorDefault, keys, values, 1,
-                                                       &kCFTypeDictionaryKeyCallBacks,
-                                                       &kCFTypeDictionaryValueCallBacks);
-    VTDecompressionSessionRef session = NULL;
-    // No destination image buffer attributes, and the no-op callback record above rather than a NULL one.
-    OSStatus created = specification ? VTDecompressionSessionCreate(kCFAllocatorDefault, format, specification,
-                                                                    NULL, &kCharonVTProbeCallback, &session)
-                                    : kVTInvalidSessionErr;
-    if (session) {
-        VTDecompressionSessionInvalidate(session);
-        CFRelease(session);
-    }
-    if (specification)
-        CFRelease(specification);
-    CFRelease(format);
-    return created == noErr;
-}
-
-Boolean VTIsHardwareDecodeSupported(CMVideoCodecType codecType)
-{
-    return charon_can_decode(codecType, kVTVideoDecoderSpecification_RequireHardwareAcceleratedVideoDecoder);
-}
+// The decoder's own supported-property dictionary would be the oracle for the other row of this family and
+// **does not exist at any band this port builds or any band this wave holds** -
+// _VTDecompressionSessionCopySupportedPropertyDictionaryForDecoder is absent from the 4.3, 6.0, 6.1.3, 7.0.1,
+// 10.3.4, 12.0, 16.0 and 18.0 caches alike - which is part of why that row is owed rather than answered.
 
 // The encoder side of the same question has no SDK 26.2 entry point of its own - there is no
 // VTIsHardwareEncodeSupported - so nothing here answers it and nothing above needs it to. What the encoder
