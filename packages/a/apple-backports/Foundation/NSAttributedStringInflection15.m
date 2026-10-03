@@ -314,6 +314,8 @@ static NSString *CharonFollow(NSAttributedString *source, NSRange range, id rule
 @end
 
 @implementation CharonInflectedRun
+@synthesize range = _range;
+@synthesize text = _text;
 @end
 
 @implementation NSAttributedString (CharonInflection15)

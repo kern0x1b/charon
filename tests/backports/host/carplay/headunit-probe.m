@@ -205,8 +205,8 @@ int main(int argc, const char *argv[])
             // hardware absence, and it is read off the metadata rather than off the header's prose.
             Class const scenes[] = {scene, dashboard, cluster};
             for (size_t i = 0; i < sizeof(scenes) / sizeof(scenes[0]); i++) {
-                IMP own = class_getInstanceMethod(scenes[i], @selector(init));
-                IMP inherited = class_getInstanceMethod([NSObject class], @selector(init));
+                Method own = class_getInstanceMethod(scenes[i], @selector(init));
+                Method inherited = class_getInstanceMethod([NSObject class], @selector(init));
                 check([NSString stringWithFormat:@"%@ declares no initialiser of its own",
                             NSStringFromClass(scenes[i])],
                       own == NULL || own == inherited,
